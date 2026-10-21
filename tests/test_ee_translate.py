@@ -250,7 +250,7 @@ def test_alias_dn_and_common_map(local,arrays):
     r=compile(call("reduce.median",collection=c),local)
     assert r["bands"]==["nd"]
     c["arguments"]["baseAlgorithm"]["body"]=call("Element.get",object=arg,property="system:time_start")
-    with pytest.raises(UnsupportedEEError,match="Dynamic item metadata"): compile(c,local)
+    with pytest.raises(UnsupportedEEError,match="must return an Image"): compile(c,local)
 
 
 def test_static_dictionary_date_and_metadata(local):

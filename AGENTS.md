@@ -48,6 +48,7 @@ Read `docs/architecture.md` before changing architecture or adding a subsystem. 
 - Run syntax/build checks, focused negative/semantic tests, and legitimate end-to-end controls appropriate to the changed module. Test real UI routes when the behavior is user-visible.
 - For EE, include date boundaries, distinct multi-scene reductions, negative ND, mask direction, select/rename/addBands and missing bands; independent numerical references are required for supported scientific claims.
 - Preserve prior evidence. Harnesses use a new `GEE_AUDIT_DIR`; never overwrite historical audit files. Distinguish a regenerated report from original evidence.
+- Clean task-created build scratch, completed-task caches and duplicate test downloads after verification. Retain concise reports, failure records and required reproducible fixtures; keep runtime dependencies, user data and formal outputs. Check that no task is using a path before removing it, and record meaningful cleanup.
 - Deploy only checked native dependencies/code, record versions/hashes, then read back process identity, architecture and user-visible behavior. Do not treat a successful build as running acceptance.
 - Report changes, exact verified scope, meaningful failures and unresolved work. Do not mark the active goal complete until its required slices are actually done.
 

@@ -1,0 +1,135 @@
+"""Build the independent Local EE GeoTrellis SPI adapter.
+
+The adapter is deliberately excluded from the upstream engine JAR lock. Build
+to an explicit path, normally `.native/jars/local-ee-integer-adapter.jar`, and
+retain the adjacent JSON manifest as the local source/artifact digest record.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import platform
+import subprocess
+import tempfile
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE = ROOT / "engine/ee_integer_adapter.scala"
+SERVICE_NAME = "org.openeo.geotrelliscommon.CubeProcessProvider"
+SERVICE_ENTRY = "local.ee.integer.LocalEeIntegerCubeProcessProvider\n"
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _engine_paths() -> tuple[Path, Path, list[Path], list[Path], dict[str, str]]:
+    native = ROOT / ".native"
+    lock = json.loads((native / "engine-lock.json").read_text())
+    java_home = Path(lock["java_home"])
+    java = java_home / "bin/java"
+    jar_tool = java_home / "bin/jar"
+    if not java.is_file() or not jar_tool.is_file():
+        raise RuntimeError(f"Locked Java runtime is unavailable: {java_home}")
+    spark_jars = native / "engine/lib/python3.11/site-packages/pyspark/jars"
+    scala_compiler = sorted(spark_jars.glob("scala-compiler-*.jar"))
+    scala_library = sorted(spark_jars.glob("scala-library-*.jar"))
+    scala_reflect = sorted(spark_jars.glob("scala-reflect-*.jar"))
+    if not (len(scala_compiler) == len(scala_library) == len(scala_reflect) == 1):
+        raise RuntimeError("Expected exactly one pinned Scala compiler/library/reflect JAR")
+    locked_jars = lock.get("jars")
+    if not isinstance(locked_jars, dict):
+        raise RuntimeError("Native engine lock does not contain the expected JAR digest map")
+    native_jars = []
+    for name, expected_digest in sorted(locked_jars.items()):
+        if name.startswith('local-ee-'):
+            raise RuntimeError('Local adapters must have separate manifests, not appear in the upstream engine lock')
+        path = native / "jars" / name
+        if not path.is_file():
+            raise RuntimeError(f"Locked engine JAR is missing: {name}")
+        actual_digest = sha256(path)
+        if actual_digest != expected_digest:
+            raise RuntimeError(f"Locked engine JAR SHA-256 mismatch: {name}")
+        native_jars.append(path)
+    if not any("geotrellis-extensions" in p.name for p in native_jars):
+        raise RuntimeError("Locked engine JAR set has no GeoTrellis extensions JAR")
+    if not any("geotrellis-dependencies" in p.name for p in native_jars):
+        raise RuntimeError("Locked engine JAR set has no GeoTrellis dependencies JAR")
+    runtime_jars = sorted(spark_jars.glob("*.jar")) + native_jars
+    return java, jar_tool, [scala_compiler[0], scala_library[0], scala_reflect[0]], runtime_jars, locked_jars
+
+
+def _run(args: list[str], *, env: dict[str, str] | None = None) -> None:
+    subprocess.run([str(arg) for arg in args], check=True, cwd=ROOT, env=env)
+
+
+def build(output: Path) -> dict:
+    if not SOURCE.is_file():
+        raise RuntimeError(f"Adapter source is missing: {SOURCE}")
+    java, jar_tool, scala_tools, runtime_jars, locked_jars = _engine_paths()
+    engine_lock = json.loads((ROOT / ".native/engine-lock.json").read_text())
+    scala_version = scala_tools[1].stem.rsplit("-", 1)[-1]
+    java_home = java.parent.parent
+    compile_cp = os.pathsep.join(str(path) for path in runtime_jars)
+    compiler_cp = os.pathsep.join(str(path) for path in scala_tools)
+    output = output.expanduser().resolve()
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    manifest_path = output.with_suffix(output.suffix + ".manifest.json")
+    with tempfile.TemporaryDirectory(prefix=".local-ee-integer-adapter-", dir=output.parent) as temporary:
+        temporary_path = Path(temporary)
+        classes = temporary_path / "classes"
+        staged_jar = temporary_path / output.name
+        staged_manifest = temporary_path / manifest_path.name
+        services = classes / "META-INF/services"
+        classes.mkdir()
+        services.mkdir(parents=True)
+        (services / SERVICE_NAME).write_text(SERVICE_ENTRY, encoding="utf-8")
+        compiler = [
+            java, "-cp", compiler_cp, "scala.tools.nsc.Main",
+            "-classpath", compile_cp, "-d", classes, SOURCE,
+        ]
+        _run(compiler, env={**os.environ, "JAVA_HOME": str(java_home)})
+        _run([jar_tool, "--create", "--file", staged_jar, "-C", classes, "."],
+             env={**os.environ, "JAVA_HOME": str(java_home)})
+        manifest = {
+            "format": "local-ee-native-adapter-v1",
+            "adapter": "local-ee-integer-adapter",
+            "source": str(SOURCE.relative_to(ROOT)),
+            "source_sha256": sha256(SOURCE),
+            "build_script": str(Path(__file__).resolve().relative_to(ROOT)),
+            "build_script_sha256": sha256(Path(__file__).resolve()),
+            "jar": str(output),
+            "jar_sha256": sha256(staged_jar),
+            "platform": platform.platform(),
+            "architecture": platform.machine(),
+            "java_home": str(java_home),
+            "scala_version": scala_version,
+            "spark_version": engine_lock["spark"],
+            "upstream_jars": locked_jars,
+            "services": {SERVICE_NAME: SERVICE_ENTRY.strip()},
+        }
+        staged_manifest.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+        staged_manifest.chmod(0o600)
+        os.replace(staged_jar, output)
+        os.replace(staged_manifest, manifest_path)
+    return manifest
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", required=True, type=Path,
+                        help="destination for the independently locked adapter JAR")
+    args = parser.parse_args()
+    print(json.dumps(build(args.output), indent=2))
+
+
+if __name__ == "__main__":
+    main()

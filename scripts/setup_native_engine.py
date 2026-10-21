@@ -81,8 +81,11 @@ def main():
     record={'platform':platform.platform(),'architecture':platform.machine(),'java_home':str(java),
             'spark':'4.0.4','gdal':version,'metadata_adaptations':replacements,
             'jni_adaptation':'Darwin arm64 resource dispatch; GDAL const metadata pointers; C++17 libc++',
-            'jars':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in jars.glob('*.jar')}}
+            'jars':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in jars.glob('*.jar') if not p.name.startswith('local-ee-')}}
     (NATIVE/'engine-lock.json').write_text(json.dumps(record,indent=2)+'\n')
+    # Local SPI extensions have their own source/artifact manifests. They are
+    # not upstream downloads and must never enter engine/jars-lock.json.
+    run([sys.executable,ROOT/'scripts/build_integer_adapter.py','--output',jars/'local-ee-integer-adapter.jar'],env=env)
     print('Native engine built; no VM or container used.')
 
 

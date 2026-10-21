@@ -1,0 +1,652 @@
+{
+  "sdk": "1.7.49",
+  "source_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a",
+  "source": "https://github.com/google/earthengine-api",
+  "expressions": {
+    "differenceDaysPlural": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-01-15"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-01-01"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "start": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "unit": "days"
+            },
+            "functionName": "Date.difference"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "2"
+      }
+    },
+    "differenceLeapYear": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2021-01-01T00:00:00Z"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-01-01T00:00:00Z"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "start": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "unit": "year"
+            },
+            "functionName": "Date.difference"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "2"
+      }
+    },
+    "differenceMonth": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-02-01"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-01-01"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "start": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "unit": "month"
+            },
+            "functionName": "Date.difference"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "2"
+      }
+    },
+    "relativeMonthYear": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-02-29T07:15:31.240Z"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "unit": "month",
+              "inUnit": "year"
+            },
+            "functionName": "Date.getRelative"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "relativeWeekYear": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2021-01-01"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "unit": "week",
+              "inUnit": "year"
+            },
+            "functionName": "Date.getRelative"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "relativeDayYear": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-02-29T07:15:31.240Z"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "unit": "day",
+              "inUnit": "year"
+            },
+            "functionName": "Date.getRelative"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "relativeDayMonth": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-02-29T07:15:31.240Z"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "unit": "day",
+              "inUnit": "month"
+            },
+            "functionName": "Date.getRelative"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "relativeMinuteDay": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-02-29T07:15:31.240Z"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "unit": "minute",
+              "inUnit": "day"
+            },
+            "functionName": "Date.getRelative"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "relativeSecondMinute": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-02-29T07:15:31.240Z"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "unit": "second",
+              "inUnit": "minute"
+            },
+            "functionName": "Date.getRelative"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "relativeLargerUnit": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-02-29T07:15:31.240Z"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "unit": "year",
+              "inUnit": "month"
+            },
+            "functionName": "Date.getRelative"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "relativeTimezone": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2021-01-01T00:00:00Z"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "unit": "day",
+              "inUnit": "year",
+              "timeZone": "UTC"
+            },
+            "functionName": "Date.getRelative"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "fractionYear": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-02-29T07:15:31.240Z"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "unit": "year"
+            },
+            "functionName": "Date.getFraction"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "fractionMonth": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-02-29T07:15:31.240Z"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "unit": "month"
+            },
+            "functionName": "Date.getFraction"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "fractionWeek": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-02-29T07:15:31.240Z"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "unit": "week"
+            },
+            "functionName": "Date.getFraction"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "fractionDay": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-02-29T07:15:31.240Z"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "unit": "day"
+            },
+            "functionName": "Date.getFraction"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "fractionHour": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-02-29T07:15:31.240Z"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "unit": "hour"
+            },
+            "functionName": "Date.getFraction"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "fractionMinute": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-02-29T07:15:31.240Z"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "unit": "minute"
+            },
+            "functionName": "Date.getFraction"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "fractionSecond": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": "2020-02-29T07:15:31.240Z"
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "unit": "second"
+            },
+            "functionName": "Date.getFraction"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    }
+  }
+}

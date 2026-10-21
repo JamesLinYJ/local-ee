@@ -15,6 +15,9 @@ import re
 from dataclasses import dataclass, replace
 from typing import Any
 
+from .ee_dates import SUPPORTED_DATE_FUNCTIONS
+from .ee_integer import SUPPORTED_INTEGER_FUNCTIONS
+
 
 class UnsupportedEEError(ValueError):
     """The serialized program uses a semantic this local adapter cannot honor."""
@@ -23,9 +26,11 @@ class UnsupportedEEError(ValueError):
 # Handler inventory, not a claim that every overload or parameter is supported,
 # nor that Google-service numerical equivalence has been established.
 SUPPORTED_FUNCTIONS = frozenset({
+    *SUPPORTED_DATE_FUNCTIONS,
+    *SUPPORTED_INTEGER_FUNCTIONS,
     "ImageCollection.load", "Image.load", "Image.constant", "Image", "ImageCollection",
     "Collection.filter", "Collection.map", "Collection.limit", "Collection.sort", "Collection.size", "Collection.first",
-    "ImageCollection.mosaic", "Image.select", "Image.rename", "Image.bandNames", "Image.toFloat",
+    "ImageCollection.mosaic", "ImageCollection.qualityMosaic", "Image.select", "Image.rename", "Image.bandNames", "Image.toFloat", "Image.toDouble",
     "Image.normalizedDifference", "Image.parseExpression", "Image.updateMask", "Image.mask", "Image.addBands", "Image.clip", "Image.reduceRegion",
     "Image.where", "Image.clamp", "Image.unitScale", "Image.reduce", "Image.date", "Image.geometry", "Collection.geometry", "Feature.geometry",
     "Collection.toList", "AggregateFeatureCollection.array", "ImageCollection.reduce", "ImageCollection.toBands", "ImageCollection.fromImages", "ImageCollection.merge", "If", "List.map", "List.iterate",
@@ -48,7 +53,11 @@ def get_capabilities():
     return {"compiler_functions": sorted(SUPPORTED_FUNCTIONS), "level": "C",
             "numerical_equivalence_to_google_verified": False,
             "restrictions": ["local Sentinel-2 only; limited pre-cloud-masked DN alias",
-                             "native collection map supports pure pixels; fromImages/toList allows finite per-frame metadata evaluation",
+                             "metadata-dependent collection maps expand a finite local item sequence; pure pixel maps retain the compact path",
+                             "UTC date fields supported with documented local policies for average year/month durations and ISO weeks; no Google numerical comparison",
+                             "qualityMosaic requires identical bands; equal quality uses the last local item, not yet Google-compared",
+                             "Number bitwise operations accept constrained integer domains; Image bitwise and integer casts remain unsupported",
+                             "toDouble/toFloat convert physical cells; Float64 pixel callbacks and temporal reductions reject until precision is preserved",
                              "binary updateMask only; planar EPSG:4326 input geometries",
                              "collection reductions preserve individual scenes; compiled graphs limited to 500 nodes",
                              "region boundary weighting is not verified against Earth Engine",
@@ -210,20 +219,25 @@ def format_date(date, pattern):
     return "".join(out)
 
 
-def _substitute(value, old, new):
+def _substitute(value, old, new, memo=None):
+    memo = {} if memo is None else memo
     if isinstance(value, Source):
         return new if value == old else value
     if isinstance(value, Pixel):
-        return replace(value, args=tuple(_substitute(a, old, new) for a in value.args))
+        key = id(value)
+        if key not in memo:
+            memo[key] = replace(value, args=tuple(_substitute(a, old, new, memo) for a in value.args))
+        return memo[key]
     if isinstance(value, tuple):
-        return tuple(_substitute(a, old, new) for a in value)
+        return tuple(_substitute(a, old, new, memo) for a in value)
     return value
 
 
 def rebind(collection, ids):
     source = replace(collection.source, ids=tuple(ids))
+    memo = {}
     image = replace(collection.image, source=source, bands=[
-        (n, _substitute(p, collection.source, source)) for n, p in collection.image.bands])
+        (n, _substitute(p, collection.source, source, memo)) for n, p in collection.image.bands])
     return Collection(source, image)
 
 
@@ -508,6 +522,18 @@ class Translator:
 
     def invoke(self, name, a):
         # Inputs are resolved values, so there is no executable user code here.
+        if name == "Collection.map" and a.get("dropNulls") is not None and not isinstance(a["dropNulls"], bool):
+            fail("Collection.map dropNulls must be a boolean")
+        if name in SUPPORTED_DATE_FUNCTIONS:
+            from .ee_dates import invoke_date
+            return invoke_date(self, name, a)
+        if name in SUPPORTED_INTEGER_FUNCTIONS:
+            from .ee_integer import invoke_integer
+            return invoke_integer(self, name, a)
+        if name == "ImageCollection.qualityMosaic":
+            self.allowed(a, {"collection", "qualityBand"})
+            from .ee_quality import quality_mosaic
+            return quality_mosaic(self, a["collection"], a["qualityBand"])
         if name in {"ImageCollection.fromImages", "ImageCollection.merge"} or isinstance(a.get("collection"), ImageSequence):
             from .ee_collections import invoke_sequence
             return invoke_sequence(self,name,a)
@@ -555,10 +581,12 @@ class Translator:
             return Filter(operation, a)
         if name == "Collection.map":
             self.allowed(a, {"collection", "baseAlgorithm", "dropNulls"})
-            if a.get("dropNulls"): fail("map(dropNulls=true) is unsupported")
             c, f = a["collection"], a["baseAlgorithm"]
             if not isinstance(c, Collection) or not isinstance(f, Function) or len(f.names) != 1:
                 fail("Collection.map needs a one-argument serialized function")
+            from .ee_metadata import evaluate_per_image_map, requires_item_metadata
+            if requires_item_metadata(f, self.scope) or a.get("dropNulls"):
+                return evaluate_per_image_map(self, c, f, a.get("dropNulls", False))
             image = self.evaluate(f.body, {**f.env, f.names[0]: replace(c.image, mapped=True)})
             if not isinstance(image, Image): fail("Collection.map must return an Image")
             return replace(c, image=replace(image, mapped=False, source=c.source))
@@ -635,7 +663,10 @@ class Translator:
         if name == "Image.bandNames": return [n for n, _ in a["image"].bands]
         if name == "Image.toFloat":
             self.allowed(a, {"value"})
-            return as_image(a["value"])
+            return unary(a["value"], "to_float")
+        if name == "Image.toDouble":
+            self.allowed(a, {"value"})
+            return unary(a["value"], "to_double")
         if name == "Image.normalizedDifference":
             self.allowed(a, {"input", "bandNames"})
             im = as_image(a["input"])
@@ -965,10 +996,13 @@ class Graph:
         self.cache = {}
         self.sources = {}
         self.required_bands = {}
+        self.expressions = {}
+        self.double_precision = {}
 
     def node(self, process_id, **args):
         key = json.dumps([process_id, args], sort_keys=True)
         if key not in self.cache:
+            if len(self.graph) >= 500: fail("Compiled process graph exceeds 500 nodes; reduce the script scope")
             nid = "n"+str(len(self.graph))
             self.graph[nid] = {"process_id": process_id, "arguments": args}
             self.cache[key] = {"from_node": nid}
@@ -1003,6 +1037,31 @@ class Graph:
         return op, {"x": x, **({"y": y} if y is not None else {})}
 
     def expression(self, p):
+        # Pixel expressions form a DAG. Quality selection and other conditionals
+        # share subexpressions; revisiting the tree can otherwise take exponential
+        # time even though node deduplication keeps the final graph small. Retain
+        # the object alongside its identity so ephemeral IR objects cannot reuse
+        # an ID and receive a different expression's cached result.
+        key = id(p)
+        if key not in self.expressions:
+            self.expressions[key] = (p, self._expression(p))
+        return self.expressions[key][1]
+
+    def has_double_precision(self, p):
+        # Pinned upstream pixel callbacks convert their input to Float32. Until
+        # typed callbacks are implemented, reject these combinations rather
+        # than silently narrowing an explicitly requested Float64 raster.
+        key = id(p)
+        if key not in self.double_precision:
+            if p.op == "to_double": result = True
+            elif p.op in {"to_float", "is_nodata"}: result = False
+            else:
+                operands = p.args[0] if p.op == "reduce_bands" else p.args[:1] if p.op in {"clip", "preserve_mask"} else p.args
+                result = any(self.has_double_precision(x) for x in operands if isinstance(x, Pixel))
+            self.double_precision[key] = (p, result)
+        return self.double_precision[key][1]
+
+    def _expression(self, p):
         if p.op == "constant":
             # GeoTrellis's scalar callback builder represents logical pixels as
             # 0/1; a Boolean false literal is not a numeric accept value there.
@@ -1016,15 +1075,28 @@ class Graph:
             ref, label, timed = self.expression(p.args[0])
             if label is None: fail("Clipping an unbound constant image is unsupported")
             return self.node("mask_polygon", data=ref, mask=p.args[1]), label, timed
+        if p.op in {"to_double", "to_float"}:
+            ref, label, timed = self.expression(p.args[0])
+            if label is None:
+                if ref is None: return None, None, timed
+                if p.op == "to_float":
+                    import struct
+                    return struct.unpack('!f', struct.pack('!f', ref))[0], None, timed
+                return float(ref), None, timed
+            return self.node("local_ee_" + p.op, data=ref), label, timed
         if p.op == "preserve_mask":
             ref, label, timed = self.expression(p.args[0])
             mask, _, mask_time = self.expression(Pixel("is_nodata", (p.args[1],), True))
             if timed != mask_time: fail("Mask dimensions do not match")
             return self.node("mask", data=ref, mask=mask), label, timed
         if p.op == "reduce_t":
+            if self.has_double_precision(p.args[0]): fail("Float64 temporal reductions are not verified; cast after reduction or explicitly toFloat() first")
             sources = set()
+            seen = set()
             def find_sources(value):
                 if isinstance(value, Pixel):
+                    if id(value) in seen: return
+                    seen.add(id(value))
                     if value.op == "band": sources.add(value.args[0])
                     else:
                         for operand in value.args: find_sources(operand)
@@ -1057,6 +1129,8 @@ class Graph:
                     "valid": {"process_id": "gt", "arguments": {"x": {"from_parameter": "x"}, "y": 0}},
                     "result": {"process_id": "if", "arguments": {"value": {"from_node": "valid"}, "accept": {"from_parameter": "x"}, "reject": None}, "result": True}}})
             return ref, label, False
+        if p.op != "is_nodata" and self.has_double_precision(p):
+            fail("Float64 pixel arithmetic is not supported by the pinned callback backend; apply toDouble() after arithmetic or explicitly toFloat() first")
         operands = p.args[0] if p.op == "reduce_bands" else p.args
         results = [self.expression(x) for x in operands]
         rasters = [(i, r) for i, r in enumerate(results) if r[1] is not None]
@@ -1128,8 +1202,11 @@ class Graph:
         return self.node("add_dimension", data=result, name="bands", label="v", type="bands"), "v", timed
 
     def image(self, image):
+        seen = set()
         def collect(value):
             if isinstance(value, Pixel):
+                if id(value) in seen: return
+                seen.add(id(value))
                 if value.op == "band": self.required_bands.setdefault(value.args[0], set()).add(value.args[1])
                 else:
                     for operand in value.args: collect(operand)
