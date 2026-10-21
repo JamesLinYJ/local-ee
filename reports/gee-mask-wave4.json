@@ -1,0 +1,420 @@
+{
+  "schema_version": 1,
+  "scope": "Modular EE compiler and bounded Image.unmask, SDK 1.7.49, native macOS ARM64; no Google-service numerical comparison",
+  "source_checks": {
+    "python_passed": 317,
+    "python_skipped": 2,
+    "skipped_scope": "Opt-in native integer and grid probes; grid probe independently enabled and passed. Existing casts also exercised in end-to-end jobs.",
+    "frontend_tests_passed": 10,
+    "typescript_and_build_passed": true
+  },
+  "compiler_modularity": {
+    "source": "reports/gee-compiler-modularity.json",
+    "facade_lines": 23,
+    "module_max_lines": 198,
+    "existing_sdk_cases_compared": 99,
+    "differences": 0
+  },
+  "native_adapter": {
+    "jar_sha256": "c3462998c9023ccf13d1288313a94b6cb5776c09ebacc293a0107e3465fe2c08",
+    "source_sha256": {
+      "engine/ee_integer_adapter.scala": "8374acb9e68f651930daf5ee18a641af468fb9b60990e249479e2cb17411d5d0",
+      "engine/ee_grid_adapter.scala": "0dabc78d06a974fd9c5d0f39be79d72f63dc3ea16a68f1bd3d001b0e100d747f",
+      "engine/ee_mask_adapter.scala": "f29fe4dfa0d184ed3391bed9d410a36cd43858ec3a83d994cdc2a56361ac5159"
+    },
+    "upstream_jars_verified_by_builder": true,
+    "vendor_sources_modified": false
+  },
+  "spi_probe": {
+    "command": "LOCAL_EE_RUN_NATIVE_GRID_TEST=1 .venv/bin/python -m pytest -q tests/test_ee_grid_adapter.py",
+    "passed": 1,
+    "controls": [
+      "missing middle/edge tile keys",
+      "all-NaN and partial masks",
+      "zero, negative, large exact values and epoch milliseconds",
+      "same-footprint and finite raster union bounds",
+      "independent mutable tile arrays",
+      "empty input/EmptyBounds refusal",
+      "100160000-cell grid budget refusal",
+      "CRS/layout and time mismatch refusal",
+      "duplicate tile key refusal",
+      "raw Python-driver ContextRDD replacement bridge"
+    ]
+  },
+  "unmask_outputs": {
+    "sdk": "1.7.49",
+    "upstream_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a",
+    "graph_nodes": 47,
+    "output_dtypes": [
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64"
+    ],
+    "shape": [
+      18,
+      18
+    ],
+    "crs": "EPSG:32649",
+    "fixture": "Synthetic three-scene, per-band NoData, millisecond timestamps. Never added to live catalog.",
+    "reference": "Independent NumPy, reprojected with Rasterio to the exact result grid. No Google-service comparison.",
+    "cases": [
+      {
+        "case": "unmaskZero__nir",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "unmaskLarge__nir",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "unmaskRaster__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "unmaskClipped__nir",
+        "valid_pixels": 128,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "unmaskDouble__nir",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      }
+    ],
+    "passed": true,
+    "distinct_scene_footprints_and_identical_timestamps": false
+  },
+  "per_scene_outputs": {
+    "sdk": "1.7.49",
+    "upstream_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a",
+    "graph_nodes": 37,
+    "output_dtypes": [
+      "float32"
+    ],
+    "shape": [
+      18,
+      18
+    ],
+    "crs": "EPSG:32649",
+    "fixture": "Synthetic three-scene, per-band NoData, millisecond timestamps. Never added to live catalog.",
+    "reference": "Independent NumPy, reprojected with Rasterio to the exact result grid. No Google-service comparison.",
+    "cases": [
+      {
+        "case": "unmaskMappedMean__nir",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      }
+    ],
+    "passed": true,
+    "distinct_scene_footprints_and_identical_timestamps": true
+  },
+  "existing_30_outputs_regression": {
+    "sdk": "1.7.49",
+    "upstream_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a",
+    "graph_nodes": 422,
+    "output_dtypes": [
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64"
+    ],
+    "shape": [
+      18,
+      18
+    ],
+    "crs": "EPSG:32649",
+    "fixture": "Synthetic three-scene, per-band NoData, millisecond timestamps. Never added to live catalog.",
+    "reference": "Independent NumPy, reprojected with Rasterio to the exact result grid. No Google-service comparison.",
+    "cases": [
+      {
+        "case": "median__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "mosaic__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "reverseMosaic__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "sum__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "count__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "cloudMask__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "nd__nd",
+        "valid_pixels": 128,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "expression__out",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "whereMasked__nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "whereConstant__nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "constantMath__nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "clamp__nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "unitScale__nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "reduceBands__mean",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "reduceCollection__nir_mean",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "toBands__a_nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "toBands__b_nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "fromImagesMean__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "fromImagesDuplicateSum__nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "fromImagesDuplicateCount__nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "fromImagesSortedMosaic__nir",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "fromImagesPeriods__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "mergedMean__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "qualityMosaic__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "qualityMosaic__blue",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "qualityMosaicReverse__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "qualityMosaicReverse__blue",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "qualityMosaicExplicit__nir",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "qualityMosaicExplicit__blue",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "perImageDateMean__nir",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_abs_error": 9.5367431640625e-07,
+        "passed": true
+      }
+    ],
+    "passed": true,
+    "distinct_scene_footprints_and_identical_timestamps": false
+  },
+  "live_sample": {
+    "reference": "Independent Rasterio reprojection and NumPy conditional: original > 0.2, then unmask(16777219), within source footprint intersected with export ROI",
+    "google_service_comparison": false,
+    "dtype": "float64",
+    "valid_pixels": 45681,
+    "filled_pixels": 16307,
+    "mask_mismatches": 0,
+    "max_abs_error": 0.0,
+    "authenticated_http_file_sha256_matches": true,
+    "result_sha256": "e2170f8dbdfe64fa5d943f6dae5754230b8e318fb3ace0f774b3b7ad8dcd971c",
+    "browser_map_and_export_completed": true,
+    "browser_download": "Edge blocked the TIFF; automatic downloads permission was already enabled. No browser security protection was disabled.",
+    "passed": true
+  },
+  "resolved_failures": [
+    {
+      "scope": "Initial end-to-end integration",
+      "finding": "Python driver wraps the primary cube but passes a secondary cube as raw ContextRDD. Single-module SPI test did not cover this bridge.",
+      "resolution": "Local adapter accepts and wraps raw ContextRDD, preserves metadata and validates one-band tiles; added probe and reran actual SDK jobs."
+    },
+    {
+      "scope": "Independent reference correction",
+      "finding": "Initial constant-fill reference omitted the source footprint and incorrectly filled 68 exterior bounding-grid cells.",
+      "resolution": "Independently rasterize the original STAC geometry, retain initial failed report, rerun without changing numeric tolerance."
+    }
+  ],
+  "limits": [
+    "Only bounded, aligned local raster grids; no implicit reproject/time broadcast",
+    "Global constant with sameFootprint=false rejects",
+    "Unmask output is Float64; pinned Float32 callbacks/reductions need explicit toFloat",
+    "Mapped unmask expands individual immutable item IDs and footprints; 500 compiled-node budget remains",
+    "Standalone constant/date bands, Image integer/QA operations and full GEE algorithm parity remain unimplemented",
+    "Edge blocked TIFF download despite automatic downloads enabled; map, export and authenticated HTTP file hash passed. No browser security protection was disabled."
+  ]
+}

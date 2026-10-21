@@ -10,6 +10,9 @@ from __future__ import annotations
 import math
 from typing import Any
 
+from .compat.earthengine.ir import UnsupportedEEError, fail
+from .compat.earthengine.date_values import millis, utc_date
+
 
 SUPPORTED_DATE_FUNCTIONS = frozenset({"Date.difference", "Date.getRelative", "Date.getFraction"})
 
@@ -59,14 +62,9 @@ _UNIT_ORDER = {name: index for index, name in enumerate(
 )}
 
 
-def _helpers():
-    """Import compiler helpers lazily to avoid a module import cycle."""
-    from gee.ee_translate import fail, millis, utc_date
-    return fail, millis, utc_date
 
 
 def _unit(value: Any, label: str, *, plural: bool = False) -> str:
-    fail, _, _ = _helpers()
     if not isinstance(value, str):
         fail(f"Date {label} must be a string")
     unit = value[:-1] if plural and value.endswith("s") else value
@@ -76,9 +74,7 @@ def _unit(value: Any, label: str, *, plural: bool = False) -> str:
 
 
 def _date_for_calendar(value: Any, label: str):
-    from gee.ee_translate import UnsupportedEEError
 
-    fail, _, utc_date = _helpers()
     value_ms = _validated_millis(value, label, allow_submillisecond=False)
     try:
         return utc_date(value_ms)
@@ -90,7 +86,6 @@ def _date_for_calendar(value: Any, label: str):
 
 def _validated_millis(value: Any, label: str, *, allow_submillisecond: bool) -> float:
     """Convert a date input while keeping numeric failures in the EE error type."""
-    fail, millis, _ = _helpers()
     try:
         value_ms = millis(value)
     except OverflowError:
@@ -142,7 +137,6 @@ def _get_relative(date, unit: str, in_unit: str) -> int:
         # its containing unit; the reference also demonstrates year/month.
         return 0
     if unit == in_unit:
-        from gee.ee_translate import fail
         fail("Date.getRelative requires unit to be smaller than inUnit")
 
     if in_unit == "year" and unit == "month":
@@ -154,13 +148,11 @@ def _get_relative(date, unit: str, in_unit: str) -> int:
         return date.timetuple().tm_yday - 1
 
     if in_unit == "month" and unit == "week":
-        from gee.ee_translate import fail
         fail("Date.getRelative('week', 'month') is unsupported: EE week-of-month boundary semantics are not specified")
 
     start = _start_of(date, in_unit)
     duration = _DURATION_MS.get(unit)
     if duration is None:
-        from gee.ee_translate import fail
         fail(f"Unsupported Date.getRelative pair: {unit} in {in_unit}")
     return _elapsed_millis(date, start) // duration
 
@@ -204,7 +196,6 @@ def invoke_date(translator, name: str, arguments: dict[str, Any]):
     helper. Dynamic/computed dates are not coerced; callers must first decode
     them to local scalar values.
     """
-    fail, _, _ = _helpers()
     if name not in SUPPORTED_DATE_FUNCTIONS:
         fail(f"Unsupported Earth Engine date algorithm: {name}")
     if not isinstance(arguments, dict):

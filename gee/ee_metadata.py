@@ -19,6 +19,10 @@ _METADATA_READS = {
     "Image.date": ("image",),
     # The official serializer calls the Image.geometry receiver `feature`.
     "Image.geometry": ("feature", "image"),
+    # unmask reads both operands' per-image masks/footprints. Keep its mapped
+    # output property lineage separate: Image.unmask inherits properties from
+    # its input receiver, not from the replacement image.
+    "Image.unmask": ("input", "value"),
     "Image.get": ("image", "object"),
     "Element.get": ("object", "image"),
     "Element.propertyNames": ("element", "object", "image"),
@@ -40,6 +44,7 @@ _IMAGE_RECEIVERS = {
     "Image.expression": ("image", "input"),
     "Image.updateMask": ("image",),
     "Image.mask": ("image",),
+    "Image.unmask": ("input",),
     "Image.where": ("input",),
     "Image.clamp": ("input",),
     "Image.unitScale": ("input",),
@@ -191,7 +196,7 @@ def evaluate_per_image_map(translator: Any, collection: Any, function: Any, drop
     does not invent a timestamp, create constant rasters, or suppress failures.
     """
     from .ee_collections import frames, invoke_sequence
-    from .ee_translate import ImageSequence
+    from .compat.earthengine.ir import ImageSequence
 
     return invoke_sequence(translator, "Collection.map", {
         "collection": ImageSequence(frames(translator, collection)),

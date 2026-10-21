@@ -2,7 +2,7 @@
 import ast
 import re
 
-from .ee_translate import Image, Pixel, as_image, binary, const, fail, pairs, unary
+from .compat.earthengine.ir import Image, Pixel, as_image, binary, const, fail, pairs, unary
 
 
 TOKEN = re.compile(r'''\s*(?:(\d+(?:\.\d*)?(?:[eE][+-]?\d+)?|\.\d+(?:[eE][+-]?\d+)?)|([A-Za-z_][A-Za-z_0-9]*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(\*\*|&&|\|\||==|!=|<=|>=|[+*/%<>()\[\].,:?!\-=]))''')

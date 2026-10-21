@@ -96,6 +96,7 @@ def test_clean_checkout_generates_without_private_audit_inputs(tmp_path: Path):
     required = (
         "scripts/ee_capability_inventory.py",
         "gee/ee_translate.py",
+        "gee/compat/earthengine/capabilities.py",
         "gee/ee_dates.py",
         "gee/ee_integer.py",
         "vendor/earthengine-js/algorithms.json",

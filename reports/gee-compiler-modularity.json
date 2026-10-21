@@ -1,0 +1,28 @@
+{
+  "base_commit": "3647fe154a422553b85c9e4b9e2108c0672d79ad",
+  "comparison": "Complete compiled result including process graph, properties, warnings, or exact UnsupportedEEError; same fixed local catalog fixture",
+  "cases": 99,
+  "differences": 0,
+  "scope": "Existing official SDK expressions; refactor behavior preservation, not Google-service or native engine equivalence",
+  "modules": {
+    "gee/compat/earthengine/__init__.py": 0,
+    "gee/compat/earthengine/capabilities.py": 51,
+    "gee/compat/earthengine/catalog.py": 164,
+    "gee/compat/earthengine/collection_ops.py": 167,
+    "gee/compat/earthengine/compile.py": 56,
+    "gee/compat/earthengine/date_values.py": 83,
+    "gee/compat/earthengine/decoder.py": 127,
+    "gee/compat/earthengine/dispatch.py": 65,
+    "gee/compat/earthengine/filtering.py": 117,
+    "gee/compat/earthengine/graph.py": 85,
+    "gee/compat/earthengine/image_ops.py": 198,
+    "gee/compat/earthengine/ir.py": 187,
+    "gee/compat/earthengine/mask_graph.py": 52,
+    "gee/compat/earthengine/metadata_ops.py": 60,
+    "gee/compat/earthengine/pixel_graph.py": 146,
+    "gee/compat/earthengine/static_values.py": 155,
+    "gee/compat/earthengine/temporal_graph.py": 45,
+    "gee/compat/earthengine/value_ops.py": 138
+  },
+  "facade_lines": 23
+}

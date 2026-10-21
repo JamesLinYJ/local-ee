@@ -6,6 +6,8 @@ import numpy as np
 import pytest
 
 from gee.ee_metadata import (
+    _IMAGE_RECEIVERS,
+    _METADATA_READS,
     _contains_mapped_metadata_read,
     _flows_from_argument,
     evaluate_per_image_map,
@@ -17,6 +19,7 @@ from test_ee_translate import evaluate_graph
 
 FIXTURE = json.loads((Path(__file__).parent / "fixtures" / "ee-metadata-1.7.49.json").read_text())
 SDK = FIXTURE["expressions"]
+MASK_FIXTURE = json.loads((Path(__file__).parent / "fixtures" / "ee-mask-1.7.49.json").read_text())
 
 
 def test_collection_map_drop_nulls_does_not_coerce_arbitrary_values():
@@ -28,8 +31,7 @@ def rect(w=0, s=0, e=2, n=2):
     return {"type": "Polygon", "coordinates": [[[w, s], [e, s], [e, n], [w, n], [w, s]]]}
 
 
-@pytest.fixture
-def local():
+def _local_data():
     names = ["blue", "green", "red", "nir", "SCL"]
     catalog = [{"id": "sentinel-2-l2a", "cube:dimensions": {"bands": {"values": names}}}]
     # Items a and b are distinct observations on the same day. Item identity
@@ -42,6 +44,25 @@ def local():
         {"id": "c", "bbox": [0, 0, 2, 2], "geometry": rect(), "properties": {
             "system:time_start": 86402000, "system:index": "c", "CLOUDY_PIXEL_PERCENTAGE": 90}},
     ]}
+    return catalog, items
+
+
+@pytest.fixture
+def local():
+    return _local_data()
+
+
+def scene_local():
+    """Distinct per-scene footprints, including same-day and same-ms items."""
+    catalog, items = _local_data()
+    geometries = [rect(0, 0, 1, 2), rect(1, 0, 2, 2), rect(0, 0, 0.5, 2)]
+    bboxes = [[0, 0, 1, 2], [1, 0, 2, 2], [0, 0, 0.5, 2]]
+    timestamps = [1000, 1001, 1000]
+    records = items["sentinel-2-l2a"]
+    for record, geometry, bbox, timestamp in zip(records, geometries, bboxes, timestamps):
+        record["geometry"] = geometry
+        record["bbox"] = bbox
+        record["properties"]["system:time_start"] = timestamp
     return catalog, items
 
 
@@ -240,6 +261,123 @@ def invocation(name, **arguments):
 
 def argument(name):
     return {"type": "ArgumentRef", "value": name}
+
+
+def mapped_unmask_expression():
+    image = argument("im")
+    selected = invocation("Image.select", input=image, bandSelectors=["nir"])
+    unmasked = invocation("Image.unmask", input=selected, value=0)
+    body = invocation("Image.toFloat", value=unmasked)
+    return invocation("Collection.map",
+        collection=invocation("ImageCollection.load", id="sentinel-2-l2a"),
+        baseAlgorithm={"type": "Function", "argumentNames": ["im"], "body": body})
+
+
+def scene_masks(result):
+    """Return each emitted polygon mask with the item IDs beneath its data."""
+    graph = result["process_graph"]
+
+    def refs(value):
+        if isinstance(value, dict):
+            if isinstance(value.get("from_node"), str):
+                yield value["from_node"]
+            else:
+                for child in value.values():
+                    yield from refs(child)
+        elif isinstance(value, list):
+            for child in value:
+                yield from refs(child)
+
+    def reachable_ids(start):
+        found, visited = set(), set()
+
+        def visit(ref):
+            key = ref.get("from_node") if isinstance(ref, dict) else ref
+            if key in visited:
+                return
+            visited.add(key)
+            node = graph[key]
+            if node["process_id"] == "load_collection":
+                found.update(node["arguments"].get("_gee_item_ids", []))
+                return
+            for child in refs(node.get("arguments", {})):
+                visit(child)
+
+        visit(start)
+        return found
+
+    return [
+        (reachable_ids(node["arguments"]["data"]), node["arguments"]["mask"])
+        for node in graph.values()
+        if node["process_id"] == "mask_polygon"
+    ]
+
+
+def assert_per_scene_masks(result, geometries):
+    from shapely.geometry import shape
+
+    loads = [node["arguments"] for node in result["process_graph"].values()
+             if node["process_id"] == "load_collection"]
+    assert [load["_gee_item_ids"] for load in loads] == [["a"], ["b"], ["c"]]
+    records = scene_masks(result)
+    assert records
+    seen = set()
+    for item_ids, geometry in records:
+        assert len(item_ids) == 1
+        item_id = next(iter(item_ids))
+        assert shape(geometry).equals(shape(geometries[item_id]))
+        seen.add(item_id)
+    assert seen == set(geometries)
+
+
+def test_unmask_metadata_dependencies_cover_both_operands_but_receiver_is_input():
+    assert _METADATA_READS["Image.unmask"] == ("input", "value")
+    assert _IMAGE_RECEIVERS["Image.unmask"] == ("input",)
+    function = Function(["im"], invocation("Image.unmask",
+        input=invocation("ImageCollection.load", id="sentinel-2-l2a"),
+        value=argument("im")), {})
+    assert requires_item_metadata(function)
+
+
+def test_official_mapped_unmask_mean_expands_singletons_with_own_footprints():
+    local = scene_local()
+    records = local[1]["sentinel-2-l2a"]
+    assert [(item["id"], item["properties"]["system:time_start"]) for item in records] == [
+        ("a", 1000), ("b", 1001), ("c", 1000),
+    ]
+    expression = MASK_FIXTURE["raster_expressions"]["unmaskMappedMean"]
+    result = compile_expression(expression, *local)
+
+    assert result["kind"] == "image"
+    assert result["has_time_dimension"] is False
+    assert result["source_item_ids"] == ["a", "b", "c"]
+    assert_per_scene_masks(result, {
+        "a": rect(0, 0, 1, 2),
+        "b": rect(1, 0, 2, 2),
+        "c": rect(0, 0, 0.5, 2),
+    })
+
+
+def test_band_names_and_to_bands_float_mean_keep_per_scene_unmask_footprints():
+    local = scene_local()
+    mapped = mapped_unmask_expression()
+    names = compile_expression(invocation("Image.bandNames",
+        image=invocation("Collection.first", collection=mapped)), *local)
+    assert names == {"kind": "value", "value": ["nir"], "warnings": []}
+
+    bands = invocation("ImageCollection.toBands", collection=mapped)
+    converted = invocation("Image.toFloat", value=bands)
+    mean = invocation("Image.reduce", image=converted, reducer=invocation("Reducer.mean"))
+    result = compile_expression(mean, *local)
+    assert result["kind"] == "image"
+    assert result["has_time_dimension"] is False
+    assert result["bands"] == ["mean"]
+    assert result["source_item_ids"] == ["a", "b", "c"]
+    assert_per_scene_masks(result, {
+        "a": rect(0, 0, 1, 2),
+        "b": rect(1, 0, 2, 2),
+        "c": rect(0, 0, 0.5, 2),
+    })
 
 
 @pytest.mark.parametrize("cast", ["Image.toFloat", "Image.toDouble"])

@@ -8,15 +8,14 @@ from __future__ import annotations
 import math
 from typing import Any, Callable
 
+from .compat.earthengine.ir import fail as _fail
+
 
 INT64_MIN = -(1 << 63)
 INT64_MAX = (1 << 63) - 1
 _SIGNED_WIDTHS = (8, 16, 32, 64)
 
 
-def _fail(message: str) -> None:
-    from gee.ee_translate import fail
-    fail(message)
 
 
 def _integer(value: Any, label: str) -> int:

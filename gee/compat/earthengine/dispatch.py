@@ -1,0 +1,65 @@
+"""Explicit routing from decoded Earth Engine invocations to small handlers."""
+from __future__ import annotations
+
+from . import collection_ops, filtering, image_ops, metadata_ops, value_ops
+from .ir import ImageSequence, fail
+
+
+_SIMPLE_ARGUMENTS = {
+    "Image.constant": {"value"},
+    "Image.bandNames": {"image"},
+    "Date.millis": {"date"},
+    "Collection.size": {"collection"},
+    "Collection.first": {"collection"},
+}
+_METADATA_ARGUMENTS = {
+    "Element.get": {"object", "property"},
+    "Image.get": {"object", "image", "property"},
+    "Element.propertyNames": {"element"},
+    "Element.set": {"object", "key", "value"},
+    "Element.setMulti": {"object", "properties"},
+}
+
+
+def invoke(translator, name, arguments):
+    """Dispatch in the same precedence order as the legacy translator."""
+    a = arguments
+    if name == "Collection.map" and a.get("dropNulls") is not None and not isinstance(a["dropNulls"], bool):
+        fail("Collection.map dropNulls must be a boolean")
+    if name.startswith("Date."):
+        from ...ee_dates import SUPPORTED_DATE_FUNCTIONS, invoke_date
+
+        if name in SUPPORTED_DATE_FUNCTIONS:
+            return invoke_date(translator, name, a)
+    if name.startswith("Number."):
+        from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS, invoke_integer
+
+        if name in SUPPORTED_INTEGER_FUNCTIONS:
+            return invoke_integer(translator, name, a)
+    if name == "ImageCollection.qualityMosaic":
+        translator.allowed(a, {"collection", "qualityBand"})
+        from ...ee_quality import quality_mosaic
+
+        return quality_mosaic(translator, a["collection"], a["qualityBand"])
+    if name == "Image.unmask":
+        from ...ee_masks import invoke_mask
+        return invoke_mask(translator, name, a)
+    if name in {"ImageCollection.fromImages", "ImageCollection.merge"} or isinstance(a.get("collection"), ImageSequence):
+        from ...ee_collections import invoke_sequence
+
+        return invoke_sequence(translator, name, a)
+    if name in _SIMPLE_ARGUMENTS:
+        translator.allowed(a, _SIMPLE_ARGUMENTS[name])
+    if name in _METADATA_ARGUMENTS:
+        translator.allowed(a, _METADATA_ARGUMENTS[name])
+    if collection_ops.handles_collection(name):
+        return collection_ops.invoke_collection(translator, name, a)
+    if name.startswith("Filter."):
+        return filtering.invoke_filter(translator, name, a)
+    if name in metadata_ops.METADATA_HANDLERS:
+        return metadata_ops.invoke_metadata(translator, name, a)
+    if image_ops.handles_image(name):
+        return image_ops.invoke_image(translator, name, a)
+    if value_ops.handles_value(name):
+        return value_ops.invoke_value(translator, name, a)
+    fail(f"Unsupported Earth Engine algorithm: {name}")

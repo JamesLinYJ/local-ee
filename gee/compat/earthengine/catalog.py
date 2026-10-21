@@ -1,0 +1,164 @@
+"""Local collection catalogue operations for decoded Earth Engine values."""
+from __future__ import annotations
+
+import re
+from dataclasses import replace
+
+from .ir import (
+    Collection,
+    Image,
+    ImageSequence,
+    Pixel,
+    Source,
+    as_image,
+    const,
+    fail,
+    rebind,
+)
+
+
+class CatalogOperations:
+    """Materialize local assets and perform collection/image catalog queries."""
+
+    def load(self, cid, image=False):
+        alias = cid in {"COPERNICUS/S2_SR_HARMONIZED", "COPERNICUS/S2_SR"}
+        original = cid
+        if alias:
+            cid = "sentinel-2-l2a"
+            self.warn("Sentinel-2 alias uses only locally ingested, pre-cloud-masked reflectance converted to a DN view (x10000); limited coverage and bands B2/B3/B4/B8/SCL do not equal the full official Earth Engine dataset.")
+        if cid not in self.catalog:
+            fail(f"Collection is not locally ingested or verified: {original}")
+        if cid != "sentinel-2-l2a":
+            fail(f"Collection has not passed Earth Engine compatibility acceptance: {cid}")
+        metadata = self.catalog[cid]
+        names = metadata.get("cube:dimensions", {}).get("bands", {}).get("values", [])
+        if not names:
+            fail("Local collection has no declared bands")
+        selected = self.items.get(cid, [])
+        source = Source(cid, tuple(i["id"] for i in selected), tuple(names), alias)
+        mapping = {"blue": "B2", "green": "B3", "red": "B4", "nir": "B8", "SCL": "SCL"}
+        bands = []
+        for name in names:
+            if alias and name not in mapping:
+                continue
+            pixel = Pixel("band", (source, name))
+            if alias and name != "SCL":
+                pixel = Pixel("multiply", (pixel, const(10000)))
+            bands.append((mapping[name] if alias else name, pixel))
+        result = Image(bands, {}, source)
+        if image:
+            if len(selected) != 1:
+                fail("Image.load requires an unambiguous local image id; use ImageCollection.first()")
+            result.props = dict(selected[0].get("properties", {}))
+            result.bands = [(name, Pixel("reduce_t", (pixel, "first"))) for name, pixel in result.bands]
+            return result
+        return Collection(source, result)
+
+    def member(self, source, iid):
+        return next(item for item in self.items[source.cid] if item["id"] == iid)
+
+    def properties(self, collection, iid):
+        original = self.member(collection.source, iid).get("properties", {})
+        image = collection.image
+        props = dict(original) if image.inherit_props else {
+            key: original[key] for key in image.copied_props if key in original
+        }
+        return {**props, **image.props}
+
+    def collection_items(self, collection):
+        items = [
+            {
+                **self.member(collection.source, iid),
+                "properties": self.properties(collection, iid),
+            }
+            for iid in collection.source.ids
+        ]
+        if collection.image.footprint:
+            from shapely.geometry import mapping, shape
+
+            clip = shape(collection.image.footprint)
+            items = [
+                {**item, "geometry": mapping(shape(item["geometry"]).intersection(clip))}
+                for item in items
+            ]
+        return items
+
+    def footprint(self, value):
+        from shapely.geometry import mapping, shape
+        from shapely.ops import unary_union
+
+        if isinstance(value, ImageSequence):
+            geometries = [self.footprint(image) for image in value.images]
+        elif isinstance(value, Collection):
+            geometries = [item["geometry"] for item in self.collection_items(value)]
+        elif isinstance(value, Image):
+            if value.footprint is not None and value.footprint_is_absolute:
+                return value.footprint
+            if value.source is None:
+                fail("Image geometry requires a source footprint")
+            geometries = [self.member(value.source, iid)["geometry"] for iid in value.source.ids]
+            base = unary_union([shape(geometry) for geometry in geometries])
+            return mapping(base.intersection(shape(value.footprint)) if value.footprint else base)
+        elif isinstance(value, dict) and value.get("type") == "Feature":
+            return value["geometry"]
+        elif isinstance(value, dict) and value.get("type") == "FeatureCollection":
+            geometries = [feature["geometry"] for feature in value["features"] if feature.get("geometry")]
+        else:
+            fail("Geometry requires an Image, Collection or Feature")
+        if not geometries:
+            fail("An empty collection has no footprint")
+        return mapping(unary_union([shape(geometry) for geometry in geometries]))
+
+    def select(self, image, selectors, names=None):
+        if isinstance(image, ImageSequence):
+            return ImageSequence([self.select(item, selectors, names) for item in image.images])
+        if isinstance(image, Collection):
+            return replace(image, image=self.select(image.image, selectors, names))
+        image = as_image(image)
+        selectors = selectors if isinstance(selectors, list) else [selectors]
+        output = []
+        for selector in selectors:
+            if isinstance(selector, int) and not isinstance(selector, bool):
+                if selector < 0 or selector >= len(image.bands):
+                    fail(f"Band index out of range: {selector}")
+                output.append(image.bands[selector])
+            elif isinstance(selector, str):
+                matched = [band for band in image.bands if band[0] == selector]
+                if not matched:
+                    try:
+                        pattern = re.compile(selector)
+                    except re.error:
+                        fail(f"Invalid band selector: {selector}")
+                    matched = [band for band in image.bands if pattern.fullmatch(band[0])]
+                if not matched:
+                    available = [name for name, _ in image.bands]
+                    fail(f"Band selector {selector!r} did not match; available: {available}")
+                output.extend(matched)
+            else:
+                fail("Band selectors must be strings or zero-based integer indices")
+        if len({name for name, _ in output}) != len(output):
+            fail("Repeated selected bands are not supported")
+        if names is not None:
+            valid_names = (
+                isinstance(names, list)
+                and len(names) == len(output)
+                and all(isinstance(name, str) for name in names)
+                and len(set(names)) == len(names)
+            )
+            if not valid_names:
+                fail("New band names must be distinct strings matching the band count")
+            output = [(name, pixel) for name, (_, pixel) in zip(names, output)]
+        if not output:
+            fail("Zero-band images are not supported")
+        return replace(image, bands=output)
+
+    def first(self, collection):
+        if not collection.source.ids:
+            fail("Cannot take first image of an empty collection")
+        selected = rebind(collection, collection.source.ids[:1])
+        props = self.properties(selected, selected.source.ids[0])
+        return replace(
+            selected.image,
+            props=props,
+            bands=[(name, Pixel("reduce_t", (pixel, "first"))) for name, pixel in selected.image.bands],
+        )
