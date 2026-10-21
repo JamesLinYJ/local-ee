@@ -44,6 +44,14 @@ const best = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(
     leftField:'system:time_start', rightField:'system:time_start'})));
 const rows = ee.FeatureCollection([0,1,2].map(x =>
   ee.Feature(null, {constant:1, x:x, y:1 + 2*x})));
+const inner = ee.ImageCollection(ee.Join.inner().apply(c, c,
+  ee.Filter.equals({leftField:'system:index', rightField:'system:index'})).map(f =>
+  ee.Image(ee.Feature(f).get('primary')).select('red').addBands(
+    ee.Image(ee.Feature(f).get('secondary')).select('nir'))));
+const prior = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(c, c,
+  ee.Filter.and(ee.Filter.maxDifference({difference:172800000,
+    leftField:'system:time_start', rightField:'system:time_start'}),
+    ee.Filter.greaterThan({leftField:'system:time_start', rightField:'system:time_start'}))));
 const values = {
   sequence: ee.List.sequence(0, 1, 99, 5),
   emptyKeys: ee.Dictionary({a:1}).values([]),
@@ -59,6 +67,8 @@ const values = {
     ee.Number(previous).add(ee.Feature(feature).get('y')), 0),
   formatted: ee.Number(7).divide(2).format('%.2f'),
   stringConversion: ee.String(ee.Number(42)).cat(' units'),
+  innerBands: inner.first().bandNames(),
+  compoundDelta: ee.Image(prior.first().get('match')).get('delta'),
   clippedBands: c.first().clip(ee.Geometry.Rectangle([100.1,30.1,100.9,30.9],null,false)).bandNames()
 };
 const expressions = Object.fromEntries(Object.entries(values).map(([k,v]) => [k,ee.Serializer.encode(v)]));
@@ -86,6 +96,14 @@ def parity_values():
                                      leftField="system:time_start", rightField="system:time_start")))
     rows = ee.FeatureCollection([ee.Feature(None, {"constant": 1, "x": x, "y": 1 + 2*x})
                                  for x in range(3)])
+    inner = ee.ImageCollection(ee.Join.inner().apply(c, c,
+        ee.Filter.equals(leftField="system:index", rightField="system:index")).map(
+        lambda f: ee.Image(ee.Feature(f).get("primary")).select("red").addBands(
+            ee.Image(ee.Feature(f).get("secondary")).select("nir"))))
+    prior = ee.ImageCollection(ee.Join.saveBest("match", "delta").apply(c, c,
+        ee.Filter.And(ee.Filter.maxDifference(difference=172800000,
+            leftField="system:time_start", rightField="system:time_start"),
+            ee.Filter.greaterThan(leftField="system:time_start", rightField="system:time_start"))))
     py = {
         "sequence": ee.List.sequence(0, 1, 99, 5),
         "emptyKeys": ee.Dictionary({"a": 1}).values([]),
@@ -101,6 +119,8 @@ def parity_values():
             lambda feature, previous: ee.Number(previous).add(ee.Feature(feature).get("y")), 0),
         "formatted": ee.Number(7).divide(2).format("%.2f"),
         "stringConversion": ee.String(ee.Number(42)).cat(" units"),
+        "innerBands": inner.first().bandNames(),
+        "compoundDelta": ee.Image(prior.first().get("match")).get("delta"),
         "clippedBands": c.first().clip(ee.Geometry.Rectangle(
             [100.1, 30.1, 100.9, 30.9], proj="EPSG:4326", geodesic=False)).bandNames(),
     }
@@ -112,7 +132,7 @@ def parity_values():
 @pytest.mark.parametrize("case", ["sequence", "emptyKeys", "missingDefault", "matrixMultiply",
                                  "matrixSolve", "notNull", "matchId", "clippedBands",
                                  "bestDelta", "tableCoefficients", "featureSum", "formatted",
-                                 "stringConversion"])
+                                 "stringConversion", "innerBands", "compoundDelta"])
 def test_python_and_javascript_reach_the_same_local_result(parity_values, case):
     javascript, python, metadata, items = parity_values
     left = compile_expression(javascript[case], metadata, items)

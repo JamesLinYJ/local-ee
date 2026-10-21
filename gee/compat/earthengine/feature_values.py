@@ -7,7 +7,7 @@ import numpy as np
 
 from .array_values import MAX_ARRAY_CELLS, MAX_ARRAY_RANK, StaticArray
 from .geometry_values import GEOMETRY_TYPES
-from .ir import fail
+from .ir import Image, Pixel, fail
 
 
 FEATURE_VALUE_METHODS = frozenset({
@@ -49,6 +49,18 @@ def validate_json_value(translator, value, depth=0):
             fail("Feature StaticArray properties exceed finite array limits")
         charge(translator, int(array.size))
         return
+    if isinstance(value, Image):
+        # Inner joins retain concrete source Images as Feature properties.
+        # Validate their public metadata without replacing the pixel graph by
+        # a description; downstream ee.Image(feature.get(...)) needs that IR.
+        if value.mapped:
+            fail("Feature properties require concrete local Images")
+        validate_json_value(translator, value.props, depth + 1)
+        charge(translator, len(value.bands))
+        for name, pixel in value.bands:
+            if not isinstance(name, str) or not isinstance(pixel, Pixel):
+                fail("Feature Image properties require valid named pixel bands")
+        return
     if isinstance(value, dict):
         if not all(isinstance(key, str) for key in value):
             fail("Feature property names must be strings")
@@ -61,7 +73,7 @@ def validate_json_value(translator, value, depth=0):
         for child in value:
             validate_json_value(translator, child, depth + 1)
         return
-    fail("Inline Feature properties must be static JSON or finite ee.Array values")
+    fail("Inline Feature properties must be static JSON, finite ee.Array or concrete Images")
 
 
 def validate_feature(translator, value):

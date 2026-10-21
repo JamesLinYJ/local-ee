@@ -46,6 +46,13 @@ def invoke(translator, name, arguments):
         from .array_values import invoke_array
 
         return invoke_array(translator, name, a)
+    if name in {"Join.inner", "Join.apply"}:
+        from .inner_join import InnerJoin, apply_inner, construct_inner
+
+        if name == "Join.inner":
+            return construct_inner(translator, a)
+        if isinstance(a.get("join"), InnerJoin):
+            return apply_inner(translator, a)
     if name.startswith("Join."):
         from .join_ops import invoke_join
 

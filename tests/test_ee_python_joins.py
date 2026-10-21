@@ -123,10 +123,11 @@ def test_save_all_cannot_bypass_whole_response_metadata_budget(ee, local):
     source = local[1]["sentinel-2-l2a"][0]
     local[1]["sentinel-2-l2a"] = [{
         **source, "id": f"{side}-{index}",
-        "properties": {"system:index": f"{side}-{index}", "side": side, "group": "same"},
+        "properties": {"system:index": f"{side}-{index}", "side": side, "group": 1},
     } for side in ("primary", "secondary") for index in range(100)]
     joined = _join(ee, ee.Join.saveAll("matches"))
-    # 10,000 equality checks are below the 50,000-step compiler limit, but
+    # 10,000 numeric equality checks are below the 50,000-step compiler limit
+    # (string comparison work is separately charged), but
     # duplicating every match into every public row must obey one output cap.
     with pytest.raises(UnsupportedEEError, match="materialization limits|1 MB"):
         _compile(ee, joined, local)

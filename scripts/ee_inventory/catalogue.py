@@ -44,7 +44,7 @@ KNOWN_PARTIAL_LIMITS: dict[str, list[str]] = {
     "Dictionary.values": ["Explicit empty keys returns []; absent/null keys selects natural sorted keys. Missing requested keys reject."],
     "List.sequence": ["Supports count/end equal spacing and count/step ranges; at most 10000 finite values. No Google numerical comparison."],
     "Number.format": ["Bounded static %s/%d/%f and limited padding/sign flags only; exact integer %d, half-up rounding on Python shortest decimal spelling, no scientific/hex/grouping or Google rounding comparison."],
-    "Filter.maxDifference": ["Finite numeric flat-field/value operands, inclusive absolute difference; missing/null does not match. A direct filter can provide a numeric join measure; compound measured conditions and spatial distances reject."],
+    "Filter.maxDifference": ["Finite numeric flat-field/value operands, inclusive absolute difference; missing/null does not match. A unique direct or And-nested filter provides a numeric join measure; multiple measures and measures under Or/Not reject when a measure is requested; spatial distances reject."],
     "Collection.reduceColumns": ["Static inline FeatureCollection linearFit/linearRegression only, <=1000 rows and <=32 flat selected inputs under shared compilation budgets; nonempty weights and image/raster reduction reject."],
     "Reducer.linearFit": ["Unweighted inline table reduceColumns only, finite metadata rows, full-rank two-column design; null/insufficient/degenerate cases covered. No raster engine or Google acceptance."],
     "Reducer.linearRegression": ["Unweighted inline table reduceColumns only; typed coefficient matrix and per-response residual RMS; n<=numX/rank-deficient outputs are null. No ImageCollection/raster regression or Google acceptance."],
@@ -63,9 +63,9 @@ for operation in ("Array", "Array.get", "Array.length", "Array.toList", "Array.r
     KNOWN_PARTIAL_LIMITS[operation] = [
         "Static finite numeric arrays only, exact integer domain <=2^53, rank <=8, cells <=10000 and shared 50000-step work budget. Explicit PixelType, empty constructors, negative indices and raster array pixels are unsupported; matrix kernels require rank 2 and matrixSolve full column rank. Independent static numerical controls are not native raster-engine or Google acceptance."
     ]
-for operation in ("Join.simple", "Join.inverted", "Join.saveFirst", "Join.saveAll", "Join.saveBest", "Join.apply"):
+for operation in ("Join.simple", "Join.inverted", "Join.saveFirst", "Join.saveAll", "Join.saveBest", "Join.inner", "Join.apply"):
     KNOWN_PARTIAL_LIMITS[operation] = [
-        "Bounded local ImageCollections and flat finite scalar metadata conditions only; at most 1000 frames and shared compilation work budget. A single direct numeric maxDifference supplies measures for saveBest/saveFirst/saveAll; inclusive threshold and local stable order/ties. Vector/spatial/compound measured joins, nested selectors and inner unsupported; synthetic graph controls do not establish native-engine or Google equivalence."
+        "Bounded local ImageCollections and flat finite scalar metadata conditions only; at most 1000 frames and shared compilation work budget. A unique direct or conjunctive numeric maxDifference supplies measures; multiple measures and measures under Or/Not reject when requested. Inner emits <=1000 null-geometry Feature pairs retaining Images, with optional measure on the pair Feature and distinct keys. Inclusive threshold and local stable order/ties; vector/spatial joins and nested selectors unsupported. Synthetic graph controls do not establish native-engine or Google equivalence."
     ]
 
 

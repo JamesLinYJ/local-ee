@@ -196,14 +196,12 @@ def test_outer_preserves_rows_with_missing_or_null_times_without_match_propertie
 @pytest.mark.parametrize("constructor,condition", [
     (lambda ee: ee.Join.saveBest("best", "delta"), lambda ee: ee.Filter.equals(leftField="group", rightField="group")),
     (lambda ee: ee.Join.saveBest("best", "delta"), lambda ee: ee.Filter.And(
+        _condition(ee), _condition(ee, difference=400),
+    )),
+    (lambda ee: ee.Join.saveFirst("match", measureKey="delta"), lambda ee: ee.Filter.Or(
         _condition(ee), ee.Filter.equals(leftField="group", rightField="group"),
     )),
-    (lambda ee: ee.Join.saveFirst("match", measureKey="delta"), lambda ee: ee.Filter.And(
-        _condition(ee), ee.Filter.equals(leftField="group", rightField="group"),
-    )),
-    (lambda ee: ee.Join.saveAll("matches", measureKey="delta"), lambda ee: ee.Filter.And(
-        _condition(ee), ee.Filter.equals(leftField="group", rightField="group"),
-    )),
+    (lambda ee: ee.Join.saveAll("matches", measureKey="delta"), lambda ee: ee.Filter.Not(_condition(ee))),
 ])
 def test_measure_joins_reject_conditions_without_one_unambiguous_measure(ee, local, constructor, condition):
     with pytest.raises(UnsupportedEEError, match="single Filter.maxDifference|compound measures"):

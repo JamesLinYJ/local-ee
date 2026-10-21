@@ -1,0 +1,20 @@
+{
+  "schema": "local-ee-synthetic-temporal-interpolation/v1",
+  "description": "Metadata and synthetic pixel arrays; null cells are masked, no real imagery",
+  "base_millis": 1700000000000,
+  "day_millis": 86400000,
+  "window_days": 2,
+  "rows": [
+    {"id": "early-far", "day": 0, "role": "observation", "signal": [2, 2, 2]},
+    {"id": "early-near", "day": 1, "role": "observation", "signal": [4, 4, null]},
+    {"id": "target", "day": 2, "role": "target", "signal": [100, 100, 100]},
+    {"id": "late-near", "day": 3, "role": "observation", "signal": [8, null, 10]},
+    {"id": "late-far", "day": 4, "role": "observation", "signal": [10, 10, 10]}
+  ],
+  "independent_reference": {
+    "previous": "early-near",
+    "following": "late-near",
+    "weight": 0.5,
+    "signal": [6, null, null]
+  }
+}

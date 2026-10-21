@@ -1,0 +1,275 @@
+{
+  "schema": "local-ee-python-compat-wave3/v1",
+  "date": "2026-10-21",
+  "status": "partial_goal_in_progress",
+  "base_commit": "76fe99a271731e2e8e319195191fec5187ba9ea0",
+  "platform": {
+    "os": "Linux",
+    "architecture": "x86_64",
+    "python": "3.11.16",
+    "node": "24.19.0",
+    "uv": "0.12.12",
+    "earthengine_api": "1.7.49"
+  },
+  "source_files_sha256": {
+    "examples/09_GEE_python_temporal_interpolation.py": "c35e2a457642e974dd343dacdb1ce125969889bb6aaf88864d207c0ed08816c0",
+    "gee/compat/earthengine/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "gee/compat/earthengine/array_values.py": "5f1e1d52eda2dfe41f564518312d6bc5ae54090aab94fa0b30b46730153634f8",
+    "gee/compat/earthengine/capabilities.py": "34538456ae6da796dc78868dc0ea007986e74460603f10bafccf11883953f4ce",
+    "gee/compat/earthengine/catalog.py": "ce7b7ab0ff83b6329ece3996c211ddc16b39354fc8a201d848e2cb4cc29b20f8",
+    "gee/compat/earthengine/collection_ops.py": "fde917a42ea264f17d8e91f6c7063b0ea08723254643bd1abc537e585f7c11ea",
+    "gee/compat/earthengine/compile.py": "80d5a0e849083cd6b19b4898ace312e7b7f5cf7719215277cbf8a8b71d773484",
+    "gee/compat/earthengine/constant_bands.py": "11f2ecd2eb08e002a735304ac201539e64f105d867c06256795fd53df75b54e4",
+    "gee/compat/earthengine/constant_graph.py": "b2a57e1a0aa84d273d86877294ceae8d494b47fb856aabb2ed974e5192139a2f",
+    "gee/compat/earthengine/date_values.py": "f4580990744e78b2f72c44e449799a99d1153773739527195ba26965959bc20b",
+    "gee/compat/earthengine/decoder.py": "036171e38a74547c9c7398d06fc066583fdb7d4aa4ded1db2b3615ff1eb0346d",
+    "gee/compat/earthengine/dispatch.py": "edc2723d4c756505ea4b305a5d0347496c6e3f8fdb012c89fd71625514625813",
+    "gee/compat/earthengine/feature_filters.py": "e9fad3a60d672000bc334db8b9779e359101c9f59c8f6889d642392877b9a6dd",
+    "gee/compat/earthengine/feature_ops.py": "1ed5b13c1672378a85a9c451385c44754f7d3da98d504b2bcfc2045ddb7e2e9f",
+    "gee/compat/earthengine/feature_values.py": "ed525f580e50e7230213ddc3b565dfb06608a8747156934f35ce1ad66f3503e2",
+    "gee/compat/earthengine/filtering.py": "ee32796a2db6216c745ff54e65584e8dc9e457ad83cca273e897d695616c4cbe",
+    "gee/compat/earthengine/geometry_values.py": "9fbc41d6ea487ae4e93f516138a0be6d217791e4189e4db6f12522590ae4912a",
+    "gee/compat/earthengine/graph.py": "73d35b28923328dfbdace4c1f2c3c3ea058d084a50dd0cebc93bc3f527153504",
+    "gee/compat/earthengine/image_ops.py": "bda904f48ca75eaa2519bf313f957a31c279bf816aa1510e14911e36e8dd88f1",
+    "gee/compat/earthengine/inner_join.py": "b56d13083f44b3691544e4a993f17654750ca16d978167464379866e697594b7",
+    "gee/compat/earthengine/ir.py": "321e1f297d93899a54f0c204d5a969600c70ebeb315b225d9d5c260d8f17f28e",
+    "gee/compat/earthengine/join_conditions.py": "9074ea3150916c204414b15830ba42051c3cc6561fcf8269cb66481cec910064",
+    "gee/compat/earthengine/join_ops.py": "4703f99e55cfb6f333649bfd5306590d3eaed07421870b6511ef08374c485228",
+    "gee/compat/earthengine/mask_graph.py": "7bc0592a88f83b94f601e6bf9fed524a914413015cee26587b1c8a7c7c83d77c",
+    "gee/compat/earthengine/metadata_ops.py": "b373c436bb0dda1920f02ad9add40be600160de93525358e863ea51e1b726d9d",
+    "gee/compat/earthengine/number_format.py": "9d85ea670b60c6c59834457a0dda4d9a1bed1a9918340a3004bbf63f82e7d2a7",
+    "gee/compat/earthengine/pixel_graph.py": "48f650e489b0c644a8e386cb2fc10bca3cda20a3980e87b12d9db4e2b54924ce",
+    "gee/compat/earthengine/public_values.py": "5d01e96a517ef2f2f975f7847fdda948ac0daa20893e3a7f00328a5d28eba56f",
+    "gee/compat/earthengine/reduction_graph.py": "f6e8799d86eb1bf2f8c0ca7cd8ae0e54cf5e326e040ef1a8481f9ad1a8fb55eb",
+    "gee/compat/earthengine/static_dictionary.py": "2823714601588f528ccf9c0284bb5d62ffd12fd87399e41c5735d7627d3df619",
+    "gee/compat/earthengine/static_equality.py": "5779f199a88090d13445252a6b3e3634bf68b7d343b4a06c4f94354f226b9e5a",
+    "gee/compat/earthengine/static_sequence.py": "7c65aea263d536357e07f2ced11226e69538ecb39fe6c88a238359f64337e2b3",
+    "gee/compat/earthengine/static_values.py": "278e7dde72bbf6445205e1c15f129133176a731a39416991eec20cbb7a0be2c3",
+    "gee/compat/earthengine/string_values.py": "81f8433eacd32eb9dec1a98b1228cfeb65aac95347a9f5198cf456fc90b32554",
+    "gee/compat/earthengine/table_reducers.py": "c439325b38e895762d96647e6bf4443da59d2b049fae7a6b27ccf7d29f9c8979",
+    "gee/compat/earthengine/temporal_graph.py": "a370582335f336b9cac38281b2ce748ee152d4226d0aaaac51b9fd8f5e2ab8a8",
+    "gee/compat/earthengine/value_ops.py": "267ef3770334788883b8bcfab685b19e5caccec92d49cadc2d0731463bb4928d",
+    "scripts/ee_inventory/catalogue.py": "045c25276229055691d4ad3a6cf26159e31fe5cac99cbd241bf009212dcfdd6f",
+    "tests/fixtures/ee-temporal-interpolation-v1.json": "b8dd273072e385f2417caebbe2de2460bb586b52028aa6c930287d90d46551b2",
+    "tests/test_ee_compound_joins.py": "a2c4f97288a6e0588fecc798cfe17c32fde2b990cd338a9eb94c8a321c7b5bd1",
+    "tests/test_ee_feature_image_properties.py": "ddf526dd2f396904d2156067b4116dacd686d1d159ab1246d925d02c6a91d420",
+    "tests/test_ee_inner_join.py": "b8d6bceacf3383731d82ca3c10b818a2042dace9c3d371c3de78e360c73ecf4f",
+    "tests/test_ee_python_joins.py": "e85f09053c93367e32b22db0838ab115068d4ee8b62c5f30768276dd92c6b85c",
+    "tests/test_ee_python_js_parity.py": "ad2b93ae98b1a8424273d88548a7b44c9cff57cda63c457064c7b19de4455c3f",
+    "tests/test_ee_temporal_joins.py": "ece54b9cb8189d7a259962d66a1b1f982561477c22c638560eb6303269cbf197",
+    "tests/test_ee_temporal_workflow.py": "0b5ac9653f0426378248d8f7d784f21677c8211eacdf5755b57c78c3b5a487cd",
+    "uv.lock": "b688828aa0119bc71d098efe66aefaa9a0d93a51fae3289bfbe806c13a535b6d",
+    "vendor/earthengine-js/algorithms.json": "8279bfd5e755f10c291a0d833aed810a5aba2e360e26ecee69f2bacaeecb3d01",
+    "web/package-lock.json": "23ab4ccf3a102558ff642f085e8d96c6ac8209fafe3042faebcfc04e2ce70c62"
+  },
+  "verification": {
+    "dependency_installation": {
+      "python": "uv sync --frozen --python 3.11: passed",
+      "frontend": "npm ci: passed with workspace activation"
+    },
+    "python": {
+      "command": ".venv/bin/python -m pytest -q -ra",
+      "passed": 745,
+      "skipped": 7,
+      "failed": 0,
+      "errors": 0,
+      "junit_sha256": "dcecb95d17aaf3d800432fa95c3941f7875850d0cf0f1e5ceeefbc0ee309fa5f",
+      "wave2_passed": 709,
+      "added_passing_cases": 36,
+      "focused_module_test_counts": {
+        "test_ee_inner_join": 13,
+        "test_ee_compound_joins": 15,
+        "test_ee_feature_image_properties": 5,
+        "test_ee_temporal_workflow": 1,
+        "test_ee_python_js_parity": 15
+      },
+      "skips": [
+        {
+          "module": "tests.test_ee_grid_adapter",
+          "test": "test_native_grid_and_unmask_spi_semantics",
+          "reason": "set LOCAL_EE_RUN_NATIVE_GRID_TEST=1 for the opt-in local[1] JVM/Spark probe"
+        },
+        {
+          "module": "tests.test_ee_integer",
+          "test": "test_native_adapter_builds_and_executes_real_spi_tile_conversion",
+          "reason": "set LOCAL_EE_RUN_NATIVE_INTEGER_TEST=1 for the lightweight JVM/Spark probe"
+        },
+        {
+          "module": "tests.test_ee_reduce_adapter",
+          "test": "test_native_single_time_and_band_reducer_semantics",
+          "reason": "set LOCAL_EE_RUN_NATIVE_REDUCER_TEST=1 for the opt-in local[1] JVM/Spark probe"
+        },
+        {
+          "module": "tests.test_native_runtime",
+          "test": "test_python_denies_foreign_files_symlinks_writes_and_network",
+          "reason": "macOS Seatbelt acceptance"
+        },
+        {
+          "module": "tests.test_native_runtime",
+          "test": "test_node_cannot_read_host_credentials",
+          "reason": "macOS Seatbelt acceptance"
+        },
+        {
+          "module": "tests.test_native_runtime",
+          "test": "test_only_declared_api_port_is_allowed",
+          "reason": "macOS Seatbelt acceptance"
+        },
+        {
+          "module": "tests.test_native_runtime",
+          "test": "test_supervisor_enforces_timeout_redacts_token_and_survives_reader_restart",
+          "reason": "macOS Seatbelt acceptance"
+        }
+      ]
+    },
+    "frontend": {
+      "test_command": "npm test -- --maxWorkers=2",
+      "tests_passed": 11,
+      "tests_failed": 0,
+      "build_command": "npm run build",
+      "typescript": "passed",
+      "build": "passed"
+    },
+    "probe_check": {
+      "command": ".venv/bin/python -m scripts.ee_python_probes --check",
+      "status": "passed",
+      "original_expressions_unchanged": true,
+      "targeted_cases": 50,
+      "serialization_passed": 50,
+      "compilation_passed": 45,
+      "compilation_rejected": 5,
+      "engine_execution": "not_run",
+      "independent_numerical_validation": "not_run",
+      "google_same_data_comparison": "not_run",
+      "interpretation": "Original whole-expression probes only; not an API compatibility percentage. Separate synthetic numerical controls are below."
+    },
+    "sdk_cross_language": {
+      "actual_python_js_serialization_and_compilation_parity_cases": 15,
+      "new_cases": [
+        "inner matched Feature -> ImageCollection bands",
+        "conjunctive nearest-prior maxDifference measure"
+      ],
+      "native_execution": "not_run"
+    },
+    "inventory_reproducibility": {
+      "status": "passed",
+      "method": "Separate pristine-process regeneration with byte comparison"
+    },
+    "fixed_probe_network_instrumentation": {
+      "attempt_count": 0,
+      "attempts_by_operation": {},
+      "instrumented_operations": [
+        "local_transport.request",
+        "socket.create_connection",
+        "socket.getaddrinfo",
+        "socket.gethostbyaddr",
+        "socket.gethostbyname",
+        "socket.gethostbyname_ex",
+        "socket.socket.connect",
+        "socket.socket.connect_ex",
+        "socket.socket.sendmsg",
+        "socket.socket.sendto"
+      ],
+      "mode": "deny_and_count_python_network_and_local_transport_entry_points",
+      "scope": "Trusted in-process SDK probes only; not packet capture or kernel isolation"
+    },
+    "independent_review": {
+      "status": "completed_with_fix_verified",
+      "finding": "Repeated numeric predicate evaluation prematurely consumed inner-join work budget",
+      "fixed_reproduction": "Official SDK/compiler 850 matching primary images to one secondary image returns 850 rows, all delta=0",
+      "focused_inner_tests_passed": 13,
+      "remaining_scoped_findings": 0
+    }
+  },
+  "inventory": {
+    "algorithm_signature_count": 991,
+    "algorithm_argument_count": 2451,
+    "python_class_count": 48,
+    "python_callable_count": 1797,
+    "named_binding_algorithm_count": 939
+  },
+  "numerical_evidence": [
+    {
+      "scope": "nearest preceding/following measured joins",
+      "status": "passed",
+      "reference": "Independent absolute millisecond distances, stable tie/threshold controls and distinct primary/secondary metadata binding",
+      "native_raster_engine": "not_run",
+      "google_comparison": "not_run"
+    },
+    {
+      "scope": "Join.inner pair mapping to two-source band composition",
+      "status": "passed",
+      "reference": "Distinct source arrays [1,3,masked] and [7,masked,11], with unrelated 999-valued bands to detect source swaps; masks remain per-band",
+      "native_raster_engine": "not_run",
+      "google_comparison": "not_run"
+    },
+    {
+      "scope": "versioned temporal interpolation pixel graph",
+      "status": "passed",
+      "fixture": "tests/fixtures/ee-temporal-interpolation-v1.json",
+      "reference": "Nearest days 1 and 3 around target day 2; weight 0.5; signal [6,masked,masked]; target timestamp retained and target 100-valued pixels unused",
+      "network_entry_attempts": 0,
+      "native_raster_engine": "not_run",
+      "google_comparison": "not_run"
+    }
+  ],
+  "implemented_scope": [
+    "Unique maxDifference directly or under And with scalar predicates for saveBest/saveFirst/saveAll/inner; ambiguous requested measures reject",
+    "Boolean Or/Not and multiple numeric predicates remain available when no measure is requested",
+    "Bounded Join.inner preserves real Image references in null-geometry Feature pairs; measureKey belongs to the pair Feature",
+    "Feature properties retain concrete Images and their pixel IR; homogeneous Image callback outputs become ImageSequence for the SDK-elided ImageCollection wrapper",
+    "Source/mask-preserving nearest-neighbor interpolation example and versioned synthetic fixture",
+    "Predicate string scan and ordering-key work are charged before comparisons/sorting"
+  ],
+  "limits": [
+    "At most 1000 input image frames per collection and 1000 inner output pairs, shared 50000-step work and whole-output materialization/1 MB limits",
+    "Inner property keys must be distinct nonempty flat names; no guessed output IDs",
+    "Spatial/vector joins, nested selectors, multiple requested measures, and requested measures under Or/Not reject",
+    "Feature/Image mixed map output types reject; concrete Image properties only, symbolic mapped Images and malformed internal bands reject",
+    "Stable local order/ties and existing missing/null join predicate policy have not been Google-compared",
+    "Interpolation uses finite numeric timestamps and requires both neighbors to match; each output pixel requires both source pixels valid"
+  ],
+  "existing_test_adjustments": [
+    "Three former compound-measure rejection cases now use genuinely ambiguous multiple/Or/Not measure structures; new positive cases validate supported And forms",
+    "Whole-response materialization regression uses numeric group keys to isolate the output cap from string scan work; its specific materialization/1 MB assertion is retained"
+  ],
+  "remaining_targeted_probe_rejections": [
+    {
+      "id": "unmask_fill",
+      "reason": "Image.unmask sameFootprint=false with a global footprint is not supported"
+    },
+    {
+      "id": "neighborhood_reduce_kernel",
+      "reason": "Unsupported Earth Engine algorithm: Kernel.square"
+    },
+    {
+      "id": "focal_mean",
+      "reason": "Unsupported Earth Engine algorithm: Image.focalMean"
+    },
+    {
+      "id": "regression_reducer",
+      "reason": "This regression Reducer currently supports static table reduceColumns only"
+    },
+    {
+      "id": "classifier_constructor",
+      "reason": "Unsupported Earth Engine algorithm: Classifier.smileRandomForest"
+    }
+  ],
+  "not_run": [
+    "Linux user-task execution adapter acceptance",
+    "Native raster-engine execution",
+    "macOS Seatbelt kernel acceptance",
+    "ARM64 JNI acceptance",
+    "Private real-data workflows",
+    "Google same-data comparisons"
+  ],
+  "regression_fixes": [
+    {
+      "issue": "Inner join recomputed a successful numeric predicate when measureKey was requested, prematurely exhausting shared work",
+      "change": "Return match and measure from one validated-condition traversal",
+      "control": "850 matching primary Images and one secondary Image produce 850 zero-measure pairs within the unchanged 50000-step budget"
+    }
+  ],
+  "cleanup": [
+    "Removed verified duplicate pristine API inventory; retained tracked inventory, reports and runtime dependencies"
+  ]
+}

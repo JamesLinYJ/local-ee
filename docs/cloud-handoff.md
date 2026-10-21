@@ -26,6 +26,16 @@
 
 Linux 用户／挂载／PID namespace 的临时能力探测在执行沙箱外成功；普通执行沙箱内的 `/proc/self/uid_map` 写限制不能推断为内核不支持。尚无验收通过的 Linux 执行适配器，因此生产用户代码继续拒绝在无对应原生隔离的平台执行。
 
+## 第三批时间匹配工作流
+
+第二批提交 `76fe99a271731e2e8e319195191fec5187ba9ea0` 已通过精确提交的 GitHub `python`／`frontend` 检查并快进发布到 main。第三批在此基础上将 Join 条件验证／求值拆到 `join_conditions.py`，增加唯一 maxDifference 与标量条件的 And 组合，以及有限 ImageCollection 的 `Join.inner`。不请求度量时保留 Or／Not 布尔筛选；请求度量时拒绝多重或歧义结构。
+
+inner 输出匹配对 Feature，内部保留真实 Image；Feature 属性和同类 Image 映射结果可继续进入选波段、addBands、ImageCollection 计算。版本化 `ee-temporal-interpolation-v1.json` 串联最近前后观测、毫秒权重和像素插值，独立参考同时覆盖来源、掩膜和目标时间。详见 `reports/gee-python-wave3.json`；这些合成图数值测试不是原生栅格引擎执行。
+
+本批 Linux Python **745 passed／7 skipped**，前端 **11 passed**、TypeScript 和构建通过；比第二批增加 36 项通过回归，跳过项目及原生平台限制不变。原大输出预算用例采用数值匹配键以单独命中物化／1 MB 上限；字符串扫描预算另有明确负控，没有放宽失败断言来隐藏回归。
+
+原有 50 项表达式及 45 编译通过／5 拒绝不变，Python／JS 官方 SDK 共享编译回归增至 15 项。后续继续优先 Image.array*、逐像元回归、采样／分类训练预测与真实项目，Python 完整目标仍未完成。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee

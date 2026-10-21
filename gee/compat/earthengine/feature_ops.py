@@ -11,10 +11,11 @@ from .feature_values import (
     is_feature,
     property_name,
     validate_feature,
+    validate_json_value,
     with_properties,
 )
 from .feature_filters import matches_feature_filter
-from .ir import Filter, Function, fail, integer
+from .ir import Filter, Function, Image, ImageSequence, fail, integer
 
 
 _COLLECTION_METHODS = frozenset({
@@ -173,9 +174,20 @@ def _invoke_collection(translator, name, a):
                 if drop_nulls is True:
                     continue
                 fail("FeatureCollection.map returned null; set dropNulls=true")
-            if not is_feature(mapped):
-                fail("FeatureCollection.map must return a Feature")
-            output.append(validate_feature(translator, mapped))
+            if isinstance(mapped, Image):
+                # A common Join.inner workflow maps matched Features back to
+                # Images, then wraps the result with ee.ImageCollection. Both
+                # SDKs omit that wrapper in the DAG, so retain actual Images.
+                validate_json_value(translator, mapped)
+                output.append(mapped)
+            elif is_feature(mapped):
+                output.append(validate_feature(translator, mapped))
+            else:
+                fail("FeatureCollection.map must return a Feature or Image")
+        if any(isinstance(value, Image) for value in output):
+            if not all(isinstance(value, Image) for value in output):
+                fail("Collection.map cannot mix Feature and Image outputs")
+            return ImageSequence(output)
         return _collection(output)
     if name == "Collection.filter":
         translator.allowed(a, {"collection", "filter"})

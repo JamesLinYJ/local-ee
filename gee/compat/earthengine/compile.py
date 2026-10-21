@@ -8,6 +8,7 @@ from .graph import Graph
 from .public_values import public_result
 from .join_ops import Join
 from .table_reducers import TableReducer
+from .inner_join import InnerJoin
 
 
 def compile_expression(expression, catalog, items, options=None):
@@ -47,7 +48,7 @@ def compile_expression(expression, catalog, items, options=None):
             ref = graph.node("aggregate_spatial", data=ref, geometries=value.geometry, reducer=reducer)
             return public_result({"kind": "region", "process_graph": graph.finish(ref), "bands": [n for n, _ in value.image.bands], "warnings": translator.warnings, "reducer": value.reducer.name,
                     "geometry": value.geometry, "grid_options": value.options})
-        if isinstance(value, (Function, ParsedExpression, Filter, Reducer, Join, TableReducer)):
+        if isinstance(value, (Function, ParsedExpression, Filter, Reducer, Join, InnerJoin, TableReducer)):
             fail("A function/filter/reducer/join is not a computable output value")
         # Ensure no internal class or non-finite number crosses the API boundary.
         return public_result({"kind": "value", "value": value, "warnings": translator.warnings})
