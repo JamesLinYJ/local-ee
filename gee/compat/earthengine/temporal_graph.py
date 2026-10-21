@@ -4,7 +4,6 @@ from .ir import Pixel, _substitute, fail
 
 
 def reduce_time(graph, p):
-    if graph.has_double_precision(p.args[0]): fail("Float64 temporal reductions are not verified; cast after reduction or explicitly toFloat() first")
     sources = set()
     seen = set()
     def find_sources(value):
@@ -35,7 +34,25 @@ def reduce_time(graph, p):
             return graph.expression(Pixel("reduce_bands", (scenes,p.args[1])))
     ref, label, timed = graph.expression(p.args[0])
     if label is None: fail("Reducing an unbound constant image is unsupported")
-    if not timed: fail("Image has no collection time dimension")
+    if not timed:
+        from .constant_graph import is_spatialized_constant
+        if is_spatialized_constant(p.args[0]):
+            if p.args[1] in {"count", "sd"}:
+                ref = graph.node("local_ee_reduce_bands", data=ref, reducer=p.args[1])
+            elif p.args[1] not in {"mean", "median", "min", "max", "sum", "first", "last"}:
+                fail("Unsupported constant temporal reducer")
+            return ref, "v", False
+        fail("Image has no collection time dimension")
+    if graph.has_double_precision(p.args[0]):
+        # Each occurrence is loaded independently above; the native boundary
+        # additionally rejects multiple actual instants and duplicate keys.
+        # Removing one verified time coordinate performs no numeric reduction.
+        ref = graph.node("local_ee_drop_single_time", data=ref)
+        if p.args[1] in {"count", "sd"}:
+            ref = graph.node("local_ee_reduce_bands", data=ref, reducer=p.args[1])
+        elif p.args[1] not in {"mean", "median", "min", "max", "sum", "first", "last"}:
+            fail("Unsupported Float64 temporal reducer")
+        return ref, "v", False
     reducer = graph.callback(p.args[1], {"data": {"from_parameter": "data"}, **({} if p.args[1] == "count" else {"ignore_nodata": True})})
     ref = graph.node("reduce_dimension", data=ref, dimension="t", reducer=reducer)
     if p.args[1] == "count":

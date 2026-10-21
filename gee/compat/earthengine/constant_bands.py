@@ -1,0 +1,200 @@
+"""Bind pure constant image bands to a concrete local raster grid."""
+from __future__ import annotations
+
+import math
+
+from .ir import Image, Pixel, UnsupportedEEError, fail
+from .static_values import scalar_power
+
+
+_MAX_SAFE_INTEGER = 2**53
+_BINARY = {
+    "add": lambda x, y: x + y,
+    "subtract": lambda x, y: x - y,
+    "multiply": lambda x, y: x * y,
+    "divide": lambda x, y: 0 if y == 0 else x / y,
+    "power": scalar_power,
+    "mod": lambda x, y: math.fmod(x, y),
+    "eq": lambda x, y: x == y,
+    "neq": lambda x, y: x != y,
+    "lt": lambda x, y: x < y,
+    "lte": lambda x, y: x <= y,
+    "gt": lambda x, y: x > y,
+    "gte": lambda x, y: x >= y,
+    "and": lambda x, y: bool(x and y),
+    "or": lambda x, y: bool(x or y),
+    "min2": min,
+    "max2": max,
+}
+_UNARY = {
+    "not": lambda x: not x,
+    "absolute": abs,
+    "sqrt": math.sqrt,
+    "log": math.log,
+    "log10": math.log10,
+    "exp": math.exp,
+    "round": lambda x: math.floor(x + 0.5),
+    "floor": math.floor,
+    "ceil": math.ceil,
+    "sin": math.sin,
+    "cos": math.cos,
+    "tan": math.tan,
+}
+_CASTS = {"to_float", "to_double"}
+
+
+def _children(value):
+    """Yield direct pixel children, including children nested in arg tuples."""
+    if isinstance(value, Pixel):
+        yield value
+    elif isinstance(value, (tuple, list)):
+        for item in value:
+            yield from _children(item)
+
+
+def _has_raster(pixel: Pixel, memo=None, active=None) -> bool:
+    """Find band dependencies without revisiting shared subexpressions."""
+    memo = {} if memo is None else memo
+    active = set() if active is None else active
+    key = id(pixel)
+    cached = memo.get(key)
+    if cached is not None and cached[0] is pixel:
+        return cached[1]
+    if key in active:
+        fail("Cyclic pixel expression cannot be used as an addBands grid template")
+    if pixel.op == "band":
+        memo[key] = (pixel, True)
+        return True
+    active.add(key)
+    result = any(_has_raster(child, memo, active) for child in _children(pixel.args))
+    active.remove(key)
+    memo[key] = (pixel, result)
+    return result
+
+
+def _literal(value):
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, int):
+        if abs(value) > _MAX_SAFE_INTEGER:
+            fail("Constant band integer literals above 2^53 are unsupported")
+        return value
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            fail("Constant bands cannot contain null or non-finite values")
+        if value.is_integer() and abs(value) > _MAX_SAFE_INTEGER:
+            fail("Constant band integer literals above 2^53 are unsupported")
+        return value
+    fail("Constant bands currently support finite numeric and boolean literals only")
+
+
+def _checked(value):
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, int):
+        if abs(value) > _MAX_SAFE_INTEGER:
+            fail("Constant band arithmetic exceeds the exact scalar range")
+        return value
+    if not isinstance(value, float) or not math.isfinite(value):
+        fail("Constant band arithmetic must produce a finite scalar")
+    if value.is_integer() and abs(value) > _MAX_SAFE_INTEGER:
+        fail("Constant band arithmetic exceeds the exact scalar range")
+    return value
+
+
+def _evaluate(pixel: Pixel, memo=None, active=None):
+    """Fold only the finite scalar operators supported by the pixel compiler."""
+    memo = {} if memo is None else memo
+    active = set() if active is None else active
+    key = id(pixel)
+    cached = memo.get(key)
+    if cached is not None and cached[0] is pixel:
+        return cached[1]
+    if key in active:
+        fail("Cyclic constant pixel expression is unsupported")
+    active.add(key)
+    if pixel.op == "constant" and len(pixel.args) == 1:
+        value = _literal(pixel.args[0])
+    else:
+        values = []
+        for argument in pixel.args:
+            if isinstance(argument, Pixel):
+                values.append(_evaluate(argument, memo, active))
+            elif isinstance(argument, (tuple, list)):
+                fail("Nested aggregate values are not supported in constant band arithmetic")
+            else:
+                values.append(argument)
+        try:
+            if pixel.op == "if" and len(values) == 3:
+                value = values[1] if values[0] else values[2]
+            elif pixel.op in _BINARY and len(values) == 2:
+                value = _BINARY[pixel.op](*values)
+            elif pixel.op in _UNARY and len(values) == 1:
+                value = _UNARY[pixel.op](values[0])
+            else:
+                if pixel.op == "clip":
+                    fail("Cannot bind a clipped constant band; its source footprint must be preserved")
+                if pixel.op in _CASTS:
+                    fail("Casts nested inside constant arithmetic cannot be rebound safely")
+                fail(f"Cannot bind constant band expression with unsupported operation: {pixel.op}")
+            value = _checked(value)
+        except UnsupportedEEError:
+            raise
+        except (ArithmeticError, TypeError, ValueError, OverflowError):
+            fail("Constant band arithmetic must produce a finite scalar")
+    active.remove(key)
+    memo[key] = (pixel, value)
+    return value
+
+
+def _bind_pixel(pixel: Pixel, destination: Image, template: Pixel, source: Image) -> Pixel:
+    casts = []
+    base = pixel
+    while base.op in _CASTS and len(base.args) == 1 and isinstance(base.args[0], Pixel):
+        casts.append(base)
+        base = base.args[0]
+    if _has_raster(base):
+        return pixel
+    if source.footprint is not None or source.footprint_is_absolute:
+        fail("Cannot bind a constant band with an explicit source footprint")
+    _evaluate(base)
+    bound = Pixel(
+        "on_grid",
+        (base, template, destination.source, destination.footprint, destination.footprint_is_absolute),
+        boolean=base.boolean,
+    )
+    for cast in reversed(casts):
+        bound = Pixel(cast.op, (bound,), boolean=cast.boolean)
+    return bound
+
+
+def bind_source_bands(source: Image, destination: Image) -> list[tuple[str, Pixel]]:
+    """Bind unbound pure constants only when the destination has a real grid."""
+    if destination.source is None:
+        return list(source.bands)
+    memo = {}
+    template = None
+    bound = []
+    for name, pixel in source.bands:
+        if _has_raster(pixel, memo):
+            bound.append((name, pixel))
+            continue
+        if template is None:
+            template = destination_template(destination)
+        if template is None:
+            fail("Cannot bind a constant band without a finite local raster grid in dstImg")
+        bound.append((name, _bind_pixel(pixel, destination, template, source)))
+    return bound
+
+
+def destination_template(destination: Image):
+    """Return a real destination band DAG with its spatial/temporal shape intact."""
+    if destination.source is None:
+        return None
+    if not destination.source.ids:
+        return None
+    memo = {}
+    for _, pixel in destination.bands:
+        if _has_raster(pixel, memo):
+            return pixel
+    return None

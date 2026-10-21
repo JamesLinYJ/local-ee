@@ -1,12 +1,13 @@
 # Local EE
 
-自托管遥感工作台：TypeScript + React 前端，Python/openEO 服务，GeoTrellis/Spark 本地计算。通过固定版本的官方 Earth Engine JavaScript 客户端构造表达式，再由本地兼容层执行已实现的算法。
+自托管遥感工作台：TypeScript + React 前端，Python/openEO 服务，GeoTrellis/Spark 本地计算。通过固定版本的官方 Earth Engine JavaScript／Python 客户端构造表达式，再由共享的本地兼容层执行已实现的算法。
 
 当前部署目标是 **Apple Silicon macOS 原生运行**。脚本、入库和计算使用 Seatbelt 沙箱；无需虚拟机或容器。项目仍在开发，**尚未完整兼容 GEE，也未完成互联网多租户生产验收**。兼容范围及剩余差异见 [兼容文档](docs/gee-compatibility.md) 和 [目标](GOAL.md)。
 
 ## 功能与当前边界
 
 - Python / GEE JavaScript 编辑、脚本保存与主动共享、持久任务队列、日志、取消及恢复。
+- Python 同时保留 openEO `connection`，支持本地 `import ee; ee.Initialize()`、Map 和官方 Task 的受支持导出写法；不使用 Google 登录或 Drive 上传。用法与限制见 [语法文档](docs/syntax.md)。
 - 本地数据目录、地图图层、色带与像素查询，GeoTIFF、NetCDF、CSV 本地导出。
 - 数据集草稿/发布/下架、文件分块上传/续传、原件下载、GeoTIFF 入库与 COG 下载。
 - 本地账号与角色、管理面板和操作记录；Keycloak OIDC、项目/数据集对象权限仍待实现。

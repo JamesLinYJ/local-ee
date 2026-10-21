@@ -9,7 +9,16 @@ KNOWN_PARTIAL_LIMITS: dict[str, list[str]] = {
     "Collection.map": ["dropNulls=true routes through finite per-image evaluation and remains subject to the 1000-frame local cap."],
     "Image.updateMask": ["Binary masks only; fractional masks and opacity semantics are not supported."],
     "Image.mask": ["The getter path is declared; the mask setter path is rejected."],
-    "Image.unmask": ["Bounded aligned local grids and identical observation instants only; defaults to valid zero and retains the input footprint. Global constants with sameFootprint=false, implicit time/grid broadcasting, non-finite or out-of-range Float64 constants reject. Physical output is Float64; explicitly toFloat before callback arithmetic/temporal reduction. No Google-service comparison."],
+    "Image.unmask": [
+        "Requires bounded aligned local grids and identical observation instants; defaults to valid zero and retains the input footprint. Global constants with sameFootprint=false, implicit time/grid broadcasting, and non-finite or out-of-range Float64 values reject.",
+        "Physical output is Float64. Bounded native temporal reducers support mean, median, min, max, sum, count, first, last, and sampleStdDev; general Float64 callback arithmetic remains unsupported. No Google-service comparison.",
+    ],
+    "Image.constant": [
+        "Finite numeric scalar literals and supported finite scalar arithmetic can be bound to a concrete destination raster when used through addBands, including per-observation date().millis() values. The scalar must remain within the exact Float64 range (absolute value <= 2^53). Standalone/global constant grids, projection queries, implicit broadcasting, arrays and arbitrary constant-image semantics remain unsupported; exact Google boundary-grid equivalence is unverified."
+    ],
+    "Image.addBands": [
+        "Constant bands are supported only when bound to a destination with a finite local raster grid; the output uses that grid and footprint with an independent valid-pixel mask. Per-observation date constants preserve the source observation identity. Unbound/global constants, explicit constant source footprints, arbitrary projection behavior and cross-grid semantics are unsupported; exact Google parity is unverified."
+    ],
     "Image.reduceRegion": ["crsTransform, bestEffort, and custom tileScale are rejected; local pixel/resource limits also apply."],
     "List.sequence": ["The count form is rejected; start/end/step is the supported local form."],
     "Projection": ["Projection transforms are rejected; supported local geometry/grid behavior is narrower than GEE."],
@@ -27,7 +36,9 @@ KNOWN_PARTIAL_LIMITS: dict[str, list[str]] = {
     "Number.leftShift": ["Static scalar inputs only; shift counts must be 0..63, the left operand must be nonnegative, and the result must fit signed 64-bit. Raster Image.leftShift is not implied."],
     "Number.rightShift": ["Static scalar inputs only; accepts exact signed-64-bit operands and shift counts 0..63, with signed arithmetic right shift. Raster Image.rightShift is not implied."],
     "Image.toFloat": ["Uses the local adapter to cast raster cells to Float32; Float32 callback arithmetic is the supported path, not a claim of Google numerical parity."],
-    "Image.toDouble": ["Uses the local adapter to cast raster cells to Float64, but subsequent Float64 pixel arithmetic and temporal reductions are rejected by the pinned callback backend. Cast after arithmetic or explicitly use toFloat before arithmetic; Google parity is unverified."],
+    "Image.toDouble": [
+        "Uses the local adapter to cast raster cells to Float64. Bounded native temporal reducers support mean, median, min, max, sum, count, first, last, and sampleStdDev; general Float64 callback pixel arithmetic remains unsupported. Cast toFloat before callback arithmetic when Float32 precision is acceptable; Google parity is unverified."
+    ],
     "reduce": ["Only the explicitly implemented reducer names and local semantics are available."],
 }
 

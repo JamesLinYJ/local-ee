@@ -15,6 +15,7 @@ Read `docs/architecture.md` before changing architecture or adding a subsystem. 
 - `gee/services/`: use cases, permissions, quotas, persistent lifecycle.
 - `gee/compat/earthengine/`: canonical pure EE DAG decoder, IR and compiler; no user-code execution or external fetches. `gee/ee_translate.py` is a 23-line backward-compatible import facade; add and change compiler behavior in the canonical package, then preserve the facade's public names.
 - `runtimes/eejs/`: offline official SDK and isolated JS runner. Preserve vendor licenses and hash/version locks.
+- `gee/ee_python_*.py`: pinned official Python SDK offline initialization, bounded loopback transport, local map/task/export adapters. Keep legacy EE serialization shared with the JS compiler, preserve openEO `connection`, and reject cloud authentication/discovery or unsupported export parameters. SDK method existence is not backend support.
 - `gee/graph.py`: canonical process graph validation; every newly exposed process needs source review and focused validation.
 - `gee/artifacts.py`: shared physical output boundary. All result readers and publication must use it.
 - `web/src/components/`, `web/src/hooks/`, `web/src/lib/`: TypeScript + React functional components, hooks and typed protocol boundaries, no promotional/mission-statement copy. Use strict TypeScript; no Vue runtime or compatibility wrappers in the served frontend. Shared visual tokens and accessible controls; map/editor usable at common desktop widths.

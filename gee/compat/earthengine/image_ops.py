@@ -4,6 +4,7 @@ from __future__ import annotations
 import math
 from dataclasses import replace
 
+from .constant_bands import bind_source_bands
 from .ir import Image, Pixel, Reducer, Region, as_image, binary, const, fail, pairs, unary
 
 
@@ -144,7 +145,7 @@ def invoke_image(translator, name, arguments):
         if a.get("names") is not None:
             source = translator.select(source, a["names"])
         bands = list(image.bands)
-        for band_name, pixel in source.bands:
+        for band_name, pixel in bind_source_bands(source, image):
             existing = [current for current, _ in bands]
             if band_name in existing and a.get("overwrite", False):
                 bands[existing.index(band_name)] = (band_name, pixel)

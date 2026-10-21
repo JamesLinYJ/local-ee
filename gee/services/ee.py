@@ -8,15 +8,18 @@ import re
 import time
 from pathlib import Path
 from datetime import datetime
-from psycopg.types.json import Jsonb
 from openeo_driver.users import User
 from .. import db, graph
 from ..artifacts import artifact_path
 from ..ee_translate import compile_expression, UnsupportedEEError
 from .ee_exports import export_options
 from .ee_budget import pixel_budget
+from .ee_idempotency import idempotency_record, validate_request_id
+from .ee_events import check_event_capacity, record_event
 
 DATA=Path(os.environ.get('DATA_ROOT','/data'))
+EE_TASK_STATES={'created':'UNSUBMITTED','queued':'READY','running':'RUNNING','finished':'COMPLETED','error':'FAILED','canceled':'CANCELLED'}
+OPERATION_STATES={'created':'PENDING','queued':'PENDING','running':'RUNNING','finished':'SUCCEEDED','error':'FAILED','canceled':'CANCELLED'}
 
 
 def catalog_snapshot():
@@ -60,15 +63,47 @@ def geometry(value,catalog,items):
     return mapping(geo)
 
 
-def record_event(account,event):
+def _script_parent(account):
+    """Resolve only the running parent attached to a database-backed script token."""
+    if account.get('scope')!='script':return None
     jid=account.get('job_id')
-    if not jid:return
-    with db.connect() as c:
-        row=c.execute("SELECT events FROM jobs WHERE id=%s AND user_id=%s AND kind='script' AND language='javascript' AND status='running' FOR UPDATE",(jid,account['user_id'])).fetchone()
-        if not row:raise ValueError('JavaScript parent job is no longer running')
-        events=row['events']
-        if len(events)>=32 or len(json.dumps(events))+len(json.dumps(event))>65536:raise ValueError('Script map/event budget exceeded')
-        c.execute('UPDATE jobs SET events=%s,updated=now() WHERE id=%s',(Jsonb([*events,event]),jid))
+    if not jid:raise ValueError('Script token is not bound to a running parent job')
+    row=db.query("SELECT id,language,status FROM jobs WHERE id::text=%s AND user_id=%s AND kind='script'",(str(jid),account['user_id']),one=True)
+    if not row or row['status']!='running' or row['language'] not in {'javascript','python'}:
+        raise ValueError('Script parent job is no longer running')
+    return row
+
+
+def _check_task_scope(row,account,parent):
+    if account.get('scope')=='script' and str(row['context'].get('source_job_id'))!=str(parent['id']):
+        # Do not expose the existence or state of a sibling task to a script token.
+        from openeo_driver.errors import JobNotFoundException
+        raise JobNotFoundException(str(row['id']))
+
+
+def _task_type(row):
+    context=row.get('context') or {}
+    if context.get('result_kind')=='region':return 'EXPORT_FEATURES'
+    for node in (row.get('process') or {}).get('process_graph',{}).values():
+        if node.get('process_id')=='save_result':
+            return 'EXPORT_FEATURES' if node.get('arguments',{}).get('format')=='CSV' else 'EXPORT_IMAGE'
+    return 'EXPORT_IMAGE'
+
+
+def _task_status(row):
+    return {'id':str(row['id']),'state':EE_TASK_STATES[row['status']],
+            'description':row.get('title',''),'task_type':_task_type(row),
+            'error_message':row.get('error')}
+
+
+def _operation(row):
+    status=OPERATION_STATES[row['status']]
+    operation={'name':'operations/'+str(row['id']),
+               'metadata':{'state':status,'description':row.get('title',''),'type':_task_type(row)},
+               'done':status in {'SUCCEEDED','FAILED','CANCELLED'}}
+    if status=='FAILED' and row.get('error'):
+        operation['error']={'code':13,'message':str(row['error'])[:500]}
+    return operation
 
 
 def numeric(value,maximum=1e9):
@@ -100,7 +135,7 @@ def visualization(value):
     return out
 
 
-def make_job(backend,account,compiled,title,fmt,context,start):
+def make_job(backend,account,compiled,title,fmt,context,start,request_id=None,request_payload=None):
     process=compiled['process_graph']
     result_ids=[key for key,node in process.items() if node.get('result') is True]
     if len(result_ids)!=1:raise ValueError('Compiler output requires one result')
@@ -109,9 +144,20 @@ def make_job(backend,account,compiled,title,fmt,context,start):
     key='gee_result'
     process[key]={'process_id':'save_result','arguments':{'data':{'from_node':result_id},'format':fmt},'result':True}
     graph.validate(process)
-    result=backend.batch_jobs.create_job(user=User(account['user_id'],internal_auth_data={'scope':account['scope'],'job_id':account.get('job_id')}),process={'process_graph':process},api_version='1.2',metadata={'title':str(title)[:200]})
-    context={**context,'protocol':'earthengine','source_job_id':str(account['job_id']) if account.get('job_id') else None,'bands':compiled.get('bands',[]),'warnings':compiled.get('warnings',[]),'pixel_budget':compiled.get('pixel_budget')}
-    db.query('UPDATE jobs SET language=%s,context=%s WHERE id=%s',('javascript',Jsonb(context),result.id))
+    parent=_script_parent(account)
+    parent_id=str(parent['id']) if parent else None
+    language=parent['language'] if parent else 'javascript'
+    context={**context,'protocol':'earthengine','source_job_id':parent_id,'bands':compiled.get('bands',[]),'warnings':compiled.get('warnings',[]),'pixel_budget':compiled.get('pixel_budget')}
+    if request_id is not None and request_payload is None:
+        raise ValueError('EE export request payload is required for idempotency')
+    idempotency=idempotency_record(request_id,request_payload)
+    internal={'scope':account['scope'],'job_id':parent_id,
+              'ee_task_context':context,'ee_task_language':language}
+    if idempotency:
+        if parent_id is None:raise ValueError('EE export request IDs require a script-scoped parent')
+        internal['ee_idempotency']=idempotency
+        context.update(idempotency)
+    result=backend.batch_jobs.create_job(user=User(account['user_id'],internal_auth_data=internal),process={'process_graph':process},api_version='1.2',metadata={'title':str(title)[:200]})
     if start:backend.batch_jobs.start_job(result.id,User(account['user_id']))
     return {'job_id':result.id,'warnings':compiled.get('warnings',[])}
 
@@ -120,12 +166,34 @@ def dispatch(backend,account,payload):
     if not isinstance(payload,dict):raise ValueError('Expected an object')
     action=payload.get('action');options=payload.get('options') or {}
     if not isinstance(options,dict):raise ValueError('options must be an object')
-    if action in {'start','status','result'}:
+    request_id=payload.get('request_id')
+    if request_id is not None:
+        if action not in {'export_image','export_table'}:raise ValueError('request_id is valid only for EE export actions')
+        request_id=validate_request_id(request_id)
+    parent=_script_parent(account)
+    if action=='list':
+        if parent is None:raise UnsupportedEEError('Task.list requires a script-scoped local session')
+        rows=db.query("""SELECT id,title,status,error,context,process FROM jobs
+            WHERE user_id=%s AND kind='batch' AND context->>'protocol'='earthengine'
+            AND context->>'source_job_id'=%s AND context->>'result_kind'='export'
+            ORDER BY created DESC LIMIT 100""",(account['user_id'],str(parent['id'])))
+        return {'operations':[_operation(row) for row in rows]}
+    if action=='map_zoom':
+        zoom=options.get('zoom')
+        if set(options)!={'zoom'} or isinstance(zoom,bool) or not isinstance(zoom,(int,float)) or not math.isfinite(zoom) or not 0<=zoom<=22:
+            raise ValueError('zoom must be a finite number between 0 and 22')
+        record_event(account,{'type':'map_view','zoom':zoom});return {'value':True}
+    if action in {'start','status','result','cancel'}:
         row=db.job(str(payload.get('job_id','')),account['user_id'])
         if row['context'].get('protocol')!='earthengine':raise ValueError('Not an Earth Engine adapter task')
+        _check_task_scope(row,account,parent)
         if action=='start':
-            backend.batch_jobs.start_job(str(row['id']),User(account['user_id']));return {'value':{'state':'READY','id':str(row['id'])}}
-        if action=='status':return {'value':{'id':str(row['id']),'state':{'created':'UNSUBMITTED','queued':'READY','running':'RUNNING','finished':'COMPLETED','error':'FAILED','canceled':'CANCELLED'}[row['status']],'error_message':row.get('error')}}
+            backend.batch_jobs.start_job(str(row['id']),User(account['user_id']))
+            return {'value':_task_status(db.job(str(row['id']),account['user_id']))}
+        if action=='cancel':
+            backend.batch_jobs.cancel_job(str(row['id']),account['user_id'])
+            return {'value':_task_status(db.job(str(row['id']),account['user_id']))}
+        if action=='status':return {'value':_task_status(row)}
         if row['status'] in {'error','canceled'}:raise ValueError(row.get('error') or row['status'])
         if row['status']!='finished':return {'pending':True,'job_id':str(row['id'])}
         if row['context'].get('result_kind')!='region':raise ValueError('Task is not a regional value result')
@@ -193,8 +261,19 @@ def dispatch(backend,account,payload):
         opacity=options.get('opacity',1)
         if isinstance(opacity,bool) or not isinstance(opacity,(int,float)) or not 0<=opacity<=1:raise ValueError('opacity must be between 0 and 1')
         name=str(options.get('name','图层'))[:200]
-        result=make_job(backend,account,compiled,'地图 · '+name,'GTiff',{'result_kind':'map','vis_params':vis,'layer_name':name},True)
-        record_event(account,{'type':'map_layer','job_id':result['job_id'],'name':name,'vis_params':vis,'shown':bool(options.get('shown',True)),'opacity':opacity})
+        event={'type':'map_layer','job_id':'0'*36,'name':name,'vis_params':vis,'shown':bool(options.get('shown',True)),'opacity':opacity}
+        check_event_capacity(account,event)
+        result=make_job(backend,account,compiled,'地图 · '+name,'GTiff',{'result_kind':'map','vis_params':vis,'layer_name':name},False)
+        event['job_id']=result['job_id']
+        try:
+            record_event(account,event)
+            backend.batch_jobs.start_job(result['job_id'],User(account['user_id']))
+        except Exception as error:
+            try:
+                backend.batch_jobs.cancel_job(result['job_id'],account['user_id'])
+            except Exception as cleanup_error:
+                error.add_note(f'Map child cancellation failed: {cleanup_error}')
+            raise
         return result
     fmt=options.get('fileFormat','CSV' if action=='export_table' else 'GeoTIFF')
     formats={'GeoTIFF':'GTiff','GTiff':'GTiff','NetCDF':'NetCDF','CSV':'CSV'}
@@ -207,4 +286,5 @@ def dispatch(backend,account,payload):
     warnings.append('toDrive 已适配为本地导出；没有向 Google Drive 传输数据。')
     if options.get('folder'):warnings.append('folder 仅记录为本地导出分组，不代表云端文件夹或宿主路径。')
     compiled['warnings']=warnings
-    return make_job(backend,account,compiled,options.get('description') or 'GEE 本地导出',formats[fmt],{'result_kind':'export','export_group':str(options.get('folder',''))[:200],**local_options},False)
+    request_payload={'action':action,'expression':payload.get('expression'),'options':options} if request_id else None
+    return make_job(backend,account,compiled,options.get('description') or 'GEE 本地导出',formats[fmt],{'result_kind':'export','export_group':str(options.get('folder',''))[:200],**local_options},False,request_id=request_id,request_payload=request_payload)

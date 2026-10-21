@@ -53,14 +53,16 @@ JSON 为每一个 `vendor/earthengine-js/algorithms.json` 条目保留官方算�
 | 谐波时序 | 逐景元数据读取现在可通过 `Collection.map(dropNulls=true)` 的有限 per-image 路径处理，仍受 1,000 景上限约束；`Date.difference` 有局部 UTC 标量实现，但年/月使用平均时长策略且没有 Google 数值对照；线性回归、数组变换、`atan2` / `hypot` 和所需 Landsat 数据仍是主要缺口 |
 | 随机森林分类 | 样本提取、分类器训练与预测、混淆矩阵、批量区域统计 |
 | 矩阵 OLS | 集合转数组、`arraySlice` / `arrayProject` / `arrayFlatten`、`matrixSolve` |
-| HISTARFM 插值 | `Date.difference` / `getRelative` 有限 UTC 标量实现不能覆盖所有时间 Join 场景；常量栅格、`int16`、时间 Join 与匹配列表属性仍是主要缺口 |
-| LandTrendr | 用户模块解析、高级时序分段、数组/像元连通语义；QA 位运算与 `unmask` |
+| HISTARFM 插值 | `Date.difference` / `getRelative` 有限 UTC 标量实现不能覆盖所有时间 Join 场景；独立常量栅格与完整投影语义、`int16`、时间 Join 与匹配列表属性仍是主要缺口 |
+| LandTrendr | 用户模块解析、高级时序分段、数组/像元连通语义与 Image QA 位运算 |
 
 定向检查中，50 个表达式由固定 SDK 序列化；3 个正向编译对照通过、43 个因算子或语义被拒绝、4 个因数据或波段被拒绝。这是表达式级观察，不能当作算法覆盖比。另有 14 个图规模编译点，场景数包括 1、10、20、30、50、100 和 365；它们只测图规模，不测吞吐或端到端长时序运行。已观察到双波段均值 30 景生成 335 节点、50 景超过现有 500 节点限制。
 
 近期已加入 `ImageCollection.qualityMosaic` 的局部编译路径，以及 `Date.difference`、`Date.getRelative`、`Date.getFraction` 的有限标量日期路径。`qualityMosaic` 要求集合非空、每景具有同名质量波段，并且波段名和顺序完全相同；无效质量像元会被排除，胜出影像的载荷掩膜会保留，相同质量值目前选择集合中最后一景，尚未与 Google 服务对照。日期运算只接受可解析的本地毫秒标量，日历年份范围为 1..9999，时区仅 UTC；`Date.difference` 的年/月使用平均时长常数作为本地策略，ISO 周规则和这些边界均没有 Google 数值对照。`getRelative` 的 week-in-month、相同 unit 和未列明日历组合明确拒绝。`Collection.map(dropNulls=true)` 对有元数据依赖的映射进行有限逐景求值，仍受 1,000 景限制。这些是局部路径和限制说明，不是端到端复杂工作流验收。
 
-当前还声明了七个 `Number` 标量位运算方法：`bitCount`、`bitwiseNot`、`bitwiseAnd/Or/Xor`、`leftShift` 和 `rightShift`。它们只处理已解析的静态标量整数，不代表对应 `Image.*` 栅格算法可用；二进制 AND/OR/XOR 只接受非负输入，左移限于无溢出的有符号 64 位范围，其他不确定的 coercion/溢出会显式拒绝。`Image.toFloat` 和 `Image.toDouble` 通过本地类型转换适配器处理栅格；固定 callback 后端的 Float64 像元运算及时间归约仍被拒绝，`toDouble()` 适用于之后不再进行这些运算的输出路径。它们也没有 Google 同数据数值对照。
+当前还声明了七个 `Number` 标量位运算方法：`bitCount`、`bitwiseNot`、`bitwiseAnd/Or/Xor`、`leftShift` 和 `rightShift`。它们只处理已解析的静态标量整数，不代表对应 `Image.*` 栅格算法可用；二进制 AND/OR/XOR 只接受非负输入，左移限于无溢出的有符号 64 位范围，其他不确定的 coercion/溢出会显式拒绝。`Image.toFloat` 和 `Image.toDouble` 通过本地类型转换适配器处理栅格；Float64 的一般像元回调运算仍被拒绝，但有界原生时间归约支持 `mean`、`median`、`min`、`max`、`sum`、`count`、`first`、`last` 和样本标准差。此有界归约也适用于 `Image.unmask` 的 Float64 结果；该调用仍要求掩膜替换网格对齐且观测时刻相同，默认保留输入 footprint，`sameFootprint=false`、隐式重投影和跨时刻广播仍拒绝。上述路径没有 Google 同数据数值对照。
+
+`Image.constant` 和 `Image.addBands` 支持一个有限子集：有限数值标量及已支持的静态标量算术可以绑定到有真实本地栅格来源的目标影像，包括 `addBands(ee.Image.constant(...))` 和逐景的 `ee.Image(image.date().millis())`。新增常量在目标本地网格和 footprint 内独立有效，不继承目标波段的像元掩膜；之后可用上述有界 Float64 时间归约。常量绝对值及运算结果限制在精确 Float64 范围 `<= 2^53`。独立/global 常量栅格、投影查询、跨网格或隐式时间广播、数组常量、任意类型提升和精确 Google 边界网格等价仍不支持或未验证。14 个官方 SDK 常量/日期表达式的原生验收共输出 18 个波段，掩膜、波段顺序和数值均与独立基准一致；这项样例不代表所有 `Image.constant` / `addBands` 重载均已实现。
 
 ## 运行时交互也属于迁移范围
 

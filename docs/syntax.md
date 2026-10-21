@@ -1,8 +1,10 @@
 # 语法与 API 文档
 
-GEE JavaScript 的对应语法、运行链路、验证等级和已知限制见 [GEE 兼容文档](gee-compatibility.md)。下面保留 Python/openEO 参考。
+GEE JavaScript 的对应语法、运行链路、验证等级和已知限制见 [GEE 兼容文档](gee-compatibility.md)。下面分别说明 Python/openEO 与 GEE Python 的用法。
 
-内容与工作台顶部“语法文档”一致；本站提供 Python 3.11 和 openEO Python 客户端。算子参数以本机 `/openeo/1.2/processes` 返回值为准，不自动访问外部文档。
+Python 编辑器也提供固定版本的官方 `earthengine-api` 客户端入口：`connection` 用于既有 openEO 写法，`ee` 用于 GEE Python 写法。两者提交到同一本地数据目录和计算后端；客户端可构造对象不代表对应算法都已实现，具体限制见兼容文档。
+
+内容与工作台顶部“语法文档”一致；本站提供 Python 3.11、openEO Python 客户端和官方 Earth Engine Python 客户端。openEO 算子参数以本机 `/openeo/1.2/processes` 返回值为准，不自动访问外部文档。
 
 ## 脚本怎样运行
 
@@ -11,6 +13,48 @@ GEE JavaScript 的对应语法、运行链路、验证等级和已知限制见 [
 ```python
 print(connection.list_collection_ids())
 print(connection.describe_collection("sentinel-2-l2a"))
+```
+
+## GEE Python 客户端
+
+运行器在本机配置官方 EE 客户端。使用 `ee.Initialize()` 建立本地适配，不需要调用 `ee.Authenticate()`、Google 账号或项目。脚本仍在独立沙箱中运行，SDK 的计算表达式由本地兼容层检查并转换。`ee.*` 支持范围与 JavaScript 兼容表共用；尚未实现的算法、参数和 Google 云端服务会明确报错。
+
+```python
+import ee
+
+ee.Initialize()
+roi = ee.Geometry.Rectangle([113.55, 22.30, 113.57, 22.32])
+images = (
+    ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
+    .filterBounds(roi)
+    .filterDate("2024-01-01", "2024-02-01")
+)
+ndvi = images.map(
+    lambda image: image.normalizedDifference(["B8", "B4"])
+    .rename("NDVI")
+    .copyProperties(image, ["system:time_start"])
+).median().clip(roi)
+
+task = ee.batch.Export.image.toDrive(
+    image=ndvi,
+    description="local-ndvi",
+    region=roi,
+    scale=10,
+    maxPixels=1e8,
+)
+task.start()
+print(task.status())
+```
+
+这里的 `COPERNICUS/S2_SR_HARMONIZED` 只映射到本机已入库且通过检查的 Sentinel-2 数据，覆盖范围、波段与预处理方式不等同于全球 GEE 数据集。`Export.image.toDrive` 在本机创建导出任务；“Drive”是为兼容官方 Python 调用形式，文件保存在当前用户的本地任务结果中，不会上传到 Google Drive。可通过任务面板检查并下载结果。完整示例也在 Python 脚本资源 `07_GEE_python_local` 中。
+
+### 地图与本地显示
+
+工作台注入的 `Map` 是本地界面适配器，不是官方 SDK 的服务器地图服务。它接受 `addLayer(image, visParams, name, shown=True, opacity=1)`、`centerObject(geometry, zoom=None)`、`setCenter(lon, lat, zoom=None)`、`setZoom(zoom)` 和 `clear()`。`addLayer` 提交异步本地栅格任务并返回本地任务引用；结果完成后由任务面板地图显示。显示参数支持 `bands`、`min`、`max`、`gamma` 与 `palette`。调用 `Map.clear()` 才会清除当前工作台地图。Python `image.getMapId()` 也会提交本地异步图层任务，返回本地任务 ID；不会返回 Google 瓦片 URL 或云端访问令牌。
+
+```python
+Map.centerObject(roi, 13)
+Map.addLayer(ndvi, {"min": 0, "max": 1, "palette": ["f4e5b9", "155b3b"]}, "NDVI")
 ```
 
 ## 变量、数字、字符串和注释
@@ -61,7 +105,7 @@ aoi = make_extent(west=113.55, south=22.30, east=113.57, north=22.32)
 
 ## 导入、异常与输出
 
-import 导入已安装的模块。try / except 捕获预期错误；未捕获异常会使 Python 任务失败，完整信息在日志中。print 输出到控制台。运行容器不能联网安装新软件包。
+import 导入已安装的模块。try / except 捕获预期错误；未捕获异常会使 Python 任务失败，完整信息在日志中。print 输出到控制台。运行脚本的原生沙箱不能联网安装新软件包。
 
 ```python
 from datetime import date
@@ -75,7 +119,7 @@ except Exception as error:
 
 ## 延迟计算与进程图
 
-load_collection、ndvi、reduce_dimension 等方法构建计算图，调用时不会读取全部像素。create_job() 将计算图保存到后端，start_job() 才进入队列。不要用普通 Python if 判断一个 DataCube。不要把 DataCube 当成 NumPy 数组。GEE 的 ee.* 脚本不能直接运行。
+load_collection、ndvi、reduce_dimension 等方法构建计算图，调用时不会读取全部像素。create_job() 将计算图保存到后端，start_job() 才进入队列。不要用普通 Python if 判断一个 DataCube。不要把 DataCube 当成 NumPy 数组。GEE Python 的 `ee.*` 代码应使用上面的官方客户端入口；它不是 openEO DataCube API，支持范围也不同。
 
 ```python
 cube = connection.load_collection(

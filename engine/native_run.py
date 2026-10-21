@@ -41,6 +41,10 @@ def setup(log_dir):
     }.items():
         conf.set(key,value)
     SparkContext.getOrCreate(conf).setLogLevel('WARN')
+    # Register the audited bridge before run_graph_locally constructs GpsProcessing,
+    # which snapshots processes advertised by the GeoTrellis SPI.
+    from ee_process_adapters import register_local_ee_processes
+    register_local_ee_processes()
     os.environ['PYTEST_CONFIGURE']=''
 
 

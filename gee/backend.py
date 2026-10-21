@@ -1,7 +1,9 @@
 import json
 import os
+import re
 import uuid
 from pathlib import Path
+import psycopg
 from psycopg.types.json import Jsonb
 from openeo_driver.backend import (BatchJobs, BatchJobMetadata, JobListing,
     CollectionCatalog, Processing, OpenEoBackendImplementation, UdfRuntimes)
@@ -12,6 +14,39 @@ from . import db, graph, auth
 from .artifacts import artifact_path
 
 DATA = Path(os.environ.get("DATA_ROOT", "/data"))
+EE_REQUEST_INDEX = "jobs_ee_request_id_unique"
+_SHA256 = re.compile(r"[0-9a-f]{64}\Z")
+_EE_LANGUAGES = {"javascript", "python"}
+
+
+def _ee_idempotency(internal, parent):
+    value = internal.get("ee_idempotency")
+    if value is None:
+        return None
+    if not parent or internal.get("scope") != "script":
+        raise OpenEOApiException("EE export request IDs require a script-scoped parent",code="IdempotencyInvalid",status_code=400)
+    if (not isinstance(value,dict) or set(value)!={"request_id_hash","request_fingerprint"}
+            or any(not isinstance(value.get(key),str) or not _SHA256.fullmatch(value[key])
+                   for key in ("request_id_hash","request_fingerprint"))):
+        raise OpenEOApiException("Invalid EE export idempotency metadata",code="IdempotencyInvalid",status_code=400)
+    return value
+
+
+def _ee_task_metadata(internal, parent):
+    context = internal.get("ee_task_context")
+    language = internal.get("ee_task_language")
+    if context is None and language is None:
+        return None
+    if (not isinstance(context, dict) or context.get("protocol") != "earthengine"
+            or context.get("source_job_id") != parent or language not in _EE_LANGUAGES):
+        raise OpenEOApiException("Invalid trusted EE task metadata", code="EEContextInvalid", status_code=400)
+    return dict(context), language
+
+
+def _same_ee_request(row, idempotency):
+    if row["context"].get("request_fingerprint") != idempotency["request_fingerprint"]:
+        raise OpenEOApiException("EE task request ID was reused with different export contents",code="IdempotencyConflict",status_code=409)
+    return row
 
 class Catalog(CollectionCatalog):
     def __init__(self): super().__init__([])
@@ -54,27 +89,57 @@ class Jobs(BatchJobs):
                 for x in v: scan(x)
         try: scan(process)
         except ValueError as e: raise OpenEOApiException(str(e), code="ProcessGraphInvalid", status_code=400)
-        with db.connect() as c:
-            c.execute("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ")
-            c.execute("SELECT id FROM users WHERE id=%s FOR UPDATE",(user.user_id,))
-            internal=user.internal_auth_data or {}
-            parent=internal.get('job_id') if internal.get('scope')=='script' else None
-            context={}
-            if parent:
-                if not c.execute("SELECT id FROM jobs WHERE id=%s AND user_id=%s AND kind='script' AND status='running' FOR SHARE",(parent,user.user_id)).fetchone():
-                    raise OpenEOApiException('脚本已停止，请重新运行',code='ScriptNotRunning',status_code=409)
-                context={'source_job_id':str(parent)}
-            if c.execute("SELECT count(*) AS n FROM jobs WHERE user_id=%s AND status IN ('created','queued','running')", (user.user_id,)).fetchone()["n"] >= 30:
-                raise OpenEOApiException("待处理任务上限为 30", code="QuotaExceeded", status_code=429)
-            snapshot = {}
-            for cid in ids:
-                row = c.execute("SELECT metadata || managed_metadata AS metadata FROM collections WHERE id=%s AND enabled", (cid,)).fetchone()
-                if not row: raise OpenEOApiException(f"数据集未入库: {cid}", code="CollectionNotFound", status_code=404)
-                items = [r["metadata"] for r in c.execute("SELECT metadata FROM items WHERE collection_id=%s AND active ORDER BY id", (cid,))]
-                snapshot[cid] = {"collection": row["metadata"], "items": items}
-            jid = str(uuid.uuid4())
-            c.execute("INSERT INTO jobs(id,user_id,kind,title,status,process,snapshot,context) VALUES(%s,%s,'batch',%s,'created',%s,%s,%s)",
-                (jid, user.user_id, str(metadata.get("title") or "未命名任务")[:200], Jsonb(process), Jsonb(snapshot),Jsonb(context)))
+        internal=user.internal_auth_data or {}
+        parent=internal.get('job_id') if internal.get('scope')=='script' else None
+        if internal.get('scope')=='script' and not parent:
+            raise OpenEOApiException('脚本令牌未绑定运行任务',code='ScriptNotRunning',status_code=409)
+        parent=str(parent) if parent else None
+        idempotency=_ee_idempotency(internal,parent)
+        ee_metadata=_ee_task_metadata(internal,parent)
+        if idempotency and ee_metadata is None:
+            raise OpenEOApiException("EE request id requires trusted task metadata",code="IdempotencyInvalid",status_code=400)
+        try:
+            with db.connect() as c:
+                c.execute("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ")
+                c.execute("SELECT id FROM users WHERE id=%s FOR UPDATE",(user.user_id,))
+                context=ee_metadata[0] if ee_metadata else {}
+                if parent:
+                    parent_row=c.execute("SELECT id,language FROM jobs WHERE id::text=%s AND user_id=%s AND kind='script' AND status='running' FOR SHARE",(parent,user.user_id)).fetchone()
+                    if not parent_row:
+                        raise OpenEOApiException('脚本已停止，请重新运行',code='ScriptNotRunning',status_code=409)
+                    if ee_metadata and parent_row['language']!=ee_metadata[1]:
+                        raise OpenEOApiException('EE task language does not match its script parent',code='EEContextInvalid',status_code=400)
+                    if not ee_metadata:
+                        context={'source_job_id':parent}
+                if idempotency:
+                    context.update({'protocol':'earthengine',**idempotency})
+                    existing=c.execute("""SELECT * FROM jobs WHERE user_id=%s AND kind='batch'
+                        AND context->>'protocol'='earthengine' AND context->>'request_id_hash'=%s
+                        AND context->>'source_job_id' IS NOT DISTINCT FROM %s FOR UPDATE""",
+                        (user.user_id,idempotency['request_id_hash'],parent)).fetchone()
+                    if existing:return self.metadata(_same_ee_request(existing,idempotency))
+                if c.execute("SELECT count(*) AS n FROM jobs WHERE user_id=%s AND status IN ('created','queued','running')", (user.user_id,)).fetchone()["n"] >= 30:
+                    raise OpenEOApiException("待处理任务上限为 30", code="QuotaExceeded", status_code=429)
+                snapshot = {}
+                for cid in ids:
+                    row = c.execute("SELECT metadata || managed_metadata AS metadata FROM collections WHERE id=%s AND enabled", (cid,)).fetchone()
+                    if not row: raise OpenEOApiException(f"数据集未入库: {cid}", code="CollectionNotFound", status_code=404)
+                    items = [r["metadata"] for r in c.execute("SELECT metadata FROM items WHERE collection_id=%s AND active ORDER BY id", (cid,))]
+                    snapshot[cid] = {"collection": row["metadata"], "items": items}
+                jid = str(uuid.uuid4())
+                language=ee_metadata[1] if ee_metadata else "python"
+                c.execute("INSERT INTO jobs(id,user_id,kind,title,status,process,snapshot,context,language) VALUES(%s,%s,'batch',%s,'created',%s,%s,%s,%s)",
+                    (jid, user.user_id, str(metadata.get("title") or "未命名任务")[:200], Jsonb(process), Jsonb(snapshot),Jsonb(context),language))
+        except psycopg.errors.UniqueViolation as error:
+            if (idempotency is None or
+                    getattr(getattr(error,"diag",None),"constraint_name",None)!=EE_REQUEST_INDEX):
+                raise
+            existing=db.query("""SELECT * FROM jobs WHERE user_id=%s AND kind='batch'
+                AND context->>'protocol'='earthengine' AND context->>'request_id_hash'=%s
+                AND context->>'source_job_id' IS NOT DISTINCT FROM %s""",
+                (user.user_id,idempotency['request_id_hash'],parent),one=True)
+            if not existing:raise
+            return self.metadata(_same_ee_request(existing,idempotency))
         return self.get_job_info(jid, user.user_id)
 
     @staticmethod

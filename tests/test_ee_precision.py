@@ -26,8 +26,11 @@ def test_double_math_rejects_implicit_float32_narrowing(local):
     compile(call('Image.add', image1=call('Image.toFloat', value=double), image2=1),local)
     collection = call('Collection.map', collection=call('ImageCollection.load', id='sentinel-2-l2a'), baseAlgorithm={
         'type':'Function','argumentNames':['im'],'body':call('Image.toDouble',value={'type':'ArgumentRef','value':'im'})})
-    with pytest.raises(UnsupportedEEError, match='Float64 temporal reductions'):
-        compile(call('reduce.mean',collection=collection),local)
+    result = compile(call('reduce.mean',collection=collection),local)
+    graph.validate(result['process_graph'])
+    processes = {node['process_id'] for node in result['process_graph'].values()}
+    assert {'local_ee_drop_single_time', 'local_ee_reduce_bands'} <= processes
+    assert result['has_time_dimension'] is False
 
 
 def test_local_cast_specs_and_canonical_top_level_boundary():

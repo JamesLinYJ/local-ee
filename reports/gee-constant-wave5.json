@@ -1,0 +1,299 @@
+{
+  "schema_version": 1,
+  "scope": "Bounded constant/date addBands and Float64 reductions, official SDK1.7.49, native macOS ARM64",
+  "fixture": {
+    "sdk": "1.7.49",
+    "source_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a",
+    "cases": [
+      {
+        "case": "boundScalar__one",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      },
+      {
+        "case": "boundLarge__large",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      },
+      {
+        "case": "boundDate__date",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      },
+      {
+        "case": "boundArithmetic__arithmetic",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      },
+      {
+        "case": "maskedConstant__nir",
+        "valid_pixels": 128,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      },
+      {
+        "case": "maskedConstant__valid_constant",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      },
+      {
+        "case": "allMaskedConstant__valid_constant",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      },
+      {
+        "case": "emptySourceConstant__valid_constant",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      },
+      {
+        "case": "staticMean__static",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      },
+      {
+        "case": "dateMean__millis",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      },
+      {
+        "case": "dateCount__millis",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      },
+      {
+        "case": "dateSd__millis_stdDev",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 1e-12,
+        "passed": true
+      },
+      {
+        "case": "dateToBands__a_millis",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      },
+      {
+        "case": "dateToBands__b_millis",
+        "valid_pixels": 160,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      },
+      {
+        "case": "dateToBands__c_millis",
+        "valid_pixels": 160,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      },
+      {
+        "case": "boundFloat__value",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      },
+      {
+        "case": "boundOverwrite__red",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      },
+      {
+        "case": "boundOverwrite__nir",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      }
+    ],
+    "graph_nodes": 119,
+    "shape": [
+      18,
+      18
+    ],
+    "crs": "EPSG:32649",
+    "output_bands": [
+      "boundScalar__one",
+      "boundLarge__large",
+      "boundDate__date",
+      "boundArithmetic__arithmetic",
+      "maskedConstant__nir",
+      "maskedConstant__valid_constant",
+      "allMaskedConstant__valid_constant",
+      "emptySourceConstant__valid_constant",
+      "staticMean__static",
+      "dateMean__millis",
+      "dateCount__millis",
+      "dateSd__millis_stdDev",
+      "dateToBands__a_millis",
+      "dateToBands__b_millis",
+      "dateToBands__c_millis",
+      "boundFloat__value",
+      "boundOverwrite__red",
+      "boundOverwrite__nir"
+    ],
+    "expected_band_order": [
+      "boundScalar__one",
+      "boundLarge__large",
+      "boundDate__date",
+      "boundArithmetic__arithmetic",
+      "maskedConstant__nir",
+      "maskedConstant__valid_constant",
+      "allMaskedConstant__valid_constant",
+      "emptySourceConstant__valid_constant",
+      "staticMean__static",
+      "dateMean__millis",
+      "dateCount__millis",
+      "dateSd__millis_stdDev",
+      "dateToBands__a_millis",
+      "dateToBands__b_millis",
+      "dateToBands__c_millis",
+      "boundFloat__value",
+      "boundOverwrite__red",
+      "boundOverwrite__nir"
+    ],
+    "band_order_passed": true,
+    "output_dtypes": [
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64"
+    ],
+    "expected_dtype": "float64",
+    "dtype_passed": true,
+    "fixture": "Synthetic three scenes; differing footprints; a/c share timestamp; blue is entirely NoData.",
+    "reference": "Independent Rasterio masks/reprojection and centered NumPy date statistics.",
+    "google_service_comparison": false,
+    "passed": true
+  },
+  "physical_float32_cast": {
+    "sdk": "1.7.49",
+    "source_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a",
+    "cases": [
+      {
+        "case": "boundFloat__value",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_absolute_error": 0.0,
+        "absolute_tolerance": 0,
+        "passed": true
+      }
+    ],
+    "graph_nodes": 10,
+    "shape": [
+      18,
+      18
+    ],
+    "crs": "EPSG:32649",
+    "output_bands": [
+      "boundFloat__value"
+    ],
+    "expected_band_order": [
+      "boundFloat__value"
+    ],
+    "band_order_passed": true,
+    "output_dtypes": [
+      "float32"
+    ],
+    "expected_dtype": "float32",
+    "dtype_passed": true,
+    "fixture": "Synthetic three scenes; differing footprints; a/c share timestamp; blue is entirely NoData.",
+    "reference": "Independent Rasterio masks/reprojection and centered NumPy date statistics.",
+    "google_service_comparison": false,
+    "passed": true
+  },
+  "native_adapter": {
+    "jar_sha256": "e3c635fd27858827a7f1b85cbfe9673b2ae3df4332ac3bdf78159d61f7ea7832",
+    "sources": {
+      "engine/ee_integer_adapter.scala": "8374acb9e68f651930daf5ee18a641af468fb9b60990e249479e2cb17411d5d0",
+      "engine/ee_grid_adapter.scala": "049052f97d6ea0c9511db94155cf49b9c8af7d63b0f6d9313b3e7bf759ada704",
+      "engine/ee_mask_adapter.scala": "f29fe4dfa0d184ed3391bed9d410a36cd43858ec3a83d994cdc2a56361ac5159",
+      "engine/ee_reduce_support.scala": "1f05bdb830904013cd91536d373f8e00e2312434f6443f76770dfcb6389bdaec",
+      "engine/ee_reduce_numeric.scala": "fc3a6f62444e178200c8d1553e9b615b538f138a84197b7ab88c139ad31b19aa",
+      "engine/ee_reduce_adapter.scala": "db14427954238b82db1f6f73d93f68cc5e67f4c749fd0635f934c1037a311781"
+    },
+    "upstream_jars_verified": true
+  },
+  "kernel_and_spi_probes": {
+    "passed": 7,
+    "command": "LOCAL_EE_RUN_NATIVE_GRID_TEST=1 LOCAL_EE_RUN_NATIVE_REDUCER_TEST=1 .venv/bin/python -m pytest -q tests/test_ee_grid_adapter.py tests/test_ee_reduce_adapter.py tests/test_native_runtime.py",
+    "controls": [
+      "bounded empty spatial template succeeds",
+      "ambiguous empty temporal and EmptyBounds reject",
+      "ordered Float64 reductions, epoch milliseconds, sample SD",
+      "subnormal and extreme median values",
+      "NoData and duplicate key validation",
+      "per-tile and total cell/time/key budgets",
+      "native foreign-file, credential, undeclared-port denial and timeout/redaction"
+    ]
+  },
+  "prior_multiscene_regression": {
+    "passed": true,
+    "command": "GEE_AUDIT_DIR=<new> .venv/bin/python scripts/check_ee_multiscene.py"
+  },
+  "limitations": [
+    "Synthetic independent NumPy/Rasterio reference; no Google-service numerical comparison",
+    "Evaluation on destination finite local grid does not expose or replace logical constant default projection",
+    "Standalone global constant raster and implicit cross-grid/time broadcasting remain unsupported",
+    "Generic Float64 pixel callbacks remain rejected; explicit toFloat loses precision",
+    "Per-item expansion remains bounded by existing graph/scene/resource limits"
+  ]
+}

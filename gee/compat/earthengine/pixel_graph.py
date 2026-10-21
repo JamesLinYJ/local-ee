@@ -1,7 +1,8 @@
 """Compile shared pixel IR into bounded native cube and callback processes."""
 import math
 
-from .ir import Pixel, fail
+from .ir import Pixel, UnsupportedEEError, fail
+from .static_values import scalar_power
 from .temporal_graph import reduce_time
 
 
@@ -32,7 +33,7 @@ class PixelCompiler:
         # than silently narrowing an explicitly requested Float64 raster.
         key = id(p)
         if key not in self.double_precision:
-            if p.op in {"to_double", "unmask", "unmask_constant"}: result = True
+            if p.op in {"to_double", "unmask", "unmask_constant", "on_grid"}: result = True
             elif p.op in {"to_float", "is_nodata"}: result = False
             else:
                 operands = p.args[0] if p.op == "reduce_bands" else p.args[:1] if p.op in {"clip", "preserve_mask"} else p.args
@@ -50,6 +51,9 @@ class PixelCompiler:
             source, name = p.args
             ref = self.node("filter_bands", data=self.source(source), bands=[name])
             return self.node("rename_labels", data=ref, dimension="bands", target=["v"]), "v", True
+        if p.op == "on_grid":
+            from .constant_graph import materialize_constant
+            return materialize_constant(self, p)
         if p.op == "clip":
             ref, label, timed = self.expression(p.args[0])
             if label is None: fail("Clipping an unbound constant image is unsupported")
@@ -73,6 +77,9 @@ class PixelCompiler:
         if p.op in {"unmask", "unmask_constant"}:
             from .mask_graph import unmask
             return unmask(self, p)
+        if p.op == "reduce_bands" and self.has_double_precision(p):
+            from .reduction_graph import reduce_bands_double
+            return reduce_bands_double(self, p)
         if p.op != "is_nodata" and self.has_double_precision(p):
             fail("Float64 pixel arithmetic is not supported by the pinned callback backend; apply toDouble() after arithmetic or explicitly toFloat() first")
         operands = p.args[0] if p.op == "reduce_bands" else p.args
@@ -83,7 +90,7 @@ class PixelCompiler:
             # never pass through eval() or an interpreter supplied by the user.
             values = [r[0] for r in results]
             if p.op == "if": return values[1] if values[0] else values[2], None, True
-            funcs = {"add": lambda: values[0]+values[1], "subtract": lambda: values[0]-values[1], "multiply": lambda: values[0]*values[1], "divide": lambda: values[0]/values[1], "power": lambda: values[0]**values[1], "eq": lambda: values[0]==values[1], "neq": lambda: values[0]!=values[1], "lt": lambda: values[0]<values[1], "lte": lambda: values[0]<=values[1], "gt": lambda: values[0]>values[1], "gte": lambda: values[0]>=values[1], "and": lambda: bool(values[0] and values[1]), "or": lambda: bool(values[0] or values[1]), "not": lambda: not values[0], "absolute": lambda: abs(values[0]),
+            funcs = {"add": lambda: values[0]+values[1], "subtract": lambda: values[0]-values[1], "multiply": lambda: values[0]*values[1], "divide": lambda: values[0]/values[1], "power": lambda: scalar_power(values[0], values[1]), "eq": lambda: values[0]==values[1], "neq": lambda: values[0]!=values[1], "lt": lambda: values[0]<values[1], "lte": lambda: values[0]<=values[1], "gt": lambda: values[0]>values[1], "gte": lambda: values[0]>=values[1], "and": lambda: bool(values[0] and values[1]), "or": lambda: bool(values[0] or values[1]), "not": lambda: not values[0], "absolute": lambda: abs(values[0]),
                      "is_nodata": lambda: values[0] is None or not math.isfinite(values[0]),
                      "min2": lambda: min(values), "max2": lambda: max(values), "mod": lambda: math.fmod(*values),
                      "sqrt": lambda: math.sqrt(values[0]), "log": lambda: math.log(values[0]), "log10": lambda: math.log10(values[0]),
@@ -95,6 +102,7 @@ class PixelCompiler:
             try:
                 value = funcs[p.op]()
                 return int(value) if isinstance(value, bool) else value, None, True
+            except UnsupportedEEError: raise
             except (ArithmeticError, TypeError, ValueError): return None, None, True
         # Give every operand a distinct internal band. The callback then pairs
         # by explicit index; labels never implicitly decide band arithmetic.

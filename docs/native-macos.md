@@ -19,11 +19,13 @@
 | 网页和 API | Gunicorn，单 worker、4 个线程，同源静态资源；仅 127.0.0.1:8787 | `web/dist`、`.native/run/api.log` |
 | 数据库 | PostgreSQL 17，32 MiB shared buffers、20 连接；只监听权限 0700 的 Unix socket，无 TCP 监听 | `.native/postgres`、`.native/run/pg` |
 | 调度 | PostgreSQL 队列、advisory lock；同一时刻一个计算或入库任务，另有两个脚本槽位 | `gee/worker.py` |
-| Python / JS | Python 3.11 / Node 24 + 官方 EE 客户端；独立 Seatbelt 进程 | `.native/eejs`、`data/jobs/<id>` |
+| Python / JS | Python 3.11 / Node 24 + 各自的官方 EE 客户端；独立 Seatbelt 进程 | `.venv`、`.native/eejs`、`data/jobs/<id>` |
 | 科学引擎 | Java 21、Spark 4.0.4 local[1]、Scala 2.13、GeoTrellis、GDAL 3.13.3 | `.native/engine`、`.native/jars` |
 | 文件与结果 | 原文件分块上传、标准化 COG、STAC、GeoTIFF/NetCDF/CSV | `data/uploads`、`data/assets`、`data/catalog`、`data/jobs` |
 
 Spark 和 JVM 仅在计算时启动，完成、取消或超限后回收，不预留整台虚拟机的内存。一个 Spark JVM 的堆配置为 1 GiB；包括 Python/JVM 子进程的保守 RSS 合计上限为 4 GiB。脚本 RSS 上限 512 MiB，入库 2 GiB。RSS 按周期检查，属于进程树监督，不是 cgroups 的硬内存配额。
+
+Python 脚本仍可使用原有 openEO `connection`，也可 `import ee; ee.Initialize()`。`earthengine-api` 1.7.49 从固定官方 Git 提交安装，来源和许可摘要见 `vendor/earthengine-python/upstream-lock.json`，安装依赖使用 `uv sync --frozen`。运行器离线加载签名，将支持的 getInfo、地图和任务操作绑定至本机接口；不读取 Google 持久凭据，也不接受 Google 项目／OAuth 配置。`toDrive` 的受支持输出存放在本地任务结果中。后端算法和参数范围仍以 [兼容说明](gee-compatibility.md) 为准。
 
 ## Unix 沙箱与生命周期
 

@@ -18,6 +18,10 @@ def register_ee_api(app,backend):
     @bp.get('/capabilities')
     @authenticated(allow_script=True)
     def capabilities():
-        return jsonify({**get_capabilities(),'version':'0.1','client':'@google/earthengine','client_version':'1.7.49','execution':'isolated-local-node','backend':'openEO GeoTrellis','full_gee_compatibility':False})
+        return jsonify({**get_capabilities(),'version':'0.1','client':'@google/earthengine','client_version':'1.7.49','execution':'isolated-local-node','backend':'openEO GeoTrellis','full_gee_compatibility':False,
+            'clients':[
+                {'language':'javascript','package':'@google/earthengine','version':'1.7.49','execution':'isolated-local-node'},
+                {'language':'python','package':'earthengine-api','version':'1.7.49','execution':'isolated-local-python','google_authentication':False},
+            ]})
 
     app.register_blueprint(bp)

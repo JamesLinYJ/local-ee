@@ -1,0 +1,3935 @@
+{
+  "sdk": "1.7.49",
+  "source_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a",
+  "source": "https://github.com/google/earthengine-api",
+  "expressions": {
+    "firstAddScalar": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 2000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "start": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "end": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "DateRange"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "rightField": "system:time_start",
+              "leftValue": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Filter.dateRangeContains"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "filter": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Collection.filter"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "8",
+          [
+            "one"
+          ]
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "7"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "11",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "10"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "11"
+      }
+    },
+    "firstAddMultiband": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 2000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "start": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "end": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "DateRange"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "rightField": "system:time_start",
+              "leftValue": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Filter.dateRangeContains"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "filter": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Collection.filter"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "7",
+          [
+            1,
+            16777219
+          ]
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "9",
+          [
+            "one",
+            "large"
+          ]
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "11",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "10"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "12",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "11"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "12"
+      }
+    },
+    "firstAddDateMillis": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 2000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "start": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "end": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "DateRange"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "rightField": "system:time_start",
+              "leftValue": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Filter.dateRangeContains"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "filter": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Collection.filter"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Image.date"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Date.millis"
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "10",
+          [
+            "millis"
+          ]
+        ],
+        [
+          "11",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "9"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "10"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "12",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "11"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "13",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "12"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "10"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "13"
+      }
+    },
+    "firstAddConstantArithmetic": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 2000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "start": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "end": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "DateRange"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "rightField": "system:time_start",
+              "leftValue": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Filter.dateRangeContains"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "filter": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Collection.filter"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 2
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 3
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image1": {
+                "type": "ValueRef",
+                "value": "7"
+              },
+              "image2": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Image.multiply"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "11",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image1": {
+                "type": "ValueRef",
+                "value": "9"
+              },
+              "image2": {
+                "type": "ValueRef",
+                "value": "10"
+              }
+            },
+            "functionName": "Image.add"
+          }
+        ],
+        [
+          "12",
+          [
+            "calculated"
+          ]
+        ],
+        [
+          "13",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "11"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "12"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "14",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "13"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "15",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "14"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "12"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "15"
+      }
+    },
+    "overwriteAndNames": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 2000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "start": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "end": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "DateRange"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "rightField": "system:time_start",
+              "leftValue": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Filter.dateRangeContains"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "filter": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Collection.filter"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "7",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "9",
+          [
+            101,
+            202
+          ]
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "11",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "10"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "12",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "11"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "7"
+              },
+              "overwrite": true
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "13",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "12"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "13"
+      }
+    },
+    "maskedRasterAddConstant": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 2000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "start": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "end": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "DateRange"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "rightField": "system:time_start",
+              "leftValue": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Filter.dateRangeContains"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "filter": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Collection.filter"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "7",
+          [
+            "SCL"
+          ]
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 9
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image1": {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              "image2": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.neq"
+          }
+        ],
+        [
+          "11",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "10"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "12",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 7
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "13",
+          [
+            "valid_constant"
+          ]
+        ],
+        [
+          "14",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "12"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "13"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "15",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "11"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "14"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "16",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "15"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "13"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "16"
+      }
+    },
+    "rasterAddClippedConstant": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 2000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "start": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "end": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "DateRange"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "rightField": "system:time_start",
+              "leftValue": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Filter.dateRangeContains"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "filter": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Collection.filter"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            ],
+            "geodesic": false,
+            "evenOdd": true
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "7"
+              },
+              "geometry": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Image.clip"
+          }
+        ],
+        [
+          "10",
+          [
+            "clipped"
+          ]
+        ],
+        [
+          "11",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "9"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "10"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "12",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "11"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "13",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "12"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "10"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "13"
+      }
+    },
+    "mapStaticConstantMean": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 2000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "start": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "end": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "DateRange"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "rightField": "system:time_start",
+              "leftValue": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Filter.dateRangeContains"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "filter": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Collection.filter"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 7
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "7",
+          [
+            "static"
+          ]
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "9"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "11",
+          {
+            "type": "Function",
+            "argumentNames": [
+              "_MAPPING_VAR_0_0"
+            ],
+            "body": {
+              "type": "ValueRef",
+              "value": "10"
+            }
+          }
+        ],
+        [
+          "12",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "baseAlgorithm": {
+                "type": "ValueRef",
+                "value": "11"
+              }
+            },
+            "functionName": "Collection.map"
+          }
+        ],
+        [
+          "13",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "12"
+              }
+            },
+            "functionName": "reduce.mean"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "13"
+      }
+    },
+    "mapDateToBands": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 2000
+            },
+            "functionName": "Date"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "start": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "end": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "DateRange"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "rightField": "system:time_start",
+              "leftValue": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Filter.dateRangeContains"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "filter": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Collection.filter"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              }
+            },
+            "functionName": "Image.date"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Date.millis"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "9",
+          [
+            "millis"
+          ]
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "11",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "10"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "12",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "11"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "13",
+          {
+            "type": "Function",
+            "argumentNames": [
+              "_MAPPING_VAR_0_0"
+            ],
+            "body": {
+              "type": "ValueRef",
+              "value": "12"
+            }
+          }
+        ],
+        [
+          "14",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "baseAlgorithm": {
+                "type": "ValueRef",
+                "value": "13"
+              }
+            },
+            "functionName": "Collection.map"
+          }
+        ],
+        [
+          "15",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "14"
+              }
+            },
+            "functionName": "ImageCollection.toBands"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "15"
+      }
+    },
+    "standaloneConstant": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 2
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image1": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "image2": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Image.add"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "2"
+      }
+    },
+    "unboundClippedConstant": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            ],
+            "geodesic": false,
+            "evenOdd": true
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "geometry": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Image.clip"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "2"
+      }
+    },
+    "unsupportedProjectionQuery": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Image.projection"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "projection": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Projection.crs"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "2"
+      }
+    }
+  },
+  "raster_expressions": {
+    "boundScalar": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "3",
+          [
+            "one"
+          ]
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "2"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "6"
+      }
+    },
+    "boundLarge": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 16777219
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "3",
+          [
+            "large"
+          ]
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "2"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "6"
+      }
+    },
+    "boundDate": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Image.date"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Date.millis"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "5",
+          [
+            "date"
+          ]
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "7"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "8"
+      }
+    },
+    "boundArithmetic": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 2
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 3
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image1": {
+                "type": "ValueRef",
+                "value": "2"
+              },
+              "image2": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.multiply"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 1
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image1": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "image2": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Image.add"
+          }
+        ],
+        [
+          "7",
+          [
+            "arithmetic"
+          ]
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "9"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "10"
+      }
+    },
+    "maskedConstant": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image1": {
+                "type": "ValueRef",
+                "value": "3"
+              },
+              "image2": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.gt"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "3"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 7
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "8",
+          [
+            "valid_constant"
+          ]
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "7"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "11",
+          [
+            "nir",
+            "valid_constant"
+          ]
+        ],
+        [
+          "12",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "10"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "11"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "12"
+      }
+    },
+    "allMaskedConstant": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "3"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 7
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "7",
+          [
+            "valid_constant"
+          ]
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "9"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "10"
+      }
+    },
+    "emptySourceConstant": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "blue"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 7
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "5",
+          [
+            "valid_constant"
+          ]
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "3"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "7"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "8"
+      }
+    },
+    "staticMean": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 7
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "2",
+          [
+            "static"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Function",
+            "argumentNames": [
+              "_MAPPING_VAR_0_0"
+            ],
+            "body": {
+              "type": "ValueRef",
+              "value": "5"
+            }
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "baseAlgorithm": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Collection.map"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "reduce.mean"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "8"
+      }
+    },
+    "dateMean": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              }
+            },
+            "functionName": "Image.date"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Date.millis"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "4",
+          [
+            "millis"
+          ]
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "3"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Function",
+            "argumentNames": [
+              "_MAPPING_VAR_0_0"
+            ],
+            "body": {
+              "type": "ValueRef",
+              "value": "7"
+            }
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "baseAlgorithm": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Collection.map"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "reduce.mean"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "10"
+      }
+    },
+    "dateCount": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              }
+            },
+            "functionName": "Image.date"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Date.millis"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "4",
+          [
+            "millis"
+          ]
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "3"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Function",
+            "argumentNames": [
+              "_MAPPING_VAR_0_0"
+            ],
+            "body": {
+              "type": "ValueRef",
+              "value": "7"
+            }
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "baseAlgorithm": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Collection.map"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "reduce.count"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "10"
+      }
+    },
+    "dateSd": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              }
+            },
+            "functionName": "Image.date"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Date.millis"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "4",
+          [
+            "millis"
+          ]
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "3"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Function",
+            "argumentNames": [
+              "_MAPPING_VAR_0_0"
+            ],
+            "body": {
+              "type": "ValueRef",
+              "value": "7"
+            }
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "baseAlgorithm": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Collection.map"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {},
+            "functionName": "Reducer.sampleStdDev"
+          }
+        ],
+        [
+          "11",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "9"
+              },
+              "reducer": {
+                "type": "ValueRef",
+                "value": "10"
+              }
+            },
+            "functionName": "ImageCollection.reduce"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "11"
+      }
+    },
+    "dateToBands": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              }
+            },
+            "functionName": "Image.date"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "date": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Date.millis"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "4",
+          [
+            "millis"
+          ]
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "3"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Function",
+            "argumentNames": [
+              "_MAPPING_VAR_0_0"
+            ],
+            "body": {
+              "type": "ValueRef",
+              "value": "7"
+            }
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "baseAlgorithm": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Collection.map"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "ImageCollection.toBands"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "10"
+      }
+    },
+    "boundFloat": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 16777219
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "3",
+          [
+            "value"
+          ]
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "2"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.toFloat"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "7"
+      }
+    },
+    "boundOverwrite": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          [
+            101,
+            202
+          ]
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "3"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "2"
+              },
+              "overwrite": true
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "7"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "8"
+      }
+    }
+  }
+}

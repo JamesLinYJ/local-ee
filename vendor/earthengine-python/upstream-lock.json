@@ -1,0 +1,21 @@
+{
+  "package": "earthengine-api",
+  "version": "1.7.49",
+  "repository": "https://github.com/google/earthengine-api.git",
+  "revision": "e189e4b89e785019ea5642ea8e80cb644749cd4a",
+  "subdirectory": "python",
+  "license": "Apache-2.0",
+  "source_integrity": {
+    "git_tree_sha1": "9ffd4e3985a80ed3057f10799c2e582c28b19567",
+    "sha256": {
+      "python/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "python/pyproject.toml": "2eaa9c4898445b328cc3fb148e6d4169220e0a0f834ca160574fc0f8f15ec325",
+      "python/ee/__init__.py": "bce628d4bfdddce6b7169e1554ced670a6430b886888305c7275e1698a49ae0e",
+      "python/ee/serializer.py": "823a0af30b260bbd77044b6d8c67207fc71b5784e3612d869eacd09ee5098291"
+    }
+  },
+  "runtime_boundary": {
+    "credential_use": "Local scripts authenticate only with a short-lived platform token to the loopback API. Do not invoke the SDK's default Google OAuth or discovery flows.",
+    "transport": "The local runtime must route supported task and map requests to the configured loopback service and must not make outbound Google API requests."
+  }
+}

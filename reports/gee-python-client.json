@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "scope": "Pinned official earthengine-api Python client, shared local EE compiler; native macOS ARM64",
+  "sdk": {
+    "package": "earthengine-api",
+    "version": "1.7.49",
+    "repository": "https://github.com/google/earthengine-api.git",
+    "revision": "e189e4b89e785019ea5642ea8e80cb644749cd4a",
+    "license": "Apache-2.0"
+  },
+  "source_checks": {
+    "python_passed": 412,
+    "python_skipped": 3,
+    "skip_scope": "Opt-in native SPI probes; grid and Float64 reducer independently enabled and passed, integer probe unchanged from prior acceptance.",
+    "frontend_passed": 11,
+    "typescript_and_build_passed": true,
+    "native_kernel_and_spi_checks_passed": 7
+  },
+  "local_execution": {
+    "passed": true,
+    "scalar": 5,
+    "date_millis": 1704067200000,
+    "concurrent_identical_requests": 4,
+    "same_job_reused": true,
+    "different_payload_rejected": true,
+    "map_events": 4,
+    "raster": {
+      "bands": 1,
+      "crs": "EPSG:32649",
+      "resolution": [
+        10.0,
+        10.0
+      ],
+      "valid_pixels": 45590,
+      "min": -0.9876550436019897,
+      "max": 0.9978926181793213,
+      "sha256": "f487c712225ed7bc1ce428d0cdd4193429c4c08a27068c4baced19e550480d24"
+    },
+    "regional_getInfo_and_csv": {
+      "getInfo": {
+        "NDVI": 0.7370262673729646
+      },
+      "csv": {
+        "NDVI": "0.7370262673729646"
+      },
+      "passed": true
+    },
+    "regional_check_level": "E: HTTP output consistency, not an independent numerical reference"
+  },
+  "ui": {
+    "browser": "Edge",
+    "python_example_executed": true,
+    "map_layer_displayed": true,
+    "local_export_finished": true,
+    "download_link_visible": true,
+    "browser_file_save_tested": false
+  },
+  "persistence": {
+    "migration": 4,
+    "additive_unique_index": true,
+    "existing_accounts_catalogue_files_scripts_preserved": true,
+    "metadata_backup_before_migration": true,
+    "retry_context_preserved": true,
+    "map_event_budget_and_start_failure_tested": true
+  },
+  "scientific_evidence": "reports/gee-constant-wave5.json",
+  "network_boundary": {
+    "official_signature_loading": "offline SHA-256 verified",
+    "cloud_auth_and_discovery": "disabled",
+    "transport": "bounded direct numeric-loopback HTTP; no proxy or redirects",
+    "native_public_network_control": "PermissionError in actual script",
+    "provider_credentials_in_script": false
+  },
+  "limitations": [
+    "Shared compiler support is partial; SDK method availability is not backend algorithm compatibility",
+    "Python image exports currently support GeoTIFF; table exports support supported regional CSV only",
+    "Map/getMapId return local async jobs, no Google tile URL or compatible tile_fetcher",
+    "getInfo image metadata is partial; supported regional values use bounded batch polling",
+    "No Google-service same-data numerical comparison; no production certification claim"
+  ]
+}

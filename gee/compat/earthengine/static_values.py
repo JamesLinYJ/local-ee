@@ -3,7 +3,21 @@ from __future__ import annotations
 
 import math
 
-from .ir import Collection, Function, Image, fail, integer
+from .ir import Collection, Function, Image, UnsupportedEEError, fail, integer
+
+
+def scalar_power(left, right):
+    """Reject enormous integer exponentiation before allocating its result."""
+    if (type(left) is int and type(right) is int and right > 0 and abs(left) > 1
+            and (abs(left).bit_length() - 1) * right > 1023):
+        fail("Scalar power exceeds the finite Float64 materialization budget")
+    result = left ** right
+    try:
+        if isinstance(result, complex) or not math.isfinite(result):
+            fail("Scalar power must produce a finite real number")
+    except OverflowError:
+        fail("Scalar power exceeds finite Float64 range")
+    return result
 
 
 def invoke_static(translator, name, a):
@@ -52,7 +66,7 @@ def invoke_static(translator, name, a):
             "subtract": lambda: value - right,
             "multiply": lambda: value * right,
             "divide": lambda: value / right if right else 0,
-            "pow": lambda: value ** right,
+            "pow": lambda: scalar_power(value, right),
             "mod": lambda: value % right,
             "eq": lambda: value == right,
             "neq": lambda: value != right,
@@ -71,6 +85,8 @@ def invoke_static(translator, name, a):
         if op in funcs:
             try:
                 return funcs[op]()
+            except UnsupportedEEError:
+                raise
             except (ArithmeticError, TypeError, ValueError):
                 fail(f"Invalid static Number.{op} operands")
     if kind == "String":

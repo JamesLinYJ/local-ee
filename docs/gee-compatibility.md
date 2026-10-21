@@ -2,9 +2,15 @@
 
 基线：官方 `@google/earthengine` 1.7.49，仓库提交 `e189e4b89e785019ea5642ea8e80cb644749cd4a`。客户端构造和序列化逻辑直接复用官方构建；签名文件也固定到同一提交，见 `vendor/earthengine-js/upstream-lock.json`。
 
+Python 编辑器同时提供官方 `earthengine-api` 客户端入口，版本 1.7.49 固定在同一上游提交的 Python 子目录；许可证、源码树及关键文件摘要见 [`vendor/earthengine-python/upstream-lock.json`](../vendor/earthengine-python/upstream-lock.json)。Python 和 JavaScript 会生成相同格式的 EE 表达式并进入同一个本地兼容层；二者都不连接 Google 计算服务。客户端语言和官方 SDK 覆盖面不表示本地编译器已支持所有调用。
+
 ## 执行链路
 
-JavaScript 在 macOS 原生 Seatbelt 隔离的 Node.js 进程执行。官方客户端生成 EE 表达式，兼容模块将支持的表达式编译为 openEO 流程图，沿用已有队列、数据快照和禁止公网访问的原生 GeoTrellis 任务。Python 只负责图转换与后端服务，不解释执行用户 JavaScript。兼容模块没有另建计算集群或公网服务，当前部署不使用虚拟机或容器。
+JavaScript 在 macOS 原生 Seatbelt 隔离的 Node.js 进程执行；Python 脚本在独立的 Python Seatbelt 进程执行。相应官方 SDK 构造 EE 表达式，兼容模块将支持的表达式编译为 openEO 流程图，沿用已有队列、数据快照和禁止公网访问的原生 GeoTrellis 任务。Python EE 运行器仍提供原有 openEO `connection`；可选择 `import ee` 使用本地初始化的官方客户端。兼容模块没有另建计算集群或公网服务，当前部署不使用虚拟机或容器。
+
+Python 运行器会将 `ee.Initialize()` 绑定到本地脚本令牌和 `/gee/v1/dispatch`，禁止认证提示、Google OAuth、项目发现及公网回退。Python `Map` 是工作台提供的本地图层/视图适配器。`ee.batch.Export.*.toDrive` 在支持范围内映射为本地任务和文件；名称沿用官方 SDK，不会上传 Google Drive。此入口共享下方 API 清单和参数限制，不会因为 SDK 接受某个方法调用就将其视为已实现。
+
+本轮原生验收覆盖 getInfo、地图、官方 Task 启动／状态／取消／列表、GeoTIFF 与区域 CSV 下载，以及并发重试去重；Edge 中的 Python 示例也已运行并显示结果。Python 图像导出当前仅支持 GeoTIFF，地图 ID 是本地异步任务引用，不提供 Google tile_fetcher。范围与证据见 [Python 客户端报告](../reports/gee-python-client.json)。
 
 官方仓库是客户端绑定。`imagecollection.js`、`collection.js`、`filter.js`、`customfunction.js` 和 `serializer.js` 是语法适配依据；官方客户端出现某个方法不代表本地具有其服务端算法。例如 `Filter.inList` 的官方实现交换参数后调用 `Filter.listContains`，本地需要接收实际生成的图。
 
@@ -32,8 +38,9 @@ S 表示固定官方 SDK 可生成表达式；C 表示本地编译；N 表示本
 | fromImages / merge | 从显式列表、toList、List.map 的分期影像构造集合；保留重复项；逐景 map 属性、筛选、排序、归约、toBands | S/C/N；分期合成跳过空段、重复求和/计数与排序 mosaic 已有实际引擎验收；有限集合最多 1000 幅 |
 | Date | UTC 构造/fromYMD/get/millis；advance 秒至周、整数月/年；常用 format token；difference/getRelative/getFraction | S/C；毫秒、月末、闰年、负向移动、格式错误；平均年月与日历 fraction/ISO 周边界采用显式本地策略并警告，没有 G 对照 |
 | 逐景元数据 map | 原始集合读取 date/get/propertyNames/geometry 时自动有限展开；支持 set/copyProperties、dropNulls，保留同日不同 item 和排序 | S/C；逐景日期参与像素计算另有实际引擎 N；纯像素 map 保留紧凑路径 |
-| 浮点类型转换 | toDouble/toFloat 通过本地 Scala SPI 真正转换物理像元类型、NoData 与 TileLayerMetadata | 独立 SPI 真实 tile 验证与 GeoTIFF 类型/数值 N；Float64 后的像素回调/时间归约明确拒绝，需最后 cast 或显式 toFloat，未承诺完整类型传播 |
-| 缺测填充 | unmask 默认有效 0、标量、单波段广播和等波段数按顺序替换；保留输入属性、替代值掩膜与默认 footprint；map 自动按场景 footprint 展开 | S/C/N：5 项 SDK→原生输出及不同足迹、相同时间戳的逐景均值验收均为 0 掩膜差异、0 数值误差；SPI 另验缺 tile 与拒绝控制。仅有限、对齐的本地网格与相同观测时刻；global constant + sameFootprint=false 拒绝。结果为 Float64，后续回调/时间归约需显式 toFloat，未完成 Google 对照 |
+| 浮点类型转换与归约 | toDouble/toFloat 转换物理像元类型；Float64 有界逐景／波段 mean、median、min、max、sum、count、first、last、sampleStdDev | 独立 SPI 与 GeoTIFF N；保留毫秒日期、同时间戳场景和二值 NoData。通用像素回调仍需显式 toFloat，未承诺完整类型传播 |
+| 常量与日期波段 | addBands 接受有限常量、静态算术及逐景 date().millis()，按目的影像的有限本地网格和 footprint 求值，常量有效性不继承源波段缺测 | S/C/N：14 用例、18 输出波段与独立基准均为 0 掩膜差异、0 数值误差，包括全缺测源、不同 footprint、同时间戳场景、均值／计数／样本标准差／toBands。见 reports/gee-constant-wave5.json；未做 G 对照 |
+| 缺测填充 | unmask 默认有效 0、标量、单波段广播和等波段数按顺序替换；保留输入属性、替代值掩膜与默认 footprint；map 自动按场景 footprint 展开 | S/C/N：5 项 SDK→原生输出及不同足迹、相同时间戳的逐景均值验收均为 0 掩膜差异、0 数值误差；SPI 另验缺 tile 与拒绝控制。仅有限、对齐的本地网格与相同观测时刻；global constant + sameFootprint=false 拒绝。结果为 Float64，通用后续算术需显式 toFloat，未完成 Google 对照 |
 | Number 位运算 | 标量 bitCount/bitwiseNot/bitwiseAnd/Or/Xor/leftShift/rightShift 的受限整数域 | 官方 SDK 与文档样例 C；signed64 整数输入，And/Or/Xor 限非负，左移限非负且不溢出，移位量 0..63；非整数、超范围明确拒绝；不是 Image QA 位运算 |
 | List | sequence/get/length/contains/add/cat/slice/distinct/sort/map/iterate | S/C；回调最多 1000 项，中间列表最多 10000 项，结果最多 1 MB |
 | Algorithms.If | 静态条件，惰性编译选中分支 | S/C；不把影像对象当作静态布尔条件 |
@@ -73,14 +80,16 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 
 完整可运行例子位于 `examples/javascript/04_日期列表与条件运算.js`，网页脚本资源中直接选择。导出任务创建后点击“开始导出”，或对返回任务调用 `start()`。
 
-逐景日期、NDVI 质量合成和末端 Float64 导出见 `examples/javascript/06_逐景日期与质量合成.js`。网页语法文档同步说明当前参数限制；`toDouble()` 不会补回先前 Float32 计算已经损失的精度，后续未实现精度保持的像素回调/时间归约会被明确拒绝。
+逐景日期、NDVI 质量合成和末端 Float64 导出见 `examples/javascript/06_逐景日期与质量合成.js`。`toDouble()` 不会补回先前 Float32 计算已经损失的精度；有界逐景归约使用独立 Float64 适配器，通用像素回调尚不支持 Float64。
 
-`examples/javascript/07_缺测填充与掩膜.js` 演示 `unmask`、clip 保留和 Float64 导出。标量填充值不是恢复观测；跨网格或跨时间替换仍需明确对齐。原生扩展单独构建为带源码/依赖摘要的 SPI JAR，构建入口保持 `scripts/build_integer_adapter.py` 以兼容现有部署命令；其中整数转换、有限网格常量和缺测替换分别位于三个 Scala 源文件，不修改上游 JAR。
+`examples/javascript/07_缺测填充与掩膜.js` 演示 `unmask`、clip 保留和 Float64 导出。标量填充值不是恢复观测；跨网格或跨时间替换仍需明确对齐。原生扩展单独构建为带源码/依赖摘要的 SPI JAR，构建入口保持 `scripts/build_integer_adapter.py`；整数转换、有限网格常量、缺测替换和 Float64 归约分开组织，不修改上游 JAR。
+
+常量与逐景日期 band 的模板保留维度操作，单景时间轴可先降为空间网格后生成常量，因此全缺测源仍可产生独立有效常量。纯空时间栅格不会被擅自补出观测时间。求值网格不改变常量逻辑上的默认 WGS84／1 度投影；该投影的查询与逐波段重投影仍明确拒绝。
 
 ## 尚未支持
 
 - 全球 GEE 数据目录、私有 assets、任意 `require('users/...')` 模块和 Google Drive/Cloud Storage 上传。
-- 纯常量集合及独立常量波段缺少明确的栅格网格；`addBands(ee.Image(image.date().millis()))` 尚不支持。不能用源波段乘零伪造完全有效的日期 band，因为那会错误继承源掩膜。任意异构类型、逐波段投影与跨网格语义仍需独立验证。
+- 独立纯常量栅格与纯常量集合缺少明确的本地网格，仍拒绝；绑定到本地影像的 addBands 常量与日期 band 已支持。常量投影查询、任意异构类型、逐波段投影与跨网格语义仍需独立实现和验证。
 - 分类器、回归/数组运算、复杂 join、邻域卷积、ui.Chart/ui.Panel 等完整 GEE 应用组件。
 - 分数掩膜、球面/测地线几何、非 UTC 时区、分数月/年、任意 Joda 格式 token。
 - 任意 CRS transform、导出分片、bestEffort 和自定义 tileScale；不支持的参数明确失败。
@@ -99,7 +108,7 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 | --- | --- |
 | 最绿像素合成 | 历史抽查时缺失；本轮已实现有限同构集合 `qualityMosaic` 并完成 6 个实际输出的独立像素对照；平分规则仍未与 Google 比较 |
 | s2cloudless 云影 | `Join.saveFirst`、定向距离变换、`projection/reproject`、`focalMin/focalMax`；云概率数据未入库 |
-| 谐波时序与矩阵回归 | 本轮已补有限逐景日期 map 和受限 `Date.difference`；仍缺常量时间 band 的网格绑定、`linearRegression/linearFit`、数组和 `matrixSolve`，以及相位/振幅的 `atan2/hypot` |
+| 谐波时序与矩阵回归 | 已补有限逐景日期 map、日期常量 band 网格绑定和受限 `Date.difference`；仍缺 `linearRegression/linearFit`、数组和 `matrixSolve`，以及相位/振幅的 `atan2/hypot` |
 | HISTARFM 插值 | 本轮已补受限 `Date.getRelative`；独立常量栅格、`int16`、`Join.saveAll`、`Filter.maxDifference` 与匹配列表属性仍缺失 |
 | 随机森林与验证 | 样本提取、分类器训练/预测、混淆矩阵与批量区域统计 |
 | LandTrendr | GEE 用户模块解析、真实时序分段算法、数组处理、连通像元与 Image QA 位运算仍缺失；已补有限网格的 `unmask`，不能据此运行完整 LandTrendr |

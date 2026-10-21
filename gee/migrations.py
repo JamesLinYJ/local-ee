@@ -20,7 +20,7 @@ CREATE INDEX IF NOT EXISTS audit_events_created ON audit_events(created DESC,id 
 
 def migrations():
     # The historical schema is migration 1. Never edit its text after rollout.
-    return [(1, 'historical_baseline', db.SCHEMA), (2, 'administration', ADMIN_SCHEMA), (3, 'dataset_files', FILE_SCHEMA)]
+    return [(1, 'historical_baseline', db.SCHEMA), (2, 'administration', ADMIN_SCHEMA), (3, 'dataset_files', FILE_SCHEMA), (4, 'ee_task_idempotency', EE_IDEMPOTENCY_SCHEMA)]
 
 
 FILE_SCHEMA = """
@@ -35,6 +35,13 @@ CREATE TABLE IF NOT EXISTS dataset_files (
  UNIQUE(collection_id,sha256,size)
 );
 CREATE INDEX IF NOT EXISTS dataset_files_collection ON dataset_files(collection_id,created DESC);
+"""
+
+
+EE_IDEMPOTENCY_SCHEMA = """
+CREATE UNIQUE INDEX IF NOT EXISTS jobs_ee_request_id_unique
+ ON jobs(user_id,(COALESCE(context->>'source_job_id','')),(context->>'request_id_hash'))
+ WHERE context->>'protocol'='earthengine' AND context->>'request_id_hash' IS NOT NULL;
 """
 
 

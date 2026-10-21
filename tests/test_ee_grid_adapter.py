@@ -253,7 +253,32 @@ object GridMaskAdapterProbe {
       val rejectedEmpty = rejectsArgument {
         invoke(empty, "local_ee_constant_on_grid", fillArgs)
       }
-      assert(rejectedEmpty, "empty template cubes must be rejected without inventing grid keys")
+      assert(rejectedEmpty, "empty spatial templates without trustworthy key bounds must be rejected")
+
+      val boundedEmptyMetadata: TileLayerMetadata[SpatialKey] = TileLayerMetadata(
+        DoubleConstantNoDataCellType, layout, gridExtent, CRS.fromEpsgCode(32649), Bounds(key0, key2))
+      val boundedEmpty = new OpenEORasterCube[SpatialKey](sc.emptyRDD[(SpatialKey, MultibandTile)],
+        boundedEmptyMetadata, new OpenEORasterCubeMetadata(Seq("template")))
+      val materializedEmpty = invoke(boundedEmpty, "local_ee_constant_on_grid", fillArgs)
+      val emptyTiles = materializedEmpty.collect().toMap
+      assert(emptyTiles.keySet == Set(key0, key1, key2), emptyTiles.keySet.toString)
+      assert(emptyTiles.values.forall(_.band(0).toArrayDouble.forall(_ == 9d)),
+        "trusted finite spatial metadata must materialize independent constant tiles")
+      assert(materializedEmpty.metadata.bounds.get.minKey == key0 &&
+        materializedEmpty.metadata.bounds.get.maxKey == key2)
+      assert(materializedEmpty.openEOMetadata.bands == Seq("template"))
+      emptyTiles(key0).band(0).asInstanceOf[MutableArrayTile].setDouble(0, 0, -44d)
+      assert(emptyTiles(key1).band(0).getDouble(0, 0) == 9d,
+        "empty-template generated keys must own independent tiles")
+
+      val emptyTemporalBounds = Bounds(SpaceTimeKey(0, 0, date1), SpaceTimeKey(2, 0, date1))
+      val emptyTemporalMetadata: TileLayerMetadata[SpaceTimeKey] = TileLayerMetadata(
+        DoubleConstantNoDataCellType, layout, gridExtent, CRS.fromEpsgCode(32649), emptyTemporalBounds)
+      val emptyTemporal = new OpenEORasterCube[SpaceTimeKey](sc.emptyRDD[(SpaceTimeKey, MultibandTile)],
+        emptyTemporalMetadata, new OpenEORasterCubeMetadata(Seq("temporal-template")))
+      assert(rejectsArgument {
+        invoke(emptyTemporal, "local_ee_constant_on_grid", fillArgs)
+      }, "empty temporal templates must not infer an instant from metadata bounds")
 
       val budgetExtent = Extent(0, 0, 626, 1)
       val budgetLayout = LayoutDefinition(budgetExtent, TileLayout(626, 1, 400, 400))
@@ -289,7 +314,7 @@ object GridMaskAdapterProbe {
       }
       assert(rejectedLayoutMismatch, "different origins/resolutions must be rejected")
 
-      println("SPI_OK constant_grid=complete missing_keys=middle+edge unmask=Float64 finite_union=true sameFootprint=true/false_precision=exact dates=preserved time_mismatch=rejected duplicate_keys=rejected empty=rejected cell_budget=rejected aliasing=checked")
+      println("SPI_OK constant_grid=complete missing_keys=middle+edge unmask=Float64 finite_union=true sameFootprint=true/false_precision=exact dates=preserved time_mismatch=rejected duplicate_keys=rejected bounded_empty_spatial=materialized ambiguous_empty_temporal=rejected empty_without_bounds=rejected cell_budget=rejected aliasing=checked")
     } finally sc.stop()
   }
 }
@@ -318,3 +343,4 @@ object GridMaskAdapterProbe {
     ], check=False, cwd=ROOT, env=environment, capture_output=True, text=True, timeout=90)
     assert probe.returncode == 0, probe.stdout[-2000:] + probe.stderr[-4000:]
     assert "SPI_OK constant_grid=complete missing_keys=middle+edge" in probe.stdout
+    assert "bounded_empty_spatial=materialized ambiguous_empty_temporal=rejected" in probe.stdout

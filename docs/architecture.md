@@ -95,13 +95,17 @@ flowchart LR
 - 管理 API 使用独立 namespace 与服务端角色检查。错误返回稳定 `code/message/details`；敏感异常记录在本地脱敏日志中。
 - 扩展参数使用明确命名，例如 `_gee_item_ids` 仅允许已有快照内的 item ID；在物化阶段转换为固定本地 STAC，不转发未知参数到上游 evaluator。
 
-## 4. GEE JavaScript 兼容
+## 4. GEE 客户端兼容
 
-### 4.1 复用与执行
+### 4.1 官方客户端与执行
 
 固定并保留 Apache-2.0 官方 `@google/earthengine` 客户端、许可证和校验值。使用其独立浏览器构建产物与公开算法签名离线构造对象和序列化图，不引入 Google OAuth、服务账号或公网计算。算法签名表只表示客户端可构造的调用，不代表本地实现了相同数量的算法。
 
-JS 在单独 Node + Seatbelt 进程执行，使用与 Python 相同的资源与生命周期控制。官方对象转换为 legacy EE DAG（CompoundValue、ValueRef、Invocation、Function、ArgumentRef）；解析器严格检查引用、循环、深度和大小。Function 只作为受控计算表达式编译，不在服务端当作代码执行。
+JavaScript 使用固定官方客户端，在单独 Node + Seatbelt 进程执行；Python 用户可选用固定官方 `earthengine-api`，在单独 Python + Seatbelt 进程执行。两种客户端都只在本地构造对象和序列化表达式，调用 `/gee/v1/dispatch`，共享同一检查、编译、任务、数据目录和 GeoTrellis 后端。Python 客户端初始化绕过 Google 凭据发现、OAuth 和公网算法发现；`ee.Authenticate()` 与未适配的 Google 服务端点不可用于本地脚本。
+
+EE Python 与现有 openEO Python 共用一个脚本运行器，但 API 含义不同：`ee` 提供官方 EE 对象模型，`connection` 保留 openEO 客户端。两者都由本地管理员会话派生短时脚本令牌，不向脚本暴露数据库、用户凭据或供应方密钥。工作台额外注入的 Python `Map` 是本地 UI 适配器，不属于官方 EE Python 包。只有经本地 dispatcher 实际实现的调用可运行；官方 SDK 的存在不代表云端 API 都有离线实现。
+
+官方对象转换为受检查的 legacy EE DAG（CompoundValue、ValueRef、Invocation、Function、ArgumentRef）；解析器严格检查引用、循环、深度和大小。Function 只作为受控计算表达式编译，不在服务端当作代码执行。
 
 本地编译器的规范实现位于 `gee/compat/earthengine/`，包含 decoder/catalog/filtering、分组 dispatch、IR/static/date、graph/pixel/temporal 编译、compile 入口及 capabilities。`gee/ee_translate.py` 仅作为旧导入的兼容 facade；新增实现和内部依赖留在规范子包中。
 

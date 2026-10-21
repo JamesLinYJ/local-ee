@@ -18,11 +18,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "engine/ee_integer_adapter.scala"
-SOURCES = [SOURCE, ROOT / "engine/ee_grid_adapter.scala", ROOT / "engine/ee_mask_adapter.scala"]
+SOURCES = [SOURCE, ROOT / "engine/ee_grid_adapter.scala", ROOT / "engine/ee_mask_adapter.scala",
+           ROOT / "engine/ee_reduce_support.scala", ROOT / "engine/ee_reduce_numeric.scala",
+           ROOT / "engine/ee_reduce_adapter.scala"]
 SERVICE_NAME = "org.openeo.geotrelliscommon.CubeProcessProvider"
 SERVICE_ENTRY = ("local.ee.integer.LocalEeIntegerCubeProcessProvider\n"
                  "local.ee.grid.LocalEeGridCubeProcessProvider\n"
-                 "local.ee.mask.LocalEeMaskCubeProcessProvider\n")
+                 "local.ee.mask.LocalEeMaskCubeProcessProvider\n"
+                 "local.ee.reduce.LocalEeReduceCubeProcessProvider\n")
 
 
 def sha256(path: Path) -> str:

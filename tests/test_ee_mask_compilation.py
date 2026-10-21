@@ -48,8 +48,11 @@ def test_float64_fill_cannot_be_silently_narrowed_by_callbacks(local):
     compile(call("Image.add", image1=call("Image.toFloat", value=filled()), image2=1), local)
     mapped = call("Collection.map", collection=col(), baseAlgorithm={
         "type": "Function", "argumentNames": ["im"], "body": call("Image.unmask", input={"type": "ArgumentRef", "value": "im"})})
-    with pytest.raises(UnsupportedEEError, match="Float64"):
-        compile(call("reduce.mean", collection=mapped), local)
+    result = compile(call("reduce.mean", collection=mapped), local)
+    graph.validate(result["process_graph"])
+    assert any(node["process_id"] == "local_ee_reduce_bands"
+               for node in result["process_graph"].values())
+    assert result["has_time_dimension"] is False
 
 
 def test_timed_multi_item_input_cannot_silently_use_daily_merged_observations(local):
