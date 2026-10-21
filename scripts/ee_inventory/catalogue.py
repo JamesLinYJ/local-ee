@@ -20,7 +20,6 @@ KNOWN_PARTIAL_LIMITS: dict[str, list[str]] = {
         "Constant bands are supported only when bound to a destination with a finite local raster grid; the output uses that grid and footprint with an independent valid-pixel mask. Per-observation date constants preserve the source observation identity. Unbound/global constants, explicit constant source footprints, arbitrary projection behavior and cross-grid semantics are unsupported; exact Google parity is unverified."
     ],
     "Image.reduceRegion": ["crsTransform, bestEffort, and custom tileScale are rejected; local pixel/resource limits also apply."],
-    "List.sequence": ["The count form is rejected; start/end/step is the supported local form."],
     "Projection": ["Projection transforms are rejected; supported local geometry/grid behavior is narrower than GEE."],
     "GeometryConstructors": ["Geodesic and non-EPSG:4326 geometry semantics are rejected by the local translator."],
     "ImageCollection.reduce": ["Only implemented reducer families and local collection/data semantics are available."],
@@ -44,15 +43,29 @@ KNOWN_PARTIAL_LIMITS: dict[str, list[str]] = {
     "Dictionary.get": ["Missing keys require an explicit non-null default; default null/omitted rejects. Existing null values remain null."],
     "Dictionary.values": ["Explicit empty keys returns []; absent/null keys selects natural sorted keys. Missing requested keys reject."],
     "List.sequence": ["Supports count/end equal spacing and count/step ranges; at most 10000 finite values. No Google numerical comparison."],
+    "Number.format": ["Bounded static %s/%d/%f and limited padding/sign flags only; exact integer %d, half-up rounding on Python shortest decimal spelling, no scientific/hex/grouping or Google rounding comparison."],
+    "Filter.maxDifference": ["Finite numeric flat-field/value operands, inclusive absolute difference; missing/null does not match. A direct filter can provide a numeric join measure; compound measured conditions and spatial distances reject."],
+    "Collection.reduceColumns": ["Static inline FeatureCollection linearFit/linearRegression only, <=1000 rows and <=32 flat selected inputs under shared compilation budgets; nonempty weights and image/raster reduction reject."],
+    "Reducer.linearFit": ["Unweighted inline table reduceColumns only, finite metadata rows, full-rank two-column design; null/insufficient/degenerate cases covered. No raster engine or Google acceptance."],
+    "Reducer.linearRegression": ["Unweighted inline table reduceColumns only; typed coefficient matrix and per-response residual RMS; n<=numX/rank-deficient outputs are null. No ImageCollection/raster regression or Google acceptance."],
 }
+
+for operation in ("String", "String.cat", "String.length", "String.compareTo"):
+    KNOWN_PARTIAL_LIMITS[operation] = [
+        "Static strings and finite numeric constructor values only; concatenation and comparisons share the 50000-step compilation budget, checked before concatenation allocation. Unicode uses Python code points and numeric conversion uses Python shortest spelling with an integral .0 removed; these local policies have no Google comparison."
+    ]
+for operation in ("Collection.merge", "Collection.iterate", "Collection.aggregate_array"):
+    KNOWN_PARTIAL_LIMITS[operation] = [
+        "Inline FeatureCollection metadata operations are bounded to 1000 features and shared work limits; callbacks are serialized expressions. Merge requires explicit IDs and prefixes them with 1_/2_, rather than inventing automatic IDs. Remote/vector execution and unsupported geometry processing reject."
+    ]
 
 for operation in ("Array", "Array.get", "Array.length", "Array.toList", "Array.reshape", "Array.transpose", "Array.matrixTranspose", "Array.matrixMultiply", "Array.matrixInverse", "Array.matrixSolve", "Array.matrixPseudoInverse"):
     KNOWN_PARTIAL_LIMITS[operation] = [
         "Static finite numeric arrays only, exact integer domain <=2^53, rank <=8, cells <=10000 and shared 50000-step work budget. Explicit PixelType, empty constructors, negative indices and raster array pixels are unsupported; matrix kernels require rank 2 and matrixSolve full column rank. Independent static numerical controls are not native raster-engine or Google acceptance."
     ]
-for operation in ("Join.simple", "Join.inverted", "Join.saveFirst", "Join.saveAll", "Join.apply"):
+for operation in ("Join.simple", "Join.inverted", "Join.saveFirst", "Join.saveAll", "Join.saveBest", "Join.apply"):
     KNOWN_PARTIAL_LIMITS[operation] = [
-        "Bounded local ImageCollections and flat finite scalar metadata conditions only; at most 1000 frames and shared compilation work budget. Local stable ordering/ties, missing/null nonmatching keys. Vector joins, spatial/time measures, nested selectors, inner and saveBest unsupported; synthetic graph controls do not establish native-engine or Google equivalence."
+        "Bounded local ImageCollections and flat finite scalar metadata conditions only; at most 1000 frames and shared compilation work budget. A single direct numeric maxDifference supplies measures for saveBest/saveFirst/saveAll; inclusive threshold and local stable order/ties. Vector/spatial/compound measured joins, nested selectors and inner unsupported; synthetic graph controls do not establish native-engine or Google equivalence."
     ]
 
 

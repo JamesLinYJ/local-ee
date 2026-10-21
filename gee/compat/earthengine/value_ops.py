@@ -7,6 +7,7 @@ import re
 
 from .date_values import format_date, millis, utc_date
 from .ir import Region, fail, integer
+from .string_values import construct_string
 
 
 VALUE_HANDLERS = frozenset({
@@ -117,7 +118,10 @@ def invoke_value(translator, name, arguments):
         from .geometry_values import construct_geometry
 
         return construct_geometry(translator, name.split(".", 1)[1], a)
-    if name in {"Number", "String", "List", "Dictionary"}:
+    if name == "String":
+        translator.allowed(a, {"input"})
+        return construct_string(translator, a)
+    if name in {"Number", "List", "Dictionary"}:
         translator.allowed(a, {"input", "value", "values", "dictionary"})
         if len(a) != 1:
             fail(f"{name} requires exactly one static constructor value")

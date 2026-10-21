@@ -24,6 +24,24 @@ _METADATA_ARGUMENTS = {
 def invoke(translator, name, arguments):
     """Dispatch in the same precedence order as the legacy translator."""
     a = arguments
+    from .table_reducers import TableReducer, handles_table_reducer, invoke_table_reducer, invoke_reduce_columns
+
+    if handles_table_reducer(name):
+        return invoke_table_reducer(translator, name, a)
+    if name == "Collection.reduceColumns":
+        return invoke_reduce_columns(translator, name, a)
+    if isinstance(a.get("reducer"), TableReducer) and name in {
+        "Image.reduce", "Image.reduceRegion", "ImageCollection.reduce",
+    }:
+        fail("This regression Reducer currently supports static table reduceColumns only")
+    from .feature_ops import handles_feature, invoke_feature
+
+    if handles_feature(name, a):
+        return invoke_feature(translator, name, a)
+    if name == "Number.format":
+        from .number_format import format_number
+
+        return format_number(translator, a)
     if name == "Array" or name.startswith("Array."):
         from .array_values import invoke_array
 

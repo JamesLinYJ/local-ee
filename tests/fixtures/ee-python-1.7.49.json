@@ -32,8 +32,9 @@
     },
     {
       "compilation": {
-        "reason": "Unsupported algorithm arguments: ['number', 'pattern']",
-        "status": "rejected"
+        "kind": "value",
+        "status": "passed",
+        "value": "3.50"
       },
       "engine_execution": {
         "status": "not_run"
@@ -4268,7 +4269,7 @@
     },
     {
       "compilation": {
-        "reason": "Unsupported reducer: Reducer.linearRegression; stdDev cannot be mapped to sample standard deviation",
+        "reason": "This regression Reducer currently supports static table reduceColumns only",
         "status": "rejected"
       },
       "engine_execution": {

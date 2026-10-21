@@ -1,6 +1,8 @@
 """Collection filter construction and local metadata/footprint predicates."""
 from __future__ import annotations
 
+import math
+
 from .date_values import millis, utc_date
 from .ir import Filter, fail, integer
 
@@ -8,9 +10,46 @@ from .ir import Filter, fail, integer
 _FILTERS = {
     "and", "or", "not", "dateRangeContains", "intersects", "equals",
     "lessThan", "greaterThan", "stringContains", "inList", "listContains",
-    "calendarRange", "notNull",
+    "calendarRange", "notNull", "maxDifference",
 }
 _MAX_NOT_NULL_PROPERTIES = 1000
+
+
+def _finite_number(value, label):
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        fail(f"{label} must be a finite number")
+    try:
+        finite = math.isfinite(value)
+    except OverflowError:
+        finite = False
+    if not finite or isinstance(value, int) and abs(value) > 2**53:
+        fail(f"{label} must be a finite, exactly representable number")
+    return value
+
+
+def _field(value, label):
+    if not isinstance(value, str) or not value or "." in value:
+        fail(f"{label} requires a nonempty flat metadata property name")
+    return value
+
+
+def _max_difference_arguments(arguments):
+    difference = _finite_number(arguments.get("difference"), "Filter.maxDifference difference")
+    for side in ("left", "right"):
+        fields = [key for key in (side + "Field", side + "Value") if key in arguments]
+        if len(fields) != 1:
+            fail("Filter.maxDifference requires exactly one field or value on each side")
+        if side + "Field" in arguments:
+            _field(arguments[side + "Field"], "Filter.maxDifference")
+        else:
+            _finite_number(arguments[side + "Value"], "Filter.maxDifference operand")
+    return difference
+
+
+def _charge(translator, count=1):
+    translator.steps += count
+    if translator.steps > 50000:
+        fail("Earth Engine graph exceeds compilation limits")
 
 
 def invoke_filter(translator, name, arguments):
@@ -34,6 +73,11 @@ def invoke_filter(translator, name, arguments):
             not isinstance(property_name, str) for property_name in properties
         ):
             fail("Filter.notNull properties must be a list of strings")
+    elif operation == "maxDifference":
+        translator.allowed(arguments, {"difference", "leftField", "leftValue", "rightField", "rightValue"})
+        if "difference" not in arguments:
+            fail("Filter.maxDifference requires difference")
+        _max_difference_arguments(arguments)
     else:
         fields = {"leftField", "leftValue", "rightField", "rightValue"}
         if operation == "intersects":
@@ -70,6 +114,26 @@ def matches_filter(translator, filt, item):
             if key is not None and (key not in properties or properties[key] is None):
                 return False
         return True
+    if name == "maxDifference":
+        difference = _max_difference_arguments(arguments)
+        values = []
+        for side in ("left", "right"):
+            field_name = side + "Field"
+            value_name = side + "Value"
+            if field_name in arguments:
+                _charge(translator)
+                value = properties.get(arguments[field_name])
+                # A missing or null property does not satisfy a numeric filter.
+                if value is None:
+                    return False
+            else:
+                value = arguments[value_name]
+            values.append(_finite_number(value, "Filter.maxDifference operand"))
+        _charge(translator)
+        distance = abs(values[0] - values[1])
+        if not math.isfinite(distance):
+            fail("Filter.maxDifference operands must produce a finite difference")
+        return distance <= difference
     if name == "dateRangeContains":
         if arguments.get("rightField") != "system:time_start" or "leftValue" not in arguments:
             fail("Only system:time_start date filtering is supported")

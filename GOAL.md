@@ -17,7 +17,7 @@ Linux 云端承担可移植 SDK、纯编译、服务、前端及合成数值验�
 - 官方客户端版本和提交见 `vendor/earthengine-js/upstream-lock.json`。
 - 官方 Python 客户端已按同一提交固定，见 `vendor/earthengine-python/upstream-lock.json`；Python 和 JS 共享本地 EE 编译器及算法支持边界，Python/openEO `connection` 继续保留。
 - 当前能力、参数限制和证据见 `docs/gee-compatibility.md`。
-- 2026-10-22 的 Python API 清单见 `reports/gee-python-api-inventory.json`，保留 991 项签名、2451 项参数及公开 Python 绑定。原有 50 项 Python 定向探针当前为 44 项编译通过、6 项明确拒绝；方法、参数和探针数量均不代表完整兼容率。最新局部实现及限制持续写入 `docs/gee-python/list.md`。
+- Python API 清单见 `reports/gee-python-api-inventory.json`，保留 991 项签名、2451 项参数及公开 Python 绑定。原有 50 项 Python 定向探针当前为 45 项编译通过、5 项明确拒绝；方法、参数和探针数量均不代表完整兼容率。第二批补齐有限表格回归、FeatureCollection、数值时间度量 Join、Number.format 和有界 String；栅格数组／回归、分类及完整 Linux 运行仍待验收。最新局部实现及限制持续写入 `docs/gee-python/list.md`。
 - 复杂工作流来源和缺口见 `audit/gee-complex-compat-v1/findings.json`。
 - 有效探针为 `audit/gee-complex-compat-v1/probe-run-v2/validation.json`：50 个表达式成功序列化，3 个阳性对照编译通过，43 个操作/语义探针被拒绝，4 个数据/波段探针被拒绝；另有 14 个规模编译检查、3 个原生 runner 检查。该定向抽查不是全 API 兼容率。
 - 两波段均值的模拟目录探针中，30 景生成 335 节点，50 景超过现有 500 节点限制。长时序执行需要单独改进。

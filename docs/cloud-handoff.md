@@ -12,7 +12,19 @@
 
 探针守卫发现原 SDK 的可选弃用资产初始化会通过 urllib 请求 Google STAC；本地初始化现已跳过这项云目录操作，生产路径初始化／重置有网络入口拒绝回归。计数覆盖 Python transport／socket／DNS，并非内核抓包或用户程序隔离。
 
-`GOAL.md` 已按用户要求持久化“Python 完整优先，随后 JS”的持续目标；目前尚无系统级后台目标管理工具，不将该文件误报为已创建自动执行任务。
+`GOAL.md` 已按用户要求持久化“Python 完整优先，随后 JS”的持续目标；文件本身记录目标与验收条件，后台任务状态以运行平台为准。
+
+## 第二批 Python 兼容实现
+
+第一批已验证提交 `6cd97801e5685dfb4c9e365f1328d321c369d0a8` 已在临时验证分支取得精确提交的 `python`／`frontend` 成功后，快进发布到 main。交接分支名保留为开发分支，不能据其远端位置判断 main 的最新状态。
+
+第二批增加有界内联 FeatureCollection 操作、无权表格 linearFit／linearRegression、maxDifference 数值度量和 saveBest、Number.format 十进制子集及 String 构造／拼接预算。版本化合成表格示例串联筛选、OLS、矩阵预测和格式化，使用手算系数与 RMS 验证。详见 `reports/gee-python-wave2.json` 和 `docs/gee-python/list.md`，表格静态求值不构成栅格引擎验收。
+
+本批 Linux Python **709 passed／7 skipped**；前端 **11 passed**，TypeScript／生产构建通过。7 项跳过仍为 3 项 opt-in JVM/Spark 和 4 项 macOS Seatbelt 检查。`uv sync --frozen --python 3.11`、`npm ci`、探针漂移检查和 Python API 清单字节重现均通过。
+
+原有 50 项表达式保持不变，当前 45 项编译通过、5 项拒绝；其中影像集合回归仍明确拒绝，新增表格回归不能替代它。Python／JS 官方 SDK 共享回归增至 13 项，完整 JS 目标仍排在 Python 之后。后续委派子 agent 按用户要求固定使用 Luna、max 推理，文件所有权不得重叠。
+
+Linux 用户／挂载／PID namespace 的临时能力探测在执行沙箱外成功；普通执行沙箱内的 `/proc/self/uid_map` 写限制不能推断为内核不支持。尚无验收通过的 Linux 执行适配器，因此生产用户代码继续拒绝在无对应原生隔离的平台执行。
 
 ## 获取正确状态
 

@@ -106,10 +106,11 @@ def integer(value: Any, label: str, minimum: int | None = None) -> int:
 def static_truth(value: Any) -> bool:
     from .array_values import StaticArray
     from .join_ops import Join
+    from .table_reducers import TableReducer
 
     # EE If treats empty arrays/dictionaries/strings, zero, NaN and null as
     # false. Do not accidentally use truthiness of internal IR dataclasses.
-    if isinstance(value, (Image, Collection, ImageSequence, Pixel, Region, Function, Filter, Reducer, StaticArray, Join)):
+    if isinstance(value, (Image, Collection, ImageSequence, Pixel, Region, Function, Filter, Reducer, StaticArray, Join, TableReducer)):
         fail("Algorithms.If currently requires a static scalar/list/dictionary condition")
     if isinstance(value, (int, float)) and not math.isfinite(value):
         return False

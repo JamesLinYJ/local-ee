@@ -4,7 +4,7 @@ import json
 import pytest
 
 from gee.compat.earthengine.array_values import ARRAY_FUNCTIONS, StaticArray
-from gee.compat.earthengine.capabilities import SUPPORTED_FUNCTIONS
+from gee.compat.earthengine.capabilities import SUPPORTED_FUNCTIONS, get_capabilities
 from gee.compat.earthengine.decoder import Translator
 from gee.compat.earthengine.ir import Image, Pixel, UnsupportedEEError
 from gee.compat.earthengine.join_ops import JOIN_FUNCTIONS
@@ -81,5 +81,7 @@ def test_capability_inventory_covers_the_implemented_static_array_and_join_slice
     assert ARRAY_FUNCTIONS <= SUPPORTED_FUNCTIONS
     assert JOIN_FUNCTIONS <= SUPPORTED_FUNCTIONS
     assert "Filter.notNull" in SUPPORTED_FUNCTIONS
-    assert "Reducer.linearRegression" not in SUPPORTED_FUNCTIONS
+    assert "Reducer.linearRegression" in SUPPORTED_FUNCTIONS
+    assert any("inline FeatureCollection.reduceColumns only" in restriction
+               for restriction in get_capabilities()["restrictions"])
     assert "Classifier.smileRandomForest" not in SUPPORTED_FUNCTIONS

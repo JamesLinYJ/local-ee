@@ -1,0 +1,19 @@
+{
+  "schema": "local-ee-synthetic-table/v1",
+  "description": "Synthetic trend observations; no research imagery or Google data",
+  "rows": [
+    {"constant": 1, "day": 0, "temperature": 1, "valid": true},
+    {"constant": 1, "day": 1, "temperature": 2, "valid": true},
+    {"constant": 1, "day": 2, "temperature": 6, "valid": true},
+    {"constant": 1, "day": 3, "temperature": null, "valid": true},
+    {"constant": 1, "day": 4, "temperature": 1000, "valid": false}
+  ],
+  "independent_reference": {
+    "sample_count": 3,
+    "temperature_sum": 9,
+    "coefficients": [[0.5], [2.5]],
+    "residual_rms": [0.7071067811865476],
+    "prediction_day_3": 8,
+    "prediction_formatted": "8.00"
+  }
+}

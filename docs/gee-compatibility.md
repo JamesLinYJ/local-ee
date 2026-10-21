@@ -22,6 +22,8 @@ S 表示固定官方 SDK 可生成表达式；C 表示本地编译；E 表示实
 
 Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单](gee-python/list.md) 和 [Python API 报告](../reports/gee-python-api-inventory.json)。2026-10-22 的便携增量修复 Python 命名 GeoJSON CRS 解码，补充 `Filter.notNull`、Dictionary／List.sequence、有限元数据 Join 和静态 Array／矩阵算法。SDK 初始化也不再获取 Google 弃用资产目录；探针实际拦截并计数 Python 网络入口，不将该计数描述为内核抓包或用户代码沙箱。
 
+第二批增加有界内联 FeatureCollection、表格 linearFit／linearRegression、数值时间差度量 Join、Number.format 和 String 的构造／工作预算。静态合成表格工作流有独立手算数值参考；本轮原生引擎与 Google 同数据对照未运行，见 [分层验证报告](../reports/gee-python-wave2.json)。
+
 | 用法 | 当前支持范围 | 证据 |
 | --- | --- | --- |
 | 普通 JavaScript | var/let/const、函数/箭头函数、对象、数组、循环；由 Node 执行 | 隔离运行器与网页实测 |
@@ -46,7 +48,9 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 | Number 位运算 | 标量 bitCount/bitwiseNot/bitwiseAnd/Or/Xor/leftShift/rightShift 的受限整数域 | 官方 SDK 与文档样例 C；signed64 整数输入，And/Or/Xor 限非负，左移限非负且不溢出，移位量 0..63；非整数、超范围明确拒绝；不是 Image QA 位运算 |
 | List／Dictionary | sequence 支持 count/end 与 count/step；get/length/contains/add/cat/slice/distinct/sort/map/iterate；Dictionary get/keys/values/contains/set | S/C；序列另有 NumPy/Python 独立参考，空 keys 保持空列表，缺键必须有非 null 默认值；回调最多 1000 项，中间列表最多 10000 项，结果最多 1 MB |
 | 非空属性筛选 | Filter.notNull；多属性全部非 null；缺失/null 拒绝，0/False/空字符串等非 null 值保留 | S/C；空属性列表匹配全部，最多 1000 属性并计入编译预算；本地平面属性名，无 G 对照 |
-| 有限元数据 Join | simple/inverted/saveFirst/saveAll/apply；左右元数据字段比较、逻辑组合、排序、outer、匹配后继续读取／组合真实来源影像 | S/C；合成源身份及掩膜的图求值对照；最多 1000 景、共享 50000 步，稳定本地顺序与平分规则，无原生 E/G；不含矢量、空间／时间度量、inner/saveBest |
+| 有限元数据 Join | simple/inverted/saveFirst/saveAll/saveBest/apply；元数据比较、排序、outer、直接 maxDifference 数值度量，匹配后读取／组合真实来源影像 | S/C；独立绝对差、源身份及掩膜的合成图参考；最多 1000 景、共享 50000 步，稳定本地顺序与平分规则；不含矢量／空间／复合度量、inner 或原生 E/G |
+| 有限表格回归 | 内联 FeatureCollection.reduceColumns，linearFit／linearRegression、类型化系数矩阵和各响应残差 RMS；缺失/null 行跳过 | S/C 与闭式独立 N；最多 1000 行／32 输入列，非空权重拒绝；秩不足和 n<=numX 返回 null；不含影像／栅格回归或 G |
+| 静态字符串和格式 | String 数值构造、cat／length／compareTo；Number.format 的有限 %s／%d／%f | S/C；拼接分配前和共享工作预算；Python Unicode code point／数值拼写及十进制半入政策均无 G；高级转换／格式拒绝 |
 | 静态 Array／矩阵 | 构造、get/length/toList/reshape/transpose、matrixTranspose/Multiply/Inverse/PseudoInverse/Solve | S/C 与静态独立 N；整数精确域不超过 2^53、最多 8 轴／10000 单元及共享工作预算；线性求解只接受满列秩方阵／超定矩阵；不含 Image.array*、栅格回归或分类器 |
 | Algorithms.If | 静态条件，惰性编译选中分支 | S/C；不把影像对象当作静态布尔条件 |
 | 几何与地图 | 平面 WGS84 Geometry；Image/Collection/Feature.geometry；Map.centerObject、setCenter、addLayer | S/C；真实地图和 RGB 预览 N |
@@ -114,7 +118,7 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 | 最绿像素合成 | 历史抽查时缺失；本轮已实现有限同构集合 `qualityMosaic` 并完成 6 个实际输出的独立像素对照；平分规则仍未与 Google 比较 |
 | s2cloudless 云影 | 有限本地影像 `Join.saveFirst` 已补；仍缺定向距离变换、`projection/reproject`、`focalMin/focalMax`；云概率数据未入库 |
 | 谐波时序与矩阵回归 | 已补有限逐景日期 map、日期常量 band、受限日期与静态 Array.matrixSolve；仍缺栅格 `linearRegression/linearFit`、Image.array*，以及相位/振幅的 `atan2/hypot` |
-| HISTARFM 插值 | 已补受限 Date.getRelative、标量元数据 saveAll 和匹配影像列表；独立常量栅格、int16、Filter.maxDifference／时间度量 Join 与真实插值仍缺失 |
+| HISTARFM 插值 | 已补受限 Date.getRelative、saveAll 匹配影像列表与直接 maxDifference 数值时间度量；独立常量栅格、int16、复合度量 Join 与真实插值仍缺失 |
 | 随机森林与验证 | 样本提取、分类器训练/预测、混淆矩阵与批量区域统计 |
 | LandTrendr | GEE 用户模块解析、真实时序分段算法、数组处理、连通像元与 Image QA 位运算仍缺失；已补有限网格的 `unmask`，不能据此运行完整 LandTrendr |
 | GEE 应用交互 | 实际原生 runner 的 `ui.Panel/ui.Chart` 返回 `ui is not defined`；`require('users/...')` 返回模块不存在 |

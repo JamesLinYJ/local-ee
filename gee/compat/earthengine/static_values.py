@@ -7,6 +7,7 @@ from .ir import Collection, Function, Image, UnsupportedEEError, fail, integer
 from .static_dictionary import dictionary_value
 from .static_equality import contains_value, distinct_values
 from .static_sequence import sequence
+from .string_values import invoke_string
 
 
 def scalar_power(left, right):
@@ -93,12 +94,7 @@ def invoke_static(translator, name, a):
             except (ArithmeticError, TypeError, ValueError):
                 fail(f"Invalid static Number.{op} operands")
     if kind == "String":
-        if op == "cat":
-            return str(a["string1"]) + str(a["string2"])
-        if op == "length":
-            return len(value)
-        if op == "compareTo":
-            return (value > a["string2"]) - (value < a["string2"])
+        return invoke_string(translator, name, a)
     if kind == "List":
         value = a.get("list", value)
         if op == "get":

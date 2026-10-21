@@ -4,11 +4,13 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 import math
 
+from .filtering import _finite_number, _max_difference_arguments
 from .ir import Filter, ImageSequence, fail
 
 
 JOIN_FUNCTIONS = frozenset({
-    "Join.simple", "Join.inverted", "Join.saveFirst", "Join.saveAll", "Join.apply",
+    "Join.simple", "Join.inverted", "Join.saveFirst", "Join.saveAll",
+    "Join.saveBest", "Join.apply",
 })
 _COMPARISONS = {"equals", "lessThan", "greaterThan"}
 
@@ -20,10 +22,11 @@ class Join:
     ordering: str | None = None
     ascending: bool = True
     outer: bool = False
+    measure_key: str | None = None
 
 
-def _charge(translator):
-    translator.steps += 1
+def _charge(translator, count=1):
+    translator.steps += count
     if translator.steps > 50000:
         fail("Earth Engine graph exceeds compilation limits")
 
@@ -56,6 +59,11 @@ def _validate_condition(translator, condition, depth=0):
                 fail("Join filter requires exactly one field or value on each side")
             if side + "Field" in args:
                 _field(args[side + "Field"], "Join filter")
+    elif op == "maxDifference":
+        translator.allowed(args, {"difference", "leftField", "leftValue", "rightField", "rightValue"})
+        if "difference" not in args:
+            fail("Filter.maxDifference requires difference")
+        _max_difference_arguments(args)
     else:
         fail(f"Unsupported local join condition: Filter.{op}")
 
@@ -77,9 +85,15 @@ def _matches(translator, condition, primary, secondary):
         return any(_matches(translator, child, primary, secondary) for child in args["filters"])
     if op == "not":
         return not _matches(translator, args["filter"], primary, secondary)
+    if op == "maxDifference":
+        return _max_difference(translator, condition, primary, secondary) is not None
     values = []
     for side, image in (("left", primary), ("right", secondary)):
-        value = image.props.get(args[side + "Field"]) if side + "Field" in args else args[side + "Value"]
+        if side + "Field" in args:
+            _charge(translator)
+            value = image.props.get(args[side + "Field"])
+        else:
+            value = args[side + "Value"]
         # An absent/null field is not an equality key. Preserve the original
         # metadata on outer rows instead of fabricating a match or an image.
         if value is None:
@@ -96,23 +110,65 @@ def _matches(translator, condition, primary, secondary):
     return left < right if op == "lessThan" else left > right
 
 
+def _max_difference(translator, condition, primary, secondary):
+    """Return the inclusive absolute numeric measure, or None when it fails."""
+    _charge(translator)
+    args = condition.args
+    difference = _max_difference_arguments(args)
+    values = []
+    for side, image in (("left", primary), ("right", secondary)):
+        field_name = side + "Field"
+        if field_name in args:
+            _charge(translator)
+            value = image.props.get(args[field_name])
+            # Missing and explicit null values are not numeric join operands.
+            if value is None:
+                return None
+        else:
+            value = args[side + "Value"]
+        values.append(_finite_number(value, "Filter.maxDifference operand"))
+    _charge(translator)
+    distance = abs(values[0] - values[1])
+    if not math.isfinite(distance):
+        fail("Filter.maxDifference operands must produce a finite difference")
+    return distance if distance <= difference else None
+
+
+def _has_direct_measure(condition):
+    # A single maxDifference filter has one unambiguous numeric measure. A
+    # logical composition can contain multiple measures or change their meaning.
+    return isinstance(condition, Filter) and condition.name == "maxDifference"
+
+
 def _construct(translator, name, args):
     op = name.split(".")[1]
     if op in {"simple", "inverted"}:
         translator.allowed(args, set())
         return Join(op)
+    if op == "saveBest":
+        translator.allowed(args, {"matchKey", "measureKey", "outer"})
+        key = _field(args.get("matchKey"), "matchKey")
+        measure_key = _field(args.get("measureKey"), "measureKey")
+        if "outer" in args and type(args["outer"]) is not bool:
+            fail("Join outer must be a boolean")
+        return Join(op, key=key, outer=args.get("outer", False), measure_key=measure_key)
+
     key_name = "matchKey" if op == "saveFirst" else "matchesKey"
     translator.allowed(args, {key_name, "ordering", "ascending", "measureKey", "outer"})
     key = _field(args.get(key_name), key_name)
-    if args.get("measureKey") is not None:
-        fail("Join measures require an independently supported distance/time condition")
     ordering = args.get("ordering")
     if ordering is not None:
         ordering = _field(ordering, "Join ordering")
+    measure_key = args.get("measureKey")
+    if measure_key is not None:
+        measure_key = _field(measure_key, "measureKey")
     for option in ("ascending", "outer"):
         if option in args and type(args[option]) is not bool:
             fail(f"Join {option} must be a boolean")
-    return Join(op, key, ordering, args.get("ascending", True), args.get("outer", False))
+    return Join(
+        op, key=key, ordering=ordering, ascending=args.get("ascending", True),
+        outer=args.get("outer", False), measure_key=measure_key,
+    )
 
 
 def invoke_join(translator, name, args):
@@ -126,6 +182,11 @@ def invoke_join(translator, name, args):
         fail("Join.apply requires a supported ee.Join")
     condition = args.get("condition")
     _validate_condition(translator, condition)
+    has_measure = _has_direct_measure(condition)
+    if join.operation == "saveBest" and not has_measure:
+        fail("Join.saveBest requires a single Filter.maxDifference condition")
+    if join.measure_key is not None and not has_measure:
+        fail("Join measures with measureKey require a single Filter.maxDifference condition; compound measures are unsupported")
     from ...ee_collections import frames
 
     primary = frames(translator, args.get("primary"))
@@ -136,8 +197,14 @@ def invoke_join(translator, name, args):
     for image in primary:
         matches = []
         for candidate in secondary:
-            if _matches(translator, condition, image, candidate):
-                matches.append(candidate)
+            if condition.name == "maxDifference":
+                measure = _max_difference(translator, condition, image, candidate)
+                matched = measure is not None
+            else:
+                measure = None
+                matched = _matches(translator, condition, image, candidate)
+            if matched:
+                matches.append((candidate, measure))
                 if join.operation in {"simple", "inverted"} or (
                     join.operation == "saveFirst" and join.ordering is None
                 ):
@@ -152,7 +219,7 @@ def invoke_join(translator, name, args):
             continue
         if join.ordering is not None:
             keys = []
-            for candidate in matches:
+            for candidate, _ in matches:
                 _charge(translator)
                 if candidate.props.get(join.ordering) is None:
                     fail("Join ordering property is missing or null")
@@ -160,6 +227,25 @@ def invoke_join(translator, name, args):
             if len({"number" if type(key) in {int, float} else type(key).__name__ for key in keys}) > 1:
                 fail("Join ordering values must have compatible scalar types")
             matches = [item for _, item in sorted(zip(keys, matches), key=lambda pair: pair[0], reverse=not join.ascending)]
-        saved = matches[0] if join.operation == "saveFirst" else matches
+        if join.operation == "saveBest":
+            # min() keeps the first secondary source row when measures tie,
+            # matching the stable local collection-order policy.
+            _charge(translator, len(matches))
+            selected = min(matches, key=lambda pair: pair[1])
+            saved = selected[0]
+            measure = selected[1]
+        elif join.operation == "saveFirst":
+            saved, measure = matches[0]
+        else:
+            saved = [item[0] for item in matches]
+            measure = None
+        if join.measure_key is not None:
+            if join.operation == "saveAll":
+                saved = [
+                    replace(candidate, props={**candidate.props, join.measure_key: distance})
+                    for candidate, distance in matches
+                ]
+            else:
+                saved = replace(saved, props={**saved.props, join.measure_key: measure})
         output.append(replace(image, props={**image.props, join.key: saved}))
     return ImageSequence(output)

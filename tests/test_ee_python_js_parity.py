@@ -39,6 +39,11 @@ ee.data.computeValue = deny;
 const c = ee.ImageCollection('sentinel-2-l2a');
 const joined = ee.ImageCollection(ee.Join.saveFirst('match').apply(
   c, c, ee.Filter.equals({leftField:'system:index', rightField:'system:index'})));
+const best = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(
+  c, c, ee.Filter.maxDifference({difference:1000,
+    leftField:'system:time_start', rightField:'system:time_start'})));
+const rows = ee.FeatureCollection([0,1,2].map(x =>
+  ee.Feature(null, {constant:1, x:x, y:1 + 2*x})));
 const values = {
   sequence: ee.List.sequence(0, 1, 99, 5),
   emptyKeys: ee.Dictionary({a:1}).values([]),
@@ -47,6 +52,13 @@ const values = {
   matrixSolve: ee.Array([[1,0],[1,1],[1,2]]).matrixSolve([[1],[3],[5]]),
   notNull: c.filter(ee.Filter.notNull(['cloud'])).size(),
   matchId: ee.Image(ee.Image(joined.first()).get('match')).get('system:index'),
+  bestDelta: ee.Image(ee.Image(best.first()).get('match')).get('delta'),
+  tableCoefficients: rows.reduceColumns(ee.Reducer.linearRegression(2, 1),
+    ['constant','x','y']).get('coefficients'),
+  featureSum: rows.filter(ee.Filter.gt('x', 0)).iterate((feature, previous) =>
+    ee.Number(previous).add(ee.Feature(feature).get('y')), 0),
+  formatted: ee.Number(7).divide(2).format('%.2f'),
+  stringConversion: ee.String(ee.Number(42)).cat(' units'),
   clippedBands: c.first().clip(ee.Geometry.Rectangle([100.1,30.1,100.9,30.9],null,false)).bandNames()
 };
 const expressions = Object.fromEntries(Object.entries(values).map(([k,v]) => [k,ee.Serializer.encode(v)]));
@@ -69,6 +81,11 @@ def parity_values():
     c = ee.ImageCollection("sentinel-2-l2a")
     joined = ee.ImageCollection(ee.Join.saveFirst("match").apply(
         c, c, ee.Filter.equals(leftField="system:index", rightField="system:index")))
+    best = ee.ImageCollection(ee.Join.saveBest("match", "delta").apply(
+        c, c, ee.Filter.maxDifference(difference=1000,
+                                     leftField="system:time_start", rightField="system:time_start")))
+    rows = ee.FeatureCollection([ee.Feature(None, {"constant": 1, "x": x, "y": 1 + 2*x})
+                                 for x in range(3)])
     py = {
         "sequence": ee.List.sequence(0, 1, 99, 5),
         "emptyKeys": ee.Dictionary({"a": 1}).values([]),
@@ -77,6 +94,13 @@ def parity_values():
         "matrixSolve": ee.Array([[1, 0], [1, 1], [1, 2]]).matrixSolve([[1], [3], [5]]),
         "notNull": c.filter(ee.Filter.notNull(["cloud"])).size(),
         "matchId": ee.Image(ee.Image(joined.first()).get("match")).get("system:index"),
+        "bestDelta": ee.Image(ee.Image(best.first()).get("match")).get("delta"),
+        "tableCoefficients": rows.reduceColumns(ee.Reducer.linearRegression(2, 1),
+                                                 ["constant", "x", "y"]).get("coefficients"),
+        "featureSum": rows.filter(ee.Filter.gt("x", 0)).iterate(
+            lambda feature, previous: ee.Number(previous).add(ee.Feature(feature).get("y")), 0),
+        "formatted": ee.Number(7).divide(2).format("%.2f"),
+        "stringConversion": ee.String(ee.Number(42)).cat(" units"),
         "clippedBands": c.first().clip(ee.Geometry.Rectangle(
             [100.1, 30.1, 100.9, 30.9], proj="EPSG:4326", geodesic=False)).bandNames(),
     }
@@ -86,7 +110,9 @@ def parity_values():
 
 
 @pytest.mark.parametrize("case", ["sequence", "emptyKeys", "missingDefault", "matrixMultiply",
-                                 "matrixSolve", "notNull", "matchId", "clippedBands"])
+                                 "matrixSolve", "notNull", "matchId", "clippedBands",
+                                 "bestDelta", "tableCoefficients", "featureSum", "formatted",
+                                 "stringConversion"])
 def test_python_and_javascript_reach_the_same_local_result(parity_values, case):
     javascript, python, metadata, items = parity_values
     left = compile_expression(javascript[case], metadata, items)
