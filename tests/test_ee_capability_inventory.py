@@ -95,6 +95,10 @@ def test_clean_checkout_generates_without_private_audit_inputs(tmp_path: Path):
     clean_root = tmp_path / "clean-checkout"
     required = (
         "scripts/ee_capability_inventory.py",
+        *(
+            str(path.relative_to(ROOT))
+            for path in sorted((ROOT / "scripts/ee_inventory").glob("*.py"))
+        ),
         "gee/ee_translate.py",
         "gee/compat/earthengine/capabilities.py",
         "gee/ee_dates.py",

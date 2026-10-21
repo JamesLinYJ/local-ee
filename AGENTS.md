@@ -21,6 +21,12 @@ Read `docs/architecture.md` before changing architecture or adding a subsystem. 
 - `deploy/`, `compose*.yaml`: explicit runtime and production profiles. `deploy/native-lock.json` and `.native/engine-lock.json` identify the current native deployment. Container image locks and old `audit/` evidence are historical.
 - Check inherited `AGENTS.md` before editing vendor subtrees. Prefer adapters or minimal documented patches; never silently rewrite pinned upstream code.
 
+## File size and cohesive modules
+
+- Most first-party business modules should fit around 150–250 readable source lines. At roughly 300 lines, review whether the file mixes responsibilities; above 400 lines, normally separate cohesive concerns before adding more behavior. These are review guidelines, not hard limits or a reason to compress code.
+- Separate request/state lifecycles from presentation, resource-specific administration from the shell, and map/graph engine integration from controls. Keep state ownership, effect dependencies, cleanup and public interfaces explicit; do not create many tiny forwarding files or generic abstractions merely to reduce line counts.
+- Existing compiler guidance below is more specific. Generated code, pinned vendor code and data catalogues do not need mechanical splitting. A longer cohesive algorithm can remain intact when splitting would obscure its invariants.
+
 ## Earth Engine compiler modularity
 
 - Keep compiler code separated by responsibility: decoding/catalog/filtering, grouped operation dispatch, IR and static/date values, graph/pixel/temporal compilation, and capability reporting. Extend the closest cohesive module; split only when a boundary improves ownership, review or reuse.

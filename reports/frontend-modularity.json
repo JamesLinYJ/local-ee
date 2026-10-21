@@ -1,0 +1,145 @@
+{
+  "scope": "Behavior-preserving modularity refactor; no new GEE algorithms, dependencies or backend APIs.",
+  "guideline": {
+    "usual_readable_source_lines": [
+      150,
+      250
+    ],
+    "review_responsibilities_at_about": 300,
+    "normally_split_above": 400,
+    "hard_limit": false,
+    "avoid": "Minification and mechanical splitting solely to satisfy line counts."
+  },
+  "entry_points": [
+    {
+      "path": "web/src/Workbench.tsx",
+      "before_lines": 862,
+      "after_lines": 312
+    },
+    {
+      "path": "web/src/admin/AdminApp.tsx",
+      "before_lines": 721,
+      "after_lines": 153
+    },
+    {
+      "path": "web/src/admin/FileManager.tsx",
+      "before_lines": 600,
+      "after_lines": 145
+    },
+    {
+      "path": "web/src/components/MapPane.tsx",
+      "before_lines": 593,
+      "after_lines": 119
+    },
+    {
+      "path": "web/src/components/GraphEditor.tsx",
+      "before_lines": 456,
+      "after_lines": 171
+    },
+    {
+      "path": "scripts/ee_capability_inventory.py",
+      "before_lines": 717,
+      "after_lines": 60
+    }
+  ],
+  "new_modules": {
+    "web/src/workbench/DatasetCatalog.tsx": 123,
+    "web/src/workbench/EditorPane.tsx": 123,
+    "web/src/workbench/LibraryPane.tsx": 136,
+    "web/src/workbench/OutputPane.tsx": 172,
+    "web/src/workbench/ScriptLibrary.tsx": 96,
+    "web/src/workbench/WorkbenchChrome.tsx": 112,
+    "web/src/workbench/types.ts": 23,
+    "web/src/workbench/useWorkbenchDocument.ts": 128,
+    "web/src/workbench/useWorkbenchJobs.ts": 136,
+    "web/src/admin/panels/RecordFields.tsx": 170,
+    "web/src/admin/panels/RecordForm.tsx": 168,
+    "web/src/admin/panels/ResourcePage.tsx": 176,
+    "web/src/admin/panels/ResourceRows.tsx": 134,
+    "web/src/admin/panels/ResourceTable.tsx": 87,
+    "web/src/admin/panels/models.ts": 36,
+    "web/src/admin/files/AssetTable.tsx": 94,
+    "web/src/admin/files/IngestForm.tsx": 73,
+    "web/src/admin/files/StoredFilesTable.tsx": 121,
+    "web/src/admin/files/UploadPanel.tsx": 69,
+    "web/src/admin/files/models.ts": 47,
+    "web/src/admin/files/useFileCatalog.ts": 65,
+    "web/src/admin/files/useFileIngest.ts": 74,
+    "web/src/admin/files/useFileUpload.ts": 160,
+    "web/src/components/map/LayerPopover.tsx": 86,
+    "web/src/components/map/MapToolbar.tsx": 150,
+    "web/src/components/map/model.ts": 28,
+    "web/src/components/map/types.ts": 35,
+    "web/src/components/map/useLayerActions.ts": 39,
+    "web/src/components/map/useMapInteractions.ts": 181,
+    "web/src/components/map/useRasterController.ts": 173,
+    "web/src/components/map/useRasterStyle.ts": 51,
+    "web/src/components/graph/GraphCanvas.tsx": 44,
+    "web/src/components/graph/GraphProperties.tsx": 82,
+    "web/src/components/graph/GraphToolbar.tsx": 95,
+    "web/src/components/graph/ProcessCard.tsx": 27,
+    "web/src/components/graph/defaultGraph.ts": 38,
+    "web/src/components/graph/graphLayout.ts": 47,
+    "web/src/components/graph/types.ts": 9,
+    "web/src/components/graph/useGraphFlow.ts": 128,
+    "scripts/ee_inventory/__init__.py": 1,
+    "scripts/ee_inventory/audit_extract.py": 140,
+    "scripts/ee_inventory/catalogue.py": 138,
+    "scripts/ee_inventory/declarations.py": 69,
+    "scripts/ee_inventory/evidence.py": 45,
+    "scripts/ee_inventory/inventory.py": 165,
+    "scripts/ee_inventory/shared.py": 31,
+    "scripts/ee_inventory/validation.py": 129
+  },
+  "maximum_new_frontend_module_lines": 181,
+  "maximum_new_inventory_module_lines": 165,
+  "verification": {
+    "python": {
+      "passed": 317,
+      "skipped": 2,
+      "note": "313 passed in the outer sandbox; four native-runtime tests passed separately with host process/socket/Seatbelt access. Initial outer-sandbox failures were retained as environment limitations, not bypassed application isolation."
+    },
+    "inventory_tests": {
+      "passed": 5,
+      "included_in_python_total": true,
+      "clean_checkout_without_private_audit": true
+    },
+    "inventory_outputs_byte_identical_to_baseline": {
+      "inventory_sha256": "4c2dff9197ef7541ee90a5aaa8d372fc6e77dd69bd26ac0880fbae560c1f360a",
+      "snapshot_sha256": "b0a57370fc704953ba48b8b17b3a3f247888f9993e71219a99f022e0a6153c9e"
+    },
+    "frontend": {
+      "tests_passed": 10,
+      "strict_typecheck": true,
+      "prettier_check": true,
+      "production_build_and_static_publication": true
+    },
+    "independent_source_review": {
+      "passes": 2,
+      "fixed_regressions": [
+        "Map teardown clears old layer references.",
+        "Status bar restored after the work area.",
+        "Script filter persists when switching resource tabs."
+      ]
+    },
+    "edge_live_checks": [
+      "Workbench loads with header/main/footer layout.",
+      "Script filter survives catalog-tab round trip.",
+      "Separate JavaScript/Python drafts survive language switching.",
+      "Python script returns the local collection IDs.",
+      "Official EE JavaScript scalar/date script prints 5 and 2024-02-29.",
+      "Existing GeoTIFF result displays, visibility toggles, and pixel query returns a value.",
+      "Map maximize/restore and drawing toggle remain usable.",
+      "Graph node selection, add-process, and parameter JSON writeback synchronize.",
+      "Dataset form opens and cancels; file list and existing COG links load.",
+      "Users, jobs and audit resources load; job list pagination advances."
+    ],
+    "not_claimed": [
+      "New algorithm or numerical compatibility.",
+      "A new full scientific rerun.",
+      "Browser upload/resume/ingestion/download acceptance in this change.",
+      "New multi-user browser or full outbound-network audit."
+    ]
+  },
+  "local_evidence": "audit/frontend-modularity-v1/"
+}
