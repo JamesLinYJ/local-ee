@@ -1,0 +1,4175 @@
+{
+  "cases": [
+    {
+      "compilation": {
+        "kind": "value",
+        "status": "passed",
+        "value": 9
+      },
+      "family": "values",
+      "id": "number_add",
+      "python": "ee.Number(4).add(right=5)",
+      "serialization": {
+        "expression": {
+          "arguments": {
+            "left": 4,
+            "right": 5
+          },
+          "functionName": "Number.add",
+          "type": "Invocation"
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "reason": "Unsupported algorithm arguments: ['number', 'pattern']",
+        "status": "rejected"
+      },
+      "family": "values",
+      "id": "number_divide_format",
+      "python": "ee.Number(7).divide(right=2).format(pattern='%.2f')",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "left": 7,
+                  "right": 2
+                },
+                "functionName": "Number.divide",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "number": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "pattern": "%.2f"
+                },
+                "functionName": "Number.format",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "1"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "kind": "value",
+        "status": "passed",
+        "value": 2023
+      },
+      "family": "dates",
+      "id": "date_get_year",
+      "python": "ee.Date('2023-11-14').get(unit='year')",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "value": "2023-11-14"
+                },
+                "functionName": "Date",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "date": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "unit": "year"
+                },
+                "functionName": "Date.get",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "1"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "kind": "value",
+        "status": "passed",
+        "value": 1.0
+      },
+      "family": "dates",
+      "id": "date_difference_days",
+      "python": "ee.Date('2023-11-15').difference(start=ee.Date('2023-11-14'), unit='day')",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "value": "2023-11-15"
+                },
+                "functionName": "Date",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "value": "2023-11-14"
+                },
+                "functionName": "Date",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "date": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "start": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "unit": "day"
+                },
+                "functionName": "Date.difference",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "2"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "kind": "value",
+        "status": "passed",
+        "value": "2023-11-16T00:00:00.000+00:00"
+      },
+      "family": "dates",
+      "id": "date_advance",
+      "python": "ee.Date('2023-11-14').advance(delta=2, unit='day').format()",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "value": "2023-11-14"
+                },
+                "functionName": "Date",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "date": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "delta": 2,
+                  "unit": "day"
+                },
+                "functionName": "Date.advance",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "date": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Date.format",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "2"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "kind": "value",
+        "status": "passed",
+        "value": [
+          2,
+          4,
+          6
+        ]
+      },
+      "family": "lists",
+      "id": "list_map_lambda",
+      "python": "ee.List([1, 2, 3]).map(lambda item: ee.Number(item).multiply(right=2))",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              [
+                1,
+                2,
+                3
+              ]
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "left": {
+                    "type": "ArgumentRef",
+                    "value": "_MAPPING_VAR_0_0"
+                  },
+                  "right": 2
+                },
+                "functionName": "Number.multiply",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "argumentNames": [
+                  "_MAPPING_VAR_0_0"
+                ],
+                "body": {
+                  "type": "ValueRef",
+                  "value": "1"
+                },
+                "type": "Function"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "baseAlgorithm": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "dropNulls": false,
+                  "list": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "List.map",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "3"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "kind": "value",
+        "status": "passed",
+        "value": 6
+      },
+      "family": "lists",
+      "id": "list_iterate_lambda",
+      "python": "ee.List([1, 2, 3]).iterate(lambda item, acc: ee.Number(acc).add(right=item), first=ee.Number(0))",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              [
+                1,
+                2,
+                3
+              ]
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "left": {
+                    "type": "ArgumentRef",
+                    "value": "_MAPPING_VAR_0_1"
+                  },
+                  "right": {
+                    "type": "ArgumentRef",
+                    "value": "_MAPPING_VAR_0_0"
+                  }
+                },
+                "functionName": "Number.add",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "argumentNames": [
+                  "_MAPPING_VAR_0_0",
+                  "_MAPPING_VAR_0_1"
+                ],
+                "body": {
+                  "type": "ValueRef",
+                  "value": "1"
+                },
+                "type": "Function"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "first": 0,
+                  "function": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "list": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "List.iterate",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "3"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "kind": "value",
+        "status": "passed",
+        "value": 4
+      },
+      "family": "dictionaries",
+      "id": "dictionary_get",
+      "python": "ee.Dictionary({'mean': 4, 'count': 2}).get(key='mean')",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "type": "Dictionary",
+                "value": {
+                  "count": 2,
+                  "mean": 4
+                }
+              }
+            ],
+            [
+              "1",
+              {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "dictionary": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "key": "mean"
+                },
+                "functionName": "Dictionary.get",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "2"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "kind": "value",
+        "status": "passed",
+        "value": "yes"
+      },
+      "family": "values",
+      "id": "conditional",
+      "python": "ee.Algorithms.If(condition=ee.Number(2).gt(right=1), trueCase='yes', falseCase='no')",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "left": 2,
+                  "right": 1
+                },
+                "functionName": "Number.gt",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "condition": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "falseCase": "no",
+                  "trueCase": "yes"
+                },
+                "functionName": "If",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "1"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "kind": "value",
+        "status": "passed",
+        "value": {
+          "coordinates": [
+            [
+              [
+                100.1,
+                30.1
+              ],
+              [
+                100.9,
+                30.1
+              ],
+              [
+                100.9,
+                30.9
+              ],
+              [
+                100.1,
+                30.9
+              ],
+              [
+                100.1,
+                30.1
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        }
+      },
+      "family": "geometry",
+      "id": "geometry_rectangle",
+      "python": "ee.Geometry.Rectangle([100.1, 30.1, 100.9, 30.9], proj='EPSG:4326', geodesic=False)",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              [
+                100.1,
+                30.1,
+                100.9,
+                30.9
+              ]
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "coordinates": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "crs": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "geodesic": false
+                },
+                "functionName": "GeometryConstructors.Rectangle",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "2"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "collection",
+        "status": "passed"
+      },
+      "family": "collections",
+      "id": "collection_load",
+      "python": "ee.ImageCollection('sentinel-2-l2a')",
+      "serialization": {
+        "expression": {
+          "arguments": {
+            "id": "sentinel-2-l2a"
+          },
+          "functionName": "ImageCollection.load",
+          "type": "Invocation"
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "collection",
+        "status": "passed"
+      },
+      "family": "collections",
+      "id": "filter_date",
+      "python": "ee.ImageCollection('sentinel-2-l2a').filterDate(start='2023-11-14', end='2023-11-16')",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "end": "2023-11-16",
+                  "start": "2023-11-14"
+                },
+                "functionName": "DateRange",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "leftValue": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "rightField": "system:time_start"
+                },
+                "functionName": "Filter.dateRangeContains",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "filter": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  }
+                },
+                "functionName": "Collection.filter",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "3"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "reason": "Malformed or unsupported Earth Engine expression: unhashable type: 'dict'",
+        "status": "rejected"
+      },
+      "family": "collections",
+      "id": "filter_bounds",
+      "python": "ee.ImageCollection('sentinel-2-l2a').filterBounds(geometry=roi)",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "coordinates": [
+                  [
+                    [
+                      100.1,
+                      30.1
+                    ],
+                    [
+                      100.9,
+                      30.1
+                    ],
+                    [
+                      100.9,
+                      30.9
+                    ],
+                    [
+                      100.1,
+                      30.9
+                    ],
+                    [
+                      100.1,
+                      30.1
+                    ]
+                  ]
+                ],
+                "crs": {
+                  "properties": {
+                    "name": "EPSG:4326"
+                  },
+                  "type": "name"
+                },
+                "geodesic": false,
+                "type": "Polygon"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Feature",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "leftField": ".all",
+                  "rightValue": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  }
+                },
+                "functionName": "Filter.intersects",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "filter": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Collection.filter",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "4"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "collection",
+        "status": "passed"
+      },
+      "family": "filters",
+      "id": "filter_metadata",
+      "python": "ee.ImageCollection('sentinel-2-l2a').filter(ee.Filter.lte(name='cloud', value=10))",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "leftField": "cloud",
+                  "rightValue": 10
+                },
+                "functionName": "Filter.greaterThan",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "filter": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Filter.not",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "filter": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  }
+                },
+                "functionName": "Collection.filter",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "3"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "collection",
+        "status": "passed"
+      },
+      "family": "filters",
+      "id": "filter_and_sort",
+      "python": "ee.ImageCollection('sentinel-2-l2a').filter(ee.Filter.And(ee.Filter.lte('cloud', 20), ee.Filter.gte('system:time_start', 1700000000000))).sort(prop='cloud', ascending=False)",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "leftField": "cloud",
+                  "rightValue": 20
+                },
+                "functionName": "Filter.greaterThan",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "filter": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Filter.not",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "leftField": "system:time_start",
+                  "rightValue": 1700000000000
+                },
+                "functionName": "Filter.lessThan",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "filter": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Filter.not",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "5",
+              [
+                {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              ]
+            ],
+            [
+              "6",
+              {
+                "arguments": {
+                  "filters": {
+                    "type": "ValueRef",
+                    "value": "5"
+                  }
+                },
+                "functionName": "Filter.and",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "7",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "filter": {
+                    "type": "ValueRef",
+                    "value": "6"
+                  }
+                },
+                "functionName": "Collection.filter",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "8",
+              {
+                "arguments": {
+                  "ascending": false,
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "7"
+                  },
+                  "key": "cloud"
+                },
+                "functionName": "Collection.limit",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "8"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "NIR",
+          "RED"
+        ],
+        "kind": "image",
+        "status": "passed"
+      },
+      "family": "images",
+      "id": "select_named_bands",
+      "python": "ee.ImageCollection('sentinel-2-l2a').first().select(selectors=['nir', 'red'], names=['NIR', 'RED'])",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.first",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              [
+                "nir",
+                "red"
+              ]
+            ],
+            [
+              "3",
+              [
+                "NIR",
+                "RED"
+              ]
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "bandSelectors": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "newNames": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Image.select",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "4"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "NDVI"
+        ],
+        "kind": "collection",
+        "status": "passed"
+      },
+      "family": "mapped_collections",
+      "id": "map_ndvi_copy_properties",
+      "python": "ee.ImageCollection('sentinel-2-l2a').map(lambda image: image.normalizedDifference(bandNames=['nir', 'red']).rename(names=['NDVI']).copyProperties(source=image, properties=['system:time_start']))",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              [
+                "nir",
+                "red"
+              ]
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "bandNames": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "input": {
+                    "type": "ArgumentRef",
+                    "value": "_MAPPING_VAR_0_0"
+                  }
+                },
+                "functionName": "Image.normalizedDifference",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              [
+                "NDVI"
+              ]
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "names": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Image.rename",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "5",
+              [
+                "system:time_start"
+              ]
+            ],
+            [
+              "6",
+              {
+                "arguments": {
+                  "destination": {
+                    "type": "ValueRef",
+                    "value": "4"
+                  },
+                  "properties": {
+                    "type": "ValueRef",
+                    "value": "5"
+                  },
+                  "source": {
+                    "type": "ArgumentRef",
+                    "value": "_MAPPING_VAR_0_0"
+                  }
+                },
+                "functionName": "Image.copyProperties",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "7",
+              {
+                "argumentNames": [
+                  "_MAPPING_VAR_0_0"
+                ],
+                "body": {
+                  "type": "ValueRef",
+                  "value": "6"
+                },
+                "type": "Function"
+              }
+            ],
+            [
+              "8",
+              {
+                "arguments": {
+                  "baseAlgorithm": {
+                    "type": "ValueRef",
+                    "value": "7"
+                  },
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.map",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "8"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "NDVI"
+        ],
+        "kind": "image",
+        "status": "passed"
+      },
+      "family": "images",
+      "id": "expression_ndvi",
+      "python": "ee.ImageCollection('sentinel-2-l2a').first().expression(expression='(nir - red) / (nir + red)', map_={'nir': ee.ImageCollection('sentinel-2-l2a').first().select('nir'), 'red': ee.ImageCollection('sentinel-2-l2a').first().select('red')}).rename('NDVI')",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              [
+                "DEFAULT_EXPRESSION_IMAGE",
+                "nir",
+                "red"
+              ]
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "argName": "DEFAULT_EXPRESSION_IMAGE",
+                  "expression": "(nir - red) / (nir + red)",
+                  "vars": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Image.parseExpression",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  }
+                },
+                "functionName": "Collection.first",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              [
+                "nir"
+              ]
+            ],
+            [
+              "5",
+              {
+                "arguments": {
+                  "bandSelectors": {
+                    "type": "ValueRef",
+                    "value": "4"
+                  },
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Image.select",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "6",
+              [
+                "red"
+              ]
+            ],
+            [
+              "7",
+              {
+                "arguments": {
+                  "bandSelectors": {
+                    "type": "ValueRef",
+                    "value": "6"
+                  },
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Image.select",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "8",
+              {
+                "arguments": {
+                  "DEFAULT_EXPRESSION_IMAGE": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  },
+                  "nir": {
+                    "type": "ValueRef",
+                    "value": "5"
+                  },
+                  "red": {
+                    "type": "ValueRef",
+                    "value": "7"
+                  }
+                },
+                "function": {
+                  "type": "ValueRef",
+                  "value": "1"
+                },
+                "type": "Invocation"
+              }
+            ],
+            [
+              "9",
+              [
+                "NDVI"
+              ]
+            ],
+            [
+              "10",
+              {
+                "arguments": {
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "8"
+                  },
+                  "names": {
+                    "type": "ValueRef",
+                    "value": "9"
+                  }
+                },
+                "functionName": "Image.rename",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "10"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "red",
+          "constant"
+        ],
+        "kind": "image",
+        "status": "passed"
+      },
+      "family": "images",
+      "id": "addbands_constant_named",
+      "python": "ee.ImageCollection('sentinel-2-l2a').first().select('red').addBands(srcImg=ee.Image.constant(value=4).rename('constant'), names=['constant'], overwrite=False)",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.first",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              [
+                "red"
+              ]
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "bandSelectors": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Image.select",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "value": 4
+                },
+                "functionName": "Image.constant",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "5",
+              [
+                "constant"
+              ]
+            ],
+            [
+              "6",
+              {
+                "arguments": {
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "4"
+                  },
+                  "names": {
+                    "type": "ValueRef",
+                    "value": "5"
+                  }
+                },
+                "functionName": "Image.rename",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "7",
+              {
+                "arguments": {
+                  "dstImg": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  },
+                  "names": {
+                    "type": "ValueRef",
+                    "value": "5"
+                  },
+                  "overwrite": false,
+                  "srcImg": {
+                    "type": "ValueRef",
+                    "value": "6"
+                  }
+                },
+                "functionName": "Image.addBands",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "7"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "image",
+        "status": "passed"
+      },
+      "family": "images",
+      "id": "update_mask",
+      "python": "ee.ImageCollection('sentinel-2-l2a').first().updateMask(mask=ee.ImageCollection('sentinel-2-l2a').first().select('SCL').neq(image2=9))",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.first",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              [
+                "SCL"
+              ]
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "bandSelectors": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Image.select",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "value": 9
+                },
+                "functionName": "Image.constant",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "5",
+              {
+                "arguments": {
+                  "image1": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  },
+                  "image2": {
+                    "type": "ValueRef",
+                    "value": "4"
+                  }
+                },
+                "functionName": "Image.neq",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "6",
+              {
+                "arguments": {
+                  "image": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "mask": {
+                    "type": "ValueRef",
+                    "value": "5"
+                  }
+                },
+                "functionName": "Image.updateMask",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "6"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "reason": "Image.unmask sameFootprint=false with a global footprint is not supported",
+        "status": "rejected"
+      },
+      "family": "images",
+      "id": "unmask_fill",
+      "python": "ee.ImageCollection('sentinel-2-l2a').first().select('nir').unmask(value=-9999, sameFootprint=False)",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.first",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              [
+                "nir"
+              ]
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "bandSelectors": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Image.select",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "value": -9999
+                },
+                "functionName": "Image.constant",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "5",
+              {
+                "arguments": {
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  },
+                  "sameFootprint": false,
+                  "value": {
+                    "type": "ValueRef",
+                    "value": "4"
+                  }
+                },
+                "functionName": "Image.unmask",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "5"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "nir"
+        ],
+        "kind": "image",
+        "status": "passed"
+      },
+      "family": "images",
+      "id": "where_threshold",
+      "python": "ee.ImageCollection('sentinel-2-l2a').first().select('nir').where(test=ee.ImageCollection('sentinel-2-l2a').first().select('nir').lt(image2=2), value=0)",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.first",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              [
+                "nir"
+              ]
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "bandSelectors": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Image.select",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "value": 2
+                },
+                "functionName": "Image.constant",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "5",
+              {
+                "arguments": {
+                  "image1": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  },
+                  "image2": {
+                    "type": "ValueRef",
+                    "value": "4"
+                  }
+                },
+                "functionName": "Image.lt",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "6",
+              {
+                "arguments": {
+                  "value": 0
+                },
+                "functionName": "Image.constant",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "7",
+              {
+                "arguments": {
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  },
+                  "test": {
+                    "type": "ValueRef",
+                    "value": "5"
+                  },
+                  "value": {
+                    "type": "ValueRef",
+                    "value": "6"
+                  }
+                },
+                "functionName": "Image.where",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "7"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "reason": "Malformed or unsupported Earth Engine expression: unhashable type: 'dict'",
+        "status": "rejected"
+      },
+      "family": "images",
+      "id": "clip_region",
+      "python": "ee.ImageCollection('sentinel-2-l2a').first().clip(clip_geometry=roi)",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.first",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "coordinates": [
+                  [
+                    [
+                      100.1,
+                      30.1
+                    ],
+                    [
+                      100.9,
+                      30.1
+                    ],
+                    [
+                      100.9,
+                      30.9
+                    ],
+                    [
+                      100.1,
+                      30.9
+                    ],
+                    [
+                      100.1,
+                      30.1
+                    ]
+                  ]
+                ],
+                "crs": {
+                  "properties": {
+                    "name": "EPSG:4326"
+                  },
+                  "type": "name"
+                },
+                "geodesic": false,
+                "type": "Polygon"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Image.clip",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "3"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "reason": "Malformed or unsupported Earth Engine expression: unhashable type: 'dict'",
+        "status": "rejected"
+      },
+      "family": "reductions",
+      "id": "reduce_region_named",
+      "python": "ee.ImageCollection('sentinel-2-l2a').first().reduceRegion(reducer=ee.Reducer.mean(), geometry=roi, scale=10, maxPixels=1000)",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.first",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {},
+                "functionName": "Reducer.mean",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "coordinates": [
+                  [
+                    [
+                      100.1,
+                      30.1
+                    ],
+                    [
+                      100.9,
+                      30.1
+                    ],
+                    [
+                      100.9,
+                      30.9
+                    ],
+                    [
+                      100.1,
+                      30.9
+                    ],
+                    [
+                      100.1,
+                      30.1
+                    ]
+                  ]
+                ],
+                "crs": {
+                  "properties": {
+                    "name": "EPSG:4326"
+                  },
+                  "type": "name"
+                },
+                "geodesic": false,
+                "type": "Polygon"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  },
+                  "image": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "maxPixels": 1000,
+                  "reducer": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "scale": 10
+                },
+                "functionName": "Image.reduceRegion",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "4"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "image",
+        "status": "passed"
+      },
+      "family": "reductions",
+      "id": "collection_mean",
+      "python": "ee.ImageCollection('sentinel-2-l2a').mean()",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "reduce.mean",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "1"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "image",
+        "status": "passed"
+      },
+      "family": "reductions",
+      "id": "collection_median",
+      "python": "ee.ImageCollection('sentinel-2-l2a').median()",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "reduce.median",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "1"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "image",
+        "status": "passed"
+      },
+      "family": "reductions",
+      "id": "collection_max",
+      "python": "ee.ImageCollection('sentinel-2-l2a').max()",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "reduce.max",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "1"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "image",
+        "status": "passed"
+      },
+      "family": "reductions",
+      "id": "collection_mosaic",
+      "python": "ee.ImageCollection('sentinel-2-l2a').mosaic()",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "ImageCollection.mosaic",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "1"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "image",
+        "status": "passed"
+      },
+      "family": "reductions",
+      "id": "quality_mosaic",
+      "python": "ee.ImageCollection('sentinel-2-l2a').qualityMosaic(qualityBand='nir')",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "qualityBand": "nir"
+                },
+                "functionName": "ImageCollection.qualityMosaic",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "1"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "image",
+        "status": "passed"
+      },
+      "family": "reductions",
+      "id": "collection_count",
+      "python": "ee.ImageCollection('sentinel-2-l2a').count()",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "reduce.count",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "1"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "scene-a_nir",
+          "scene-b_nir",
+          "scene-c_nir"
+        ],
+        "kind": "image",
+        "status": "passed"
+      },
+      "family": "collections",
+      "id": "collection_to_bands",
+      "python": "ee.ImageCollection('sentinel-2-l2a').select('nir').toBands()",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              [
+                "nir"
+              ]
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "bandSelectors": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "input": {
+                    "type": "ArgumentRef",
+                    "value": "_MAPPING_VAR_0_0"
+                  }
+                },
+                "functionName": "Image.select",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "argumentNames": [
+                  "_MAPPING_VAR_0_0"
+                ],
+                "body": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "type": "Function"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "baseAlgorithm": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  },
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.map",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "5",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "4"
+                  }
+                },
+                "functionName": "ImageCollection.toBands",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "5"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "collection",
+        "status": "passed"
+      },
+      "family": "collections",
+      "id": "collection_from_images",
+      "python": "ee.ImageCollection.fromImages(images=[ee.ImageCollection('sentinel-2-l2a').first(), ee.ImageCollection('sentinel-2-l2a').first()])",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.first",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              [
+                {
+                  "type": "ValueRef",
+                  "value": "1"
+                },
+                {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              ]
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "images": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  }
+                },
+                "functionName": "ImageCollection.fromImages",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "3"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "collection",
+        "status": "passed"
+      },
+      "family": "collections",
+      "id": "collection_limit_sort",
+      "python": "ee.ImageCollection('sentinel-2-l2a').limit(maximum=2, prop='cloud', ascending=True)",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "ascending": true,
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "key": "cloud",
+                  "limit": 2
+                },
+                "functionName": "Collection.limit",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "1"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "collection",
+        "status": "passed"
+      },
+      "family": "mapped_collections",
+      "id": "map_copy_system_properties",
+      "python": "ee.ImageCollection('sentinel-2-l2a').map(lambda image: image.copyProperties(source=image, properties=['system:index', 'system:time_start']))",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              [
+                "system:index",
+                "system:time_start"
+              ]
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "destination": {
+                    "type": "ArgumentRef",
+                    "value": "_MAPPING_VAR_0_0"
+                  },
+                  "properties": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "source": {
+                    "type": "ArgumentRef",
+                    "value": "_MAPPING_VAR_0_0"
+                  }
+                },
+                "functionName": "Image.copyProperties",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "argumentNames": [
+                  "_MAPPING_VAR_0_0"
+                ],
+                "body": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "type": "Function"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "baseAlgorithm": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  },
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.map",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "4"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "collection",
+        "status": "passed"
+      },
+      "family": "mapped_collections",
+      "id": "map_set_dynamic_property",
+      "python": "ee.ImageCollection('sentinel-2-l2a').map(lambda image: image.set('is_clear', ee.Number(image.get('cloud')).lte(right=10)))",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "object": {
+                    "type": "ArgumentRef",
+                    "value": "_MAPPING_VAR_0_0"
+                  },
+                  "property": "cloud"
+                },
+                "functionName": "Element.get",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "left": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "right": 10
+                },
+                "functionName": "Number.lte",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "key": "is_clear",
+                  "object": {
+                    "type": "ArgumentRef",
+                    "value": "_MAPPING_VAR_0_0"
+                  },
+                  "value": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  }
+                },
+                "functionName": "Element.set",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "argumentNames": [
+                  "_MAPPING_VAR_0_0"
+                ],
+                "body": {
+                  "type": "ValueRef",
+                  "value": "3"
+                },
+                "type": "Function"
+              }
+            ],
+            [
+              "5",
+              {
+                "arguments": {
+                  "baseAlgorithm": {
+                    "type": "ValueRef",
+                    "value": "4"
+                  },
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.map",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "5"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "reflectance"
+        ],
+        "kind": "collection",
+        "status": "passed"
+      },
+      "family": "mapped_collections",
+      "id": "map_arithmetic_rename",
+      "python": "ee.ImageCollection('sentinel-2-l2a').map(lambda image: image.select('nir').multiply(image2=0.0001).rename('reflectance'))",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              [
+                "nir"
+              ]
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "bandSelectors": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "input": {
+                    "type": "ArgumentRef",
+                    "value": "_MAPPING_VAR_0_0"
+                  }
+                },
+                "functionName": "Image.select",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "value": 0.0001
+                },
+                "functionName": "Image.constant",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "image1": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "image2": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Image.multiply",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "5",
+              [
+                "reflectance"
+              ]
+            ],
+            [
+              "6",
+              {
+                "arguments": {
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "4"
+                  },
+                  "names": {
+                    "type": "ValueRef",
+                    "value": "5"
+                  }
+                },
+                "functionName": "Image.rename",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "7",
+              {
+                "argumentNames": [
+                  "_MAPPING_VAR_0_0"
+                ],
+                "body": {
+                  "type": "ValueRef",
+                  "value": "6"
+                },
+                "type": "Function"
+              }
+            ],
+            [
+              "8",
+              {
+                "arguments": {
+                  "baseAlgorithm": {
+                    "type": "ValueRef",
+                    "value": "7"
+                  },
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.map",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "8"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "kind": "value",
+        "status": "passed",
+        "value": "scene-a"
+      },
+      "family": "properties",
+      "id": "first_dynamic_property",
+      "python": "ee.ImageCollection('sentinel-2-l2a').first().get(property='system:index')",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.first",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "object": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "property": "system:index"
+                },
+                "functionName": "Element.get",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "2"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "kind": "value",
+        "status": "passed",
+        "value": [
+          "scene-a",
+          "scene-b",
+          "scene-c"
+        ]
+      },
+      "family": "properties",
+      "id": "aggregate_array_properties",
+      "python": "ee.ImageCollection('sentinel-2-l2a').aggregate_array(property='system:index')",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "property": "system:index"
+                },
+                "functionName": "AggregateFeatureCollection.array",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "1"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "collection",
+        "status": "passed"
+      },
+      "family": "filters",
+      "id": "filter_date_algorithm",
+      "python": "ee.ImageCollection('sentinel-2-l2a').filter(ee.Filter.date(start='2023-11-14', end='2023-11-16'))",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "end": "2023-11-16",
+                  "start": "2023-11-14"
+                },
+                "functionName": "DateRange",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "leftValue": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "rightField": "system:time_start"
+                },
+                "functionName": "Filter.dateRangeContains",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "filter": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  }
+                },
+                "functionName": "Collection.filter",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "3"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "difference"
+        ],
+        "kind": "collection",
+        "status": "passed"
+      },
+      "family": "mapped_collections",
+      "id": "map_expression",
+      "python": "ee.ImageCollection('sentinel-2-l2a').map(lambda image: image.expression(expression='nir - red', map_={'nir': image.select('nir'), 'red': image.select('red')}).rename('difference'))",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              [
+                "DEFAULT_EXPRESSION_IMAGE",
+                "nir",
+                "red"
+              ]
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "argName": "DEFAULT_EXPRESSION_IMAGE",
+                  "expression": "nir - red",
+                  "vars": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Image.parseExpression",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              [
+                "nir"
+              ]
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "bandSelectors": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  },
+                  "input": {
+                    "type": "ArgumentRef",
+                    "value": "_MAPPING_VAR_0_0"
+                  }
+                },
+                "functionName": "Image.select",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "5",
+              [
+                "red"
+              ]
+            ],
+            [
+              "6",
+              {
+                "arguments": {
+                  "bandSelectors": {
+                    "type": "ValueRef",
+                    "value": "5"
+                  },
+                  "input": {
+                    "type": "ArgumentRef",
+                    "value": "_MAPPING_VAR_0_0"
+                  }
+                },
+                "functionName": "Image.select",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "7",
+              {
+                "arguments": {
+                  "DEFAULT_EXPRESSION_IMAGE": {
+                    "type": "ArgumentRef",
+                    "value": "_MAPPING_VAR_0_0"
+                  },
+                  "nir": {
+                    "type": "ValueRef",
+                    "value": "4"
+                  },
+                  "red": {
+                    "type": "ValueRef",
+                    "value": "6"
+                  }
+                },
+                "function": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "type": "Invocation"
+              }
+            ],
+            [
+              "8",
+              [
+                "difference"
+              ]
+            ],
+            [
+              "9",
+              {
+                "arguments": {
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "7"
+                  },
+                  "names": {
+                    "type": "ValueRef",
+                    "value": "8"
+                  }
+                },
+                "functionName": "Image.rename",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "10",
+              {
+                "argumentNames": [
+                  "_MAPPING_VAR_0_0"
+                ],
+                "body": {
+                  "type": "ValueRef",
+                  "value": "9"
+                },
+                "type": "Function"
+              }
+            ],
+            [
+              "11",
+              {
+                "arguments": {
+                  "baseAlgorithm": {
+                    "type": "ValueRef",
+                    "value": "10"
+                  },
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.map",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "11"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "kind": "value",
+        "status": "passed",
+        "value": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ]
+      },
+      "family": "images",
+      "id": "image_band_names",
+      "python": "ee.ImageCollection('sentinel-2-l2a').first().bandNames()",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.first",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "image": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Image.bandNames",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "2"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "nir"
+        ],
+        "kind": "image",
+        "status": "passed"
+      },
+      "family": "images",
+      "id": "image_to_float",
+      "python": "ee.ImageCollection('sentinel-2-l2a').first().select('nir').toFloat()",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.first",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              [
+                "nir"
+              ]
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "bandSelectors": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Image.select",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "value": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Image.toFloat",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "4"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "reason": "Unsupported Earth Engine algorithm: Kernel.square",
+        "status": "rejected"
+      },
+      "family": "neighborhood",
+      "id": "neighborhood_reduce_kernel",
+      "python": "ee.ImageCollection('sentinel-2-l2a').first().reduceNeighborhood(reducer=ee.Reducer.mean(), kernel=ee.Kernel.square(radius=1, units='pixels', normalize=False))",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.first",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {},
+                "functionName": "Reducer.mean",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "normalize": false,
+                  "radius": 1,
+                  "units": "pixels"
+                },
+                "functionName": "Kernel.square",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "image": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "kernel": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  },
+                  "reducer": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  }
+                },
+                "functionName": "Image.reduceNeighborhood",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "4"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "reason": "Unsupported Earth Engine algorithm: Image.focalMean",
+        "status": "rejected"
+      },
+      "family": "neighborhood",
+      "id": "focal_mean",
+      "python": "ee.ImageCollection('sentinel-2-l2a').first().focalMean(radius=1, kernelType='circle', units='pixels', iterations=1)",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.first",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "image": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "iterations": 1,
+                  "kernelType": "circle",
+                  "radius": 1,
+                  "units": "pixels"
+                },
+                "functionName": "Image.focalMean",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "2"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "reason": "Unsupported Earth Engine algorithm: Join.saveFirst",
+        "status": "rejected"
+      },
+      "family": "joins",
+      "id": "join_save_first",
+      "python": "ee.Join.saveFirst(matchKey='match').apply(primary=ee.ImageCollection('sentinel-2-l2a'), secondary=ee.ImageCollection('sentinel-2-l2a'), condition=ee.Filter.equals(leftField='system:index', rightField='system:index'))",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "matchKey": "match"
+                },
+                "functionName": "Join.saveFirst",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "leftField": "system:index",
+                  "rightField": "system:index"
+                },
+                "functionName": "Filter.equals",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "condition": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "join": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "primary": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  },
+                  "secondary": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Join.apply",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "3"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "reason": "Unsupported Earth Engine algorithm: Array",
+        "status": "rejected"
+      },
+      "family": "arrays",
+      "id": "array_matrix_multiply",
+      "python": "ee.Array([[1, 2], [3, 4]]).matrixMultiply(right=ee.Array([[1], [1]]))",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              [
+                1,
+                2
+              ]
+            ],
+            [
+              "1",
+              [
+                3,
+                4
+              ]
+            ],
+            [
+              "2",
+              [
+                {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              ]
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "values": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  }
+                },
+                "functionName": "Array",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              [
+                1
+              ]
+            ],
+            [
+              "5",
+              [
+                {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              ]
+            ],
+            [
+              "6",
+              {
+                "arguments": {
+                  "values": {
+                    "type": "ValueRef",
+                    "value": "5"
+                  }
+                },
+                "functionName": "Array",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "7",
+              {
+                "arguments": {
+                  "left": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  },
+                  "right": {
+                    "type": "ValueRef",
+                    "value": "6"
+                  }
+                },
+                "functionName": "Array.matrixMultiply",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "7"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "reason": "Unsupported reducer: Reducer.linearRegression; stdDev cannot be mapped to sample standard deviation",
+        "status": "rejected"
+      },
+      "family": "regression",
+      "id": "regression_reducer",
+      "python": "ee.ImageCollection('sentinel-2-l2a').reduce(reducer=ee.Reducer.linearRegression(numX=2, numY=1))",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "numX": 2,
+                  "numY": 1
+                },
+                "functionName": "Reducer.linearRegression",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "reducer": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "ImageCollection.reduce",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "2"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "reason": "Unsupported Earth Engine algorithm: Classifier.smileRandomForest",
+        "status": "rejected"
+      },
+      "family": "classifiers",
+      "id": "classifier_constructor",
+      "python": "ee.Classifier.smileRandomForest(numberOfTrees=10, variablesPerSplit=2, minLeafPopulation=1, bagFraction=0.5, seed=7)",
+      "serialization": {
+        "expression": {
+          "arguments": {
+            "bagFraction": 0.5,
+            "minLeafPopulation": 1,
+            "numberOfTrees": 10,
+            "seed": 7,
+            "variablesPerSplit": 2
+          },
+          "functionName": "Classifier.smileRandomForest",
+          "type": "Invocation"
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "bands": [
+          "NIR"
+        ],
+        "kind": "image",
+        "status": "passed"
+      },
+      "export_options": {
+        "crs": "EPSG:32649",
+        "description": "python-probe-image",
+        "fileFormat": "GeoTIFF",
+        "fileNamePrefix": "nir",
+        "folder": "research",
+        "maxPixels": 1000,
+        "region": {
+          "coordinates": [
+            [
+              [
+                100.1,
+                30.1
+              ],
+              [
+                100.9,
+                30.1
+              ],
+              [
+                100.9,
+                30.9
+              ],
+              [
+                100.1,
+                30.9
+              ],
+              [
+                100.1,
+                30.1
+              ]
+            ]
+          ],
+          "crs": {
+            "properties": {
+              "name": "EPSG:4326"
+            },
+            "type": "name"
+          },
+          "geodesic": false,
+          "type": "Polygon"
+        },
+        "scale": 10
+      },
+      "family": "exports",
+      "id": "export_image_drive",
+      "python": "ee.batch.Export.image.toDrive(image=ee.ImageCollection('sentinel-2-l2a').first().select('nir').rename('NIR'), description='python-probe-image', folder='research', fileNamePrefix='nir', region=roi, scale=10, crs='EPSG:32649', maxPixels=1000)",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "arguments": {
+                  "id": "sentinel-2-l2a"
+                },
+                "functionName": "ImageCollection.load",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "collection": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  }
+                },
+                "functionName": "Collection.first",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              [
+                "nir"
+              ]
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "bandSelectors": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Image.select",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              [
+                "NIR"
+              ]
+            ],
+            [
+              "5",
+              {
+                "arguments": {
+                  "input": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  },
+                  "names": {
+                    "type": "ValueRef",
+                    "value": "4"
+                  }
+                },
+                "functionName": "Image.rename",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "5"
+          }
+        },
+        "status": "passed"
+      }
+    },
+    {
+      "compilation": {
+        "reason": "Malformed or unsupported Earth Engine expression: unhashable type: 'dict'",
+        "status": "rejected"
+      },
+      "export_options": {
+        "description": "python-probe-table",
+        "fileFormat": "CSV",
+        "fileNamePrefix": "summary",
+        "folder": "research",
+        "selectors": [
+          "mean",
+          "scene"
+        ]
+      },
+      "family": "exports",
+      "id": "export_table_drive",
+      "python": "ee.batch.Export.table.toDrive(collection=ee.FeatureCollection([ee.Feature(roi, {'mean': 3, 'scene': 'a'})]), description='python-probe-table', folder='research', fileNamePrefix='summary', fileFormat='CSV', selectors=['mean', 'scene'])",
+      "serialization": {
+        "expression": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      100.1,
+                      30.1
+                    ],
+                    [
+                      100.9,
+                      30.1
+                    ],
+                    [
+                      100.9,
+                      30.9
+                    ],
+                    [
+                      100.1,
+                      30.9
+                    ],
+                    [
+                      100.1,
+                      30.1
+                    ]
+                  ]
+                ],
+                "crs": {
+                  "properties": {
+                    "name": "EPSG:4326"
+                  },
+                  "type": "name"
+                },
+                "geodesic": false,
+                "type": "Polygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "type": "Dictionary",
+                "value": {
+                  "mean": 3,
+                  "scene": "a"
+                }
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "metadata": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Feature",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              [
+                {
+                  "type": "ValueRef",
+                  "value": "2"
+                }
+              ]
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "features": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Collection",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "4"
+          }
+        },
+        "status": "passed"
+      }
+    }
+  ],
+  "catalogue": {
+    "bands": [
+      "blue",
+      "green",
+      "red",
+      "nir",
+      "SCL"
+    ],
+    "id": "sentinel-2-l2a",
+    "items": [
+      "scene-a",
+      "scene-b",
+      "scene-c"
+    ]
+  },
+  "network_requests": 0,
+  "schema": "local-ee-python-probes/v1",
+  "sdk": "1.7.49",
+  "signature_count": 991,
+  "signature_sha256": "8279bfd5e755f10c291a0d833aed810a5aba2e360e26ecee69f2bacaeecb3d01",
+  "source_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a"
+}

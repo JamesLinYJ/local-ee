@@ -8,8 +8,9 @@ from .ir import Filter, fail, integer
 _FILTERS = {
     "and", "or", "not", "dateRangeContains", "intersects", "equals",
     "lessThan", "greaterThan", "stringContains", "inList", "listContains",
-    "calendarRange",
+    "calendarRange", "notNull",
 }
+_MAX_NOT_NULL_PROPERTIES = 1000
 
 
 def invoke_filter(translator, name, arguments):
@@ -22,6 +23,15 @@ def invoke_filter(translator, name, arguments):
         translator.allowed(arguments, {"filter"})
     elif operation == "calendarRange":
         translator.allowed(arguments, {"start", "end", "field"})
+    elif operation == "notNull":
+        translator.allowed(arguments, {"properties"})
+        properties = arguments.get("properties")
+        if not isinstance(properties, list) or any(
+            not isinstance(property_name, str) for property_name in properties
+        ):
+            fail("Filter.notNull properties must be a list of strings")
+        if len(properties) > _MAX_NOT_NULL_PROPERTIES:
+            fail("Filter.notNull supports at most 1000 properties")
     else:
         fields = {"leftField", "leftValue", "rightField", "rightValue"}
         if operation == "intersects":
@@ -41,6 +51,15 @@ def matches_filter(translator, filt, item):
     if name == "not":
         return not matches_filter(translator, arguments["filter"], item)
     properties = item.get("properties", {})
+    if name == "notNull":
+        # The pinned official signature describes this as passing when all named
+        # properties are non-null. Missing and explicit null values both fail;
+        # other falsey JSON values remain present and non-null. An empty list
+        # therefore passes every item by the literal all-properties predicate.
+        return all(
+            key in properties and properties[key] is not None
+            for key in arguments["properties"]
+        )
     if name == "dateRangeContains":
         if arguments.get("rightField") != "system:time_start" or "leftValue" not in arguments:
             fail("Only system:time_start date filtering is supported")

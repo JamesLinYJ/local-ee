@@ -1,8 +1,10 @@
-# GEE JavaScript 兼容目标
+# GEE 兼容目标（Python 优先）
 
-设定日期：2026-10-21。用户要求：尽量完全兼容 GEE 语法。
+设定日期：2026-10-21。用户要求：尽量完全兼容 GEE 语法；最新顺序是先探测 Python、列出 list.md，再补齐兼容，并交给云端 Codex 继续开发与测试。
 
 ## 目标
+
+当前优先在云端推进 Python 客户端和共享后端兼容，先按 `docs/gee-python/list.md` 补齐实际失败项；原有 JavaScript 支持和下列完整目标继续保留。
 
 在现有 macOS 原生私有工作台中，尽可能完整兼容固定版本 Google Earth Engine JavaScript API 的类型、方法、参数和计算语义，并逐步兼容 Code Editor 的地图、图表及模块交互，使真实 GEE 项目能够以尽量少的修改迁移到本机运行。
 
