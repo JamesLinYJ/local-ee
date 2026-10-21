@@ -36,6 +36,6 @@ python3 scripts/fetch_engine_dependencies.py --verify-only
 
 ## 主分支保护
 
-`main` 必须通过 PR 合并：GitHub Actions 的 `python` 和 `frontend` 检查均通过，基于最新主分支，解决全部讨论，保持线性提交历史。禁止强推和删除主分支，规则同时约束管理员；合并方式采用 squash，合并后自动删除工作分支。
+默认直接 push，不要求创建 PR。`main` 继续要求 GitHub Actions 的 `python` 和 `frontend` 检查通过、基于最新主分支并保持线性提交历史。禁止强推和删除主分支，规则同时约束管理员。
 
-目前仅有一名维护者，批准人数暂设为 0，仍强制 PR 和 CI。新增可信维护者后应将 required approving reviews 提高为至少 1，并启用过期批准撤销策略。自动化不得为提交代码临时关闭保护。
+必需检查针对实际提交：新提交先推送到临时验证分支，CI 通过后将同一提交快进推送到 `main`，再清理临时分支。主分支若已前进，重新整合并对新提交运行检查。PR 仅在用户明确要求时使用；自动化不得为提交代码绕过或临时关闭 CI、强推及管理员保护。

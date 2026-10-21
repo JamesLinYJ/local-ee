@@ -49,7 +49,7 @@ Read `docs/architecture.md` before changing architecture or adding a subsystem. 
 
 ## Verification and workflow
 
-- The public source repository is `JamesLinYJ/local-ee`. Submit changes through pull requests. Protected `main` requires the GitHub Actions `python` and `frontend` checks, an up-to-date base, resolved conversations and linear history; force pushes and branch deletion are disallowed, including for administrators. Do not disable protection to publish changes. With only one maintainer, approving reviews are not required; revisit when another trusted maintainer joins.
+- The public source repository is `JamesLinYJ/local-ee`. The user prefers direct pushes; do not create pull requests unless requested. Protected `main` still requires successful GitHub Actions `python` and `frontend` checks on the exact commit, an up-to-date base and linear history, including for administrators. When checks have not run, push that commit to a temporary validation branch, wait for CI, then fast-forward `main` to the identical commit and remove the temporary branch. Never force-push or delete `main`, bypass checks, or temporarily disable protection to publish changes.
 - Inspect code and direct callers first. Keep bounded changes and ownership clear; parallel workers must not edit overlapping files and must report evidence/limits.
 - Use existing package managers/locks. Keep builds in temporary output directories, then safely deploy static assets. No public hosting or publishing for this local platform without user authorization.
 - Run syntax/build checks, focused negative/semantic tests, and legitimate end-to-end controls appropriate to the changed module. Test real UI routes when the behavior is user-visible.
