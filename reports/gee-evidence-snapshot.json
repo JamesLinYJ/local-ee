@@ -1,0 +1,652 @@
+{
+  "api_context_counts": {
+    "AggregateFeatureCollection.array": {
+      "compile_rejection_expression_count": 0,
+      "compile_success_expression_count": 1,
+      "sdk_serialization_expression_count": 1
+    },
+    "Classifier.confusionMatrix": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Classifier.smileRandomForest": {
+      "compile_rejection_expression_count": 4,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 4
+    },
+    "Classifier.train": {
+      "compile_rejection_expression_count": 3,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 3
+    },
+    "Collection": {
+      "compile_rejection_expression_count": 5,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 5
+    },
+    "Collection.filter": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Collection.first": {
+      "compile_rejection_expression_count": 29,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 29
+    },
+    "Collection.iterate": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Collection.map": {
+      "compile_rejection_expression_count": 8,
+      "compile_success_expression_count": 5,
+      "sdk_serialization_expression_count": 11
+    },
+    "Collection.size": {
+      "compile_rejection_expression_count": 2,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 2
+    },
+    "Collection.toList": {
+      "compile_rejection_expression_count": 0,
+      "compile_success_expression_count": 1,
+      "sdk_serialization_expression_count": 1
+    },
+    "Date": {
+      "compile_rejection_expression_count": 2,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 2
+    },
+    "Date.difference": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Date.get": {
+      "compile_rejection_expression_count": 0,
+      "compile_success_expression_count": 1,
+      "sdk_serialization_expression_count": 1
+    },
+    "Date.getRelative": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Date.millis": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Element.set": {
+      "compile_rejection_expression_count": 0,
+      "compile_success_expression_count": 1,
+      "sdk_serialization_expression_count": 1
+    },
+    "Feature": {
+      "compile_rejection_expression_count": 5,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 5
+    },
+    "Filter.equals": {
+      "compile_rejection_expression_count": 2,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 2
+    },
+    "Filter.maxDifference": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.add": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.addBands": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.arrayFlatten": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.arrayProject": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.arraySlice": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.atan2": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.bitwiseAnd": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.classify": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.clip": {
+      "compile_rejection_expression_count": 0,
+      "compile_success_expression_count": 1,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.connectedPixelCount": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.constant": {
+      "compile_rejection_expression_count": 6,
+      "compile_success_expression_count": 1,
+      "sdk_serialization_expression_count": 7
+    },
+    "Image.date": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 1,
+      "sdk_serialization_expression_count": 2
+    },
+    "Image.directionalDistanceTransform": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.focalMax": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.focalMin": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.hsvToRgb": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.hypot": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.int16": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.matrixSolve": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.neq": {
+      "compile_rejection_expression_count": 0,
+      "compile_success_expression_count": 1,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.normalizedDifference": {
+      "compile_rejection_expression_count": 0,
+      "compile_success_expression_count": 1,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.projection": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.reduceNeighborhood": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.reduceRegion": {
+      "compile_rejection_expression_count": 2,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 2
+    },
+    "Image.reduceRegions": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.rename": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 1,
+      "sdk_serialization_expression_count": 2
+    },
+    "Image.reproject": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.rightShift": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.sample": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.sampleRegions": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.select": {
+      "compile_rejection_expression_count": 28,
+      "compile_success_expression_count": 3,
+      "sdk_serialization_expression_count": 29
+    },
+    "Image.stratifiedSample": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.toArray": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.unmask": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Image.updateMask": {
+      "compile_rejection_expression_count": 0,
+      "compile_success_expression_count": 1,
+      "sdk_serialization_expression_count": 1
+    },
+    "ImageCollection.fromImages": {
+      "compile_rejection_expression_count": 0,
+      "compile_success_expression_count": 1,
+      "sdk_serialization_expression_count": 1
+    },
+    "ImageCollection.load": {
+      "compile_rejection_expression_count": 43,
+      "compile_success_expression_count": 5,
+      "sdk_serialization_expression_count": 46
+    },
+    "ImageCollection.qualityMosaic": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "ImageCollection.reduce": {
+      "compile_rejection_expression_count": 3,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 3
+    },
+    "ImageCollection.toArray": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Join.apply": {
+      "compile_rejection_expression_count": 2,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 2
+    },
+    "Join.saveAll": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Join.saveFirst": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Kernel.square": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Projection": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Reducer.combine": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Reducer.histogram": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Reducer.linearFit": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Reducer.linearRegression": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Reducer.mean": {
+      "compile_rejection_expression_count": 3,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 3
+    },
+    "Reducer.percentile": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "Reducer.sampleStdDev": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "TemporalSegmentation.LandTrendr": {
+      "compile_rejection_expression_count": 1,
+      "compile_success_expression_count": 0,
+      "sdk_serialization_expression_count": 1
+    },
+    "reduce.mean": {
+      "compile_rejection_expression_count": 2,
+      "compile_success_expression_count": 3,
+      "sdk_serialization_expression_count": 3
+    },
+    "reduce.median": {
+      "compile_rejection_expression_count": 0,
+      "compile_success_expression_count": 1,
+      "sdk_serialization_expression_count": 1
+    }
+  },
+  "numerical_evidence_contexts": [
+    {
+      "context": "one real local preprocessed Sentinel-2 NDVI sample",
+      "crs": "EPSG:32649",
+      "google_service_comparison": false,
+      "mask_mismatches": 0,
+      "max_absolute_error": 0.0,
+      "passed": true,
+      "reference": "independent Rasterio/NumPy reference on the exact output grid",
+      "scope_note": "This is an end-to-end sample result; it does not certify every signature or overload used by a general script.",
+      "tolerance": 1e-06,
+      "valid_pixels": 45590
+    },
+    {
+      "context": "synthetic three-scene multiband temporal reduction fixture",
+      "google_service_comparison": false,
+      "mask_mismatches_total": 0,
+      "maximum_absolute_error": 0.0,
+      "output_case_count": 23,
+      "passed": true,
+      "reference": "independent NumPy reference reprojected to the exact output grid",
+      "scope_note": "Fixture-level numerical evidence; not a per-signature support or full GEE-equivalence claim."
+    }
+  ],
+  "provenance": "Allowlisted and sanitized counters/labels derived from local compatibility and numerical audit records; raw records and paths are excluded.",
+  "schema_version": 1,
+  "sdk_version": "1.7.49",
+  "targeted_audit_summary": {
+    "native_runner_probes": [
+      {
+        "exit_code": 1,
+        "network_allowed": false,
+        "observed_class": "ui_namespace_missing",
+        "surface": "ui.Panel"
+      },
+      {
+        "exit_code": 1,
+        "network_allowed": false,
+        "observed_class": "ui_namespace_missing",
+        "surface": "ui.Chart"
+      },
+      {
+        "exit_code": 1,
+        "network_allowed": false,
+        "observed_class": "remote_user_module_unavailable",
+        "surface": "require(users/... module)"
+      }
+    ],
+    "scale_probes": {
+      "cases": [
+        {
+          "compiled": true,
+          "graph_nodes": 5,
+          "scene_count": 1
+        },
+        {
+          "compiled": true,
+          "graph_nodes": 10,
+          "scene_count": 1
+        },
+        {
+          "compiled": true,
+          "graph_nodes": 62,
+          "scene_count": 10
+        },
+        {
+          "compiled": true,
+          "graph_nodes": 115,
+          "scene_count": 10
+        },
+        {
+          "compiled": true,
+          "graph_nodes": 122,
+          "scene_count": 20
+        },
+        {
+          "compiled": true,
+          "graph_nodes": 225,
+          "scene_count": 20
+        },
+        {
+          "compiled": true,
+          "graph_nodes": 182,
+          "scene_count": 30
+        },
+        {
+          "compiled": true,
+          "graph_nodes": 335,
+          "scene_count": 30
+        },
+        {
+          "compiled": false,
+          "graph_nodes": null,
+          "scene_count": 50
+        },
+        {
+          "compiled": true,
+          "graph_nodes": 302,
+          "scene_count": 50
+        },
+        {
+          "compiled": false,
+          "graph_nodes": null,
+          "scene_count": 100
+        },
+        {
+          "compiled": false,
+          "graph_nodes": null,
+          "scene_count": 100
+        },
+        {
+          "compiled": false,
+          "graph_nodes": null,
+          "scene_count": 365
+        },
+        {
+          "compiled": false,
+          "graph_nodes": null,
+          "scene_count": 365
+        }
+      ],
+      "classification_note": "Graph-size probes only; not throughput or full time-series acceptance.",
+      "compiled": 9,
+      "count": 14,
+      "rejected": 5,
+      "scene_counts": [
+        1,
+        10,
+        20,
+        30,
+        50,
+        100,
+        365
+      ]
+    },
+    "scope": "Source inspection plus isolated official-SDK serialization and local compilation; no original full workflow or Google-service numerical acceptance",
+    "source": "sanitized summary of the local complex-compatibility audit",
+    "workflow_probes": {
+      "classification_note": "Targeted workflow dependencies, not a random API sample; an expression outcome is co-occurrence evidence and not per-signature parameter or numerical verification.",
+      "compiled": 3,
+      "count": 50,
+      "data_or_band_rejections": 4,
+      "operation_or_semantic_rejections": 43,
+      "sdk_serialized": 50
+    },
+    "workflow_source_review_count": 6
+  },
+  "workflow_source_review": [
+    {
+      "audit_reported_gaps": [
+        "Date.difference",
+        "Image.arrayFlatten",
+        "Image.arrayProject",
+        "Image.arraySlice",
+        "Image.matrixSolve",
+        "ImageCollection.toArray"
+      ],
+      "id": "arrays",
+      "local_data_blockers": [
+        "Landsat not locally loaded"
+      ],
+      "name": "OLS regression by per-pixel matrix solve",
+      "priority": "P2",
+      "public_reference": "https://developers.google.com/earth-engine/guides/arrays_transformations",
+      "scope_note": "The gap list is a saved source-review finding. Regenerated inventory separately records current same-name handler declarations; neither alone proves full semantics.",
+      "whole_workflow_status": "not runnable as-is; source review and isolated blocker probes, not whole-script execution"
+    },
+    {
+      "audit_reported_gaps": [
+        "Classifier.confusionMatrix",
+        "Classifier.smileRandomForest",
+        "Classifier.train",
+        "Image.classify",
+        "Image.reduceRegions",
+        "Image.sample",
+        "Image.sampleRegions",
+        "Image.stratifiedSample"
+      ],
+      "id": "classification",
+      "local_data_blockers": [
+        "Landsat, MODIS labels, vector training assets not locally loaded"
+      ],
+      "name": "Random forest classification and independent validation",
+      "priority": "P2",
+      "public_reference": "https://developers.google.com/earth-engine/guides/classification",
+      "scope_note": "The gap list is a saved source-review finding. Regenerated inventory separately records current same-name handler declarations; neither alone proves full semantics.",
+      "whole_workflow_status": "not runnable as-is; source review and isolated blocker probes, not whole-script execution"
+    },
+    {
+      "audit_reported_gaps": [
+        "Date.difference",
+        "Dynamic image date in native collection map",
+        "Image.arrayFlatten",
+        "Image.arrayProject",
+        "Image.atan2",
+        "Image.bitwiseAnd",
+        "Image.hsvToRgb",
+        "Image.hypot",
+        "Reducer.linearRegression",
+        "ui.Chart"
+      ],
+      "id": "harmonic",
+      "local_data_blockers": [
+        "LANDSAT/LC08/C02/T1_L2 not locally loaded"
+      ],
+      "name": "Harmonic NDVI regression and phenology",
+      "priority": "P1",
+      "public_reference": "https://developers.google.com/earth-engine/tutorials/community/time-series-modeling",
+      "scope_note": "The gap list is a saved source-review finding. Regenerated inventory separately records current same-name handler declarations; neither alone proves full semantics.",
+      "whole_workflow_status": "not runnable as-is; source review and isolated blocker probes, not whole-script execution"
+    },
+    {
+      "audit_reported_gaps": [
+        "Date.difference",
+        "Date.getRelative",
+        "Filter.maxDifference",
+        "Image.int16",
+        "Join.saveAll",
+        "Per-image matched-list metadata",
+        "Standalone constant grid"
+      ],
+      "id": "histarfm",
+      "local_data_blockers": [
+        "HISTARFM precomputed reflectance database not locally loaded"
+      ],
+      "name": "Five-day interpolation of HISTARFM gap-filled reflectance",
+      "priority": "P1",
+      "public_reference": "https://developers.google.com/earth-engine/tutorials/community/histarfm-cloud-and-gap-free-landsat",
+      "scope_note": "The gap list is a saved source-review finding. Regenerated inventory separately records current same-name handler declarations; neither alone proves full semantics.",
+      "whole_workflow_status": "not runnable as-is; source review and isolated blocker probes, not whole-script execution"
+    },
+    {
+      "audit_reported_gaps": [
+        "GEE users module resolver",
+        "Image.arrayFlatten",
+        "Image.arrayMask",
+        "Image.arraySlice",
+        "Image.bitwiseAnd",
+        "Image.connectedPixelCount",
+        "Image.unmask",
+        "TemporalSegmentation.LandTrendr"
+      ],
+      "id": "landtrendr",
+      "local_data_blockers": [
+        "Multi-year Landsat and SWIR bands not locally loaded"
+      ],
+      "name": "LandTrendr forest disturbance segmentation and patch filters",
+      "priority": "P3",
+      "public_reference": "https://github.com/eMapR/LT-GEE/blob/master/LandTrendr.js",
+      "scope_note": "The gap list is a saved source-review finding. Regenerated inventory separately records current same-name handler declarations; neither alone proves full semantics.",
+      "whole_workflow_status": "not runnable as-is; source review and isolated blocker probes, not whole-script execution"
+    },
+    {
+      "audit_reported_gaps": [
+        "Image.directionalDistanceTransform",
+        "Image.focalMax",
+        "Image.focalMin",
+        "Image.projection",
+        "Image.reproject",
+        "Join.saveFirst"
+      ],
+      "id": "s2cloudless",
+      "local_data_blockers": [
+        "COPERNICUS/S2_CLOUD_PROBABILITY not locally loaded",
+        "Local Sentinel-2 has pre-applied masks and limited source metadata; cannot reconstruct original cloudy pixels"
+      ],
+      "name": "Sentinel-2 cloud and shadow masking",
+      "priority": "P1",
+      "public_reference": "https://developers.google.com/earth-engine/tutorials/community/sentinel-2-s2cloudless",
+      "scope_note": "The gap list is a saved source-review finding. Regenerated inventory separately records current same-name handler declarations; neither alone proves full semantics.",
+      "whole_workflow_status": "not runnable as-is; source review and isolated blocker probes, not whole-script execution"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 """Native ARM64 GeoTrellis adapter, preserving upstream batch evaluation."""
+import hashlib
 import json
 import os
 import sys
@@ -13,6 +14,13 @@ def setup(log_dir):
     jars = Path(os.environ['GEOPYSPARK_JARS_PATH'])
     conf = geopyspark_conf(master='local[1]',appName='private-gee-native')
     paths = conf.get('spark.jars').split(',')
+    adapter = jars/'local-ee-integer-adapter.jar'
+    if adapter.exists():
+        manifest = json.loads(adapter.with_suffix('.jar.manifest.json').read_text())
+        if hashlib.sha256(adapter.read_bytes()).hexdigest() != manifest['jar_sha256']:
+            raise RuntimeError('Local EE adapter checksum mismatch; rebuild the native adapter')
+        if str(adapter) not in paths:
+            paths.append(str(adapter))
     paths.sort(key=lambda p:'geotrellis-extensions' not in p and 'geotrellis-dependencies' not in p)
     # local[1] shares one JVM. Use its classpath instead of serving/copying JARs
     # through Spark's network FileServer (Darwin sendfile needs broader rights).

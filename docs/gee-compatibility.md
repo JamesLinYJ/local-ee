@@ -12,6 +12,8 @@ JavaScript 在 macOS 原生 Seatbelt 隔离的 Node.js 进程执行。官方客�
 
 S 表示固定官方 SDK 可生成表达式；C 表示本地编译；N 表示本地实际引擎与独立数值基准比较；G 表示与原始 Google 服务同数据比较。下表所有项目尚无 G 级结论。`/gee/v1/capabilities` 的函数名是 C 级处理器清单，不是 991 项服务端算法均已实现。
 
+完整固定签名、参数与验证层次见 [全量 API 清单](gee-api-inventory.md) 和 [机器可读报告](../reports/gee-api-inventory.json)。该清单可以在没有本机数据和审计目录的干净克隆中重新生成；不会用声明数量推算兼容率。
+
 | 用法 | 当前支持范围 | 证据 |
 | --- | --- | --- |
 | 普通 JavaScript | var/let/const、函数/箭头函数、对象、数组、循环；由 Node 执行 | 隔离运行器与网页实测 |
@@ -25,9 +27,13 @@ S 表示固定官方 SDK 可生成表达式；C 表示本地编译；N 表示本
 | 范围变换 | clamp、unitScale；后者不截断范围外数值 | S/C/N；要求有限 low < high |
 | 归约 | median/mean/min/max/sum/count、已实现单输出 Reducer、Image.reduce | S/C；多景 median/mean/sum/count、波段 mean 已有 N |
 | mosaic | 按集合顺序从后向前取有效像素，反序与相同时间戳仍保留逐景身份 | 正/反序 N；相同时间戳 C 回归 |
+| qualityMosaic | 按质量波段最大值选择整组像素，获胜景某波段缺测则保持缺测；排除质量缺测景；当前要求波段名称/顺序一致 | 正序、反序与显式集合 6 个实际输出 N；平分采用本地后景优先规则，未做 G 对照 |
 | reduce / toBands | Collection.reduce 输出波段带 reducer 后缀；toBands 按 system:index 命名 | S/C/N；toBands 最多 100 波段，仍受 500 图节点限制 |
 | fromImages / merge | 从显式列表、toList、List.map 的分期影像构造集合；保留重复项；逐景 map 属性、筛选、排序、归约、toBands | S/C/N；分期合成跳过空段、重复求和/计数与排序 mosaic 已有实际引擎验收；有限集合最多 1000 幅 |
-| Date | UTC 构造/fromYMD/get/millis；advance 秒至周、整数月/年；常用 format token | S/C；月末、闰年、负向移动、格式错误夹具 |
+| Date | UTC 构造/fromYMD/get/millis；advance 秒至周、整数月/年；常用 format token；difference/getRelative/getFraction | S/C；毫秒、月末、闰年、负向移动、格式错误；平均年月与日历 fraction/ISO 周边界采用显式本地策略并警告，没有 G 对照 |
+| 逐景元数据 map | 原始集合读取 date/get/propertyNames/geometry 时自动有限展开；支持 set/copyProperties、dropNulls，保留同日不同 item 和排序 | S/C；逐景日期参与像素计算另有实际引擎 N；纯像素 map 保留紧凑路径 |
+| 浮点类型转换 | toDouble/toFloat 通过本地 Scala SPI 真正转换物理像元类型、NoData 与 TileLayerMetadata | 独立 SPI 真实 tile 验证与 GeoTIFF 类型/数值 N；Float64 后的像素回调/时间归约明确拒绝，需最后 cast 或显式 toFloat，未承诺完整类型传播 |
+| Number 位运算 | 标量 bitCount/bitwiseNot/bitwiseAnd/Or/Xor/leftShift/rightShift 的受限整数域 | 官方 SDK 与文档样例 C；signed64 整数输入，And/Or/Xor 限非负，左移限非负且不溢出，移位量 0..63；非整数、超范围明确拒绝；不是 Image QA 位运算 |
 | List | sequence/get/length/contains/add/cat/slice/distinct/sort/map/iterate | S/C；回调最多 1000 项，中间列表最多 10000 项，结果最多 1 MB |
 | Algorithms.If | 静态条件，惰性编译选中分支 | S/C；不把影像对象当作静态布尔条件 |
 | 几何与地图 | 平面 WGS84 Geometry；Image/Collection/Feature.geometry；Map.centerObject、setCenter、addLayer | S/C；真实地图和 RGB 预览 N |
@@ -66,14 +72,17 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 
 完整可运行例子位于 `examples/javascript/04_日期列表与条件运算.js`，网页脚本资源中直接选择。导出任务创建后点击“开始导出”，或对返回任务调用 `start()`。
 
+逐景日期、NDVI 质量合成和末端 Float64 导出见 `examples/javascript/06_逐景日期与质量合成.js`。网页语法文档同步说明当前参数限制；`toDouble()` 不会补回先前 Float32 计算已经损失的精度，后续未实现精度保持的像素回调/时间归约会被明确拒绝。
+
 ## 尚未支持
 
 - 全球 GEE 数据目录、私有 assets、任意 `require('users/...')` 模块和 Google Drive/Cloud Storage 上传。
-- 原始加载集合的 map 内动态逐景属性运算；可先用 `ImageCollection.fromImages(collection.toList(count))` 显式展开，再逐景读取 date/get 属性。纯常量集合缺少栅格网格，任意异构类型与跨网格语义仍需独立验证。
+- 纯常量集合及独立常量波段缺少明确的栅格网格；`addBands(ee.Image(image.date().millis()))` 尚不支持。不能用源波段乘零伪造完全有效的日期 band，因为那会错误继承源掩膜。任意异构类型、逐波段投影与跨网格语义仍需独立验证。
 - 分类器、回归/数组运算、复杂 join、邻域卷积、ui.Chart/ui.Panel 等完整 GEE 应用组件。
 - 分数掩膜、球面/测地线几何、非 UTC 时区、分数月/年、任意 Joda 格式 token。
 - 任意 CRS transform、导出分片、bestEffort 和自定义 tileScale；不支持的参数明确失败。
-- 所有整数像元类型转换和原始 GEE 的边界像元加权。当前 N 验收以浮点数值、网格和二值 NoData 为准。
+- 整数像元类型转换、Image 位运算和原始 GEE 的边界像元加权。GeoTrellis 整型 NoData 哨兵会占用合法数值，不能简单替换 cast 名称；完整类型提升仍待实现。当前 N 验收以浮点数值、网格和二值 NoData 为准。
+- 新日期字段只支持 UTC；getRelative 的相同单位、week/month 组合，以及 getRelative/getFraction 的亚毫秒输入明确拒绝。difference 年/月按 365.2425 天/年及十二分之一月计算；getFraction 年/月按实际 UTC 日历长度计算，周按 ISO 周，都会对未完成 Google 对照的策略发出警告。
 
 本地 Sentinel-2 已预去云，仅有 B2/B3/B4/B8/SCL 对应波段；DN 视图是已标准化反射率 ×10000。缺失 QA60/B11 不会被伪造；别名不会恢复已经掩膜的数据。
 
@@ -85,17 +94,17 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 
 | 工作流 | 已确认的主要阻塞 |
 | --- | --- |
-| 最绿像素合成 | `ImageCollection.qualityMosaic` 未实现，普通 `mosaic` 无法替代按质量波段选取整组像素 |
+| 最绿像素合成 | 历史抽查时缺失；本轮已实现有限同构集合 `qualityMosaic` 并完成 6 个实际输出的独立像素对照；平分规则仍未与 Google 比较 |
 | s2cloudless 云影 | `Join.saveFirst`、定向距离变换、`projection/reproject`、`focalMin/focalMax`；云概率数据未入库 |
-| 谐波时序与矩阵回归 | 原生集合 map 动态逐景日期、`Date.difference`、`linearRegression/linearFit`、数组和 `matrixSolve`；相位/振幅的 `atan2/hypot` 也缺失 |
-| HISTARFM 插值 | `Date.getRelative`、独立常量栅格、`int16`、`Join.saveAll`、`Filter.maxDifference` 与匹配列表属性 |
+| 谐波时序与矩阵回归 | 本轮已补有限逐景日期 map 和受限 `Date.difference`；仍缺常量时间 band 的网格绑定、`linearRegression/linearFit`、数组和 `matrixSolve`，以及相位/振幅的 `atan2/hypot` |
+| HISTARFM 插值 | 本轮已补受限 `Date.getRelative`；独立常量栅格、`int16`、`Join.saveAll`、`Filter.maxDifference` 与匹配列表属性仍缺失 |
 | 随机森林与验证 | 样本提取、分类器训练/预测、混淆矩阵与批量区域统计 |
 | LandTrendr | GEE 用户模块解析、真实时序分段算法、数组处理、连通像元；QA 位运算与 `unmask` 也未实现 |
 | GEE 应用交互 | 实际原生 runner 的 `ui.Panel/ui.Chart` 返回 `ui is not defined`；`require('users/...')` 返回模块不存在 |
 
 额外 14 个规模编译探针发现：单波段均值 50 景为 302 节点，100 景超过 500；双波段均值 30 景为 335 节点，50 景超过 500。该结果仅测图规模，未测吞吐。需要紧凑而保留精确观测身份的加载/归约路径，不能只放宽节点上限。
 
-数据与算子须分别处理：当前 `Translator.load` 仅放行已验证的 `sentinel-2-l2a`；新增 STAC 数据并不自动获得 Landsat、ERA5 或其他 EE 别名。需要各自的波段、单位、缩放、QA 与实样验收。此轮没有实现上述缺失算法。
+数据与算子须分别处理：当前 `Translator.load` 仅放行已验证的 `sentinel-2-l2a`；新增 STAC 数据并不自动获得 Landsat、ERA5 或其他 EE 别名。需要各自的波段、单位、缩放、QA 与实样验收。历史 50 个表达式的计数保持原记录，不作为当前全部实现的统计。
 
 复现探针（无数据库、无任务提交、无网络的原生 Seatbelt）：
 

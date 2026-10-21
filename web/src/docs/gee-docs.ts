@@ -4,7 +4,7 @@ const entries: ReferenceEntry[] = [
   {
     id: "gee-start",
     title: "GEE JavaScript 入门",
-    text: "选择编辑器的 GEE JavaScript 模式。标准 JavaScript 由隔离 Node 容器执行；ee.* 使用固定的官方客户端构造延迟计算图，本地兼容层执行支持的算法。不是连接 Google 的客户端。只有本地入库范围可计算；导出创建后在任务面板开始。",
+    text: "选择编辑器的 GEE JavaScript 模式。标准 JavaScript 由 macOS 原生沙箱中的 Node 进程执行；ee.* 使用固定的官方客户端构造延迟计算图，本地兼容层执行支持的算法。只有本地入库范围可计算；导出创建后在任务面板开始。",
     code: "var roi = ee.Geometry.Rectangle([113.55,22.30,113.57,22.32]);\nvar image = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')\n    .filterDate('2024-01-19','2024-01-20').filterBounds(roi).median();\nprint(image.bandNames());",
   },
   {
@@ -38,8 +38,14 @@ const entries: ReferenceEntry[] = [
   },
   {
     id: "gee-composite",
-    title: "median / mean / mosaic",
+    title: "median / mean / mosaic / qualityMosaic",
     text: "median/mean/min/max/sum/count 按逐景有效像素归约，同一天的影像不会提前合并。mosaic 从集合末尾向前选有效像素，保留显式排序；相同时间戳也按集合顺序处理。reduce(Reducer.mean()) 输出带 _mean 后缀的波段，toBands() 按 system:index 生成名称（本地最多 100 个输出波段，仍受 500 节点限制）。预处理、网格和重采样会影响结果。",
+  },
+  {
+    id: "gee-quality",
+    title: "qualityMosaic 按质量选景",
+    text: "qualityMosaic('qualityBand') 在每个像素选择质量波段最大的影像，其他波段跟随同一景。质量缺测的景被排除；获胜景某波段缺测时保持缺测，不从其他景补值。当前要求各景波段名称与顺序一致；平分时按本地集合顺序取后景，该规则尚未与 Google 服务比较。仍受 500 图节点与本地景数预算限制。",
+    code: "var scored = scenes.map(function(image) {\n  var ndvi = image.normalizedDifference(['B8','B4']).rename('NDVI');\n  return image.addBands(ndvi);\n});\nvar greenest = scored.qualityMosaic('NDVI');\nMap.addLayer(greenest.select('NDVI'), {min:0,max:1}, '最绿像素');",
   },
   {
     id: "gee-map",
@@ -50,7 +56,7 @@ const entries: ReferenceEntry[] = [
   {
     id: "gee-export",
     title: "Export.image.toDrive → 本地文件",
-    text: "toDrive 适配为本地导出，创建独立任务，不会上传 Google Drive。点击任务面板“开始导出”，或保存返回对象后调用 start()。region/scale/crs 参与计算，fileNamePrefix 决定实际文件名；支持 GeoTIFF、NetCDF。允许 maxPixels:1e13 等上限，但会按本地网格保守预检，并继续限制为最多 1 亿像素/波段及容器资源预算。暂不支持 toAsset/toCloudStorage、crsTransform、dimensions、分片等参数。",
+    text: "toDrive 适配为本地导出，创建独立任务，不会上传 Google Drive。点击任务面板“开始导出”，或保存返回对象后调用 start()。region/scale/crs 参与计算，fileNamePrefix 决定实际文件名；支持 GeoTIFF、NetCDF。允许 maxPixels:1e13 等上限，但会按本地网格保守预检，并继续限制为最多 1 亿像素/波段及原生进程资源预算。暂不支持 toAsset/toCloudStorage、crsTransform、dimensions、分片等参数。",
     code: "var task = Export.image.toDrive({\n image:ndvi, description:'NDVI', fileFormat:'GeoTIFF',\n region:roi, scale:10, crs:'EPSG:32649'\n});\n// task.start();",
   },
   {
@@ -62,13 +68,13 @@ const entries: ReferenceEntry[] = [
   {
     id: "gee-dates",
     title: "Date 与 List 日期循环",
-    text: "支持 UTC Date.fromYMD/get/millis/format，以及整数月/年 advance（保留月末规则）；其他时区、分数月/年和未知格式 token 明确拒绝。List.sequence/map/iterate/slice/distinct/sort 可用于静态日期和参数列表。map/iterate 每次最多 1000 项，生成列表最多 10000 项。Algorithms.If 支持静态条件并只编译选中的分支。",
+    text: "支持 UTC Date.fromYMD/get/millis/format、difference/getRelative/getFraction，以及整数月/年 advance。difference 的秒至周使用固定时长；年/月采用本地平均时长策略并输出未完成 GEE 对照的警告。周字段采用 ISO 周边界并提示限制；getRelative 的 week/month 与相同单位组合明确拒绝。其他时区、分数月/年和未知格式 token 明确拒绝。List.sequence/map/iterate/slice/distinct/sort 可用于日期和参数列表；map/iterate 每次最多 1000 项，生成列表最多 10000 项。Algorithms.If 只编译静态条件选中的分支。",
     code: "var dates = ee.List.sequence(0,2).map(function(m) {\n  return ee.Date.fromYMD(2024,1,31).advance(m,'month').format('yyyy-MM-dd');\n});\nprint(dates); // 2024-01-31、2024-02-29、2024-03-31",
   },
   {
     id: "gee-properties",
     title: "集合属性与逐景列表",
-    text: "支持 aggregate_array、toList(count,offset)、Filter.inList、Filter.calendarRange（UTC，包含端点且可跨年）。读取 map 后的属性遵循继承、set 与 copyProperties 结果。toList 取得单景后可读 date/get/bandNames；fromImages 构造的有限集合可逐景解析属性。原始加载集合 map 内动态属性仍需先展开为 toList/fromImages，不能把一个日期套到整个集合。",
+    text: "支持 aggregate_array、toList(count,offset)、Filter.inList、Filter.calendarRange（UTC，包含端点且可跨年）。原始集合 map 读取 image.date/get/propertyNames/geometry 时，自动逐景解析本地元数据，保留同一天的不同观测及集合顺序；set/copyProperties 与 map(...,true) 跳过 null 均可使用。纯像素 map 保留紧凑路径。逐景展开仍受 1000 景与 500 节点预算限制；把日期常量直接加为独立栅格波段的网格广播尚未实现。",
     code: "print(scenes.aggregate_array('system:index'));\nvar first = ee.Image(scenes.toList(1).get(0));\nprint(first.date().format('yyyy-MM-dd'));\nMap.centerObject(first, 13);",
   },
   {

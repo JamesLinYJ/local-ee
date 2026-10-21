@@ -1,0 +1,491 @@
+{
+  "sdk": "1.7.49",
+  "source_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a",
+  "source": "https://github.com/google/earthengine-api",
+  "expressions": {
+    "numberAnd": {
+      "type": "Invocation",
+      "arguments": {
+        "left": 25,
+        "right": 21
+      },
+      "functionName": "Number.bitwiseAnd"
+    },
+    "numberOr": {
+      "type": "Invocation",
+      "arguments": {
+        "left": 25,
+        "right": 21
+      },
+      "functionName": "Number.bitwiseOr"
+    },
+    "numberXor": {
+      "type": "Invocation",
+      "arguments": {
+        "left": 25,
+        "right": 21
+      },
+      "functionName": "Number.bitwiseXor"
+    },
+    "numberLeftShift": {
+      "type": "Invocation",
+      "arguments": {
+        "left": 20,
+        "right": 2
+      },
+      "functionName": "Number.leftShift"
+    },
+    "numberRightShift": {
+      "type": "Invocation",
+      "arguments": {
+        "left": 20,
+        "right": 2
+      },
+      "functionName": "Number.rightShift"
+    },
+    "numberSignedRightShift": {
+      "type": "Invocation",
+      "arguments": {
+        "left": -8,
+        "right": 2
+      },
+      "functionName": "Number.rightShift"
+    },
+    "numberNotSmallestSigned": {
+      "type": "Invocation",
+      "arguments": {
+        "input": 25
+      },
+      "functionName": "Number.bitwiseNot"
+    },
+    "numberBitCountNegative": {
+      "type": "Invocation",
+      "arguments": {
+        "input": -2
+      },
+      "functionName": "Number.bitCount"
+    },
+    "imageAnd": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 21
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image1": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "image2": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Image.bitwiseAnd"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "2"
+      }
+    },
+    "imageOr": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 21
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image1": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "image2": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Image.bitwiseOr"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "2"
+      }
+    },
+    "imageXor": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 21
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image1": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "image2": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Image.bitwiseXor"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "2"
+      }
+    },
+    "imageLeftShift": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 2
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image1": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "image2": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Image.leftShift"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "2"
+      }
+    },
+    "imageRightShift": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 2
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image1": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "image2": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Image.rightShift"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "2"
+      }
+    },
+    "imageNot": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Image.bitwiseNot"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "imageToDouble": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "imageToFloat": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Image.toFloat"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "imageToInt16": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Image.toInt16"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "imageToUint16": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Image.toUint16"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    },
+    "imageToInt32": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Image.toInt32"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "1"
+      }
+    }
+  }
+}

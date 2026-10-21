@@ -13,7 +13,8 @@ SUPPORTED = {
     "eq", "neq", "gt", "gte", "lt", "lte", "or", "and", "not", "is_nodata",
     "if", "save_result", "rename_labels", "merge_cubes", "mask_polygon",
     "add_dimension", "drop_dimension", "first", "last", "absolute", "power",
-    "sqrt", "log", "exp", "round", "floor", "ceil", "mod", "cos", "sin", "tan"
+    "sqrt", "log", "exp", "round", "floor", "ceil", "mod", "cos", "sin", "tan",
+    "local_ee_to_double", "local_ee_to_float"
 }
 
 def validate(graph):
@@ -66,6 +67,9 @@ def validate(graph):
                 ids=args["_gee_item_ids"]
                 if not isinstance(ids,list) or not ids or len(ids)>1000 or any(not isinstance(x,str) or not x or len(x)>256 for x in ids) or len(set(ids))!=len(ids):
                     raise ValueError("GEE item selection must contain 1..1000 unique item IDs")
+            if node["process_id"] in {"local_ee_to_double", "local_ee_to_float"}:
+                if depth != 0 or set(args) != {"data"} or not isinstance(args["data"], dict) or set(args["data"]) != {"from_node"}:
+                    raise ValueError("Local EE type conversion requires a top-level cube reference")
             if node["process_id"] == "mask_polygon" and not isinstance(args.get("mask"),dict):
                 raise ValueError("多边形掩膜需要内嵌 GeoJSON，不接受 URL 或文件路径")
             if node["process_id"] == "load_collection" and args.get("properties"):

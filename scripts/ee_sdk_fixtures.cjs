@@ -77,6 +77,12 @@ const values = {
   fromImagesPeriodDates: periods.aggregate_array('system:time_start'),
   fromImagesPeriods: periods.mean(),
   mergedMean: c.limit(1).merge(ee.ImageCollection.fromImages([ee.Image(c.toList(2).get(1))])).select('nir').mean(),
+  qualityMosaic: c.limit(2).select(['nir','blue']).qualityMosaic('nir'),
+  qualityMosaicReverse: c.limit(2).sort('system:time_start',false).select(['nir','blue']).qualityMosaic('nir'),
+  qualityMosaicExplicit: ee.ImageCollection.fromImages(c.toList(3)).select(['nir','blue']).qualityMosaic('nir'),
+  toDouble: n.toDouble(),
+  doubleToFloat: n.toDouble().toFloat(),
+  perImageDateMean: c.map(x => x.select('nir').multiply(x.date().difference(ee.Date(0),'second'))).mean(),
 };
 const serialized = Object.fromEntries(Object.entries(values).map(([key, value]) => [key, ee.Serializer.encode(value)]));
 process.stdout.write(JSON.stringify({sdk: '1.7.49', source_commit: 'e189e4b89e785019ea5642ea8e80cb644749cd4a', expressions: serialized}, null, 2) + '\n');

@@ -117,6 +117,10 @@ class Processes(Processing):
         registry=ProcessRegistry()
         from openeo_driver.specs import SPECS_ROOT
         for name in sorted(graph.SUPPORTED):
+            if name in {"local_ee_to_double", "local_ee_to_float"}:
+                from .local_processes import type_conversion_spec
+                registry.add_spec(type_conversion_spec(name))
+                continue
             path=SPECS_ROOT/'openeo-processes/1.x'/f'{name}.json'
             if not path.exists(): path=SPECS_ROOT/'openeo-processes/1.x/proposals'/f'{name}.json'
             spec=json.loads(path.read_text())

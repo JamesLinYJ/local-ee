@@ -9,6 +9,7 @@ import datetime as dt
 import hashlib
 import json
 import os
+import shutil
 from pathlib import Path
 import warnings
 
@@ -64,6 +65,10 @@ for iid,ms in [('a',1000),('b',1001),('c',2000)]:
 sdk = json.loads((ROOT/'tests/fixtures/ee-sdk-1.7.49.json').read_text())
 CASES = ['median','mosaic','reverseMosaic','sum','count','cloudMask','nd','expression','whereMasked','whereConstant','constantMath','clamp','unitScale','reduceBands','reduceCollection','toBands',
          'fromImagesMean','fromImagesDuplicateSum','fromImagesDuplicateCount','fromImagesSortedMosaic','fromImagesPeriods','mergedMean']
+if os.environ.get('GEE_EE_CASES'):
+    CASES = os.environ['GEE_EE_CASES'].split(',')
+    if not CASES or any(name not in sdk['expressions'] for name in CASES):
+        raise ValueError('GEE_EE_CASES must select existing official SDK fixture names')
 merged={}; dedup={}; outputs=[]; expected_names=[]
 
 def append(process,args):
@@ -146,10 +151,23 @@ with rasterio.open(paths[0]) as output:
             'fromImagesMean':[np.nanmean(stack,axis=0)],'fromImagesPeriods':[np.nanmean(stack,axis=0)],'mergedMean':[np.nanmean(stack,axis=0)],
             'fromImagesDuplicateSum':[x*2],'fromImagesDuplicateCount':[np.where(np.isfinite(x),2,np.nan)],
             'fromImagesSortedMosaic':[np.where(np.isfinite(b['nir']),b['nir'],np.where(np.isfinite(x),x,c['nir']))],
+            'toDouble':[x.astype('float64')], 'doubleToFloat':[x],
+            'perImageDateMean':[np.nanmean(np.stack([warped[i]['nir'] * seconds for i,seconds in [('a',1.0),('b',1.001),('c',2.0)]]),axis=0)],
         }
+        # Independent argmax/gather keeps all output bands tied to the same
+        # source scene. A missing payload in the winning scene stays missing.
+        for name,order in [('qualityMosaic','ab'),('qualityMosaicReverse','ba'),('qualityMosaicExplicit','abc')]:
+            quality=np.stack([warped[i]['nir'] for i in order]);valid_quality=np.isfinite(quality)
+            winner=len(order)-1-np.argmax(np.where(valid_quality,quality,-np.inf)[::-1],axis=0)
+            expected[name]=[]
+            for band in ['nir','blue']:
+                payload=np.stack([warped[i][band] for i in order])
+                gathered=np.take_along_axis(payload,winner[None,...],axis=0)[0]
+                expected[name].append(np.where(valid_quality.any(axis=0),gathered,np.nan))
     for index,name in enumerate(CASES):
         for band_index,reference in enumerate(expected[name]):
             suffix = ['a_nir','b_nir'][band_index] if name=='toBands' else {'reduceBands':'mean','reduceCollection':'nir_mean','nd':'nd','expression':'out'}.get(name,'nir')
+            if name.startswith('qualityMosaic'):suffix=['nir','blue'][band_index]
             label=name+'__'+suffix
             position=expected_names.index(label)+1
             actual=output.read(position,masked=True).filled(np.nan); valid=np.isfinite(reference)&np.isfinite(actual)
@@ -157,10 +175,26 @@ with rasterio.open(paths[0]) as output:
             passed=mismatch==0 and bool(np.allclose(actual[valid],reference[valid],rtol=1e-6,atol=1e-6))
             report.append({'case':label,'valid_pixels':int(valid.sum()),'mask_mismatches':mismatch,'max_abs_error':error,'passed':passed})
             print(report[-1],flush=True)
+    expected_dtype={'toDouble':'float64','doubleToFloat':'float32'}.get(CASES[0]) if len(CASES)==1 else None
+    dtype_passed=expected_dtype is None or all(value==expected_dtype for value in output.dtypes)
     result={'native_engine':engine,'sdk':sdk['sdk'],'upstream_commit':sdk['source_commit'],'graph_nodes':len(merged),
+        'output_dtypes':list(output.dtypes),
+        'expected_output_dtype':expected_dtype,'dtype_passed':dtype_passed,
         'shape':list(output.shape),'crs':str(output.crs),'output_bands':list(output.descriptions),'expected_band_order':expected_names,
         'fixture':'Synthetic three-scene, per-band NoData, millisecond timestamps. Never added to live catalog.',
         'reference':'Independent NumPy, reprojected with Rasterio to the exact result grid. No Google-service comparison.',
-        'cases':report,'passed':all(x['passed'] for x in report)}
+        'cases':report,'passed':dtype_passed and all(x['passed'] for x in report)}
 (AUDIT/'validation.json').write_text(json.dumps(result,indent=2)+'\n')
 assert result['passed'],report
+# These inputs were generated in this new, isolated audit directory. Keep the
+# scientific output and a checksum manifest, and regenerate fixtures with this
+# script when needed instead of accumulating tiled TIFF copies after success.
+input_records=[]
+for iid in arrays:
+    folder=JOB/iid
+    for path in sorted(folder.iterdir()):
+        input_records.append({'file':str(path.relative_to(AUDIT)),'bytes':path.stat().st_size,
+                              'sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
+    shutil.rmtree(folder)
+(AUDIT/'generated-input-cleanup.json').write_text(json.dumps({'inputs':input_records,
+    'reproduction':'scripts/check_ee_multiscene.py regenerates synthetic inputs; graph, output and logs retained'},indent=2)+'\n')

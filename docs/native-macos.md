@@ -59,6 +59,14 @@ npm --prefix web ci
 
 Git 克隆不包含 JAR、影像、数据库或凭据。依赖恢复程序核对来源清单及 SHA-256，匹配本机已有文件时不重复下载；上游快照变更会明确失败。仓库边界见 [repository.md](repository.md)，历史验证摘要见 [verification.md](verification.md)。
 
+本地类型转换扩展单独从 `engine/ee_integer_adapter.scala` 编译，通过 GeoTrellis 的 ServiceLoader/CubeProcessRegistry 接口注册。已有原生引擎可只执行下列命令，无需重新编译 GDAL；全量 `setup_native_engine.py` 也会执行这一步：
+
+```sh
+.venv/bin/python scripts/build_integer_adapter.py --output .native/jars/local-ee-integer-adapter.jar
+```
+
+构建器核对现有引擎依赖摘要，输出独立 JAR 和 `.jar.manifest.json`（源码、构建脚本、依赖与产物 SHA）。本地扩展不混入上游下载锁；任务启动核对其 JAR 摘要。扩展提供实际 Float64/Float32 转换，不代表已实现整数类型或完整的 GEE 类型提升。
+
 ## 备份与独立恢复校验
 
 ```sh

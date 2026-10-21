@@ -1,0 +1,292 @@
+{
+  "schema_version": 1,
+  "scope": "Local EE compatibility wave 3; pinned SDK 1.7.49; native macOS ARM64. No Google-service numerical equivalence claim.",
+  "source_checks": {
+    "python_passed": 278,
+    "python_skipped": 1,
+    "skipped_case": "Opt-in full native SPI probe; separately enabled and passed",
+    "frontend_tests_passed": 10,
+    "typescript_and_build_passed": true
+  },
+  "combined_numerical_fixture": {
+    "sdk": "1.7.49",
+    "upstream_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a",
+    "graph_nodes": 422,
+    "shape": [
+      18,
+      18
+    ],
+    "crs": "EPSG:32649",
+    "fixture": "Synthetic three-scene, per-band NoData, millisecond timestamps. Never added to live catalog.",
+    "reference": "Independent NumPy, reprojected with Rasterio to the exact result grid. No Google-service comparison.",
+    "cases": [
+      {
+        "case": "median__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "mosaic__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "reverseMosaic__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "sum__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "count__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "cloudMask__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "nd__nd",
+        "valid_pixels": 128,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "expression__out",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "whereMasked__nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "whereConstant__nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "constantMath__nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "clamp__nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "unitScale__nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "reduceBands__mean",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "reduceCollection__nir_mean",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "toBands__a_nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "toBands__b_nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "fromImagesMean__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "fromImagesDuplicateSum__nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "fromImagesDuplicateCount__nir",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "fromImagesSortedMosaic__nir",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "fromImagesPeriods__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "mergedMean__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "qualityMosaic__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "qualityMosaic__blue",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "qualityMosaicReverse__nir",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "qualityMosaicReverse__blue",
+        "valid_pixels": 192,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "qualityMosaicExplicit__nir",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "qualityMosaicExplicit__blue",
+        "valid_pixels": 224,
+        "mask_mismatches": 0,
+        "max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "case": "perImageDateMean__nir",
+        "valid_pixels": 256,
+        "mask_mismatches": 0,
+        "max_abs_error": 9.5367431640625e-07,
+        "passed": true
+      }
+    ],
+    "passed": true
+  },
+  "terminal_cast_exports": [
+    {
+      "expression": "toDouble",
+      "output_dtypes": [
+        "float64"
+      ],
+      "cases": [
+        {
+          "case": "toDouble__nir",
+          "valid_pixels": 192,
+          "mask_mismatches": 0,
+          "max_abs_error": 0.0,
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    {
+      "expression": "doubleToFloat",
+      "output_dtypes": [
+        "float32"
+      ],
+      "cases": [
+        {
+          "case": "doubleToFloat__nir",
+          "valid_pixels": 192,
+          "mask_mismatches": 0,
+          "max_abs_error": 0.0,
+          "passed": true
+        }
+      ],
+      "passed": true
+    }
+  ],
+  "real_browser_export": {
+    "scope": "One real local preprocessed Sentinel-2 scene: per-item metadata -> qualityMosaic -> terminal toDouble -> map and local export. No Google-service comparison.",
+    "browser": "Edge UI submitted the example and started export; completed download checksum matches stored result",
+    "reference": "Independent Float64 Rasterio/NumPy NDVI, nearest projection to output grid, pixel-center region mask",
+    "output_dtype": "float64",
+    "crs": "EPSG:32649",
+    "valid_pixels": 45590,
+    "mask_mismatches": 0,
+    "maximum_absolute_error": 1.2851604658248306e-07,
+    "absolute_tolerance": 1e-06,
+    "download_sha256": "c4bb8409438961948aa2e7f60425143dae26f74f9db4cbc9824a26ff05efa4cb",
+    "download_checksum_matches": true,
+    "passed": true
+  },
+  "limitations": [
+    "Not full GEE support. Full pinned signatures are an inventory, not implemented algorithms.",
+    "Quality ties select the last local scene; no Google tie oracle. Homogeneous band schema only.",
+    "Date average year/month, calendar fractions and ISO-week policy are explicitly warned and not Google-compared.",
+    "Number bitwise operations accept only the documented constrained integer domains; Image bitwise and integer casts remain unavailable.",
+    "Physical Float64/Float32 casts preserve masks; downstream Float64 callbacks and time reductions reject instead of silently narrowing.",
+    "No standalone constant raster/time band grid binding, joins, array regression, classifiers, advanced time series or Code Editor UI module compatibility."
+  ]
+}
