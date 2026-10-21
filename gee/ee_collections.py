@@ -1,7 +1,7 @@
 """Finite EE image-axis operations; no code execution or invented timestamps."""
 from dataclasses import replace
 
-from .ee_translate import Collection, Image, ImageSequence, Function, Filter, Pixel, Reducer, as_image, fail, integer, rebind
+from .compat.earthengine.ir import Collection, Image, ImageSequence, Function, Filter, Pixel, Reducer, as_image, fail, integer, rebind
 
 
 def frames(t, value):

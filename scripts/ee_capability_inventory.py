@@ -31,6 +31,7 @@ KNOWN_PARTIAL_LIMITS: dict[str, list[str]] = {
     "Collection.map": ["dropNulls=true routes through finite per-image evaluation and remains subject to the 1000-frame local cap."],
     "Image.updateMask": ["Binary masks only; fractional masks and opacity semantics are not supported."],
     "Image.mask": ["The getter path is declared; the mask setter path is rejected."],
+    "Image.unmask": ["Bounded aligned local grids and identical observation instants only; defaults to valid zero and retains the input footprint. Global constants with sameFootprint=false, implicit time/grid broadcasting, non-finite or out-of-range Float64 constants reject. Physical output is Float64; explicitly toFloat before callback arithmetic/temporal reduction. No Google-service comparison."],
     "Image.reduceRegion": ["crsTransform, bestEffort, and custom tileScale are rejected; local pixel/resource limits also apply."],
     "List.sequence": ["The count form is rejected; start/end/step is the supported local form."],
     "Projection": ["Projection transforms are rejected; supported local geometry/grid behavior is narrower than GEE."],
@@ -204,7 +205,9 @@ def _expand_handler_expression(node: ast.AST, symbols: dict[str, set[str]] | Non
 
 
 def read_declared_handlers(source: Path) -> set[str]:
-    tree = ast.parse(source.read_text(encoding="utf-8"), filename="gee/ee_translate.py")
+    declaration = source.parent / "compat/earthengine/capabilities.py"
+    if not declaration.exists(): declaration = source
+    tree = ast.parse(declaration.read_text(encoding="utf-8"), filename=str(declaration.name))
     date_tree = ast.parse(source.with_name("ee_dates.py").read_text(encoding="utf-8"), filename="gee/ee_dates.py")
     integer_tree = ast.parse(source.with_name("ee_integer.py").read_text(encoding="utf-8"), filename="gee/ee_integer.py")
     symbols: dict[str, set[str]] = {}

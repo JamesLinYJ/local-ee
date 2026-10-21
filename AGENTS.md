@@ -13,13 +13,20 @@ Read `docs/architecture.md` before changing architecture or adding a subsystem. 
 
 - `gee/api/`: routes, auth, typed input/output; delegate science and scheduling to services.
 - `gee/services/`: use cases, permissions, quotas, persistent lifecycle.
-- `gee/compat/earthengine/` (initial implementation may be `gee/ee_translate.py`): pure EE DAG decoder/IR/compiler; no code execution or external fetches.
+- `gee/compat/earthengine/`: canonical pure EE DAG decoder, IR and compiler; no user-code execution or external fetches. `gee/ee_translate.py` is a 23-line backward-compatible import facade; add and change compiler behavior in the canonical package, then preserve the facade's public names.
 - `runtimes/eejs/`: offline official SDK and isolated JS runner. Preserve vendor licenses and hash/version locks.
 - `gee/graph.py`: canonical process graph validation; every newly exposed process needs source review and focused validation.
 - `gee/artifacts.py`: shared physical output boundary. All result readers and publication must use it.
 - `web/src/components/`, `web/src/hooks/`, `web/src/lib/`: TypeScript + React functional components, hooks and typed protocol boundaries, no promotional/mission-statement copy. Use strict TypeScript; no Vue runtime or compatibility wrappers in the served frontend. Shared visual tokens and accessible controls; map/editor usable at common desktop widths.
 - `deploy/`, `compose*.yaml`: explicit runtime and production profiles. `deploy/native-lock.json` and `.native/engine-lock.json` identify the current native deployment. Container image locks and old `audit/` evidence are historical.
 - Check inherited `AGENTS.md` before editing vendor subtrees. Prefer adapters or minimal documented patches; never silently rewrite pinned upstream code.
+
+## Earth Engine compiler modularity
+
+- Keep compiler code separated by responsibility: decoding/catalog/filtering, grouped operation dispatch, IR and static/date values, graph/pixel/temporal compilation, and capability reporting. Extend the closest cohesive module; split only when a boundary improves ownership, review or reuse.
+- Aim for modules around 200 source lines as a maintainability guideline, not a hard limit. Do not minify code or mechanically split files just to meet a line count; keep functions and types readable and their dependencies explicit.
+- Keep new compiler-to-compiler imports within `gee.compat.earthengine`; do not add imports from the legacy `gee.ee_translate` facade or deepen transitional dependencies on root-level helper modules. Add or update focused semantic checks and the capability documentation when changing behavior.
+- A module, handler or facade export is not proof of complete API or numerical support. New semantics, including `unmask` and new native-adapter behavior, remain unverified until their declared scope passes positive, negative, boundary and numerical validation. Preserve all existing resource limits and explicit rejection paths.
 
 ## Security and persistence invariants
 

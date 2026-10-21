@@ -21,11 +21,13 @@ import numpy as np
 import rasterio
 from rasterio.transform import from_origin
 from rasterio.warp import transform_bounds, reproject, Resampling
+from rasterio.features import geometry_mask
 
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 from gee import graph
 from gee.ee_translate import compile_expression
 
-ROOT = Path(__file__).resolve().parents[1]
 AUDIT = Path(os.environ['GEE_AUDIT_DIR']).resolve()
 AUDIT.mkdir(parents=True, exist_ok=False)
 JOB = AUDIT/'engine'; JOB.mkdir(); (JOB/'out').mkdir(mode=0o777); (JOB/'out').chmod(0o777)
@@ -63,12 +65,24 @@ for iid,ms in [('a',1000),('b',1001),('c',2000)]:
             'system:time_start':ms,'system:index':iid,'proj:epsg':32649,'CLOUDY_PIXEL_PERCENTAGE':{'a':20,'b':5,'c':90}[iid]},'assets':assets,
         'stac_extensions':['https://stac-extensions.github.io/eo/v1.1.0/schema.json','https://stac-extensions.github.io/projection/v1.1.0/schema.json']})
 sdk = json.loads((ROOT/'tests/fixtures/ee-sdk-1.7.49.json').read_text())
+mask_sdk = json.loads((ROOT/'tests/fixtures/ee-mask-1.7.49.json').read_text())
+expressions = {**sdk['expressions'], **mask_sdk['raster_expressions']}
 CASES = ['median','mosaic','reverseMosaic','sum','count','cloudMask','nd','expression','whereMasked','whereConstant','constantMath','clamp','unitScale','reduceBands','reduceCollection','toBands',
          'fromImagesMean','fromImagesDuplicateSum','fromImagesDuplicateCount','fromImagesSortedMosaic','fromImagesPeriods','mergedMean']
 if os.environ.get('GEE_EE_CASES'):
     CASES = os.environ['GEE_EE_CASES'].split(',')
-    if not CASES or any(name not in sdk['expressions'] for name in CASES):
+    if not CASES or any(name not in expressions for name in CASES):
         raise ValueError('GEE_EE_CASES must select existing official SDK fixture names')
+if 'unmaskMappedMean' in CASES:
+    # Item footprints differ even when two observations share exactly the same
+    # timestamp. Do not let a collection-wide union revive each frame's exterior.
+    middle=(BBOX[0]+BBOX[2])/2
+    for item,west,east in [(items[1],middle,BBOX[2]),(items[2],BBOX[0],middle)]:
+        south,north=BBOX[1],BBOX[3]
+        item['geometry']={'type':'Polygon','coordinates':[[[west,south],[east,south],
+                         [east,north],[west,north],[west,south]]]}
+    items[1]['properties']['datetime']=items[0]['properties']['datetime']
+    items[1]['properties']['system:time_start']=items[0]['properties']['system:time_start']
 merged={}; dedup={}; outputs=[]; expected_names=[]
 
 def append(process,args):
@@ -78,7 +92,7 @@ def append(process,args):
     return dedup[key]
 
 for name in CASES:
-    compiled=compile_expression(sdk['expressions'][name],[metadata],{'sentinel-2-l2a':items})
+    compiled=compile_expression(expressions[name],[metadata],{'sentinel-2-l2a':items})
     remap={}
     def refs(v):
         if isinstance(v,list):return [refs(x) for x in v]
@@ -153,7 +167,32 @@ with rasterio.open(paths[0]) as output:
             'fromImagesSortedMosaic':[np.where(np.isfinite(b['nir']),b['nir'],np.where(np.isfinite(x),x,c['nir']))],
             'toDouble':[x.astype('float64')], 'doubleToFloat':[x],
             'perImageDateMean':[np.nanmean(np.stack([warped[i]['nir'] * seconds for i,seconds in [('a',1.0),('b',1.001),('c',2.0)]]),axis=0)],
+            'unmaskZero':[np.where(np.isfinite(x),x,0).astype('float64')],
+            'unmaskLarge':[np.where(np.isfinite(x),x.astype('float64'),16_777_219)],
+            'unmaskRaster':[np.where(np.isfinite(x),x,y).astype('float64')],
+            'unmaskDouble':[np.where(np.isfinite(x),x.astype('float64'),1_700_000_000_001)],
         }
+        # Independently rasterize the SDK fixture's planar clip, after source
+        # reprojection onto the result grid. Filling cannot revive clip-exterior cells.
+        clip_bounds=[113.55299439326834,22.314269909925745,113.5537966618118,22.315726168412937]
+        cw,cs,ce,cn=clip_bounds
+        clip={'type':'Polygon','coordinates':[[[cw,cs],[ce,cs],[ce,cn],[cw,cn],[cw,cs]]]}
+        from rasterio.warp import transform_geom
+        input_footprint=geometry_mask([transform_geom(4326,output.crs,GEOMETRY)],
+            out_shape=output.shape,transform=output.transform,invert=True)
+        for name in ('unmaskZero','unmaskLarge','unmaskRaster','unmaskDouble'):
+            expected[name]=[np.where(input_footprint,expected[name][0],np.nan)]
+        inside=geometry_mask([transform_geom(4326,output.crs,clip)],out_shape=output.shape,
+                             transform=output.transform,invert=True)
+        expected['unmaskClipped']=[np.where(inside,expected['unmaskLarge'][0],np.nan)]
+        if 'unmaskMappedMean' in CASES:
+            filled=[]
+            for item in items:
+                footprint=geometry_mask([transform_geom(4326,output.crs,item['geometry'])],
+                    out_shape=output.shape,transform=output.transform,invert=True)
+                values=warped[item['id']]['nir']
+                filled.append(np.where(footprint,np.where(np.isfinite(values),values,0),np.nan))
+            expected['unmaskMappedMean']=[np.nanmean(np.stack(filled),axis=0)]
         # Independent argmax/gather keeps all output bands tied to the same
         # source scene. A missing payload in the winning scene stays missing.
         for name,order in [('qualityMosaic','ab'),('qualityMosaicReverse','ba'),('qualityMosaicExplicit','abc')]:
@@ -175,13 +214,16 @@ with rasterio.open(paths[0]) as output:
             passed=mismatch==0 and bool(np.allclose(actual[valid],reference[valid],rtol=1e-6,atol=1e-6))
             report.append({'case':label,'valid_pixels':int(valid.sum()),'mask_mismatches':mismatch,'max_abs_error':error,'passed':passed})
             print(report[-1],flush=True)
-    expected_dtype={'toDouble':'float64','doubleToFloat':'float32'}.get(CASES[0]) if len(CASES)==1 else None
+    expected_dtype={'toDouble':'float64','doubleToFloat':'float32',
+                    **{name:'float64' for name in mask_sdk['raster_expressions']},
+                    'unmaskMappedMean':'float32'}.get(CASES[0]) if len(CASES)==1 else None
     dtype_passed=expected_dtype is None or all(value==expected_dtype for value in output.dtypes)
     result={'native_engine':engine,'sdk':sdk['sdk'],'upstream_commit':sdk['source_commit'],'graph_nodes':len(merged),
         'output_dtypes':list(output.dtypes),
         'expected_output_dtype':expected_dtype,'dtype_passed':dtype_passed,
         'shape':list(output.shape),'crs':str(output.crs),'output_bands':list(output.descriptions),'expected_band_order':expected_names,
         'fixture':'Synthetic three-scene, per-band NoData, millisecond timestamps. Never added to live catalog.',
+        'distinct_scene_footprints_and_identical_timestamps':'unmaskMappedMean' in CASES,
         'reference':'Independent NumPy, reprojected with Rasterio to the exact result grid. No Google-service comparison.',
         'cases':report,'passed':dtype_passed and all(x['passed'] for x in report)}
 (AUDIT/'validation.json').write_text(json.dumps(result,indent=2)+'\n')

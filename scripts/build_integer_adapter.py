@@ -18,8 +18,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "engine/ee_integer_adapter.scala"
+SOURCES = [SOURCE, ROOT / "engine/ee_grid_adapter.scala", ROOT / "engine/ee_mask_adapter.scala"]
 SERVICE_NAME = "org.openeo.geotrelliscommon.CubeProcessProvider"
-SERVICE_ENTRY = "local.ee.integer.LocalEeIntegerCubeProcessProvider\n"
+SERVICE_ENTRY = ("local.ee.integer.LocalEeIntegerCubeProcessProvider\n"
+                 "local.ee.grid.LocalEeGridCubeProcessProvider\n"
+                 "local.ee.mask.LocalEeMaskCubeProcessProvider\n")
 
 
 def sha256(path: Path) -> str:
@@ -71,8 +74,9 @@ def _run(args: list[str], *, env: dict[str, str] | None = None) -> None:
 
 
 def build(output: Path) -> dict:
-    if not SOURCE.is_file():
-        raise RuntimeError(f"Adapter source is missing: {SOURCE}")
+    for source in SOURCES:
+        if not source.is_file():
+            raise RuntimeError(f"Adapter source is missing: {source}")
     java, jar_tool, scala_tools, runtime_jars, locked_jars = _engine_paths()
     engine_lock = json.loads((ROOT / ".native/engine-lock.json").read_text())
     scala_version = scala_tools[1].stem.rsplit("-", 1)[-1]
@@ -94,7 +98,7 @@ def build(output: Path) -> dict:
         (services / SERVICE_NAME).write_text(SERVICE_ENTRY, encoding="utf-8")
         compiler = [
             java, "-cp", compiler_cp, "scala.tools.nsc.Main",
-            "-classpath", compile_cp, "-d", classes, SOURCE,
+            "-classpath", compile_cp, "-d", classes, *SOURCES,
         ]
         _run(compiler, env={**os.environ, "JAVA_HOME": str(java_home)})
         _run([jar_tool, "--create", "--file", staged_jar, "-C", classes, "."],
@@ -104,6 +108,7 @@ def build(output: Path) -> dict:
             "adapter": "local-ee-integer-adapter",
             "source": str(SOURCE.relative_to(ROOT)),
             "source_sha256": sha256(SOURCE),
+            "sources": {str(path.relative_to(ROOT)): sha256(path) for path in SOURCES},
             "build_script": str(Path(__file__).resolve().relative_to(ROOT)),
             "build_script_sha256": sha256(Path(__file__).resolve()),
             "jar": str(output),

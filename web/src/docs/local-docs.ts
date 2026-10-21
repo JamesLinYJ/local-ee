@@ -125,7 +125,7 @@ const entries: ReferenceEntry[] = [
     id: "limits",
     category: "故障排查",
     title: "常见错误与当前边界",
-    text: "CollectionNotFound：数据尚未同步或 ID 错误；空查询：范围/日期没有本地影像；全云：查询有影像，但掩膜后没有有效像素；ProcessGraphInvalid：用了本站未支持的算子或远程 namespace；超时/内存超限：缩小范围，分时段提交。脚本不能访问公网、宿主机文件和供应方凭据。任务服务重启后会继续追踪已存在的运行容器，容器丢失会明确标记失败。",
+    text: "CollectionNotFound：数据尚未同步或 ID 错误；空查询：范围/日期没有本地影像；全云：查询有影像，但掩膜后没有有效像素；ProcessGraphInvalid：用了本站未支持的算子或远程 namespace；超时/内存超限：缩小范围，分时段提交。脚本不能访问公网、宿主机文件和供应方凭据。任务服务重启后会校验并继续追踪已有原生任务进程；进程丢失会明确标记失败。",
   },
 ];
 

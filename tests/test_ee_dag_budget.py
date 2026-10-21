@@ -18,8 +18,16 @@ for _ in range(38):
     assert q.args[0] is q.args[1]
     q = q.args[0]
 assert q.args[0].ids == ('a',)
-items = [{'id':i,'bbox':[0,0,2,2],'properties':{'system:time_start':1000}} for i in ('a','b')]
+geometry={'type':'Polygon','coordinates':[[[0,0],[2,0],[2,2],[0,2],[0,0]]]}
+items = [{'id':i,'bbox':[0,0,2,2],'geometry':geometry,'properties':{'system:time_start':1000}} for i in ('a','b')]
 translator = Translator([], {'sentinel-2-l2a':items}, None)
+# Replacement literal checks must also traverse shared IR only once, before
+# graph compilation has a chance to enforce the final node budget.
+from gee.ee_masks import invoke_mask
+single = replace(source, ids=('a',))
+input_image = Image([('nir', Pixel('band', (single, 'nir')))], {}, single)
+replacement = Image([('nir', bound)], {}, single)
+assert invoke_mask(translator, 'Image.unmask', {'input':input_image, 'value':replacement}).bands
 graph = Graph(translator)
 try:
     graph.image(Image([('nir', Pixel('reduce_t',(p,'mean')))], {}, source))

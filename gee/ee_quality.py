@@ -1,6 +1,6 @@
 """Quality composites keep every output band tied to the same winning scene."""
 from .ee_collections import frames
-from .ee_translate import Image, ImageSequence, Pixel, const, fail
+from .compat.earthengine.ir import Image, ImageSequence, Pixel, const, fail
 
 
 def quality_mosaic(translator, collection, quality_band):

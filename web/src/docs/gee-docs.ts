@@ -37,6 +37,12 @@ const entries: ReferenceEntry[] = [
     code: "var ndvi = image.expression('(n-r)/(n+r)', {\n  n:image.select('B8'), r:image.select('B4')\n}).rename('NDVI');\nvar vegetation = ndvi.updateMask(ndvi.gt(0.3));",
   },
   {
+    id: "gee-unmask",
+    title: "unmask 缺测填充",
+    text: "unmask() 用有效的 0 填充缺测；unmask(value) 接受数值或网格、时间维度一致的本地影像。有效的原值（包括 0）保留，替代影像自己的缺测继续缺测。默认保留输入 footprint，clip 外不会被填回。sameFootprint:false 只接受已对齐的有限栅格替代值，全局常量扩展报错。当前结果使用 Float64；后续算术或时间归约需显式 toFloat()，会降低精度。数值填充不会恢复真实观测。",
+    code: "var image = scenes.first().select('B8').clip(roi);\nvar filled = image.unmask(32767);\nExport.image.toDrive({image:filled,description:'填充缺测',\n region:roi,scale:10,crs:'EPSG:32649',fileFormat:'GeoTIFF'});",
+  },
+  {
     id: "gee-composite",
     title: "median / mean / mosaic / qualityMosaic",
     text: "median/mean/min/max/sum/count 按逐景有效像素归约，同一天的影像不会提前合并。mosaic 从集合末尾向前选有效像素，保留显式排序；相同时间戳也按集合顺序处理。reduce(Reducer.mean()) 输出带 _mean 后缀的波段，toBands() 按 system:index 生成名称（本地最多 100 个输出波段，仍受 500 节点限制）。预处理、网格和重采样会影响结果。",

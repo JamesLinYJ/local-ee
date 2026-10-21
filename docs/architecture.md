@@ -51,7 +51,7 @@ flowchart LR
 | `web/src/components/`, `hooks/`, `lib/` | 布局、编辑器、目录、地图、任务、管理与文档组件 | 不保存供应方密钥，不把自定义脚本放进有账号权限的浏览器上下文执行 |
 | `gee/api/` | 版本化 HTTP 路由、认证、请求/响应校验 | 不直接实现科学算法或启动任意宿主进程 |
 | `gee/services/` | 用例编排、配额、权限、任务与导出生命周期 | 不依赖浏览器状态，不绕过统一结果路径边界 |
-| `gee/compat/earthengine/` | EE 协议解析、元数据 IR、算子编译、支持清单 | 不执行输入函数文本，不联系 Google，不承诺语法存在即算法可用 |
+| `gee/compat/earthengine/` | 规范 EE DAG 解码、元数据 IR、分组算子分派、图编译与能力清单 | 不执行输入函数文本，不联系 Google，不承诺语法存在即算法可用 |
 | `runtimes/eejs/` | 官方 JS 客户端离线初始化、Map/Export/print 本地适配 | 不持有 DB/供应方凭据，不访问公网，不在 API 进程内执行用户代码 |
 | `gee/graph.py` 与 openEO adapter | 严格校验规范进程图，冻结本地数据目录 | 不接受 URL/UDF/远程 namespace 或隐藏执行表示 |
 | `gee/worker.py` / runtime registry | 排队、独立沙箱进程、限额、取消、恢复、结果发布 | 不信任脚本输出的路径、用户 ID、状态或资产清单 |
@@ -60,9 +60,23 @@ flowchart LR
 | ingestion / catalog | 来源检查、标准化、质量控制、STAC、版本与处理记录 | 不写任务目录，不使用数据库管理员账号，不擅自新增出站地址 |
 | administration | 用户/角色、任务与配额、数据源、系统状态、审计查询 | 不把凭据显示在页面或日志中，不允许普通用户授予自己权限 |
 
-渐进拆分：已有 `app.py/backend.py/worker.py/auth.py` 暂作为兼容入口；新业务通过模块接口接入。EE 编译器首个实现位于 `gee/ee_translate.py`，通过包 facade 对外提供稳定接口；重构时保留旧导入与 HTTP 合同。不得在同一次改动中无验证地重写全部路由。
+渐进拆分：已有 `app.py/backend.py/worker.py/auth.py` 暂作为兼容入口；新业务通过模块接口接入。EE 兼容实现已集中在 `gee/compat/earthengine/`；`gee/ee_translate.py` 保留为 23 行向后兼容导入 facade，供既有调用方使用。继续保留旧导入与 HTTP 合同，不得在同一次改动中无验证地重写全部路由。
 
-### 3.1 公共协议
+### 3.1 EE 编译器模块边界
+
+兼容编译器按职责拆分，避免重新积累到单一 translator 文件：
+
+| 模块 | 职责 |
+| --- | --- |
+| `decoder.py`, `catalog.py`, `filtering.py` | 解码官方客户端 DAG、绑定本地目录元数据、构建筛选器并按本地元数据求值 |
+| `dispatch.py`, `value_ops.py`, `image_ops.py`, `collection_ops.py`, `metadata_ops.py` | 将已解码调用分派到静态值、影像、集合与属性操作实现 |
+| `ir.py`, `static_values.py`, `date_values.py` | 纯值类型和像素 IR、标量静态调用，以及 UTC 日期值辅助函数 |
+| `graph.py`, `pixel_graph.py`, `temporal_graph.py`, `mask_graph.py` | 规范进程图组装、像素表达式编译、保留观测身份的时间归约与原生掩膜处理 |
+| `compile.py`, `capabilities.py` | 稳定的编译入口、已声明处理器清单与当前限制 |
+
+模块通常以约 200 行为可维护性参考，不是硬性上限。按职责拆分，保持类型、验证和错误路径清晰；不得为满足行数而压缩代码或机械拆文件。编译器模块之间使用规范 `gee.compat.earthengine` 导入，不从 `gee.ee_translate` facade 回导形成循环；兼容期仍在根目录的辅助依赖要保持无环，并在合适的重构中迁入规范子包。拆分或新增 handler 不等于算法语义已经实现；每项公开能力仍需对应的参数、类型、边界及数值证据。
+
+### 3.2 公共协议
 
 - `/workbench/*`：当前网页会话与业务接口；保持既有脚本/任务/结果 URL 可用。
 - `/openeo/1.2/*`：标准数据集、算子、作业、日志、结果接口，仅公布经支持清单确认的能力。
@@ -77,6 +91,8 @@ flowchart LR
 固定并保留 Apache-2.0 官方 `@google/earthengine` 客户端、许可证和校验值。使用其独立浏览器构建产物与公开算法签名离线构造对象和序列化图，不引入 Google OAuth、服务账号或公网计算。算法签名表只表示客户端可构造的调用，不代表本地实现了相同数量的算法。
 
 JS 在单独 Node + Seatbelt 进程执行，使用与 Python 相同的资源与生命周期控制。官方对象转换为 legacy EE DAG（CompoundValue、ValueRef、Invocation、Function、ArgumentRef）；解析器严格检查引用、循环、深度和大小。Function 只作为受控计算表达式编译，不在服务端当作代码执行。
+
+本地编译器的规范实现位于 `gee/compat/earthengine/`，包含 decoder/catalog/filtering、分组 dispatch、IR/static/date、graph/pixel/temporal 编译、compile 入口及 capabilities。`gee/ee_translate.py` 仅作为旧导入的兼容 facade；新增实现和内部依赖留在规范子包中。
 
 ### 4.2 分层验收
 
@@ -155,6 +171,7 @@ PostgreSQL 保存身份/角色/项目、脚本及语言、任务状态、父子�
 - P0 revised：用户要求删除旧 VM、镜像和数据库，转为 macOS 原生。已有影像、结果和源码保留，旧账号/脚本/任务数据库不恢复；新本机数据库重新初始化。当前实现与证据见 `native-macos.md`。
 - P1 verified：官方客户端 → 隔离 Node → 本地 EE 编译器 → openEO/GeoTrellis → 网页地图和下载已跑通。真实 Sentinel-2 单景 NDVI 与独立基准掩膜相同、最大绝对误差 0，见 `audit/react-ui/ndvi-validation.json`；非矩形导出见 `audit/ee-export-region/validation.json`。
 - P2 partial：工作台与流程图已采用严格 TypeScript + React；CodeMirror/OpenLayers/React Flow/Motion、三种桌面宽度、减少动态效果均有实测。多景 23 项输出通过固定引擎及独立 NumPy 比较，见 `audit/ee-compat-wave2/validation.json`；具体语法与限制见 `docs/gee-compatibility.md`。没有原始 GEE 同数据对照，不标 G。
+- P2 新增有限网格 `unmask`：默认 0、标量、对齐栅格替换、clip 保留及 Float64 精度已有 5 项 SDK→原生引擎独立数值验收；不同 footprint、相同时间戳的逐景填补后均值另有 1 项独立验收，掩膜差异与数值误差均为 0。独立 SPI 探针覆盖缺 tile、重复键、精度、空输入与预算拒绝。全局 footprint 扩展、隐式重投影/时间广播和 Float64 回调归约仍拒绝；未完成 Google 对照。汇总见 `reports/gee-mask-wave4.json`。
 - 适配边界：增加 EE 入口，继续共用 openEO 数据、队列和引擎。当前逐景归约避开上游按日合并的语义差异，不改科研日期。复杂流程仍受 500 节点限制，后续优化不以牺牲逐景身份为代价。
 - P3 partial：Refine 管理中心、本地四角色权限、用户停用/会话撤销、最后管理员保护、数据集草稿/发布/下架、任务查询/取消、管理审计和独立版本化迁移已实现。文件模块实现分块上传、校验、原件下载、GeoTIFF 隔离入库与 COG 下载；组件验证与运行证据分别在 `audit/admin-v1/`、`audit/admin-files-v1-r3/`、`audit/admin-files-live-v1/`。Keycloak OIDC、项目/数据集对象权限、非 GeoTIFF 通用入库仍待实施。
 - P4 partial：已有隔离、持久任务、版本化 migrator 与迁移前备份可用；有限 DB 角色、TLS、完整磁盘硬配额、文件归档清理与完整生产 profile 尚待实施。依赖处置和端到端出站审查继续保留原验收要求。

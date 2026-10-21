@@ -33,6 +33,7 @@ S 表示固定官方 SDK 可生成表达式；C 表示本地编译；N 表示本
 | Date | UTC 构造/fromYMD/get/millis；advance 秒至周、整数月/年；常用 format token；difference/getRelative/getFraction | S/C；毫秒、月末、闰年、负向移动、格式错误；平均年月与日历 fraction/ISO 周边界采用显式本地策略并警告，没有 G 对照 |
 | 逐景元数据 map | 原始集合读取 date/get/propertyNames/geometry 时自动有限展开；支持 set/copyProperties、dropNulls，保留同日不同 item 和排序 | S/C；逐景日期参与像素计算另有实际引擎 N；纯像素 map 保留紧凑路径 |
 | 浮点类型转换 | toDouble/toFloat 通过本地 Scala SPI 真正转换物理像元类型、NoData 与 TileLayerMetadata | 独立 SPI 真实 tile 验证与 GeoTIFF 类型/数值 N；Float64 后的像素回调/时间归约明确拒绝，需最后 cast 或显式 toFloat，未承诺完整类型传播 |
+| 缺测填充 | unmask 默认有效 0、标量、单波段广播和等波段数按顺序替换；保留输入属性、替代值掩膜与默认 footprint；map 自动按场景 footprint 展开 | S/C/N：5 项 SDK→原生输出及不同足迹、相同时间戳的逐景均值验收均为 0 掩膜差异、0 数值误差；SPI 另验缺 tile 与拒绝控制。仅有限、对齐的本地网格与相同观测时刻；global constant + sameFootprint=false 拒绝。结果为 Float64，后续回调/时间归约需显式 toFloat，未完成 Google 对照 |
 | Number 位运算 | 标量 bitCount/bitwiseNot/bitwiseAnd/Or/Xor/leftShift/rightShift 的受限整数域 | 官方 SDK 与文档样例 C；signed64 整数输入，And/Or/Xor 限非负，左移限非负且不溢出，移位量 0..63；非整数、超范围明确拒绝；不是 Image QA 位运算 |
 | List | sequence/get/length/contains/add/cat/slice/distinct/sort/map/iterate | S/C；回调最多 1000 项，中间列表最多 10000 项，结果最多 1 MB |
 | Algorithms.If | 静态条件，惰性编译选中分支 | S/C；不把影像对象当作静态布尔条件 |
@@ -74,6 +75,8 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 
 逐景日期、NDVI 质量合成和末端 Float64 导出见 `examples/javascript/06_逐景日期与质量合成.js`。网页语法文档同步说明当前参数限制；`toDouble()` 不会补回先前 Float32 计算已经损失的精度，后续未实现精度保持的像素回调/时间归约会被明确拒绝。
 
+`examples/javascript/07_缺测填充与掩膜.js` 演示 `unmask`、clip 保留和 Float64 导出。标量填充值不是恢复观测；跨网格或跨时间替换仍需明确对齐。原生扩展单独构建为带源码/依赖摘要的 SPI JAR，构建入口保持 `scripts/build_integer_adapter.py` 以兼容现有部署命令；其中整数转换、有限网格常量和缺测替换分别位于三个 Scala 源文件，不修改上游 JAR。
+
 ## 尚未支持
 
 - 全球 GEE 数据目录、私有 assets、任意 `require('users/...')` 模块和 Google Drive/Cloud Storage 上传。
@@ -99,7 +102,7 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 | 谐波时序与矩阵回归 | 本轮已补有限逐景日期 map 和受限 `Date.difference`；仍缺常量时间 band 的网格绑定、`linearRegression/linearFit`、数组和 `matrixSolve`，以及相位/振幅的 `atan2/hypot` |
 | HISTARFM 插值 | 本轮已补受限 `Date.getRelative`；独立常量栅格、`int16`、`Join.saveAll`、`Filter.maxDifference` 与匹配列表属性仍缺失 |
 | 随机森林与验证 | 样本提取、分类器训练/预测、混淆矩阵与批量区域统计 |
-| LandTrendr | GEE 用户模块解析、真实时序分段算法、数组处理、连通像元；QA 位运算与 `unmask` 也未实现 |
+| LandTrendr | GEE 用户模块解析、真实时序分段算法、数组处理、连通像元与 Image QA 位运算仍缺失；已补有限网格的 `unmask`，不能据此运行完整 LandTrendr |
 | GEE 应用交互 | 实际原生 runner 的 `ui.Panel/ui.Chart` 返回 `ui is not defined`；`require('users/...')` 返回模块不存在 |
 
 额外 14 个规模编译探针发现：单波段均值 50 景为 302 节点，100 景超过 500；双波段均值 30 景为 335 节点，50 景超过 500。该结果仅测图规模，未测吞吐。需要紧凑而保留精确观测身份的加载/归约路径，不能只放宽节点上限。
