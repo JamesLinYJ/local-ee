@@ -1,4 +1,4 @@
-# Private GEE engineering instructions
+# Local EE engineering instructions
 
 Read `docs/architecture.md` before changing architecture or adding a subsystem. This is an existing local research platform, not a blank starter. Preserve catalog versions, results, dependency locks and security boundaries. The user explicitly deleted the former VM and database; do not restore old account/job backups automatically.
 
@@ -42,6 +42,7 @@ Read `docs/architecture.md` before changing architecture or adding a subsystem. 
 
 ## Verification and workflow
 
+- The public source repository is `JamesLinYJ/local-ee`. Submit changes through pull requests. Protected `main` requires the GitHub Actions `python` and `frontend` checks, an up-to-date base, resolved conversations and linear history; force pushes and branch deletion are disallowed, including for administrators. Do not disable protection to publish changes. With only one maintainer, approving reviews are not required; revisit when another trusted maintainer joins.
 - Inspect code and direct callers first. Keep bounded changes and ownership clear; parallel workers must not edit overlapping files and must report evidence/limits.
 - Use existing package managers/locks. Keep builds in temporary output directories, then safely deploy static assets. No public hosting or publishing for this local platform without user authorization.
 - Run syntax/build checks, focused negative/semantic tests, and legitimate end-to-end controls appropriate to the changed module. Test real UI routes when the behavior is user-visible.

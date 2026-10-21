@@ -1,4 +1,4 @@
-# Private GEE Workbench
+# Local EE
 
 自托管遥感工作台：TypeScript + React 前端，Python/openEO 服务，GeoTrellis/Spark 本地计算。通过固定版本的官方 Earth Engine JavaScript 客户端构造表达式，再由本地兼容层执行已实现的算法。
 
@@ -19,8 +19,8 @@
 需要原生 arm64 Python 3.11、Node.js 24、Homebrew、uv、Xcode Command Line Tools。Java 21 仅用于本项目，不要求修改全局 Java 默认版本。
 
 ```sh
-git clone https://github.com/JamesLinYJ/private-gee.git
-cd private-gee
+git clone https://github.com/JamesLinYJ/local-ee.git
+cd local-ee
 HOMEBREW_NO_AUTO_UPDATE=1 brew install postgresql@17 openjdk@21 gdal udunits
 uv sync --frozen
 .venv/bin/python scripts/fetch_engine_dependencies.py

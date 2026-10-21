@@ -1,6 +1,6 @@
 # 源码仓库与本机状态
 
-GitHub 仓库为私有源码备份及后续开发入口。发布不改变现有本机数据、账号、任务或服务进程。
+GitHub 仓库为公开源码入口：[JamesLinYJ/local-ee](https://github.com/JamesLinYJ/local-ee)。公开范围仅限经过检查的源码和文档，不包括本机数据、账号、任务或服务状态。
 
 ## 保留在 Git 中
 
@@ -32,4 +32,10 @@ python3 scripts/fetch_engine_dependencies.py --verify-only
 
 `upstream-lock.json`、`uv.lock`、`web/package-lock.json`、`engine/*-lock.json` 是可共享的基线。`.native/engine-lock.json` 和 `deploy/native-lock.json` 由实际部署记录，可能含机器路径，仅留本机。
 
-根项目暂未选择开源许可证；私有托管不产生额外开源授权。第三方许可证与版权声明按原样保留，见 `THIRD_PARTY_NOTICES.md`。
+根项目暂未选择开源许可证；公开托管不额外改变授权范围。第三方许可证与版权声明按原样保留，见 `THIRD_PARTY_NOTICES.md`。
+
+## 主分支保护
+
+`main` 必须通过 PR 合并：GitHub Actions 的 `python` 和 `frontend` 检查均通过，基于最新主分支，解决全部讨论，保持线性提交历史。禁止强推和删除主分支，规则同时约束管理员；合并方式采用 squash，合并后自动删除工作分支。
+
+目前仅有一名维护者，批准人数暂设为 0，仍强制 PR 和 CI。新增可信维护者后应将 required approving reviews 提高为至少 1，并启用过期批准撤销策略。自动化不得为提交代码临时关闭保护。
