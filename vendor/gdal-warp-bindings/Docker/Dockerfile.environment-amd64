@@ -1,0 +1,76 @@
+# docker buildx create --name multi-platform-builder
+# docker buildx use multi-platform-builder
+# 
+# docker build -f Dockerfile.environment-amd64 -t daunnc/gdal-warp-bindings-environment:${GDAL_VERSION}-amd64 .
+# docker buildx build -f Dockerfile.environment-amd64 --platform linux/amd64 --push -t daunnc/gdal-warp-bindings-environment:${GDAL_VERSION}-amd64 .
+
+FROM quay.io/geotrellis/gdal-warp-bindings-crossbuild:amd64-2
+LABEL maintainer="Azavea <info@azavea.com>"
+
+ARG GDAL_VERSION=3.13.1
+ARG GDAL_MACOS=libgdal-core-3.13.1-h2e1b34b_1.conda
+ARG GDAL_WINDOWS=release-1944-x64-gdal-3-12-1-mapserver-8-6-0-libs.zip
+ARG PROJ_VERSION=9.8.1
+ARG LIBTIFF_VERSION=4.1.0
+ARG CURL_VERSION=7.71.1
+
+RUN apt-get update -y && \
+    apt-get install build-essential pkg-config openjdk-8-jdk -y -q && \
+    apt-get autoremove && \
+    apt-get autoclean && \
+    apt-get clean
+
+# Install SQLite
+RUN apt-get install -y sqlite3 libsqlite3-dev
+
+# Build GDAL ${GDAL_VERSION}
+RUN cd /usr/local/src && \
+    wget -k "https://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz" && \
+    wget -k "https://download.osgeo.org/proj/proj-${PROJ_VERSION}.tar.gz" && \
+    wget -k "https://download.osgeo.org/libtiff/tiff-${LIBTIFF_VERSION}.tar.gz" && \
+    wget -k "https://curl.haxx.se/download/curl-${CURL_VERSION}.tar.gz" && \
+    tar axvf gdal-${GDAL_VERSION}.tar.gz && tar axvf proj-${PROJ_VERSION}.tar.gz && tar axvf tiff-${LIBTIFF_VERSION}.tar.gz && tar axvf curl-${CURL_VERSION}.tar.gz && \
+    cd curl-${CURL_VERSION} && ./configure --prefix=/usr/local && nice -n 19 make -j33 && make install && \
+    cd ../tiff-${LIBTIFF_VERSION} && ./configure --prefix=/usr/local && nice -n 19 make -j33 && make install && \
+    cd ../proj-${PROJ_VERSION} && mkdir -p build && cd ./build && cmake .. && cmake --build . -j 33 && cmake --build . --target install && \
+    cd ../../gdal-${GDAL_VERSION} && mkdir -p build && cd ./build && cmake .. && cmake --build . -j 33 && cmake --build . --target install && \
+    cd ../.. && rm -r curl-${CURL_VERSION}/ tiff-${LIBTIFF_VERSION}/ proj-${PROJ_VERSION}/ gdal-${GDAL_VERSION}/ curl-${CURL_VERSION}.tar.gz tiff-${LIBTIFF_VERSION}.tar.gz proj-${PROJ_VERSION}.tar.gz gdal-${GDAL_VERSION}.tar.gz
+
+# Test data
+RUN wget 'https://download.osgeo.org/geotiff/samples/usgs/c41078a1.tif' -k -O /tmp/c41078a1.tif
+
+# Boost
+RUN wget 'https://archives.boost.io/release/1.69.0/source/boost_1_69_0.tar.bz2' -O /tmp/boost.tar.bz2 && \
+  mkdir -p /usr/local/include && \
+  cd /usr/local/include && \
+  tar axvf /tmp/boost.tar.bz2 && \
+  rm /tmp/boost.tar.bz2
+  
+# Macintosh
+RUN mkdir -p /macintosh && \
+    cd /macintosh && \
+    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && /bin/bash ~/miniconda.sh -b && \
+    eval "$(/root/miniconda3/bin/conda shell.bash hook)" && \
+    wget "https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u202-b08/OpenJDK8U-jdk_x64_mac_hotspot_8u202b08.tar.gz" && \
+    tar axvf OpenJDK8U-jdk_x64_mac_hotspot_8u202b08.tar.gz && \
+    rm -f OpenJDK8U-jdk_x64_mac_hotspot_8u202b08.tar.gz && \
+    wget "https://anaconda.org/conda-forge/libgdal-core/${GDAL_VERSION}/download/osx-64/${GDAL_MACOS}" && \
+    mkdir -p gdal/${GDAL_VERSION} && \
+    cph extract ${GDAL_MACOS} --dest gdal/${GDAL_VERSION} && \
+    rm -f ${GDAL_MACOS} && \
+    rm -r /root/miniconda3
+
+# Windows
+RUN mkdir -p /windows && \
+    cd /windows && \
+    wget "https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u202-b08/OpenJDK8U-jdk_x64_windows_hotspot_8u202b08.zip" && \
+    unzip OpenJDK8U-jdk_x64_windows_hotspot_8u202b08.zip && \
+    rm -r OpenJDK8U-jdk_x64_windows_hotspot_8u202b08.zip && \
+    mkdir -p /windows/gdal && \
+    cd /windows/gdal && \
+    wget "https://download.gisinternals.com/sdk/downloads/${GDAL_WINDOWS}" && \
+    unzip ${GDAL_WINDOWS} && \
+    rm -f ${GDAL_WINDOWS}
+
+# Linkage
+RUN echo '/usr/local/lib' >> /etc/ld.so.conf && ldconfig

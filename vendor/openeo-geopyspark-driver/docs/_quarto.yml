@@ -1,0 +1,54 @@
+project:
+  type: website
+  preview:
+    port: 4200
+
+website:
+  repo-url: "https://github.com/Open-EO/openeo-geopyspark-driver"
+  repo-branch: "master"
+  search:
+    location: sidebar
+    type: textbox
+    copy-button: true
+
+  navbar:
+    pinned: true
+  page-navigation: true
+  title: "openEO Geotrellis documentation"
+  sidebar:
+    style: "floating"
+    collapse-level: 2
+    contents:
+      - href: README.md
+        text: Welcome
+      - text: Backend setup
+        contents:
+            - href: deployment/local_batch_job.md
+              text: Single machine batch job
+            - href: deployment/local_web_service.md
+              text: Local web service
+      - href: development.md
+        text: Development
+      - href: load_stac.qmd
+        text: Loading external data
+      - href: geotrellis_processing.md
+        text: Geotrellis Processing
+      - href: performance_debug.md
+        text: Performance Debugging
+      - href: vectorcube-run_udf.md
+        text: Running UDF on vector cube
+      - href: calrissian-cwl.md
+        text: Calrissian CWL
+      - href: udf-eoap-cwl.md
+        text: UDF EOAP-CWL
+      - href: job_options.md
+        text: Job options
+      - href: layercatalog.md
+        text: Collection configuration
+      - href: configuration.md
+        text: Configuration
+        contents:
+            - href: configuration/container_images_and_udf_runtimes.md
+              text: Images and UDF runtimes
+      - href: testing.md
+        text: Testing

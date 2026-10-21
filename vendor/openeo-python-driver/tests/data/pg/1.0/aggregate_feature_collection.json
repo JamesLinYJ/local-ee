@@ -1,0 +1,85 @@
+{
+  "loadco1": {
+    "process_id": "load_collection",
+    "arguments": {
+      "id": "ESA_WORLDCOVER_10M_2020_V1",
+      "spatial_extent": {
+        "west": 5,
+        "east": 6,
+        "north": 52,
+        "south": 51
+      },
+      "temporal_extent": [
+        "2017-11-21",
+        "2017-11-21"
+      ]
+    }
+  },
+  "aggreg1": {
+    "process_id": "aggregate_spatial",
+    "arguments": {
+      "data": {
+        "from_node": "loadco1"
+      },
+      "geometries": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    5.076,
+                    51.21
+                  ],
+                  [
+                    5.166,
+                    51.21
+                  ],
+                  [
+                    5.166,
+                    51.26
+                  ],
+                  [
+                    5.076,
+                    51.26
+                  ],
+                  [
+                    5.076,
+                    51.21
+                  ]
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "reducer": {
+        "process_graph": {
+          "mean1": {
+            "process_id": "mean",
+            "arguments": {
+              "data": {
+                "from_parameter": "data"
+              }
+            },
+            "result": true
+          }
+        }
+      }
+    }
+  },
+  "save": {
+    "process_id": "save_result",
+    "arguments": {
+      "data": {
+        "from_node": "aggreg1"
+      },
+      "format": "JSON"
+    },
+    "result": true
+  }
+}

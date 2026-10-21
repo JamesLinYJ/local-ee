@@ -1,0 +1,46 @@
+language: python
+
+python:
+  - "3.5"
+
+branches:
+  only:
+    - io-refactor
+    - master
+    - refactor/performance-refactor
+    - milestone/mvp
+    - gdal
+
+addons:
+  apt:
+    packages:
+      - awscli
+  # Fix OpenJDK builds
+  # https://github.com/travis-ci/travis-ci/issues/5227
+  hostname: localhost
+
+services:
+  - docker
+
+cache:
+  directories:
+  - ./archives
+  - $HOME/.ivy2/cache
+  - $HOME/.sbt/boot/
+  - $HOME/.coursier/cache/v1
+  - $HOME/.cache/pip
+
+script:
+  - ./scripts/build_and_test_docker.sh
+
+before_deploy:
+  - export GEOPYSPARK_VERSION_SUFFIX="${TRAVIS_COMMIT:0:7}"
+
+deploy:
+  - provider: script
+    script: ./scripts/deploy.sh
+    skip_cleanup: true
+    on:
+      repo: locationtech-labs/geopyspark
+      branch: master
+      tags: false

@@ -1,0 +1,91 @@
+name: private-gee
+services:
+  db:
+    image: ${POSTGRES_IMAGE:-postgres:17-bookworm}
+    environment:
+      POSTGRES_DB: gee
+      POSTGRES_USER: gee
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Run scripts/configure.py first}
+    volumes: [postgres:/var/lib/postgresql/data]
+    networks: [backend]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U gee -d gee']
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+  migrate:
+    image: ${APP_IMAGE:-private-gee-app:local}
+    command: [python, -m, gee.migrations]
+    environment:
+      DATABASE_URL: postgresql://gee:${DB_PASSWORD}@db/gee
+    networks: [backend]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    depends_on:
+      db: {condition: service_healthy}
+    restart: 'no'
+  api:
+    image: ${APP_IMAGE:-private-gee-app:local}
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://gee:${DB_PASSWORD}@db/gee
+      DATA_ROOT: /data
+      UPLOAD_ROOT: /uploads
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:-http://localhost:8787}
+    volumes: ['./data:/data:ro', './data/uploads:/uploads']
+    networks: [backend, scripts, web]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    depends_on:
+      db: {condition: service_healthy}
+      migrate: {condition: service_completed_successfully}
+    restart: unless-stopped
+  worker:
+    image: ${APP_IMAGE:-private-gee-app:local}
+    user: '0:0'
+    command: [python, -m, gee.worker]
+    environment:
+      DATABASE_URL: postgresql://gee:${DB_PASSWORD}@db/gee
+      DATA_ROOT: /data
+      HOST_DATA_ROOT: ${HOST_DATA_ROOT:?Run scripts/configure.py first}
+      UPLOAD_ROOT: /data/uploads
+      APP_IMAGE: ${APP_IMAGE:-private-gee-app:local}
+      ENGINE_IMAGE: ${ENGINE_IMAGE:-private-gee-engine:arm64}
+      JS_IMAGE: ${JS_IMAGE:-private-gee-js:local}
+      JOB_MEMORY: ${JOB_MEMORY:-10g}
+      JOB_CPUS: ${JOB_CPUS:-6}
+      JOB_TIMEOUT: ${JOB_TIMEOUT:-1800}
+    volumes: ['./data:/data', '/var/run/docker.sock:/var/run/docker.sock']
+    networks: [backend]
+    read_only: true
+    tmpfs: [/tmp]
+    depends_on:
+      db: {condition: service_healthy}
+      api: {condition: service_started}
+    restart: unless-stopped
+  web:
+    image: ${NGINX_IMAGE:-nginx:stable-alpine}
+    user: '101:101'
+    ports: ['127.0.0.1:8787:8080']
+    volumes: ['./web/dist:/usr/share/nginx/html:ro', './deploy/nginx.conf:/etc/nginx/nginx.conf:ro']
+    networks: [web, edge]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    depends_on: [api]
+    restart: unless-stopped
+networks:
+  backend: {internal: true}
+  scripts: {internal: true}
+  web: {internal: true}
+  edge: {}
+volumes:
+  postgres:

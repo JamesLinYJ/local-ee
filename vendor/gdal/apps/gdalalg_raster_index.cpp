@@ -1,0 +1,314 @@
+/******************************************************************************
+ *
+ * Project:  GDAL
+ * Purpose:  gdal "raster index" subcommand
+ * Author:   Even Rouault <even dot rouault at spatialys.com>
+ *
+ ******************************************************************************
+ * Copyright (c) 2025, Even Rouault <even dot rouault at spatialys.com>
+ *
+ * SPDX-License-Identifier: MIT
+ ****************************************************************************/
+
+#include "gdalalg_raster_index.h"
+
+#include "cpl_conv.h"
+#include "gdal_priv.h"
+#include "gdal_utils_priv.h"
+#include "ogrsf_frmts.h"
+
+//! @cond Doxygen_Suppress
+
+#ifndef _
+#define _(x) (x)
+#endif
+
+/************************************************************************/
+/*         GDALRasterIndexAlgorithm::GDALRasterIndexAlgorithm()         */
+/************************************************************************/
+
+GDALRasterIndexAlgorithm::GDALRasterIndexAlgorithm()
+    : GDALVectorOutputAbstractAlgorithm(NAME, DESCRIPTION, HELP_URL)
+{
+    AddProgressArg();
+    AddInputDatasetArg(&m_inputDatasets, GDAL_OF_RASTER)
+        .SetAutoOpenDataset(false)
+        .SetDatasetInputFlags(GADV_NAME);
+    GDALVectorOutputAbstractAlgorithm::AddAllOutputArgs();
+
+    AddCommonOptions();
+
+    AddArg("source-crs-field-name", 0,
+           _("Name of the field to store the CRS of each dataset"),
+           &m_sourceCrsName)
+        .SetMinCharCount(1);
+    AddArg("source-crs-format", 0,
+           _("Format in which the CRS of each dataset must be written"),
+           &m_sourceCrsFormat)
+        .SetMinCharCount(1)
+        .SetDefault(m_sourceCrsFormat)
+        .SetChoices("auto", "WKT", "EPSG", "PROJ");
+}
+
+/************************************************************************/
+/*         GDALRasterIndexAlgorithm::GDALRasterIndexAlgorithm()         */
+/************************************************************************/
+
+GDALRasterIndexAlgorithm::GDALRasterIndexAlgorithm(
+    const std::string &name, const std::string &description,
+    const std::string &helpURL)
+    : GDALVectorOutputAbstractAlgorithm(name, description, helpURL)
+{
+}
+
+/************************************************************************/
+/*             GDALRasterIndexAlgorithm::AddCommonOptions()             */
+/************************************************************************/
+
+void GDALRasterIndexAlgorithm::AddCommonOptions()
+{
+    AddArg("recursive", 0,
+           _("Whether input directories should be explored recursively."),
+           &m_recursive);
+    AddArg("filename-filter", 0,
+           _("Pattern that the filenames in input directories should follow "
+             "('*' and '?' wildcard)"),
+           &m_filenameFilter);
+    AddArg("min-pixel-size", 0,
+           _("Minimum pixel size in term of geospatial extent per pixel "
+             "(resolution) that a raster should have to be selected."),
+           &m_minPixelSize)
+        .SetMinValueExcluded(0);
+    AddArg("max-pixel-size", 0,
+           _("Maximum pixel size in term of geospatial extent per pixel "
+             "(resolution) that a raster should have to be selected."),
+           &m_maxPixelSize)
+        .SetMinValueExcluded(0);
+    AddArg("location-name", 0, _("Name of the field with the raster path"),
+           &m_locationName)
+        .SetDefault(m_locationName)
+        .SetMinCharCount(1);
+    AddAbsolutePathArg(
+        &m_writeAbsolutePaths,
+        _("Whether the path to the input datasets should be stored as an "
+          "absolute path"));
+    AddArg(GDAL_ARG_NAME_OUTPUT_CRS, 0, _("Output CRS"), &m_crs)
+        .SetIsCRSArg()
+        .AddHiddenAlias("dst-crs")
+        .AddHiddenAlias("t_srs");
+
+    {
+        auto &arg =
+            AddArg("metadata", 0, _("Add dataset metadata item"), &m_metadata)
+                .SetMetaVar("<KEY>=<VALUE>")
+                .SetPackedValuesAllowed(false);
+        arg.AddValidationAction([this, &arg]()
+                                { return ParseAndValidateKeyValue(arg); });
+        arg.AddHiddenAlias("mo");
+    }
+
+    AddArg("skip-errors", 0, _("Skip errors related to input datasets"),
+           &m_skipErrors);
+    AddArg("profile", 0, _("Profile of output dataset"), &m_profile)
+        .SetDefault(m_profile)
+        .SetChoices(PROFILE_NONE, PROFILE_STAC_GEOPARQUET);
+    AddArg("base-url", 0, _("Base URL for STAC-GeoParquet href"), &m_baseUrl);
+    AddArg("id-method", 0, _("How to derive STAC-GeoParquet 'id'"), &m_idMethod)
+        .SetDefault(m_idMethod)
+        .SetChoices(ID_METHOD_FILENAME, ID_METHOD_MD5, ID_METHOD_METADATA_ITEM);
+    AddArg("id-metadata-item", 0,
+           _("Name of metadata item used to set STAC-GeoParquet 'id'"),
+           &m_idMetadataItem)
+        .SetDefault(m_idMetadataItem)
+        .AddValidationAction(
+            [this]()
+            {
+                m_idMethod = ID_METHOD_METADATA_ITEM;
+                return true;
+            });
+
+    AddValidationAction(
+        [this]()
+        {
+            if (m_profile == PROFILE_STAC_GEOPARQUET)
+            {
+                if (!m_outputFormat.empty() &&
+                    !EQUAL(m_outputFormat.c_str(), "Parquet"))
+                {
+                    ReportError(CE_Failure, CPLE_NotSupported,
+                                "STAC-GeoParquet profile is only compatible "
+                                "with Parquet output format");
+                    return false;
+                }
+                else if (m_outputFormat.empty() &&
+                         !EQUAL(CPLGetExtensionSafe(
+                                    m_outputDataset.GetName().c_str())
+                                    .c_str(),
+                                "parquet"))
+                {
+                    ReportError(CE_Failure, CPLE_NotSupported,
+                                "STAC-GeoParquet profile is only compatible "
+                                "with Parquet output format");
+                    return false;
+                }
+                m_outputFormat = "Parquet";
+
+                if (!m_crs.empty() && m_crs != "EPSG:4326")
+                {
+                    OGRSpatialReference oSRS;
+                    CPL_IGNORE_RET_VAL(oSRS.SetFromUserInput(m_crs.c_str()));
+                    const char *pszCelestialBodyName =
+                        oSRS.GetCelestialBodyName();
+                    // STAC-GeoParquet requires EPSG:4326, but let be nice
+                    // with planetary use cases and allow a non-Earth geographic CRS...
+                    if (!(pszCelestialBodyName &&
+                          !EQUAL(pszCelestialBodyName, "Earth") &&
+                          oSRS.IsGeographic()))
+                    {
+                        ReportError(
+                            CE_Failure, CPLE_NotSupported,
+                            "STAC-GeoParquet profile is only compatible "
+                            "with --output-crs=EPSG:4326");
+                        return false;
+                    }
+                }
+                if (m_crs.empty())
+                    m_crs = "EPSG:4326";
+            }
+            return true;
+        });
+}
+
+/************************************************************************/
+/*                 GDALRasterIndexAlgorithm::RunImpl()                  */
+/************************************************************************/
+
+bool GDALRasterIndexAlgorithm::RunImpl(GDALProgressFunc pfnProgress,
+                                       void *pProgressData)
+{
+    CPLStringList aosSources;
+    for (auto &srcDS : m_inputDatasets)
+    {
+        CPLAssert(!srcDS.GetDatasetRef());
+        aosSources.push_back(srcDS.GetName());
+    }
+
+    auto setupRet = SetupOutputDataset();
+    if (!setupRet.outDS)
+        return false;
+
+    if (!SetDefaultOutputLayerNameIfNeeded(setupRet.outDS))
+        return false;
+
+    CPLStringList aosOptions;
+    aosOptions.push_back("--invoked-from-gdal-raster-index");
+
+    if (m_profile != PROFILE_NONE)
+    {
+        aosOptions.push_back("-profile");
+        aosOptions.push_back(m_profile);
+
+        if (!m_baseUrl.empty())
+        {
+            aosOptions.push_back("--base-url");
+            aosOptions.push_back(m_baseUrl);
+        }
+
+        aosOptions.push_back("--id-metadata-item");
+        aosOptions.push_back(m_idMetadataItem);
+
+        aosOptions.push_back("--id-method");
+        aosOptions.push_back(m_idMethod);
+    }
+
+    if (m_skipErrors)
+    {
+        aosOptions.push_back("-skip_errors");
+    }
+    if (m_recursive)
+    {
+        aosOptions.push_back("-recursive");
+    }
+    for (const std::string &s : m_filenameFilter)
+    {
+        aosOptions.push_back("-filename_filter");
+        aosOptions.push_back(s);
+    }
+    if (m_minPixelSize > 0)
+    {
+        aosOptions.push_back("-min_pixel_size");
+        aosOptions.push_back(CPLSPrintf("%.17g", m_minPixelSize));
+    }
+    if (m_maxPixelSize > 0)
+    {
+        aosOptions.push_back("-max_pixel_size");
+        aosOptions.push_back(CPLSPrintf("%.17g", m_maxPixelSize));
+    }
+
+    if (!m_outputLayerName.empty())
+    {
+        aosOptions.push_back("-lyr_name");
+        aosOptions.push_back(m_outputLayerName);
+    }
+
+    aosOptions.push_back("-tileindex");
+    aosOptions.push_back(m_locationName);
+
+    if (m_writeAbsolutePaths)
+    {
+        aosOptions.push_back("-write_absolute_path");
+    }
+    if (m_crs.empty())
+    {
+        if (m_sourceCrsName.empty())
+            aosOptions.push_back("-skip_different_projection");
+    }
+    else
+    {
+        aosOptions.push_back("-t_srs");
+        aosOptions.push_back(m_crs);
+    }
+    if (!m_sourceCrsName.empty())
+    {
+        aosOptions.push_back("-src_srs_name");
+        aosOptions.push_back(m_sourceCrsName);
+
+        aosOptions.push_back("-src_srs_format");
+        aosOptions.push_back(CPLString(m_sourceCrsFormat).toupper());
+    }
+
+    for (const std::string &s : m_metadata)
+    {
+        aosOptions.push_back("-mo");
+        aosOptions.push_back(s);
+    }
+
+    if (!AddExtraOptions(aosOptions))
+        return false;
+
+    std::unique_ptr<GDALTileIndexOptions, decltype(&GDALTileIndexOptionsFree)>
+        options(GDALTileIndexOptionsNew(aosOptions.List(), nullptr),
+                GDALTileIndexOptionsFree);
+
+    if (options)
+    {
+        GDALTileIndexOptionsSetProgress(options.get(), pfnProgress,
+                                        pProgressData);
+    }
+
+    const bool ret =
+        options && GDALTileIndexInternal(m_outputDataset.GetName().c_str(),
+                                         GDALDataset::ToHandle(setupRet.outDS),
+                                         OGRLayer::ToHandle(setupRet.layer),
+                                         aosSources.size(), aosSources.List(),
+                                         options.get(), nullptr) != nullptr;
+
+    if (ret && setupRet.newDS)
+    {
+        m_outputDataset.Set(std::move(setupRet.newDS));
+    }
+
+    return ret;
+}
+
+//! @endcond

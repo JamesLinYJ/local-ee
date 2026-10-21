@@ -1,0 +1,453 @@
+import dataclasses
+import logging
+import re
+from dataclasses import dataclass, field, fields
+from typing import Any, Dict, List
+
+from openeo_driver.constants import DEFAULT_LOG_LEVEL_PROCESSING
+from openeo_driver.errors import OpenEOApiException
+from openeogeotrellis.config import get_backend_config
+from openeogeotrellis.integrations.credit_check_registry import get_credit_check
+from openeogeotrellis.constants import (
+    JOB_OPTION_LOG_LEVEL,
+    JOB_OPTION_LOGGING_THRESHOLD,
+    STAC_API_FILTER_BY_GEOMETRY_DEFAULT,
+)
+from openeogeotrellis.udf.udf_runtime_images import UdfRuntimeImageRepository
+from openeogeotrellis.util.byteunit import byte_string_as
+
+
+JOB_OPTION_DISABLE = "disable"
+
+@dataclass
+class JobOptions:
+    """
+    This class represents the available job options for openEO Geotrellis.
+
+    """
+
+    _log = logging.getLogger(__name__)
+
+    driver_memory: str = field(
+        default=get_backend_config().default_driver_memory,
+        metadata={
+            "description": "Memory allocated to the Spark ‘driver’ JVM, which manages the execution and metadata of the batch job."
+        },
+    )
+
+    driver_memory_overhead: str = field(
+        default=get_backend_config().default_driver_memoryOverhead,
+        metadata={
+            "name": "driver-memoryOverhead",
+            "description": "Memory assigned to the Spark ‘driver’ on top of JVM memory for Python processes."
+        })
+
+    driver_cores: int = field(
+        default=5,
+        metadata={
+            "description": "Number of CPUs per driver, normally not needed.",
+            "public": False
+        })
+
+    executor_memory: str = field(
+        default=get_backend_config().default_executor_memory,
+        metadata={
+            "description": "Memory allocated to the workers for the JVM that executes most predefined processes."
+        })
+    executor_memory_overhead: str = field(
+        default=get_backend_config().default_executor_memoryOverhead,
+        metadata={
+            "name": "executor-memoryOverhead",
+            "description": "Memory allocated to the workers in addition to the JVM, for example, to run UDFs. "
+            "The total available memory of an executor is equal to executor-memory + executor-memoryOverhead [+ python-memory].",
+        })
+    python_memory: str = field(
+        default=get_backend_config().default_python_memory,
+        metadata={
+            "description": "Setting to specifically limit the memory used by python on a worker. "
+            "Typical processes that use python-memory are UDF's, sar_backscatter or Sentinel 3 data loading. "
+            "Leaving this setting empty will allow Python to use almost all of the executor-memoryOverhead, but may lead to unclear error messages when the memory limit is reached."
+        })
+    executor_cores: int = field(
+        default=get_backend_config().default_executor_cores,
+        metadata={
+            "description": "Number of CPUs per worker (executor). The number of parallel tasks is calculated as executor-cores / task-cpus. Setting this value equal to task-cpus is recommended to avoid potential GDAL reading errors."
+        })
+    task_cpus: int = field(
+        default=1,
+        metadata={
+            "description": "CPUs assigned to a single task. UDFs using libraries like Tensorflow can benefit from further parallelization at the individual task level."
+        },
+    )  # TODO add description on how this increases requested memory
+
+    soft_errors: str = field(
+        default=get_backend_config().default_soft_errors,
+        metadata={
+            "description": "Ratio of soft-errors to allow in load_collection/load_stac and sar_backscatter. Reading errors can occur due to corrupted files or intermittent cloud issues."
+        },
+    )
+    max_executors: int = field(
+        default=get_backend_config().default_max_executors,
+        metadata={
+            "description": "The maximum number of workers assigned to the job. The maximum number of parallel tasks is max-executors*executor-cores/task-cpus. "
+            "Increasing this can inflate costs, while not necessarily improving performance! "
+            "Decreasing this can increase cost efficiency but will make your job slower."
+        },
+    )
+    executor_threads_jvm: int = field(
+        default=get_backend_config().default_executor_threads_jvm,
+        metadata={
+            "description": "Number of threads to allocate for the default jvm worker. Certain openEO processes can benefit of additional local parallelism on top of the distributed processing performed by Spark."
+        },
+    )
+    gdal_dataset_cache_size: int = field(
+        default=get_backend_config().default_gdal_dataset_cache_size,
+        metadata={
+            "description": "The default number of datasets that will be cached in batch jobs. A large cache will increase memory usage."
+        },
+    )
+    udf_dependency_archives: List[str] = field(
+        default_factory=list,
+        metadata={"description": "An array of URLs pointing to zip files with extra dependencies to be used in UDF's."},
+    )
+    udf_dependency_files: List[str] = field(
+        default_factory=list,
+        metadata={"description": "An array of URLs pointing to files to be used in UDF's."},
+    )
+    openeo_jar_path: str = field(
+        default=None,
+        metadata={"description": "Custom jar path.", "public":False},
+    )
+
+    image_name: str = field(
+        default=None,
+        metadata={"description": "Custom docker image name.", "public": False},
+    )
+
+    log_level:str = field(
+        default=DEFAULT_LOG_LEVEL_PROCESSING,
+        metadata={"name":"log_level","description": "log level, can be 'debug', 'info', 'warning' or 'error'", "public":True},
+    )
+
+    stac_version : str = field(
+        default="1.0",
+        metadata={"description": "The STAC version to use for the metadata of outputs.", "public": False,  "enum": ["1.0", "1.1"]},
+    )
+
+    omit_derived_from_links: bool = field(
+        default=False,
+        metadata={
+            "description": "Whether to omit 'derived_from' links in the batch job results to reduce the batch job result metadata size.",
+            "public": False
+        },
+    )
+
+    concurrent_save_results: int = field(
+        default=1,
+        metadata={
+            "description": "[Experimental] The number of save-result nodes to evaluate concurrently. Increasing this setting may improve resource utilization, but too high values usually increase costs.",
+            "public": True
+        },
+    )
+
+    stac_api_filter_by_geometry: bool = field(
+        default=STAC_API_FILTER_BY_GEOMETRY_DEFAULT,
+        metadata={
+            "description": "Whether to enable fine-grained filtering with geometries in STAC API queries (`intersects` parameter), instead of a simple global bounding box.",
+            "experimental": True,
+            "public": False,
+        },
+    )
+
+    credit_plans: List[str] = field(
+        default_factory=list,
+        metadata={
+            "description": get_credit_check().get_job_option_description(),
+            "experimental": True,
+            "public": False,
+        },
+    )
+
+    spark_context_cleanup: str = field(
+        default="none",
+        metadata={
+            "description": "How to release the Spark driver's executors once save_result "
+            "writing is done, before writing final metadata/exports. "
+            "'stop' fully shuts down the SparkContext, "
+            "'kill-executors' only kills the executors and keeps the SparkContext usable, "
+            "'none' (current default) leaves everything running.",
+            "public": False,
+            "experimental": True,
+            "enum": ["stop", "kill-executors", "none"],
+        },
+    )
+
+    @staticmethod
+    def as_logging_threshold_arg(value) -> str:
+        value = value.upper()
+        if value == "WARNING":
+            value = "WARN"  # Log4j only accepts WARN whereas Python logging accepts WARN as well as WARNING
+
+        return value
+
+    def validate(self):
+
+        allowed_stac_versions = {"1.0", "1.1"}
+        if self.stac_version not in allowed_stac_versions:
+            raise OpenEOApiException(
+                code="InvalidStacVersion",
+                status_code=400,
+                message=f"Invalid stac-version in batch job options {self.stac_version!r}. Should be one of {sorted(allowed_stac_versions)}.",
+            )
+
+        if self.log_level.upper() not in ["DEBUG", "INFO", "WARN", "ERROR"]:
+            raise OpenEOApiException(
+                code="InvalidLogLevel",
+                status_code=400,
+                message=f"Invalid log level {self.log_level}. Should be one of 'debug', 'info', 'warning' or 'error'.",
+            )
+
+        python_memory = 0 if self.python_memory == JOB_OPTION_DISABLE else byte_string_as(self.python_memory or "0b")
+        if byte_string_as(self.executor_memory) + byte_string_as(self.executor_memory_overhead) + python_memory > byte_string_as(
+                get_backend_config().max_executor_or_driver_memory):
+            raise OpenEOApiException(
+                message=f"Requested too much executor memory: {self.executor_memory} + {self.executor_memory_overhead}, the max for this instance is: {get_backend_config().max_executor_or_driver_memory}",
+                status_code=400)
+
+        if byte_string_as(self.driver_memory) + byte_string_as(self.driver_memory_overhead) > byte_string_as(
+                get_backend_config().max_executor_or_driver_memory):
+            raise OpenEOApiException(
+                message=f"Requested too much driver memory: {self.driver_memory} + {self.driver_memory_overhead}, the max for this instance is: {get_backend_config().max_executor_or_driver_memory}",
+                status_code=400)
+
+        if (self.openeo_jar_path is not None and not self.openeo_jar_path.startswith("https://artifactory.vgt.vito.be/artifactory/libs-release-public/org/openeo/geotrellis-extensions")
+                and not self.openeo_jar_path.startswith("https://artifactory.vgt.vito.be/artifactory/libs-snapshot-public/org/openeo/geotrellis-extensions/") )  :
+            raise OpenEOApiException(
+                message=f"Requested invalid openeo jar path {self.openeo_jar_path}",
+                status_code=400)
+
+        if self.image_name is not None:
+            # TODO: reuse existing UdfRuntimeImageRepository instead of creating a new one?
+            udf_runtime_image_repository = UdfRuntimeImageRepository.from_config()
+            if self.image_name not in udf_runtime_image_repository.get_all_image_refs_and_aliases():
+                # TODO: move this validation inside UdfRuntimeImageRepository too?
+                if re.compile(get_backend_config().batch_image_regex).fullmatch(self.image_name) is None:
+                    self._log.warning(f"Invalid value {self.image_name} for job_option image-name")
+                    #raise OpenEOApiException(f"Invalid value {self.image_name} for job_option image-name", status_code=400)
+
+        if len(self.credit_plans) > 0:
+            get_credit_check().check_format_user_provided_plans(self.credit_plans)
+
+    def soft_errors_arg(self) -> str:
+        value = self.soft_errors
+
+        if value == "false":
+            return "0.0"
+        elif value == None:
+            return str(get_backend_config().default_soft_errors)
+        elif value == "true":
+            return "1.0"
+        elif isinstance(value, bool):
+            return "1.0" if value else "0.0"
+        elif isinstance(value, (int, float)) and 0.0 <= value <= 1.0:
+            return str(value)
+
+        raise OpenEOApiException(message=f"invalid value {value} for job_option soft-errors; "
+                                         f"supported values include false/true and values in the "
+                                         f"interval [0.0, 1.0]",
+                                 status_code=400)
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "JobOptions":
+
+        init_kwargs = {}
+        for field in fields(cls):
+            job_option_name = field.metadata.get("name", field.name.replace("_","-"))  # Use "name" from metadata or default to field name
+            if job_option_name in data:
+
+                value = data.get(job_option_name)
+                cls.validate_type(value=value, expected_type=field.type, name=job_option_name)
+                init_kwargs[field.name] = value
+
+        if JOB_OPTION_LOG_LEVEL not in init_kwargs and JOB_OPTION_LOGGING_THRESHOLD in data:
+            init_kwargs[JOB_OPTION_LOG_LEVEL] = data[JOB_OPTION_LOGGING_THRESHOLD]
+        if JOB_OPTION_LOG_LEVEL in init_kwargs:
+            init_kwargs[JOB_OPTION_LOG_LEVEL] = JobOptions.as_logging_threshold_arg(init_kwargs[JOB_OPTION_LOG_LEVEL])
+
+
+        jvmOverheadBytes = byte_string_as("128m")
+
+        # By default, Python uses the space reserved by `spark.executor.memoryOverhead` but no limit is enforced.
+        # When `spark.executor.pyspark.memory` is specified, Python will only use this memory and no more.
+        python_mem = data.get("python-memory",None)
+        python_max = -1
+        if python_mem != JOB_OPTION_DISABLE:
+
+            noExplicitOverhead = "executor-memoryOverhead" not in data
+            if python_mem is not None:
+                python_max = byte_string_as(python_mem)
+
+                if noExplicitOverhead:
+                    memOverheadBytes = jvmOverheadBytes
+                    init_kwargs["executor_memory_overhead"] = f"{memOverheadBytes // (1024 ** 2)}m"
+
+            elif not noExplicitOverhead:
+                # If python-memory is not set, we convert most of the overhead memory to python memory
+                # this in fact duplicates the overhead memory, we should migrate away from this approach
+                if cls == K8SOptions:
+                    memOverheadBytes = byte_string_as(data["executor-memoryOverhead"])
+                    python_max = memOverheadBytes - jvmOverheadBytes
+
+        if python_max is not None and python_max > 0:
+            init_kwargs["python_memory"] = f"{python_max}b"
+
+
+        return cls(**init_kwargs)
+
+
+    @classmethod
+    def validate_type(cls, value, expected_type, name: str = "n/a"):
+        try:
+            if not isinstance(value, expected_type):
+                cls._log.warning(
+                    f"Job option {name!r} with unexpected type: {value!r}, expected: {cls.python_type_to_json_schema(expected_type)}"
+                )
+        except TypeError:
+            pass
+
+
+
+
+    @classmethod
+    def list_options(cls, public_only=True):
+        """
+        List all available options and their descriptions, following the schema defined by openEO parameters extension
+        https://github.com/Open-EO/openeo-api/blob/draft/extensions/processing-parameters/openapi.yaml
+        """
+
+        def get_default(field):
+            if field.default_factory != dataclasses.MISSING:
+                return field.default_factory()
+            elif field.default != dataclasses.MISSING:
+                return field.default
+            else:
+                return None
+
+        options = []
+        for field in fields(cls):
+            if public_only and field.metadata.get("public", False):
+                continue
+            default = get_default(field)
+            schema = cls.python_type_to_json_schema(field.type)
+            if "enum" in field.metadata:
+                schema["enum"] = field.metadata["enum"]
+
+            options.append({
+                "name": field.metadata.get("name", field.name.replace("_","-")),
+                "description": field.metadata.get("description", ""),
+                "optional": True,
+                "default": default,
+                "schema": schema
+            })
+        return options
+
+    @classmethod
+    def python_type_to_json_schema(cls, python_type):
+        """
+        Converts a Python type or instance to a basic JSON schema representation.
+
+        Args:
+            python_type: A Python type (e.g., str, int, list, dict) or an instance of a type.
+
+        Returns:
+            A dictionary representing the basic JSON schema for the given Python type.
+        """
+        if isinstance(python_type, type):
+            if python_type is str:
+                return {"type": "string"}
+            elif python_type is int:
+                return {"type": "integer"}
+            elif python_type is float:
+                return {"type": "number"}
+            elif python_type is bool:
+                return {"type": "boolean"}
+            elif python_type is list:
+                return {"type": "array", "items": {}}  # Need more info for item type
+            elif python_type is dict:
+                return {"type": "object", "properties": {}}  # Need more info for properties
+            elif python_type is type(None):
+                return {"type": "null"}
+            else:
+                raise ValueError(f"JSON schema convert does not support {type}")
+        elif List[str] == python_type:
+            return {"type": "array", "items": {"type": "string"}}
+        else:
+            # Handle instances
+            return cls.python_type_to_json_schema(type(python_type))
+
+@dataclass
+class K8SOptions(JobOptions):
+    driver_cores: int = field(
+        default=1,
+        metadata={
+            "description": "Number of CPUs per driver, normally not needed.",
+            "public": False
+        })
+
+    driver_request_cores: str = field(
+        default="NONE",
+        metadata={
+            "description": "CPU request for the driver, expressed as 'milli-cpus', for instance '500m' for 0.5 of 1 cpu unit. Allows partial CPU allocation for the driver.",
+            "public": False
+        })
+
+    executor_request_cores: str = field(
+
+        default="NONE",
+        metadata={
+            "description": "Fraction of CPUs to actually request, expressed as 'milli-cpus', for instance '600m' for 0.6 of 1 cpu unit.",
+            "public": True
+        })
+    goofys:bool = field(default=False,
+        metadata={
+        "description": "Deprecated, use goofys or not",
+        "public": False
+    })
+    mount_tmp: bool = field(default=False,
+         metadata={
+             "description": "Deprecated, mounted tmp or not",
+             "public": False
+         })
+    spark_pvc: bool = field(default=False,
+         metadata={
+             "description": "Deprecated, use spark pvcs or not",
+             "public": False
+         })
+    open_telemetry_metrics_exporter: str = field(default=None,
+         metadata={
+            "description": "[Experimental] Configure and enable the OpenTelemetry Java SDK exporter",
+            "public": False,
+            "enum": ["console", "prometheus"]
+        })
+
+    force_s3proxy: bool = field(
+        default=False,
+        metadata={
+            "description": "[Experimental] Force all traffic to go via an internal S3Proxy",
+            "public": False
+        },
+    )
+
+
+
+    def validate(self):
+        max_cores = 4
+        if int(self.executor_cores) > max_cores:
+            raise OpenEOApiException(
+                message=f"Requested too many executor cores: {self.executor_cores} , the max for this instance is: {max_cores}",
+                status_code=400)
+        if int(self.driver_cores) > max_cores:
+            raise OpenEOApiException(
+                message=f"Requested too many driver cores: {self.driver_cores} , the max for this instance is: {max_cores}",
+                status_code=400)
+        return super().validate()

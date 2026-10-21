@@ -1,0 +1,132 @@
+{
+  "collection": {
+    "process_id": "load_collection",
+    "arguments": {
+      "id": "TERRASCOPE_S2_FAPAR_V2"
+    }
+  },
+  "reduce_dimension": {
+    "process_id": "reduce_dimension",
+    "arguments": {
+      "data": {
+        "from_node": "collection"
+      },
+      "dimension": "t",
+      "reducer": {
+        "process_graph": {
+          "mean": {
+            "process_id": "mean",
+            "arguments": {
+              "data": {
+                "from_parameter": "data"
+              }
+            },
+            "result": true
+          }
+        }
+      }
+    }
+  },
+  "aggregate_spatial": {
+    "process_id": "aggregate_spatial",
+    "arguments": {
+      "data": {
+        "from_node": "reduce_dimension"
+      },
+      "geometries": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "properties": {
+              "target": 0
+            },
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    3,
+                    5
+                  ],
+                  [
+                    4,
+                    5
+                  ],
+                  [
+                    4,
+                    6
+                  ],
+                  [
+                    3,
+                    6
+                  ],
+                  [
+                    3,
+                    5
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "target": 1
+            },
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    8,
+                    1
+                  ],
+                  [
+                    9,
+                    1
+                  ],
+                  [
+                    9,
+                    2
+                  ],
+                  [
+                    8,
+                    2
+                  ],
+                  [
+                    8,
+                    1
+                  ]
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "reducer": {
+        "process_graph": {
+          "mean": {
+            "arguments": {
+              "data": {
+                "from_parameter": "data"
+              }
+            },
+            "process_id": "mean",
+            "result": true
+          }
+        }
+      }
+    }
+  },
+  "save_result": {
+    "process_id": "save_result",
+    "arguments": {
+      "data": {
+        "from_node": "aggregate_spatial"
+      },
+      "format": "JSON"
+    },
+    "result": true
+  }
+}

@@ -1,0 +1,869 @@
+import functools
+import json
+import logging
+import math
+from pathlib import Path
+from typing import Any, Collection, List, Mapping, Optional, Sequence, Tuple, Union
+
+import antimeridian
+import pyproj
+import shapely.geometry
+import shapely.ops
+from openeo.util import repr_truncate
+from shapely.geometry import MultiPolygon, Polygon
+from shapely.geometry.base import BaseGeometry
+
+from openeo_driver.errors import OpenEOApiException
+from openeo_driver.util.caching import lru_cache_if_simple_args
+from openeo_driver.util.utm import auto_utm_epsg, auto_utm_epsg_for_geometry, is_auto_utm_crs
+
+_log = logging.getLogger(__name__)
+
+
+GEOJSON_GEOMETRY_TYPES_BASIC = frozenset(
+    {"Point", "MultiPoint", "LineString", "MultiLineString", "Polygon", "MultiPolygon"}
+)
+GEOJSON_GEOMETRY_TYPES_EXTENDED = GEOJSON_GEOMETRY_TYPES_BASIC | {"GeometryCollection"}
+
+
+def validate_geojson_basic(
+    value: Any,
+    *,
+    allowed_types: Optional[Collection[str]] = None,
+    raise_exception: bool = True,
+    recurse: bool = True,
+) -> List[str]:
+    """
+    Validate if given value looks like a valid GeoJSON construct.
+
+    Note: this is just for basic inspection to catch simple/obvious structural issues.
+    It is not intended for a full-blown, deep GeoJSON validation and coordinate inspection.
+
+    :param value: the value to inspect
+    :param allowed_types: optional collection of GeoJSON types to accept
+    :param raise_exception: whether to raise an exception when issues are found (default),
+        or just return list of issues
+    :param recurse: whether to recursively validate Feature's geometry and FeatureCollection's features
+    :returns: list of issues found (when `raise_exception` is off)
+    """
+    try:
+        if not isinstance(value, dict):
+            raise ValueError(f"JSON object (mapping/dictionary) expected, but got {type(value).__name__}")
+        assert "type" in value, "No 'type' field"
+        geojson_type = value["type"]
+        assert isinstance(geojson_type, str), f"Invalid 'type' type: {type(geojson_type).__name__}"
+        if allowed_types and geojson_type not in allowed_types:
+            raise ValueError(f"Found type {geojson_type!r}, but expects one of {sorted(allowed_types)}")
+        if geojson_type in GEOJSON_GEOMETRY_TYPES_BASIC:
+            assert "coordinates" in value, f"No 'coordinates' field (type {geojson_type!r})"
+        elif geojson_type in {"GeometryCollection"}:
+            assert "geometries" in value, f"No 'geometries' field (type {geojson_type!r})"
+            # TODO: recursively check sub-geometries?
+        elif geojson_type in {"Feature"}:
+            assert "geometry" in value, f"No 'geometry' field (type {geojson_type!r})"
+            assert "properties" in value, f"No 'properties' field (type {geojson_type!r})"
+            if recurse:
+                validate_geojson_basic(
+                    value["geometry"], recurse=True, allowed_types=GEOJSON_GEOMETRY_TYPES_EXTENDED, raise_exception=True
+                )
+        elif geojson_type in {"FeatureCollection"}:
+            assert "features" in value, f"No 'features' field (type {geojson_type!r})"
+            if recurse:
+                assert isinstance(value["features"], list), f"Invalid 'features' field, it should be a list, but got {value['features']!r}"
+
+                for f in value["features"]:
+                    validate_geojson_basic(f, recurse=True, allowed_types=["Feature"], raise_exception=True)
+        else:
+            raise ValueError(f"Invalid type {geojson_type!r}")
+
+    except Exception as e:
+        if raise_exception:
+            raise
+        return [str(e)]
+    return []
+
+
+def validate_geojson_coordinates(geojson: dict):
+    def _validate_coordinates(coordinates, initial_run=True):
+        max_evaluations = 20
+        message = f"Failed to parse Geojson. Coordinates are invalid."
+        if not isinstance(coordinates, (list, Tuple)) or len(coordinates) == 0:
+            raise OpenEOApiException(status_code=400, message=message)
+        if not isinstance(coordinates[0], (float, int)):
+            # Flatten until elements are floats or ints.
+            eval_count = 0
+            for sub in coordinates:
+                eval_count += _validate_coordinates(sub, False)
+                if eval_count > max_evaluations:
+                    break
+            return eval_count
+        if len(coordinates) < 2:
+            raise OpenEOApiException(status_code=400, message=message)
+        if not (-180 <= coordinates[0] <= 180 and -90 <= coordinates[1] <= 90):
+            message = (
+                f"Failed to parse Geojson. Invalid coordinate: {coordinates}. "
+                f"X value must be between -180 and 180, Y value must be between -90 and 90."
+            )
+            raise OpenEOApiException(status_code=400, message=message)
+        return 1
+
+    def _validate_geometry_collection(geojson):
+        if geojson["type"] != "GeometryCollection":
+            return
+        for geometry in geojson["geometries"]:
+            if geometry["type"] == "GeometryCollection":
+                _validate_geometry_collection(geometry)
+            else:
+                _validate_coordinates(geometry["coordinates"])
+
+    def _validate_feature_collection(geojson):
+        if geojson["type"] != "FeatureCollection":
+            return
+        for feature in geojson["features"]:
+            if feature["geometry"]["type"] == "GeometryCollection":
+                _validate_geometry_collection(feature["geometry"])
+            else:
+                _validate_coordinates(feature["geometry"]["coordinates"])
+
+    if not isinstance(geojson, dict):
+        raise ValueError(f"Invalid GeoJSON: not a dict: {repr_truncate(geojson)}")
+    if "type" not in geojson:
+        raise ValueError(f"Invalid GeoJSON: missing 'type' field: {repr_truncate(geojson)}")
+
+    if geojson["type"] == "Feature":
+        geojson = geojson["geometry"]
+
+    if geojson["type"] == "GeometryCollection":
+        _validate_geometry_collection(geojson)
+    elif geojson["type"] == "FeatureCollection":
+        _validate_feature_collection(geojson)
+    else:
+        _validate_coordinates(geojson["coordinates"])
+
+
+def geojson_to_geometry(geojson: dict) -> BaseGeometry:
+    """Convert GeoJSON object to shapely geometry object"""
+    # TODO #71 #114 EP-3981 standardize on vector cubes instead of deprecated GeometryCollection?
+    _log.warning("geojson_to_geometry usage is deprecated and should be replaced by proper vector cube usage")
+    validate_geojson_coordinates(geojson)
+    if geojson["type"] == "FeatureCollection":
+        geojson = {
+            "type": "GeometryCollection",
+            "geometries": [feature["geometry"] for feature in geojson["features"]],
+        }
+    elif geojson["type"] == "Feature":
+        geojson = geojson["geometry"]
+    try:
+        return shapely.geometry.shape(geojson)
+    except Exception as e:
+        _log.error(e, exc_info=True)
+        _log.error(f"Invalid geojson: {json.dumps(geojson)}")
+        raise ValueError(
+            f"Invalid geojson object, the shapely library generated this error: {str(e)}. When trying to parse your geojson."
+        )
+
+
+def geojson_to_multipolygon(
+    geojson: dict,
+) -> Union[MultiPolygon, Polygon]:
+    """
+    Convert GeoJSON object (dict) to shapely MultiPolygon (or Polygon where possible/allowed; in particular, this
+    means dissolving overlapping polygons into one).
+    """
+    # TODO: option to also force conversion of Polygon to MultiPolygon?
+    # TODO: #71 #114 migrate/centralize all this kind of logic to vector cubes
+    # TODO #288 this function supports/promotes wrong usage of MultiPolygons (when FeatureCollections or VectorCubes should be used instead)
+    validate_geojson_coordinates(geojson)
+    if geojson["type"] == "Feature":
+        geojson = geojson["geometry"]
+
+    if geojson["type"] in ("MultiPolygon", "Polygon"):
+        geometry = shapely.geometry.shape(geojson)
+    elif geojson["type"] == "GeometryCollection":
+        geometry = shapely.ops.unary_union(shapely.geometry.shape(geojson).geoms)
+    elif geojson["type"] == "FeatureCollection":
+        geometry = shapely.ops.unary_union(
+            [shapely.geometry.shape(f["geometry"]) for f in geojson["features"]]
+        )
+    else:
+        raise ValueError(
+            f"Invalid GeoJSON type for MultiPolygon conversion: {geojson['type']}"
+        )
+
+    if not isinstance(geometry, (MultiPolygon, Polygon)):
+        raise ValueError(f"Failed to convert to MultiPolygon ({geojson['type']})")
+
+    return geometry
+
+
+def reproject_bounding_box(bbox: dict, from_crs: Optional[str], to_crs: str) -> dict:
+    """
+    Reproject given bounding box dictionary
+
+    :param bbox: bbox dict with fields "west", "south", "east", "north"
+    :param from_crs: source CRS. Specify `None` to use the "crs" field of input bbox dict
+    :param to_crs: target CRS
+    :return: bbox dict (fields "west", "south", "east", "north", "crs")
+    """
+    # TODO: replace usage of this function with more thoroughly tested`BoundingBox` helper
+    box = shapely.geometry.box(bbox["west"], bbox["south"], bbox["east"], bbox["north"])
+    if from_crs is None:
+        from_crs = bbox["crs"]
+    elif "crs" in bbox:
+        assert from_crs == bbox["crs"]
+    tranformer = pyproj.Transformer.from_crs( crs_from=from_crs, crs_to=to_crs, always_xy=True )
+    reprojected = shapely.ops.transform(tranformer.transform, box)
+    return dict(zip(["west", "south", "east", "north"], reprojected.bounds), crs=to_crs)
+
+
+def reproject_geometry(
+    geometry: BaseGeometry,
+    from_crs: Union[pyproj.CRS, str],
+    to_crs: Union[pyproj.CRS, str],
+) -> BaseGeometry:
+    """
+    Reproject given shapely geometry
+
+    :param geometry: shapely geometry
+    :param from_crs: source CRS
+    :param to_crs: target CRS
+    :return: reprojected shapely geometry
+    """
+    transformer = pyproj.Transformer.from_crs(
+        crs_from=from_crs, crs_to=to_crs, always_xy=True
+    )
+    return shapely.ops.transform(transformer.transform, geometry)
+
+
+def spatial_extent_union(*bboxes: dict, default_crs="EPSG:4326") -> dict:
+    """
+    Calculate spatial bbox covering all given bounding boxes
+
+    :return: bbox dict (fields "west", "south", "east", "north", "crs")
+    """
+    assert len(bboxes) >= 1
+    crss = set(b.get("crs", default_crs) for b in bboxes)
+    if len(crss) > 1:
+        # Re-project to CRS of first bbox
+        def reproject(bbox, to_crs):
+            from_crs = bbox.get("crs", default_crs)
+            if from_crs != to_crs:
+                return reproject_bounding_box(bbox, from_crs=from_crs, to_crs=to_crs)
+            return bbox
+
+        to_crs = bboxes[0].get("crs", default_crs)
+        bboxes = [reproject(b, to_crs=to_crs) for b in bboxes]
+        crs = to_crs
+    else:
+        crs = crss.pop()
+    bbox = {
+        "west": min(b["west"] for b in bboxes),
+        "south": min(b["south"] for b in bboxes),
+        "east": max(b["east"] for b in bboxes),
+        "north": max(b["north"] for b in bboxes),
+        "crs": crs,
+    }
+    return bbox
+
+
+class GeometryBufferer:
+    """
+    Geometry buffering helper.
+
+    For example, for buffering 100m when working with lonlat geometries:
+    >>> bufferer = GeometryBufferer.from_meter_for_crs(distance=100, crs="EPSG:4326")
+    >>> buffered_geometry = bufferer.buffer(geometry)
+
+    """
+
+    __slots__ = ["distance", "resolution"]
+
+    def __init__(self, distance: float, resolution=2):
+        self.distance = distance
+        self.resolution = resolution
+
+    def buffer(self, geometry: BaseGeometry):
+        return geometry.buffer(distance=self.distance, resolution=self.resolution)
+
+    @classmethod
+    def from_meter_for_crs(
+        cls,
+        distance: float = 1.0,
+        crs: Union[str, pyproj.CRS] = "EPSG:4326",
+        loi: Tuple[float, float] = (0, 0),
+        loi_crs: Union[str, pyproj.CRS, None] = None,
+        resolution=2,
+    ) -> "GeometryBufferer":
+        """
+        Build bufferer for buffering given distance in meter of geometries in given CRS.
+
+        :param crs: the target CRS to express the distance in (as easting)
+        :param distance: distance in meter
+        :param loi: location of interest where the distance will be used for buffering
+            (e.g. lon-lat coordinates of center of AOI).
+            Latitude is for example important to give a better approximation of the transformed distance.
+        :param loi_crs: CRS used for the `loi` coordinates (target `crs` will be used by default)
+        """
+        distance = cls.transform_meter_to_crs(
+            crs=crs, distance=distance, loi=loi, loi_crs=loi_crs
+        )
+        return cls(distance=distance, resolution=resolution)
+
+    @staticmethod
+    def transform_meter_to_crs(
+        distance: float = 1.0,
+        crs: Union[str, pyproj.CRS] = "EPSG:4326",
+        loi: Tuple[float, float] = (0, 0),
+        loi_crs: Union[str, pyproj.CRS, None] = None,
+    ) -> float:
+        """
+        (Approximate) reproject a distance in meter to a different CRS.
+
+        :param crs: the target CRS to express the distance in (as easting)
+        :param distance: distance in meter
+        :param loi: location of interest where the distance will be used for buffering
+            (e.g. lon-lat coordinates of center of AOI).
+            Latitude is for example important to give a better approximation of the transformed distance.
+        :param loi_crs: CRS used for the `loi` coordinates (target `crs` will be used by default)
+
+        :return: distance in target CRS (easting)
+        """
+        proj_target = pyproj.Proj(crs)
+        proj_operation = pyproj.Proj(loi_crs or crs)
+
+        # Determine UTM zone and projection for location of operation
+        operation_loc_lonlat = pyproj.Transformer.from_proj(
+            proj_from=proj_operation, proj_to=pyproj.Proj("EPSG:4326"), always_xy=True
+        ).transform(*loi)
+        utm_zone = auto_utm_epsg(*operation_loc_lonlat)
+        proj_utm = pyproj.Proj(f"EPSG:{utm_zone}")
+
+        # Transform location of operation to UTM
+        x_utm, y_utm = pyproj.Transformer.from_proj(
+            proj_from=proj_operation, proj_to=proj_utm, always_xy=True
+        ).transform(*loi)
+        # Transform distance from UTM to target CRS
+        utm2crs = pyproj.Transformer.from_proj(proj_utm, proj_target, always_xy=True)
+        lon0, lat0 = utm2crs.transform(x_utm, y_utm)
+        lon1, lat1 = utm2crs.transform(x_utm + distance, y_utm)
+        # TODO: check/incorporate lat0 and lat1?
+        # TODO: take average, or max of longitude delta and latitude delta?
+        if abs(lat1 - lat0) > 1e-3 * abs(lon1 - lon0):
+            _log.warning(
+                f"transform_meters_to_crs: large latitude delta: ({lon0},{lat0})-({lon1},{lat1})"
+            )
+        return abs(lon1 - lon0)
+
+
+def as_geojson_feature(
+    geometry: Union[dict, BaseGeometry, Path],
+    properties: Union[dict, None] = None,
+) -> dict:
+    """
+    Helper to construct a GeoJSON-style Feature dictionary from a shapely geometry,
+    a GeoJSON-style geometry/feature dictionary, a path to a GeoJSON file, ...
+
+    :param geometry: a shapely geometry, a geometry as GeoJSON-style dict, a feature as GeoJSON-style dict, a path to a GeoJSON file
+    :param properties: properties to set on the feature
+    :return: GeoJSON-style Feature dict
+    """
+    # TODO: support loading WKT string?
+    if isinstance(geometry, Path):
+        # Assume GeoJSON file
+        geometry = json.loads(geometry.read_text(encoding="utf-8"))
+    elif not isinstance(geometry, dict):
+        geometry = shapely.geometry.mapping(geometry)
+    assert "type" in geometry
+    if geometry["type"] == "Feature":
+        properties = properties or geometry["properties"]
+        geometry = geometry["geometry"]
+    assert isinstance(geometry, dict)
+    assert geometry["type"] in [
+        "Point",
+        "MultiPoint",
+        "LineString",
+        "MultiLineString",
+        "Polygon",
+        "MultiPolygon",
+        "GeometryCollection",
+    ]
+    return {"type": "Feature", "geometry": geometry, "properties": properties}
+
+
+def as_geojson_feature_collection(
+    *features: Union[dict, BaseGeometry, Path, List[Union[dict, BaseGeometry, Path]]]
+) -> dict:
+    """
+    Helper to construct a GeoJSON-style FeatureCollection from feature like objects
+    :param features: zero, one or more of a shapely geometry, a geometry as GeoJSON-style dict, a feature as GeoJSON-style dict, a path to a GeoJSON file
+
+    :return: GeoJSON-style FeatureCollection dict
+    """
+    # TODO: some way of setting properties for all/each feature?
+    # TODO: support a single arg with `"type": "FeatureCollection"`?
+    if len(features) == 1 and isinstance(features[0], list):
+        # Support providing multiple features as a single list (instead of *args)
+        features = features[0]
+    return {
+        "type": "FeatureCollection",
+        "features": [as_geojson_feature(f) for f in features],
+    }
+
+
+def epsg_code_or_none(crs: Any) -> Union[int, None]:
+    """Find EPSG code for given CRS, or return None when not possible."""
+    try:
+        epsg = pyproj.CRS.from_user_input(crs).to_epsg()
+        return epsg
+    except pyproj.exceptions.CRSError:
+        return None
+
+
+class BoundingBoxException(ValueError):
+    pass
+
+
+class CrsRequired(BoundingBoxException):
+    pass
+
+
+def normalize_west_east_longitude(west: float, east: float) -> Tuple[float, float]:
+    """
+    Assuming longitude in degrees (e.g. EPSG:4326):
+    normalize west to range [-180, 180) and east to range (-180, 180]
+    which is useful in bounding box contexts.
+    """
+    west = ((west + 180) % 360) - 180
+    east = 180 - ((180 - east) % 360)
+    return west, east
+
+
+class BoundingBox:
+    """
+    Bounding box with west, south, east, north coordinates
+    optionally (geo)referenced.
+
+    .. note::
+        About antimeridian handling:
+        when working in a cyclic CRS like EPSG:4326 with a bounding box that crosses the antimeridian,
+        the "west" coordinate will be larger than the "east" coordinate.
+        For example::
+
+            # Bounding box of 10 degrees wide across the antimeridian
+            bbox_a = BoundingBox(west=175, east=-175, crs="EPSG:4326", ...)
+
+            # bounding box of 350 degrees wide, starting in the west
+            # and going all the way to the east, but not crossing the antimeridian.
+            bbox_b = BoundingBox(west=-175, east=175, crs="EPSG:4326", ...)
+
+        also see https://datatracker.ietf.org/doc/html/rfc7946#section-5.2
+    """
+
+    # TODO: do longitude normalization (for EPSG:4326) in constructor instead of on the fly in various places?
+
+    __slots__ = ("_west", "_south", "_east", "_north", "_crs", "_reproject_cache")
+
+    def __init__(
+        self,
+        west: float,
+        south: float,
+        east: float,
+        north: float,
+        *,
+        crs: Union[str, int, None] = None,
+    ):
+        missing = [
+            k
+            for k, v in zip(
+                ("west", "south", "east", "north"), (west, south, east, north)
+            )
+            if v is None
+        ]
+        if missing:
+            raise BoundingBoxException(f"Missing bounds: {missing}.")
+
+        self._west = west
+        self._south = south
+        self._east = east
+        self._north = north
+        self._crs = self.normalize_crs(crs) if crs is not None else None
+        self._reproject_cache = {}
+
+    @property
+    def west(self) -> float:
+        return self._west
+
+    @property
+    def south(self) -> float:
+        return self._south
+
+    @property
+    def east(self) -> float:
+        return self._east
+
+    @property
+    def north(self) -> float:
+        return self._north
+
+    @property
+    def crs(self) -> Union[str, int, None]:
+        return self._crs
+
+    def __repr__(self):
+        return (
+            f"BoundingBox(west={self.west}, south={self.south}, east={self.east}, north={self.north}, crs={self.crs!r})"
+        )
+
+    def _key(self) -> tuple:
+        return (self.west, self.south, self.east, self.north, self.crs)
+
+    def __hash__(self):
+        return hash(self._key())
+
+    def __eq__(self, other):
+        if isinstance(other, BoundingBox):
+            return self._key() == other._key()
+        return NotImplemented
+
+    @staticmethod
+    @lru_cache_if_simple_args(maxsize=500)
+    def normalize_crs(crs: Union[str, int]) -> str:
+        if is_auto_utm_crs(crs):
+            return "AUTO:42001"
+        if epsg := epsg_code_or_none(crs):
+            return f"EPSG:{epsg}"
+        else:
+            raise BoundingBoxException(f"Invalid CRS {crs!r}")
+
+    @classmethod
+    def from_dict(
+        cls, d: Mapping, *, default_crs: Optional[Union[str, int]] = None
+    ) -> "BoundingBox":
+        """
+        Extract bounding box from given mapping/dict (required fields "west", "south", "east", "north"),
+        with optional CRS (field "crs").
+
+        :param d: dictionary with at least fields "west", "south", "east", "north", and optionally "crs"
+        :param default_crs: fallback CRS to use if not present in dictionary
+        :return:
+        """
+        bounds = {k: d.get(k) for k in ["west", "south", "east", "north"]}
+        return cls(**bounds, crs=d.get("crs", default_crs))
+
+    @classmethod
+    def from_dict_or_none(
+        cls, d: Mapping, *, default_crs: Optional[Union[str, int]] = None
+    ) -> Union["BoundingBox", None]:
+        """
+        Like `from_dict`, but returns `None`
+        when no valid bounding box could be loaded from dict
+        """
+        try:
+            return cls.from_dict(d=d, default_crs=default_crs)
+        except Exception:
+            # TODO: option to log something?
+            return None
+
+    @classmethod
+    def from_wsen_tuple(
+        cls, wsen: Sequence[float], crs: Optional[Union[str, int]] = None
+    ):
+        """Build bounding box from tuple of west, south, east and north bounds (and optional crs"""
+        assert len(wsen) == 4
+        return cls(*wsen, crs=crs)
+
+    def is_georeferenced(self) -> bool:
+        # TODO: deprecate: "is georeferenced" is bad name for "has CRS" check
+        return self.crs is not None
+
+    def has_crs(self) -> bool:
+        return self.crs is not None
+
+    def assert_crs(self):
+        if self.crs is None:
+            raise CrsRequired(f"A CRS is required, but not available in {self}.")
+
+    @staticmethod
+    def _crs_with_cyclic_x(crs: Union[None, str]) -> bool:
+        """
+        Whether the x coordinate is cyclic (e.g. longitude in EPSG:4326)
+        which requires some special handling like coordinate normalization and antimeridian crossing handling.
+        """
+        return crs == "EPSG:4326"
+
+    def cyclic_antimeridian_crossing(self) -> bool:
+        """
+        Whether this bounding box uses cyclic longitude coordinates
+        and crosses the antimeridian (so that west > east).
+        """
+        if self._crs_with_cyclic_x(self.crs):
+            west, east = normalize_west_east_longitude(west=self.west, east=self.east)
+            return west > east
+        return False
+
+    def as_dict(self) -> dict:
+        return {
+            "west": self.west,
+            "south": self.south,
+            "east": self.east,
+            "north": self.north,
+            "crs": self.crs,
+        }
+
+    def as_tuple(self) -> Tuple[float, float, float, float, Union[str, None]]:
+        return (self.west, self.south, self.east, self.north, self.crs)
+
+    def as_wsen_tuple(self) -> Tuple[float, float, float, float]:
+        return (self.west, self.south, self.east, self.north)
+
+    def as_polygon(self) -> shapely.geometry.Polygon:
+        """
+        Get bounding box as a shapely Polygon.
+        Simple single polygon, but not ideal for proper handling of antimeridian crossing in EPSG:4326,
+        which require to split the geometry in two parts: use `as_geometry` instead for that.
+        """
+        west, east = self.west, self.east
+        if self._crs_with_cyclic_x(self.crs):
+            west, east = normalize_west_east_longitude(west=west, east=east)
+            if east < west:
+                # TODO: this assumes "cyclic" implies longitude in degrees (EPSG:4326)
+                east += 360
+
+        return shapely.geometry.box(minx=west, miny=self.south, maxx=east, maxy=self.north)
+
+    def as_geometry(self) -> Union[shapely.geometry.Polygon, shapely.geometry.MultiPolygon]:
+        """Get bounding box as a shapely geometry (Polygon or MultiPolygon when crossing antimeridian)"""
+        west, east = self.west, self.east
+        if self._crs_with_cyclic_x(self.crs):
+            west, east = normalize_west_east_longitude(west=west, east=east)
+            if east < west:
+                # TODO: this assumes "cyclic" implies longitude in degrees (EPSG:4326), and split is at +/-180
+                return shapely.geometry.MultiPolygon(
+                    [
+                        shapely.geometry.box(west, self.south, 180, self.north),
+                        shapely.geometry.box(-180, self.south, east, self.north),
+                    ]
+                )
+
+        return shapely.geometry.box(minx=west, miny=self.south, maxx=east, maxy=self.north)
+
+    def as_geojson_dict(self) -> dict:
+        """Represent as a GeoJSON Polygon dictionary (in lon-lat)"""
+        if self.crs is None:
+            geometry = self.as_polygon()
+            return shapely.geometry.mapping(geometry)
+        elif self.crs == "EPSG:4326":
+            geometry = self.as_geometry()
+            return shapely.geometry.mapping(geometry)
+        else:
+            geometry = self.as_polygon()
+            geometry = reproject_geometry(geometry=geometry, from_crs=self.crs, to_crs="EPSG:4326")
+            return antimeridian.fix_shape(geometry)
+
+    # Legacy alias
+    as_geojson = as_geojson_dict
+
+    def as_geojson_str(self, indent=None) -> str:
+        return json.dumps(self.as_geojson_dict(), indent=indent)
+
+    def centroid(self) -> Tuple[float, float]:
+        if self._crs_with_cyclic_x(self.crs):
+            # Properly handle cyclic longitude coordinates, and antimeridian crossing
+            west, east = normalize_west_east_longitude(west=self.west, east=self.east)
+            if west <= east:
+                x = 0.5 * (west + east)
+            else:
+                x, _ = normalize_west_east_longitude(west=0.5 * (west + east + 360), east=0)
+        else:
+            x = 0.5 * (self.west + self.east)
+
+        y = 0.5 * (self.south + self.north)
+
+        return x, y
+
+    def approx(self, rel: Optional[float] = 0, abs: Optional[float] = None) -> "BoundingBox":
+        """Pytest helper to construct an expected bounding box with tolerance"""
+        # Local import as pytest is not a required dependency in general
+        import pytest
+
+        return BoundingBox(
+            west=pytest.approx(self.west, rel=rel, abs=abs),
+            south=pytest.approx(self.south, rel=rel, abs=abs),
+            east=pytest.approx(self.east, rel=rel, abs=abs),
+            north=pytest.approx(self.north, rel=rel, abs=abs),
+            crs=self.crs,
+        )
+
+    def contains(self, x: float, y: float) -> bool:
+        """Check if given point is inside the bounding box"""
+        # Start with easy y coordinate (north-south) check for quick exit
+        if not (self.south <= y <= self.north):
+            return False
+
+        if self._crs_with_cyclic_x(self.crs):
+            x = x % 360
+            west = self.west % 360
+            east = self.east % 360
+            if west <= east:
+                return west <= x <= east
+            else:
+                # Handle antimeridian crossing
+                return not (east < x < west)
+        else:
+            return self.west <= x <= self.east
+
+    def reproject(self, crs: Union[str, int]) -> "BoundingBox":
+        """
+        Reproject bounding box to given CRS to a new bounding box.
+
+        Note that bounding box of the reprojected geometry
+        typically has a larger spatial coverage than the
+        original bounding box.
+        """
+        self.assert_crs()
+        crs = self.normalize_crs(crs)
+
+        if is_auto_utm_crs(crs):
+            return self.reproject_to_best_utm()
+
+        if crs == self.crs:
+            return self
+
+        if crs in self._reproject_cache:
+            return self._reproject_cache[crs]
+
+        transformer = pyproj.Transformer.from_crs(crs_from=self.crs, crs_to=crs, always_xy=True)
+        reprojected = shapely.ops.transform(transformer.transform, self.as_polygon())
+        west, south, east, north = reprojected.bounds
+
+        if self._crs_with_cyclic_x(crs):
+            # Handle bounding boxes in EPSG:4326 around the antimeridian
+            # use the projection of the centroid to detect coordinate wrapping, and adjust bounds properly
+            cx, cy = transformer.transform(*self.centroid())
+            if not (west <= cx <= east):
+                west, east = east, west
+
+        bbox = BoundingBox(west=west, south=south, east=east, north=north, crs=crs)
+
+        self._reproject_cache[crs] = bbox
+
+        return bbox
+
+    def best_utm(self) -> int:
+        """
+        Determine the best UTM zone for this bbox
+
+        :return: EPSG code of UTM zone, e.g. 32631 for Belgian bounding boxes
+        """
+        self.assert_crs()
+        return auto_utm_epsg_for_geometry(self.as_polygon(), crs=self.crs)
+
+    def reproject_to_best_utm(self):
+        return self.reproject(crs=self.best_utm())
+
+    def round_to_resolution(
+        self, res_x: float, res_y: Optional[float] = None, *, offset_x: float = 0, offset_y: float = 0
+    ) -> "BoundingBox":
+        """
+        Round bounding box coordinates to given resolution (in units of the bounding box CRS),
+        with optional offset for the grid to round to.
+        """
+        if res_y is None:
+            res_y = res_x
+        w, s, e, n = self.as_wsen_tuple()
+        # TODO: leverage the offset (add appropriate multiple of resolution) to improve numerical precision?
+        return BoundingBox(
+            west=res_x * math.floor((w - offset_x) / res_x) + offset_x if math.isfinite(w) else w,
+            east=res_x * math.ceil((e - offset_x) / res_x) + offset_x if math.isfinite(e) else e,
+            south=res_y * math.floor((s - offset_y) / res_y) + offset_y if math.isfinite(s) else s,
+            north=res_y * math.ceil((n - offset_y) / res_y) + offset_y if math.isfinite(n) else n,
+            crs=self.crs,
+        )
+
+    def buffer(self, dx: float, dy: Union[float, None] = None) -> "BoundingBox":
+        """Buffer the bounding box by given distance (in units of the bounding box CRS)"""
+        # TODO: what to do with negative buffering that overshoots the bbox width or height? Assert here or in main constructor?
+        # TODO: also support 4-component buffering (left, bottom, right, top)?
+        if dy is None:
+            dy = dx
+        return BoundingBox(
+            west=self.west - dx, south=self.south - dy, east=self.east + dx, north=self.north + dy, crs=self.crs
+        )
+
+    def align_to(self, target: Union[None, str, int, "BoundingBox"]) -> "BoundingBox":
+        """
+        Align the projection of this bounding box to another CRS "source"
+        (None for "unspecified", a CRS code or the CRS of another bounding box):
+
+        - if current and target CRS are None ("unspecified"): do nothing
+        - if current and target CRS are both specified, reproject appropriately
+        - fail otherwise (as it's unclear how to handle alignment)
+        """
+        if isinstance(target, BoundingBox):
+            target_crs = target.crs
+        elif target is None:
+            target_crs = None
+        else:
+            target_crs = self.normalize_crs(target)
+
+        if self.crs is None:
+            if target_crs is None:
+                return self
+            else:
+                raise CrsRequired(f"Can not reproject bounding box with unspecified CRS to {target_crs!r}.")
+        else:
+            if target_crs is None:
+                # TODO: option to just erase the CRS field instead of failing?
+                raise BoundingBoxException(f"Can not reproject bounding box with CRS {self.crs!r} to unspecified CRS.")
+            else:
+                if self.crs != target_crs:
+                    return self.reproject(crs=target_crs)
+                else:
+                    return self
+
+    def union(self, other: "BoundingBox") -> "BoundingBox":
+        """
+        Get bounding box covering both this and the other bounding box.
+        When other bounding box is in another projection, it is first reprojected to this bounding box's CRS.
+        """
+        if self.crs != other.crs:
+            other = other.align_to(self)
+        return BoundingBox(
+            west=min(self.west, other.west),
+            south=min(self.south, other.south),
+            east=max(self.east, other.east),
+            north=max(self.north, other.north),
+            crs=self.crs,
+        )
+
+    def intersection(self, other: "BoundingBox") -> Union["BoundingBox", None]:
+        """
+        Get bounding box representing the intersection of this and the other bounding box.
+        When other bounding box is in another projection, it is first reprojected to this bounding box's CRS.
+        returns None when there is no intersection.
+        """
+        other = other.align_to(self)
+        # TODO: antimeridian correctness?
+        west = max(self.west, other.west)
+        south = max(self.south, other.south)
+        east = min(self.east, other.east)
+        north = min(self.north, other.north)
+        if west >= east or south >= north:
+            return None
+        return BoundingBox(west=west, south=south, east=east, north=north, crs=self.crs)
+
+    def cyclic_antimeridian_split(self) -> List["BoundingBox"]:
+        """
+        When this bounding box uses cyclic longitude coordinates and crosses the antimeridian:
+        split it into two bounding boxes for each side of the antimeridian.
+        Otherwise, just return this bounding box as is.
+        """
+        if self.cyclic_antimeridian_crossing():
+            # TODO: this assumes "cyclic" implies longitude in degrees (EPSG:4326), and split is at +/-180
+            west, east = normalize_west_east_longitude(west=self.west, east=self.east)
+            return [
+                BoundingBox(west=west, south=self.south, east=180, north=self.north, crs=self.crs),
+                BoundingBox(west=-180, south=self.south, east=east, north=self.north, crs=self.crs),
+            ]
+        else:
+            return [self]

@@ -1,0 +1,1217 @@
+import contextlib
+import json
+import re
+from typing import Optional, Iterable
+
+import dirty_equals
+import pytest
+
+from openeogeotrellis.catalog.enrich import LinksList
+
+
+from openeo.testing.stac import StacDummyBuilder
+from openeogeotrellis.catalog.manage import (
+    BandMetadata,
+    build_stac_collection_metadata,
+    CRS_AUTO_42001,
+    ENRICHMENT_MODE,
+    extract_band_metadata_list,
+    apply_raster_scale_and_offset_to_band_metadata,
+    LayerCatalog,
+    sort_dict_like_other,
+    CollectionMetadataBuilderRegistry,
+    MetadataException,
+    LayerCatalogManagerCliApp,
+    _BuildItem,
+    BandMetadataList,
+    _find_common_prefix,
+)
+
+
+class TestLayerCatalog:
+    def test_basic(self, tmp_path):
+        layer_catalog = LayerCatalog()
+        layer_catalog.set_collection_metadata(
+            {
+                "id": "FOO",
+                "title": "The FOO dataset",
+            }
+        )
+        path = tmp_path / "layercatalog.json"
+        layer_catalog.write_json_file(path)
+
+        assert json.loads(path.read_text(encoding="utf-8")) == [{"id": "FOO", "title": "The FOO dataset"}]
+
+    def test_compact_settings(self, tmp_path):
+        layer_catalog = LayerCatalog()
+        layer_catalog.set_collection_metadata({"id": "FOO", "title": "The FOO dataset"})
+        path = tmp_path / "layercatalog.json"
+        layer_catalog.write_json_file(path, indent=None, separators=(",", ":"))
+        assert path.read_text(encoding="utf-8") == '[{"id":"FOO","title":"The FOO dataset"}]\n'
+
+
+class TestBandMetadata:
+    def test_to_common_bands(self):
+        assert BandMetadata(name="blue").to_common_bands() == {
+            "name": "blue",
+        }
+
+        assert BandMetadata(name="blue", description="Not red").to_common_bands() == {
+            "name": "blue",
+            "description": "Not red",
+        }
+
+    def test_to_summaries_raster_bands(self):
+        assert BandMetadata(
+            name="blue",
+            raster_scale=0.01,
+            raster_offset=42,
+            unit="scoville",
+            gsd=30,
+            data_type="uint8",
+            nodata=12345,
+        ).to_summaries_raster_bands() == {
+            "name": "blue",
+            "scale": 0.01,
+            "offset": 42,
+            "data_type": "uint8",
+            "nodata": 12345,
+            "unit": "scoville",
+        }
+
+    def test_to_summaries_eo_bands(self):
+        assert BandMetadata(
+            name="blue",
+            raster_scale=0.01,
+            raster_offset=42,
+            unit="scoville",
+            gsd=30,
+            data_type="uint8",
+            nodata=12345,
+        ).to_summaries_eo_bands() == {
+            "name": "blue",
+            "gsd": 30,
+            "data_type": "uint8",
+            "nodata": 12345,
+            "unit": "scoville",
+        }
+
+    def test_to_summaries_bands(self):
+        assert BandMetadata(
+            name="blue",
+            raster_scale=0.01,
+            raster_offset=42,
+            unit="scoville",
+            gsd=30,
+            data_type="uint8",
+            nodata=12345,
+        ).to_summaries_bands() == {
+            "name": "blue",
+            "raster:scale": 0.01,
+            "raster:offset": 42,
+            "data_type": "uint8",
+            "nodata": 12345,
+            "unit": "scoville",
+            "gsd": 30,
+        }
+
+
+class TestBuildMetadata:
+    @pytest.fixture(autouse=True)
+    def _default_stac_collections(self, requests_mock):
+        requests_mock.get(
+            "https://stac.test/c/foobar1",
+            json=StacDummyBuilder.collection(
+                id="foobar1",
+                stac_extensions=["https://stac-extensions.github.io/datacube/v2.2.0/schema.json"],
+                stac_version="1.1.0",
+                links=[
+                    {
+                        "rel": "root",
+                        "href": "https://stac.test/",
+                        "type": "application/json",
+                    },
+                    {
+                        "rel": "self",
+                        "href": "https://stac.test/c/foobar1",
+                        "type": "application/json",
+                    },
+                    {
+                        "rel": "about",
+                        "href": "https://stac.test/c/foobar1.html",
+                        "type": "text/html",
+                    },
+                ],
+            ),
+        )
+
+    def test_minimal(self):
+        metadata = build_stac_collection_metadata(
+            id="FOOBAR",
+            stac_url="https://stac.test/c/foobar1",
+            bands=[BandMetadata(name="blue", description="Not red")],
+        )
+        assert metadata == {
+            "stac_version": "1.1.0",
+            "type": "Collection",
+            "id": "FOOBAR",
+            "title": "FOOBAR",
+            "description": "Collection 123",
+            "_vito": {
+                "data_source": {
+                    "type": "stac",
+                    "url": "https://stac.test/c/foobar1",
+                    "enrich": True,
+                },
+                "management_info": {"enrichment_mode": "legacy_at_runtime"},
+            },
+            "bands": [{"name": "blue", "description": "Not red"}],
+            "cube:dimensions": {
+                "bands": {"type": "bands", "values": ["blue"]},
+                "t": {"type": "temporal"},
+                "x": {"type": "spatial", "axis": "x", "reference_system": CRS_AUTO_42001, "step": 10},
+                "y": {"type": "spatial", "axis": "y", "reference_system": CRS_AUTO_42001, "step": 10},
+            },
+            "extent": {
+                "spatial": {"bbox": [[3, 4, 5, 6]]},
+                "temporal": {"interval": [["2024-01-01", "2024-05-05"]]},
+            },
+            "license": "proprietary",
+            "providers": [],
+            "summaries": {
+                "bands": [{"name": "blue", "description": "Not red"}],
+                "eo:bands": [{"name": "blue", "description": "Not red"}],
+                "raster:bands": [{"name": "blue"}],
+            },
+        }
+
+    def test_enrich_at_build_time(self):
+        metadata = build_stac_collection_metadata(
+            id="FOOBAR",
+            stac_url="https://stac.test/c/foobar1",
+            bands=[BandMetadata(name="blue", description="Not red")],
+            enrichment_mode=ENRICHMENT_MODE.LEGACY_AT_BUILD_TIME,
+        )
+        assert metadata == {
+            "stac_version": "1.1.0",
+            "stac_extensions": ["https://stac-extensions.github.io/datacube/v2.2.0/schema.json"],
+            "type": "Collection",
+            "id": "FOOBAR",
+            "title": "FOOBAR",
+            "description": "Collection 123",
+            "_vito": {
+                "data_source": {
+                    "type": "stac",
+                    "url": "https://stac.test/c/foobar1",
+                    "enrich": False,
+                },
+                "management_info": {"enrichment_mode": "legacy_at_build_time"},
+            },
+            "bands": [{"name": "blue", "description": "Not red"}],
+            "cube:dimensions": {
+                "bands": {"type": "bands", "values": ["blue"]},
+                "t": {"type": "temporal"},
+                "x": {"type": "spatial", "axis": "x", "reference_system": CRS_AUTO_42001, "step": 10},
+                "y": {"type": "spatial", "axis": "y", "reference_system": CRS_AUTO_42001, "step": 10},
+            },
+            "extent": {
+                "spatial": {"bbox": [[3, 4, 5, 6]]},
+                "temporal": {"interval": [["2024-01-01", "2024-05-05"]]},
+            },
+            "license": "proprietary",
+            "providers": [],
+            "summaries": {
+                "bands": [{"name": "blue", "description": "Not red"}],
+                "eo:bands": [{"name": "blue", "description": "Not red"}],
+                "raster:bands": [{"name": "blue"}],
+            },
+            "links": [
+                {"rel": "root", "href": "https://stac.test/", "type": "application/json"},
+                {"rel": "self", "href": "https://stac.test/c/foobar1", "type": "application/json"},
+                {"rel": "about", "href": "https://stac.test/c/foobar1.html", "type": "text/html"},
+            ],
+        }
+
+    def test_bands_metadata(self):
+        metadata = build_stac_collection_metadata(
+            id="FOOBAR",
+            stac_url="https://stac.test/c/foobar1",
+            bands=[
+                BandMetadata(
+                    name="B02",
+                    description="Not red",
+                    eo_common_name="blue",
+                    raster_scale=0.1,
+                    raster_offset=0.5,
+                    aliases=["bleu"],
+                    gsd=123,
+                    data_type="uint8",
+                )
+            ],
+        )
+        assert metadata == dirty_equals.IsPartialDict(
+            {
+                "bands": [
+                    {
+                        "name": "B02",
+                        "description": "Not red",
+                    }
+                ],
+                "cube:dimensions": dirty_equals.IsPartialDict(
+                    {
+                        "bands": {
+                            "type": "bands",
+                            "values": ["B02"],
+                        },
+                    }
+                ),
+                "summaries": {
+                    "bands": [
+                        {
+                            "name": "B02",
+                            "description": "Not red",
+                            "aliases": ["bleu"],
+                            "eo:common_name": "blue",
+                            "gsd": 123,
+                            "raster:offset": 0.5,
+                            "raster:scale": 0.1,
+                            "data_type": "uint8",
+                        }
+                    ],
+                    "eo:bands": [
+                        {
+                            "name": "B02",
+                            "description": "Not red",
+                            "aliases": ["bleu"],
+                            "common_name": "blue",
+                            "gsd": 123,
+                            "data_type": "uint8",
+                        }
+                    ],
+                    "raster:bands": [
+                        {
+                            "name": "B02",
+                            "offset": 0.5,
+                            "scale": 0.1,
+                            "data_type": "uint8",
+                        }
+                    ],
+                },
+            }
+        )
+
+    def test_enrich_at_build_time_with_upstream_links_filter(self):
+        def upstream_links_filter(links: LinksList) -> LinksList:
+            return [link for link in links if link.get("rel") in {"license", "about"}]
+
+        metadata = build_stac_collection_metadata(
+            id="FOOBAR",
+            stac_url="https://stac.test/c/foobar1",
+            bands=[BandMetadata(name="blue", description="Not red")],
+            enrichment_mode=ENRICHMENT_MODE.LEGACY_AT_BUILD_TIME,
+            upstream_links_filter=upstream_links_filter,
+        )
+        assert metadata == dirty_equals.IsPartialDict(
+            {
+                "id": "FOOBAR",
+                "links": [
+                    {"rel": "about", "href": "https://stac.test/c/foobar1.html", "type": "text/html"},
+                ],
+            }
+        )
+
+    def test_with_band_metadata_list_object(self):
+        metadata = build_stac_collection_metadata(
+            id="FOOBAR",
+            stac_url="https://stac.test/c/foobar1",
+            bands=BandMetadataList([BandMetadata(name="blue", description="Not red")]),
+        )
+        assert metadata == dirty_equals.IsPartialDict(
+            {
+                "bands": [{"name": "blue", "description": "Not red"}],
+            }
+        )
+
+
+class TestExtractBandMetadata:
+    def test_empty(self):
+        assert extract_band_metadata_list({}).as_list() == []
+
+    def test_toplevel_bands(self):
+        metadata = {
+            "bands": [{"name": "blue", "description": "Not red"}, {"name": "green", "description": "A frog"}],
+        }
+        assert extract_band_metadata_list(metadata).as_list() == [
+            BandMetadata(name="blue", description="Not red"),
+            BandMetadata(name="green", description="A frog"),
+        ]
+
+    def test_clms_lcm_global(self):
+        """Use case clms_lcm_global_10m_yearly_v1_cog"""
+        metadata = {
+            "stac_version": "1.1.0",
+            "bands": [{"name": "map", "description": "MAP"}],
+            "summaries": {
+                "gsd": [10.0],
+            },
+            "item_assets": {
+                "map": {
+                    "bands": [
+                        {
+                            "name": "map",
+                            "description": "MAP",
+                            "classification:classes": [
+                                {"name": "tree_cover", "value": 10},
+                                {"name": "shrubland", "value": 20},
+                            ],
+                        }
+                    ],
+                    "nodata": 255,
+                    "data_type": "uint8",
+                },
+                "Product": {
+                    "title": "Zipped product",
+                    "type": "application/zip",
+                },
+            },
+        }
+        assert extract_band_metadata_list(metadata).as_list() == [
+            BandMetadata(
+                name="map",
+                description="MAP",
+                gsd=10.0,
+                data_type="uint8",
+                nodata=255,
+                classification_classes=[
+                    {"name": "tree_cover", "value": 10},
+                    {"name": "shrubland", "value": 20},
+                ],
+            )
+        ]
+
+    def test_clms_ba_global(self):
+        """Use case clms_ba_global_300m_daily_v4_cog"""
+        metadata = {
+            "stac_version": "1.1.0",
+            "bands": [
+                {"name": "cp_nrt", "description": "Probability corresponds"},
+                {
+                    "name": "bf_nrt",
+                    "description": "Fraction of pixel surface",
+                },
+                {"name": "dob_nrt", "description": "Day of burn"},
+                {"name": "lfp_nrt", "description": "Probability fractional"},
+            ],
+            "item_assets": {
+                "Product": {
+                    "type": "application/zip",
+                    "title": "Zipped product",
+                },
+                "ba300_bf_nrt": {
+                    "bands": [{"name": "bf_nrt", "description": "Fraction"}],
+                    "roles": ["data"],
+                    "nodata": -32768.0,
+                    "data_type": "int16",
+                    "raster:scale": 0.001,
+                },
+                "ba300_cp_nrt": {
+                    "bands": [
+                        {
+                            "name": "cp_nrt",
+                            "description": "Probability corresponds",
+                        }
+                    ],
+                    "roles": ["data"],
+                    "nodata": -32768.0,
+                    "data_type": "int16",
+                    "raster:scale": 0.001,
+                },
+                "ba300_dob_nrt": {
+                    "bands": [{"name": "dob_nrt", "description": "Day of burn"}],
+                    "roles": ["data"],
+                    "nodata": -32768.0,
+                    "data_type": "int16",
+                },
+                "ba300_lfp_nrt": {
+                    "bands": [{"name": "lfp_nrt", "description": "Probability fractional"}],
+                    "roles": ["data"],
+                    "nodata": -32768.0,
+                    "data_type": "int16",
+                    "raster:scale": 0.001,
+                },
+            },
+        }
+
+        assert extract_band_metadata_list(metadata).as_list() == [
+            BandMetadata(
+                name="cp_nrt",
+                description="Probability corresponds",
+                raster_scale=0.001,
+                raster_offset=None,
+                gsd=None,
+                data_type="int16",
+                nodata=-32768,
+            ),
+            BandMetadata(
+                name="bf_nrt",
+                description="Fraction",
+                raster_scale=0.001,
+                raster_offset=None,
+                gsd=None,
+                data_type="int16",
+                nodata=-32768,
+            ),
+            BandMetadata(
+                name="dob_nrt",
+                description="Day of burn",
+                raster_scale=None,
+                raster_offset=None,
+                gsd=None,
+                data_type="int16",
+                nodata=-32768,
+            ),
+            BandMetadata(
+                name="lfp_nrt",
+                description="Probability fractional",
+                raster_scale=0.001,
+                raster_offset=None,
+                gsd=None,
+                data_type="int16",
+                nodata=-32768,
+            ),
+        ]
+
+    def test_clms_ndvi_global(self):
+        """Use case clms_ndvi_global_300m_10daily_v3_cog"""
+        metadata = {
+            "stac_version": "1.1.0",
+            "bands": [
+                {"name": "nobs", "description": "Number of observation"},
+                {"name": "ndvi", "description": "Normalized Difference Vegetation Index"},
+                {"name": "unc", "description": "Uncertainty on Normalized Difference Vegetation Index"},
+                {"name": "qflag", "description": "Quality Flag on Normalized Difference Vegetation Index"},
+            ],
+            "summaries": {
+                "gsd": [300.0],
+            },
+            "item_assets": {
+                "Product": {
+                    "type": "application/zip",
+                    "title": "Zipped product",
+                },
+                "ndvi300_unc": {
+                    "bands": [{"name": "unc", "description": "Uncertainty on Normalized Difference Vegetation Index"}],
+                    "roles": ["data"],
+                    "nodata": -1.0,
+                    "data_type": "int16",
+                    "raster:scale": 0.001,
+                },
+                "ndvi300_ndvi": {
+                    "bands": [
+                        {
+                            "name": "ndvi",
+                            "description": "Normalized Difference Vegetation Index",
+                            "classification:classes": [
+                                {"name": "unknown", "value": 252},
+                                {"name": "snow", "value": 253},
+                                {"name": "water", "value": 254},
+                                {"name": "missing", "value": 255},
+                            ],
+                        }
+                    ],
+                    "roles": ["data"],
+                    "nodata": 255.0,
+                    "data_type": "uint8",
+                    "raster:scale": 0.004,
+                    "raster:offset": -0.08,
+                },
+                "ndvi300_nobs": {
+                    "bands": [{"name": "nobs", "description": "Number of observation"}],
+                    "roles": ["data"],
+                    "nodata": 255.0,
+                    "data_type": "uint8",
+                },
+                "ndvi300_qflag": {
+                    "bands": [
+                        {
+                            "name": "qflag",
+                            "description": "Quality Flag on Normalized Difference Vegetation Index",
+                            "classification:bitfields": [
+                                {
+                                    "name": "no_observations",
+                                    "length": 1,
+                                    "offset": 0,
+                                    "classes": [
+                                        {"name": "observations_available", "value": 0},
+                                        {"name": "no_observations", "value": 1},
+                                    ],
+                                },
+                                {
+                                    "name": "snow_observation",
+                                    "length": 1,
+                                    "offset": 1,
+                                    "classes": [
+                                        {"name": "no_snow", "value": 0},
+                                        {"name": "snow_detected", "value": 1},
+                                    ],
+                                },
+                            ],
+                        }
+                    ],
+                    "roles": ["data"],
+                    "nodata": 255.0,
+                    "data_type": "uint8",
+                },
+            },
+        }
+        assert extract_band_metadata_list(metadata).as_list() == [
+            BandMetadata(
+                name="nobs",
+                description="Number of observation",
+                gsd=300,
+                data_type="uint8",
+                nodata=255,
+            ),
+            BandMetadata(
+                name="ndvi",
+                description="Normalized Difference Vegetation Index",
+                raster_scale=0.004,
+                raster_offset=-0.08,
+                gsd=300,
+                data_type="uint8",
+                nodata=255,
+                classification_classes=[
+                    {"name": "unknown", "value": 252},
+                    {"name": "snow", "value": 253},
+                    {"name": "water", "value": 254},
+                    {"name": "missing", "value": 255},
+                ],
+            ),
+            BandMetadata(
+                name="unc",
+                description="Uncertainty on Normalized Difference Vegetation " "Index",
+                raster_scale=0.001,
+                raster_offset=None,
+                gsd=300,
+                data_type="int16",
+                nodata=-1,
+            ),
+            BandMetadata(
+                name="qflag",
+                description="Quality Flag on Normalized Difference Vegetation " "Index",
+                gsd=300,
+                data_type="uint8",
+                nodata=255,
+            ),
+        ]
+
+    def test_only_cube_dimensions(self):
+        metadata = {
+            "cube:dimensions": {
+                "x": {"type": "spatial", "axis": "x"},
+                "y": {"type": "spatial", "axis": "y"},
+                "t": {"type": "temporal", "extent": ["2024-04-01T00:00:00Z", None], "step": "P5D"},
+                "bands": {"type": "bands", "values": ["FAPAR"]},
+            },
+        }
+        assert extract_band_metadata_list(metadata).as_list() == [BandMetadata(name="FAPAR")]
+
+class TestBandMetadataList:
+    def test_apply_raster_scale_and_offset_simple(self):
+        bands = BandMetadataList(
+            [
+                BandMetadata(name="foo"),
+                BandMetadata(name="bar"),
+            ]
+        )
+        assert list(bands.apply_raster_scale_and_offset_to_band_metadata()) == [
+            BandMetadata(name="foo"),
+            BandMetadata(name="bar"),
+        ]
+
+    def test_apply_raster_scale_and_offset_with_scale(self):
+        bands = BandMetadataList(
+            [
+                BandMetadata(name="foo", data_type="int8", nodata=-128),
+                BandMetadata(name="bar", data_type="uint16", raster_scale=0.001),
+            ]
+        )
+        assert list(bands.apply_raster_scale_and_offset_to_band_metadata()) == [
+            BandMetadata(name="foo", data_type="float32"),
+            BandMetadata(name="bar", data_type="float32"),
+        ]
+
+    def test_apply_raster_scale_and_offset_with_offset(self):
+        bands = BandMetadataList(
+            [
+                BandMetadata(name="foo", data_type="int8", nodata=-128),
+                BandMetadata(name="bar", data_type="uint16", raster_offset=-1.5),
+            ]
+        )
+        assert list(bands.apply_raster_scale_and_offset_to_band_metadata()) == [
+            BandMetadata(name="foo", data_type="float32"),
+            BandMetadata(name="bar", data_type="float32"),
+        ]
+
+    def test_apply_raster_scale_and_offset_with_classification_classes(self):
+        bands = BandMetadataList(
+            [
+                BandMetadata(
+                    name="foo",
+                    data_type="int8",
+                    raster_scale=0.001,
+                    classification_classes=[
+                        {"value": 253, "name": "snow"},
+                        {"value": 254, "name": "water"},
+                    ],
+                ),
+            ]
+        )
+        assert list(bands.apply_raster_scale_and_offset_to_band_metadata()) == [
+            BandMetadata(name="foo", data_type="float32"),
+        ]
+
+    def test_iter(self):
+        bands = BandMetadataList([BandMetadata(name="blue"), BandMetadata(name="green")])
+        assert [isinstance(b, BandMetadata) for b in bands] == [True, True]
+        assert [b.name for b in bands] == ["blue", "green"]
+        assert list(bands) == [
+            BandMetadata(name="blue"),
+            BandMetadata(name="green"),
+        ]
+
+    def test_as_list(self):
+        bands = BandMetadataList([BandMetadata(name="blue"), BandMetadata(name="green")])
+        assert bands.as_list() == [
+            BandMetadata(name="blue"),
+            BandMetadata(name="green"),
+        ]
+
+    def test_add_band_name_aliases_add_prefix(self):
+        bands = BandMetadataList(
+            [
+                BandMetadata(name="blue"),
+                BandMetadata(name="green", aliases=["frog"]),
+            ]
+        )
+        aliased = bands.add_band_name_aliases_add_prefix(prefix="ndvi_")
+
+        assert list(bands) == [
+            BandMetadata(name="blue"),
+            BandMetadata(name="green", aliases=["frog"]),
+        ]
+        assert isinstance(aliased, BandMetadataList)
+        assert list(aliased) == [
+            BandMetadata(name="blue", aliases=["ndvi_blue"]),
+            BandMetadata(name="green", aliases=["frog", "ndvi_green"]),
+        ]
+
+    def test_add_band_name_aliases_drop_prefix(self):
+        bands = BandMetadataList(
+            [
+                BandMetadata(name="dark_blue"),
+                BandMetadata(name="dark_green", aliases=["frog"]),
+                BandMetadata(name="red"),
+            ]
+        )
+        aliased = bands.add_band_name_aliases_drop_prefix(prefix="dark_")
+
+        assert list(bands) == [
+            BandMetadata(name="dark_blue"),
+            BandMetadata(name="dark_green", aliases=["frog"]),
+            BandMetadata(name="red"),
+        ]
+        assert isinstance(aliased, BandMetadataList)
+        assert list(aliased) == [
+            BandMetadata(name="dark_blue", aliases=["blue"]),
+            BandMetadata(name="dark_green", aliases=["frog", "green"]),
+            BandMetadata(name="red"),
+        ]
+
+    def test_add_band_name_aliases_drop_common_prefix(self):
+        bands = BandMetadataList(
+            [
+                BandMetadata(name="dark_blue"),
+                BandMetadata(name="dark_green", aliases=["frog"]),
+            ]
+        )
+        aliased = bands.add_band_name_aliases_drop_common_prefix()
+
+        assert list(bands) == [
+            BandMetadata(name="dark_blue"),
+            BandMetadata(name="dark_green", aliases=["frog"]),
+        ]
+        assert isinstance(aliased, BandMetadataList)
+        assert list(aliased) == [
+            BandMetadata(name="dark_blue", aliases=["blue"]),
+            BandMetadata(name="dark_green", aliases=["frog", "green"]),
+        ]
+
+
+def test_find_common_prefix():
+    assert _find_common_prefix([]) is None
+    assert _find_common_prefix(["foo"]) == "foo"
+    assert _find_common_prefix(["foo", "bar"]) == ""
+    assert _find_common_prefix(["foo", "far", "fizz"]) == "f"
+    assert _find_common_prefix(["ndvi_1", "ndvi_2", "ndvi_3"]) == "ndvi_"
+
+
+@pytest.mark.parametrize(
+    ["other", "expected"],
+    [
+        (
+            {},
+            '{"id": "foo", "description": "The foo", "bands": [1, 2, 3], "link": true}',
+        ),
+        (
+            {"id": "bar", "bands": 3},
+            '{"id": "foo", "bands": [1, 2, 3], "description": "The foo", "link": true}',
+        ),
+        (
+            ["id", "color", "link", "flavor"],
+            '{"id": "foo", "link": true, "description": "The foo", "bands": [1, 2, 3]}',
+        ),
+    ],
+)
+def test_sort_dict_like_other(other, expected):
+    orig = {
+        "id": "foo",
+        "description": "The foo",
+        "bands": [1, 2, 3],
+        "link": True,
+    }
+    assert json.dumps(orig) == '{"id": "foo", "description": "The foo", "bands": [1, 2, 3], "link": true}'
+
+    reordered = sort_dict_like_other(orig, other)
+    assert reordered == orig
+    assert json.dumps(reordered) == expected
+
+
+class TestCollectionMetadataBuilderRegistry:
+    def test_register_basic(self):
+        registry = CollectionMetadataBuilderRegistry()
+
+        def build123() -> dict:
+            return {"id": "COLLECTION123"}
+
+        def build456() -> dict:
+            return {"id": "COLLECTION456"}
+
+        registry.register("COLLECTION123", build123)
+        registry.register("COLLECTION456", build456)
+
+        assert list(registry.call_builders()) == [
+            {"id": "COLLECTION123"},
+            {"id": "COLLECTION456"},
+        ]
+
+    def test_register_decorator(self):
+        registry = CollectionMetadataBuilderRegistry()
+        collection = registry.decorator
+
+        @collection("COLLECTION123")
+        def build() -> dict:
+            return {"id": "COLLECTION123"}
+
+        @collection("COLLECTION456")
+        def build() -> dict:
+            return {"id": "COLLECTION456"}
+
+        assert list(registry.call_builders()) == [
+            {"id": "COLLECTION123"},
+            {"id": "COLLECTION456"},
+        ]
+
+    def test_register_decorator_multiple_dict(self):
+        registry = CollectionMetadataBuilderRegistry()
+        collections = registry.decorator_multiple
+
+        @collections(
+            {
+                "COLLECTION_FOO": {"biopar": "FOO"},
+                "COLLECTION_BAR": {"biopar": "BAR"},
+            }
+        )
+        def build_biopar(collection_id, biopar) -> dict:
+            return {"id": collection_id, "biopar": biopar}
+
+        assert list(registry.call_builders()) == [
+            {"id": "COLLECTION_FOO", "biopar": "FOO"},
+            {"id": "COLLECTION_BAR", "biopar": "BAR"},
+        ]
+
+    def test_register_decorator_multiple_list(self):
+        registry = CollectionMetadataBuilderRegistry()
+        collections = registry.decorator_multiple
+
+        @collections(
+            [
+                ("COLLECTION_FOO", {"biopar": "FOO"}),
+                ("COLLECTION_BAR", {"biopar": "BAR"}, ["dev"]),
+            ]
+        )
+        def build_biopar(collection_id, biopar) -> dict:
+            return {"id": collection_id, "biopar": biopar}
+
+        assert list(registry.call_builders()) == [
+            {"id": "COLLECTION_FOO", "biopar": "FOO"},
+            {"id": "COLLECTION_BAR", "biopar": "BAR"},
+        ]
+        assert list(registry.call_builders(label_filter=lambda labels: "dev" in labels)) == [
+            {"id": "COLLECTION_BAR", "biopar": "BAR"},
+        ]
+
+    def test_register_kwargs(self):
+        registry = CollectionMetadataBuilderRegistry()
+        collection = registry.decorator
+
+        @collection("COLLECTION123", title="One Two Three")
+        def build(title) -> dict:
+            return {"id": "COLLECTION123", "title": title}
+
+        assert list(registry.call_builders()) == [
+            {"id": "COLLECTION123", "title": "One Two Three"},
+        ]
+
+    def test_forbidden_kwargs(self):
+        registry = CollectionMetadataBuilderRegistry()
+
+        def build(**kwargs):
+            return kwargs
+
+        registry.register("COLLECTION123", build, kwargs={"flavor": "vanilla"})
+
+        with pytest.raises(MetadataException, match="Forbidden"):
+            registry.register("COLLECTION123", build, kwargs={"collection_id": "COLLECTION456"})
+
+        with pytest.raises(MetadataException, match="Forbidden"):
+            registry.register("COLLECTION123", build, kwargs={"labels": ["prod"]})
+
+    def test_register_with_labels(self):
+        registry = CollectionMetadataBuilderRegistry()
+        collection = registry.decorator
+
+        @collection("C123", labels=["prod"])
+        def build() -> dict:
+            return {"id": "C123"}
+
+        @collection("C456", label="dev")
+        def build() -> dict:
+            return {"id": "C456"}
+
+        registry.register(
+            "C789",
+            lambda: {"id": "C789"},
+            labels=["staging", "dev"],
+        )
+
+        assert list(registry.call_builders()) == [
+            {"id": "C123"},
+            {"id": "C456"},
+            {"id": "C789"},
+        ]
+        assert list(registry.call_builders(label_filter=lambda labels: "prod" in labels)) == [
+            {"id": "C123"},
+        ]
+        assert list(registry.call_builders(label_filter=lambda labels: "dev" in labels)) == [
+            {"id": "C456"},
+            {"id": "C789"},
+        ]
+        assert list(registry.call_builders(label_filter=lambda labels: "staging" in labels)) == [
+            {"id": "C789"},
+        ]
+        assert list(registry.call_builders(label_filter=lambda labels: "nope" in labels)) == []
+
+    def test_register_multiple(self):
+        registry = CollectionMetadataBuilderRegistry()
+
+        def build(collection_id: str, biopar: str = "NDVI") -> dict:
+            return {"id": collection_id, "biopar": biopar}
+
+        registry.register_multiple(
+            build,
+            cases=[
+                ("C123",),
+                ("C456", {"biopar": "EVI"}),
+                ("C789", {"biopar": "fAPAR"}, ["dev"]),
+            ],
+        )
+
+        assert list(registry.call_builders()) == [
+            {"id": "C123", "biopar": "NDVI"},
+            {"id": "C456", "biopar": "EVI"},
+            {"id": "C789", "biopar": "fAPAR"},
+        ]
+        assert list(registry.call_builders(label_filter=lambda labels: "dev" not in labels)) == [
+            {"id": "C123", "biopar": "NDVI"},
+            {"id": "C456", "biopar": "EVI"},
+        ]
+        assert list(registry.call_builders(label_filter=lambda labels: "dev" in labels)) == [
+            {"id": "C789", "biopar": "fAPAR"},
+        ]
+
+    def test_duplicate_handling_and_labels(self):
+        registry = CollectionMetadataBuilderRegistry()
+
+        def build(collection_id: str, labels: Iterable[str]) -> dict:
+            return {"id": collection_id, "labels": sorted(labels)}
+
+        # Registering duplicates is fine
+        registry.register("COLLECTION123", build, labels=["prod"])
+        registry.register("COLLECTION456", build, labels=["prod"])
+        registry.register("COLLECTION123", build, labels=["dev"])
+
+        # But complain at call time
+        with pytest.raises(MetadataException, match="duplicate collections: COLLECTION123"):
+            _ = list(registry.call_builders())
+
+        assert list(registry.call_builders(label_filter=lambda labels: "dev" not in labels)) == [
+            {"id": "COLLECTION123", "labels": ["prod"]},
+            {"id": "COLLECTION456", "labels": ["prod"]},
+        ]
+        assert list(registry.call_builders(label_filter=lambda labels: "dev" in labels)) == [
+            {"id": "COLLECTION123", "labels": ["dev"]},
+        ]
+
+    def test_auto_pass_collection_id(self):
+        registry = CollectionMetadataBuilderRegistry()
+        collection = registry.decorator
+
+        @collection("COLLECTION123", title="One Two Three")
+        def build(collection_id: str, title: Optional[str] = None):
+            return {"id": collection_id, "title": title or collection_id}
+
+        registry.register("COLLECTION456", build)
+        registry.register("COLLECTION789", build, kwargs={"title": "fo fi si"})
+
+        assert list(registry.call_builders()) == [
+            {"id": "COLLECTION123", "title": "One Two Three"},
+            {"id": "COLLECTION456", "title": "COLLECTION456"},
+            {"id": "COLLECTION789", "title": "fo fi si"},
+        ]
+
+    def test_auto_pass_kwargs(self):
+        registry = CollectionMetadataBuilderRegistry()
+        collection = registry.decorator
+
+        @collection("C123", label="prod")
+        def build(**kwargs) -> dict:
+            collection_id = kwargs.pop("collection_id")
+            return {
+                "id": collection_id,
+                "labels": sorted(kwargs.get("labels", [])),
+            }
+
+        registry.register("C456", build)
+        registry.register("C789", build, labels=["dev", "staging"])
+        assert list(registry.call_builders()) == [
+            {"id": "C123", "labels": ["prod"]},
+            {"id": "C456", "labels": []},
+            {"id": "C789", "labels": ["dev", "staging"]},
+        ]
+
+
+class RaisesSystemExit:
+    """
+    Test helper to check for triggering a SystemExit (e.g. as done by `argparse`)
+    with some error message on stderr.
+    """
+
+    def __init__(self, *, expected_exception=SystemExit, message: Optional[str] = None):
+        self.expected_exception = expected_exception
+        self.message = message
+
+    @contextlib.contextmanager
+    def raises(self, capsys: Optional[pytest.CaptureFixture] = None):
+        with pytest.raises(expected_exception=self.expected_exception):
+            yield
+        if self.message:
+            assert capsys, "capsys fixture should be provided"
+            assert self.message in capsys.readouterr().err
+
+
+class TestBuildItem:
+    def test_basic(self):
+        def build():
+            return {"id": "FOO"}
+
+        build_item = _BuildItem(collection_id="FOO", build=build, kwargs={}, labels=frozenset([]))
+        assert build_item.call() == {"id": "FOO"}
+
+    def test_auto_args(self):
+        def build(collection_id: str, biopar: str = "NDVI"):
+            return {"id": collection_id, "biopar": biopar}
+
+        build_item = _BuildItem(collection_id="FOO", build=build, kwargs={"biopar": "EVI"}, labels=frozenset([]))
+        assert build_item.call() == {"id": "FOO", "biopar": "EVI"}
+
+    def test_auto_kwargs(self):
+        def build(collection_id: str, **kwargs):
+            return {"id": collection_id, **kwargs}
+
+        build_item = _BuildItem(collection_id="FOO", build=build, kwargs={"biopar": "EVI"}, labels=frozenset([]))
+        assert build_item.call() == {"id": "FOO", "biopar": "EVI", "labels": frozenset([])}
+
+
+class TestLayerCatalogManagerCliApp:
+    @pytest.fixture()
+    def registry(self) -> CollectionMetadataBuilderRegistry:
+        registry = CollectionMetadataBuilderRegistry()
+        openeo_collection = registry.decorator
+
+        @openeo_collection("FOO")
+        def foo(collection_id):
+            return {
+                "id": collection_id,
+                "description": "Dummy 'FOO' collection",
+            }
+
+        @openeo_collection("BAR", label="dev")
+        def bar(collection_id):
+            return {
+                "id": collection_id,
+                "description": "Dummy 'BAR' collection",
+            }
+
+        return registry
+
+    @pytest.fixture()
+    def cli_app(self, registry) -> LayerCatalogManagerCliApp:
+        return LayerCatalogManagerCliApp(registry=registry)
+
+    @pytest.mark.parametrize(
+        ["args", "expected"],
+        [
+            (
+                ["generate"],
+                RaisesSystemExit(message="following arguments are required: catalog_path"),
+            ),
+            (
+                ["generate", "lcat.json"],
+                {"catalog_path": "lcat.json", "output_catalog_path": None, "cid_substring": None},
+            ),
+            (
+                ["generate", "lcat.json", "--output", "lcat-out.json"],
+                {"catalog_path": "lcat.json", "output_catalog_path": "lcat-out.json"},
+            ),
+            (
+                ["generate", "lcat.json", "-k", "ESA"],
+                {"catalog_path": "lcat.json", "cid_substring": "ESA"},
+            ),
+        ],
+    )
+    def test_parse_generate(self, cli_app: LayerCatalogManagerCliApp, args, expected, capsys) -> None:
+        parser = cli_app.build_argument_parser()
+
+        if isinstance(expected, RaisesSystemExit):
+            with expected.raises(capsys=capsys):
+                _ = parser.parse_args(args)
+        else:
+            args = parser.parse_args(args)
+            assert args.subcommand == "generate"
+            assert {k: getattr(args, k) for k in expected.keys()} == expected
+
+    @pytest.mark.parametrize(
+        ["args", "expected"],
+        [
+            (["list"], {"show_extended": False}),
+            (["list", "-l"], {"show_extended": True}),
+        ],
+    )
+    def test_parse_list(self, cli_app: LayerCatalogManagerCliApp, args, expected):
+        parser = cli_app.build_argument_parser()
+        args = parser.parse_args(args)
+        assert args.subcommand == "list"
+        assert {k: getattr(args, k) for k in expected.keys()} == expected
+
+    def test_handle_list(self, cli_app: LayerCatalogManagerCliApp, capsys) -> None:
+        cli_app.main(["list"])
+        stdout = capsys.readouterr().out
+        assert stdout.strip().split("\n") == ["BAR", "FOO"]
+
+    def test_handle_generate_no_existing(self, cli_app: LayerCatalogManagerCliApp, tmp_path, caplog) -> None:
+        catalog_path = tmp_path / "catalog.json"
+        cli_app.main(["generate", str(catalog_path)])
+        catalog = json.loads(catalog_path.read_text())
+        assert catalog == [
+            {"id": "FOO", "description": "Dummy 'FOO' collection"},
+            {"id": "BAR", "description": "Dummy 'BAR' collection"},
+        ]
+
+        assert "Building metadata for collection_id='FOO'" in caplog.text
+        assert caplog.text == dirty_equals.IsStr(regex=r".*registry\.get_stats.*register\W+2.*", regex_flags=re.DOTALL)
+
+    def test_handle_generate_with_existing(self, cli_app: LayerCatalogManagerCliApp, tmp_path, caplog) -> None:
+        catalog_path = tmp_path / "catalog.json"
+        pre_existing = [
+            {"id": "FOO", "description": "Original 'FOO'"},
+            {"id": "UNMANAGED", "description": "Some unmanaged collection"},
+        ]
+        catalog_path.write_text(json.dumps(pre_existing))
+        cli_app.main(["generate", str(catalog_path)])
+        catalog = json.loads(catalog_path.read_text())
+        assert catalog == [
+            {"id": "FOO", "description": "Dummy 'FOO' collection"},
+            {"id": "UNMANAGED", "description": "Some unmanaged collection"},
+            {"id": "BAR", "description": "Dummy 'BAR' collection"},
+        ]
+
+        assert "Unmanaged collections: ['UNMANAGED']" in caplog.text
+
+    def test_handle_generate_partitioning(self, cli_app: LayerCatalogManagerCliApp, tmp_path, caplog) -> None:
+        default_catalog_path = tmp_path / "catalog.json"
+        dev_catalog_path = tmp_path / "dev" / "catalogue.json"
+        foo_catalog_path = tmp_path / "foo" / "catafoo.json"
+        cli_app.main(
+            [
+                "generate",
+                str(default_catalog_path),
+                "--label-partition",
+                f"dev:{dev_catalog_path}",
+                "--label-partition",
+                f"foo:{foo_catalog_path}",
+            ]
+        )
+        default_catalog = json.loads(default_catalog_path.read_text())
+        dev_catalog = json.loads(dev_catalog_path.read_text())
+        foo_catalog = json.loads(foo_catalog_path.read_text())
+        assert (default_catalog, dev_catalog, foo_catalog) == (
+            [{"id": "FOO", "description": "Dummy 'FOO' collection"}],
+            [{"id": "BAR", "description": "Dummy 'BAR' collection"}],
+            [],
+        )
+
+    def test_handle_generate_partitioning_with_existing(
+        self, cli_app: LayerCatalogManagerCliApp, tmp_path, caplog
+    ) -> None:
+        default_catalog_path = tmp_path / "catalog.json"
+        default_catalog_path.parent.mkdir(parents=True, exist_ok=True)
+        default_catalog_path.write_text(json.dumps([{"id": "UNMANAGED"}]))
+        dev_catalog_path = tmp_path / "dev" / "catalogue.json"
+        dev_catalog_path.parent.mkdir(parents=True, exist_ok=True)
+        dev_catalog_path.write_text(json.dumps([{"id": "MANAGED_NOT"}]))
+        foo_catalog_path = tmp_path / "foo" / "catafoo.json"
+        cli_app.main(
+            [
+                "generate",
+                str(default_catalog_path),
+                "--label-partition",
+                f"dev:{dev_catalog_path}",
+                "--label-partition",
+                f"foo:{foo_catalog_path}",
+            ]
+        )
+        default_catalog = json.loads(default_catalog_path.read_text())
+        dev_catalog = json.loads(dev_catalog_path.read_text())
+        foo_catalog = json.loads(foo_catalog_path.read_text())
+        assert (default_catalog, dev_catalog, foo_catalog) == (
+            [
+                {"id": "UNMANAGED"},
+                {"id": "FOO", "description": "Dummy 'FOO' collection"},
+            ],
+            [
+                {"id": "MANAGED_NOT"},
+                {"id": "BAR", "description": "Dummy 'BAR' collection"},
+            ],
+            [],
+        )

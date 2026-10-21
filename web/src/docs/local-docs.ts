@@ -1,0 +1,132 @@
+import type { ReferenceEntry } from "../types";
+// Local reference. No runtime fetch to a documentation or CDN service.
+import geeDocs from "./gee-docs";
+const entries: ReferenceEntry[] = [
+  ...geeDocs,
+  {
+    id: "start",
+    category: "开始",
+    title: "脚本怎样运行",
+    text: "编辑器运行标准 Python 3.11。变量 connection 已由运行器连接并认证到本机 openEO API，无需填写密码。Python 脚本最长运行 120 秒，负责构建和提交计算图。影像计算由独立 GeoTrellis 任务执行，默认同时运行一个重任务。任务面板中的 Python 和 GeoTrellis 是两个不同阶段。",
+    code: 'print(connection.list_collection_ids())\nprint(connection.describe_collection("sentinel-2-l2a"))',
+  },
+  {
+    id: "values",
+    category: "Python 语法",
+    title: "变量、数字、字符串和注释",
+    text: "用 = 赋值；# 后是注释。字符串用单引号或双引号，f 字符串可插入变量。Python 区分大小写。缺失值用 None，布尔值用 True / False。",
+    code: '# 注释不会执行\nyear = 2024\nthreshold = 0.3\ncollection_id = "sentinel-2-l2a"\nprint(f"分析 {year} 年的 {collection_id}")',
+  },
+  {
+    id: "containers",
+    category: "Python 语法",
+    title: "列表、字典与索引",
+    text: "列表用于波段、日期等有序值。字典用键值对表示研究区等参数。索引从 0 开始，切片 [start:end] 不包含 end。",
+    code: 'bands = ["red", "nir"]\ndates = ["2024-01-01", "2024-02-01"]\naoi = {"west": 113.55, "south": 22.30, "east": 113.57, "north": 22.32}\nprint(bands[0], aoi["west"])',
+  },
+  {
+    id: "control",
+    category: "Python 语法",
+    title: "条件、循环与缩进",
+    text: "if / elif / else 作条件判断，for 遍历数据。冒号后开始代码块，用 4 个空格缩进。不要把 Tab 与空格混用。循环提交会创建多个任务，建议先小范围测试。",
+    code: 'for year in [2023, 2024]:\n    if year == 2024:\n        print("当前年份", year)\n    else:\n        print("历史年份", year)',
+  },
+  {
+    id: "functions",
+    category: "Python 语法",
+    title: "函数、参数与返回值",
+    text: "def 定义函数，return 返回结果。调用时可用关键字参数，让范围和单位更清楚。默认参数放在必填参数之后。",
+    code: 'def make_extent(west, south, east, north):\n    return {"west": west, "south": south, "east": east, "north": north}\n\naoi = make_extent(west=113.55, south=22.30, east=113.57, north=22.32)',
+  },
+  {
+    id: "imports",
+    category: "Python 语法",
+    title: "导入、异常与输出",
+    text: "import 导入已安装的模块。try / except 捕获预期错误；未捕获异常会使 Python 任务失败，完整信息在日志中。print 输出到控制台。运行容器不能联网安装新软件包。",
+    code: 'from datetime import date\ntry:\n    metadata = connection.describe_collection("sentinel-2-l2a")\n    print(metadata["id"], date.today())\nexcept Exception as error:\n    print(type(error).__name__, str(error))\n    raise',
+  },
+  {
+    id: "graph",
+    category: "openEO Python",
+    title: "延迟计算与进程图",
+    text: "load_collection、ndvi、reduce_dimension 等方法构建计算图，调用时不会读取全部像素。create_job() 将计算图保存到后端，start_job() 才进入队列。不要用普通 Python if 判断一个 DataCube。不要把 DataCube 当成 NumPy 数组。GEE 的 ee.* 脚本请选择独立的 GEE JavaScript 模式，兼容范围见对应条目。",
+    code: 'cube = connection.load_collection(\n    "sentinel-2-l2a",\n    spatial_extent={"west":113.55,"south":22.30,"east":113.57,"north":22.32},\n    temporal_extent=["2024-01-01","2024-02-01"],\n    bands=["red","nir"]\n)\nprint(cube.flat_graph())',
+  },
+  {
+    id: "load",
+    category: "openEO Python",
+    title: "connection.load_collection()",
+    text: "必填 collection_id 为左侧数据集 ID。spatial_extent 使用 west/south/east/north；默认坐标系 EPSG:4326，单位为度。temporal_extent 为 [开始, 结束]，结束点不包含。bands 是本地数据集波段名，不一定与供应商原始名称相同。只能选择已入库的数据。",
+    code: 'cube = connection.load_collection(\n    "sentinel-2-l2a",\n    spatial_extent={"west":113.55,"south":22.30,"east":113.57,"north":22.32},\n    temporal_extent=["2024-01-01","2024-02-01"],\n    bands=["red","nir"]\n)',
+  },
+  {
+    id: "filter",
+    category: "openEO Python",
+    title: "筛选波段、时间与范围",
+    text: "filter_bands() 筛选波段；filter_temporal() 缩小日期范围；filter_bbox() 缩小空间范围。筛选操作不会把尚未同步的数据从公网补回来。",
+    code: 'subset = cube.filter_bands(["red","nir"])\nsubset = subset.filter_temporal("2024-01-10", "2024-01-20")\nsubset = subset.filter_bbox(west=113.55, south=22.30, east=113.56, north=22.31)',
+  },
+  {
+    id: "bands",
+    category: "openEO Python",
+    title: "波段运算、NDVI 与 NDWI",
+    text: "band() 选择单波段。DataCube 支持 +、-、*、/。NDVI=(NIR−Red)/(NIR+Red)；NDWI=(Green−NIR)/(Green+NIR)。反射率已按源数据的 scale/offset 转换，不要再次乘 0.0001。分母为零或无效输入应作为 NoData。",
+    code: 'ndvi = cube.ndvi(nir="nir", red="red")\n# NDWI 需要先加载 green 与 nir 波段：\n# green, nir = cube.band("green"), cube.band("nir")\n# ndwi = (green - nir) / (green + nir)',
+  },
+  {
+    id: "reduce",
+    category: "openEO Python",
+    title: "时间合成与维度归约",
+    text: "reduce_dimension() 在一个维度上计算 mean、median、min、max、sum 等。t 是时间维度，bands 是波段维度。mean_time() 是按 t 计算均值的快捷方法。云和缺测处理会影响结果，时间合成前请先确认输入数据的掩膜规则。",
+    code: 'composite = cube.reduce_dimension(dimension="t", reducer="median")\nmean_image = cube.mean_time()',
+  },
+  {
+    id: "callback",
+    category: "openEO Python",
+    title: "回调表达式与 lambda",
+    text: "openEO 的 lambda 回调构建后端表达式，函数参数通常是 ProcessBuilder。只能使用受支持的 openEO 算子，不能在 lambda 里随意调用 Python 库。UDF（run_udf）暂不开放；网页 Python 脚本运行和像素级 UDF 是两种不同功能。",
+    code: 'scaled = cube.apply(lambda x: x * 2 + 1)\nfrom openeo.processes import sum as process_sum\nmonthly = cube.aggregate_temporal_period(\n    "month", reducer=lambda data: process_sum(data, ignore_nodata=False)\n)',
+  },
+  {
+    id: "spatial",
+    category: "openEO Python",
+    title: "区域统计与 GeoJSON",
+    text: 'aggregate_spatial() 接受 GeoJSON 几何，reducer="mean" 等指定聚合。GeoJSON 坐标顺序是经度、纬度，Polygon 环必须闭合。输出为区域时间序列，可保存 CSV。界面导入研究区目前把其包围盒用于数据加载；精确多边形统计应把几何传入本方法。',
+    code: 'region = {"type":"Polygon", "coordinates":[[\n    [113.55,22.30],[113.57,22.30],[113.57,22.32],\n    [113.55,22.32],[113.55,22.30]\n]]}\nseries = cube.aggregate_spatial(geometries=region, reducer="mean")',
+  },
+  {
+    id: "jobs",
+    category: "任务与结果",
+    title: "提交、状态、取消和日志",
+    text: "create_job(title=...) 创建批处理，start_job() 开始。describe_job() 返回状态，logs() 返回日志，stop_job() 取消。网页控制台也可查看。任务失败后使用面板“重新提交”，新任务拥有独立 ID 和输出目录。不要在 120 秒的脚本里长时间等待重任务。",
+    code: 'job = cube.save_result("GTiff").create_job(title="遥感分析")\njob.start_job()\nprint("任务 ID:", job.job_id)\nprint(job.describe_job()["status"])\n# 以后可用 job = connection.job("任务 ID")\n# job.stop_job()',
+  },
+  {
+    id: "formats",
+    category: "任务与结果",
+    title: "GeoTIFF、NetCDF、CSV",
+    text: "GTiff 用于栅格影像，NetCDF 用于多时相数据立方体，CSV 用于区域统计的表格结果。任务完成后，从任务面板下载。GeoTIFF 可点击“显示地图”，色带最小/最大值仅改变显示，不修改结果数据。像素查询返回原始数值。",
+    code: 'job = cube.save_result("NetCDF").create_job(title="多时相影像")\njob.start_job()\n# 区域统计可用 series.save_result("CSV")',
+  },
+  {
+    id: "climate",
+    category: "数据含义",
+    title: "ERA5-Land 单位与时间",
+    text: "本地 temperature 为 UTC 日均温，单位摄氏度，由 00–23 UTC 共 24 个样本计算；缺小时则该日 NoData。precipitation 为 UTC 日累计 mm，取次日 00 UTC 的原始累计值。月降水对完整月份的日累计求和，不能把原始累计小时值直接相加。没有 CDS 凭据时，ERA5-Land 不会自动入库。",
+    code: 'cube = connection.load_collection("era5-land",\n    temporal_extent=["2024-01-01","2024-02-01"],\n    spatial_extent={"west":113.5,"south":22.2,"east":113.8,"north":22.5},\n    bands=["precipitation"])',
+  },
+  {
+    id: "clouds",
+    category: "数据含义",
+    title: "反射率、云掩膜与 NoData",
+    text: "Sentinel-2 使用 Earth Search Collection 1，按资产元数据 scale/offset 转换反射率；旧 L2A 源因偏移元数据歧义不接收，保留 SCL 分类 4、5、6、7。Landsat C2 L2 使用 scale=0.0000275、offset=−0.2（以资产元数据优先），排除 QA_PIXEL 的 fill/cloud/shadow/snow 等位及 QA_RADSAT 饱和像素。标准化 COG 的 NoData 为 −9999。NoData 不等于 0，区域统计的有效像素数应单独检查。",
+  },
+  {
+    id: "limits",
+    category: "故障排查",
+    title: "常见错误与当前边界",
+    text: "CollectionNotFound：数据尚未同步或 ID 错误；空查询：范围/日期没有本地影像；全云：查询有影像，但掩膜后没有有效像素；ProcessGraphInvalid：用了本站未支持的算子或远程 namespace；超时/内存超限：缩小范围，分时段提交。脚本不能访问公网、宿主机文件和供应方凭据。任务服务重启后会继续追踪已存在的运行容器，容器丢失会明确标记失败。",
+  },
+];
+
+export default entries;

@@ -1,0 +1,99 @@
+import logging
+
+from openeo_driver.backend import LoadParameters
+from openeo_driver.utils import EvalEnv
+from py4j.java_gateway import JVMView
+
+from openeogeotrellis._backend import post_dry_run
+from openeogeotrellis.config import get_backend_config
+from openeogeotrellis.constants import EVAL_ENV_KEY
+from openeogeotrellis.geopysparkdatacube import GeopysparkDataCube
+
+logger = logging.getLogger(__name__)
+
+
+def create(load_params: LoadParameters, env: EvalEnv, jvm: JVMView):
+    feature_flags = load_params.get("featureflags", {})
+    tilesize = feature_flags.get("tilesize", 256)
+    default_temporal_resolution = "ByDay"
+
+    # if len(load_params.process_types) == 1 and ProcessType.GLOBAL_TIME in load_params.process_types:
+    # for pure timeseries processing, adjust partitioning strategy
+    # default_temporal_resolution = "None"
+    # default_indexReduction = 0
+
+    temporalResolution = feature_flags.get("temporalresolution", default_temporal_resolution)
+    datacubeParams = jvm.org.openeo.geotrelliscommon.DataCubeParameters()
+    # WTF simple assignment to a var in a scala class doesn't work??
+    getattr(datacubeParams, "tileSize_$eq")(tilesize)
+    getattr(datacubeParams, "maskingStrategyParameters_$eq")(load_params.custom_mask)
+    logger.debug(f"Using load_params.data_mask {load_params.data_mask!r}")
+    if isinstance(load_params.data_mask, GeopysparkDataCube):
+        datacubeParams.setMaskingCube(load_params.data_mask.get_max_level().srdd.rdd())
+
+    if "indexreduction" in feature_flags:
+        datacubeParams.setPartitionerIndexReduction(feature_flags["indexreduction"])
+    datacubeParams.setPartitionerTemporalResolution(temporalResolution)
+
+    datacubeParams.setAllowEmptyCube(
+        feature_flags.get("allow_empty_cube", env.get(EVAL_ENV_KEY.ALLOW_EMPTY_CUBES, False))
+    )
+
+    # TODO: undocumented feature flag "global_bounds"
+    if feature_flags.get("global_bounds", True):
+        if ge := post_dry_run.get_global_extent(load_params=load_params, env=env):
+            logger.debug(f"setGlobalExtent with {ge=}")
+            datacubeParams.setGlobalExtent(
+                float(ge.west), float(ge.south), float(ge.east), float(ge.north), str(ge.crs)
+            )
+
+    single_level = env.get(EVAL_ENV_KEY.PYRAMID_LEVELS, "all") != "all"
+    if single_level:
+        getattr(datacubeParams, "layoutScheme_$eq")("FloatingLayoutScheme")
+
+    if load_params.pixel_buffer is not None:
+        datacubeParams.setPixelBuffer(load_params.pixel_buffer[0], load_params.pixel_buffer[1])
+
+    datacubeParams.setResolveTileOverlap(load_params.resolve_tile_overlap)
+
+    load_per_product = feature_flags.get("load_per_product", None)
+    if load_per_product is not None:
+        datacubeParams.setLoadPerProduct(load_per_product)
+    elif get_backend_config().default_reading_strategy == "load_per_product":
+        datacubeParams.setLoadPerProduct(True)
+
+    if get_backend_config().default_tile_size is not None:
+        if "tilesize" not in feature_flags:
+            getattr(datacubeParams, "tileSize_$eq")(get_backend_config().default_tile_size)
+
+    if "max_partition_size" in feature_flags:
+        datacubeParams.setMaxPartitionSize(int(feature_flags["max_partition_size"]))
+    elif get_backend_config().default_max_partition_size is not None:
+        datacubeParams.setMaxPartitionSize(get_backend_config().default_max_partition_size)
+
+    datacubeParams.setResampleMethod(GeopysparkDataCube._get_resample_method(load_params.resample_method))
+
+    if load_params.filter_temporal_labels is not None:
+        from openeogeotrellis.backend import GeoPySparkBackendImplementation
+
+        labels_filter = GeoPySparkBackendImplementation.accept_process_graph(
+            load_params.filter_temporal_labels["process_graph"]
+        )
+        datacubeParams.setTimeDimensionFilter(labels_filter.builder)
+
+    datacubeParams.setRetainNoDataTiles(feature_flags.get("retain_nodata_tiles", False))
+
+    use_raster_source_providers = feature_flags.get("use_raster_source_providers", False)
+    datacubeParams.setUseRasterSourceProviders(use_raster_source_providers)
+
+    synthetic_data_override_celltype = feature_flags.get("synthetic_data_override_celltype", None)
+    if synthetic_data_override_celltype:
+        synthetic_data_override_udf = feature_flags.get("synthetic_data_override_udf", None)
+        option = jvm.scala.Option
+        option_synthetic_udf = option.apply(synthetic_data_override_udf) if synthetic_data_override_udf else option.empty()
+        syntheticDataOverride =  jvm.org.openeo.geotrelliscommon.SyntheticDataOverride(
+            synthetic_data_override_celltype, option_synthetic_udf
+        )
+        datacubeParams.setSyntheticDataOverride(syntheticDataOverride)
+
+    return datacubeParams, single_level

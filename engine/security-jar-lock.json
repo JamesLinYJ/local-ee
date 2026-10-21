@@ -1,0 +1,106 @@
+[
+  {
+    "file": "bcprov-jdk18on-1.86.jar",
+    "sha256": "2af190b300cbb0b35e248ccf5f4a06b6072030aeb3da7a98ec73abe5b4cb371f"
+  },
+  {
+    "file": "commons-compress-1.28.0.jar",
+    "sha256": "e1522945218456f3649a39bc4afd70ce4bd466221519dba7d378f2141a4642ca"
+  },
+  {
+    "file": "jersey-client-3.0.17.jar",
+    "sha256": "7a6917097f98c0418f92700a9bb0e8c836ca26a3e9bd97ce8afbdcd9cc1d7c39"
+  },
+  {
+    "file": "jersey-common-3.0.17.jar",
+    "sha256": "be9a782277b3beec0f0810467728c37d4d055acb6d41f6ca6dc12fc0f0829eb5"
+  },
+  {
+    "file": "log4j-1.2-api-2.25.5.jar",
+    "sha256": "4dd812dc5a6343f542a9e0046b1ec78ecf10bdd5a8c15745101cdd8b9aa24974"
+  },
+  {
+    "file": "log4j-api-2.25.5.jar",
+    "sha256": "64777f73ea0b3104c04eb82befbdccc30a425a19e83ad06cb2f93aa303511863"
+  },
+  {
+    "file": "log4j-core-2.25.5.jar",
+    "sha256": "050c4f85deb48b055e9c041ac39043fbb79ce477841a11a1eb2969c86c6a0072"
+  },
+  {
+    "file": "log4j-layout-template-json-2.25.5.jar",
+    "sha256": "27c37313e20c16bf0178e38d9d1a5c7320e34c03aa35bc2c66a589ea14abf545"
+  },
+  {
+    "file": "log4j-slf4j2-impl-2.25.5.jar",
+    "sha256": "8cab16dd6fc4c8f14c1c473022cb217512f2bbb2d59a70f8ec90a268d64d8831"
+  },
+  {
+    "file": "lz4-java-1.12.0.jar",
+    "sha256": "31c287041eab41f2459e93659d49162eff015a0eb858877e1c5e9dcce1a10c26"
+  },
+  {
+    "file": "netty-buffer-4.1.137.Final.jar",
+    "sha256": "f474b14c7734f15e0540394cb6f39d67777b7581a42919e4ac89d253d4efd929"
+  },
+  {
+    "file": "netty-codec-4.1.137.Final.jar",
+    "sha256": "9987b6a660b0a6b1f0d791485dae33180b3d1c63687c006fe6d3fd025e9e3798"
+  },
+  {
+    "file": "netty-codec-dns-4.1.137.Final.jar",
+    "sha256": "2d9a33ce41bd9f6f607df95039e42518a1fca16f83c9bbfe72beb57df6e2489f"
+  },
+  {
+    "file": "netty-codec-http-4.1.137.Final.jar",
+    "sha256": "0535bb5a736472bef5c948d15eb273c4ab9f796656fc7c5d6b982ad92bddbd49"
+  },
+  {
+    "file": "netty-codec-http2-4.1.137.Final.jar",
+    "sha256": "576ddcfb51b78e86f145c9a52b60e500b1a1d5a257cafec8aa5416ffba044b49"
+  },
+  {
+    "file": "netty-codec-socks-4.1.137.Final.jar",
+    "sha256": "4a6190e08988c058bfeef2b5965e71946439c771abf721c68f4039b4e7b023e8"
+  },
+  {
+    "file": "netty-common-4.1.137.Final.jar",
+    "sha256": "d31926b01adcc07af86f5e27b81b6d6c115df17d366e835d1fc3f5a1924e7e52"
+  },
+  {
+    "file": "netty-handler-4.1.137.Final.jar",
+    "sha256": "d0e4c6ee4779f59f6ab2fb5d388e4f57147c82270164b37945764bb9bda96a44"
+  },
+  {
+    "file": "netty-handler-proxy-4.1.137.Final.jar",
+    "sha256": "843de10c4cef34cbc1a5344090f1b57db532fbebf141559862da675f6b656df4"
+  },
+  {
+    "file": "netty-resolver-4.1.137.Final.jar",
+    "sha256": "b4cf2aeedd9fc7c8c439bbfe574f63cfe5b83392e88bbc07ca0e8424b7cff955"
+  },
+  {
+    "file": "netty-resolver-dns-4.1.137.Final.jar",
+    "sha256": "898d63ca62ed68ff46543c5344f969424b417f1e8d082fe2bb0181ba10144194"
+  },
+  {
+    "file": "netty-transport-4.1.137.Final.jar",
+    "sha256": "6251adc2a2921572382732a2db188d4f4f2251fd6ebb49c5d44bbf33d6bfb1a7"
+  },
+  {
+    "file": "netty-transport-classes-epoll-4.1.137.Final.jar",
+    "sha256": "55049554b799dc8e53bf234fffa36e001f7b5b65c32994b9bd59fc6356f1c52f"
+  },
+  {
+    "file": "netty-transport-classes-kqueue-4.1.137.Final.jar",
+    "sha256": "88d0ac216f9c7be690a9d0157778570d6f4c61f885863da1fccec7fcaee35557"
+  },
+  {
+    "file": "netty-transport-native-unix-common-4.1.137.Final.jar",
+    "sha256": "8056e7637f9948f953314894cf995ab664711b66c73c4cd5b593ae84f0b1048c"
+  },
+  {
+    "file": "sqlite-jdbc-3.53.4.0.jar",
+    "sha256": "bcb1f51e36f940867e83342f9efbf5968ac44a6bef4d397bb4af7b17b45cd2fb"
+  }
+]

@@ -1,0 +1,1447 @@
+import contextlib
+import math
+from typing import List, Union
+from unittest import mock
+
+import dirty_equals
+import pyproj
+import pyproj.exceptions
+import pytest
+import shapely.geometry
+from numpy.testing import assert_allclose
+from shapely.geometry import Point, Polygon
+from shapely.geometry.base import BaseGeometry
+
+from openeo_driver.testing import approxify
+from openeo_driver.util.geometry import (
+    BoundingBox,
+    BoundingBoxException,
+    CrsRequired,
+    GeometryBufferer,
+    as_geojson_feature,
+    as_geojson_feature_collection,
+    epsg_code_or_none,
+    geojson_to_multipolygon,
+    normalize_west_east_longitude,
+    reproject_bounding_box,
+    reproject_geometry,
+    spatial_extent_union,
+    validate_geojson_basic,
+)
+
+from ..data import get_path
+
+
+class IsGeometry:
+    """
+    Equality helper: matches a GeoJSON-style geometry dict that is geometrically equal to given shapely geometry,
+    independent of vertex order/start (which differs between shapely versions).
+    """
+
+    def __init__(self, expected: BaseGeometry):
+        self.expected = expected
+
+    def __eq__(self, other):
+        return isinstance(other, dict) and shapely.geometry.shape(other).equals(self.expected)
+
+    def __repr__(self):
+        return f"IsGeometry({self.expected.wkt})"
+
+EARTH_CIRCUMFERENCE_KM = 40075.017
+
+
+def test_geojson_to_multipolygon():
+    poly1_coords = [(0, 0), (1, 0), (1, 1), (0, 0)]
+    poly2_coords = [(0, 2), (1, 2), (1, 3), (0, 2)]
+    poly3_coords = [(2, 0), (3, 0), (3, 1), (2, 0)]
+    gj_poly_1 = {"type": "Polygon", "coordinates": (poly1_coords,)}
+    gj_poly_2 = {"type": "Polygon", "coordinates": (poly2_coords,)}
+    gj_poly_3 = {"type": "Polygon", "coordinates": (poly3_coords,)}
+    gj_multipoly_p1_p2 = {
+        "type": "MultiPolygon",
+        "coordinates": [(poly1_coords,), (poly2_coords,)],
+    }
+    gj_geometry_collection_p1_p2 = {
+        "type": "GeometryCollection",
+        "geometries": [gj_poly_1, gj_poly_2],
+    }
+    gj_geometry_collection_mp12_p3 = {
+        "type": "GeometryCollection",
+        "geometries": [gj_multipoly_p1_p2, gj_poly_3],
+    }
+    gj_geometry_collection_p3 = {
+        "type": "GeometryCollection",
+        "geometries": [gj_poly_3],
+    }
+    gj_feature_p1 = {"type": "Feature", "geometry": gj_poly_1}
+    gj_feature_mp12 = {"type": "Feature", "geometry": gj_multipoly_p1_p2}
+    gj_feature_gc12 = {"type": "Feature", "geometry": gj_geometry_collection_p1_p2}
+    gj_feature_gc123 = {"type": "Feature", "geometry": gj_geometry_collection_mp12_p3}
+    gj_featcol_p1_p2 = {
+        "type": "FeatureCollection",
+        "features": [
+            {"type": "Feature", "geometry": gj_poly_1},
+            {"type": "Feature", "geometry": gj_poly_2},
+        ],
+    }
+    gj_featcol_mp12_p3 = {
+        "type": "FeatureCollection",
+        "features": [
+            {"type": "Feature", "geometry": gj_multipoly_p1_p2},
+            {"type": "Feature", "geometry": gj_poly_3},
+        ],
+    }
+    gj_featcol_gc12_p3 = {
+        "type": "FeatureCollection",
+        "features": [
+            {"type": "Feature", "geometry": gj_geometry_collection_p1_p2},
+            {"type": "Feature", "geometry": gj_poly_3},
+        ],
+    }
+    gj_featcol_mp12_gc3 = {
+        "type": "FeatureCollection",
+        "features": [
+            {"type": "Feature", "geometry": gj_multipoly_p1_p2},
+            {"type": "Feature", "geometry": gj_geometry_collection_p3},
+        ],
+    }
+
+    def assert_equal_multipolygon(a, b):
+        assert isinstance(a, shapely.geometry.MultiPolygon)
+        assert isinstance(b, shapely.geometry.MultiPolygon)
+        assert len(a.geoms) == len(b.geoms)
+        assert a.equals(b), f"{a!s} ?= {b!s}"
+
+    poly_1 = shapely.geometry.Polygon(poly1_coords)
+    poly_2 = shapely.geometry.Polygon(poly2_coords)
+    poly_3 = shapely.geometry.Polygon(poly3_coords)
+    multipoly_p1_p2 = shapely.geometry.MultiPolygon([poly_1, poly_2])
+    multipoly_p1_p2_p3 = shapely.geometry.MultiPolygon([poly_1, poly_2, poly_3])
+
+    assert geojson_to_multipolygon(gj_poly_1) == poly_1
+    assert geojson_to_multipolygon(gj_feature_p1) == poly_1
+
+    assert_equal_multipolygon(
+        geojson_to_multipolygon(gj_multipoly_p1_p2), multipoly_p1_p2
+    )
+    assert_equal_multipolygon(
+        geojson_to_multipolygon(gj_geometry_collection_p1_p2), multipoly_p1_p2
+    )
+    assert_equal_multipolygon(
+        geojson_to_multipolygon(gj_geometry_collection_mp12_p3), multipoly_p1_p2_p3
+    )
+    assert_equal_multipolygon(geojson_to_multipolygon(gj_feature_mp12), multipoly_p1_p2)
+    assert_equal_multipolygon(geojson_to_multipolygon(gj_feature_gc12), multipoly_p1_p2)
+    assert_equal_multipolygon(
+        geojson_to_multipolygon(gj_feature_gc123), multipoly_p1_p2_p3
+    )
+    assert_equal_multipolygon(
+        geojson_to_multipolygon(gj_featcol_p1_p2), multipoly_p1_p2
+    )
+    assert_equal_multipolygon(
+        geojson_to_multipolygon(gj_featcol_mp12_p3), multipoly_p1_p2_p3
+    )
+    assert_equal_multipolygon(
+        geojson_to_multipolygon(gj_featcol_gc12_p3), multipoly_p1_p2_p3
+    )
+    assert_equal_multipolygon(
+        geojson_to_multipolygon(gj_featcol_mp12_gc3), multipoly_p1_p2_p3
+    )
+
+
+@pytest.mark.parametrize(
+    ["crs", "bbox"],
+    [
+        (
+            "EPSG:32631",
+            {"west": 640800, "south": 5676000, "east": 642200, "north": 5677000},
+        ),
+        ("EPSG:4326", {"west": 5.01, "south": 51.2, "east": 5.1, "north": 51.5}),
+    ],
+)
+def test_reproject_bounding_box_same(crs, bbox):
+    reprojected = reproject_bounding_box(bbox, from_crs=crs, to_crs=crs)
+    assert reprojected == dict(crs=crs, **bbox)
+
+
+def test_reproject_bounding_box():
+    bbox = {"west": 640800, "south": 5676000, "east": 642200.0, "north": 5677000.0}
+    reprojected = reproject_bounding_box(
+        bbox, from_crs="EPSG:32631", to_crs="EPSG:4326"
+    )
+    assert reprojected == {
+        "west": pytest.approx(5.016118467277098),
+        "south": pytest.approx(51.217660146353246),
+        "east": pytest.approx(5.036548264535997),
+        "north": pytest.approx(51.22699369149726),
+        "crs": "EPSG:4326",
+    }
+
+
+def test_reproject_geometry():
+    geometry = shapely.geometry.GeometryCollection(
+        [
+            shapely.geometry.Point(5.0, 51.0),
+            shapely.geometry.LineString([(5.0, 51.0), (5.1, 51.1)]),
+        ]
+    )
+    expected_reprojected = shapely.geometry.GeometryCollection(
+        [
+            shapely.geometry.Point(640333.2963383198, 5651728.68267166),
+            shapely.geometry.LineString(
+                [
+                    (640333.2963383198, 5651728.68267166),
+                    (647032.2494640718, 5663042.764772809),
+                ]
+            ),
+        ]
+    )
+    reprojected = reproject_geometry(
+        geometry, from_crs="EPSG:4326", to_crs="EPSG:32631"
+    )
+    assert reprojected.equals(expected_reprojected)
+
+    # Individual reprojected geometries should be equal to the reprojected collection.
+    reprojected_geoms = []
+    for geom in geometry.geoms:
+        geom = reproject_geometry(geom, from_crs="EPSG:4326", to_crs="EPSG:32631")
+        reprojected_geoms.append(geom)
+    reprojected_expected = shapely.geometry.GeometryCollection(reprojected_geoms)
+    assert reprojected.equals(reprojected_expected)
+
+    # Inverse
+    reprojected = reproject_geometry(
+        expected_reprojected, from_crs="EPSG:32631", to_crs="EPSG:4326"
+    )
+    # Reprojection introduces very small errors.
+    assert not reprojected.within(geometry)
+    assert reprojected.within(geometry.buffer(1e-6))
+
+
+def test_spatial_extent_union():
+    assert spatial_extent_union({"west": 1, "south": 51, "east": 2, "north": 52}) == {
+        "west": 1,
+        "south": 51,
+        "east": 2,
+        "north": 52,
+        "crs": "EPSG:4326",
+    }
+    assert spatial_extent_union(
+        {"west": 1, "south": 51, "east": 2, "north": 52},
+        {"west": 3, "south": 53, "east": 4, "north": 54},
+    ) == {"west": 1, "south": 51, "east": 4, "north": 54, "crs": "EPSG:4326"}
+    assert spatial_extent_union(
+        {"west": 1, "south": 51, "east": 2, "north": 52},
+        {"west": -5, "south": 50, "east": 3, "north": 53},
+        {"west": 3, "south": 53, "east": 4, "north": 54},
+    ) == {"west": -5, "south": 50, "east": 4, "north": 54, "crs": "EPSG:4326"}
+
+
+def test_spatial_extent_union_mixed_crs():
+    bbox1 = {
+        "west": 640860.0,
+        "south": 5676170.0,
+        "east": 642140.0,
+        "north": 5677450.0,
+        "crs": "EPSG:32631",
+    }
+    bbox2 = {
+        "west": 5.017,
+        "south": 51.21,
+        "east": 5.035,
+        "north": 51.23,
+        "crs": "EPSG:4326",
+    }
+    assert spatial_extent_union(bbox1, bbox2) == {
+        "west": 640824.9450876965,
+        "south": 5675111.354480841,
+        "north": 5677450.0,
+        "east": 642143.1739784481,
+        "crs": "EPSG:32631",
+    }
+    assert spatial_extent_union(bbox2, bbox1) == {
+        "west": 5.017,
+        "south": 51.21,
+        "east": 5.035868037661473,
+        "north": 51.2310228422003,
+        "crs": "EPSG:4326",
+    }
+
+
+def to_wkt(geometry: BaseGeometry, rounding_precision=2):
+    try:
+        from shapely import to_wkt
+        to_wkt(geometry,rounding_precision=rounding_precision)
+    except ImportError:
+        from shapely.geos import WKTWriter
+        wkt_writer = WKTWriter(shapely.geos.lgeos, rounding_precision=rounding_precision)
+        return wkt_writer.write(geometry)
+
+
+class TestGeometryBufferer:
+    def test_basic_point(self):
+        bufferer = GeometryBufferer(distance=1)
+        point = Point(2, 3)
+        polygon = bufferer.buffer(point)
+        assert isinstance(polygon, Polygon)
+        assert_allclose(
+            polygon.exterior.coords,
+            [
+                (3, 3),
+                (2.7, 2.3),
+                (2, 2),
+                (1.3, 2.3),
+                (1, 3),
+                (1.3, 3.7),
+                (2, 4),
+                (2.7, 3.7),
+                (3, 3),
+            ],
+            atol=0.01,
+        )
+
+    @pytest.mark.parametrize(
+        ["resolution", "expected"],
+        [
+            (1, [(8, 8), (5, 5), (2, 8), (5, 11), (8, 8)]),
+            (
+                2,
+                [
+                    (8.0, 8.0),
+                    (7.12, 5.88),
+                    (5.0, 5.0),
+                    (2.88, 5.88),
+                    (2.0, 8.0),
+                    (2.88, 10.12),
+                    (5.0, 11.0),
+                    (7.12, 10.12),
+                    (8.0, 8.0),
+                ],
+            ),
+        ],
+    )
+    def test_resolution(self, resolution, expected):
+        bufferer = GeometryBufferer(distance=3, resolution=resolution)
+        point = Point(5, 8)
+        polygon = bufferer.buffer(point)
+        assert isinstance(polygon, Polygon)
+        assert_allclose(polygon.exterior.coords, expected, atol=0.01)
+
+    @pytest.mark.parametrize(
+        ["distance", "expected"],
+        [
+            (0, 0),
+            (1, 360 / (EARTH_CIRCUMFERENCE_KM * 1000)),
+            (1000, 360 / EARTH_CIRCUMFERENCE_KM),
+        ],
+    )
+    def test_transform_meters_to_lonlat_default(self, distance, expected):
+        distance = GeometryBufferer.transform_meter_to_crs(
+            distance=distance, crs="EPSG:4326"
+        )
+        assert_allclose(distance, expected, rtol=1e-3)
+
+    def test_transform_meters_to_pyproj_crs(self):
+        distance = GeometryBufferer.transform_meter_to_crs(
+            distance=1000,
+            crs=pyproj.CRS.from_epsg(32631),
+            loi=(3, 0),
+            loi_crs=pyproj.CRS.from_epsg(4326),
+        )
+        assert_allclose(distance, 1000, rtol=1e-3)
+
+    @pytest.mark.parametrize(
+        ["latitude", "expected"],
+        [
+            (0, 360 / EARTH_CIRCUMFERENCE_KM),
+            # Rough back-of-envelope calculation for circumference at latitude
+            (52, 360 / (EARTH_CIRCUMFERENCE_KM * math.cos(52 * math.pi / 180))),
+            (75, 360 / (EARTH_CIRCUMFERENCE_KM * math.cos(75 * math.pi / 180))),
+        ],
+    )
+    def test_transform_meters_to_lonlat_latitude_correction(self, latitude, expected):
+        distance = GeometryBufferer.transform_meter_to_crs(
+            distance=1000, crs="EPSG:4326", loi=(3, latitude)
+        )
+        assert_allclose(distance, expected, rtol=1e-2)
+
+    def test_transform_meters_to_utm_roundtrip(self):
+        distance = GeometryBufferer.transform_meter_to_crs(
+            distance=1000,
+            crs="epsg:32631",
+            loi=(4, 52),
+            loi_crs="EPSG:4326",
+        )
+        assert_allclose(distance, 1000, rtol=1e-6)
+
+    def test_from_meter_for_crs(self):
+        bufferer = GeometryBufferer.from_meter_for_crs(distance=1000, crs="EPSG:4326")
+        point = Point(4, 51)
+        polygon = bufferer.buffer(point)
+        assert isinstance(polygon, Polygon)
+
+        assert_allclose(
+            polygon.exterior.coords,
+            [
+                (4.009, 51),
+                (4.006, 50.99),
+                (4, 50.99),
+                (3.994, 50.99),
+                (3.991, 51),
+                (3.994, 51.01),
+                (4, 51.01),
+                (4.006, 51.01),
+                (4.009, 51),
+            ],
+            atol=0.01,
+        )
+
+
+class TestAsGeoJsonFeatureCollection:
+    def test_as_geojson_feature_point(self):
+        feature = as_geojson_feature(Point(1, 2))
+        assert feature == {
+            "type": "Feature",
+            "geometry": {"type": "Point", "coordinates": (1.0, 2.0)},
+            "properties": None,
+        }
+
+    def test_as_geojson_feature_point_with_properties(self):
+        feature = as_geojson_feature(Point(1, 2), properties={"color": "red"})
+        assert feature == {
+            "type": "Feature",
+            "geometry": {"type": "Point", "coordinates": (1.0, 2.0)},
+            "properties": {"color": "red"},
+        }
+
+    def test_as_geojson_feature_dict(self):
+        feature = as_geojson_feature({"type": "Point", "coordinates": (1.0, 2.0)})
+        assert feature == {
+            "type": "Feature",
+            "geometry": {"type": "Point", "coordinates": (1.0, 2.0)},
+            "properties": None,
+        }
+
+    def test_as_geojson_feature_dict_with_properties(self):
+        feature = as_geojson_feature(
+            {"type": "Point", "coordinates": (1.0, 2.0)}, properties={"color": "red"}
+        )
+        assert feature == {
+            "type": "Feature",
+            "geometry": {"type": "Point", "coordinates": (1.0, 2.0)},
+            "properties": {"color": "red"},
+        }
+
+    def test_as_geojson_feature_path(self):
+        feature = as_geojson_feature(get_path("geojson/Polygon01.json"))
+        assert feature == {
+            "type": "Feature",
+            "geometry": {
+                "coordinates": [
+                    [
+                        [5.1, 51.22],
+                        [5.11, 51.23],
+                        [5.14, 51.21],
+                        [5.12, 51.2],
+                        [5.1, 51.22],
+                    ]
+                ],
+                "type": "Polygon",
+            },
+            "properties": None,
+        }
+
+    def test_as_geojson_feature_from_feature(self):
+        feature = as_geojson_feature(
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": (1.0, 2.0)},
+                "properties": None,
+            }
+        )
+        assert feature == {
+            "type": "Feature",
+            "geometry": {"type": "Point", "coordinates": (1.0, 2.0)},
+            "properties": None,
+        }
+
+    def test_as_geojson_feature_from_feature_with_properties(self):
+        feature = as_geojson_feature(
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": (1.0, 2.0)},
+                "properties": {"color": "red", "size": 4},
+            },
+        )
+        assert feature == {
+            "type": "Feature",
+            "geometry": {"type": "Point", "coordinates": (1.0, 2.0)},
+            "properties": {"color": "red", "size": 4},
+        }
+
+    def test_as_geojson_feature_from_feature_with_properties_override(self):
+        feature = as_geojson_feature(
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": (1.0, 2.0)},
+                "properties": {"color": "red", "size": 4},
+            },
+            properties={"color": "GREEN!", "shape": "circle"},
+        )
+        assert feature == {
+            "type": "Feature",
+            "geometry": {"type": "Point", "coordinates": (1.0, 2.0)},
+            "properties": {"color": "GREEN!", "shape": "circle"},
+        }
+
+    def test_as_geojson_feature_collection_simple_point(self):
+        feature_collection = as_geojson_feature_collection(Point(1, 2))
+        assert feature_collection == {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {"type": "Point", "coordinates": (1.0, 2.0)},
+                    "properties": None,
+                }
+            ],
+        }
+
+    def test_as_geojson_feature_collection_multiple(self):
+        feature_collection = as_geojson_feature_collection(
+            Point(1, 2), Polygon.from_bounds(1, 2, 3, 4), Point(5, 6)
+        )
+        assert feature_collection == {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {"type": "Point", "coordinates": (1.0, 2.0)},
+                    "properties": None,
+                },
+                {
+                    "type": "Feature",
+                    "geometry": IsGeometry(Polygon.from_bounds(1, 2, 3, 4)),
+                    "properties": None,
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {"type": "Point", "coordinates": (5.0, 6.0)},
+                    "properties": None,
+                },
+            ],
+        }
+
+    def test_as_geojson_feature_collection_multiple_as_list(self):
+        feature_collection = as_geojson_feature_collection(
+            [Point(1, 2), Polygon.from_bounds(1, 2, 3, 4), Point(5, 6)]
+        )
+        assert feature_collection == {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {"type": "Point", "coordinates": (1.0, 2.0)},
+                    "properties": None,
+                },
+                {
+                    "type": "Feature",
+                    "geometry": IsGeometry(Polygon.from_bounds(1, 2, 3, 4)),
+                    "properties": None,
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {"type": "Point", "coordinates": (5.0, 6.0)},
+                    "properties": None,
+                },
+            ],
+        }
+
+    def test_as_geojson_feature_collection_mix(self):
+        feature_collection = as_geojson_feature_collection(
+            {"type": "Point", "coordinates": (1.0, 2.0)},
+            Polygon.from_bounds(1, 2, 3, 4),
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": (5.0, 6.0)},
+                "properties": None,
+            },
+            get_path("geojson/Polygon01.json"),
+        )
+        assert feature_collection == {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {"type": "Point", "coordinates": (1.0, 2.0)},
+                    "properties": None,
+                },
+                {
+                    "type": "Feature",
+                    "geometry": IsGeometry(Polygon.from_bounds(1, 2, 3, 4)),
+                    "properties": None,
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {"type": "Point", "coordinates": (5.0, 6.0)},
+                    "properties": None,
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "coordinates": [
+                            [
+                                [5.1, 51.22],
+                                [5.11, 51.23],
+                                [5.14, 51.21],
+                                [5.12, 51.2],
+                                [5.1, 51.22],
+                            ]
+                        ],
+                        "type": "Polygon",
+                    },
+                    "properties": None,
+                },
+            ],
+        }
+
+
+def test_epsg_code_or_none():
+    assert epsg_code_or_none(None) is None
+    assert epsg_code_or_none(0) is None
+    assert epsg_code_or_none("nope") is None
+
+    assert epsg_code_or_none(4326) == 4326
+    assert epsg_code_or_none("EPSG:4326") == 4326
+    assert epsg_code_or_none(32631) == 32631
+    assert epsg_code_or_none(pyproj.CRS.from_epsg(32631)) == 32631
+
+
+class TestBoundingBox:
+    def test_basic(self):
+        bbox = BoundingBox(1, 2, 3, 4)
+        assert bbox.west == 1
+        assert bbox.south == 2
+        assert bbox.east == 3
+        assert bbox.north == 4
+        assert bbox.crs is None
+
+    @pytest.mark.parametrize("crs", [4326, "EPSG:4326", "epsg:4326"])
+    def test_basic_with_crs(self, crs):
+        bbox = BoundingBox(1, 2, 3, 4, crs=crs)
+        assert bbox.west == 1
+        assert bbox.south == 2
+        assert bbox.east == 3
+        assert bbox.north == 4
+        assert bbox.crs == "EPSG:4326"
+
+    def test_immutable(self):
+        bbox = BoundingBox(1, 2, 3, 4, crs=4326)
+        assert bbox.west == 1
+        with pytest.raises(AttributeError):
+            bbox.west = 100
+        with pytest.raises(AttributeError):
+            bbox.crs = "EPSG:32631"
+        assert bbox.west == 1
+        assert bbox.crs == "EPSG:4326"
+
+    def test_hash_basic(self):
+        bbox1 = BoundingBox(1, 2, 3, 4)
+        bbox2 = BoundingBox(1, 2, 3, 4)
+        assert hash(bbox1) == hash(bbox2)
+
+    def test_hash_with_crs(self):
+        bbox1 = BoundingBox(1, 2, 3, 4, crs=4326)
+        bbox2 = BoundingBox(1, 2, 3, 4, crs="EPSG:4326")
+        assert hash(bbox1) == hash(bbox2)
+
+    def test_equality_basic(self):
+        bbox1 = BoundingBox(1, 2, 3, 4)
+        bbox2 = BoundingBox(1, 2, 3, 4)
+        bbox3 = BoundingBox(1, 2, 3, 44)
+        assert bbox1 == bbox2
+        assert bbox2 == bbox1
+        assert bbox1 != bbox3
+        assert bbox3 != bbox1
+
+    def test_equality_with_crs(self):
+        bbox1 = BoundingBox(1, 2, 3, 4, crs=4326)
+        bbox2 = BoundingBox(1, 2, 3, 4, crs="EPSG:4326")
+        bbox3 = BoundingBox(1, 2, 3, 44, crs="EPSG:4326")
+        assert bbox1 == bbox2
+        assert bbox2 == bbox1
+        assert bbox1 != bbox3
+        assert bbox3 != bbox1
+
+    @pytest.mark.parametrize(
+        "expected",
+        [
+            dirty_equals.AnyThing,
+            dirty_equals.IsInstance(BoundingBox),
+            dirty_equals.HasAttributes(south=2),
+        ],
+    )
+    def test_equality_dirty(self, expected):
+        """Test equality integration with dirty_equals"""
+        bbox = BoundingBox(1, 2, 3, 4)
+        assert bbox == expected
+        assert expected == bbox
+
+    @pytest.mark.parametrize(
+        ["bbox", "expected"],
+        [
+            (
+                BoundingBox(1, 2, 3, 4),
+                "BoundingBox(west=1, south=2, east=3, north=4, crs=None)",
+            ),
+            (
+                BoundingBox(1, 2, 3, 4, crs="EPSG:4326"),
+                "BoundingBox(west=1, south=2, east=3, north=4, crs='EPSG:4326')",
+            ),
+            (
+                BoundingBox(1, 2, 3, 4, crs=4326),
+                "BoundingBox(west=1, south=2, east=3, north=4, crs='EPSG:4326')",
+            ),
+        ],
+    )
+    def test_repr_and_str(self, bbox, expected):
+        assert repr(bbox) == expected
+        assert str(bbox) == expected
+
+    def test_missing_bounds(self):
+        with pytest.raises(BoundingBoxException, match=r"Missing bounds: \['south'\]"):
+            _ = BoundingBox(1, None, 3, 4)
+
+    def test_missing_invalid_crs(self):
+        with pytest.raises(BoundingBoxException, match="Invalid CRS 'foobar:42'"):
+            _ = BoundingBox(1, 2, 3, 4, crs="foobar:42")
+
+    @pytest.mark.parametrize(
+        ["data", "default_crs", "expected"],
+        [
+            ({"west": 1, "south": 2, "east": 3, "north": 4}, None, (1, 2, 3, 4, None)),
+            (
+                {"west": 1, "south": 2, "east": 3, "north": 4},
+                4326,
+                (1, 2, 3, 4, "EPSG:4326"),
+            ),
+            (
+                {"west": 1, "south": 2, "east": 3, "north": 4, "crs": 4326},
+                None,
+                (1, 2, 3, 4, "EPSG:4326"),
+            ),
+            (
+                {"west": 1, "south": 2, "east": 3, "north": 4, "crs": "EPSG:4326"},
+                None,
+                (1, 2, 3, 4, "EPSG:4326"),
+            ),
+            (
+                {"west": 1, "south": 2, "east": 3, "north": 4, "crs": "EPSG:4326"},
+                32631,
+                (1, 2, 3, 4, "EPSG:4326"),
+            ),
+        ],
+    )
+    def test_from_dict(self, data, default_crs, expected):
+        bbox = BoundingBox.from_dict(data, default_crs=default_crs)
+        assert (bbox.west, bbox.south, bbox.east, bbox.north, bbox.crs) == expected
+
+    def test_from_dict_invalid(self):
+        data = {"west": 1, "south": 2, "east": None, "northhhhhh": 4}
+        with pytest.raises(
+            BoundingBoxException, match=r"Missing bounds: \['east', 'north'\]"
+        ):
+            _ = BoundingBox.from_dict(data)
+
+    @pytest.mark.parametrize(
+        ["data"],
+        [
+            ({"west": 1, "south": 2, "east": None, "northhhhhh": 4},),
+            ({},),
+            (None,),
+            ([],),
+        ],
+    )
+    def test_from_dict_or_none(self, data):
+        bbox = BoundingBox.from_dict_or_none(data)
+        assert bbox is None
+
+    def test_from_wsen_tuple(self):
+        bbox = BoundingBox.from_wsen_tuple((4, 3, 2, 1))
+        expected = (4, 3, 2, 1, None)
+        assert (bbox.west, bbox.south, bbox.east, bbox.north, bbox.crs) == expected
+
+    def test_from_wsen_tuple_with_crs(self):
+        bbox = BoundingBox.from_wsen_tuple((4, 3, 2, 1), crs=32631)
+        expected = (4, 3, 2, 1, "EPSG:32631")
+        assert (bbox.west, bbox.south, bbox.east, bbox.north, bbox.crs) == expected
+
+    def test_is_georeferenced(self):
+        assert BoundingBox(1, 2, 3, 4).is_georeferenced() is False
+        assert BoundingBox(1, 2, 3, 4, crs=4326).is_georeferenced() is True
+
+    def test_cyclic_antimeridian_crossing(self):
+        assert BoundingBox(1, 2, 3, 4).cyclic_antimeridian_crossing() is False
+        assert BoundingBox(-170, 2, 170, 4).cyclic_antimeridian_crossing() is False
+        assert BoundingBox(-170, 2, 170, 4, crs=4326).cyclic_antimeridian_crossing() is False
+        assert BoundingBox(170, 2, -170, 4).cyclic_antimeridian_crossing() is False
+        assert BoundingBox(170, 2, -170, 4, crs=4326).cyclic_antimeridian_crossing() is True
+        assert BoundingBox(-190, 2, -170, 4, crs=4326).cyclic_antimeridian_crossing() is True
+        assert BoundingBox(170, 2, 190, 4, crs=4326).cyclic_antimeridian_crossing() is True
+
+    def test_has_crs(self):
+        assert BoundingBox(1, 2, 3, 4).has_crs() is False
+        assert BoundingBox(1, 2, 3, 4, crs=4326).has_crs() is True
+
+    def test_as_tuple(self):
+        bbox = BoundingBox(1, 2, 3, 4)
+        assert bbox.as_tuple() == (1, 2, 3, 4, None)
+        bbox = BoundingBox(1, 2, 3, 4, crs="epsg:4326")
+        assert bbox.as_tuple() == (1, 2, 3, 4, "EPSG:4326")
+
+    def test_as_wsen_tuple(self):
+        assert BoundingBox(1, 2, 3, 4).as_wsen_tuple() == (1, 2, 3, 4)
+        assert BoundingBox(1, 2, 3, 4, crs="epsg:4326").as_wsen_tuple() == (1, 2, 3, 4)
+
+    def test_as_polygon(self):
+        bbox = BoundingBox(1, 2, 3, 4)
+        polygon = bbox.as_polygon()
+        assert isinstance(polygon, shapely.geometry.Polygon)
+        assert shapely.geometry.mapping(polygon) == {
+            "type": "Polygon",
+            "coordinates": (((3, 2), (3, 4), (1, 4), (1, 2), (3, 2)),),
+        }
+
+    def test_as_polygon_across_anti_meridian(self):
+        bbox = BoundingBox(170, 50, -170, 51, crs=4326)
+        polygon = bbox.as_polygon()
+        assert isinstance(polygon, shapely.geometry.Polygon)
+        assert shapely.geometry.mapping(polygon) == {
+            "type": "Polygon",
+            "coordinates": (((190, 50), (190, 51), (170, 51), (170, 50), (190, 50)),),
+        }
+
+    def test_as_geometry_basic(self):
+        bbox = BoundingBox(1, 2, 3, 4)
+        polygon = bbox.as_geometry()
+        assert isinstance(polygon, shapely.geometry.Polygon)
+        assert shapely.geometry.mapping(polygon) == {
+            "type": "Polygon",
+            "coordinates": (((3, 2), (3, 4), (1, 4), (1, 2), (3, 2)),),
+        }
+
+    def test_as_geometry_across_anti_meridian(self):
+        bbox = BoundingBox(170, 50, -170, 51, crs=4326)
+        polygon = bbox.as_geometry()
+        assert isinstance(polygon, shapely.geometry.MultiPolygon)
+        assert shapely.geometry.mapping(polygon) == {
+            "type": "MultiPolygon",
+            "coordinates": [
+                (((180, 50), (180, 51), (170, 51), (170, 50), (180, 50)),),
+                (((-170, 50), (-170, 51), (-180, 51), (-180, 50), (-170, 50)),),
+            ],
+        }
+
+    def test_as_geojson_basic(self):
+        bbox = BoundingBox(1, 2, 3, 4)
+        assert bbox.as_geojson_dict() == {
+            "type": "Polygon",
+            "coordinates": (((3, 2), (3, 4), (1, 4), (1, 2), (3, 2)),),
+        }
+        assert (
+            bbox.as_geojson_str()
+            == '{"type": "Polygon", "coordinates": [[[3.0, 2.0], [3.0, 4.0], [1.0, 4.0], [1.0, 2.0], [3.0, 2.0]]]}'
+        )
+
+    def test_as_geojson_epsg4326(self):
+        bbox = BoundingBox(3, 50, 4, 51, crs=4326)
+        assert bbox.as_geojson_dict() == {
+            "type": "Polygon",
+            "coordinates": (((4, 50), (4, 51), (3, 51), (3, 50), (4, 50)),),
+        }
+
+    def test_as_geojson_epsg4326_across_anti_meridian(self):
+        bbox = BoundingBox(179, 50, -179, 51, crs=4326)
+        assert bbox.as_geojson_dict() == {
+            "type": "MultiPolygon",
+            "coordinates": [
+                (((180, 50), (180, 51), (179, 51), (179, 50), (180, 50)),),
+                (((-179, 50), (-179, 51), (-180, 51), (-180, 50), (-179, 50)),),
+            ],
+        }
+
+    def test_as_geojson_from_utm(self):
+        bbox = BoundingBox(500000, 5649824, 507016, 5660950, crs="EPSG:32631")
+        assert bbox.as_geojson_dict() == {
+            "type": "Polygon",
+            "coordinates": approxify(
+                (((3.1, 51.0), (3.1, 51.1), (3.0, 51.1), (3.0, 51.0), (3.1, 51.0)),),
+                abs=0.001,
+            ),
+        }
+
+    def test_as_geojson_from_utm_across_anti_meridian(self):
+        bbox = BoundingBox(west=300000, south=7690200, east=409800, north=7800000, crs="EPSG:32601")
+        assert bbox.as_geojson_dict() == {
+            "type": "MultiPolygon",
+            "coordinates": approxify(
+                [
+                    (((-180, 69.295), (-179.287, 69.306), (-179.397, 70.290), (-180, 70.281), (-180, 69.295)),),
+                    (((180, 70.281), (177.697, 70.228), (177.937, 69.247), (180, 69.295), (180, 70.281)),),
+                ],
+                abs=0.1,
+            ),
+        }
+
+    def test_centroid(self):
+        bbox = BoundingBox(2, 3, 5, 8)
+        assert bbox.centroid() == (3.5, 5.5)
+
+    @pytest.mark.parametrize(
+        ["west", "east", "expected"],
+        [
+            (10, -170, 100),
+            (-170, 160, -5),
+            (-160, 170, 5),
+            (160, -170, 175),
+            (160 - 360, -170, 175),
+            (170, -160, -175),
+            (170 + 360, -160 + 5 * 360, -175),
+            (170, -170, -180),
+            (-180, -170, -175),
+            (-190, -180, 175),
+            (170, 180, 175),
+            (180, 190, -175),
+        ],
+    )
+    def test_centroid_epsg4326_wrap_around(self, west, east, expected):
+        bbox = BoundingBox(west, 50, east, 52, crs=4326)
+        assert bbox.centroid() == (expected, 51)
+
+    def test_approx(self):
+        expected = BoundingBox(100, 200, 300, 400)
+        bbox = BoundingBox(100.01, 200.01, 300.01, 400.01)
+        assert bbox == expected.approx(abs=0.1)
+        assert bbox != expected.approx(abs=0.001)
+
+        assert bbox == expected.approx(rel=0.001)
+        assert bbox != expected.approx(rel=0.0001)
+
+    def test_contains_generic(self):
+        bbox = BoundingBox(2, 3, 5, 8)
+        assert bbox.contains(2, 3) is True
+        assert bbox.contains(5, 8) is True
+        assert bbox.contains(2.5, 3.5) is True
+        assert bbox.contains(1.9, 5) is False
+        assert bbox.contains(3, 2.9) is False
+        assert bbox.contains(5.1, 4) is False
+        assert bbox.contains(4, 8.1) is False
+
+    @pytest.mark.parametrize(
+        ["bbox", "inside", "outside"],
+        [
+            (
+                # Basic 1 degree bbox
+                BoundingBox(3, 51, 4, 52, crs=4326),
+                [(3.1, 51.1), (3.2 + 360, 51.1), (3.5 - 360, 52)],
+                [(2, 51), (4.1, 51.5), (2, 52.1), (4, 52.01)],
+            ),
+            (
+                # Anti-meridian crossing bbox
+                BoundingBox(179, 51, -179, 52, crs=4326),
+                [(179, 51.1), (179.2 + 360, 51.1), (-179.2 - 360, 52)],
+                [(178.5, 51.5), (4.1, 51.5), (179.1, 52.1), (-179.1, 52.1)],
+            ),
+            (
+                # Wide, but non-anti-meridian crossing bbox
+                BoundingBox(-170, 51, 170, 52, crs=4326),
+                [(-167.1, 51.5), (-167.1 - 360, 51.5), (0, 51), (360, 51.5), (169.9, 52), (169.9 + 360, 52)],
+                [(-189, 51.5), (-171, 51.5), (171, 51.5), (189, 51.5), (0, 50.9), (0, 52.1)],
+            ),
+            (
+                # Bounding box with west bound at  -180
+                BoundingBox(-180, 51, -170, 52, crs=4326),
+                [(-180, 51.5), (-175, 51.5), (180, 51.5), (185, 51.5)],
+                [(-180.5, 51.5), (179.5, 51.5)],
+            ),
+            (
+                # Bounding box with east bound at 180
+                BoundingBox(170, 51, 180, 52, crs=4326),
+                [(180, 51.5), (175, 51.5), (-180, 51.5), (-185, 51.5)],
+                [(180.5, 51.5), (-179.5, 51.5)],
+            ),
+        ],
+    )
+    def test_contains_epsg4326_wrap_around(self, bbox, inside, outside):
+        assert all([bbox.contains(*point) is True for point in inside])
+        assert all([bbox.contains(*point) is False for point in outside])
+
+    def test_reproject(self):
+        bbox = BoundingBox(3, 51, 3.1, 51.1, crs="epsg:4326")
+        reprojected = bbox.reproject(32631)
+        assert isinstance(reprojected, BoundingBox)
+        assert reprojected.as_tuple() == (
+            pytest.approx(500000, abs=10),
+            pytest.approx(5649824, abs=10),
+            pytest.approx(507016, abs=10),
+            pytest.approx(5660950, abs=10),
+            "EPSG:32631",
+        )
+
+    def test_reproject_anti_meridian(self):
+        # Use case accross anti-meridian
+        # from https://github.com/Open-EO/openeo-geopyspark-driver/issues/1568
+        bbox = BoundingBox(west=300000, south=7690200, east=409800, north=7800000, crs="EPSG:32601")
+        reprojected = bbox.reproject(4326)
+        assert isinstance(reprojected, BoundingBox)
+        # Anti-meridian crossing bbox, so west > east.
+        assert reprojected == BoundingBox(
+            west=177.9,
+            south=69.2,
+            east=-179.4,
+            north=70.3,
+            crs="EPSG:4326",
+        ).approx(abs=0.1)
+
+    def test_reproject_cache_returns_same_object(self):
+        """Reprojecting same BoundingBox to same CRS twice returns the cached (identical) object."""
+        bbox = BoundingBox(3, 51, 3.1, 51.1, crs="EPSG:4326")
+        reprojected1 = bbox.reproject(32631)
+        reprojected2 = bbox.reproject(32631)
+        reprojected3 = bbox.reproject(3035)
+        assert reprojected1 == reprojected2
+        assert reprojected1 is reprojected2
+        assert reprojected1 != reprojected3
+
+    def test_reproject_cache_avoids_recomputation(self):
+        """The expensive shapely transform is only called once per unique (bbox, crs) combination."""
+        bbox = BoundingBox(3, 51, 3.1, 51.1, crs="EPSG:4326")
+        with mock.patch("shapely.ops.transform", wraps=shapely.ops.transform) as mock_transform:
+            bbox.reproject(32631)
+            assert mock_transform.call_count == 1
+            bbox.reproject(32631)
+            assert mock_transform.call_count == 1
+            bbox.reproject("EPSG:32631")
+            assert mock_transform.call_count == 1
+            bbox.reproject(3035)
+            assert mock_transform.call_count == 2
+            bbox.reproject(32631)
+            assert mock_transform.call_count == 2
+
+    def test_best_utm_no_crs(self):
+        bbox = BoundingBox(1, 2, 3, 4)
+        with pytest.raises(CrsRequired):
+            _ = bbox.best_utm()
+
+    def test_best_utm(self):
+        bbox = BoundingBox(4, 51, 4.1, 51.1, crs="EPSG:4326")
+        assert bbox.best_utm() == 32631
+
+        bbox = BoundingBox(-72, -13, -71, -12, crs="EPSG:4326")
+        assert bbox.best_utm() == 32719
+
+    def test_round_to_resolution_small(self):
+        bbox = BoundingBox(4.12345, 50.12345, 4.6789, 51.6789)
+        rounded = bbox.round_to_resolution(0.01, 0.1)
+        assert rounded.as_tuple() == (4.12, 50.1, 4.68, 51.7, None)
+
+    @pytest.mark.parametrize(
+        ["offset_x", "offset_y", "expected"],
+        [
+            (0, 0, BoundingBox(4.12, 50.1, 4.68, 51.7)),
+            (0.001, 0.02, BoundingBox(4.121, 50.12, 4.681, 51.72).approx(abs=1e-6)),
+            (0.888, 0.444, BoundingBox(4.118, 50.044, 4.688, 51.744).approx(abs=1e-6)),
+        ],
+    )
+    def test_round_to_resolution_small_with_offset(self, offset_x, offset_y, expected):
+        bbox = BoundingBox(4.12345, 50.12345, 4.6789, 51.6789)
+        rounded = bbox.round_to_resolution(0.01, 0.1, offset_x=offset_x, offset_y=offset_y)
+        assert rounded == expected
+
+    def test_round_to_resolution_large(self):
+        bbox = BoundingBox(500435.6, 5649834.7, 507678.1, 5667864.1)
+        rounded = bbox.round_to_resolution(10, 20)
+        assert rounded.as_tuple() == (500430, 5649820, 507680, 5667880, None)
+
+    @pytest.mark.parametrize(
+        ["offset_x", "offset_y", "expected"],
+        [
+            (0, 0, BoundingBox(500430, 5649820, 507680, 5667880)),
+            (3, 7, BoundingBox(500433, 5649827, 507683, 5667867)),
+            (7, 13, BoundingBox(500427, 5649833, 507687, 5667873)),
+            (19, 19, BoundingBox(500429, 5649819, 507679, 5667879)),
+        ],
+    )
+    def test_round_to_resolution_large_with_offset(self, offset_x, offset_y, expected):
+        bbox = BoundingBox(500435.6, 5649834.7, 507678.1, 5667864.1)
+        rounded = bbox.round_to_resolution(10, 20, offset_x=offset_x, offset_y=offset_y)
+        assert rounded == expected
+
+    def test_round_to_resolution_nodata(self):
+        bbox = BoundingBox(500435.6, 5649834.7, 507678.1, float("inf"))
+        rounded = bbox.round_to_resolution(10, 20)
+        assert rounded.as_tuple() == (500430, 5649820, 507680, float("inf"), None)
+
+    def test_round_to_resolution_single(self):
+        bbox = BoundingBox(500435.6, 5649834.7, 507678.1, 5667864.1)
+        rounded = bbox.round_to_resolution(10)
+        assert rounded.as_tuple() == (500430, 5649830, 507680, 5667870, None)
+
+    def test_buffer(self):
+        bbox = BoundingBox(1, 2, 3, 4, crs=4326)
+
+        assert bbox.buffer(1).as_tuple() == (0, 1, 4, 5, "EPSG:4326")
+        assert bbox.buffer(0.1).as_tuple() == (0.9, 1.9, 3.1, 4.1, "EPSG:4326")
+        assert bbox.buffer(-0.1).as_tuple() == (1.1, 2.1, 2.9, 3.9, "EPSG:4326")
+
+        assert bbox.buffer(0.5, 0.1).as_tuple() == (0.5, 1.9, 3.5, 4.1, "EPSG:4326")
+        assert bbox.buffer(0.5, -0.1).as_tuple() == (0.5, 2.1, 3.5, 3.9, "EPSG:4326")
+
+        # TODO: instead of this nonsense result, should this fail, or result in some special empty case?
+        assert bbox.buffer(-10).as_tuple() == (11, 12, -7, -6, "EPSG:4326")
+
+    @pytest.mark.parametrize(
+        ["bbox", "target", "expected"],
+        [
+            (BoundingBox(11, 12, 13, 14), None, BoundingBox(11, 12, 13, 14, crs=None)),
+            (BoundingBox(11, 12, 13, 14, crs=4326), 4326, BoundingBox(11, 12, 13, 14, crs=4326)),
+            (BoundingBox(11, 12, 13, 14, crs=4326), "EPSG:4326", BoundingBox(11, 12, 13, 14, crs=4326)),
+            (
+                BoundingBox(11, 12, 13, 14, crs=4326),
+                None,
+                BoundingBoxException("Can not reproject bounding box with CRS 'EPSG:4326' to unspecified CRS."),
+            ),
+            (
+                BoundingBox(11, 12, 13, 14, crs=None),
+                "EPSG:4326",
+                CrsRequired("Can not reproject bounding box with unspecified CRS to 'EPSG:4326'."),
+            ),
+            (
+                BoundingBox(11, 12, 13, 14, crs=4326),
+                BoundingBox(5, 6, 7, 8, crs=4326),
+                BoundingBox(11, 12, 13, 14, crs=4326),
+            ),
+            (
+                BoundingBox(3.1, 51.1, 3.2, 51.2, crs=4326),
+                32631,
+                BoundingBox(west=506986, south=5660950, east=514003, north=5672085, crs="EPSG:32631").approx(abs=1),
+            ),
+        ],
+    )
+    def test_align_to(self, bbox, target, expected):
+        if isinstance(expected, BoundingBox):
+            aligned = bbox.align_to(target)
+            assert aligned == expected
+        elif isinstance(expected, Exception):
+            with pytest.raises(type(expected), match=str(expected)):
+                _ = bbox.align_to(target)
+        else:
+            raise ValueError(expected)
+
+    @pytest.mark.parametrize(
+        ["bbox1", "bbox2", "expected"],
+        [
+            (
+                BoundingBox(11, 12, 13, 14),
+                BoundingBox(16, 15, 17, 18),
+                BoundingBox(11, 12, 17, 18),
+            ),
+            (
+                BoundingBox(11, 12, 13, 14, crs=4326),
+                BoundingBox(16, 15, 17, 18, crs=4326),
+                BoundingBox(11, 12, 17, 18, crs=4326),
+            ),
+            (
+                BoundingBox(3.1, 51.1, 3.11, 51.11, crs="epsg:4326"),
+                BoundingBox(500000, 5649824, 507016, 5660950, crs="EPSG:32631"),
+                BoundingBox(3, 51, 3.11, 51.11, crs="EPSG:4326").approx(abs=1e-4),
+            ),
+            (
+                BoundingBox(500000, 5649824, 507016, 5660950, crs="EPSG:32631"),
+                BoundingBox(3.1, 51.1, 3.11, 51.11, crs="epsg:4326"),
+                BoundingBox(500000, 5649824, 507702, 5662063, crs="EPSG:32631").approx(abs=1),
+            ),
+        ],
+    )
+    def test_union(self, bbox1, bbox2, expected):
+        result = bbox1.union(bbox2)
+        assert result == expected
+
+    @pytest.mark.parametrize(
+        ["bbox1", "bbox2", "expected"],
+        [
+            (
+                # Simple overlap
+                BoundingBox(1, 2, 5, 6),
+                BoundingBox(3, 4, 8, 9),
+                BoundingBox(3, 4, 5, 6),
+            ),
+            (
+                # large x-shift
+                BoundingBox(1, 2, 5, 6),
+                BoundingBox(13, 4, 18, 9),
+                None,
+            ),
+            (
+                # Large y-shift
+                BoundingBox(1, 2, 5, 6),
+                BoundingBox(3, 14, 8, 19),
+                None,
+            ),
+            (
+                # One larger containing the other
+                BoundingBox(10, 20, 30, 40),
+                BoundingBox(12, 22, 14, 24),
+                BoundingBox(12, 22, 14, 24),
+            ),
+            (
+                # explicit CRS
+                BoundingBox(1, 2, 5, 6, crs=4326),
+                BoundingBox(3, 4, 8, 9, crs="EPSG:4326"),
+                BoundingBox(3, 4, 5, 6, crs="EPSG:4326"),
+            ),
+            (
+                BoundingBox(3.1, 51.1, 3.3, 51.3, crs="epsg:4326"),
+                # Roughly (3.2, 51.2, 3.4, 51.4) in lot-lan:
+                BoundingBox(513912, 5672085, 527946, 5694383, crs="EPSG:32631"),
+                BoundingBox(3.2, 51.2, 3.3, 51.3, crs="EPSG:4326").approx(abs=0.001),
+            ),
+            (
+                # Roughly (3.2, 51.2, 3.4, 51.4) in lot-lan:
+                BoundingBox(513912, 5672085, 527946, 5694383, crs="EPSG:32631"),
+                BoundingBox(3.1, 51.1, 3.3, 51.3, crs="epsg:4326"),
+                BoundingBox(513912, 5672085, 521005, 5683229, crs="EPSG:32631").approx(abs=1),
+            ),
+            (
+                BoundingBox(13.1, 51.1, 13.3, 51.3, crs="epsg:4326"),
+                BoundingBox(513912, 5672085, 527946, 5694383, crs="EPSG:32631"),
+                None,
+            ),
+        ],
+    )
+    def test_intersection(self, bbox1, bbox2, expected):
+        assert bbox1.intersection(bbox2) == expected
+
+        # When there is no reprojection in play we can easily verify the reverse case too
+        if bbox1.crs == bbox2.crs:
+            assert bbox2.intersection(bbox1) == expected
+
+    @pytest.mark.parametrize(
+        ["bbox", "expected"],
+        [
+            (
+                BoundingBox(1, 2, 3, 4),
+                [BoundingBox(1, 2, 3, 4)],
+            ),
+            (
+                BoundingBox(-170, 2, 170, 4, crs=4326),
+                [BoundingBox(-170, 2, 170, 4, crs=4326)],
+            ),
+            (
+                BoundingBox(175, 2, -170, 4, crs=4326),
+                [
+                    BoundingBox(175, 2, 180, 4, crs=4326),
+                    BoundingBox(-180, 2, -170, 4, crs=4326),
+                ],
+            ),
+            (
+                BoundingBox(175, 2, 180, 4, crs=4326),
+                [BoundingBox(175, 2, 180, 4, crs=4326)],
+            ),
+            (
+                BoundingBox(-180, 2, -170, 4, crs=4326),
+                [BoundingBox(-180, 2, -170, 4, crs=4326)],
+            ),
+        ],
+    )
+    def test_cyclic_antimeridian_split(self, bbox, expected):
+        assert bbox.cyclic_antimeridian_split() == expected
+
+
+def test_normalize_west_east_longitude():
+    assert normalize_west_east_longitude(0, 0) == (0, 0)
+    assert normalize_west_east_longitude(10, 20) == (10, 20)
+    assert normalize_west_east_longitude(10.5, 20.5) == (10.5, 20.5)
+    assert normalize_west_east_longitude(190, 200) == (-170, -160)
+    assert normalize_west_east_longitude(190.5, 200.5) == (-169.5, -159.5)
+
+    assert normalize_west_east_longitude(-10, -20) == (-10, -20)
+    assert normalize_west_east_longitude(-10.5, -20.5) == (-10.5, -20.5)
+    assert normalize_west_east_longitude(-200, -190) == (160, 170)
+    assert normalize_west_east_longitude(-200.5, -190.5) == (159.5, 169.5)
+
+    assert normalize_west_east_longitude(-180, -170) == (-180, -170)
+    assert normalize_west_east_longitude(-190, -180) == (170, 180)
+    assert normalize_west_east_longitude(-180.5, -170.5) == (179.5, -170.5)
+    assert normalize_west_east_longitude(-190.5, -180.5) == (169.5, 179.5)
+
+    assert normalize_west_east_longitude(170, 180) == (170, 180)
+    assert normalize_west_east_longitude(180, 190) == (-180, -170)
+    assert normalize_west_east_longitude(170.5, 180.5) == (170.5, -179.5)
+    assert normalize_west_east_longitude(180.5, 190.5) == (-179.5, -169.5)
+
+
+class TestValidateGeoJSON:
+    @staticmethod
+    @contextlib.contextmanager
+    def _checker(expected_issue: Union[str, None], raise_exception: bool):
+        """
+        Helper context manager to easily check a validate_geojson_basic result
+        for both raise_exception modes:
+
+        - "exception mode": context manger __exit__ phase checks result
+        - "return issue mode": returned `check` function should be used inside context manageer body
+        """
+        checked = False
+
+        def check(result: List[str]):
+            """Check validation result in case no actual exception was thrown"""
+            nonlocal checked
+            checked = True
+            if expected_issue:
+                if raise_exception:
+                    pytest.fail("Exception should have been raised")
+                if not result:
+                    pytest.fail("No issue was reported")
+                assert expected_issue in "\n".join(result)
+            else:
+                if result:
+                    pytest.fail(f"Unexpected issue reported: {result}")
+
+        try:
+            yield check
+        except Exception as e:
+            # Check validation result in case of actual exception
+            if not raise_exception:
+                pytest.fail(f"Unexpected {e!r}: issue should be returned")
+            if not expected_issue:
+                pytest.fail(f"Unexpected {e!r}: no issue expected")
+            assert expected_issue in str(e)
+        else:
+            # No exception was thrown: check that the `check` function has been called.
+            if not checked:
+                raise RuntimeError("`check` function was not used")
+
+    @pytest.mark.parametrize(
+        ["value", "expected_issue"],
+        [
+            ("nope nope", "JSON object (mapping/dictionary) expected, but got str"),
+            (123, "JSON object (mapping/dictionary) expected, but got int"),
+            ({}, "No 'type' field"),
+            ({"type": 123}, "Invalid 'type' type: int"),
+            ({"type": {"Poly": "gon"}}, "Invalid 'type' type: dict"),
+            ({"type": "meh"}, "Invalid type 'meh'"),
+            ({"type": "Point"}, "No 'coordinates' field (type 'Point')"),
+            ({"type": "Point", "coordinates": [1, 2]}, None),
+            ({"type": "Polygon"}, "No 'coordinates' field (type 'Polygon')"),
+            ({"type": "Polygon", "coordinates": [[1, 2]]}, None),
+            ({"type": "MultiPolygon"}, "No 'coordinates' field (type 'MultiPolygon')"),
+            ({"type": "MultiPolygon", "coordinates": [[[1, 2]]]}, None),
+            ({"type": "GeometryCollection", "coordinates": []}, "No 'geometries' field (type 'GeometryCollection')"),
+            ({"type": "GeometryCollection", "geometries": []}, None),
+            ({"type": "Feature", "coordinates": []}, "No 'geometry' field (type 'Feature')"),
+            ({"type": "Feature", "geometry": {}}, "No 'properties' field (type 'Feature')"),
+            ({"type": "Feature", "geometry": {}, "properties": {}}, "No 'type' field"),
+            (
+                {"type": "Feature", "geometry": {"type": "Polygon"}, "properties": {}},
+                "No 'coordinates' field (type 'Polygon')",
+            ),
+            (
+                {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[1, 2]]}, "properties": {}},
+                None,
+            ),
+            (
+                {"type": "Feature", "geometry": {"type": "Polygonnnnn", "coordinates": [[1, 2]]}, "properties": {}},
+                "Found type 'Polygonnnnn', but expects one of ",
+            ),
+            ({"type": "FeatureCollection"}, "No 'features' field (type 'FeatureCollection')"),
+            ({"type": "FeatureCollection", "features": []}, None),
+            ({"type": "FeatureCollection", "features": [{"type": "Feature"}]}, "No 'geometry' field (type 'Feature')"),
+            (
+                {"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {}}]},
+                "No 'properties' field (type 'Feature')",
+            ),
+            (
+                {"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {}, "properties": {}}]},
+                "No 'type' field",
+            ),
+            (
+                {
+                    "type": "FeatureCollection",
+                    "features": [{"type": "Feature", "geometry": {"type": "Polygon"}, "properties": {}}],
+                },
+                "No 'coordinates' field (type 'Polygon')",
+            ),
+            (
+                {
+                    "type": "FeatureCollection",
+                    "features": [
+                        {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[1, 2]]}, "properties": {}},
+                        {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[3, 4]]}, "properties": {}},
+                    ],
+                },
+                None,
+            ),
+        ],
+    )
+    @pytest.mark.parametrize("raise_exception", [False, True])
+    def test_validate_geojson_basic(self, value, expected_issue, raise_exception):
+        with self._checker(expected_issue=expected_issue, raise_exception=raise_exception) as check:
+            result = validate_geojson_basic(value, raise_exception=raise_exception)
+            check(result)
+
+    @pytest.mark.parametrize(
+        ["value", "allowed_types", "expected_issue"],
+        [
+            (
+                {"type": "Point", "coordinates": [1, 2]},
+                {"Polygon", "MultiPolygon"},
+                "Found type 'Point', but expects one of ['MultiPolygon', 'Polygon']",
+            ),
+            ({"type": "Polygon", "coordinates": [[1, 2]]}, {"Polygon", "MultiPolygon"}, None),
+            ({"type": "MultiPolygon", "coordinates": [[[1, 2]]]}, {"Polygon", "MultiPolygon"}, None),
+            (
+                {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[1, 2]]}, "properties": {}},
+                {"Polygon", "MultiPolygon"},
+                "Found type 'Feature', but expects one of ['MultiPolygon', 'Polygon']",
+            ),
+            (
+                {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[1, 2]]}, "properties": {}},
+                {"Feature"},
+                None,
+            ),
+            (
+                {
+                    "type": "FeatureCollection",
+                    "features": [
+                        {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[1, 2]]}, "properties": {}},
+                        {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[3, 4]]}, "properties": {}},
+                    ],
+                },
+                {"Polygon", "MultiPolygon"},
+                "Found type 'FeatureCollection', but expects one of ['MultiPolygon', 'Polygon']",
+            ),
+            (
+                {
+                    "type": "FeatureCollection",
+                    "features": [
+                        {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[1, 2]]}, "properties": {}},
+                        {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[3, 4]]}, "properties": {}},
+                    ],
+                },
+                {"FeatureCollection"},
+                None,
+            ),
+        ],
+    )
+    @pytest.mark.parametrize(
+        "raise_exception",
+        [
+            False,
+            True,
+        ],
+    )
+    def test_validate_geojson_basic_allowed_types(self, value, allowed_types, expected_issue, raise_exception):
+        with self._checker(expected_issue=expected_issue, raise_exception=raise_exception) as check:
+            result = validate_geojson_basic(value, allowed_types=allowed_types, raise_exception=raise_exception)
+            check(result)

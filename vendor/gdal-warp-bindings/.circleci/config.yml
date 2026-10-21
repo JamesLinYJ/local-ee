@@ -1,0 +1,215 @@
+version: 2.1
+
+parameters:
+  # Image tag (<< docker-build-version >>-amd64) pulled from the executor registry; built by `make gdal-3-13-1`.
+  # To target another line, set both params: 3.11.5 (make gdal-3-11-5) or 3.12.4 (make gdal-3-12-4).
+  docker-build-version:
+    type: string
+    default: "3.12.4"
+  gdal-version:
+    type: string
+    default: "3.12.4"
+  skip-tests:
+    type: boolean
+    default: false
+    description: Skip tests, false by default.
+
+executors:
+  gdal-build-executor-amd64:
+    docker:
+      - image: daunnc/gdal-warp-bindings-environment:<< pipeline.parameters.docker-build-version >>-amd64
+    working_directory: /workdir
+
+  gdal-build-executor-arm64:
+    docker:
+      - image: quay.io/geotrellis/gdal-warp-bindings-environment:arm64-2
+    working_directory: /workdir
+
+jobs:
+  build-linux-amd64:
+    executor: gdal-build-executor-amd64
+    resource_class: large
+    environment:
+      CC: gcc
+      CXX: g++
+      CFLAGS: "-Wall -Werror -Og -ggdb3 -DSO_FINI -D_GNU_SOURCE"
+      BOOST_ROOT: "/usr/local/include/boost_1_69_0"
+      JAVA_HOME: "/usr/lib/jvm/java-8-openjdk-amd64"
+      SKIP_TESTS: << pipeline.parameters.skip-tests >>
+    steps:
+      - attach_workspace:
+          at: /tmp/workdir/
+      - checkout
+      - run:
+          name: Build AMD64 Linux binaries and run unit tests
+          command: |
+            if [ "$SKIP_TESTS" = true ]; then
+              make -j4 -C src libgdalwarp_bindings-amd64.so
+            else 
+              ln -s /tmp/c41078a1.tif src/experiments/data/c41078a1.tif
+              make -j4 -C src tests
+              make -j4 -C src/experiments/thread pattern oversubscribe
+            fi
+      - persist_to_workspace:
+          root: src
+          paths:
+            - com_azavea_gdal_GDALWarp.h
+            - libgdalwarp_bindings-amd64.so
+
+  build-linux-arm64:
+    executor: gdal-build-executor-arm64
+    resource_class: large
+    environment:
+      ARCH: arm64
+      CC: aarch64-linux-gnu-gcc-8
+      CXX: aarch64-linux-gnu-g++-8
+      CFLAGS: "-Wall -Og -ggdb3 -DSO_FINI -D_GNU_SOURCE"
+      BOOST_ROOT: "/usr/local/include/boost_1_69_0"
+      JAVA_HOME: "/usr/lib/jvm/java-8-openjdk-arm64"
+    steps:
+      - attach_workspace:
+          at: /tmp/workdir/
+      - checkout
+      - run:
+          name: Build ARM64 Linux binaries
+          command: |
+            touch /workdir/src/main/java/com/azavea/gdal/GDALWarp.class
+            cp -f /tmp/workdir/*.h /workdir/src/
+            make -j4 -C src libgdalwarp_bindings-arm64.so
+      - persist_to_workspace:
+          root: src
+          paths:
+            - libgdalwarp_bindings-arm64.so
+
+  build-macos-amd64:
+    executor: gdal-build-executor-amd64
+    resource_class: large
+    environment:
+      OSXCROSS_NO_INCLUDE_PATH_WARNINGS: 1
+      CROSS_TRIPLE: x86_64-apple-darwin14
+      OS: darwin
+      SO: dylib
+      CC: cc
+      CXX: c++
+      CFLAGS: "-Wall -Werror -Og -ggdb3"
+      JAVA_HOME: "/macintosh/jdk8u202-b08/Contents/Home"
+      GDALCFLAGS: "-I/macintosh/gdal/<< pipeline.parameters.gdal-version >>/include"
+      CXXFLAGS: "-I/usr/osxcross/SDK/MacOSX10.10.sdk/usr/include/c++/v1"
+      BOOST_ROOT: "/usr/local/include/boost_1_69_0"
+      LDFLAGS: "-mmacosx-version-min=10.9 -L/macintosh/gdal/<< pipeline.parameters.gdal-version >>/lib -lgdal -lstdc++ -lpthread -Wl,-rpath,/usr/local/lib"
+      LD_LIBRARY_PATH_ORIGIN: ""
+      CROSS_ROOT: /usr/x86_64-apple-darwin14
+      PATH: /usr/x86_64-apple-darwin14/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      PATH_ORIGIN: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    steps:
+      - attach_workspace:
+          at: /tmp/workdir/
+      - checkout
+      - run:
+          name: Build MacOS AMD64 binaries
+          command: |
+            touch /workdir/src/main/java/com/azavea/gdal/GDALWarp.class
+            cp -f /tmp/workdir/*.h /workdir/src/
+            make -j4 -C src libgdalwarp_bindings-amd64.dylib
+      - persist_to_workspace:
+          root: src
+          paths:
+            - libgdalwarp_bindings-amd64.dylib
+
+  build-windows-amd64:
+    executor: gdal-build-executor-amd64
+    resource_class: large
+    environment:
+      CROSS_TRIPLE: x86_64-w64-mingw32
+      OS: win32
+      CFLAGS: "-Wall -Werror -Og -g"
+      JAVA_HOME: "/windows/jdk8u202-b08"
+      GDALCFLAGS: "-I/usr/local/include"
+      BOOST_ROOT: "/usr/local/include/boost_1_69_0"
+      LDFLAGS: "-L/windows/gdal/lib -lgdal_i -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic -lws2_32"
+      LD_LIBRARY_PATH: "/usr/x86_64-linux-gnu/x86_64-w64-mingw32/lib:"
+      LD_LIBRARY_PATH_ORIGIN: ""
+      CROSS_ROOT: /usr/x86_64-w64-mingw32
+      PATH: /usr/x86_64-w64-mingw32/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    steps:
+      - attach_workspace:
+          at: /tmp/workdir/
+      - checkout
+      - run:
+          name: Build Windows AMD64 binaries
+          command: |
+            touch /workdir/src/main/java/com/azavea/gdal/GDALWarp.class
+            cp -f /tmp/workdir/*.h /workdir/src/
+            make -j4 -C src gdalwarp_bindings-amd64.dll
+      - persist_to_workspace:
+          root: src
+          paths:
+            - gdalwarp_bindings-amd64.dll
+
+  publish:
+    executor: gdal-build-executor-amd64
+    resource_class: large
+    steps:
+      - attach_workspace:
+          at: /tmp/workdir/
+      - checkout
+      - run:
+          name: Build a jar file, pack binaries into it and deploy it to maven central
+          command: |
+            apt-get install maven -y && \
+            rm -f src/main/resources/resources/.gitkeep && \
+            cp -f /tmp/workdir/*.so /tmp/workdir/*.dylib /tmp/workdir/*.dll src/main/resources/resources/ && \
+            mvn package && \
+            if [ ! -z "${GPG_KEY}" ]; then \
+              mkdir -p ~/.m2 && \
+              cp /workdir/.circleci/settings.xml ~/.m2/ && \
+              gpg --keyserver keyserver.ubuntu.com --recv-keys "0x${GPG_KEY_ID}" && \
+              echo "${GPG_KEY}" | base64 -d > signing_key.asc && \
+              gpg --batch --passphrase "${GPG_PASSPHRASE}" --import signing_key.asc && \
+              mvn deploy
+            fi
+
+workflows:
+  build-publish:
+    jobs:
+      - build-linux-amd64:
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /^v.*/
+      - build-linux-arm64:
+          requires:
+            - build-linux-amd64
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /^v.*/
+      - build-macos-amd64:
+          requires:
+            - build-linux-amd64
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /^v.*/
+      - build-windows-amd64:
+          requires:
+            - build-linux-amd64
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /^v.*/
+      - publish:
+          requires:
+            - build-linux-amd64
+            - build-linux-arm64
+            - build-macos-amd64
+            - build-windows-amd64
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /^v.*/

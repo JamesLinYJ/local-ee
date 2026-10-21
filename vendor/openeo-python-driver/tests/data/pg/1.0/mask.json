@@ -1,0 +1,76 @@
+{
+  "collection": {
+    "process_id": "load_collection",
+    "arguments": {
+      "id": "ESA_WORLDCOVER_10M_2020_V1"
+    }
+  },
+  "mask_collection": {
+    "process_id": "load_collection",
+    "arguments": {
+      "id": "PROBAV_L3_S10_TOC_NDVI_333M_V2"
+    }
+  },
+  "aggregate_spatial": {
+    "process_id": "aggregate_spatial",
+    "arguments": {
+      "data": {
+        "from_node": "mask"
+      },
+      "geometries": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.02,
+              51.7
+            ],
+            [
+              7.65,
+              51.7
+            ],
+            [
+              7.65,
+              51.2
+            ],
+            [
+              7.04,
+              51.3
+            ],
+            [
+              7.02,
+              51.7
+            ]
+          ]
+        ]
+      },
+      "reducer": {
+        "process_graph": {
+          "max": {
+            "arguments": {
+              "data": {
+                "from_parameter": "data"
+              }
+            },
+            "process_id": "mean",
+            "result": true
+          }
+        }
+      },
+      "name": "my_name"
+    },
+    "result": true
+  },
+  "mask": {
+    "process_id": "mask",
+    "arguments": {
+      "data": {
+        "from_node": "collection"
+      },
+      "mask": {
+        "from_node": "mask_collection"
+      },
+      "replacement": "10"
+    }
+  }
+}

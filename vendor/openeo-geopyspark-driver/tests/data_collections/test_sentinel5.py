@@ -1,0 +1,889 @@
+from __future__ import annotations
+
+import calendar
+import glob
+import json
+import logging
+import os.path
+import re
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Optional, Union
+
+import numpy as np
+import pytest
+import rasterio
+import shapely.geometry
+import xarray
+from shapely.geometry.multipolygon import MultiPolygon
+
+from openeogeotrellis.utils import typechecked
+
+if __name__ == "__main__":
+    import openeogeotrellis.deploy.local
+
+    # Allow to run from commandline:
+    # /usr/bin/time -v python3 tests/data_collections/test_sentinel3.py
+    # python3 -m memory_profiler tests/data_collections/test_sentinel3.py
+    # The SparkContext is only needed to make imports work, but is actually not used for the tests
+    openeogeotrellis.deploy.local.setup_environment()
+
+from openeogeotrellis.collections.load_sentinel5p import load_level2_data, read_product
+from openeogeotrellis.collections.sentinel5p_functions import (
+    all_gases,
+    parse_gas_from_filename,
+)
+
+np.random.seed(42)
+
+_log = logging.getLogger(__name__)
+
+@typechecked
+def _create_synthetic_s5p_nc(path: Path, bands: dict, qa_value: float) -> None:
+    """Create a minimal synthetic Sentinel-5P NetCDF file for unit tests.
+
+    The file covers lon 4.0–4.9 °E, lat 50.2–51.1 °N, 2024-09-02 10:00–10:19 UTC,
+    with 20 scanlines × 10 pixels.
+
+    :param bands: mapping of PRODUCT variable name to a 2-D (scanline × ground_pixel) array.
+    :param qa_value: scalar QA fill value applied uniformly to all pixels.
+    """
+    from netCDF4 import Dataset
+
+    n_scanlines = 20
+    n_pixels = 10
+
+    ref_epoch = calendar.timegm(datetime(2010, 1, 1).timetuple())
+    orbit_start = calendar.timegm(datetime(2024, 9, 2, 9, 41, 32).timetuple())
+
+    scan_start = calendar.timegm(datetime(2024, 9, 2, 10, 0, 0).timetuple())
+    scan_end = calendar.timegm(datetime(2024, 9, 2, 10, 19, 0).timetuple())
+    scan_times_s = np.linspace(scan_start, scan_end, n_scanlines)
+
+    lats = np.linspace(51.1, 50.2, n_scanlines)
+    lons = np.linspace(4.0, 4.9, n_pixels)
+    lat2d = np.tile(lats[:, np.newaxis], (1, n_pixels))
+    lon2d = np.tile(lons[np.newaxis, :], (n_scanlines, 1))
+
+    with Dataset(path, "w", format="NETCDF4") as ds:
+        ds.createDimension("time", 1)
+        ds.createDimension("scanline", n_scanlines)
+        ds.createDimension("ground_pixel", n_pixels)
+
+        grp = ds.createGroup("PRODUCT")
+
+        t_var = grp.createVariable("time", "f8", ("time",))
+        t_var.units = "seconds since 2010-01-01"
+        t_var[0] = orbit_start - ref_epoch
+
+        dt_var = grp.createVariable("delta_time", "f8", ("time", "scanline"))
+        dt_var.units = "milliseconds since 2010-01-01"
+        dt_var[0, :] = (scan_times_s - ref_epoch) * 1000
+
+        lat_var = grp.createVariable("latitude", "f4", ("time", "scanline", "ground_pixel"))
+        lat_var[0] = lat2d
+
+        lon_var = grp.createVariable("longitude", "f4", ("time", "scanline", "ground_pixel"))
+        lon_var[0] = lon2d
+
+        qa_var = grp.createVariable("qa_value", "f4", ("time", "scanline", "ground_pixel"))
+        qa_var[0] = np.full((n_scanlines, n_pixels), qa_value, dtype=np.float32)
+
+        for var_name, data in bands.items():
+            var = grp.createVariable(var_name, "f4", ("time", "scanline", "ground_pixel"))
+            var[0] = data
+
+
+# Per-product spec used to synthesize NetCDF fixtures and to drive the parametrized
+# "default bands" test below: name -> (filename product code, band builder, qa_value, expected default band count).
+# Expected default band count includes the qa_value band, which is part of DEFAULT_BANDS for every product.
+def _co_bands() -> dict[str, Any]:
+    nd = np.random.uniform(0.025, 0.040, (20, 10))
+    assert isinstance(nd, np.ndarray)
+    co_col = nd.astype(np.float32)
+    return {
+        "carbonmonoxide_total_column": co_col,
+        "carbonmonoxide_total_column_corrected": co_col * 1.05,
+    }
+
+
+@typechecked
+def _no2_bands() -> dict[str, np.ndarray]:
+    nd = np.random.uniform(1e-5, 5e-5, (20, 10))
+    assert isinstance(nd, np.ndarray)
+    return {
+        "nitrogendioxide_tropospheric_column": nd.astype(np.float32),
+        "nitrogendioxide_tropospheric_column_precision": (nd * 0.1).astype(np.float32),
+        "SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_stratospheric_column": (nd * 0.2).astype(np.float32),
+        "SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_stratospheric_column_precision": (nd * 0.02).astype(np.float32),
+        "SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_total_column": (nd * 1.2).astype(np.float32),
+        "SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_total_column_precision": (nd * 0.12).astype(np.float32),
+    }
+
+
+@typechecked
+def _ch4_bands() -> dict[str, Any]:
+    nd = np.random.uniform(1800, 1900, (20, 10))
+    assert isinstance(nd, np.ndarray)
+    ch4_ratio = nd.astype(np.float32)
+    return {
+        "methane_mixing_ratio": ch4_ratio,
+        "methane_mixing_ratio_bias_corrected": ch4_ratio * 1.01,
+        "methane_mixing_ratio_bias_corrected_destriped": ch4_ratio * 1.01,
+    }
+
+
+@typechecked
+def _so2_bands() -> dict[str, np.ndarray]:
+    nd = np.random.uniform(-1e-4, 5e-4, (20, 10))
+    assert isinstance(nd, np.ndarray)
+    return {"sulfurdioxide_total_vertical_column": nd.astype(np.float32)}
+
+
+@typechecked
+def _hcho_bands() -> dict[str, np.ndarray]:
+    nd = np.random.uniform(1e-5, 1e-4, (20, 10))
+    assert isinstance(nd, np.ndarray)
+    return {"formaldehyde_tropospheric_vertical_column": nd.astype(np.float32)}
+
+
+@typechecked
+def _o3_bands() -> dict[str, np.ndarray]:
+    nd = np.random.uniform(0.05, 0.09, (20, 10))
+    assert isinstance(nd, np.ndarray)
+    return {"ozone_total_vertical_column": nd.astype(np.float32)}
+
+
+@typechecked
+def _aer_ai_bands() -> dict[str, np.ndarray]:
+    nd = np.random.uniform(-1.0, 2.0, (20, 10))
+    assert isinstance(nd, np.ndarray)
+    return {
+        "aerosol_index_340_380": nd.astype(np.float32),
+        "aerosol_index_354_388": (nd * 0.95).astype(np.float32),
+    }
+
+
+@typechecked
+def _cloud_bands() -> dict[str, np.ndarray]:
+    fraction = np.random.uniform(0.0, 1.0, (20, 10)).astype(np.float32)
+    top_pressure = np.random.uniform(20000, 60000, (20, 10)).astype(np.float32)
+    base_pressure = top_pressure + np.random.uniform(1000, 5000, (20, 10)).astype(np.float32)
+    top_height = np.random.uniform(3000, 10000, (20, 10)).astype(np.float32)
+    base_height = top_height - np.random.uniform(500, 2000, (20, 10)).astype(np.float32)
+    optical_thickness = np.random.uniform(1.0, 50.0, (20, 10)).astype(np.float32)
+    return {
+        "cloud_fraction": fraction,
+        "cloud_top_pressure": top_pressure,
+        "cloud_base_pressure": base_pressure,
+        "cloud_top_height": top_height,
+        "cloud_base_height": base_height,
+        "cloud_optical_thickness": optical_thickness,
+    }
+
+
+@typechecked
+def _aer_lh_bands():
+    mid_height = np.random.uniform(1000, 8000, (20, 10)).astype(np.float32)
+    mid_pressure = np.random.uniform(30000, 90000, (20, 10)).astype(np.float32)
+    return {
+        "aerosol_mid_height": mid_height,
+        "aerosol_mid_pressure": mid_pressure,
+    }
+
+
+SYNTHETIC_PRODUCT_SPECS = {
+    "co": ("CO_____", _co_bands, 0.75, 3),
+    "no2": ("NO2____", _no2_bands, 0.8, 7),
+    "ch4": ("CH4____", _ch4_bands, 0.6, 4),
+    "so2": ("SO2____", _so2_bands, 0.6, 2),
+    "hcho": ("HCHO___", _hcho_bands, 0.6, 2),
+    "o3": ("O3_____", _o3_bands, 0.6, 2),
+    "aer_ai": ("AER_AI_", _aer_ai_bands, 0.8, 3),
+    "cloud": ("CLOUD__", _cloud_bands, 0.5, 7),
+    "aer_lh": ("AER_LH_", _aer_lh_bands, 0.5, 3),
+}
+
+
+@pytest.fixture(scope="module")
+def synthetic_products(tmp_path_factory) -> dict:
+    """Build a synthetic NetCDF file for every product in SYNTHETIC_PRODUCT_SPECS.
+
+    :return: mapping of product name to its generated file path.
+    """
+    paths = {}
+    for name, (product_code, bands_fn, qa_value, _expected_band_count) in SYNTHETIC_PRODUCT_SPECS.items():
+        path = (
+            tmp_path_factory.mktemp(f"sentinel5p_{name}")
+            / f"S5P_OFFL_L2__{product_code}20240902T094132_20240902T112301_00001_03_020600_20240903T232407.nc"
+        )
+        _create_synthetic_s5p_nc(path, bands=bands_fn(), qa_value=qa_value)
+        paths[name] = path
+    return paths
+
+
+@pytest.fixture(scope="module")
+def synthetic_co_file(synthetic_products):
+    return synthetic_products["co"]
+
+
+# ---------------------------------------------------------------------------
+# Tests using synthetic test data (no eodata mount required)
+# ---------------------------------------------------------------------------
+
+
+def test_read_product_returns_tiles(synthetic_co_file):
+    """read_product produces at least one SpaceTimeKey+Tile pair for a valid extent."""
+    instant_ms = calendar.timegm(datetime(2024, 9, 2, 10, 5).timetuple()) * 1000
+    features = [
+        {
+            "key": {"col": 0, "row": 0, "instant": instant_ms},
+            "key_extent": {"xmin": 4.0, "ymin": 50.5, "xmax": 4.9, "ymax": 51.1},
+            "key_epsg": 4326,
+        }
+    ]
+    result = read_product(
+        (synthetic_co_file, features),
+        band_names=["carbonmonoxide_total_column_corrected", "carbonmonoxide_total_column"],
+        tile_size=4,
+        resolution=0.1,
+    )
+    assert len(result) > 0, "Expected at least one tile"
+    _, tile = result[0]
+    assert tile.cells.shape[0] == 2, "Expected 2 bands"
+    assert tile.cells.shape[1] == 4, "Expected tile_size rows"
+    assert tile.cells.shape[2] == 4, "Expected tile_size cols"
+
+
+def test_read_product_default_bands(synthetic_co_file):
+    """read_product uses default CO band when band_names is empty."""
+    instant_ms = calendar.timegm(datetime(2024, 9, 2, 10, 5).timetuple()) * 1000
+    features = [
+        {
+            "key": {"col": 0, "row": 0, "instant": instant_ms},
+            "key_extent": {"xmin": 4.0, "ymin": 50.5, "xmax": 4.9, "ymax": 51.1},
+            "key_epsg": 4326,
+        }
+    ]
+    result = read_product(
+        (synthetic_co_file, features),
+        band_names=[],
+        tile_size=4,
+        resolution=0.1,
+    )
+    assert len(result) > 0
+    _key, tile = result[0]
+    assert tile.cells.shape[0] == 3
+
+
+def test_read_product_no_data_outside_extent(synthetic_co_file):
+    """read_product returns empty list when spatial extent has no data."""
+    instant_ms = calendar.timegm(datetime(2024, 9, 2, 10, 5).timetuple()) * 1000
+    features = [
+        {
+            "key": {"col": 0, "row": 0, "instant": instant_ms},
+            "key_extent": {"xmin": 10.0, "ymin": 10.0, "xmax": 11.0, "ymax": 11.0},
+            "key_epsg": 4326,
+        }
+    ]
+    result = read_product(
+        (synthetic_co_file, features),
+        band_names=["carbonmonoxide_total_column_corrected"],
+        tile_size=4,
+        resolution=0.1,
+    )
+    assert result == [], "Expected empty list for extent with no data"
+
+
+def test_read_product_spacetimekey_instant(synthetic_co_file):
+    """SpaceTimeKey instant is rounded down to the minute."""
+    # Use calendar.timegm to create a UTC-based Unix timestamp (10:05:30 UTC)
+    # 10:05:30 UTC → should round to 10:05:00
+    instant_ms = calendar.timegm(datetime(2024, 9, 2, 10, 5, 30).timetuple()) * 1000
+    features = [
+        {
+            "key": {"col": 0, "row": 0, "instant": instant_ms},
+            "key_extent": {"xmin": 4.0, "ymin": 50.5, "xmax": 4.9, "ymax": 51.1},
+            "key_epsg": 4326,
+        }
+    ]
+    result = read_product(
+        (synthetic_co_file, features),
+        band_names=["carbonmonoxide_total_column_corrected"],
+        tile_size=4,
+        resolution=0.1,
+    )
+    assert len(result) > 0
+    key, _ = result[0]
+    assert key.instant == datetime(2024, 9, 2, 10, 5, 0), f"Expected rounded instant, got {key.instant}"
+
+
+def test_invalid_time_exception():
+    temporal_extent_invalid = [datetime(2024, 9, 2, 11, 30, 0), datetime(2024, 9, 2, 11, 35, 0)]
+    params = {
+        "filename": "no_existing_file.nc",
+        "temporal_extent": temporal_extent_invalid,
+    }
+    with pytest.raises(Exception) as exc_info:
+        _ = load_level2_data(params)
+    assert ["Input temporal extent is not in the file" in str(exc_info.value)]
+
+
+@pytest.mark.parametrize("product_name", ["no2", "ch4", "so2", "hcho", "o3", "aer_ai", "cloud", "aer_lh"])
+def test_read_product_default_bands_per_product(synthetic_products, product_name):
+    """read_product uses each product's default band(s) when band_names is empty."""
+    _product_code, _bands_fn, _qa_value, expected_band_count = SYNTHETIC_PRODUCT_SPECS[product_name]
+    instant_ms = calendar.timegm(datetime(2024, 9, 2, 10, 5).timetuple()) * 1000
+    features = [
+        {
+            "key": {"col": 0, "row": 0, "instant": instant_ms},
+            "key_extent": {"xmin": 4.0, "ymin": 50.5, "xmax": 4.9, "ymax": 51.1},
+            "key_epsg": 4326,
+        }
+    ]
+    result = read_product(
+        (synthetic_products[product_name], features),
+        band_names=[],
+        tile_size=4,
+        resolution=0.1,
+    )
+    assert len(result) > 0
+    _key, tile = result[0]
+    assert (
+        tile.cells.shape[0] == expected_band_count
+    ), f"Expected {expected_band_count} default band(s) for {product_name}"
+
+
+# ---------------------------------------------------------------------------
+# Tests that require a real eodata mount
+# ---------------------------------------------------------------------------
+
+requires_eodata = pytest.mark.skipif(
+    (not os.path.exists("/eodata_CACHE/eodata") or not os.listdir("/eodata_CACHE/eodata"))
+    and (not os.path.exists("/eodata") or not os.listdir("/eodata"))
+    and (
+        not "AWS_ACCESS_KEY_ID" in os.environ
+        and not "AWS_ENDPOINT_URL_S3" in os.environ
+        and not "AWS_S3_ENDPOINT" in os.environ
+    ),
+    reason="requires mounting /eodata.",
+)
+
+
+def fix_eodata_path(path: Union[Path, str]) -> Union[Path, str]:
+    p = str(path)
+    if p.startswith("/eodata/"):
+        p_try = p.replace("/eodata/", "/eodata_CACHE/eodata/")
+        p_ok = None
+        if os.path.exists(p_try):
+            p_ok = p_try
+        p_try_tmp = "/tmp/eodata/" + os.path.basename(p)
+        if not p_ok and os.path.exists(p_try_tmp):
+            p_ok = p_try_tmp
+        if not p_ok and not os.path.exists(p):
+            endpoint_url = os.environ.get("AWS_ENDPOINT_URL_S3") or os.environ.get("AWS_S3_ENDPOINT")
+            if endpoint_url and "AWS_ACCESS_KEY_ID" in os.environ:
+                print("Downloading eodata file from S3 to local cache:", p)
+                import boto3
+
+                client = boto3.client(
+                    "s3",
+                    endpoint_url=endpoint_url,
+                    aws_access_key_id=os.environ["AWS_ACCESS_KEY_ID"],
+                    aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
+                )
+                key = p.replace("/eodata/", "")
+                Path(p_try_tmp).parent.mkdir(parents=True, exist_ok=True)
+                client.download_file("eodata", key, p_try_tmp)
+                p_ok = p_try_tmp
+        if not p_ok and os.path.exists(p):
+            p_ok = p
+        if not p_ok:
+            print("fix_eodata_path could not fix the path:", p)
+            p_ok = p
+        if isinstance(path, Path):
+            return Path(p_ok)
+        else:
+            return p_ok
+    return path
+
+
+def assert_tif_file_is_healthy(tif_path):
+    import rioxarray
+
+    tiff_arr = rioxarray.open_rasterio(tif_path)
+    assert isinstance(tiff_arr, xarray.DataArray)
+    shape = tiff_arr.shape
+    _log.info(f"{shape=}")
+    assert shape[1] > 10
+    assert shape[2] > 10
+    issues = []
+    for b in range(shape[0]):
+        band = tiff_arr[b, :, :]
+        nan_percentage = np.isnan(band.values).mean()
+        _log.info(f"{nan_percentage=}")
+        if nan_percentage >= 0.95:
+            issues.append(f"Too high NaN percentage: {nan_percentage}, for band {band.long_name[b]}")
+
+    # - The offset of the main IFD should be < 300. It is 21236950 instead
+    # - The offset of the IFD for overview of index 0 is 684, whereas it should be greater than the one of the main image, which is at byte 21236950
+    from rio_cogeo import cog_validate
+
+    is_valid_cog, errors, _ = cog_validate(str(tif_path), quiet=True)
+    if errors:
+        print(f"COG validation errors for {tif_path}: {errors}")
+    # assert is_valid_cog, str(errors)
+    issues.extend(errors)
+    if issues:
+        raise AssertionError("\n".join(issues))
+
+
+@typechecked
+def verify_bounding_polygon_is_valid(data: dict, tmp_path: Optional[Path] = None):
+    bounding_polygon = data["bounding_polygon"]
+    if tmp_path:
+        assert isinstance(bounding_polygon, MultiPolygon)
+        output_path = tmp_path / "bounding_polygon.geojson"
+        output_path.write_text(json.dumps(shapely.geometry.mapping(bounding_polygon), indent=2))
+    assert bounding_polygon.is_valid
+
+
+# Directory (under /eodata) known to contain at least one real product file for each gas/product
+# short name, used to cross-check the `FILTER_VALUE` configured in `all_gases` against the
+# `qa_value` variable's `comment` attribute embedded in the actual netCDF product.
+GAS_TYPE_SAMPLE_DIR = {
+    "co": "/eodata/Sentinel-5P/TROPOMI/L2__CO____/2024/09/02",
+    "no2": "/eodata/Sentinel-5P/TROPOMI/L2__NO2___/2024/09/02",
+    "ch4": "/eodata/Sentinel-5P/TROPOMI/L2__CH4___/2024/10/07",
+    "so2": "/eodata/Sentinel-5P/TROPOMI/L2__SO2___/2024/12/01",
+    "hcho": "/eodata/Sentinel-5P/TROPOMI/L2__HCHO__/2024/10/07",
+    "o3": "/eodata/Sentinel-5P/TROPOMI/L2__O3____/2024/10/07",
+    "aer_ai": "/eodata/Sentinel-5P/TROPOMI/L2__AER_AI/2024/10/07",
+    "cloud": "/eodata/Sentinel-5P/TROPOMI/L2__CLOUD_/2023/06/01",
+    "aer_lh": "/eodata/Sentinel-5P/TROPOMI/L2__AER_LH/2024/01/02",
+}
+
+
+def _get_qa_value_recommended_threshold(nc_path) -> float:
+    """Parse the recommended qa_value filtering threshold from the netCDF product's
+    `PRODUCT/qa_value` variable `comment` attribute, e.g.:
+    "... Recommend to ignore data with qa_value < 0.5" -> 0.5
+    """
+    import netCDF4
+
+    with netCDF4.Dataset(nc_path) as ds:
+        comment = ds.groups["PRODUCT"].variables["qa_value"].comment
+    match = re.search(r"qa_value\s*<\s*([\d.]+)", comment)
+    assert match, f"Could not parse qa_value threshold from comment: {comment!r}"
+    return float(match.group(1))
+
+
+@pytest.mark.parametrize(
+    "gas_short_name",
+    [
+        "co",
+        pytest.param(
+            "no2",
+            marks=pytest.mark.xfail(
+                reason="NO2 intentionally uses a stricter documented qa_value threshold (0.75) "
+                "than the generic in-file recommendation (0.5), to filter out cloud/aerosol effects "
+                "on the tropospheric column.",
+                strict=True,
+            ),
+        ),
+        "ch4",
+        "so2",
+        "hcho",
+        "o3",
+        pytest.param(
+            "aer_ai",
+            marks=pytest.mark.xfail(
+                reason="AER_AI intentionally uses a stricter documented qa_value threshold (0.8) "
+                "than the generic in-file recommendation (0.5), as recommended for aerosol index products.",
+                strict=True,
+            ),
+        ),
+        "cloud",
+        "aer_lh",
+    ],
+)
+@requires_eodata
+def test_filter_value_matches_netcdf_qa_value_metadata(gas_short_name):
+    """The FILTER_VALUE configured for each gas/product in `all_gases` should match the qa_value
+    threshold documented in the `comment` attribute of a real product's netCDF metadata, unless
+    explicitly (and intentionally) overridden with a stricter, externally-documented threshold."""
+    sample_dir = GAS_TYPE_SAMPLE_DIR[gas_short_name]
+    nc_files = glob.glob(os.path.join(sample_dir, "*.nc"))
+    assert nc_files, f"No sample netCDF file found for gas '{gas_short_name}' in {sample_dir}"
+
+    parsed_gas_short_name = parse_gas_from_filename(nc_files[0])
+    assert parsed_gas_short_name == gas_short_name
+
+    metadata_threshold = _get_qa_value_recommended_threshold(nc_files[0])
+    configured_threshold = all_gases["gas_" + gas_short_name]["FILTER_VALUE"]
+    assert configured_threshold == metadata_threshold
+
+
+@requires_eodata
+class TestSentinel5:
+    def setup_method(self):
+        # important to get these files locally for testing
+        self.filename = fix_eodata_path(
+            "/eodata/Sentinel-5P/TROPOMI/L2__CO____/2024/09/02/S5P_OFFL_L2__CO_____20240902T094132_20240902T112301_35696_03_020600_20240903T232407.nc"
+        )
+        self.filename_anti = fix_eodata_path(
+            "/eodata/Sentinel-5P/TROPOMI/L2__CO____/2018/04/30/S5P_RPRO_L2__CO_____20180430T001950_20180430T020120_02818_03_020400_20220901T170054.nc"
+        )
+
+        self.temporal_extent_anti = [datetime(2018, 4, 30, 0, 50, 0), datetime(2018, 4, 30, 1, 30, 0)]
+        self.spatial_extent_anti = [179.5, 22, -179.5, 23]  # min_lon, min_lat, max_lon, max_lat
+
+        self.temporal_extent_valid = [datetime(2024, 9, 2, 10, 30, 0), datetime(2024, 9, 2, 11, 0, 0)]
+        self.spatial_extent_normal = [30.0, 25.0, 30.05, 25.05]  # min_lon, min_lat, max_lon, max_lat
+        self.spatial_extent_invalid = [22.0, 24.0, 24.0, 26.0]  # min_lon, min_lat, max_lon, max_lat
+
+        self.filename_no2 = fix_eodata_path(
+            "/eodata/Sentinel-5P/TROPOMI/L2__NO2___/2022/06/14/S5P_RPRO_L2__NO2____20220614T095228_20220614T113358_24190_03_020400_20230202T231229.nc"
+        )
+        self.spatial_extent_no2 = [10.0, 50.0, 10.05, 50.05]
+        self.temporal_extent_no2 = [datetime(2022, 6, 14, 10, 30, 0), datetime(2022, 6, 14, 11, 0, 0)]
+
+    @pytest.mark.parametrize(
+        "collection_id",
+        [
+            "SENTINEL5P_L2_CO",
+            "SENTINEL5P_L2_NO2",
+            "SENTINEL5P_L2_CH4",
+            "SENTINEL5P_L2_SO2",
+            "SENTINEL5P_L2_HCHO",
+            "SENTINEL5P_L2_O3",
+            "SENTINEL5P_L2_AER_LH",
+            "SENTINEL5P_L2_AER_AI",
+            "SENTINEL5P_L2_CLOUD",
+        ],
+    )
+    def test_sentinel5p_l2(self, api110, tmp_path, collection_id) -> None:
+        # spatio-temporal extent selected so there is data in all layers.
+        process_graph = {
+            "loadcollection1": {
+                "process_id": "load_collection",
+                "arguments": {
+                    "id": collection_id,
+                    "spatial_extent": {"west": 6, "south": 32, "east": 11, "north": 37},
+                    "temporal_extent": ["2026-06-01T00:00:00Z", "2026-06-01T12:00:00Z"],
+                },
+                "result": True,
+            },
+        }
+        response = api110.check_result(process_graph)
+
+        output_file = tmp_path / f"test_{collection_id}.tif"
+        with output_file.open(mode="wb") as f:
+            f.write(response.data)
+
+        assert_tif_file_is_healthy(output_file)
+
+        with rasterio.open(output_file) as ds:
+            print(ds.bounds)
+            assert ds.bounds.right == 11.0
+
+    def test_sentinel5p_l2_qa_value_threshold_featureflag(self, api110, tmp_path) -> None:
+        """A stricter `qa_value_threshold` featureflag masks out more pixels than the CO default (0.5).
+
+        Runs the same `load_collection` process graph twice (default vs. a strict `qa_value_threshold`
+        override) through the full backend, so the resulting GeoTIFFs can be compared directly.
+        """
+        collection_id = "SENTINEL5P_L2_CO"
+
+        # collection_id = "SENTINEL5P_L2_NO2" # was also tested with this.
+
+        def run_and_save(qa_value_threshold: Optional[float]) -> Path:
+            arguments: dict[str, Any] = {
+                "id": collection_id,
+                "spatial_extent": {"west": 4, "south": 50, "east": 11, "north": 55},
+                "temporal_extent": ["2024-09-02T12:00:00Z", "2024-09-02T13:59:59Z"],
+                # "bands": ["carbonmonoxide_total_column_corrected"],
+                "bands": ["nitrogendioxide_tropospheric_column"],
+            }
+            if collection_id == "SENTINEL5P_L2_CO":
+                arguments["bands"] = ["carbonmonoxide_total_column_corrected"]
+            elif collection_id == "SENTINEL5P_L2_NO2":
+                arguments["bands"] = ["nitrogendioxide_tropospheric_column"]
+            else:
+                raise Exception(f"Unknown collection id: {collection_id}")
+            if qa_value_threshold is not None:
+                arguments["featureflags"] = {"qa_value_threshold": qa_value_threshold}
+            graph = {
+                "loadcollection1": {
+                    "process_id": "load_collection",
+                    "arguments": arguments,
+                    "result": True,
+                },
+            }
+            response = api110.check_result(graph)
+            output_file = tmp_path / f"test_{collection_id}_qa{qa_value_threshold}.tif"
+            with output_file.open(mode="wb") as f:
+                f.write(response.data)
+            return output_file
+
+        ds____zero = rasterio.open(run_and_save(0.00)).read(1, masked=True)
+        ds_default = rasterio.open(run_and_save(None)).read(1, masked=True)
+        ds__strict = rasterio.open(run_and_save(0.99)).read(1, masked=True)
+
+        # A stricter qa_value_threshold should never yield more valid (unmasked) pixels than the default.
+        assert ds__strict.count() <= ds_default.count()
+        assert ds_default.count() <= ds____zero.count()
+
+    def test_sentinel5p_l2_aer_ai_354_388_clamping(self, api110, tmp_path, request) -> None:
+        process_graph = {
+            "loadcollection1": {
+                "process_id": "load_collection",
+                "arguments": {
+                    "id": "SENTINEL5P_L2_AER_AI",
+                    "spatial_extent": {"west": 4, "south": 32, "east": 11, "north": 37},
+                    "temporal_extent": ["2024-10-07T11:00:00Z", "2024-10-07T12:00:00Z"],
+                    "bands": ["aerosol_index_354_388"],
+                },
+                "result": True,
+            }
+        }
+        response = api110.check_result(process_graph)
+
+        output_file = tmp_path / f"{request.node.name}.tif"
+        with output_file.open(mode="wb") as f:
+            f.write(response.data)
+
+        ds = rasterio.open(output_file).read(1)
+        nan_percentage = np.isnan(ds).mean()
+        assert nan_percentage > 0.1  # sanity check
+        assert nan_percentage < 0.9  # Enable after clamping fix.
+
+    def test_sentinel5p_l2_long_vertical_extent(self, api110, tmp_path, request) -> None:
+        """A very tall spatial extent (near the equator up to near the north pole) should load fine.
+
+        This exercises multiple S5P orbits/tiles stacked vertically over a large latitude range,
+        which is a much larger extent than the other tests use.
+        """
+        process_graph = {
+            "loadcollection1": {
+                "process_id": "load_collection",
+                "arguments": {
+                    "id": "SENTINEL5P_L2_CO",
+                    "spatial_extent": {"west": 4, "south": 1, "east": 11, "north": 75},
+                    "temporal_extent": ["2024-09-02T12:00:00Z", "2024-09-02T13:00:00Z"],
+                    "bands": ["carbonmonoxide_total_column_corrected"],
+                },
+                "result": True,
+            }
+        }
+        response = api110.check_result(process_graph)
+
+        output_file = tmp_path / f"{request.node.name}.tif"
+        with output_file.open(mode="wb") as f:
+            f.write(response.data)
+
+        assert_tif_file_is_healthy(output_file)
+        ds = rasterio.open(output_file).read(1, masked=True)
+        assert ds.count() > 103916 - 1
+
+    def test_sentinel5p_l2_artifacts(self, api110, tmp_path, request) -> None:
+        """
+        https://github.com/Open-EO/openeo-geopyspark-driver/issues/1819
+        """
+        process_graph = {
+            "loadcollection1": {
+                "process_id": "load_collection",
+                "arguments": {
+                    "bands": ["aerosol_index_354_388"],
+                    "id": "SENTINEL5P_L2_AER_AI",
+                    "spatial_extent": {"east": 8, "north": 54, "south": 50, "west": 3},
+                    "temporal_extent": ["2023-06-29T13:00:00.000000Z", "2023-06-29T23:00:00.000000Z"],
+                },
+                "result": True,
+            },
+        }
+        response = api110.check_result(process_graph)
+
+        output_file = tmp_path / f"{request.node.name}.tif"
+        with output_file.open(mode="wb") as f:
+            f.write(response.data)
+
+        assert_tif_file_is_healthy(output_file)
+        ds = rasterio.open(output_file).read(1, masked=True)
+        unique, counts = np.unique(ds.compressed(), return_counts=True)
+        most_common = sorted(zip(unique, counts), key=lambda x: x[1], reverse=True)[:5]
+        print(f"Most common values: {most_common}")
+        # assert a popular value does not go over 500 occurrences:
+        assert all(count < 500 for _, count in most_common)
+
+    def test_invalid_spatial_extent_exception(self):
+        params = {
+            "filename": self.filename,
+            "spatial_extent": self.spatial_extent_invalid,
+            "temporal_extent": None,
+        }
+        with pytest.raises(Exception) as exc_info:
+            _ = load_level2_data(params)
+        assert "Input spatial extent is not in the file" in str(exc_info.value)
+
+    def test_data_availability_exception(self):
+        """Valid temporal and spatial extents in the file but when combined there is no data."""
+        params = {
+            "filename": self.filename,
+            "spatial_extent": self.spatial_extent_normal,
+            "temporal_extent": [datetime(2024, 9, 2, 10, 5, 0), datetime(2024, 9, 2, 10, 10, 0)],
+        }
+        with pytest.raises(Exception) as exc_info:
+            _ = load_level2_data(params)
+        assert "No data is available for given spatial and temporal extent" in str(exc_info.value)
+
+    def test_data_availability_based_on_filter_exception(self):
+        """No data based on filter_value."""
+        params = {
+            "filename": self.filename,
+            "spatial_extent": [45, 11, 46, 12],
+            "temporal_extent": self.temporal_extent_valid,
+            "filter_value": 0.5,
+        }
+        with pytest.raises(Exception) as exc_info:
+            _ = load_level2_data(params)
+        assert "No data is available after applying quality filter" in str(exc_info.value)
+
+    def test_data_loading_co(self, tmp_path):
+        """Test if it loads all bands, data and shape of bands."""
+        params = {
+            "filename": self.filename,
+            "spatial_extent": [35, 24, 35.05, 24.05],
+            "temporal_extent": self.temporal_extent_valid,
+            "bands": ["carbonmonoxide_total_column_corrected", "carbonmonoxide_total_column", "qa_value"],
+            "filter_value": 0.5,
+            "resample_factor": [False, 0.025, "nearest"],
+        }
+        co_corr = np.array(
+            [[np.nan, 0.03327221, 0.03151973], [0.03266068, 0.03381333, np.nan], [np.nan, 0.03140356, np.nan]]
+        )
+        data = load_level2_data(params)
+        assert "carbonmonoxide_total_column_corrected" in data
+        assert "carbonmonoxide_total_column" in data
+        assert "qa_value" in data
+        assert np.allclose(data["carbonmonoxide_total_column_corrected"], co_corr, equal_nan=True)
+        assert data["carbonmonoxide_total_column"].shape == (3, 3)
+        assert data["qa_value"].shape == (3, 3)
+        verify_bounding_polygon_is_valid(data, tmp_path)
+
+    def test_data_loading_with_resampling(self, tmp_path):
+        params = {
+            "filename": self.filename,
+            "spatial_extent": [35, 24, 35.05, 24.05],
+            "temporal_extent": self.temporal_extent_valid,
+            "bands": ["carbonmonoxide_total_column_corrected", "carbonmonoxide_total_column", "qa_value"],
+            "filter_value": 0.5,
+            "resample_factor": [True, 0.025, "nearest"],
+        }
+        co = np.array([0.03099886, 0.03340864, 0.03340864, 0.03340864])
+        co_corr = np.array([0.03140356, 0.03381333, 0.03381333, 0.03381333])
+        lat = np.array([24.0375, 24.0375, 24.0125, 24.0125])
+        lon = np.array([35.0125, 35.0375, 35.0125, 35.0375])
+        data = load_level2_data(params)
+        assert "carbonmonoxide_total_column_corrected" in data
+        assert "carbonmonoxide_total_column" in data
+        assert "qa_value" in data
+        assert np.allclose(data["carbonmonoxide_total_column_corrected"].ravel(), co_corr, equal_nan=True)
+        assert np.allclose(data["carbonmonoxide_total_column"].ravel(), co, equal_nan=True)
+        assert np.allclose(data["latitude"].ravel(), lat, equal_nan=True)
+        assert np.allclose(data["longitude"].ravel(), lon, equal_nan=True)
+        verify_bounding_polygon_is_valid(data, tmp_path)
+
+    def test_data_loading_with_antimeridian_crossing(self, tmp_path):
+        """Test loading data that crosses the antimeridian."""
+        params = {
+            "filename": str(self.filename_anti),
+            "spatial_extent": self.spatial_extent_anti,
+            "temporal_extent": self.temporal_extent_anti,
+        }
+        data = load_level2_data(params)
+        params1 = {
+            "filename": str(self.filename_anti),
+            "spatial_extent": [179.5, 22, 179.99, 23],
+            "temporal_extent": self.temporal_extent_anti,
+        }
+        data1 = load_level2_data(params1)
+        params2 = {
+            "filename": str(self.filename_anti),
+            "spatial_extent": [-179.99, 22, -179.5, 23],
+            "temporal_extent": self.temporal_extent_anti,
+        }
+        data2 = load_level2_data(params2)
+        # assert first 5 lines of data1 lon and data lon match
+        assert np.allclose(data["longitude"][2:, :5], data1["longitude"][:, :5])
+        # assert last 5 lines of data1 lon and data lon match
+        assert np.allclose(data["longitude"][:-2, -5:], data2["longitude"][:, -5:])
+        # assert first 5 lines of data1 carbonmonoxide_total_column_corrected and
+        # data carbonmonoxide_total_column_corrected match
+        assert np.allclose(
+            data["carbonmonoxide_total_column_corrected"][2:, :5],
+            data1["carbonmonoxide_total_column_corrected"][:, :5],
+            equal_nan=True,
+        )
+        # assert last 5 lines of data2 carbonmonoxide_total_column_corrected and
+        # data carbonmonoxide_total_column_corrected match
+        assert np.allclose(
+            data["carbonmonoxide_total_column_corrected"][:-2, -5:],
+            data2["carbonmonoxide_total_column_corrected"][:, -5:],
+            equal_nan=True,
+        )
+        verify_bounding_polygon_is_valid(data)
+        verify_bounding_polygon_is_valid(data1)
+        verify_bounding_polygon_is_valid(data2)
+
+    def test_data_loading_with_complex_bounding_box_01(self, tmp_path):
+        nc_file_path = Path(
+            fix_eodata_path(
+                "/eodata/Sentinel-5P/TROPOMI/L2__CH4___/2026/09/10/S5P_OFFL_L2__CH4____20260910T073351_20260910T091521_46165_03_020901_20260911T235059.nc"
+            )
+        )
+        assert nc_file_path.exists()
+        params = {
+            "filename": str(nc_file_path),
+            "spatial_extent": {"west": -180, "south": -90, "east": 180, "north": 90},
+            "temporal_extent": ["2026-09-10T07:30:00Z", "2026-09-10T09:30:00Z"],
+            "filter_value": 0.0,
+        }
+        data = load_level2_data(params)
+        verify_bounding_polygon_is_valid(data, tmp_path)
+
+    def test_data_loading_with_complex_bounding_box_02(self, tmp_path):
+        """
+        This product has bad anti-meridian wrapping. The polygon probably needs to be split.
+        """
+        nc_file_path = Path(
+            fix_eodata_path(
+                "/eodata/Sentinel-5P/TROPOMI/L2__AER_AI/2023/06/29/S5P_OFFL_L2__AER_AI_20230629T125244_20230629T143414_29583_03_020500_20230701T023445.nc"
+            )
+        )
+        assert nc_file_path.exists()
+        params = {
+            "filename": str(nc_file_path),
+            "spatial_extent": {"west": -180, "south": -90, "east": 180, "north": 90},
+            "bands": ["aerosol_index_354_388", "bounding_polygon"],
+        }
+        data = load_level2_data(params)
+        verify_bounding_polygon_is_valid(data, tmp_path)
+
+    def test_data_loading_no2(self, tmp_path):
+        """Test if it loads all bands, data and shape of bands."""
+        params = {
+            "filename": self.filename_no2,
+            "spatial_extent": self.spatial_extent_no2,
+            "temporal_extent": self.temporal_extent_no2,
+            "bands": ["nitrogendioxide_tropospheric_column", "qa_value"],
+            "filter_value": 0.75,
+            "resample_factor": [False, 0.025, "nearest"],
+        }
+        data = load_level2_data(params)
+        no2_act = np.array([[np.nan, 3.6674388e-05], [2.5847688e-05, 3.4489720e-05], [2.9435478e-05, 1.3215038e-05]])
+        assert "nitrogendioxide_tropospheric_column" in data
+        assert "qa_value" in data
+        assert np.allclose(data["nitrogendioxide_tropospheric_column"], no2_act, equal_nan=True)
+        assert data["nitrogendioxide_tropospheric_column"].shape == data["qa_value"].shape
+        verify_bounding_polygon_is_valid(data, tmp_path)

@@ -1,0 +1,163 @@
+.workbench .file-dialog {
+  width: 1040px;
+}
+.file-dialog > * {
+  flex-shrink: 0;
+}
+.file-upload-zone {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  border: 1px dashed #b5cec6;
+  border-radius: 6px;
+  background: #f3f8f6;
+}
+.file-upload-zone > svg {
+  width: 24px;
+  height: 24px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.file-upload-zone > div {
+  flex: 1;
+}
+.file-upload-zone b {
+  font-weight: 550;
+  font-size: 13px;
+}
+.file-upload-zone p {
+  margin: 7px 0;
+  color: #6d858d;
+  font-size: 11px;
+  line-height: 1.8;
+}
+.file-upload-zone small {
+  color: #91a2a8;
+  font-size: 10px;
+}
+.file-upload-zone .file-button {
+  flex-direction: row;
+  padding: 8px 12px;
+  display: inline-flex;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.file-upload-zone input[type="file"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  padding: 0;
+}
+.file-upload-zone .file-button:focus-within {
+  outline: 2px solid var(--accent);
+}
+.file-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+.file-section-heading h3 {
+  font-size: 12px;
+  margin: 0;
+  font-weight: 550;
+}
+.file-section-heading h3 span {
+  color: #91a2a8;
+  padding-left: 5px;
+}
+.file-section-heading > small {
+  color: #91a2a8;
+  font-size: 10px;
+}
+.file-section-heading svg,
+.file-actions svg,
+.file-download svg {
+  width: 13px;
+  height: 13px;
+}
+.file-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #508478;
+  font-size: 11px;
+}
+.file-progress span:first-child {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+.file-progress progress {
+  width: 140px;
+  accent-color: var(--accent);
+}
+.file-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.file-actions a,
+.file-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--accent) !important;
+  white-space: nowrap;
+}
+.file-dialog .admin-table small.error {
+  color: #b86456;
+  max-width: 480px;
+}
+.file-dialog .admin-table td {
+  font-size: 11px;
+}
+.file-dialog .file-empty {
+  padding: 24px;
+  text-align: center;
+  color: #91a2a8;
+}
+.file-dialog > footer > span {
+  margin-right: auto;
+  color: #8c9ea6;
+  font-size: 11px;
+}
+.file-ingest-form {
+  padding: 18px;
+  background: #f5f8f8;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.file-ingest-form h3 {
+  font-size: 12px;
+  font-weight: 550;
+  margin: 0;
+}
+.file-ingest-form p {
+  font-size: 10px;
+  line-height: 1.9;
+  margin: 0;
+  color: #81959b;
+}
+.file-ingest-form > div:last-child {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.file-ingest-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr;
+  gap: 14px;
+}
+@media (max-width: 900px) {
+  .file-upload-zone {
+    flex-wrap: wrap;
+  }
+  .file-ingest-grid {
+    grid-template-columns: 1fr;
+  }
+}

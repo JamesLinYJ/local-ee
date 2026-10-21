@@ -1,0 +1,42 @@
+{
+    "id": "predict_catboost",
+    "summary": "Predict values from a Catboost model",
+    "description": "Applies a Catboost machine learning model to an array and predicts a value for it.",
+    "categories": [
+        "machine learning",
+        "reducer"
+    ],
+    "experimental": true,
+    "parameters": [
+        {
+            "name": "data",
+            "description": "An array of numbers.",
+            "schema": {
+                "type": "array",
+                "items": {
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "model",
+            "description": "A model object that can be trained with the processes ``fit_regr_catboost()`` (regression) and ``fit_class_catboost()`` (classification).",
+            "schema": {
+                "type": "object",
+                "subtype": "ml-model"
+            }
+        }
+    ],
+    "returns": {
+        "description": "The predicted value.",
+        "schema": {
+            "type": [
+                "number",
+                "null"
+            ]
+        }
+    }
+}

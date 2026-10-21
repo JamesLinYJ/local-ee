@@ -1,0 +1,13 @@
+.venv
+data
+web/node_modules
+web/dist
+**/.git
+**/__pycache__
+audit
+
+.env
+deploy/local-login.txt
+work
+
+**/node_modules

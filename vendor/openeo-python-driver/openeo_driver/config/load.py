@@ -1,0 +1,106 @@
+"""
+Utilities for (lazy) loading of config
+"""
+
+import logging
+import os
+from pathlib import Path
+from typing import Any, ContextManager, Optional, Type, Union
+import importlib.resources
+
+from openeo_driver.config import ConfigException, OpenEoBackendConfig
+
+_log = logging.getLogger(__name__)
+
+
+def exec_py_file(path: Union[str, Path]) -> dict:
+    """Compile and execute given python file, and get the globals from doing that."""
+    # Based on flask's Config.from_pyfile
+    path = Path(path)
+    with path.open(mode="r", encoding="utf-8") as f:
+        src = f.read()
+
+    ast = compile(src, path, "exec")
+    globals = {"__file__": str(path)}
+    exec(ast, globals)
+
+    return globals
+
+
+def load_from_py_file(
+    path: Union[str, Path],
+    variable: str = "config",
+    expected_class: Optional[type] = OpenEoBackendConfig,
+) -> Any:
+    """Load a config value from a Python file."""
+    path = Path(path)
+    _log.debug(f"Loading configuration from Python file {path!r} (variable {variable!r})")
+
+    globals = exec_py_file(path)
+
+    try:
+        config = globals[variable]
+    except KeyError:
+        raise ConfigException(f"No variable {variable!r} found in config file {path!r}") from None
+
+    if expected_class:
+        if not isinstance(config, expected_class):
+            raise ConfigException(f"Expected {expected_class.__name__} but got {type(config).__name__}")
+    return config
+
+
+class ConfigGetter:
+    """Config loader, with lazy-loading and flushing."""
+
+    # Environment variable to point to config file
+    OPENEO_BACKEND_CONFIG = "OPENEO_BACKEND_CONFIG"
+
+    # TODO: this should be set from __init__, but kept for now for backward compatibility
+    expected_class: Type = None
+
+    def __init__(self, expected_class: Type = OpenEoBackendConfig):
+        self._config: Optional[OpenEoBackendConfig] = None
+
+        # TODO: eliminate this if condition when backwards compatibility is not necessary anymore
+        if self.expected_class is None:
+            self.expected_class = expected_class
+
+    def __call__(self, force_reload: bool = False, *, show_stack: bool = True) -> OpenEoBackendConfig:
+        """Syntactic sugar to lazy load the config with function call."""
+        # TODO: eliminate this syntactic sugar to simplify the surface area of this class
+        return self.get(force_reload=force_reload, show_stack=show_stack)
+
+    def get(self, force_reload: bool = False, *, show_stack: bool = True) -> OpenEoBackendConfig:
+        """Lazy load the config."""
+        if self._config is None:
+            self._config = self._load(reason="lazy_load", show_stack=show_stack)
+        elif force_reload:
+            self._config = self._load(reason="force_reload", show_stack=show_stack)
+
+        return self._config
+
+    def _default_config(self) -> ContextManager[Path]:
+        """
+        Default config file (as a context manager to allow it to be an ephemeral resource).
+        """
+        return importlib.resources.as_file(importlib.resources.files("openeo_driver.config") / "default.py")
+
+    def _load(self, *, reason: Optional[str] = None, show_stack: bool = True) -> OpenEoBackendConfig:
+        """Load the config from config file."""
+        with self._default_config() as default_config:
+            config_path = os.environ.get(self.OPENEO_BACKEND_CONFIG) or default_config
+            config = load_from_py_file(path=config_path, variable="config", expected_class=self.expected_class)
+        config_id = getattr(config, "id", None)
+        # Use `stack_info=True` to show stacktrace of where the config loading triggered from
+        _log.info(f"Loaded config {config_id=} from {config_path=} ({reason=})", stack_info=show_stack)
+        return config
+
+    def flush(self):
+        """Flush the config, to force a reload on next get."""
+        self._config = None
+
+
+# "Singleton by convention" config getter
+_backend_config_getter = ConfigGetter()
+
+get_backend_config = _backend_config_getter.get

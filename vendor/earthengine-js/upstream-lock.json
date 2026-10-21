@@ -1,0 +1,15 @@
+{
+  "name": "@google/earthengine",
+  "version": "1.7.49",
+  "license": "Apache-2.0",
+  "source": "https://github.com/google/earthengine-api",
+  "npm_artifact": "https://registry.npmjs.org/@google/earthengine/-/earthengine-1.7.49.tgz",
+  "algorithm_signatures_source": "https://raw.githubusercontent.com/google/earthengine-api/e189e4b89e785019ea5642ea8e80cb644749cd4a/python/ee/tests/algorithms.json",
+  "files": {
+    "LICENSE": "0acebb5577c8f693e14259ff745ee61319da86733ea28d5ee0791d9526618b9b",
+    "algorithms.json": "8279bfd5e755f10c291a0d833aed810a5aba2e360e26ecee69f2bacaeecb3d01",
+    "earthengine.cjs": "a8bc9bac202c16f351811b1f69c3b690d064f47ecff64cfefb47c82e514e5e03"
+  },
+  "note": "Offline client bindings only. Listed algorithm signatures do not imply local backend support.",
+  "source_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a"
+}

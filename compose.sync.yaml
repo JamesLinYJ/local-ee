@@ -1,0 +1,50 @@
+services:
+  sync:
+    image: ${APP_IMAGE:-private-gee-app:local}
+    command: [python, -m, gee.sync]
+    user: '1000:1000'
+    environment:
+      DATABASE_URL: postgresql://gee_sync:${SYNC_DB_PASSWORD:?Run scripts/prepare_sync.py first}@db/gee
+      DATA_ROOT: /data
+      HTTPS_PROXY: http://egress:3128
+      HTTP_PROXY: http://egress:3128
+      GDAL_HTTP_PROXY: egress:3128
+      GDAL_HTTP_TIMEOUT: '30'
+      GDAL_HTTP_CONNECTTIMEOUT: '10'
+      GDAL_VRT_ENABLE_PYTHON: 'NO'
+      GDAL_VRT_ENABLE_RAWRASTERBAND: 'NO'
+      GDAL_HTTP_MAX_RETRY: '3'
+      GDAL_HTTP_RETRY_DELAY: '2'
+      GDAL_DISABLE_READDIR_ON_OPEN: EMPTY_DIR
+      CURL_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
+      CDSAPI_KEY: ${CDSAPI_KEY:-}
+    volumes: ['./data/assets:/data/assets', './data/catalog:/data/catalog', './data/raw:/data/raw', './deploy/sync.yaml:/app/deploy/sync.yaml:ro']
+    networks: [backend, ingestion]
+    read_only: true
+    tmpfs: ['/tmp:rw,nosuid,noexec,size=536870912,mode=1777']
+    mem_limit: 2g
+    memswap_limit: 2g
+    cpus: 2
+    pids_limit: 256
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    depends_on: [db, egress]
+    restart: unless-stopped
+  egress:
+    image: ${APP_IMAGE:-private-gee-app:local}
+    command: [python, -m, gee.egress_proxy]
+    environment:
+      ALLOW_FAKEIP_DNS: ${ALLOW_FAKEIP_DNS:-0}
+    networks: [ingestion, sync_egress]
+    read_only: true
+    tmpfs: ['/tmp:rw,nosuid,noexec,size=67108864,mode=1777']
+    mem_limit: 128m
+    memswap_limit: 128m
+    cpus: 0.5
+    pids_limit: 64
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    restart: unless-stopped
+networks:
+  ingestion: {internal: true}
+  sync_egress: {}

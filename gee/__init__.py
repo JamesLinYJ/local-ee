@@ -1,0 +1,1 @@
+"""Local, persistent openEO workbench."""

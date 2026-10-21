@@ -1,0 +1,50 @@
+{
+  "collection": {
+    "process_id": "load_collection",
+    "arguments": {
+      "id": "S2_FAPAR_CLOUDCOVER"
+    }
+  },
+  "apply_neighborhood": {
+    "arguments": {
+      "data": {
+        "from_node": "collection"
+      },
+      "overlap": [
+        {
+          "dimension": "t",
+          "value": "P10D"
+        }
+      ],
+      "process": {
+        "process_graph": {
+          "runudf1": {
+            "arguments": {
+              "code": "myfancycode",
+              "data": {
+                "from_parameter": "data"
+              },
+              "runtime": "Python"
+            },
+            "process_id": "run_udf",
+            "result": true
+          }
+        }
+      },
+      "size": [
+        {
+          "dimension": "x",
+          "unit": "px",
+          "value": 128
+        },
+        {
+          "dimension": "y",
+          "unit": "px",
+          "value": 128
+        }
+      ]
+    },
+    "process_id": "apply_neighborhood",
+    "result": true
+  }
+}

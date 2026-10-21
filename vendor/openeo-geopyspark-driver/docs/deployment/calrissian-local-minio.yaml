@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: csi-s3
+---
+# RBAC for the "default" ServiceAccount used by the Calrissian runner pod.
+# Calrissian's own k8s client (see calrissian/k8s.py) needs to create/list/watch/delete
+# pods (and read their logs) in the namespace it operates in, to manage CWL step pods
+# and to look up its own pod (get_current_pod()). Without this, Calrissian jobs fail with:
+#   (403) Reason: Forbidden ... cannot list resource "pods" in API group "" in the
+#   namespace "calrissian-demo-project"
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: calrissian-pod-manager
+  namespace: calrissian-demo-project
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: calrissian-pod-manager
+  namespace: calrissian-demo-project
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: calrissian-demo-project
+roleRef:
+  kind: Role
+  name: calrissian-pod-manager
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: csi-s3-secret
+  namespace: csi-s3  # This must match what is in the StorageClass
+stringData:
+  accessKeyID: "minioadmin"
+  secretAccessKey: "minioadmin"
+  endpoint: "http://minio-service.calrissian-demo-project.svc.cluster.local:9000"
+  #region: "your-region"
+  # Optional parameters:
+  #storageClass: "STANDARD"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  namespace: calrissian-demo-project
+  labels:
+    app: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+      - name: minio
+        image: cgr.dev/chainguard/minio:latest
+        args:
+        - server
+        - /data
+        - "--console-address=:9001"
+        env:
+        - name: MINIO_ACCESS_KEY
+          value: "minioadmin"
+        - name: MINIO_SECRET_KEY
+          value: "minioadmin"
+        - name: MINIO_BROWSER_LOGIN_ANIMATION
+          value: "off"
+        ports:
+        - containerPort: 9000
+        - containerPort: 9001
+        volumeMounts:
+        - name: storage
+          mountPath: "/data"
+      volumes:
+      - name: storage
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-service
+  namespace: calrissian-demo-project
+spec:
+  type: NodePort
+  ports:
+    - port: 9000
+      targetPort: 9000
+      nodePort: 30000
+      name: minio-service-port1
+    - port: 9001
+      targetPort: 9001
+      nodePort: 30001
+      name: minio-service-port2
+  selector:
+    app: minio

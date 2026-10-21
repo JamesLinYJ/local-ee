@@ -1,0 +1,39 @@
+{
+  "openeo-web-editor": {
+    "repository": "https://github.com/Open-EO/openeo-web-editor",
+    "commit": "a2beda3a2d45eacd61a37001b2755ddfcf90a5b0"
+  },
+  "openeo-geopyspark-driver": {
+    "repository": "https://github.com/Open-EO/openeo-geopyspark-driver",
+    "commit": "2d59061b4f5a1c14fac2eaaca856f3ba4c40cb88"
+  },
+  "openeo-python-driver": {
+    "repository": "https://github.com/Open-EO/openeo-python-driver",
+    "commit": "59e2cd2a8fd6bb668261308252d667e358ee57df"
+  },
+  "openeo-geotrellis-extensions": {
+    "repository": "https://github.com/Open-EO/openeo-geotrellis-extensions",
+    "commit": "d240b43160bc65272c6c02f9501dced363525dc4"
+  },
+  "geopyspark": {
+    "repository": "https://github.com/Open-EO/geopyspark",
+    "commit": "4125093ee5a77cf322bf45c4fc62f4213308c1d8",
+    "version": "0.4.10+openeo"
+  },
+  "gdal-warp-bindings": {
+    "repository": "https://github.com/Open-EO/gdal-warp-bindings",
+    "commit": "698c01f980848e819a429ee463f2dc59b5b175c7",
+    "version": "3.12.0",
+    "local_patch": "engine/patch_gdal_jni.py"
+  },
+  "GDAL": {
+    "source": "https://download.osgeo.org/gdal/3.13.3/gdal-3.13.3.tar.gz",
+    "version": "3.13.3",
+    "sha256": "5e0c388d83da2d686cc00a40272882432cdb54edff43d4af173e532844a0a0ea"
+  },
+  "JEP": {
+    "version": "4.1.1",
+    "source": "PyPI source distribution",
+    "sha256": "5914a4d815a7e86819f55be3de840edc2d3fe0d0b3f67626e5cea73841b1d1c0"
+  }
+}

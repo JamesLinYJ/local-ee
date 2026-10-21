@@ -1,0 +1,50 @@
+{
+  "collection": {
+    "process_id": "load_collection",
+    "arguments": {
+      "id": "S2_FOOBAR"
+    }
+  },
+  "apply": {
+    "process_id": "reduce_dimension",
+    "arguments": {
+      "data": {
+        "from_node": "collection"
+      },
+      "dimension": "bands",
+      "reducer": {
+        "process_graph": {
+          "sum": {
+            "arguments": {
+              "data": {
+                "from_parameter": "data"
+              }
+            },
+            "process_id": "sum"
+          },
+          "subtract": {
+            "arguments": {
+              "data": {
+                "from_parameter": "data"
+              }
+            },
+            "process_id": "subtract"
+          },
+          "divide": {
+            "arguments": {
+              "y": {
+                "from_node": "subtract"
+              },
+              "x": {
+                "from_node": "sum"
+              }
+            },
+            "process_id": "divide",
+            "result": true
+          }
+        }
+      }
+    },
+    "result": true
+  }
+}

@@ -1,0 +1,329 @@
+/******************************************************************************
+ *
+ * Project:  GDAL
+ * Purpose:  "clip" step of "vector pipeline", or "gdal vector clip" standalone
+ * Author:   Even Rouault <even dot rouault at spatialys.com>
+ *
+ ******************************************************************************
+ * Copyright (c) 2025, Even Rouault <even dot rouault at spatialys.com>
+ *
+ * SPDX-License-Identifier: MIT
+ ****************************************************************************/
+
+#include "gdalalg_vector_clip.h"
+
+#include "gdal_priv.h"
+#include "gdal_utils.h"
+#include "ogrsf_frmts.h"
+
+#include <algorithm>
+
+//! @cond Doxygen_Suppress
+
+#ifndef _
+#define _(x) (x)
+#endif
+
+/************************************************************************/
+/*          GDALVectorClipAlgorithm::GDALVectorClipAlgorithm()          */
+/************************************************************************/
+
+GDALVectorClipAlgorithm::GDALVectorClipAlgorithm(bool standaloneStep)
+    : GDALVectorPipelineStepAlgorithm(NAME, DESCRIPTION, HELP_URL,
+                                      standaloneStep)
+{
+    AddActiveLayerArg(&m_activeLayer);
+    AddBBOXArg(&m_bbox, _("Clipping bounding box as xmin,ymin,xmax,ymax"))
+        .SetMutualExclusionGroup("bbox-geometry-like");
+    AddArg("bbox-crs", 0, _("CRS of clipping bounding box"), &m_bboxCrs)
+        .SetIsCRSArg()
+        .AddHiddenAlias("bbox_srs");
+    AddArg("geometry", 0, _("Clipping geometry (WKT or GeoJSON)"), &m_geometry)
+        .SetMutualExclusionGroup("bbox-geometry-like");
+    AddArg("geometry-crs", 0, _("CRS of clipping geometry"), &m_geometryCrs)
+        .SetIsCRSArg()
+        .AddHiddenAlias("geometry_srs");
+    AddArg("like", 0, _("Dataset to use as a template for bounds"),
+           &m_likeDataset, GDAL_OF_RASTER | GDAL_OF_VECTOR)
+        .SetMetaVar("DATASET")
+        .SetMutualExclusionGroup("bbox-geometry-like");
+    AddArg("like-sql", 0, ("SELECT statement to run on the 'like' dataset"),
+           &m_likeSQL)
+        .SetMetaVar("SELECT-STATEMENT")
+        .SetMutualExclusionGroup("sql-where");
+    AddArg("like-layer", 0, ("Name of the layer of the 'like' dataset"),
+           &m_likeLayer)
+        .SetMetaVar("LAYER-NAME");
+    AddArg("like-where", 0, ("WHERE SQL clause to run on the 'like' dataset"),
+           &m_likeWhere)
+        .SetMetaVar("WHERE-EXPRESSION")
+        .SetMutualExclusionGroup("sql-where");
+}
+
+/************************************************************************/
+/*                     GDALVectorClipAlgorithmLayer                     */
+/************************************************************************/
+
+namespace
+{
+class GDALVectorClipAlgorithmLayer final : public GDALVectorPipelineOutputLayer
+{
+  public:
+    GDALVectorClipAlgorithmLayer(OGRLayer &oSrcLayer,
+                                 std::unique_ptr<OGRGeometry> poClipGeom)
+        : GDALVectorPipelineOutputLayer(oSrcLayer),
+          // Clone the SRS as the input geometry might use one that will be
+          // hard deleted.
+          m_poSRSClone(OGRSpatialReferenceRefCountedPtr::makeClone(
+              poClipGeom->getSpatialReference())),
+          m_poClipGeom(std::move(poClipGeom)),
+          m_eSrcLayerGeomType(oSrcLayer.GetGeomType()),
+          m_eFlattenSrcLayerGeomType(wkbFlatten(m_eSrcLayerGeomType)),
+          m_bSrcLayerGeomTypeIsCollection(CPL_TO_BOOL(OGR_GT_IsSubClassOf(
+              m_eFlattenSrcLayerGeomType, wkbGeometryCollection))),
+          m_poFeatureDefn(oSrcLayer.GetLayerDefn()->Clone())
+    {
+        m_poClipGeom->assignSpatialReference(m_poSRSClone.get());
+        SetDescription(oSrcLayer.GetDescription());
+        SetMetadata(oSrcLayer.GetMetadata());
+        oSrcLayer.SetSpatialFilter(m_poClipGeom.get());
+    }
+
+    const OGRFeatureDefn *GetLayerDefn() const override
+    {
+        return m_poFeatureDefn.get();
+    }
+
+    void TranslateFeature(
+        std::unique_ptr<OGRFeature> poSrcFeature,
+        std::vector<std::unique_ptr<OGRFeature>> &apoOutFeatures) override
+    {
+        std::unique_ptr<OGRGeometry> poIntersection;
+        auto poGeom = poSrcFeature->GetGeometryRef();
+
+        if (poGeom == nullptr)
+            return;
+
+        poIntersection.reset(poGeom->Intersection(m_poClipGeom.get()));
+        if (!poIntersection)
+            return;
+        poIntersection->assignSpatialReference(
+            m_poFeatureDefn->GetGeomFieldDefn(0)->GetSpatialRef());
+
+        poSrcFeature->SetFDefnUnsafe(m_poFeatureDefn.get());
+
+        auto eFeatGeomType = wkbFlatten(poIntersection->getGeometryType());
+
+        // Promote non-curve geometries to curve layer geometry type if needed.
+        if (OGR_GT_IsNonLinear(m_eFlattenSrcLayerGeomType) &&
+            !OGR_GT_IsNonLinear(eFeatGeomType))
+        {
+            poIntersection = OGRGeometryFactory::forceTo(
+                std::move(poIntersection), m_eSrcLayerGeomType);
+            eFeatGeomType = wkbFlatten(poIntersection->getGeometryType());
+            if (eFeatGeomType == m_eFlattenSrcLayerGeomType)
+            {
+                poSrcFeature->SetGeometry(std::move(poIntersection));
+                if (PassesFilters(poSrcFeature.get()))
+                {
+                    apoOutFeatures.push_back(std::move(poSrcFeature));
+                }
+                return;
+            }
+        }
+
+        const auto eSrcGeomType = wkbFlatten(poGeom->getGeometryType());
+        if (eFeatGeomType != eSrcGeomType &&
+            m_eFlattenSrcLayerGeomType != wkbUnknown &&
+            m_eFlattenSrcLayerGeomType != eFeatGeomType)
+        {
+            // If the intersection is a collection of geometry and the
+            // layer geometry type is of non-collection type, create
+            // one feature per element of the collection.
+            if (!m_bSrcLayerGeomTypeIsCollection &&
+                OGR_GT_IsSubClassOf(eFeatGeomType, wkbGeometryCollection))
+            {
+                auto poGeomColl = std::unique_ptr<OGRGeometryCollection>(
+                    poIntersection.release()->toGeometryCollection());
+                for (const auto *poSubGeom : poGeomColl.get())
+                {
+                    auto poDstFeature =
+                        std::unique_ptr<OGRFeature>(poSrcFeature->Clone());
+                    poDstFeature->SetGeometry(poSubGeom);
+                    if (PassesFilters(poDstFeature.get()))
+                    {
+                        apoOutFeatures.push_back(std::move(poDstFeature));
+                    }
+                }
+            }
+            else if (OGR_GT_GetCollection(eFeatGeomType) ==
+                     m_eFlattenSrcLayerGeomType)
+            {
+                poIntersection = OGRGeometryFactory::forceTo(
+                    std::move(poIntersection), m_eSrcLayerGeomType);
+                poSrcFeature->SetGeometry(std::move(poIntersection));
+                if (PassesFilters(poSrcFeature.get()))
+                {
+                    apoOutFeatures.push_back(std::move(poSrcFeature));
+                }
+            }
+            else if (m_eFlattenSrcLayerGeomType == wkbGeometryCollection)
+            {
+                auto poGeomColl = std::make_unique<OGRGeometryCollection>();
+                poGeomColl->addGeometry(std::move(poIntersection));
+                poSrcFeature->SetGeometry(std::move(poGeomColl));
+                if (PassesFilters(poSrcFeature.get()))
+                {
+                    apoOutFeatures.push_back(std::move(poSrcFeature));
+                }
+            }
+            // else discard geometries of incompatible type with the
+            // layer geometry type
+        }
+        else
+        {
+            poSrcFeature->SetGeometry(std::move(poIntersection));
+            if (PassesFilters(poSrcFeature.get()))
+            {
+                apoOutFeatures.push_back(std::move(poSrcFeature));
+            }
+        }
+    }
+
+    int TestCapability(const char *pszCap) const override
+    {
+        if (EQUAL(pszCap, OLCStringsAsUTF8) ||
+            EQUAL(pszCap, OLCCurveGeometries) || EQUAL(pszCap, OLCZGeometries))
+            return m_srcLayer.TestCapability(pszCap);
+        return false;
+    }
+
+  private:
+    OGRSpatialReferenceRefCountedPtr const m_poSRSClone{};
+    std::unique_ptr<OGRGeometry> const m_poClipGeom{};
+    const OGRwkbGeometryType m_eSrcLayerGeomType;
+    const OGRwkbGeometryType m_eFlattenSrcLayerGeomType;
+    const bool m_bSrcLayerGeomTypeIsCollection;
+    const OGRFeatureDefnRefCountedPtr m_poFeatureDefn;
+
+    CPL_DISALLOW_COPY_ASSIGN(GDALVectorClipAlgorithmLayer)
+};
+
+}  // namespace
+
+/************************************************************************/
+/*                  GDALVectorClipAlgorithm::RunStep()                  */
+/************************************************************************/
+
+bool GDALVectorClipAlgorithm::RunStep(GDALPipelineStepRunContext &)
+{
+    auto poSrcDS = m_inputDataset[0].GetDatasetRef();
+    CPLAssert(poSrcDS);
+
+    CPLAssert(m_outputDataset.GetName().empty());
+    CPLAssert(!m_outputDataset.GetDatasetRef());
+
+    const int nLayerCount = poSrcDS->GetLayerCount();
+    bool bSrcLayerHasSRS = false;
+    for (int i = 0; i < nLayerCount; ++i)
+    {
+        auto poSrcLayer = poSrcDS->GetLayer(i);
+        if (poSrcLayer &&
+            (m_activeLayer.empty() ||
+             m_activeLayer == poSrcLayer->GetDescription()) &&
+            poSrcLayer->GetSpatialRef())
+        {
+            bSrcLayerHasSRS = true;
+            break;
+        }
+    }
+
+    auto [poClipGeom, errMsg] = GetClipGeometry();
+    if (!poClipGeom)
+    {
+        ReportError(CE_Failure, CPLE_AppDefined, "%s", errMsg.c_str());
+        return false;
+    }
+    if (!poClipGeom->IsValid())
+    {
+        ReportError(CE_Failure, CPLE_AppDefined,
+                    "Clipping geometry is invalid. You can attempt to correct "
+                    "it with 'gdal vector make-valid'.");
+        return false;
+    }
+
+    auto poLikeDS = m_likeDataset.GetDatasetRef();
+    if (bSrcLayerHasSRS && !poClipGeom->getSpatialReference() && poLikeDS &&
+        poLikeDS->GetLayerCount() == 0)
+    {
+        ReportError(CE_Warning, CPLE_AppDefined,
+                    "Dataset '%s' has no CRS. Assuming its CRS is the "
+                    "same as the input vector.",
+                    poLikeDS->GetDescription());
+    }
+
+    auto outDS = std::make_unique<GDALVectorPipelineOutputDataset>(*poSrcDS);
+
+    for (int i = 0; i < nLayerCount; ++i)
+    {
+        const auto poSrcLayer = poSrcDS->GetLayer(i);
+        if (poSrcLayer == nullptr)
+        {
+            return false;
+        }
+
+        if ((m_activeLayer.empty() && poSrcLayer->GetGeomType() != wkbNone) ||
+            m_activeLayer == poSrcLayer->GetDescription())
+        {
+            const OGRSpatialReference *clipSRS =
+                poClipGeom->getSpatialReference();
+            const OGRSpatialReference *layerSRS = poSrcLayer->GetSpatialRef();
+
+            auto poClipGeomForLayer =
+                std::unique_ptr<OGRGeometry>(poClipGeom->clone());
+            if (clipSRS && layerSRS && !clipSRS->IsSame(layerSRS))
+            {
+                if (poClipGeomForLayer->transformTo(
+                        poSrcLayer->GetSpatialRef()) != OGRERR_NONE)
+                {
+                    ReportError(CE_Failure, CPLE_AppDefined,
+                                "Could not transform clipping geometry to "
+                                "layer SRS.");
+                    return false;
+                }
+
+                if (!poClipGeomForLayer->IsValid())
+                {
+                    ReportError(
+                        CE_Failure, CPLE_AppDefined,
+                        "Clipping geometry became invalid upon "
+                        "transformation to the layer SRS. You can "
+                        "try transforming the geometry and repairing it "
+                        "separately with 'gdal vector reproject' "
+                        "and 'gdal vector make-valid'.");
+                    return false;
+                }
+            }
+
+            outDS->AddLayer(*poSrcLayer,
+                            std::make_unique<GDALVectorClipAlgorithmLayer>(
+                                *poSrcLayer, std::move(poClipGeomForLayer)));
+        }
+        else
+        {
+            outDS->AddLayer(
+                *poSrcLayer,
+                std::make_unique<GDALVectorPipelinePassthroughLayer>(
+                    *poSrcLayer));
+        }
+    }
+
+    m_outputDataset.Set(std::move(outDS));
+
+    return true;
+}
+
+GDALVectorClipAlgorithmStandalone::~GDALVectorClipAlgorithmStandalone() =
+    default;
+
+//! @endcond

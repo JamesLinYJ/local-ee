@@ -1,0 +1,25 @@
+{
+  "loaddiskdata": {
+    "process_id": "load_uploaded_files",
+    "arguments": {
+      "paths": ["/data/MTDA/CGS_S2/CGS_S2_FAPAR/2019/04/24/10M/FAPAR_10M_V102.tif"],
+      "format": "GTiff"
+    }
+  },
+  "filterbbox": {
+    "process_id": "filter_bbox",
+    "arguments": {
+      "data": {
+        "from_node": "loaddiskdata"
+      },
+      "extent": {
+        "west": 3,
+        "east": 6,
+        "south": 50,
+        "north": 51,
+        "crs": "EPSG:4326"
+      }
+    },
+    "result": true
+  }
+}

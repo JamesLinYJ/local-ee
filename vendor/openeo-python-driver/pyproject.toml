@@ -1,0 +1,15 @@
+
+[tool.black]
+line-length = 120
+# TODO: drop this target-version when `project.requires-python` is set
+# This can stay as a formatting target, but project metadata now declares the real runtime floor.
+target-version = ["py38"]
+
+[tool.isort]
+profile = "black"
+
+[tool.ruff]
+line-length = 120
+
+# TODO: drop this target-version when `project.requires-python` is set
+target-version = "py311"

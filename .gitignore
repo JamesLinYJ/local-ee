@@ -1,0 +1,60 @@
+# Local accounts, credentials and service state
+/.env
+/.env.*
+!/.env.example
+/.native/
+/data/
+/deploy/*login*.txt
+*.pem
+*.key
+*.p12
+*.pfx
+.DS_Store
+
+# Environments, caches and generated build products
+.venv/
+node_modules/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+coverage/
+.coverage
+htmlcov/
+*.log
+*.o
+*.class
+*.so
+*.dylib
+*.jar
+
+# Binary dependencies are restored from checksummed manifests
+/engine/jars/
+/engine/security-jars/
+/vendor/geopyspark/geopyspark/tests/data_files/test_files.zip
+/vendor/jep/src/test/python/lib/
+
+# Raw local audits contain task/user identifiers, machine paths and outputs
+/audit/*
+# Keep the independently authored, credential-free compiler audit harness
+!/audit/gee-complex-compat-v1/
+/audit/gee-complex-compat-v1/*
+!/audit/gee-complex-compat-v1/probes.cjs
+!/audit/gee-complex-compat-v1/run_probes.py
+
+# Host-generated build inventories remain on this deployment
+/deploy/web-lock.json
+/deploy/images-lock.json
+/deploy/native-lock.json
+
+# Backups and local export bundles
+/backups/
+/work/
+*.dump
+*.sql.gz
+*.tar.gz
+*.crdownload

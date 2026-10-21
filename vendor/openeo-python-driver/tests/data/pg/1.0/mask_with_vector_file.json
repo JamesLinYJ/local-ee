@@ -1,0 +1,73 @@
+{
+  "loadcollection2": {
+    "process_id": "load_collection",
+    "arguments": {
+      "id": "S2_FOOBAR",
+      "bands": [
+        "B02",
+        "B03",
+        "B04",
+        "B08"
+      ]
+    },
+    "result": false
+  },
+  "filterbbox1": {
+    "process_id": "filter_bbox",
+    "arguments": {
+      "data": {
+        "from_node": "loadcollection2"
+      },
+      "extent": {
+        "west": 3.43,
+        "east": 3.46,
+        "north": 51.02,
+        "south": 51.0,
+        "crs": "EPSG:4326"
+      }
+    },
+    "result": false
+  },
+  "filtertemporal1": {
+    "process_id": "filter_temporal",
+    "arguments": {
+      "data": {
+        "from_node": "filterbbox1"
+      },
+      "extent": [
+        "2018-05-06",
+        "2018-05-06"
+      ]
+    },
+    "result": false
+  },
+  "readvector1": {
+    "process_id": "read_vector",
+    "arguments": {
+      "filename": "PLACEHOLDER"
+    },
+    "result": false
+  },
+  "maskpolygon1": {
+    "process_id": "mask_polygon",
+    "arguments": {
+      "data": {
+        "from_node": "filtertemporal1"
+      },
+      "mask": {
+        "from_node": "readvector1"
+      }
+    },
+    "result": false
+  },
+  "saveresult4": {
+    "process_id": "save_result",
+    "arguments": {
+      "data": {
+        "from_node": "maskpolygon1"
+      },
+      "format": "GTIFF"
+    },
+    "result": true
+  }
+}

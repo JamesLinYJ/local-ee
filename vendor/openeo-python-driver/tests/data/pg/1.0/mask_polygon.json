@@ -1,0 +1,50 @@
+{
+  "loadcollection1": {
+    "process_id": "load_collection",
+    "arguments": {
+      "id": "S2_FAPAR_CLOUDCOVER"
+    }
+  },
+  "maskpolygon1": {
+    "process_id": "mask_polygon",
+    "arguments": {
+      "data": {
+        "from_node": "loadcollection1"
+      },
+      "mask": {
+        "type": "Polygon",
+        "crs": {
+          "type": "name",
+          "properties": {
+            "name": "EPSG:4326"
+          }
+        },
+        "coordinates": [
+          [
+            [
+              7.022705078125007,
+              51.75432477678571
+            ],
+            [
+              7.659912109375007,
+              51.74333844866071
+            ],
+            [
+              7.659912109375007,
+              51.29289899553571
+            ],
+            [
+              7.044677734375007,
+              51.31487165178571
+            ],
+            [
+              7.022705078125007,
+              51.75432477678571
+            ]
+          ]
+        ]
+      }
+    },
+    "result": true
+  }
+}

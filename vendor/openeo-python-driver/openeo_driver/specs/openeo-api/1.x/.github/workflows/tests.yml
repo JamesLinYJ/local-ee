@@ -1,0 +1,14 @@
+name: Test API Spec
+on: [push, pull_request]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
+      - uses: actions/checkout@v3
+      - name: Run tests
+        run: |
+          npm install
+          npm test

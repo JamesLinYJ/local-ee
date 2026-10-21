@@ -1,0 +1,9 @@
+recursive-include src *.c *.h *.java *.txt *.py
+recursive-include commands *.py
+recursive-include release_notes *.rst
+include src/main/scripts/*
+include src/test/python/lib/*.jar
+include LICENSE
+include AUTHORS
+include README.rst
+include pom.xml

@@ -1,0 +1,63 @@
+{
+  "id": "udf_reduce_dimension",
+  "summary": "udf_reduce_dimension",
+  "description": "udf_reduce_dimension",
+  "parameters": [
+    {
+      "name": "data",
+      "description": "A data cube.",
+      "schema": {
+        "type": "object",
+        "subtype": "raster-cube"
+      }
+    },
+    {
+      "name": "udfparam",
+      "description": "A parameter for the UDF.",
+      "optional": true,
+      "default": "udfparam_default",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "returns": {
+    "description": "UDF datacube",
+    "schema": {
+      "type": "object",
+      "subtype": "raster-cube"
+    }
+  },
+  "process_graph": {
+    "reducedimension1": {
+      "process_id": "reduce_dimension",
+      "arguments": {
+        "data": {
+          "from_parameter": "data"
+        },
+        "dimension": "bands",
+        "reducer": {
+          "process_graph": {
+            "runudf1": {
+              "process_id": "run_udf",
+              "arguments": {
+                "data": {
+                  "from_parameter": "data"
+                },
+                "udf": "print('hello world')",
+                "runtime": "Python",
+                "context": {
+                  "param": {
+                    "from_parameter": "udfparam"
+                  }
+                }
+              },
+              "result": true
+            }
+          }
+        }
+      },
+      "result": true
+    }
+  }
+}

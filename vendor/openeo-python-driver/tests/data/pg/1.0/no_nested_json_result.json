@@ -1,0 +1,92 @@
+{
+  "process": {
+    "budget": null,
+    "title": null,
+    "description": null,
+    "plan": null,
+    "process_graph": {
+      "loadcollection1": {
+        "result": null,
+        "process_id": "load_collection",
+        "arguments": {
+          "id": "PROBAV_L3_S10_TOC_NDVI_333M_V2",
+          "spatial_extent": null,
+          "temporal_extent": null
+        }
+      },
+      "aggregatespatial1": {
+        "process_id": "aggregate_spatial",
+        "arguments": {
+          "data": {
+            "from_node": "loadcollection1"
+          },
+          "geometries": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  7.022705078125007,
+                  51.75432477678571
+                ],
+                [
+                  7.659912109375007,
+                  51.74333844866071
+                ],
+                [
+                  7.659912109375007,
+                  51.29289899553571
+                ],
+                [
+                  7.044677734375007,
+                  51.31487165178571
+                ],
+                [
+                  7.022705078125007,
+                  51.75432477678571
+                ]
+              ]
+            ]
+          },
+          "reducer": {
+            "process_graph": {
+              "max": {
+                "arguments": {
+                  "data": {
+                    "from_parameter": "data"
+                  }
+                },
+                "process_id": "mean",
+                "result": true
+              }
+            }
+          },
+          "name": "my_name"
+        }
+      },
+      "saveresult1": {
+        "result": true,
+        "process_id": "save_result",
+        "arguments": {
+          "format": "GeoJSON",
+          "data": {
+            "from_node": "aggregatespatial1"
+          },
+          "options": {}
+        }
+      },
+      "filtertemporal1": {
+        "result": false,
+        "process_id": "filter_temporal",
+        "arguments": {
+          "data": {
+            "from_node": "loadcollection1"
+          },
+          "extent": [
+            "2017-01-01",
+            "2017-11-21"
+          ]
+        }
+      }
+    }
+  }
+}

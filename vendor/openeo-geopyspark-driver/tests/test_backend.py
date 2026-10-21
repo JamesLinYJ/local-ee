@@ -1,0 +1,1746 @@
+import sys
+
+import json
+import logging
+
+import os
+import re
+from typing import Union
+from unittest.mock import MagicMock
+
+import dirty_equals
+import kubernetes.client.exceptions
+import mock
+import pytest
+import shapely
+
+from geopyspark import Pyramid, TiledRasterLayer, LayerType
+from openeo.utils.version import ComparableVersion
+from openeo_driver.backend import BatchJobMetadata
+from openeo_driver.config.load import ConfigGetter
+from openeo_driver.constants import JOB_STATUS
+from openeo_driver.datacube import DriverVectorCube
+from openeo_driver.datastructs import SarBackscatterArgs
+from openeo_driver.delayed_vector import DelayedVector
+from openeo_driver.dry_run import SourceId, DryRunDataTracer
+from openeo_driver.processes import ProcessRegistry
+from openeo_driver.ProcessGraphDeserializer import ENV_SOURCE_CONSTRAINTS
+from openeo_driver.specs import read_spec
+from openeo_driver.users import User
+from openeo_driver.utils import EvalEnv
+
+from openeogeotrellis.backend import GpsProcessing, GeoPySparkBackendImplementation, GpsUdfRuntimes, GpsBatchJobs
+from openeogeotrellis.config import GpsBackendConfig, get_backend_config
+from openeogeotrellis.config.s3_config import S3Config
+from openeogeotrellis.geopysparkcubemetadata import Band
+from openeogeotrellis.geopysparkdatacube import GeopysparkDataCube
+from openeogeotrellis.integrations.kubernetes import (
+    k8s_render_manifest_template,
+    k8s_set_secret_owner_reference,
+    K8S_SPARK_APP_STATE,
+)
+from openeogeotrellis.integrations.yarn_jobrunner import YARNBatchJobRunner
+from openeogeotrellis.job_registry import InMemoryJobRegistry
+from openeogeotrellis.testing import gps_config_overrides
+from openeogeotrellis.utils import get_jvm
+from tests.conftest import TEST_AWS_REGION_NAME
+
+
+def test_extract_application_id():
+    yarn_log = """
+19/07/10 15:56:39 WARN DomainSocketFactory: The short-circuit local reads feature cannot be used because libhadoop cannot be loaded.
+19/07/10 15:56:39 INFO Client: Attempting to login to the Kerberos using principal: jenkins@VGT.VITO.BE and keytab: jenkins.keytab-2322e03c-bf97-4f59-b9ad-7c2ecb2d1c70
+19/07/10 15:56:39 INFO RequestHedgingRMFailoverProxyProvider: Created wrapped proxy for [rm1, rm2]
+19/07/10 15:56:39 INFO RequestHedgingRMFailoverProxyProvider: Looking for the active RM in [rm1, rm2]...
+19/07/10 15:56:39 INFO RequestHedgingRMFailoverProxyProvider: Found active RM [rm2]
+19/07/10 15:56:39 INFO Client: Requesting a new application from cluster with 99 NodeManagers
+19/07/10 15:56:39 INFO Configuration: resource-types.xml not found
+19/07/10 15:56:39 INFO ResourceUtils: Unable to find 'resource-types.xml'.
+19/07/10 15:56:39 INFO Client: Verifying our application has not requested more than the maximum memory capability of the cluster (55296 MB per container)
+19/07/10 15:56:39 INFO Client: Will allocate AM container, with 1408 MB memory including 384 MB overhead
+19/07/10 15:56:39 INFO Client: Setting up container launch context for our AM
+19/07/10 15:56:39 INFO Client: Setting up the launch environment for our AM container
+19/07/10 15:56:39 INFO Client: Credentials file set to: credentials-4bfb4d79-eb95-4578-bd0a-cbfa2bf7d298
+19/07/10 15:56:39 INFO Client: Preparing resources for our AM container
+19/07/10 15:56:39 INFO HadoopFSDelegationTokenProvider: getting token for: DFS[DFSClient[clientName=DFSClient_NONMAPREDUCE_885268276_1, ugi=jenkins@VGT.VITO.BE (auth:KERBEROS)]]
+19/07/10 15:56:39 INFO DFSClient: Created token for jenkins: HDFS_DELEGATION_TOKEN owner=jenkins@VGT.VITO.BE, renewer=yarn, realUser=, issueDate=1562766999634, maxDate=1563371799634, sequenceNumber=1296276, masterKeyId=1269 on ha-hdfs:hacluster
+19/07/10 15:56:39 INFO HadoopFSDelegationTokenProvider: getting token for: DFS[DFSClient[clientName=DFSClient_NONMAPREDUCE_885268276_1, ugi=jenkins@VGT.VITO.BE (auth:KERBEROS)]]
+19/07/10 15:56:39 INFO DFSClient: Created token for jenkins: HDFS_DELEGATION_TOKEN owner=jenkins@VGT.VITO.BE, renewer=jenkins, realUser=, issueDate=1562766999721, maxDate=1563371799721, sequenceNumber=1296277, masterKeyId=1269 on ha-hdfs:hacluster
+19/07/10 15:56:39 INFO HadoopFSDelegationTokenProvider: Renewal interval is 86400059 for token HDFS_DELEGATION_TOKEN
+19/07/10 15:56:40 INFO Client: To enable the AM to login from keytab, credentials are being copied over to the AM via the YARN Secure Distributed Cache.
+19/07/10 15:56:40 INFO Client: Uploading resource file:/data1/hadoop/yarn/local/usercache/jenkins/appcache/application_1562328661428_5538/container_e3344_1562328661428_5538_01_000001/jenkins.keytab-2322e03c-bf97-4f59-b9ad-7c2ecb2d1c70 -> hdfs://hacluster/user/jenkins/.sparkStaging/application_1562328661428_5542/jenkins.keytab-2322e03c-bf97-4f59-b9ad-7c2ecb2d1c70
+19/07/10 15:56:41 WARN Client: Neither spark.yarn.jars nor spark.yarn.archive is set, falling back to uploading libraries under SPARK_HOME.
+19/07/10 15:56:46 INFO Client: Uploading resource file:/data1/hadoop/yarn/local/usercache/jenkins/appcache/application_1562328661428_5538/spark-ad3a2402-36d5-407a-8b30-392033d45899/__spark_libs__4608991107087829959.zip -> hdfs://hacluster/user/jenkins/.sparkStaging/application_1562328661428_5542/__spark_libs__4608991107087829959.zip
+19/07/10 15:56:51 INFO Client: Uploading resource file:/data1/hadoop/yarn/local/usercache/jenkins/appcache/application_1562328661428_5538/container_e3344_1562328661428_5538_01_000001/geotrellis-extensions-1.3.0-SNAPSHOT.jar -> hdfs://hacluster/user/jenkins/.sparkStaging/application_1562328661428_5542/geotrellis-extensions-1.3.0-SNAPSHOT.jar
+19/07/10 15:56:52 INFO Client: Uploading resource file:/data1/hadoop/yarn/local/usercache/jenkins/appcache/application_1562328661428_5538/container_e3344_1562328661428_5538_01_000001/geotrellis-backend-assembly-0.4.6-openeo.jar -> hdfs://hacluster/user/jenkins/.sparkStaging/application_1562328661428_5542/geotrellis-backend-assembly-0.4.6-openeo.jar
+19/07/10 15:56:54 INFO Client: Uploading resource file:/data1/hadoop/yarn/local/usercache/jenkins/appcache/application_1562328661428_5538/container_e3344_1562328661428_5538_01_000001/layercatalog.json -> hdfs://hacluster/user/jenkins/.sparkStaging/application_1562328661428_5542/layercatalog.json
+19/07/10 15:56:54 INFO Client: Uploading resource file:/mnt/ceph/Projects/OpenEO/f5ddcb98-a9ca-440e-a705-da6d71aaab44/in -> hdfs://hacluster/user/jenkins/.sparkStaging/application_1562328661428_5542/in
+19/07/10 15:56:54 INFO Client: Uploading resource https://artifactory.vgt.vito.be/artifactory/auxdata-public/openeo/venv.zip#venv -> hdfs://hacluster/user/jenkins/.sparkStaging/application_1562328661428_5542/venv.zip
+19/07/10 15:57:01 INFO Client: Uploading resource file:/data1/hadoop/yarn/local/usercache/jenkins/appcache/application_1562328661428_5538/container_e3344_1562328661428_5538_01_000001/venv/lib64/python3.5/site-packages/openeogeotrellis/deploy/batch_job.py -> hdfs://hacluster/user/jenkins/.sparkStaging/application_1562328661428_5542/batch_job.py
+19/07/10 15:57:01 INFO Client: Uploading resource file:/usr/hdp/3.0.0.0-1634/spark2/python/lib/pyspark.zip -> hdfs://hacluster/user/jenkins/.sparkStaging/application_1562328661428_5542/pyspark.zip
+19/07/10 15:57:01 INFO Client: Uploading resource file:/usr/hdp/3.0.0.0-1634/spark2/python/lib/py4j-0.10.7-src.zip -> hdfs://hacluster/user/jenkins/.sparkStaging/application_1562328661428_5542/py4j-0.10.7-src.zip
+19/07/10 15:57:02 INFO Client: Uploading resource file:/data1/hadoop/yarn/local/usercache/jenkins/appcache/application_1562328661428_5538/spark-ad3a2402-36d5-407a-8b30-392033d45899/__spark_conf__2177799938793019578.zip -> hdfs://hacluster/user/jenkins/.sparkStaging/application_1562328661428_5542/__spark_conf__.zip
+19/07/10 15:57:02 INFO SecurityManager: Changing view acls to: jenkins
+19/07/10 15:57:02 INFO SecurityManager: Changing modify acls to: jenkins
+19/07/10 15:57:02 INFO SecurityManager: Changing view acls groups to:
+19/07/10 15:57:02 INFO SecurityManager: Changing modify acls groups to:
+19/07/10 15:57:02 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(jenkins); groups with view permissions: Set(); users  with modify permissions: Set(jenkins); groups with modify permissions: Set()
+19/07/10 15:57:02 INFO Client: Submitting application application_1562328661428_5542 to ResourceManager
+19/07/10 15:57:02 INFO YarnClientImpl: Submitted application application_1562328661428_5542
+19/07/10 15:57:03 INFO Client: Application report for application_1562328661428_5542 (state: ACCEPTED)
+19/07/10 15:57:03 INFO Client:
+	 client token: Token { kind: YARN_CLIENT_TOKEN, service:  }
+	 diagnostics: AM container is launched, waiting for AM container to Register with RM
+	 ApplicationMaster host: N/A
+	 ApplicationMaster RPC port: -1
+	 queue: default
+	 start time: 1562767022250
+	 final status: UNDEFINED
+	 tracking URL: http://epod17.vgt.vito.be:8088/proxy/application_1562328661428_5542/
+	 user: jenkins
+19/07/10 15:57:04 INFO Client: Application report for application_1562328661428_5542 (state: ACCEPTED)
+19/07/10 15:57:05 INFO Client: Application report for application_1562328661428_5542 (state: ACCEPTED)
+19/07/10 15:57:06 INFO Client: Application report for application_1562328661428_5542 (state: ACCEPTED)
+19/07/10 15:57:07 INFO Client: Application report for application_1562328661428_5542 (state: ACCEPTED)
+19/07/10 15:57:08 INFO Client: Application report for application_1562328661428_5542 (state: ACCEPTED)
+19/07/10 15:57:13 INFO Client: Application report for application_1562328661428_5542 (state: ACCEPTED)
+19/07/10 15:57:59 INFO Client: Application report for application_1562328661428_5542 (state: ACCEPTED)
+19/07/10 15:58:00 INFO Client: Application report for application_1562328661428_5542 (state: ACCEPTED)
+19/07/10 15:58:01 INFO Client: Application report for application_1562328661428_5542 (state: ACCEPTED)
+19/07/10 15:58:02 INFO Client: Application report for application_1562328661428_5542 (state: RUNNING)
+19/07/10 15:58:02 INFO Client:
+	 client token: Token { kind: YARN_CLIENT_TOKEN, service:  }
+	 diagnostics: N/A
+	 ApplicationMaster host: 192.168.207.182
+	 ApplicationMaster RPC port: 0
+	 queue: default
+	 start time: 1562767022250
+	 final status: UNDEFINED
+	 tracking URL: http://epod17.vgt.vito.be:8088/proxy/application_1562328661428_5542/
+	 user: jenkins
+19/07/10 15:58:03 INFO Client: Application report for application_1562328661428_5542 (state: RUNNING)
+19/07/10 15:58:04 INFO Client: Application report for application_1562328661428_5542 (state: RUNNING)
+19/07/10 15:58:05 INFO Client: Application report for application_1562328661428_5542 (state: RUNNING)
+19/07/10 15:58:06 INFO Client: Application report for application_1562328661428_5542 (state: RUNNING)
+19/07/10 15:58:07 INFO Client: Application report for application_1562328661428_5542 (state: RUNNING)
+19/07/10 15:58:08 INFO Client: Application report for application_1562328661428_5542 (state: RUNNING)
+19/07/10 15:58:09 INFO Client: Application report for application_1562328661428_5542 (state: RUNNING)
+19/07/10 15:58:10 INFO Client: Application report for application_1562328661428_5542 (state: RUNNING)
+19/07/10 15:58:11 INFO Client: Application report for application_1562328661428_5542 (state: RUNNING)
+    """
+    assert YARNBatchJobRunner._extract_application_id(yarn_log) == "application_1562328661428_5542"
+
+
+def test_get_submit_py_files_basic(tmp_path, caplog):
+    (tmp_path / "lib.whl").touch()
+    (tmp_path / "zop.zip").touch()
+    (tmp_path / "__pyfiles__").mkdir()
+    (tmp_path / "__pyfiles__" / "stuff.py").touch()
+    env = {"OPENEO_SPARK_SUBMIT_PY_FILES": "stuff.py,lib.whl,foo.py"}
+    py_files = YARNBatchJobRunner.get_submit_py_files(env=env, cwd=tmp_path, log = logging.getLogger("openeogeotrellis"))
+    assert py_files == "__pyfiles__/stuff.py,lib.whl"
+    warn_logs = [r.message for r in caplog.records if r.levelname == "WARNING"]
+    assert warn_logs == ["Could not find 'py-file' foo.py: skipping"]
+
+
+def test_get_submit_py_files_deep_paths(tmp_path, caplog):
+    # Originally submitted py-files
+    env = {"OPENEO_SPARK_SUBMIT_PY_FILES": "data/deps/stuff.py,data/deps/lib.whl"}
+    # Resources of flask app job.
+    (tmp_path / "lib.whl").touch()
+    (tmp_path / "__pyfiles__").mkdir()
+    (tmp_path / "__pyfiles__" / "stuff.py").touch()
+    py_files = YARNBatchJobRunner.get_submit_py_files(env=env, cwd=tmp_path)
+    assert py_files == "__pyfiles__/stuff.py,lib.whl"
+    warn_logs = [r.message for r in caplog.records if r.levelname == "WARNING"]
+    assert warn_logs == []
+
+
+def test_get_submit_py_files_no_env(tmp_path):
+    py_files = YARNBatchJobRunner.get_submit_py_files(env={}, cwd=tmp_path)
+    assert py_files == ""
+
+
+def test_get_submit_py_files_empty(tmp_path):
+    env = {"OPENEO_SPARK_SUBMIT_PY_FILES": ""}
+    py_files = YARNBatchJobRunner.get_submit_py_files(env=env, cwd=tmp_path)
+    assert py_files == ""
+
+
+def test_extra_validation_layer_too_large_drivervectorcube(backend_implementation):
+    processing = GpsProcessing()
+    source_id1 = SourceId("load_collection", arguments=("SENTINEL1_GRD", None), pg_node_id="lc1")
+    source_id2 = SourceId("load_collection", arguments=("COPERNICUS_30", None), pg_node_id="lc2")
+    polygon = {"type": "Polygon", "coordinates": [[(0, 0), (180, 0), (0, 90), (180, 90)]]}
+    env_source_constraints = [
+        (source_id1, {
+            "temporal_extent": ["2019-01-01", "2023-01-09"],
+            "spatial_extent": {"south": -952987.7582, "west": 4495130.8875, "north": 910166.7419, "east": 7088482.3929, "crs": "EPSG:32632"},
+            "bands": ["HH", "HV", "VV"],
+        }),
+        (source_id2, {
+            "temporal_extent": ["2019-01-01", "2019-01-02"],
+            "spatial_extent": {"south": 0.0, "west": 0.0, "north": 90.0, "east": 180.0},
+            "bands": ["DEM"],
+            "aggregate_spatial": {
+                "geometries": DriverVectorCube.from_geojson(polygon),
+            },
+        }),
+    ]
+    env = EvalEnv(values={ENV_SOURCE_CONSTRAINTS: env_source_constraints, "backend_implementation": backend_implementation, "version": "1.0.0"})
+    errors = list(processing.extra_validation({}, env, None, env_source_constraints))
+    assert len(errors) == 2
+    assert errors[0]['code'] == "ExtentTooLarge"
+    assert errors[1]['code'] == "ExtentTooLarge"
+
+
+def test_extra_validation_layer_too_large_open_time_interval(backend_implementation):
+    processing = GpsProcessing()
+    source_id1 = SourceId("load_collection", arguments=("SENTINEL1_GRD", None), pg_node_id="lc1")
+    env_source_constraints = [
+        (source_id1, {
+            "temporal_extent": [None, None],  # Will go from 2014 till current time
+            "spatial_extent": {"south": -952987.7582, "west": 4495130.8875, "north": 910166.7419, "east": 7088482.3929,
+                               "crs": "EPSG:32632"},
+            "bands": ["VV"],
+        })
+    ]
+    env = EvalEnv(
+        values={ENV_SOURCE_CONSTRAINTS: env_source_constraints, "backend_implementation": backend_implementation,
+                "version": "1.0.0"})
+    errors = list(processing.extra_validation({}, env, None, env_source_constraints))
+    assert len(errors) == 1
+    assert errors[0]['code'] == "ExtentTooLarge"
+
+
+def test_extra_validation_layer_too_large_copernicus_30(backend_implementation):
+    processing = GpsProcessing()
+    source_id1 = SourceId("load_collection", arguments=("COPERNICUS_30", None), pg_node_id="lc1")
+    env_source_constraints = [
+        (source_id1, {
+            # taken from user example in 'process_graph_list_mep.jsonl'
+            # Specifying a temporal extent is unneeded here, and caused the old extra_validation to fail.
+            "temporal_extent": ["2010-01-01", "2030-12-31"],
+            "spatial_extent": {"east": 1941516.7822, "south": -637292.4712999999, "crs": "EPSG:32637",
+                               "north": 2493707.5287, "west": -1285483.2178},
+            "bands": ["DEM"],
+        })
+    ]
+    env = EvalEnv(
+        values={ENV_SOURCE_CONSTRAINTS: env_source_constraints, "backend_implementation": backend_implementation,
+                "version": "1.0.0"})
+    errors = list(processing.extra_validation({}, env, None, env_source_constraints))
+    assert errors == []
+
+
+def test_extra_validation_layer_fail(backend_implementation):
+    processing = GpsProcessing()
+    source_id1 = SourceId("load_collection", arguments=("!!BOGUS_LAYER!!", None), pg_node_id="lc1")
+    env_source_constraints = [
+        (source_id1, {
+            "temporal_extent": None,
+            "spatial_extent": None,
+        })
+    ]
+    env = EvalEnv(
+        values={ENV_SOURCE_CONSTRAINTS: env_source_constraints, "backend_implementation": backend_implementation,
+                "version": "1.0.0"})
+    errors = list(processing.extra_validation({}, env, None, env_source_constraints))
+    assert len(errors) == 1
+    assert errors[0]['code'] == "Internal"
+
+
+def test_extra_validation_without_temporal_extent(backend_implementation):
+    processing = GpsProcessing()
+    source_id1 = SourceId("load_collection", arguments=("ESA_WORLDCOVER_10M_2021_V2", None), pg_node_id="lc1")
+    env_source_constraints = [
+        (source_id1, {
+            "temporal_extent": None,
+            "spatial_extent": {"east": 1941516.7822, "south": -637292.4712999999, "crs": "EPSG:32637",
+                               "north": 2493707.5287, "west": 0},
+            "bands": ["MAP"],
+        })
+    ]
+    env = EvalEnv(
+        values={ENV_SOURCE_CONSTRAINTS: env_source_constraints, "backend_implementation": backend_implementation,
+                "version": "1.0.0"})
+    errors = list(processing.extra_validation({}, env, None, env_source_constraints))
+    assert errors == []
+
+def test_extra_validation_with_world_extent(backend_implementation):
+    processing = GpsProcessing()
+    source_id1 = SourceId("load_collection", arguments=("SENTINEL1_GRD", None), pg_node_id="lc1")
+    env_source_constraints = [
+        (source_id1, {
+            "temporal_extent": ["2022-01-01", "2022-01-01"],
+            "spatial_extent": {"south": -90, "west": -180, "north": 90, "east": 180},
+            "bands": ["VV", "VH", "HV", "HH"],
+        })
+    ]
+    env = EvalEnv(
+        values={ENV_SOURCE_CONSTRAINTS: env_source_constraints, "backend_implementation": backend_implementation,
+                "version": "1.0.0"})
+    errors = list(processing.extra_validation({}, env, None, env_source_constraints))
+    assert len(errors) == 1
+    assert errors[0]["code"] == "ExtentTooLarge"
+    assert "spatial extent" in errors[0]["message"].lower()
+
+
+def test_extra_validation_layer_too_large_area(backend_implementation):
+    processing = GpsProcessing()
+    source_id1 = SourceId("load_collection", arguments=("SENTINEL1_GRD", None), pg_node_id="lc1")
+    env_source_constraints = [
+        (source_id1, {
+            "temporal_extent": ["2022-01-01", "2022-01-01"],
+            "spatial_extent": {"south": -952987.7582, "west": 1495130.8875, "north": 910166.7419, "east": 9088482.3929,
+                               "crs": "EPSG:32632"},
+            "bands": ["VV"],
+        })
+    ]
+    env = EvalEnv(
+        values={ENV_SOURCE_CONSTRAINTS: env_source_constraints, "backend_implementation": backend_implementation,
+                "sync_job": True,
+                "version": "1.0.0"})
+    errors = list(processing.extra_validation({}, env, None, env_source_constraints))
+    assert len(errors) == 1
+    assert errors[0]["code"] == "ExtentTooLarge"
+    assert "spatial extent" in errors[0]["message"].lower()
+
+
+def test_extra_validation_layer_timezone(backend_implementation):
+    processing = GpsProcessing()
+    source_id1 = SourceId("load_collection", arguments=("SENTINEL1_GRD", None), pg_node_id="lc1")
+    env_source_constraints = [
+        (source_id1, {
+            "temporal_extent": ["2022-01-01T00:00:00Z", "2022-01-09"],
+            "spatial_extent": {"south": -952987.7582, "west": 1495130.8875, "north": 910166.7419, "east": 9088482.3929,
+                               "crs": "EPSG:32632"},
+            "bands": ["VV"],
+        })
+    ]
+    env = EvalEnv(
+        values={ENV_SOURCE_CONSTRAINTS: env_source_constraints, "backend_implementation": backend_implementation,
+                "sync_job": True,
+                "version": "1.0.0"})
+    errors = list(processing.extra_validation({}, env, None, env_source_constraints))
+    assert len(errors) == 1
+    assert errors[0]["code"] == "ExtentTooLarge"
+    assert "spatial extent" in errors[0]["message"].lower()
+
+
+def test_extra_validation_layer_too_large_delayedvector(backend_implementation):
+    processing = GpsProcessing()
+    source_id1 = SourceId("load_collection", arguments=("SENTINEL1_GRD", None), pg_node_id="lc1")
+    source_id2 = SourceId("load_collection", arguments=("COPERNICUS_30", None), pg_node_id="lc2")
+    polygon1 = {"type": "Polygon", "coordinates": [[(0.0, 0.0), (0.05, 0.0), (0.0, 0.05), (0.05, 0.05)]]}
+    polygon2 = {"type": "Polygon", "coordinates": [[(0.0, 0.0), (80.0, 0.0), (0.0, 60.0), (80.0, 60.0)]]}
+    geom_coll = {"type": "GeometryCollection", "geometries": [polygon1, polygon2]}
+    env_source_constraints = [
+        (source_id1, {
+            "temporal_extent": ["2019-01-01", "2019-01-02"],
+            "spatial_extent": {"south": 0.0, "west": 0.0, "north": 80.0, "east": 60.0},
+            "bands": ["HH", "HV", "VV"],
+            "resample": {"target_crs": "EPSG:4326"},
+            "aggregate_spatial": {
+                "geometries": DelayedVector.from_json_dict(polygon1),
+            },
+        }),
+        (source_id2, {
+            "temporal_extent": ["2019-01-01", "2019-01-02"],
+            "spatial_extent": {"south": 0.0, "west": 0.0, "north": 80.0, "east": 60.0},
+            "bands": ["DEM"],
+            "resample": {"target_crs": "EPSG:4326"},
+            "aggregate_spatial": {
+                "geometries": DelayedVector.from_json_dict(geom_coll),
+            },
+        }),
+    ]
+    env = EvalEnv(values={ENV_SOURCE_CONSTRAINTS: env_source_constraints, "backend_implementation": backend_implementation, "version": "1.0.0"})
+    errors = list(processing.extra_validation({}, env, None, env_source_constraints))
+    assert len(errors) == 1
+    assert errors[0]['code'] == "ExtentTooLarge"
+
+
+def test_extra_validation_layer_too_large_geometrycollection(backend_implementation):
+    processing = GpsProcessing()
+    source_id1 = SourceId("load_collection", arguments=("SENTINEL1_GRD", None), pg_node_id="lc1")
+    source_id2 = SourceId("load_collection", arguments=("COPERNICUS_30", None), pg_node_id="lc2")
+    polygon1 = shapely.geometry.Polygon([(0, 0), (0.2, 0), (0, 0.2), (0.2, 0.2)])
+    polygon2 = shapely.geometry.Polygon([(0, 0), (80, 0), (0, 60), (80, 60)])
+    env_source_constraints = [
+        (source_id1, {
+            "temporal_extent": ["2019-01-01", "2019-01-02"],
+            "spatial_extent": {"south": 0.0, "west": 0.0, "north": 80.0, "east": 60.0},
+            "bands": ["HH", "HV", "VV"],
+            "resample": {"target_crs": "EPSG:4326"},
+            "aggregate_spatial": {
+                "geometries": shapely.geometry.MultiPolygon([polygon1]),
+            },
+        }),
+        (source_id2, {
+            "temporal_extent": ["2019-01-01", "2019-01-02"],
+            "spatial_extent": {"south": 0.0, "west": 0.0, "north": 80.0, "east": 60.0},
+            "bands": ["DEM"],
+            "resample": { "target_crs": "EPSG:4326" },
+            "aggregate_spatial": {
+                "geometries": shapely.geometry.GeometryCollection([polygon1, polygon2]),
+            },
+        }),
+    ]
+    env = EvalEnv(values={ENV_SOURCE_CONSTRAINTS: env_source_constraints, "backend_implementation": backend_implementation, "version": "1.0.0"})
+    errors = list(processing.extra_validation({}, env, None, env_source_constraints))
+    assert len(errors) == 1
+    assert errors[0]['code'] == "ExtentTooLarge"
+
+
+def test_extra_validation_layer_too_large_custom_crs(backend_implementation):
+    # The user can specify their own CRS in load_collection.
+    # Here: The native crs of AGERA5 is LatLon but the user specifies a spatial_extent in EPSG:3035.
+    processing = GpsProcessing()
+    source_id1 = SourceId("load_collection", arguments=("AGERA5", None), pg_node_id="lc1")
+    env_source_constraints = [
+        (source_id1, {
+            "temporal_extent": ["2019-01-01", "2019-01-02"],
+            "spatial_extent": {"south": 5000000.0, "west": 420000.0, "north": 5110000.0, "east": 430000.0, "crs": "EPSG:3035"},
+            "bands": ["wind-speed"],
+        }),
+    ]
+    env = EvalEnv(values={ENV_SOURCE_CONSTRAINTS: env_source_constraints, "backend_implementation": backend_implementation, "version": "1.0.0"})
+    errors = list(processing.extra_validation({}, env, None, env_source_constraints))
+    assert len(errors) == 0
+
+
+def test_extra_validation_layer_too_large_custom_crs_hourly(backend_implementation):
+    processing = GpsProcessing()
+    source_id1 = SourceId("load_collection", arguments=("AGERA5_HOURLY", None), pg_node_id="lc1")
+    env_source_constraints = [
+        (source_id1, {
+            "temporal_extent": ["2019-01-01", "2019-01-02"],
+            "spatial_extent": {"south": 5000000.0, "west": 420000.0, "north": 5110000.0, "east": 430000.0,
+                               "crs": "EPSG:3035"},
+            "bands": ["wind-speed"],
+        }),
+    ]
+    env = EvalEnv(
+        values={ENV_SOURCE_CONSTRAINTS: env_source_constraints, "backend_implementation": backend_implementation,
+                "version": "1.0.0"})
+    errors = list(processing.extra_validation({}, env, None, env_source_constraints))
+    assert len(errors) == 0
+
+
+def test_extra_validation_missing_gsd(backend_implementation):
+    # Layers with missing GSD should not crash
+    processing = GpsProcessing()
+    source_id1 = SourceId("load_collection", arguments=("TERRASCOPE_S1_SLC_COHERENCE_V1", None), pg_node_id="lc1")
+    polygon = {"type": "Polygon", "coordinates": [[(0, 0), (180.0, 0), (0, 90.0), (180.0, 90.0)]]}
+    env_source_constraints = [
+        (source_id1, {
+            "temporal_extent": ["2019-01-01", "2019-01-02"],
+            "spatial_extent": {"south": 0.0, "west": 0.0, "north": 90.0, "east": 180.0, 'crs': 'EPSG:4326'},
+            "bands": ["VV", "VH"],
+            "aggregate_spatial": {
+                "geometries": DelayedVector.from_json_dict(polygon),
+            },
+        }),
+    ]
+    env = EvalEnv(values={ENV_SOURCE_CONSTRAINTS: env_source_constraints, "backend_implementation": backend_implementation, "version": "1.0.0"})
+    processing.extra_validation({}, env, None, env_source_constraints)
+
+
+def test_extra_validation_layer_too_large_resample_spatial(backend_implementation):
+    # When resample_spatial or resample_cube_spatial is used, the resolution and crs of the layer is changed.
+    # So that needs to be taken into account when estimating the number of pixels.
+    processing = GpsProcessing()
+    source_id1 = SourceId("load_collection", arguments=("SENTINEL1_GAMMA0_SENTINELHUB", None), pg_node_id="lc1")
+    source_id2 = SourceId("load_collection", arguments=("COPERNICUS_30", None), pg_node_id="lc2")
+    polygon = {"type": "Polygon", "coordinates": [[(0, 0), (180.0, 0), (0, 90.0), (180.0, 90.0)]]}
+    env_source_constraints = [
+        (source_id1, {
+            "temporal_extent": ["2019-01-01", "2019-01-02"],
+            "spatial_extent": {"south": 0.0, "west": 0.0, "north": 90.0, "east": 180.0, 'crs': 'EPSG:4326'},
+            "bands": ['VV', 'VH', 'HV', 'HH'],
+            "resample": {
+                "target_crs": "EPSG:4326",
+                "resolution": [10.0, 10.0],
+                "method": "near",
+            },
+        }),
+        (source_id2, {
+            "temporal_extent": ["2019-01-01", "2019-01-02"],
+            "spatial_extent": {"south": 0.0, "west": 0.0, "north": 90.0, "east": 180.0, 'crs': 'EPSG:4326'},
+            "bands": ["DEM"],
+            "aggregate_spatial": {
+                "geometries": DelayedVector.from_json_dict(polygon),
+            },
+            "resample": {
+                "target_crs": "EPSG:3035",
+                "resolution": [10000.0, 10000.0],
+                "method": "near",
+            },
+        }),
+    ]
+    env = EvalEnv(values={ENV_SOURCE_CONSTRAINTS: env_source_constraints, "backend_implementation": backend_implementation, "version": "1.0.0"})
+    errors = list(processing.extra_validation({}, env, None, env_source_constraints))
+    assert len(errors) == 0
+
+
+def test_extra_validation_layer_too_large_resample_spatial_auto42001(backend_implementation):
+    # Resample spatial with Auto42001 as target projection.
+    processing = GpsProcessing()
+    source_id1 = SourceId("load_collection", arguments=("COPERNICUS_30", None), pg_node_id="lc1")
+    env_source_constraints = [
+        (source_id1, {
+            "temporal_extent": ["2019-01-01", "2019-01-02"],
+            "spatial_extent": {"south": 0.0, "west": 0.0, "north": 50.0, "east": 40.0, 'crs': 'EPSG:4326'},
+            "bands": ["DEM"],
+            "resample": {
+                "target_crs": {
+                    "id": {
+                        "code": "Auto42001"
+                    }
+                },
+                "resolution": [10000.0, 10000.0],
+                "method": "near",
+            },
+        }),
+    ]
+    env = EvalEnv(values={ENV_SOURCE_CONSTRAINTS: env_source_constraints, "backend_implementation": backend_implementation, "version": "1.0.0"})
+    errors = list(processing.extra_validation({}, env, None, env_source_constraints))
+    assert len(errors) == 0
+
+
+def test_extra_validation_layer_too_large_resample_spatial_zero(backend_implementation):
+    # Resample with different CRS, but resolution 0 should be ok.
+    processing = GpsProcessing()
+    source_id1 = SourceId("load_collection", arguments=("COPERNICUS_30", None), pg_node_id="lc1")
+    env_source_constraints = [
+        (
+            source_id1,
+            {
+                "temporal_extent": ["2019-01-01", "2019-01-02"],
+                "spatial_extent": {"south": 0.0, "west": 0.0, "north": 50.0, "east": 60.0, "crs": "EPSG:4326"},
+                "bands": ["DEM"],
+                "resample": {
+                    "target_crs": {"id": {"code": "Auto42001"}},
+                    "resolution": [0.0, 0.0],
+                    "method": "near",
+                },
+            },
+        ),
+    ]
+    env = EvalEnv(
+        values={
+            ENV_SOURCE_CONSTRAINTS: env_source_constraints,
+            "backend_implementation": backend_implementation,
+            "version": "1.0.0",
+        }
+    )
+    errors = list(processing.extra_validation({}, env, None, env_source_constraints))
+    assert len(errors) == 0
+
+
+class TestGpsProcessing:
+    # TODO: move all these test_extra_validation_* inhere too.
+
+    @pytest.mark.parametrize(
+        ["sar_backscatter_spec", "expected"],
+        [
+            (
+                None,
+                {"coefficient": "gamma0-terrain"},
+            ),
+            (
+                read_spec("openeo-processes/2.x/proposals/sar_backscatter.json"),
+                {"coefficient": "gamma0-terrain"},
+            ),
+            (
+                {"id": "sar_backscatter", "parameters": [{"name": "coefficient", "default": "omega666"}]},
+                {"coefficient": "omega666"},
+            ),
+        ],
+    )
+    def test_get_default_sar_backscatter_arguments(self, sar_backscatter_spec, expected, caplog):
+        caplog.set_level(logging.WARNING)
+
+        class MyGpsProcessing(GpsProcessing):
+            def __init__(self):
+                self.process_registry = ProcessRegistry()
+
+            def get_process_registry(self, api_version: Union[str, ComparableVersion]) -> ProcessRegistry:
+                return self.process_registry
+
+        my_processing = MyGpsProcessing()
+        if sar_backscatter_spec:
+            my_processing.process_registry.add_spec(sar_backscatter_spec)
+
+        sar_backscatter_arguments = my_processing.get_default_sar_backscatter_arguments(api_version="1.2.0")
+        assert isinstance(sar_backscatter_arguments, SarBackscatterArgs)
+        assert sar_backscatter_arguments._asdict() == dirty_equals.IsPartialDict(expected)
+        assert caplog.text == ""
+
+    def test_dynamic_processes_from_cube_process_registry(self):
+        """
+        GpsProcessing.__init__ should register processes listed by the JVM-side
+        CubeProcessRegistry, generate a spec from id/description, and the
+        generated handler should invoke the cube method with the remaining args.
+        """
+        # Fake JVM-side process descriptors (list of dict-likes).
+        fake_processes = [
+            {"id": "fancy_cube_op", "description": "Does something fancy to a cube."},
+            {"id": "load_collection", "description": "Should be skipped: already exists."},
+            {"id": "no_desc_op"},  # no description -> auto-generated
+        ]
+
+        fake_registry = mock.Mock()
+        fake_registry.listProcesses.return_value = fake_processes
+        fake_jvm = mock.Mock()
+        fake_jvm.org.openeo.geotrelliscommon.CubeProcessRegistry = fake_registry
+
+        with mock.patch("openeogeotrellis.backend.get_jvm", return_value=fake_jvm):
+            processing = GpsProcessing()
+
+        registry = processing.get_process_registry(ComparableVersion("1.2.0"))
+
+        # New processes are registered ...
+        assert registry.contains("fancy_cube_op")
+        assert registry.contains("no_desc_op")
+
+        # ... with a spec built from id + description.
+        spec = registry.get_spec("fancy_cube_op")
+        assert spec["id"] == "fancy_cube_op"
+        assert spec["description"] == "Does something fancy to a cube."
+        param_names = [p["name"] for p in spec["parameters"]]
+        assert "data" in param_names
+
+        # Existing standard processes are not overridden.
+        load_collection_spec = registry.get_spec("load_collection")
+        assert "Should be skipped" not in (load_collection_spec.get("description") or "")
+
+        # The handler retrieves the method by name on the cube and invokes it
+        # with all non-"data" arguments as keyword arguments.
+        from openeo_driver.datacube import DriverDataCube
+        from openeo_driver.processes import ProcessArgs
+
+        GeopysparkDataCube._extend_from_cube_process_registry(fake_jvm)
+
+        layerMock = MagicMock(spec=TiledRasterLayer)
+        layerMock.layer_type = LayerType.SPATIAL
+
+        gpsCube = GeopysparkDataCube(Pyramid({0: layerMock}))
+        assert hasattr(gpsCube, "fancy_cube_op")
+
+        jvm = get_jvm()
+        with mock.patch.object(jvm, "org", new=mock.MagicMock()) as m:
+            with mock.patch.object(jvm, "geopyspark", new=mock.MagicMock()) as g:
+                with mock.patch.object(gpsCube, "_create_tilelayer", return_value=layerMock) as create_tl:
+                    gpsCube.fancy_cube_op(factor=2, label="y")
+                    m.openeo.geotrelliscommon.CubeProcessRegistry.invoke.assert_called_once()
+
+                    # Cube arguments must be replaced by their RDD at the same pyramid level.
+                    otherLayer = MagicMock(spec=TiledRasterLayer)
+                    otherLayer.layer_type = LayerType.SPATIAL
+                    otherCube = GeopysparkDataCube(Pyramid({0: otherLayer}))
+                    invoke = m.openeo.geotrelliscommon.CubeProcessRegistry.invoke
+                    invoke.reset_mock()
+                    gpsCube.fancy_cube_op(other=otherCube, cubes=[otherCube], factor=2)
+                    invoke.assert_called_once()
+                    _, pid, invoke_kwargs = invoke.call_args.args
+                    assert pid == "fancy_cube_op"
+                    other_rdd = otherLayer.srdd.rdd.return_value
+                    assert invoke_kwargs == {"other": other_rdd, "cubes": [other_rdd], "factor": 2}
+
+
+        class MyCube(DriverDataCube):
+            def __init__(self):
+                super().__init__()
+                self.calls = []
+
+            def fancy_cube_op(self, **kwargs):
+                self.calls.append(kwargs)
+                return self
+
+        cube = MyCube()
+        handler = registry.get_function("fancy_cube_op")
+        args = ProcessArgs({"data": cube, "factor": 3, "label": "x"}, process_id="fancy_cube_op")
+        result = handler(args, EvalEnv())
+        assert result is cube
+        assert cube.calls == [{"factor": 3, "label": "x"}]
+
+        # If the cube does not implement the method, a ProcessUnsupportedException is raised.
+        from openeo_driver.errors import ProcessUnsupportedException
+
+        class CubeWithoutMethod(DriverDataCube):
+            pass
+
+        handler2 = registry.get_function("no_desc_op")
+        with pytest.raises(ProcessUnsupportedException):
+            handler2(
+                ProcessArgs({"data": CubeWithoutMethod()}, process_id="no_desc_op"),
+                EvalEnv(),
+            )
+
+    def test_dynamic_processes_jvm_unavailable(self, caplog):
+        """When the JVM/CubeProcessRegistry is not available, init must not raise."""
+        caplog.set_level(logging.DEBUG)
+        with mock.patch("openeogeotrellis.backend.get_jvm", side_effect=RuntimeError("no jvm")):
+            processing = GpsProcessing()
+        # Should not have added any dynamic process, just logged.
+        assert "CubeProcessRegistry not available" in caplog.text
+        assert isinstance(processing, GpsProcessing)
+
+
+
+@pytest.mark.parametrize(
+    "success, state, status",
+    [
+        (True, "FINISHED", "UNDEFINED"),
+        (False, "FAILED", "UNDEFINED"),
+    ],
+)
+@pytest.mark.parametrize("shpu", [123.0, 0.0])
+@gps_config_overrides(use_etl_api_on_sync_processing=True, etl_api_report_added_value_on_sync_processing=True)
+@mock.patch("openeogeotrellis.integrations.etl_api.get_etl_api_credentials_from_env")
+def test_request_costs(mock_get_etl_api_credentials_from_env, backend_implementation, success, shpu, state, status):
+    # TODO: this test does quite a bit of mocking, which might break when internals change
+    #       The tested functionality is also tested in TestEtlApiReporting (test_api_result.py), so maybe we can remove this test?
+    user_id = 'testuser'
+
+    with mock.patch("openeogeotrellis.integrations.etl_api.EtlApi") as MockEtlApi, mock.patch(
+        "openeogeotrellis.backend.get_jvm"
+    ) as get_jvm:
+        mock_etl_api = MockEtlApi.return_value
+        mock_etl_api.log_resource_usage.return_value = 6
+        mock_etl_api.log_added_value.return_value = 7
+
+        tracker = get_jvm.return_value.org.openeo.geotrelliscommon.ScopedMetadataTracker.apply.return_value
+        tracker.sentinelHubProcessingUnits.return_value = shpu
+
+        process_graph = {
+            "loadcollection1": {
+                "process_id": "load_collection",
+                "arguments": {
+                    "id": "SOME_COLLECTION",
+                    "spatial_extent": {
+                        "west": 654900,
+                        "south": 5643900,
+                        "east": 656100,
+                        "north": 5645100,
+                        "crs": 32631,
+                    },
+                },
+                "result": True,
+            }
+        }
+
+        tracer = DryRunDataTracer()
+        tracer.load_collection(
+            collection_id="SOME_COLLECTION",
+            arguments={
+                "spatial_extent": {
+                    "west": 654900,
+                    "south": 5643900,
+                    "east": 656100,
+                    "north": 5645100,
+                    "crs": 32631,
+                }
+            },
+        )
+
+        credit_cost = backend_implementation.request_costs(
+            user=User(user_id=user_id),
+            request_id="r-abc123",
+            success=success,
+            process_graph=process_graph,
+            tracer=tracer,
+        )
+
+        mock_etl_api.log_resource_usage.assert_called_once_with(
+            batch_job_id='r-abc123',
+            title="Synchronous processing request 'r-abc123'",
+            execution_id='r-abc123',
+            user_id=user_id,
+            started_ms=None,
+            finished_ms=None,
+            state=state,
+            status=status,
+            cpu_seconds=5400,
+            mb_seconds=11059200,
+            duration_ms=None,
+            sentinel_hub_processing_units=shpu if shpu else None,
+            additional_credits_cost=None,
+            source_id=None,
+            organization_id=None,
+        )
+
+        mock_etl_api.log_added_value.assert_called_once_with(
+            batch_job_id="r-abc123",
+            title="Synchronous processing request 'r-abc123'",
+            execution_id="r-abc123",
+            user_id=user_id,
+            started_ms=None,
+            finished_ms=None,
+            process_ids=["load_collection"],
+            square_meters=pytest.approx(1200 * 1200, rel=0.01),
+            source_id=None,
+        )
+
+        assert credit_cost == 13
+
+
+def test_k8s_sparkapplication_dict_udf_python_deps(backend_config_path):
+    # TODO: this is minimal attempt to have a bit of test coverage for UDF dep env var handling
+    #       in the K8s code path. But there is a lot of room for improvement.
+    #       Also see https://github.com/Open-EO/openeo-geopyspark-driver/issues/915
+    app_dict = k8s_render_manifest_template(
+        "sparkapplication.yaml.j2",
+        udf_python_dependencies_folder_path="/jobs/j123/udfdepz.d",
+        udf_python_dependencies_archive_path="/jobs/j123/udfdepz.zip",
+        # TODO: avoid duplication of the actual code here
+        openeo_backend_config=os.environ.get(ConfigGetter.OPENEO_BACKEND_CONFIG, ""),
+        propagatable_web_app_driver_envars={},
+    )
+    assert app_dict == dirty_equals.IsPartialDict(
+        spec=dirty_equals.IsPartialDict(
+            driver=dirty_equals.IsPartialDict(
+                env=dirty_equals.Contains(
+                    {
+                        "name": "UDF_PYTHON_DEPENDENCIES_FOLDER_PATH",
+                        "value": "/jobs/j123/udfdepz.d",
+                    },
+                    {
+                        "name": "UDF_PYTHON_DEPENDENCIES_ARCHIVE_PATH",
+                        "value": "/jobs/j123/udfdepz.zip",
+                    },
+                    {"name": "OPENEO_BACKEND_CONFIG", "value": str(backend_config_path)},
+                ),
+            ),
+            executor=dirty_equals.IsPartialDict(
+                env=dirty_equals.Contains(
+                    {
+                        "name": "UDF_PYTHON_DEPENDENCIES_FOLDER_PATH",
+                        "value": "/jobs/j123/udfdepz.d",
+                    },
+                    {
+                        "name": "UDF_PYTHON_DEPENDENCIES_ARCHIVE_PATH",
+                        "value": "/jobs/j123/udfdepz.zip",
+                    },
+                    {"name": "OPENEO_BACKEND_CONFIG", "value": str(backend_config_path)},
+                ),
+            ),
+        )
+    )
+
+
+def test_k8s_s3_profiles_and_token():
+    # Given a test token and test content for a AWS config file
+    test_token = "mytoken1"
+    test_profile = "[default]\nregion = eu-west-1\n"
+    # Given a job id
+    test_job_id = "j-123test"
+
+    # Given how the base64 encoded form in a kubernetes manifest must look
+    test_tokenb64 = "bXl0b2tlbjE="
+    test_profile_b64 = "W2RlZmF1bHRdCnJlZ2lvbiA9IGV1LXdlc3QtMQo="
+
+    # When we render the kubernetes manifest
+    app_dict = k8s_render_manifest_template(
+        "batch_job_cfg_secret.yaml.j2",
+        secret_name="my-app-secret",
+        job_id=test_job_id,
+        token=test_token,
+        profile_file_content=test_profile
+    )
+    # Then we expect an opaque secret with the base64 encoded format
+    assert app_dict == dirty_equals.IsPartialDict(
+        data=dirty_equals.IsPartialDict(
+            profile_file=test_profile_b64,
+            token=test_tokenb64,
+        ),
+        metadata=dirty_equals.IsPartialDict(
+            labels=dirty_equals.IsPartialDict(job_id=test_job_id),
+            name="my-app-secret"
+        ),
+        kind="Secret",
+        type="Opaque"
+    )
+
+
+def test_k8s_s3_profiles_and_token_must_be_cleanable(backend_config_path, fast_sleep, time_machine):
+    time_machine.move_to(1745410732)  # Wed 2025-04-23 12:18:52 UTC)
+    # WHEN we render the kubernetes manifest for s3 access
+    token_path = get_backend_config().batch_job_config_dir / "token"
+    app_dict = k8s_render_manifest_template(
+        "batch_job_cfg_secret.yaml.j2",
+        secret_name="my-app",
+        job_id="test_id",
+        token="test",
+        profile_file_content=S3Config.from_backend_config("j-any", str(token_path)),
+    )
+    # THEN we expect it to be cleanable by having a starttime set to the time it was created.
+    # We can only clean files if we know they are stale
+    assert app_dict == dirty_equals.IsPartialDict(
+        {
+            "apiVersion": "v1",
+            "kind": "Secret",
+            "metadata": dirty_equals.IsPartialDict(
+                {
+                    "labels": {"job_id": "test_id"},
+                    "name": "my-app",
+                    "annotations": {"created_at": "1745410732.0"},
+                }
+            ),
+        }
+    )
+
+
+class TestK8sSetSecretOwnerReference:
+    SPARK_APP = {
+        "apiVersion": "sparkoperator.k8s.io/v1beta2",
+        "kind": "SparkApplication",
+        "metadata": {"name": "a-1234", "namespace": "spark-jobs", "uid": "cafe-1234"},
+    }
+
+    def test_sets_owner_reference(self):
+        core_api = mock.Mock()
+
+        assert (
+            k8s_set_secret_owner_reference(
+                core_api, namespace="spark-jobs", secret_name="cfg-a-1234", owner=self.SPARK_APP
+            )
+            is True
+        )
+
+        core_api.patch_namespaced_secret.assert_called_once_with(
+            name="cfg-a-1234",
+            namespace="spark-jobs",
+            body={
+                "metadata": {
+                    "ownerReferences": [
+                        {
+                            "apiVersion": "sparkoperator.k8s.io/v1beta2",
+                            "kind": "SparkApplication",
+                            "name": "a-1234",
+                            "uid": "cafe-1234",
+                            "controller": False,
+                            # Must stay False: we have no "update" permission on the owner's finalizers.
+                            "blockOwnerDeletion": False,
+                        }
+                    ]
+                }
+            },
+        )
+
+    @pytest.mark.parametrize("owner", [{}, {"metadata": {}}, {"metadata": {"name": "a-1234"}}])
+    def test_no_uid_in_owner(self, owner, caplog):
+        caplog.set_level(logging.WARNING)
+        core_api = mock.Mock()
+
+        assert (
+            k8s_set_secret_owner_reference(core_api, namespace="spark-jobs", secret_name="cfg-a-1234", owner=owner)
+            is False
+        )
+
+        core_api.patch_namespaced_secret.assert_not_called()
+        assert "Not setting owner reference on secret cfg-a-1234" in caplog.text
+
+    def test_patch_failure_is_just_a_warning(self, caplog):
+        """Adopting the secret is best effort: a separate cleanup based on "created_at" remains the safety net."""
+        caplog.set_level(logging.WARNING)
+        core_api = mock.Mock()
+        core_api.patch_namespaced_secret.side_effect = kubernetes.client.exceptions.ApiException(
+            status=403, reason="Forbidden"
+        )
+
+        assert (
+            k8s_set_secret_owner_reference(
+                core_api, namespace="spark-jobs", secret_name="cfg-a-1234", owner=self.SPARK_APP
+            )
+            is False
+        )
+
+        assert "Failed to set owner reference on secret cfg-a-1234" in caplog.text
+
+
+def test_k8s_sparkapplication_dict_propagatable_web_app_driver_envars(backend_config_path):
+    app_dict = k8s_render_manifest_template(
+        "sparkapplication.yaml.j2",
+        propagatable_web_app_driver_envars={
+            "OPENEO_SOME_ENVAR": "somevalue",
+            "OPENEO_SOME_OTHER_ENVAR": "someothervalue",
+        },
+    )
+
+    assert app_dict == dirty_equals.IsPartialDict(
+        spec=dirty_equals.IsPartialDict(
+            driver=dirty_equals.IsPartialDict(
+                env=dirty_equals.Contains(
+                    {
+                        "name": "OPENEO_SOME_ENVAR",
+                        "value": "somevalue",
+                    },
+                    {
+                        "name": "OPENEO_SOME_OTHER_ENVAR",
+                        "value": "someothervalue",
+                    },
+                ),
+            ),
+        )
+    )
+
+
+class TestK8sBatchJobResultsVolume:
+    """Rendering of the batch job results volume, with and without a shared results PVC."""
+
+    @staticmethod
+    def _render(**kwargs) -> dict:
+        return k8s_render_manifest_template(
+            "sparkapplication.yaml.j2",
+            propagatable_web_app_driver_envars={},
+            job_name="a-1234",
+            job_id_full="j-abc",
+            fuse_mount_batchjob_s3_bucket=True,
+            **kwargs,
+        )
+
+    @staticmethod
+    def _results_volume(app_dict: dict) -> dict:
+        [volume] = [v for v in app_dict["spec"]["volumes"] if v["name"] == "batch-job-results"]
+        return volume
+
+    @staticmethod
+    def _results_mounts(app_dict: dict) -> list:
+        return [
+            mount
+            for role in ["driver", "executor"]
+            for mount in app_dict["spec"][role]["volumeMounts"]
+            if mount["name"] == "batch-job-results"
+        ]
+
+    def test_per_job_volume_by_default(self):
+        """Without a shared PVC: claim the per job PVC and mount it as a whole."""
+        app_dict = self._render()
+
+        assert self._results_volume(app_dict) == {
+            "name": "batch-job-results",
+            "persistentVolumeClaim": {"claimName": "a-1234", "readOnly": False},
+        }
+        mounts = self._results_mounts(app_dict)
+        assert len(mounts) == 2  # driver + executor
+        for mount in mounts:
+            assert mount == {"name": "batch-job-results", "mountPath": "/batch_jobs/j-abc"}
+            assert "subPath" not in mount
+
+    def test_shared_results_pvc(self):
+        """With a shared PVC: claim that one and mount only the job's own subPath of it."""
+        app_dict = self._render(shared_results_pvc="openeo-batch-results")
+
+        assert self._results_volume(app_dict) == {
+            "name": "batch-job-results",
+            "persistentVolumeClaim": {"claimName": "openeo-batch-results", "readOnly": False},
+        }
+        mounts = self._results_mounts(app_dict)
+        assert len(mounts) == 2  # driver + executor
+        for mount in mounts:
+            # The mount path is the same as without a shared PVC, so the batch job sees no difference.
+            assert mount == {
+                "name": "batch-job-results",
+                "mountPath": "/batch_jobs/j-abc",
+                "subPath": "j-abc",
+            }
+
+    def test_no_results_volume_without_fuse_mount(self):
+        app_dict = k8s_render_manifest_template(
+            "sparkapplication.yaml.j2",
+            propagatable_web_app_driver_envars={},
+            job_name="a-1234",
+            job_id_full="j-abc",
+            fuse_mount_batchjob_s3_bucket=False,
+            shared_results_pvc="openeo-batch-results",
+        )
+
+        assert [v for v in app_dict["spec"]["volumes"] if v["name"] == "batch-job-results"] == []
+        assert self._results_mounts(app_dict) == []
+
+
+def test_k8s_sparkapplication_dict_custom_open_telemetry_prometheus_port(backend_config_path):
+    app_dict = k8s_render_manifest_template(
+        "sparkapplication.yaml.j2",
+        propagatable_web_app_driver_envars={},
+        open_telemetry_prometheus_port=19464,
+    )
+
+    assert app_dict["spec"]["executor"]["ports"] == [
+        {"containerPort": 19464, "name": "prom-scala", "protocol": "TCP"},
+        {"containerPort": 9465, "name": "prom-python", "protocol": "TCP"},
+    ]
+    assert "-Dotel.exporter.prometheus.port=19464" in app_dict["spec"]["executor"]["javaOptions"]
+
+    # Kubernetes requires port names to be a valid IANA_SVC_NAME (at most 15 characters)
+    for port in app_dict["spec"]["executor"]["ports"]:
+        assert len(port["name"]) <= 15
+        assert re.fullmatch("[a-z0-9]([a-z0-9-]*[a-z0-9])?", port["name"])
+
+
+def test_k8s_sparkapplication_dict_gdal_envars(backend_config_path):
+    """
+    Make sure GDAL environment variables are present for driver and executor
+    """
+    app_dict = k8s_render_manifest_template(
+        "sparkapplication.yaml.j2",
+        propagatable_web_app_driver_envars={},
+        aws_access_key_id="akid",
+        aws_secret_access_key="mysec",
+        aws_endpoint="s3.localhost",
+        aws_region="eodata",
+        aws_https="TRUE",
+    )
+
+    expected_env_values = [
+        {
+            "name": "AWS_ACCESS_KEY_ID",
+            "value": "akid",
+        },
+        {
+            "name": "AWS_SECRET_ACCESS_KEY",
+            "value": "mysec",
+        },
+        {
+            "name": "AWS_S3_ENDPOINT",
+            "value": "s3.localhost",
+        },
+        {
+            "name": "AWS_DEFAULT_REGION",
+            "value": "eodata",
+        },
+        {
+            "name": "AWS_REGION",
+            "value": "eodata",
+        },
+        {
+            "name": "AWS_HTTPS",
+            "value": "TRUE",
+        },
+        {
+            "name": "AWS_VIRTUAL_HOSTING",
+            "value": "FALSE",
+        },
+    ]
+
+    for spark_component in ["driver", "executor"]:
+        spark_component_env = app_dict["spec"][spark_component]["env"]
+
+        assert spark_component_env == dirty_equals.Contains(*expected_env_values)
+
+
+def test_k8s_sparkapplication_dict_gdal_envars_with_proxy(backend_config_path):
+    """
+    Make sure adapted GDAL environment variables are present for driver and executor and make sure other
+    environment variables are NOT set.
+    """
+    app_dict = k8s_render_manifest_template(
+        "sparkapplication.yaml.j2",
+        propagatable_web_app_driver_envars={},
+        force_s3proxy=True,
+        aws_role_arn="arn:aws:iam:::role/my-role",
+        aws_web_identity_token_file="/tmp/token",
+        s3_proxy_endpoint="s3.localhost",
+        sts_proxy_endpoint="sts.localhost",
+        aws_region="eodata",
+        aws_https="TRUE",
+    )
+
+    expected_env_values = [
+        {
+            "name": "AWS_ROLE_ARN",
+            "value": "arn:aws:iam:::role/my-role",
+        },
+        {
+            "name": "AWS_WEB_IDENTITY_TOKEN_FILE",
+            "value": "/tmp/token",
+        },
+        {
+            "name": "AWS_S3_ENDPOINT",
+            "value": "s3.localhost",
+        },
+        {
+            "name": "AWS_STS_ENDPOINT",
+            "value": "sts.localhost",
+        },
+        {
+            "name": "AWS_DEFAULT_REGION",
+            "value": "eodata",
+        },
+        {
+            "name": "AWS_REGION",
+            "value": "eodata",
+        },
+        {
+            "name": "AWS_HTTPS",
+            "value": "TRUE",
+        },
+        {
+            "name": "AWS_VIRTUAL_HOSTING",
+            "value": "FALSE",
+        },
+    ]
+
+    for spark_component in ["driver", "executor"]:
+        spark_component_env = app_dict["spec"][spark_component]["env"]
+
+        assert spark_component_env == dirty_equals.Contains(*expected_env_values)
+        for problem_env_vars in ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"]:
+            assert problem_env_vars not in [e["name"] for e in spark_component_env]
+
+
+def test_k8s_sparkapplication_layer_catalog_init_container_disabled(backend_config_path):
+    """
+    When layer_catalog_init_image is DISABLED (the default), no initContainer
+    should be added for the layer catalog in either driver or executor.
+    """
+    app_dict = k8s_render_manifest_template(
+        "sparkapplication.yaml.j2",
+        propagatable_web_app_driver_envars={},
+        layer_catalog_init_image="DISABLED",
+        layer_catalog_init_dir="/opt/layercatalogs",
+        layer_catalog_init_pull_policy="IfNotPresent",
+    )
+
+    for spark_component in ["driver", "executor"]:
+        init_containers = app_dict["spec"][spark_component].get("initContainers") or []
+        init_container_names = [c["name"] for c in init_containers]
+        assert "init-layercatalog" not in init_container_names
+
+
+def test_k8s_sparkapplication_layer_catalog_init_container_enabled(backend_config_path):
+    """
+    When layer_catalog_init_image is set to a real image, an initContainer named
+    init-layercatalog should be present in both driver and executor with the correct
+    image, pull policy, TARGET_DIR env var, volume mount, and resource limits.
+    """
+    app_dict = k8s_render_manifest_template(
+        "sparkapplication.yaml.j2",
+        propagatable_web_app_driver_envars={},
+        layer_catalog_init_image="my-registry/layer-catalog-init:v1.2.3",
+        layer_catalog_init_dir="/opt/layercatalogs",
+        layer_catalog_init_pull_policy="IfNotPresent",
+    )
+
+    expected_init_container = {
+        "name": "init-layercatalog",
+        "image": "my-registry/layer-catalog-init:v1.2.3",
+        "imagePullPolicy": "IfNotPresent",
+        "env": [{"name": "TARGET_DIR", "value": "/opt/layercatalogs"}],
+        "volumeMounts": [{"name": "layercatalogs", "mountPath": "/opt/layercatalogs"}],
+        "resources": {
+            "requests": {"cpu": "50m", "memory": "64Mi"},
+            "limits": {"cpu": "200m", "memory": "64Mi"},
+        },
+    }
+
+    for spark_component in ["driver", "executor"]:
+        init_containers = app_dict["spec"][spark_component].get("initContainers", [])
+        init_container_names = [c["name"] for c in init_containers]
+        assert (
+            "init-layercatalog" in init_container_names
+        ), f"init-layercatalog not found in {spark_component} initContainers"
+        actual = next(c for c in init_containers if c["name"] == "init-layercatalog")
+        assert actual == expected_init_container
+
+
+def test_k8s_sparkapplication_layer_catalog_init_container_custom_pull_policy(backend_config_path):
+    """
+    The imagePullPolicy of the init container should reflect the value passed in,
+    e.g. Always instead of the IfNotPresent default.
+    """
+    app_dict = k8s_render_manifest_template(
+        "sparkapplication.yaml.j2",
+        propagatable_web_app_driver_envars={},
+        layer_catalog_init_image="my-registry/layer-catalog-init:latest",
+        layer_catalog_init_dir="/opt/layercatalogs",
+        layer_catalog_init_pull_policy="Always",
+    )
+
+    for spark_component in ["driver", "executor"]:
+        init_containers = app_dict["spec"][spark_component].get("initContainers", [])
+        actual = next((c for c in init_containers if c["name"] == "init-layercatalog"), None)
+        assert actual is not None
+        assert actual["imagePullPolicy"] == "Always"
+
+
+def test_k8s_sparkapplication_layer_catalog_volume_disabled(backend_config_path):
+    """
+    When layer_catalog_init_image is DISABLED, no layercatalogs volume should
+    be present in spec.volumes, and no layercatalogs volumeMount in driver or executor.
+    """
+    app_dict = k8s_render_manifest_template(
+        "sparkapplication.yaml.j2",
+        propagatable_web_app_driver_envars={},
+        layer_catalog_init_image="DISABLED",
+        layer_catalog_init_dir="/opt/layercatalogs",
+        layer_catalog_init_pull_policy="IfNotPresent",
+    )
+
+    volume_names = [v["name"] for v in app_dict["spec"].get("volumes", [])]
+    assert "layercatalogs" not in volume_names
+
+    for spark_component in ["driver", "executor"]:
+        mount_names = [m["name"] for m in app_dict["spec"][spark_component].get("volumeMounts", [])]
+        assert "layercatalogs" not in mount_names
+
+
+def test_k8s_sparkapplication_layer_catalog_volume_enabled(backend_config_path):
+    """
+    When layer_catalog_init_image is set, a layercatalogs emptyDir volume should
+    be present in spec.volumes, and a corresponding volumeMount in both driver
+    and executor so the Spark operator propagates the volume into the pod spec.
+    """
+    app_dict = k8s_render_manifest_template(
+        "sparkapplication.yaml.j2",
+        propagatable_web_app_driver_envars={},
+        layer_catalog_init_image="my-registry/layer-catalog-init:latest",
+        layer_catalog_init_dir="/opt/layercatalogs",
+        layer_catalog_init_pull_policy="IfNotPresent",
+    )
+
+    volumes = app_dict["spec"].get("volumes", [])
+    volume_names = [v["name"] for v in volumes]
+    assert "layercatalogs" in volume_names
+    layercatalogs_volume = next(v for v in volumes if v["name"] == "layercatalogs")
+    assert layercatalogs_volume == {"name": "layercatalogs", "emptyDir": {}}
+
+    for spark_component in ["driver", "executor"]:
+        mounts = app_dict["spec"][spark_component].get("volumeMounts", [])
+        lc_mount = next((m for m in mounts if m["name"] == "layercatalogs"), None)
+        assert lc_mount is not None, (
+            f"layercatalogs volumeMount missing from {spark_component} - "
+            "Spark operator requires this to propagate the volume into the pod spec"
+        )
+        assert lc_mount["mountPath"] == "/opt/layercatalogs"
+
+
+class TestGpsBatchJobs:
+    _dummy_user = User(user_id="test_user", internal_auth_data={"access_token": "4cc3ss_t0k3n"})
+
+    @pytest.fixture
+    def job_registry(self) -> InMemoryJobRegistry:
+        return InMemoryJobRegistry()
+
+    @pytest.fixture
+    def backend_implementation(self, job_registry) -> GeoPySparkBackendImplementation:
+        return GeoPySparkBackendImplementation(
+            use_zookeeper=False,
+            elastic_job_registry=job_registry,
+        )
+
+    @pytest.fixture
+    def kube_no_zk(self, monkeypatch):
+        with gps_config_overrides(
+            setup_kerberos_auth=False,
+            yunikorn_user_specific_queues=True,  # avoid another call to ZK
+            batch_job_work_dir_root="/batch_jobs/",
+        ):
+            monkeypatch.setenv("KUBE", "TRUE")
+            yield
+
+    @pytest.fixture
+    def mock_non_swift_s3_bucket(self, mock_s3_resource):
+        """A bucket different from the default, configured one."""
+        bucket = mock_s3_resource.Bucket("openeo-non-swift-fake-bucketname")
+        bucket.create(CreateBucketConfiguration={"LocationConstraint": TEST_AWS_REGION_NAME})
+        yield bucket
+
+    @mock.patch("kubernetes.config.load_kube_config", return_value=mock.MagicMock())
+    @mock.patch("kubernetes.config.load_incluster_config", return_value=mock.MagicMock())
+    @mock.patch("kubernetes.client.CoreV1Api.read_namespaced_pod", return_value=mock.MagicMock())
+    @mock.patch("kubernetes.client.CustomObjectsApi.create_namespaced_custom_object", return_value=mock.MagicMock())
+    @mock.patch(
+        "kubernetes.client.CustomObjectsApi.get_namespaced_custom_object",
+        return_value={"status": {"applicationState": {"state": K8S_SPARK_APP_STATE.SUBMITTED}}},
+    )
+    def test_start_k8s_job_persists_results_metadata_uri_and_infra_id(
+        self,
+        mock_get_spark_pod_status,
+        mock_create_spark_pod,
+        mock_get_pod_image,
+        mock_k8s_config_incluster_config,
+        mock_k8s_config_load_kube_config,
+        kube_no_zk,
+        backend_implementation,
+        job_registry,
+        mock_s3_bucket,
+        fast_sleep,
+        monkeypatch,
+    ):
+        monkeypatch.setenv("ETL_INFRA_ID", "my-test-dev")
+        with gps_config_overrides(infra_id=GpsBackendConfig().infra_id):
+            self._create_dummy_batch_job(backend_implementation, self._dummy_user)
+
+            job_id, job = next(iter(job_registry.db.items()))
+            assert job.get("results_metadata_uri") is None
+
+            backend_implementation.batch_jobs.start_job(job_id, self._dummy_user)
+        mock_create_spark_pod.assert_called_once()
+        assert job.get("results_metadata_uri") == f"s3://{mock_s3_bucket.name}/batch_jobs/{job_id}/job_metadata.json"
+        assert job["infra_id"] == "my-test-dev"
+
+    @mock.patch("kubernetes.config.load_kube_config", return_value=mock.MagicMock())
+    @mock.patch("kubernetes.config.load_incluster_config", return_value=mock.MagicMock())
+    @mock.patch("kubernetes.client.CoreV1Api.read_namespaced_pod", return_value=mock.MagicMock())
+    @mock.patch("kubernetes.client.CoreV1Api.create_namespaced_secret", return_value=mock.MagicMock())
+    @mock.patch("kubernetes.client.CoreV1Api.patch_namespaced_secret", return_value=mock.MagicMock())
+    @mock.patch(
+        "kubernetes.client.CustomObjectsApi.create_namespaced_custom_object",
+        return_value={
+            "apiVersion": "sparkoperator.k8s.io/v1beta2",
+            "kind": "SparkApplication",
+            "metadata": {"name": "a-1234", "uid": "cafe-1234"},
+        },
+    )
+    @mock.patch(
+        "kubernetes.client.CustomObjectsApi.get_namespaced_custom_object",
+        return_value={"status": {"applicationState": {"state": K8S_SPARK_APP_STATE.SUBMITTED}}},
+    )
+    def test_start_k8s_job_adopts_batch_job_cfg_secret(
+        self,
+        mock_get_spark_pod_status,
+        mock_create_spark_pod,
+        mock_patch_secret,
+        mock_create_secret,
+        mock_get_pod_image,
+        mock_k8s_config_incluster_config,
+        mock_k8s_config_load_kube_config,
+        kube_no_zk,
+        backend_implementation,
+        job_registry,
+        mock_s3_bucket,
+        fast_sleep,
+    ):
+        """The batch job config secret is created before the Spark application, and adopted by it afterwards."""
+        with gps_config_overrides(provide_s3_profiles_and_tokens=True):
+            self._create_dummy_batch_job(backend_implementation, self._dummy_user)
+            job_id, job = next(iter(job_registry.db.items()))
+
+            backend_implementation.batch_jobs.start_job(job_id, self._dummy_user)
+
+        # Job started as usual.
+        assert job["status"] == JOB_STATUS.QUEUED
+        assert job["application_id"] is not None
+        mock_create_secret.assert_called_once()
+        mock_create_spark_pod.assert_called_once()
+
+        # And the secret is now owned by the Spark application.
+        secret_name = f"cfg-{job['application_id']}"
+        mock_patch_secret.assert_called_once()
+        _, kwargs = mock_patch_secret.call_args
+        assert kwargs["name"] == secret_name
+        assert kwargs["body"] == {
+            "metadata": {
+                "ownerReferences": [
+                    {
+                        "apiVersion": "sparkoperator.k8s.io/v1beta2",
+                        "kind": "SparkApplication",
+                        "name": "a-1234",
+                        "uid": "cafe-1234",
+                        "controller": False,
+                        "blockOwnerDeletion": False,
+                    }
+                ]
+            }
+        }
+
+    @pytest.mark.parametrize(
+        ["shared_results_pvc", "expect_per_job_volume"],
+        [
+            (None, True),  # legacy behaviour: a PV and PVC per batch job
+            ("openeo-batch-results", False),  # shared PVC: nothing to create per batch job
+        ],
+    )
+    @mock.patch("kubernetes.config.load_kube_config", return_value=mock.MagicMock())
+    @mock.patch("kubernetes.config.load_incluster_config", return_value=mock.MagicMock())
+    @mock.patch("kubernetes.client.CoreV1Api.read_namespaced_pod", return_value=mock.MagicMock())
+    @mock.patch("kubernetes.client.CoreV1Api.create_persistent_volume", return_value=mock.MagicMock())
+    @mock.patch("kubernetes.client.CoreV1Api.create_namespaced_persistent_volume_claim", return_value=mock.MagicMock())
+    @mock.patch("kubernetes.client.CustomObjectsApi.create_namespaced_custom_object", return_value=mock.MagicMock())
+    @mock.patch(
+        "kubernetes.client.CustomObjectsApi.get_namespaced_custom_object",
+        return_value={"status": {"applicationState": {"state": K8S_SPARK_APP_STATE.SUBMITTED}}},
+    )
+    def test_start_k8s_job_results_volume(
+        self,
+        mock_get_spark_pod_status,
+        mock_create_spark_pod,
+        mock_create_pvc,
+        mock_create_pv,
+        mock_get_pod_image,
+        mock_k8s_config_incluster_config,
+        mock_k8s_config_load_kube_config,
+        kube_no_zk,
+        backend_implementation,
+        job_registry,
+        mock_s3_bucket,
+        fast_sleep,
+        shared_results_pvc,
+        expect_per_job_volume,
+    ):
+        """A per job PV/PVC is only created when there is no shared results PVC to mount instead."""
+        with gps_config_overrides(fuse_mount_batchjob_s3_bucket=True, shared_results_pvc=shared_results_pvc):
+            self._create_dummy_batch_job(backend_implementation, self._dummy_user)
+            job_id, job = next(iter(job_registry.db.items()))
+
+            backend_implementation.batch_jobs.start_job(job_id, self._dummy_user)
+
+        # Job is started either way.
+        assert job["status"] == JOB_STATUS.QUEUED
+        mock_create_spark_pod.assert_called_once()
+
+        assert mock_create_pv.called is expect_per_job_volume
+        assert mock_create_pvc.called is expect_per_job_volume
+
+    @pytest.mark.parametrize(
+        ["shared_results_pvc", "expect_per_job_volume"],
+        [(None, True), ("openeo-batch-results", False)],
+    )
+    @mock.patch("kubernetes.config.load_kube_config", return_value=mock.MagicMock())
+    @mock.patch("kubernetes.config.load_incluster_config", return_value=mock.MagicMock())
+    @mock.patch("kubernetes.client.CoreV1Api.delete_persistent_volume", return_value=mock.MagicMock())
+    @mock.patch("kubernetes.client.CoreV1Api.delete_namespaced_persistent_volume_claim", return_value=mock.MagicMock())
+    @mock.patch("kubernetes.client.CustomObjectsApi.delete_namespaced_custom_object", return_value=mock.MagicMock())
+    def test_cancel_k8s_job_results_volume(
+        self,
+        mock_delete_spark_pod,
+        mock_delete_pvc,
+        mock_delete_pv,
+        mock_k8s_config_incluster_config,
+        mock_k8s_config_load_kube_config,
+        kube_no_zk,
+        backend_implementation,
+        job_registry,
+        shared_results_pvc,
+        expect_per_job_volume,
+    ):
+        """The shared results PVC outlives individual jobs, so it must never be deleted when cancelling one."""
+        self._create_dummy_batch_job(backend_implementation, self._dummy_user)
+        job_id, job = next(iter(job_registry.db.items()))
+        job["status"] = JOB_STATUS.RUNNING
+        job["application_id"] = "a-1234"
+
+        with gps_config_overrides(fuse_mount_batchjob_s3_bucket=True, shared_results_pvc=shared_results_pvc):
+            backend_implementation.batch_jobs.cancel_job(job_id, self._dummy_user.user_id)
+
+        mock_delete_spark_pod.assert_called_once()
+        assert mock_delete_pv.called is expect_per_job_volume
+        assert mock_delete_pvc.called is expect_per_job_volume
+
+    def test_getters_read_from_s3_results_metadata_uri(
+        self,
+        kube_no_zk,
+        backend_implementation,
+        job_registry,
+        mock_non_swift_s3_bucket,
+    ):
+        self._create_dummy_batch_job(backend_implementation, self._dummy_user)
+
+        job_id, job = next(iter(job_registry.db.items()))
+
+        job_metadata_json_key = f"batch_jobs/{job_id}/job_metadata.json"
+        mock_non_swift_s3_bucket.put_object(
+            Key=job_metadata_json_key,
+            Body=json.dumps(
+                {
+                    "items": [
+                        {
+                            "id": "b9510f20-92a0-4947-a4b6-a6a934a0015e",
+                            "assets": {"openEO": {"href": "s3://bucket/path/to/openEO.tif"}},
+                        }
+                    ],
+                    "epsg": 32631,
+                    "providers": [{"name": "VITO"}],
+                }
+            ).encode("utf-8"),
+        )
+        job["status"] = JOB_STATUS.FINISHED
+        job["results_metadata_uri"] = f"s3://{mock_non_swift_s3_bucket.name}/{job_metadata_json_key}"
+
+        metadata = backend_implementation.batch_jobs.get_job_info(
+            job_id=job_id, user_id=self._dummy_user.user_id
+        )
+        assert metadata.epsg == 32631
+
+        result_metadata = backend_implementation.batch_jobs.get_result_metadata(
+            job_id=job_id, user_id=self._dummy_user.user_id
+        )
+        assert [provider["name"] for provider in result_metadata.providers] == ["VITO"]
+        assert result_metadata.items == {
+            "b9510f20-92a0-4947-a4b6-a6a934a0015e": {
+                "id": "b9510f20-92a0-4947-a4b6-a6a934a0015e",
+                "assets": {"openEO": {"href": "s3://bucket/path/to/openEO.tif"}},
+            }
+        }
+
+    @pytest.mark.parametrize(
+        "results_metadata_uri_prefix",
+        [
+            "file:",
+            "file://",
+        ],
+    )
+    def test_get_result_assets_reads_from_file_results_metadata_uri(
+        self,
+        kube_no_zk,
+        backend_implementation,
+        job_registry,
+        tmp_path,
+        results_metadata_uri_prefix,
+    ):
+        self._create_dummy_batch_job(backend_implementation, self._dummy_user)
+
+        job_id, job = next(iter(job_registry.db.items()))
+
+        job_metadata_json_path = tmp_path / "job_metadata.json"
+        with open(job_metadata_json_path, "w") as f:
+            f.write('{"assets": {"openEO": {"href": "file:///path/to/openEO.tif", "bands": [{"name": "Flat:2" , "statistics": {"maximum": 2.0, "mean": 0.84375, "minimum": 0.0, "stddev": 0.98771753932994, "valid_percent": 100.0} } ]}}}')
+        job["status"] = JOB_STATUS.FINISHED
+        job["results_metadata_uri"] = f"{results_metadata_uri_prefix}{job_metadata_json_path}"
+
+        asset_key, asset = next(
+            iter(
+                backend_implementation.batch_jobs.get_result_assets(
+                    job_id=job_id, user_id=self._dummy_user.user_id
+                ).items()
+            )
+        )
+
+        assert asset_key == "openEO"
+        assert asset["href"] == "file:///path/to/openEO.tif"
+        assert asset["bands"] == [Band(name="Flat:2",statistics={"maximum": 2.0, "mean": 0.84375, "minimum": 0.0, "stddev": 0.98771753932994, "valid_percent": 100.0})]
+
+    def test_get_result_metadata(self, kube_no_zk, backend_implementation, job_registry, tmp_path):
+        job_metadata = self._create_dummy_batch_job(backend_implementation, self._dummy_user)
+        job_id = job_metadata.id
+
+        job_metadata_json_path = tmp_path / "job_metadata.json"
+        with open(job_metadata_json_path, "w") as f:
+            json.dump(
+                {
+                    "items": [
+                        {"id": "item1", "assets": {"openEO": {"href": "file:///path/to/openEO.tif"}}},
+                    ],
+                    "links": [
+                        {"rel": "aux", "href": "file:///path/to/aux.json"},
+                    ],
+                },
+                fp=f,
+            )
+        job_registry.set_status(job_id=job_id, status=JOB_STATUS.FINISHED)
+        job_registry.set_results_metadata_uri(job_id=job_id, results_metadata_uri=f"file://{job_metadata_json_path}")
+
+        result_metadata = backend_implementation.batch_jobs.get_result_metadata(
+            job_id=job_id, user_id=self._dummy_user.user_id
+        )
+        assert result_metadata.items == {
+            "item1": {
+                "id": "item1",
+                "assets": {
+                    "openEO": {
+                        "href": "file:///path/to/openEO.tif",
+                        "output_dir": dirty_equals.IsStr(regex="/batch_jobs/j-.*"),
+                    }
+                },
+            }
+        }
+        assert result_metadata.links == [
+            {
+                "rel": "aux",
+                "href": "file:///path/to/aux.json",
+            }
+        ]
+
+    @staticmethod
+    def _create_dummy_batch_job(backend_implementation, user) -> BatchJobMetadata:
+        return backend_implementation.batch_jobs.create_job(
+            user=user,
+            process={
+                "process_graph": {
+                    "pi1": {
+                        "process_id": "pi",
+                        "result": True,
+                    }
+                }
+            },
+            api_version="1.2",
+            metadata={},
+            job_options={"log_level": "info"},
+        )
+
+    def test_determine_container_image_from_process_graph_no_udfs(self):
+        """No UDFs -> use default image (e.g. highest Python version)"""
+        gps_batch_jobs = GpsBatchJobs(catalog=None, jvm=None, udf_runtimes=GpsUdfRuntimes())
+        pg = {
+            "add35": {"process_id": "add", "arguments": {"x": 3, "y": 5}, "result": True},
+        }
+        image = gps_batch_jobs._determine_container_image_from_process_graph(pg)
+        assert image == "docker.test/openeo-geopy311:7.9.11"
+
+    @pytest.mark.parametrize(
+        ["args", "expected", "expected_warning"],
+        [
+            ({"runtime": "Python"}, "docker.test/openeo-geopy311:7.9.11", None),
+            ({"runtime": "Python", "version": "3"}, "docker.test/openeo-geopy311:7.9.11", None),
+            ({"runtime": "Python", "version": "3.8"}, "docker.test/openeo-geopy38:3.5.8", None),
+            ({"runtime": "Python", "version": "3.11"}, "docker.test/openeo-geopy311:7.9.11", None),
+            (
+                {"runtime": "Python", "version": "4.5"},
+                "docker.test/openeo-geopy311:7.9.11",
+                dirty_equals.IsStr(regex="No image matches all runtimes.*"),
+            ),
+            (
+                {"runtime": "Pithoon", "version": "3.8"},
+                "docker.test/openeo-geopy311:7.9.11",
+                dirty_equals.IsStr(regex="No image matches all runtimes.*"),
+            ),
+        ],
+    )
+    def test_determine_container_image_from_process_graph_with_udf_runtime(
+        self, args, expected, expected_warning, caplog
+    ):
+        caplog.set_level(logging.WARNING)
+        gps_batch_jobs = GpsBatchJobs(catalog=None, jvm=None, udf_runtimes=GpsUdfRuntimes())
+        pg = {
+            "runudf": {
+                "process_id": "run_udf",
+                "arguments": {"data": [1, 2, 3], "udf": "hello world", **args},
+                "result": True,
+            },
+        }
+        image = gps_batch_jobs._determine_container_image_from_process_graph(pg)
+        assert image == expected
+
+        if expected_warning:
+            assert expected_warning in caplog.messages
+        else:
+            assert caplog.messages == []
+
+
+class TestGpsUdfRuntimes:
+    def test_get_udf_runtimes(self):
+        runtimes = GpsUdfRuntimes()
+        assert runtimes.get_udf_runtimes() == {
+            "Python": {
+                "title": "Python",
+                "type": "language",
+                "default": "3",
+                "versions": {
+                    "3.8": {"libraries": {"numpy": {"version": "1.22.4"}, "pandas": {"version": "1.5.3"}}},
+                    "3.11": {"libraries": {"numpy": {"version": "2.3.3"}, "pandas": {"version": "2.3.3"}}},
+                    "3": {"libraries": {"numpy": {"version": "2.3.3"}, "pandas": {"version": "2.3.3"}}},
+                },
+            },
+            "Python-Jep": {
+                "title": "Python-Jep",
+                "type": "language",
+                "default": "3.8",
+                "versions": {
+                    "3.8": {"libraries": {"numpy": {"version": "1.22.4"}, "pandas": {"version": "1.5.3"}}},
+                },
+            },
+        }

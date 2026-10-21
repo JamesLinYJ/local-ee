@@ -1,0 +1,641 @@
+import unittest
+
+import pytest
+from pathlib import Path
+from unittest import skip
+
+import rasterio
+
+from openeo_driver.backend import LoadParameters
+from openeo_driver.utils import EvalEnv
+
+if __name__ == "__main__":
+    import openeogeotrellis.deploy.local
+
+    # Allow to run from commandline:
+    # /usr/bin/time -v python3 tests/data_collections/test_sentinel3.py
+    # python3 -m memory_profiler tests/data_collections/test_sentinel3.py
+    # The SparkContext is only needed to make imports work, but is actually not used for the tests
+    openeogeotrellis.deploy.local.setup_environment()
+
+from openeogeotrellis.collections.sentinel3 import *
+from openeogeotrellis.collections.sentinel3 import _get_acquisition_key, _map_attributes_for_stac, _filter_urls_by_timeliness
+from numpy.testing import assert_allclose
+from unittest.mock import Mock
+
+from tests.data import get_test_data_file
+
+def test_read_single():
+
+    tiles = [
+        {
+            "key":{
+                "col":10,
+                "row":10,
+                "instant":100,
+
+            },
+            "key_extent":{
+                "xmin":3.1,"xmax":7.2,"ymin":50.1,"ymax":55.2
+            },
+            "key_epsg":4326
+        }
+    ]
+    result = read_product(
+        (
+            Path(__file__).parent.parent
+            / "data/binary/Sentinel-3/S3A_SL_2_LST____20240129T100540_20240129T100840_20240129T121848_0179_108_236_2160_PS1_O_NR_004.SEN3",
+            tiles,
+        ),
+        SLSTR_PRODUCT_TYPE,
+        ["LST_in:LST"],
+        tile_size=1024,
+        resolution=0.008928571428571,
+    )
+
+
+    from rasterio.transform import from_bounds
+
+    arr = result[0][1].cells
+
+    transform = from_bounds(3.1, 50.1, 7.2, 55.2, arr.shape[2], arr.shape[1])
+
+
+    # new_dataset = rasterio.open('test1.tif', 'w', driver='GTiff',
+    #                             height=arr.shape[1], width=arr.shape[2],
+    #                             count=1, dtype=str(arr.dtype),
+    #                             crs=CRS.from_epsg(4326),
+    #                             transform=transform)
+    #
+    # new_dataset.write(arr)
+    # new_dataset.close()
+
+
+def test_read_single_binned():
+    tiles = [
+        {
+            "key":{
+                "col":10,
+                "row":10,
+                "instant":100,
+
+            },
+            "key_extent":{
+                "xmin":3.1,"xmax":7.2,"ymin":50.1,"ymax":55.2
+            },
+            "key_epsg":4326
+        }
+    ]
+    result = read_product(
+        (
+            Path(__file__).parent.parent
+            / "data/binary/Sentinel-3/S3A_SL_2_LST____20240129T100540_20240129T100840_20240129T121848_0179_108_236_2160_PS1_O_NR_004.SEN3",
+            tiles,
+        ),
+        SLSTR_PRODUCT_TYPE,
+        ["LST_in:LST"],
+        tile_size=1024,
+        resolution=0.008928571428571,
+        reprojection_type=REPROJECTION_TYPE_BINNING,
+        binning_args={
+            KEY_SUPER_SAMPLING: 3,
+        }
+    )
+
+    arr = result[0][1].cells
+    return
+
+def test_read_masked_binned():
+    tiles = [
+        {
+            "key":{
+                "col":10,
+                "row":10,
+                "instant":1717326516089,
+            },
+            "key_extent":{
+                "xmin":13.857467,"xmax":18.10,"ymin":47.096,"ymax":47.597925
+            },
+            "key_epsg":4326
+        }
+    ]
+    result = read_product(
+        (
+            Path(__file__).parent.parent
+            / "data/binary/Sentinel-3/S3A_SL_2_LST____20240129T100540_20240129T100840_20240129T121848_0179_108_236_2160_PS1_O_NR_004.SEN3",
+            tiles,
+        ),
+        SLSTR_PRODUCT_TYPE,
+        ["LST_in:LST", "flags_in:cloud_in"],
+        tile_size=1024,
+        resolution=0.008928571428571,
+        reprojection_type=REPROJECTION_TYPE_BINNING,
+        binning_args={
+            KEY_SUPER_SAMPLING: 3,
+            KEY_FLAG_BAND: "cloud_in",
+            KEY_FLAG_BITMASK: 0xff,
+        }
+    )
+
+    arr = result[0][1].cells
+
+
+def test_read_single_edge():
+
+    tiles = [
+        {
+            "key":{
+                "col":10,
+                "row":10,
+                "instant":100,
+
+            },
+            "key_extent":{
+                "xmin":15.86,"xmax":18.10,"ymin":47.096,"ymax":47.597
+            },
+            "key_epsg":4326
+        }
+    ]
+    product_dir = Path(
+        __file__).parent.parent / "data/binary/Sentinel-3/S3A_SL_2_LST____20240129T100540_20240129T100840_20240129T121848_0179_108_236_2160_PS1_O_NR_004.SEN3"
+    result = read_product(
+        (product_dir, tiles),
+        SLSTR_PRODUCT_TYPE,
+        ["LST_in:LST", "geometry_tn:solar_zenith_tn"],
+        tile_size=1024,
+        resolution=0.008928571428571,
+    )
+
+    assert len(result) == 0
+
+def test_read_single_edge_with_some_data():
+
+    tiles = [
+        {
+            "key":{
+                "col":10,
+                "row":10,
+                "instant":1717326516089,
+            },
+            "key_extent":{
+                "xmin":13.857467,"xmax":18.09853842858,"ymin":47.096,"ymax":47.596
+            },
+            "key_epsg":4326
+        }
+    ]
+    product_dir = Path(
+        __file__).parent.parent / "data/binary/Sentinel-3/S3A_SL_2_LST____20240129T100540_20240129T100840_20240129T121848_0179_108_236_2160_PS1_O_NR_004.SEN3"
+    result = read_product((product_dir, tiles), SLSTR_PRODUCT_TYPE, ["LST_in:LST",  "geometry_tn:solar_zenith_tn"], 1024, 0.008928571428571)
+
+    assert len(result) == 1
+
+    spacetimekey = result[0][0]
+
+    #instant should be rounded to the minute
+    assert spacetimekey.instant == datetime(2024, 6, 2, 11, 8,0)
+    # from rasterio.transform import from_origin, from_bounds
+
+    arr = result[0][1].cells
+
+    # transform = from_bounds(13.857467, 47.096, 18.10, 47.597925, arr.shape[2], arr.shape[1])
+    #
+    # new_dataset = rasterio.open('ref_file_edge_shift.tif', 'w', driver='GTiff',
+    #                              height=arr.shape[1], width=arr.shape[2],
+    #                             count=2, dtype=str(arr.dtype),
+    #                             crs=CRS.from_epsg(4326),
+    #                             transform=transform)
+    #
+    # new_dataset.write(arr)
+    # new_dataset.close()
+
+    expected_path =  get_test_data_file("binary/Sentinel-3/sentinel3_edge_ref.tif")
+
+    with rasterio.open(expected_path) as ds_ref:
+        expected_result = ds_ref.read()
+    #with rasterio.open(filename) as ds:
+        actual_result = arr
+        assert expected_result.shape == actual_result.shape
+        assert_allclose(expected_result, actual_result, atol=0.00001)
+
+
+@unittest.mock.patch("openeogeotrellis.collections.sentinel3.read_band")
+def test_mask_before_binning(mock_read_band):
+    value_to_be_masked = 5
+    value_to_keep = 1
+    fill_value = np.nan
+    mask_set = 4
+
+    shape = (4, 5)
+    out_shape = shape
+
+    band_data = np.full(shape, value_to_keep, dtype=np.float32)
+    mask_data = np.zeros(shape, dtype=np.uint16)
+
+    band_data[3, 3] = value_to_be_masked
+    band_data[3, 4] = value_to_be_masked
+    mask_data[3, 3] = mask_set
+    mask_data[3, 4] = mask_set
+
+    def return_value(_in_file, in_band, *args, **kwargs):
+        data, attrs = None, {}
+        if in_band == "CLOUD_flags":
+            data = mask_data
+            attrs["dtype"] = "uint8"
+        elif in_band == "SDR_Oa04":
+            data = band_data
+            attrs["dtype"] = "float32"
+        else:
+            raise ValueError(f"in_band '{in_band}' not recognized")
+
+        return data, {"dtype": "uint"}
+
+    mock_read_band.side_effect = return_value
+    #lat = np.tile(np.arange(shape[0], dtype=np.float64), (shape[1], 1))
+    lat = np.tile(np.arange(shape[0], 0, -1, dtype=np.float64), (shape[1], 1)).T
+    lon = np.tile(np.arange(shape[1], dtype=np.float64), (shape[0], 1))
+    source_coordinates = np.stack([lon, lat], axis=0)
+    target_coordinates = np.stack([lon, lat], axis=2)
+
+    binned_data_vars = do_binning(
+        product_type=SYNERGY_PRODUCT_TYPE,
+        final_grid_resolution=1.0,
+        creo_path=Path("fake_path"),
+        band_names=["flags:CLOUD_flags", "Syn_Oa04_reflectance"],
+        source_coordinates=source_coordinates,
+        target_coordinates=target_coordinates,
+        data_mask=None,
+        angle_source_coordinates=None,
+        target_coordinates_with_rim=None,
+        angle_data_mask=None,
+        digital_numbers=True,
+        super_sampling=3,
+        flag_bitmask=np.uint16(0xff),
+        flag_band="CLOUD_flags",
+    )
+
+    assert binned_data_vars.shape == (2, *out_shape)
+    binned_band = binned_data_vars[1]
+    assert ((binned_band == value_to_keep) | np.isnan(binned_band)).all()
+    assert np.count_nonzero(np.isfinite(binned_band)) > 0
+
+
+@skip("requires mounting raster data.")
+def test_sentinel3_slstr_l2_lst(api110, tmp_path) -> None:
+    process_graph = {
+        "loadcollection1": {
+            "process_id": "load_collection",
+            "arguments": {
+                "id": "SENTINEL3_SLSTR_L2_LST",
+                "spatial_extent": {"west": 3.1, "south": 50.1, "east": 4.2, "north": 51.2},
+                "temporal_extent": ("2026-01-10T00:00:00Z", "2026-01-10T23:59:59Z"),
+                "bands": [
+                    "LST",
+                    "LST_uncertainty",
+                    "sunAzimuthAngles",
+                    "confidence_in",
+                    "exception",
+                    "viewAzimuthAngles",
+                    "viewZenithAngles",
+                ],
+            },
+            "result": True,
+        },
+    }
+    response = api110.check_result(process_graph)
+
+    output_file = tmp_path / "out.tif"
+    with output_file.open(mode="wb") as f:
+        f.write(response.data)
+
+    with rasterio.open(output_file) as ds:
+        print(ds.bounds)
+        assert ds.bounds.right == 4.207142857142804
+
+
+if __name__ == "__main__":
+    # Allow to run from commandline
+    test_read_single()
+
+
+def test_get_acquisition_key():
+    """Test getting acquisition key from STAC item properties."""
+    # Create mock items with properties
+    nrt_item = Mock()
+    nrt_item.properties = {"platform": "sentinel-3a", "sat:absolute_orbit": 51421}
+    assert _get_acquisition_key(nrt_item) == ("sentinel-3a", 51421)
+
+    # NTC item from same acquisition should have same key
+    ntc_item = Mock()
+    ntc_item.properties = {"platform": "sentinel-3a", "sat:absolute_orbit": 51421}
+    assert _get_acquisition_key(ntc_item) == ("sentinel-3a", 51421)
+
+    # Different acquisition
+    other_item = Mock()
+    other_item.properties = {"platform": "sentinel-3b", "sat:absolute_orbit": 40027}
+    assert _get_acquisition_key(other_item) == ("sentinel-3b", 40027)
+
+    # Missing properties should return (None, None)
+    incomplete_item = Mock()
+    incomplete_item.properties = {}
+    assert _get_acquisition_key(incomplete_item) == (None, None)
+
+
+def test_deduplicate_items_prefer_ntc_no_overlap():
+    """Test deduplication when NRT and NTC have different acquisitions (no overlap)."""
+    # Create mock items with different orbits
+    nrt_item1 = Mock()
+    nrt_item1.id = "NRT_1"
+    nrt_item1.properties = {"platform": "sentinel-3a", "sat:absolute_orbit": 51421}
+
+    nrt_item2 = Mock()
+    nrt_item2.id = "NRT_2"
+    nrt_item2.properties = {"platform": "sentinel-3a", "sat:absolute_orbit": 51422}
+
+    ntc_item1 = Mock()
+    ntc_item1.id = "NTC_1"
+    ntc_item1.properties = {"platform": "sentinel-3a", "sat:absolute_orbit": 51420}
+
+    items_by_collection = {
+        "NRT": [(nrt_item1, {}), (nrt_item2, {})],
+        "NTC": [(ntc_item1, {})],
+    }
+
+    result = deduplicate_items_prefer_ntc(items_by_collection)
+
+    # Should have all items since there's no overlap
+    assert len(result) == 3
+    # NTC item should be included
+    assert any(item.id == ntc_item1.id for item, _ in result)
+    # Both NRT items should be included
+    assert any(item.id == nrt_item1.id for item, _ in result)
+    assert any(item.id == nrt_item2.id for item, _ in result)
+
+
+def test_deduplicate_items_prefer_ntc_with_overlap():
+    """Test deduplication when same acquisition exists in both NRT and NTC."""
+    # Create mock items with same orbit (overlap)
+    nrt_item = Mock()
+    nrt_item.id = "NRT_overlapping"
+    nrt_item.properties = {"platform": "sentinel-3a", "sat:absolute_orbit": 51421}
+
+    ntc_item = Mock()
+    ntc_item.id = "NTC_overlapping"
+    ntc_item.properties = {"platform": "sentinel-3a", "sat:absolute_orbit": 51421}
+
+    # Different acquisition in NRT
+    nrt_item_unique = Mock()
+    nrt_item_unique.id = "NRT_unique"
+    nrt_item_unique.properties = {"platform": "sentinel-3a", "sat:absolute_orbit": 51422}
+
+    items_by_collection = {
+        "NRT": [(nrt_item, {}), (nrt_item_unique, {})],
+        "NTC": [(ntc_item, {})],
+    }
+
+    result = deduplicate_items_prefer_ntc(items_by_collection)
+
+    # Should have 2 items: NTC version of overlapping + unique NRT
+    assert len(result) == 2
+
+    # NTC item should be included
+    assert any(item.id == ntc_item.id for item, _ in result)
+
+    # Unique NRT item should be included
+    assert any(item.id == nrt_item_unique.id for item, _ in result)
+
+    # NRT version of overlapping acquisition should NOT be included
+    assert not any(item.id == nrt_item.id for item, _ in result)
+
+
+def test_deduplicate_items_prefer_ntc_all_overlap():
+    """Test deduplication when all NRT items have NTC equivalents."""
+    # Create mock items - all have NTC equivalents
+    nrt_item1 = Mock()
+    nrt_item1.id = "NRT_1"
+    nrt_item1.properties = {"platform": "sentinel-3a", "sat:absolute_orbit": 51421}
+
+    nrt_item2 = Mock()
+    nrt_item2.id = "NRT_2"
+    nrt_item2.properties = {"platform": "sentinel-3a", "sat:absolute_orbit": 51422}
+
+    ntc_item1 = Mock()
+    ntc_item1.id = "NTC_1"
+    ntc_item1.properties = {"platform": "sentinel-3a", "sat:absolute_orbit": 51421}
+
+    ntc_item2 = Mock()
+    ntc_item2.id = "NTC_2"
+    ntc_item2.properties = {"platform": "sentinel-3a", "sat:absolute_orbit": 51422}
+
+    items_by_collection = {
+        "NRT": [(nrt_item1, {}), (nrt_item2, {})],
+        "NTC": [(ntc_item1, {}), (ntc_item2, {})],
+    }
+
+    result = deduplicate_items_prefer_ntc(items_by_collection)
+
+    # Should have only 2 items: both NTC versions
+    assert len(result) == 2
+
+    # Both NTC items should be included
+    assert any(item.id == ntc_item1.id for item, _ in result)
+    assert any(item.id == ntc_item2.id for item, _ in result)
+
+    # No NRT items should be included
+    assert not any(item.id == nrt_item1.id for item, _ in result)
+    assert not any(item.id == nrt_item2.id for item, _ in result)
+
+
+def test_deduplicate_items_prefer_ntc_empty_collections():
+    """Test deduplication with empty collections."""
+    # Empty both
+    result = deduplicate_items_prefer_ntc({"NRT": [], "NTC": []})
+    assert len(result) == 0
+
+    # Only NRT
+    nrt_item = Mock()
+    nrt_item.id = "NRT_only"
+    nrt_item.properties = {"platform": "sentinel-3a", "sat:absolute_orbit": 51421}
+    result = deduplicate_items_prefer_ntc({"NRT": [(nrt_item, {})], "NTC": []})
+    assert len(result) == 1
+    assert result[0][0].id == nrt_item.id
+
+    # Only NTC
+    ntc_item = Mock()
+    ntc_item.id = "NTC_only"
+    ntc_item.properties = {"platform": "sentinel-3a", "sat:absolute_orbit": 51421}
+    result = deduplicate_items_prefer_ntc({"NRT": [], "NTC": [(ntc_item, {})]})
+    assert len(result) == 1
+    assert result[0][0].id == ntc_item.id
+
+
+def test_map_attributes_for_stac():
+    old_attributes = {"orbitDirection": "DESCENDING", "productType": "SL_2_LST___", "timeliness": "NT"}
+    converted_attributes = _map_attributes_for_stac(old_attributes)
+    assert converted_attributes == {
+        "sat:orbit_state": "descending",
+        "product:timeliness_category": "NT",
+    }
+
+
+def test_map_attributes_for_stac_no_warning(caplog):
+    old_attributes = {
+        "sat:orbit_state": "DESCENDING",
+        "product:type": "SL_2_LST___",
+        "product:timeliness_category": "NT",
+        "NON_EXISTING_PROPERTY": "some_value",
+    }
+    converted_attributes = _map_attributes_for_stac(old_attributes)
+    assert converted_attributes == {
+        "sat:orbit_state": "descending",
+        "product:timeliness_category": "NT",
+        "NON_EXISTING_PROPERTY": "some_value",
+    }
+    assert any("No mapping" in record.message for record in caplog.records)
+
+
+class TestFilterUrlsByTimeliness:
+    SYNERGY_URLS = [
+        "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-3-syn-2-syn-stc",
+        "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-3-syn-2-syn-ntc",
+    ]
+    SLSTR_URLS = [
+        "https://stac.opensearch.dataspace.copernicus.eu/v1/collections/sentinel-3-sl-2-lst-nrt",
+        "https://stac.opensearch.dataspace.copernicus.eu/v1/collections/sentinel-3-sl-2-lst-ntc",
+    ]
+
+    def test_filter_ntc(self):
+        result = _filter_urls_by_timeliness(self.SYNERGY_URLS, "NT")
+        assert result == [
+            "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-3-syn-2-syn-ntc",
+        ]
+
+    def test_filter_stc(self):
+        result = _filter_urls_by_timeliness(self.SYNERGY_URLS, "ST")
+        assert result == [
+            "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-3-syn-2-syn-stc",
+        ]
+
+    def test_filter_nrt(self):
+        result = _filter_urls_by_timeliness(self.SLSTR_URLS, "NR")
+        assert result == [
+            "https://stac.opensearch.dataspace.copernicus.eu/v1/collections/sentinel-3-sl-2-lst-nrt",
+        ]
+
+    def test_unknown_timeliness_returns_all(self):
+        result = _filter_urls_by_timeliness(self.SYNERGY_URLS, "UNKNOWN")
+        assert result == self.SYNERGY_URLS
+
+    def test_no_matching_url_returns_all(self):
+        """If timeliness is valid but no URL matches (e.g., NRT not available for SYNERGY), return all."""
+        result = _filter_urls_by_timeliness(self.SYNERGY_URLS, "NR")
+        assert result == self.SYNERGY_URLS
+
+
+def _create_synthetic_olci_product(path: Path) -> Path:
+    """Create a minimal OLCI L1B product with a full resolution grid and a (sub-sampled) tie point grid."""
+    product = path / "S3A_OL_1_EFR____SYNTHETIC.SEN3"
+    product.mkdir()
+
+    rows, columns = 40, 64
+    lon_1d = np.linspace(3.0, 6.15, columns)
+    lat_1d = np.linspace(52.0, 50.05, rows)
+    lon, lat = np.meshgrid(lon_1d, lat_1d)
+    geo_scale = 1e-6
+    xr.Dataset(
+        {
+            "latitude": (("rows", "columns"), np.round(lat / geo_scale).astype(np.int32), {"scale_factor": geo_scale}),
+            "longitude": (("rows", "columns"), np.round(lon / geo_scale).astype(np.int32), {"scale_factor": geo_scale}),
+        }
+    ).to_netcdf(product / "geo_coordinates.nc")
+    xr.Dataset(
+        {"Oa01_radiance": (("rows", "columns"), np.full((rows, columns), 100, dtype=np.uint16), {"scale_factor": 0.5, "add_offset": 0.0})}
+    ).to_netcdf(product / "Oa01_radiance.nc")
+
+    # tie point grid: every 8th column (the OLCI tie grid has a different resolution than the image grid)
+    tie_lon, tie_lat = np.meshgrid(np.linspace(2.5, 6.5, 9), np.linspace(52.5, 49.5, rows))
+    xr.Dataset(
+        {
+            "latitude": (("tie_rows", "tie_columns"), tie_lat),
+            "longitude": (("tie_rows", "tie_columns"), tie_lon),
+        }
+    ).to_netcdf(product / "tie_geo_coordinates.nc")
+
+    angle_scale = 1e-6
+    sza = 30.0 + (tie_lon - 2.5)  # linear in longitude
+    saa = np.where(tie_lon < 4.5, 179.0, -179.0)  # wraps around +/-180
+    xr.Dataset(
+        {
+            "SZA": (("tie_rows", "tie_columns"), np.round(sza / angle_scale).astype(np.uint32), {"scale_factor": angle_scale}),
+            "SAA": (("tie_rows", "tie_columns"), np.round(saa / angle_scale).astype(np.int32), {"scale_factor": angle_scale}),
+        }
+    ).to_netcdf(product / "tie_geometries.nc")
+
+    humidity = np.stack([np.full(tie_lon.shape, 10.0 * (level + 1)) for level in range(3)], axis=-1)
+    xr.Dataset(
+        {
+            "total_ozone": (("tie_rows", "tie_columns"), np.full(tie_lon.shape, 0.007, dtype=np.float32)),
+            "humidity": (("tie_rows", "tie_columns", "tie_pressure_levels"), humidity.astype(np.float32)),
+        }
+    ).to_netcdf(product / "tie_meteo.nc")
+    return product
+
+
+@pytest.mark.parametrize("reprojection_type", [DEFAULT_REPROJECTION_TYPE, REPROJECTION_TYPE_BINNING])
+def test_read_olci_tie_point_bands(tmp_path, reprojection_type):
+    product = _create_synthetic_olci_product(tmp_path)
+    resolution = 0.05
+    bbox = [3.5, 50.5, 5.5, 51.5]
+    band_names = [
+        "tie_geometries:SZA",
+        "Oa01_radiance",
+        "tie_geometries:SAA",
+        "tie_meteo:total_ozone",
+        "tie_meteo:humidity:2",
+    ]
+
+    result = create_s3_toa(
+        OLCI_PRODUCT_TYPE,
+        product,
+        band_names,
+        bbox,
+        digital_numbers=False,
+        final_grid_resolution=resolution,
+        reprojection_type=reprojection_type,
+    )
+
+    tile_coordinates, tile_shape = create_final_grid(bbox, resolution=resolution)
+    assert result.shape == (len(band_names),) + tile_shape
+    target_lon = tile_coordinates[:, 0].reshape(tile_shape)
+
+    sza, radiance, saa, ozone, humidity = result
+    assert_allclose(sza, 30.0 + (target_lon - 2.5), atol=1e-4)
+    assert np.count_nonzero(np.isfinite(radiance)) > 0
+    assert_allclose(radiance[np.isfinite(radiance)], 50.0)
+    # azimuth interpolated across the +/-180 wrap stays close to 180 (not around 0)
+    assert np.all(np.abs(np.abs(saa) - 180.0) <= 1.0 + 1e-4)
+    assert_allclose(ozone, 0.007, rtol=1e-5)
+    assert_allclose(humidity, 30.0)
+
+
+def test_read_olci_tie_point_bands_only(tmp_path):
+    product = _create_synthetic_olci_product(tmp_path)
+    result = create_s3_toa(
+        OLCI_PRODUCT_TYPE, product, ["tie_geometries:SZA"], [3.5, 50.5, 5.5, 51.5], digital_numbers=False, final_grid_resolution=0.05
+    )
+    assert result.shape[0] == 1
+    assert np.isfinite(result).all()
+
+
+def test_read_olci_tie_point_band_requires_index_for_3d_variable(tmp_path):
+    product = _create_synthetic_olci_product(tmp_path)
+    with pytest.raises(ValueError, match="extra dimension"):
+        create_s3_toa(
+            OLCI_PRODUCT_TYPE, product, ["tie_meteo:humidity"], [3.5, 50.5, 5.5, 51.5], digital_numbers=False, final_grid_resolution=0.05
+        )
+
+
+def test_tie_point_bands_not_supported_for_slstr():
+    with pytest.raises(ValueError, match="only supported for OLCI"):
+        create_s3_toa(
+            SLSTR_PRODUCT_TYPE, Path("/does/not/exist"), ["tie_geometries:SZA"], [3.5, 50.5, 5.5, 51.5], digital_numbers=False, final_grid_resolution=0.05
+        )

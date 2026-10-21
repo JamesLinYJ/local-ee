@@ -1,0 +1,20 @@
+[
+  {
+    "url": "https://artifactory.vgt.vito.be/artifactory/libs-snapshot-public/org/openeo/geotrellis-extensions/2.6.4_2.13-SNAPSHOT/geotrellis-extensions-2.6.4_2.13-SNAPSHOT.jar",
+    "file": "geotrellis-extensions-2.6.4_2.13-SNAPSHOT.jar",
+    "sha256": "07899dc65733d2e6454b6069e0cfd0372d85f22dd452540627af2596aec3ef0c",
+    "size": 11115308
+  },
+  {
+    "url": "https://artifactory.vgt.vito.be/artifactory/libs-snapshot-public/org/openeo/geotrellis-dependencies/2.6.4_2.13-SNAPSHOT/geotrellis-dependencies-2.6.4_2.13-SNAPSHOT.jar",
+    "file": "geotrellis-dependencies-2.6.4_2.13-SNAPSHOT.jar",
+    "sha256": "65dd8126f6dd90cf37daf0d48db9f62c20ecdc966b59d19274b5713c5be41bcf",
+    "size": 339455608
+  },
+  {
+    "url": "https://artifactory.vgt.vito.be/artifactory/libs-snapshot-public/org/openeo/openeo-logging/2.6.4_2.13-SNAPSHOT/openeo-logging-2.6.4_2.13-SNAPSHOT.jar",
+    "file": "openeo-logging-2.6.4_2.13-SNAPSHOT.jar",
+    "sha256": "3cabcaa5b5939980e8e7aba755938ec924e1e2744c394a608a92c463d48d29f7",
+    "size": 241627
+  }
+]

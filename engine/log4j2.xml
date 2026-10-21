@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN"><Appenders><Console name="local" target="SYSTEM_ERR"><PatternLayout pattern="%d{ISO8601} %-5level %logger{1}: %msg%n%throwable"/></Console></Appenders><Loggers><Root level="WARN"><AppenderRef ref="local"/></Root></Loggers></Configuration>

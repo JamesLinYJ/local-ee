@@ -1,0 +1,31 @@
+{
+  "collection": {
+    "process_id": "load_collection",
+    "arguments": {
+      "id": "S2_FOOBAR"
+    }
+  },
+  "reduce": {
+    "process_id": "reduce_dimension",
+    "arguments": {
+      "data": {
+        "from_node": "collection"
+      },
+      "dimension": "PLACEHOLDER",
+      "reducer": {
+        "process_graph": {
+          "max": {
+            "arguments": {
+              "data": {
+                "from_parameter": "data"
+              }
+            },
+            "process_id": "max",
+            "result": true
+          }
+        }
+      }
+    },
+    "result": true
+  }
+}

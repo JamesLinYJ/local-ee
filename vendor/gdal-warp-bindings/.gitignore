@@ -1,0 +1,74 @@
+*.aux.xml
+*.dll
+*.dylib
+*.o
+*.obj
+*.so
+*.tif
+*.vrt
+.vscode/launch.json
+.vscode/c_cpp_properties.json
+.vscode/ipch
+src/experiments/bench/rawbench
+src/experiments/thread/rawthread
+src/experiments/thread/wrapthread
+src/experiments/thread/pattern
+src/experiments/thread/oversubscribe
+src/experiments/thread/metadata
+src/unit_tests/dataset_tests
+src/unit_tests/token_tests
+src/unit_tests/cache_tests
+src/unit_tests/bindings_tests
+src/com_azavea_gdal_GDALWarp.h
+*.jar
+*.class
+
+# Operating System Files
+
+*.DS_Store
+Thumbs.db
+
+# Build Files
+
+bin
+target
+build/
+.gradle
+
+# Eclipse Project Files
+
+.classpath
+.project
+.settings
+
+# IntelliJ IDEA Files
+
+*.iml
+*.ipr
+*.iws
+*.idea
+
+# Spring Bootstrap artifacts
+
+dependency-reduced-pom.xml
+README.html
+
+# Sublime files
+
+*.sublime-workspace
+
+# VSCode files
+.vscode
+.history
+
+# Test data files #
+
+sbt-jni/data
+
+# Compiled libs #
+
+sbt-jni/*.dylib
+sbt-jni/*.so
+sbt-jni/*dll
+
+massif.out.*

@@ -1,0 +1,87 @@
+class STAC_EXTENSION:
+    PROCESSING = "https://stac-extensions.github.io/processing/v1.1.0/schema.json"
+    EO = "https://stac-extensions.github.io/eo/v1.1.0/schema.json"
+    EO_V110 = "https://stac-extensions.github.io/eo/v1.1.0/schema.json"
+    EO_V200 = "https://stac-extensions.github.io/eo/v2.0.0/schema.json"
+    FILEINFO = "https://stac-extensions.github.io/file/v2.1.0/schema.json"
+    PROJECTION_V110 = "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+    PROJECTION_V120 = "https://stac-extensions.github.io/projection/v1.2.0/schema.json"
+    PROJECTION_v200 = "https://stac-extensions.github.io/projection/v2.0.0/schema.json"
+    DATACUBE = "https://stac-extensions.github.io/datacube/v2.2.0/schema.json"
+    MLMODEL = "https://stac-extensions.github.io/ml-model/v1.0.0/schema.json"
+    CARD4LOPTICAL = "https://stac-extensions.github.io/card4l/v0.1.0/optical/schema.json"
+    CARD4LSAR = "https://stac-extensions.github.io/card4l/v0.1.0/sar/schema.json"
+    RASTER_V110 = "https://stac-extensions.github.io/raster/v1.1.0/schema.json"
+    RASTER_V200 = "https://stac-extensions.github.io/raster/v2.0.0/schema.json"
+
+
+class JOB_STATUS:
+    """
+    Container of batch job status constants.
+
+    Allows to easily find places where batch job status is checked/set/updated.
+    """
+
+    CREATED = "created"
+    QUEUED = "queued"
+    RUNNING = "running"
+    CANCELED = "canceled"
+    FINISHED = "finished"
+    ERROR = "error"
+
+
+# Resample methods as used in official specs of `resample_spatial` and `resample_cube_spatial`
+RESAMPLE_SPATIAL_METHODS = [
+    "average",
+    "bilinear",
+    "cubic",
+    "cubicspline",
+    "lanczos",
+    "max",
+    "med",
+    "min",
+    "mode",
+    "near",
+    "q1",
+    "q3",
+    "rms",
+    "sum",
+    "binning",  # custom method for "binning" resampling of sentinel-3
+    "geocode",  # custom method for geocoding of e.g. Sentinel-1 based on lat/lon bands
+]
+
+
+class RESAMPLE_SPATIAL_ALIGN:
+    # Align options as used in official spec of `resample_spatial`
+    LOWER_LEFT = "lower-left"
+    UPPER_LEFT = "upper-left"
+    LOWER_RIGHT = "lower-right"
+    UPPER_RIGHT = "upper-right"
+
+
+RESAMPLE_SPATIAL_ALIGN_DEFAULT = RESAMPLE_SPATIAL_ALIGN.UPPER_LEFT
+
+RESAMPLE_SPATIAL_ALIGNS = [
+    RESAMPLE_SPATIAL_ALIGN.LOWER_LEFT,
+    RESAMPLE_SPATIAL_ALIGN.UPPER_LEFT,
+    RESAMPLE_SPATIAL_ALIGN.LOWER_RIGHT,
+    RESAMPLE_SPATIAL_ALIGN.UPPER_RIGHT,
+]
+
+
+# Default value for `log_level` parameter in `POST /result`, `POST /jobs`, ... requests
+DEFAULT_LOG_LEVEL_PROCESSING = "info"
+# Default value for `level in `GET /jobs/{job_id}/logs`, `GET /services/{service_id}/logs` requests
+DEFAULT_LOG_LEVEL_RETRIEVAL = "debug"
+
+
+class ITEM_LINK_PROPERTY:
+    EXPOSE_AUXILIARY = "_expose_auxiliary"
+
+
+class LINK_REL:
+    # Custom openEO link relation for OGC queryables, per https://github.com/Open-EO/openeo-api/pull/487
+    OGC_QUERYABLES = "http://www.opengis.net/def/rel/ogc/1.0/queryables"
+
+
+STAC_ITEM_MEDIA_TYPE = "application/geo+json"

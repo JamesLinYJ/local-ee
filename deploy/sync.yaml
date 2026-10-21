@@ -1,0 +1,10 @@
+# Activate sources deliberately after choosing a study area and accepting provider terms.
+interval_hours: 24
+bbox: [113.55, 22.30, 113.57, 22.32]
+start: '2024-01-01'
+end: '2024-01-31'
+sources:
+  sentinel-2-l2a: {enabled: true, page_size: 100, max_items: 10000}
+  landsat-c2-l2: {enabled: false, page_size: 100, max_items: 10000}
+  cop-dem-glo-30: {enabled: false, page_size: 100, max_items: 10000}
+  era5-land: {enabled: false, variables: [2m_temperature, total_precipitation]}
