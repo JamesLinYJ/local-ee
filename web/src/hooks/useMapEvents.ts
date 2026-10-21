@@ -15,12 +15,7 @@ export function readyMapEvents(
 ): EventDispatch[] {
   const parent = focus
     ? jobs.find((j) => j.id === focus)
-    : jobs.find(
-        (j) =>
-          j.kind === "script" &&
-          j.language === "javascript" &&
-          j.events?.length,
-      );
+    : jobs.find((j) => j.kind === "script" && j.events?.length);
   if (!parent) return [];
   const ready: EventDispatch[] = [];
   for (const [index, event] of (parent.events || []).entries()) {

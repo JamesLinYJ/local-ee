@@ -39,7 +39,7 @@ const entries: ReferenceEntry[] = [
   {
     id: "gee-unmask",
     title: "unmask 缺测填充",
-    text: "unmask() 用有效的 0 填充缺测；unmask(value) 接受数值或网格、时间维度一致的本地影像。有效的原值（包括 0）保留，替代影像自己的缺测继续缺测。默认保留输入 footprint，clip 外不会被填回。sameFootprint:false 只接受已对齐的有限栅格替代值，全局常量扩展报错。当前结果使用 Float64；后续算术或时间归约需显式 toFloat()，会降低精度。数值填充不会恢复真实观测。",
+    text: "unmask() 用有效的 0 填充缺测；unmask(value) 接受数值或网格、时间维度一致的本地影像。有效的原值（包括 0）保留，替代影像自己的缺测继续缺测。默认保留输入 footprint，clip 外不会被填回。sameFootprint:false 只接受已对齐的有限栅格替代值，全局常量扩展报错。当前结果使用 Float64；有界逐景均值、中位数、计数等归约保留双精度，通用后续算术仍需显式 toFloat()，会降低精度。数值填充不会恢复真实观测。",
     code: "var image = scenes.first().select('B8').clip(roi);\nvar filled = image.unmask(32767);\nExport.image.toDrive({image:filled,description:'填充缺测',\n region:roi,scale:10,crs:'EPSG:32649',fileFormat:'GeoTIFF'});",
   },
   {
@@ -80,7 +80,7 @@ const entries: ReferenceEntry[] = [
   {
     id: "gee-properties",
     title: "集合属性与逐景列表",
-    text: "支持 aggregate_array、toList(count,offset)、Filter.inList、Filter.calendarRange（UTC，包含端点且可跨年）。原始集合 map 读取 image.date/get/propertyNames/geometry 时，自动逐景解析本地元数据，保留同一天的不同观测及集合顺序；set/copyProperties 与 map(...,true) 跳过 null 均可使用。纯像素 map 保留紧凑路径。逐景展开仍受 1000 景与 500 节点预算限制；把日期常量直接加为独立栅格波段的网格广播尚未实现。",
+    text: "支持 aggregate_array、toList(count,offset)、Filter.inList、Filter.calendarRange（UTC，包含端点且可跨年）。原始集合 map 读取 image.date/get/propertyNames/geometry 时，自动逐景解析本地元数据，保留同一天的不同观测及集合顺序；set/copyProperties 与 map(...,true) 跳过 null 均可使用。纯像素 map 保留紧凑路径。逐景展开仍受 1000 景与 500 节点预算限制；支持 image.addBands(ee.Image(image.date().millis()).rename('millis'))，常量在目的影像的有限本地网格与 footprint 内有效，不继承源缺测；可 mean/count/sampleStdDev/toBands。独立全局常量与常量投影查询仍拒绝。",
     code: "print(scenes.aggregate_array('system:index'));\nvar first = ee.Image(scenes.toList(1).get(0));\nprint(first.date().format('yyyy-MM-dd'));\nMap.centerObject(first, 13);",
   },
   {

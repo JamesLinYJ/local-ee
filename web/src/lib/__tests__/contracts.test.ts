@@ -104,6 +104,19 @@ describe("execution protocol contracts", () => {
       ),
     ).toEqual([]);
   });
+  it("replays local map events from an official EE Python script", () => {
+    const parent = job("python-parent", {
+      language: "python",
+      events: [{ type: "map_view", center: [113, 22], zoom: 12 }],
+    });
+    expect(readyMapEvents([parent], new Set())).toEqual([
+      {
+        key: "python-parent:0",
+        event: { type: "map_view", center: [113, 22], zoom: 12 },
+        job: undefined,
+      },
+    ]);
+  });
   it("does not replay a previous script map while a newly submitted script has no events", () => {
     const previous = job("previous", { events: [{ type: "map_clear" }] });
     expect(
