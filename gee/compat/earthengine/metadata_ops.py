@@ -1,10 +1,10 @@
 """Properties and property-copy operations on decoded Earth Engine values."""
 from __future__ import annotations
 
-import json
 from dataclasses import replace
 
 from .ir import fail
+from .public_values import public_result
 
 
 METADATA_HANDLERS = frozenset({
@@ -35,7 +35,9 @@ def invoke_metadata(translator, name, arguments):
         if not all(isinstance(key, str) for key in props):
             fail("Metadata property names must be strings")
         try:
-            json.dumps(props, allow_nan=False)
+            # Validate the public description while retaining typed Array and
+            # joined Image values for subsequent SDK operations in this DAG.
+            public_result(props)
         except (TypeError, ValueError):
             fail("Only static JSON values may be stored in image metadata")
         return replace(obj, props=props)

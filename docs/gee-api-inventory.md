@@ -1,6 +1,8 @@
 # GEE API 兼容清单与证据边界
 
-本页配合 [完整机器可读清单](../reports/gee-api-inventory.json) 使用。清单固定于官方 `@google/earthengine` **1.7.49**、提交 `e189e4b89e785019ea5642ea8e80cb644749cd4a`。当前源文件含 **991 个唯一算法签名、2,451 个参数项**；生成时 `gee.ee_translate.SUPPORTED_FUNCTIONS` 中有 **158 个同名声明**。这三个数字分别描述上游目录、参数数量和本地声明，不表示兼容率。
+本页配合 [完整机器可读清单](../reports/gee-api-inventory.json) 使用。清单固定于官方 `@google/earthengine` **1.7.49**、提交 `e189e4b89e785019ea5642ea8e80cb644749cd4a`。当前源文件含 **991 个唯一算法签名、2,451 个参数项**；当前同名处理器声明数量见生成报告。这些记录分别描述上游目录、参数和本地声明，不表示兼容率。
+
+Python 类型、方法、继承方法、参数默认值和命名绑定另见 [Python API 报告](../reports/gee-python-api-inventory.json) 与 [Python 优先清单](gee-python/list.md)。2026-10-22 新增的有限 metadata Join 和静态 Array／矩阵支持，不表示 Image.array*、栅格回归或整个公开工作流已经完成。旧审计计数继续作为历史上下文保留。
 
 ## 清单范围
 

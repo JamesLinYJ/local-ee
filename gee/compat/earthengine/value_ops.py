@@ -114,20 +114,9 @@ def invoke_value(translator, name, arguments):
             fail("Only static Features or one reduceRegion Feature can be exported as a FeatureCollection")
         return {"type": "FeatureCollection", "features": features}
     if name.startswith("GeometryConstructors."):
-        operation = name.split(".")[1]
-        translator.allowed(a, {"coordinates", "crs", "geodesic", "evenOdd", "maxError"})
-        if a.get("crs") not in (None, "EPSG:4326") or a.get("geodesic") is True:
-            fail("Only planar EPSG:4326 geometries are supported")
-        coordinates = a["coordinates"]
-        if operation == "Rectangle":
-            if len(coordinates) == 4 and isinstance(coordinates[0], (int, float)):
-                west, south, east, north = coordinates
-            else:
-                (west, south), (east, north) = coordinates
-            return {"type": "Polygon", "coordinates": [[[west, south], [east, south], [east, north], [west, north], [west, south]]]}
-        if operation not in {"Point", "Polygon", "MultiPolygon", "LineString", "MultiPoint"}:
-            fail(f"Unsupported geometry constructor: {operation}")
-        return translator.evaluate({"type": operation, "coordinates": coordinates})
+        from .geometry_values import construct_geometry
+
+        return construct_geometry(translator, name.split(".", 1)[1], a)
     if name in {"Number", "String", "List", "Dictionary"}:
         translator.allowed(a, {"input", "value", "values", "dictionary"})
         if len(a) != 1:

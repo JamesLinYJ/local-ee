@@ -26,12 +26,14 @@ def invoke_filter(translator, name, arguments):
     elif operation == "notNull":
         translator.allowed(arguments, {"properties"})
         properties = arguments.get("properties")
-        if not isinstance(properties, list) or any(
-            not isinstance(property_name, str) for property_name in properties
-        ):
+        if not isinstance(properties, list):
             fail("Filter.notNull properties must be a list of strings")
         if len(properties) > _MAX_NOT_NULL_PROPERTIES:
             fail("Filter.notNull supports at most 1000 properties")
+        if any(
+            not isinstance(property_name, str) for property_name in properties
+        ):
+            fail("Filter.notNull properties must be a list of strings")
     else:
         fields = {"leftField", "leftValue", "rightField", "rightValue"}
         if operation == "intersects":
@@ -56,10 +58,18 @@ def matches_filter(translator, filt, item):
         # properties are non-null. Missing and explicit null values both fail;
         # other falsey JSON values remain present and non-null. An empty list
         # therefore passes every item by the literal all-properties predicate.
-        return all(
-            key in properties and properties[key] is not None
-            for key in arguments["properties"]
-        )
+        # Catalogue metadata is not part of the serialized DAG. Charge this
+        # work explicitly so an item/property cross product cannot bypass the
+        # decoder's existing total compilation budget. Count each item even
+        # when the property list is empty, and stop as soon as the predicate
+        # fails rather than scanning unrelated properties.
+        for key in (None, *arguments["properties"]):
+            translator.steps += 1
+            if translator.steps > 50000:
+                fail("Earth Engine graph exceeds compilation limits")
+            if key is not None and (key not in properties or properties[key] is None):
+                return False
+        return True
     if name == "dateRangeContains":
         if arguments.get("rightField") != "system:time_start" or "leftValue" not in arguments:
             fail("Only system:time_start date filtering is supported")

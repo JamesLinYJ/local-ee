@@ -6,8 +6,17 @@
         "status": "passed",
         "value": 9
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "values",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "number_add",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.Number(4).add(right=5)",
       "serialization": {
         "expression": {
@@ -26,8 +35,17 @@
         "reason": "Unsupported algorithm arguments: ['number', 'pattern']",
         "status": "rejected"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "values",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "number_divide_format",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.Number(7).divide(right=2).format(pattern='%.2f')",
       "serialization": {
         "expression": {
@@ -73,8 +91,17 @@
         "status": "passed",
         "value": 2023
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "dates",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "date_get_year",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.Date('2023-11-14').get(unit='year')",
       "serialization": {
         "expression": {
@@ -119,8 +146,17 @@
         "status": "passed",
         "value": 1.0
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "dates",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "date_difference_days",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.Date('2023-11-15').difference(start=ee.Date('2023-11-14'), unit='day')",
       "serialization": {
         "expression": {
@@ -179,8 +215,17 @@
         "status": "passed",
         "value": "2023-11-16T00:00:00.000+00:00"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "dates",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "date_advance",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.Date('2023-11-14').advance(delta=2, unit='day').format()",
       "serialization": {
         "expression": {
@@ -243,8 +288,17 @@
           6
         ]
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "lists",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "list_map_lambda",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.List([1, 2, 3]).map(lambda item: ee.Number(item).multiply(right=2))",
       "serialization": {
         "expression": {
@@ -318,8 +372,17 @@
         "status": "passed",
         "value": 6
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "lists",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "list_iterate_lambda",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.List([1, 2, 3]).iterate(lambda item, acc: ee.Number(acc).add(right=item), first=ee.Number(0))",
       "serialization": {
         "expression": {
@@ -397,8 +460,17 @@
         "status": "passed",
         "value": 4
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "dictionaries",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "dictionary_get",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.Dictionary({'mean': 4, 'count': 2}).get(key='mean')",
       "serialization": {
         "expression": {
@@ -450,8 +522,17 @@
         "status": "passed",
         "value": "yes"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "values",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "conditional",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.Algorithms.If(condition=ee.Number(2).gt(right=1), trueCase='yes', falseCase='no')",
       "serialization": {
         "expression": {
@@ -524,8 +605,17 @@
           "type": "Polygon"
         }
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "geometry",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "geometry_rectangle",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.Geometry.Rectangle([100.1, 30.1, 100.9, 30.9], proj='EPSG:4326', geodesic=False)",
       "serialization": {
         "expression": {
@@ -589,8 +679,17 @@
         "kind": "collection",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "collections",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "collection_load",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a')",
       "serialization": {
         "expression": {
@@ -615,8 +714,17 @@
         "kind": "collection",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "collections",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "filter_date",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').filterDate(start='2023-11-14', end='2023-11-16')",
       "serialization": {
         "expression": {
@@ -685,11 +793,27 @@
     },
     {
       "compilation": {
-        "reason": "Malformed or unsupported Earth Engine expression: unhashable type: 'dict'",
-        "status": "rejected"
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "collection",
+        "status": "passed"
+      },
+      "engine_execution": {
+        "status": "not_run"
       },
       "family": "collections",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "filter_bounds",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').filterBounds(geometry=roi)",
       "serialization": {
         "expression": {
@@ -807,8 +931,17 @@
         "kind": "collection",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "filters",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "filter_metadata",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').filter(ee.Filter.lte(name='cloud', value=10))",
       "serialization": {
         "expression": {
@@ -886,8 +1019,17 @@
         "kind": "collection",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "filters",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "filter_and_sort",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').filter(ee.Filter.And(ee.Filter.lte('cloud', 20), ee.Filter.gte('system:time_start', 1700000000000))).sort(prop='cloud', ascending=False)",
       "serialization": {
         "expression": {
@@ -1027,8 +1169,17 @@
         "kind": "image",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "images",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "select_named_bands",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').first().select(selectors=['nir', 'red'], names=['NIR', 'RED'])",
       "serialization": {
         "expression": {
@@ -1109,8 +1260,17 @@
         "kind": "collection",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "mapped_collections",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "map_ndvi_copy_properties",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').map(lambda image: image.normalizedDifference(bandNames=['nir', 'red']).rename(names=['NDVI']).copyProperties(source=image, properties=['system:time_start']))",
       "serialization": {
         "expression": {
@@ -1247,8 +1407,17 @@
         "kind": "image",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "images",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "expression_ndvi",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').first().expression(expression='(nir - red) / (nir + red)', map_={'nir': ee.ImageCollection('sentinel-2-l2a').first().select('nir'), 'red': ee.ImageCollection('sentinel-2-l2a').first().select('red')}).rename('NDVI')",
       "serialization": {
         "expression": {
@@ -1411,8 +1580,17 @@
         "kind": "image",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "images",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "addbands_constant_named",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').first().select('red').addBands(srcImg=ee.Image.constant(value=4).rename('constant'), names=['constant'], overwrite=False)",
       "serialization": {
         "expression": {
@@ -1540,8 +1718,17 @@
         "kind": "image",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "images",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "update_mask",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').first().updateMask(mask=ee.ImageCollection('sentinel-2-l2a').first().select('SCL').neq(image2=9))",
       "serialization": {
         "expression": {
@@ -1651,8 +1838,17 @@
         "reason": "Image.unmask sameFootprint=false with a global footprint is not supported",
         "status": "rejected"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "images",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "unmask_fill",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').first().select('nir').unmask(value=-9999, sameFootprint=False)",
       "serialization": {
         "expression": {
@@ -1749,8 +1945,17 @@
         "kind": "image",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "images",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "where_threshold",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').first().select('nir').where(test=ee.ImageCollection('sentinel-2-l2a').first().select('nir').lt(image2=2), value=0)",
       "serialization": {
         "expression": {
@@ -1871,11 +2076,27 @@
     },
     {
       "compilation": {
-        "reason": "Malformed or unsupported Earth Engine expression: unhashable type: 'dict'",
-        "status": "rejected"
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "image",
+        "status": "passed"
+      },
+      "engine_execution": {
+        "status": "not_run"
       },
       "family": "images",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "clip_region",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').first().clip(clip_geometry=roi)",
       "serialization": {
         "expression": {
@@ -1969,11 +2190,28 @@
     },
     {
       "compilation": {
-        "reason": "Malformed or unsupported Earth Engine expression: unhashable type: 'dict'",
-        "status": "rejected"
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "region",
+        "reducer": "mean",
+        "status": "passed"
+      },
+      "engine_execution": {
+        "status": "not_run"
       },
       "family": "reductions",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "reduce_region_named",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').first().reduceRegion(reducer=ee.Reducer.mean(), geometry=roi, scale=10, maxPixels=1000)",
       "serialization": {
         "expression": {
@@ -2091,8 +2329,17 @@
         "kind": "image",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "reductions",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "collection_mean",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').mean()",
       "serialization": {
         "expression": {
@@ -2142,8 +2389,17 @@
         "kind": "image",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "reductions",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "collection_median",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').median()",
       "serialization": {
         "expression": {
@@ -2193,8 +2449,17 @@
         "kind": "image",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "reductions",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "collection_max",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').max()",
       "serialization": {
         "expression": {
@@ -2244,8 +2509,17 @@
         "kind": "image",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "reductions",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "collection_mosaic",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').mosaic()",
       "serialization": {
         "expression": {
@@ -2295,8 +2569,17 @@
         "kind": "image",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "reductions",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "quality_mosaic",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').qualityMosaic(qualityBand='nir')",
       "serialization": {
         "expression": {
@@ -2347,8 +2630,17 @@
         "kind": "image",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "reductions",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "collection_count",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').count()",
       "serialization": {
         "expression": {
@@ -2396,8 +2688,17 @@
         "kind": "image",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "collections",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "collection_to_bands",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').select('nir').toBands()",
       "serialization": {
         "expression": {
@@ -2500,8 +2801,17 @@
         "kind": "collection",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "collections",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "collection_from_images",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection.fromImages(images=[ee.ImageCollection('sentinel-2-l2a').first(), ee.ImageCollection('sentinel-2-l2a').first()])",
       "serialization": {
         "expression": {
@@ -2577,8 +2887,17 @@
         "kind": "collection",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "collections",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "collection_limit_sort",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').limit(maximum=2, prop='cloud', ascending=True)",
       "serialization": {
         "expression": {
@@ -2631,8 +2950,17 @@
         "kind": "collection",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "mapped_collections",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "map_copy_system_properties",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').map(lambda image: image.copyProperties(source=image, properties=['system:index', 'system:time_start']))",
       "serialization": {
         "expression": {
@@ -2727,8 +3055,17 @@
         "kind": "collection",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "mapped_collections",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "map_set_dynamic_property",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').map(lambda image: image.set('is_clear', ee.Number(image.get('cloud')).lte(right=10)))",
       "serialization": {
         "expression": {
@@ -2837,8 +3174,17 @@
         "kind": "collection",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "mapped_collections",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "map_arithmetic_rename",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').map(lambda image: image.select('nir').multiply(image2=0.0001).rename('reflectance'))",
       "serialization": {
         "expression": {
@@ -2972,8 +3318,17 @@
         "status": "passed",
         "value": "scene-a"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "properties",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "first_dynamic_property",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').first().get(property='system:index')",
       "serialization": {
         "expression": {
@@ -3035,8 +3390,17 @@
           "scene-c"
         ]
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "properties",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "aggregate_array_properties",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').aggregate_array(property='system:index')",
       "serialization": {
         "expression": {
@@ -3087,8 +3451,17 @@
         "kind": "collection",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "filters",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "filter_date_algorithm",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').filter(ee.Filter.date(start='2023-11-14', end='2023-11-16'))",
       "serialization": {
         "expression": {
@@ -3163,8 +3536,17 @@
         "kind": "collection",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "mapped_collections",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "map_expression",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').map(lambda image: image.expression(expression='nir - red', map_={'nir': image.select('nir'), 'red': image.select('red')}).rename('difference'))",
       "serialization": {
         "expression": {
@@ -3347,8 +3729,17 @@
           "SCL"
         ]
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "images",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "image_band_names",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').first().bandNames()",
       "serialization": {
         "expression": {
@@ -3407,8 +3798,17 @@
         "kind": "image",
         "status": "passed"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "images",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "image_to_float",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').first().select('nir').toFloat()",
       "serialization": {
         "expression": {
@@ -3487,8 +3887,17 @@
         "reason": "Unsupported Earth Engine algorithm: Kernel.square",
         "status": "rejected"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "neighborhood",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "neighborhood_reduce_kernel",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').first().reduceNeighborhood(reducer=ee.Reducer.mean(), kernel=ee.Kernel.square(radius=1, units='pixels', normalize=False))",
       "serialization": {
         "expression": {
@@ -3572,8 +3981,17 @@
         "reason": "Unsupported Earth Engine algorithm: Image.focalMean",
         "status": "rejected"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "neighborhood",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "focal_mean",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').first().focalMean(radius=1, kernelType='circle', units='pixels', iterations=1)",
       "serialization": {
         "expression": {
@@ -3630,11 +4048,27 @@
     },
     {
       "compilation": {
-        "reason": "Unsupported Earth Engine algorithm: Join.saveFirst",
-        "status": "rejected"
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "collection",
+        "status": "passed"
+      },
+      "engine_execution": {
+        "status": "not_run"
       },
       "family": "joins",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "join_save_first",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.Join.saveFirst(matchKey='match').apply(primary=ee.ImageCollection('sentinel-2-l2a'), secondary=ee.ImageCollection('sentinel-2-l2a'), condition=ee.Filter.equals(leftField='system:index', rightField='system:index'))",
       "serialization": {
         "expression": {
@@ -3707,11 +4141,28 @@
     },
     {
       "compilation": {
-        "reason": "Unsupported Earth Engine algorithm: Array",
-        "status": "rejected"
+        "kind": "value",
+        "status": "passed",
+        "value": [
+          [
+            3
+          ],
+          [
+            7
+          ]
+        ]
+      },
+      "engine_execution": {
+        "status": "not_run"
       },
       "family": "arrays",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "array_matrix_multiply",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.Array([[1, 2], [3, 4]]).matrixMultiply(right=ee.Array([[1], [1]]))",
       "serialization": {
         "expression": {
@@ -3820,8 +4271,17 @@
         "reason": "Unsupported reducer: Reducer.linearRegression; stdDev cannot be mapped to sample standard deviation",
         "status": "rejected"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "regression",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "regression_reducer",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.ImageCollection('sentinel-2-l2a').reduce(reducer=ee.Reducer.linearRegression(numX=2, numY=1))",
       "serialization": {
         "expression": {
@@ -3879,8 +4339,17 @@
         "reason": "Unsupported Earth Engine algorithm: Classifier.smileRandomForest",
         "status": "rejected"
       },
+      "engine_execution": {
+        "status": "not_run"
+      },
       "family": "classifiers",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "classifier_constructor",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.Classifier.smileRandomForest(numberOfTrees=10, variablesPerSplit=2, minLeafPopulation=1, bagFraction=0.5, seed=7)",
       "serialization": {
         "expression": {
@@ -3904,6 +4373,9 @@
         ],
         "kind": "image",
         "status": "passed"
+      },
+      "engine_execution": {
+        "status": "not_run"
       },
       "export_options": {
         "crs": "EPSG:32649",
@@ -3949,7 +4421,13 @@
         "scale": 10
       },
       "family": "exports",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "export_image_drive",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.batch.Export.image.toDrive(image=ee.ImageCollection('sentinel-2-l2a').first().select('nir').rename('NIR'), description='python-probe-image', folder='research', fileNamePrefix='nir', region=roi, scale=10, crs='EPSG:32649', maxPixels=1000)",
       "serialization": {
         "expression": {
@@ -4035,8 +4513,50 @@
     },
     {
       "compilation": {
-        "reason": "Malformed or unsupported Earth Engine expression: unhashable type: 'dict'",
-        "status": "rejected"
+        "kind": "value",
+        "status": "passed",
+        "value": {
+          "features": [
+            {
+              "geometry": {
+                "coordinates": [
+                  [
+                    [
+                      100.1,
+                      30.1
+                    ],
+                    [
+                      100.9,
+                      30.1
+                    ],
+                    [
+                      100.9,
+                      30.9
+                    ],
+                    [
+                      100.1,
+                      30.9
+                    ],
+                    [
+                      100.1,
+                      30.1
+                    ]
+                  ]
+                ],
+                "type": "Polygon"
+              },
+              "properties": {
+                "mean": 3,
+                "scene": "a"
+              },
+              "type": "Feature"
+            }
+          ],
+          "type": "FeatureCollection"
+        }
+      },
+      "engine_execution": {
+        "status": "not_run"
       },
       "export_options": {
         "description": "python-probe-table",
@@ -4049,7 +4569,13 @@
         ]
       },
       "family": "exports",
+      "google_same_data_comparison": {
+        "status": "not_run"
+      },
       "id": "export_table_drive",
+      "independent_numerical_validation": {
+        "status": "not_run"
+      },
       "python": "ee.batch.Export.table.toDrive(collection=ee.FeatureCollection([ee.Feature(roi, {'mean': 3, 'scene': 'a'})]), description='python-probe-table', folder='research', fileNamePrefix='summary', fileFormat='CSV', selectors=['mean', 'scene'])",
       "serialization": {
         "expression": {
@@ -4166,8 +4692,27 @@
       "scene-c"
     ]
   },
+  "interpretation": "Targeted whole-expression S/C probes; compilation does not establish engine, independent numerical or Google equivalence and is not a full-API compatibility rate",
+  "network_evidence": {
+    "attempt_count": 0,
+    "attempts_by_operation": {},
+    "instrumented_operations": [
+      "local_transport.request",
+      "socket.create_connection",
+      "socket.getaddrinfo",
+      "socket.gethostbyaddr",
+      "socket.gethostbyname",
+      "socket.gethostbyname_ex",
+      "socket.socket.connect",
+      "socket.socket.connect_ex",
+      "socket.socket.sendmsg",
+      "socket.socket.sendto"
+    ],
+    "mode": "deny_and_count_python_network_and_local_transport_entry_points",
+    "scope": "Trusted in-process SDK probes only; not packet capture or kernel isolation"
+  },
   "network_requests": 0,
-  "schema": "local-ee-python-probes/v1",
+  "schema": "local-ee-python-probes/v2",
   "sdk": "1.7.49",
   "signature_count": 991,
   "signature_sha256": "8279bfd5e755f10c291a0d833aed810a5aba2e360e26ecee69f2bacaeecb3d01",

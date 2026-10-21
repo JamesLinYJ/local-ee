@@ -2,6 +2,18 @@
 
 2026-10-21。用户明确要求由云端 Codex 继续开发与兼容性测试，当前优先 GEE Python：先探测、整理 `docs/gee-python/list.md`，再持续补齐兼容。完整平台目标仍见 `GOAL.md`、`AGENTS.md` 和 `docs/architecture.md`，不能把本轮客户端接入当成整个目标完成。
 
+## 2026-10-22 云端续作
+
+已从 `handoff/gee-python-cloud-20261021` 的 `71810c3448241051696545d0810f5348f1875290` 核对并继续。Linux 使用 Python 3.11、Node 24、uv 0.12.12；锁定依赖和便携测试环境已经实际验证，完整原生服务仍未在 Linux 适配。
+
+本轮补齐公开 Python API／参数／绑定清单，修复命名 GeoJSON CRS、notNull、Dictionary／List.sequence，增加有界 ImageCollection 元数据 Join 和静态 Array／矩阵求值；独立数值参考只覆盖明确的静态算法／合成图。探针保持原有 50 个表达式，当前 44 项编译通过、6 项明确拒绝，不能据此推算完整 API 兼容率。完整清单和剩余限制见 `docs/gee-python/list.md`。
+
+验证汇总见 `reports/gee-python-wave1.json`：Python 597 passed／7 skipped，前端 11 passed、TypeScript／构建通过；包含 8 项固定 Python／JS SDK 的共享编译结果回归。没有运行完整 Linux 后端、macOS 内核沙箱、ARM64 JNI 或私有影像验收。
+
+探针守卫发现原 SDK 的可选弃用资产初始化会通过 urllib 请求 Google STAC；本地初始化现已跳过这项云目录操作，生产路径初始化／重置有网络入口拒绝回归。计数覆盖 Python transport／socket／DNS，并非内核抓包或用户程序隔离。
+
+`GOAL.md` 已按用户要求持久化“Python 完整优先，随后 JS”的持续目标；目前尚无系统级后台目标管理工具，不将该文件误报为已创建自动执行任务。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee
@@ -21,13 +33,13 @@
 - 常量／日期波段：14 个用例、18 个输出波段，独立 NumPy/Rasterio 比较为零掩膜和数值差异；没有 Google 同数据比较。
 - 交接时应用测试为 412 passed / 3 skipped（另有真实内核／SPI 检查）；前端 11 项测试、TypeScript、构建通过。
 
-## 未完成工作和已知问题
+## 初始交接问题及当前状态
 
-1. `scripts/ee_python_probes.py` 与 `tests/fixtures/ee-python-1.7.49.json` 是草稿：50 个官方 Python 调用完成序列化，38 个表达式编译通过、12 个拒绝。尚缺专用回归测试、可重复性检查和模块整理。`network_requests: 0` 目前是草稿中的固定字段，不能据此声称已经抓取／核验运行流量。生成器通过受控源码字符串构造 SDK 对象，不接收用户程序。
-2. 其几何输入触发 `unhashable type: dict`，影响 filterBounds、clip、reduceRegion 与表格案例；优先定位官方 Python GeoJSON／投影序列化的解码问题，不能以改坏探针、删参数来制造通过。
-3. `gee/compat/earthengine/filtering.py` 有未完成的 `Filter.notNull` 实现。还没有专用测试、能力登记与正式验收。补齐缺失／null、0／False／空字符串、多字段、空列表和预算控制后再声明支持。
-4. 已定位但尚未修改：`Dictionary.values(keys=[])` 误返回全部值；缺键 `Dictionary.get` 的默认值行为需按固定官方语义验证。`List.sequence(count=...)`、Join、数组／矩阵、回归、分类器、邻域／高级时序仍有实际缺口。
-5. 全量 Python API／类型／方法／参数清单尚未生成。固定算法签名共有 991 项，现有 `reports/gee-api-inventory.json` 可复用结构；区分方法可见、序列化、编译、实际执行、独立数值验证和 Google 对照，不能用 handler 数量推算兼容率。
+1. 初始 50 项草稿为 38 编译通过／12 拒绝，旧硬编码网络计数不构成证据。现已拆分模块、补专用重复性／漂移测试与 deny/count 守卫，v2 仍保留原表达式，并分开标注未运行的 E/N/G。
+2. Python 命名 GeoJSON CRS 引起的 unhashable dict 已修复，四个相关原探针通过；只接受明确的有限二维 EPSG:4326 平面范围，其他语义拒绝或列为未验证。
+3. Filter.notNull 已补专用回归、能力登记与预算；本地平面属性名 S/C 验证，无 Google 对照。
+4. Dictionary 空 keys／缺键和 List.sequence count 已补；有限元数据 Join、静态矩阵也已补。栅格数组／回归、分类器、空间／时间度量 Join、邻域／高级时序仍有实质缺口。
+5. `reports/gee-python-api-inventory.json` 已生成 991 项签名／2451 参数和公开 Python 绑定目录；列出方法不等于实现所有重载或后端算法。
 
 ## 云端起步
 

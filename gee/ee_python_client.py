@@ -97,7 +97,10 @@ def _initialize_offline(ee: Any, state: dict[str, Any]) -> None:
         dynamic_class.initialize()
     ee._InitializeGeneratedClasses()
     ee._InitializeUnboundMethods()
-    ee._InitializeDeprecatedAssets()
+    # The upstream deprecation initializer downloads a Google STAC catalogue
+    # through urllib, outside ee.data's guarded transport. Local assets and
+    # their lifecycle are owned by our catalogue; never fetch cloud metadata
+    # during offline initialization (including after ee.Reset()).
 
 
 def configure_local_ee(

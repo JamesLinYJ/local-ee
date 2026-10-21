@@ -5,6 +5,8 @@ from .ir import (ImageSequence, Image, Collection, Region, Function, ParsedExpre
                  Filter, Reducer, UnsupportedEEError, fail)
 from .decoder import Translator
 from .graph import Graph
+from .public_values import public_result
+from .join_ops import Join
 
 
 def compile_expression(expression, catalog, items, options=None):
@@ -21,19 +23,19 @@ def compile_expression(expression, catalog, items, options=None):
     try:
         value = translator.evaluate(expression)
         if isinstance(value, ImageSequence):
-            return {"kind":"collection", "bands":[n for n,_ in value.images[0].bands] if value.images else [],
+            return public_result({"kind":"collection", "bands":[n for n,_ in value.images[0].bands] if value.images else [],
                     "source_item_ids":[im.props.get("system:index",str(i)) for i,im in enumerate(value.images)],
                     "features":[{"type":"Image","id":im.props.get("system:index",str(i)),"properties":im.props,
                                  "bands":[{"id":n} for n,_ in im.bands]} for i,im in enumerate(value.images)],
-                    "has_time_dimension":True,"warnings":translator.warnings,"properties":{}}
+                    "has_time_dimension":True,"warnings":translator.warnings,"properties":{}})
         if isinstance(value, (Image, Collection)):
             graph = Graph(translator)
             image = value.image if isinstance(value, Collection) else value
             ref, timed = graph.image(image)
-            return {"kind": "collection" if isinstance(value, Collection) else "image",
+            return public_result({"kind": "collection" if isinstance(value, Collection) else "image",
                     "process_graph": graph.finish(ref), "bands": [n for n, _ in image.bands],
                     "properties": image.props, "warnings": translator.warnings,
-                    "has_time_dimension": timed, "source_item_ids": list(dict.fromkeys(i for source in graph.sources for i in source.ids))}
+                    "has_time_dimension": timed, "source_item_ids": list(dict.fromkeys(i for source in graph.sources for i in source.ids))})
         if isinstance(value, Region):
             opts = {k: v for k, v in value.options.items() if k in {"region", "scale", "crs"}}
             translator.options = opts
@@ -42,14 +44,12 @@ def compile_expression(expression, catalog, items, options=None):
             if timed: fail("reduceRegion requires a single Image, not a time-dependent collection")
             reducer = graph.callback(value.reducer.name, {"data": {"from_parameter": "data"}, **({} if value.reducer.name == "count" else {"ignore_nodata": True})})
             ref = graph.node("aggregate_spatial", data=ref, geometries=value.geometry, reducer=reducer)
-            return {"kind": "region", "process_graph": graph.finish(ref), "bands": [n for n, _ in value.image.bands], "warnings": translator.warnings, "reducer": value.reducer.name,
-                    "geometry": value.geometry, "grid_options": value.options}
-        if isinstance(value, (Function, ParsedExpression, Filter, Reducer)):
-            fail("A function/filter/reducer is not a computable output value")
+            return public_result({"kind": "region", "process_graph": graph.finish(ref), "bands": [n for n, _ in value.image.bands], "warnings": translator.warnings, "reducer": value.reducer.name,
+                    "geometry": value.geometry, "grid_options": value.options})
+        if isinstance(value, (Function, ParsedExpression, Filter, Reducer, Join)):
+            fail("A function/filter/reducer/join is not a computable output value")
         # Ensure no internal class or non-finite number crosses the API boundary.
-        encoded = json.dumps(value, allow_nan=False)
-        if len(encoded) > 1000000: fail("Computed value exceeds 1 MB")
-        return {"kind": "value", "value": json.loads(encoded), "warnings": translator.warnings}
+        return public_result({"kind": "value", "value": value, "warnings": translator.warnings})
     except UnsupportedEEError:
         raise
     except (KeyError, IndexError, TypeError, AttributeError, ValueError, RecursionError, OverflowError) as exc:

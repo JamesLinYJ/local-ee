@@ -24,6 +24,14 @@ _METADATA_ARGUMENTS = {
 def invoke(translator, name, arguments):
     """Dispatch in the same precedence order as the legacy translator."""
     a = arguments
+    if name == "Array" or name.startswith("Array."):
+        from .array_values import invoke_array
+
+        return invoke_array(translator, name, a)
+    if name.startswith("Join."):
+        from .join_ops import invoke_join
+
+        return invoke_join(translator, name, a)
     if name == "Collection.map" and a.get("dropNulls") is not None and not isinstance(a["dropNulls"], bool):
         fail("Collection.map dropNulls must be a boolean")
     if name.startswith("Date."):

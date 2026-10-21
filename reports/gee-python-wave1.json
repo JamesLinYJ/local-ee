@@ -1,0 +1,195 @@
+{
+  "schema": "local-ee-python-compat-wave1/v1",
+  "date": "2026-10-22",
+  "status": "partial_goal_in_progress",
+  "base_commit": "71810c3448241051696545d0810f5348f1875290",
+  "platform": {
+    "os": "Linux",
+    "architecture": "x86_64",
+    "python": "3.11.16",
+    "node": "24.19.0",
+    "uv": "0.12.12",
+    "earthengine_api": "1.7.49"
+  },
+  "source_files_sha256": {
+    "gee/compat/earthengine/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "gee/compat/earthengine/array_values.py": "5f1e1d52eda2dfe41f564518312d6bc5ae54090aab94fa0b30b46730153634f8",
+    "gee/compat/earthengine/capabilities.py": "6f8d5d2efa66e0a4cdd36f4740b7d48bcd2daf976e6ff6bc987001bc5504adfa",
+    "gee/compat/earthengine/catalog.py": "ce7b7ab0ff83b6329ece3996c211ddc16b39354fc8a201d848e2cb4cc29b20f8",
+    "gee/compat/earthengine/collection_ops.py": "fde917a42ea264f17d8e91f6c7063b0ea08723254643bd1abc537e585f7c11ea",
+    "gee/compat/earthengine/compile.py": "788d99b433bc794ea4a45633a21b3576b283292abf0b03b179e341a960545689",
+    "gee/compat/earthengine/constant_bands.py": "11f2ecd2eb08e002a735304ac201539e64f105d867c06256795fd53df75b54e4",
+    "gee/compat/earthengine/constant_graph.py": "b2a57e1a0aa84d273d86877294ceae8d494b47fb856aabb2ed974e5192139a2f",
+    "gee/compat/earthengine/date_values.py": "f4580990744e78b2f72c44e449799a99d1153773739527195ba26965959bc20b",
+    "gee/compat/earthengine/decoder.py": "036171e38a74547c9c7398d06fc066583fdb7d4aa4ded1db2b3615ff1eb0346d",
+    "gee/compat/earthengine/dispatch.py": "afbd07a710c0a5fcb68b54af4a9df3fd385f91f9647e43ddec63581e36367ca1",
+    "gee/compat/earthengine/filtering.py": "171fcc9eae8492f857d70f6ce339142d965eb9fa9abf197ebbf73f01c4893b04",
+    "gee/compat/earthengine/geometry_values.py": "9fbc41d6ea487ae4e93f516138a0be6d217791e4189e4db6f12522590ae4912a",
+    "gee/compat/earthengine/graph.py": "73d35b28923328dfbdace4c1f2c3c3ea058d084a50dd0cebc93bc3f527153504",
+    "gee/compat/earthengine/image_ops.py": "bda904f48ca75eaa2519bf313f957a31c279bf816aa1510e14911e36e8dd88f1",
+    "gee/compat/earthengine/ir.py": "63c3649dc847702184383c326a5136fb5b51dc0efa3e6671a1b7c3645b84d1ec",
+    "gee/compat/earthengine/join_ops.py": "b3f3f95853bc23243bfec96cef82d77ce6e19b2be221bdc6f2a1f1a714d962eb",
+    "gee/compat/earthengine/mask_graph.py": "7bc0592a88f83b94f601e6bf9fed524a914413015cee26587b1c8a7c7c83d77c",
+    "gee/compat/earthengine/metadata_ops.py": "b373c436bb0dda1920f02ad9add40be600160de93525358e863ea51e1b726d9d",
+    "gee/compat/earthengine/pixel_graph.py": "48f650e489b0c644a8e386cb2fc10bca3cda20a3980e87b12d9db4e2b54924ce",
+    "gee/compat/earthengine/public_values.py": "5d01e96a517ef2f2f975f7847fdda948ac0daa20893e3a7f00328a5d28eba56f",
+    "gee/compat/earthengine/reduction_graph.py": "f6e8799d86eb1bf2f8c0ca7cd8ae0e54cf5e326e040ef1a8481f9ad1a8fb55eb",
+    "gee/compat/earthengine/static_dictionary.py": "2823714601588f528ccf9c0284bb5d62ffd12fd87399e41c5735d7627d3df619",
+    "gee/compat/earthengine/static_equality.py": "5779f199a88090d13445252a6b3e3634bf68b7d343b4a06c4f94354f226b9e5a",
+    "gee/compat/earthengine/static_sequence.py": "7c65aea263d536357e07f2ced11226e69538ecb39fe6c88a238359f64337e2b3",
+    "gee/compat/earthengine/static_values.py": "347d0ba0c32d82d0249f5152a1036a230c3e1672eac104bde0a7207080ca4840",
+    "gee/compat/earthengine/temporal_graph.py": "a370582335f336b9cac38281b2ce748ee152d4226d0aaaac51b9fd8f5e2ab8a8",
+    "gee/compat/earthengine/value_ops.py": "7ec079cf02d40065443a2912af1d6af2dc229b92d6698cd49c4e40611b8f77cc",
+    "gee/ee_python_client.py": "10f7c71ffc565ee0ca2c634eed18fd12579e03f95fb2f484f6f943fea0cfef47",
+    "scripts/ee_python_api/__init__.py": "69508e080feec6ff7d6416885d94f458b477db5809c6c69cb5ccfad891643886",
+    "scripts/ee_python_api/bindings.py": "5851585dad01031b8c08f2cf67d809eaaa8bacc5f721426b8e31cb3dbccb1746",
+    "scripts/ee_python_api/inventory.py": "e60f528d42497b9e2e83a362f31a4c2ed75d996b89f0393c7b36c332de87a5b8",
+    "scripts/ee_python_api/offline.py": "899874f95e3e5b1729313ada366e9adead4efcf8ae86ca14c7de32eb57970242",
+    "scripts/ee_python_api/probe_cases.py": "49dd8f02155f5341aff1597d2d967bd8ecdb0350f1f68a275e9ca3ca98229782",
+    "scripts/ee_python_inventory.py": "6a8b6ed0327dc42fcbab8a7f891769c48328a4617fe8f016417ac54db3ac3d6f",
+    "scripts/ee_python_probes.py": "54992717d6e3667f87b984d0cd628f2933345a3fb23d49b4b10539029cfdfa52"
+  },
+  "verification": {
+    "python": {
+      "command": ".venv/bin/python -m pytest -q -ra",
+      "passed": 597,
+      "skipped": 7,
+      "failed": 0,
+      "new_module_test_counts": {
+        "test_ee_not_null": 18,
+        "test_ee_public_values": 16,
+        "test_ee_python_arrays": 35,
+        "test_ee_python_geometry": 22,
+        "test_ee_python_inventory": 4,
+        "test_ee_python_joins": 21,
+        "test_ee_python_js_parity": 8,
+        "test_ee_python_probes": 7,
+        "test_ee_python_static_values": 53
+      }
+    },
+    "frontend": {
+      "test_command": "npm --prefix web test -- --maxWorkers=2",
+      "tests_passed": 11,
+      "tests_failed": 0,
+      "typescript": "passed",
+      "build_command": ".venv/bin/python scripts/build_web.py",
+      "build": "passed"
+    },
+    "probe_check": {
+      "command": ".venv/bin/python -m scripts.ee_python_probes --check",
+      "status": "passed",
+      "targeted_cases": 50,
+      "serialization_passed": 50,
+      "compilation_passed": 44,
+      "compilation_rejected": 6,
+      "engine_execution": "not_run",
+      "independent_numerical_validation": "not_run",
+      "google_same_data_comparison": "not_run",
+      "interpretation": "Whole-expression probes only; not an API compatibility percentage or export execution acceptance"
+    },
+    "sdk_cross_language": {
+      "actual_python_js_serialization_and_compilation_parity_cases": 8,
+      "native_execution": "not_run"
+    },
+    "network_instrumentation": {
+      "attempt_count": 0,
+      "attempts_by_operation": {},
+      "instrumented_operations": [
+        "local_transport.request",
+        "socket.create_connection",
+        "socket.getaddrinfo",
+        "socket.gethostbyaddr",
+        "socket.gethostbyname",
+        "socket.gethostbyname_ex",
+        "socket.socket.connect",
+        "socket.socket.connect_ex",
+        "socket.socket.sendmsg",
+        "socket.socket.sendto"
+      ],
+      "mode": "deny_and_count_python_network_and_local_transport_entry_points",
+      "scope": "Trusted in-process SDK probes only; not packet capture or kernel isolation"
+    }
+  },
+  "inventory": {
+    "algorithm_signature_count": 991,
+    "algorithm_argument_count": 2451,
+    "python_class_count": 48,
+    "python_callable_count": 1797,
+    "named_binding_algorithm_count": 939
+  },
+  "numerical_evidence": [
+    {
+      "scope": "static Array matrixMultiply/inverse/pseudoinverse/least-squares",
+      "reference": "hand-derived products/inverse/rank-one pseudoinverse and linear fit coefficients plus residual orthogonality",
+      "status": "passed",
+      "native_raster_engine": "not_run",
+      "google_comparison": "not_run"
+    },
+    {
+      "scope": "static List.sequence count ranges",
+      "reference": "NumPy linspace and Python range; adjacent Float64 endpoint controls",
+      "status": "passed",
+      "google_endpoint_rounding": "not_verified"
+    },
+    {
+      "scope": "Join image source and mask composition",
+      "reference": "synthetic per-source arrays evaluated through the existing test graph interpreter against independently specified expected source values/masks",
+      "status": "passed",
+      "native_raster_engine": "not_run",
+      "google_comparison": "not_run"
+    }
+  ],
+  "fixes": [
+    "Python named GeoJSON CRS normalization and explicit geometry validation",
+    "Filter.notNull semantics/capability/budget",
+    "Dictionary empty keys and missing-key/default behavior",
+    "List.sequence count and bounded endpoints; nested static array equality",
+    "bounded image metadata joins retaining source images",
+    "bounded static Array linear algebra",
+    "whole-output incremental escaped JSON/materialization budget",
+    "remove optional SDK online deprecation catalogue initialization",
+    "deterministic full public Python API inventory and measured deny/count probes"
+  ],
+  "explicit_local_policies": [
+    "Omitted geometry edge flags retain existing planar interpretation",
+    "Step sequences compare produced Float64 values strictly to endpoint, without epsilon expansion",
+    "Array equality requires matching dtype/shape/cells; int/float scalar equality is numeric, bool is separate",
+    "Join null/missing keys do not match; stable local secondary ordering/ties; unmatched outer rows have no fabricated match property"
+  ],
+  "remaining_probe_rejections": [
+    {
+      "id": "number_divide_format",
+      "reason": "Unsupported algorithm arguments: ['number', 'pattern']"
+    },
+    {
+      "id": "unmask_fill",
+      "reason": "Image.unmask sameFootprint=false with a global footprint is not supported"
+    },
+    {
+      "id": "neighborhood_reduce_kernel",
+      "reason": "Unsupported Earth Engine algorithm: Kernel.square"
+    },
+    {
+      "id": "focal_mean",
+      "reason": "Unsupported Earth Engine algorithm: Image.focalMean"
+    },
+    {
+      "id": "regression_reducer",
+      "reason": "Unsupported reducer: Reducer.linearRegression; stdDev cannot be mapped to sample standard deviation"
+    },
+    {
+      "id": "classifier_constructor",
+      "reason": "Unsupported Earth Engine algorithm: Classifier.smileRandomForest"
+    }
+  ],
+  "unrun_or_unimplemented": [
+    "macOS Seatbelt kernel acceptance",
+    "ARM64 JNI and real local research imagery",
+    "Linux full sandbox/execution/GeoTrellis adapter",
+    "Image.array* and raster linearRegression/linearFit",
+    "classifier training/prediction and vector/time/spatial join measures",
+    "neighborhood and advanced time-series/full project workflows",
+    "Google same-data numerical comparison"
+  ],
+  "publication": "Local verification does not establish remote GitHub Actions checks or main publication; report those separately."
+}

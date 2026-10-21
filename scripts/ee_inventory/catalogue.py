@@ -40,7 +40,20 @@ KNOWN_PARTIAL_LIMITS: dict[str, list[str]] = {
         "Uses the local adapter to cast raster cells to Float64. Bounded native temporal reducers support mean, median, min, max, sum, count, first, last, and sampleStdDev; general Float64 callback pixel arithmetic remains unsupported. Cast toFloat before callback arithmetic when Float32 precision is acceptable; Google parity is unverified."
     ],
     "reduce": ["Only the explicitly implemented reducer names and local semantics are available."],
+    "Filter.notNull": ["Flat local metadata names only, at most 1000 properties under the shared compilation budget; missing/null fail while non-null falsey values pass. No Google comparison."],
+    "Dictionary.get": ["Missing keys require an explicit non-null default; default null/omitted rejects. Existing null values remain null."],
+    "Dictionary.values": ["Explicit empty keys returns []; absent/null keys selects natural sorted keys. Missing requested keys reject."],
+    "List.sequence": ["Supports count/end equal spacing and count/step ranges; at most 10000 finite values. No Google numerical comparison."],
 }
+
+for operation in ("Array", "Array.get", "Array.length", "Array.toList", "Array.reshape", "Array.transpose", "Array.matrixTranspose", "Array.matrixMultiply", "Array.matrixInverse", "Array.matrixSolve", "Array.matrixPseudoInverse"):
+    KNOWN_PARTIAL_LIMITS[operation] = [
+        "Static finite numeric arrays only, exact integer domain <=2^53, rank <=8, cells <=10000 and shared 50000-step work budget. Explicit PixelType, empty constructors, negative indices and raster array pixels are unsupported; matrix kernels require rank 2 and matrixSolve full column rank. Independent static numerical controls are not native raster-engine or Google acceptance."
+    ]
+for operation in ("Join.simple", "Join.inverted", "Join.saveFirst", "Join.saveAll", "Join.apply"):
+    KNOWN_PARTIAL_LIMITS[operation] = [
+        "Bounded local ImageCollections and flat finite scalar metadata conditions only; at most 1000 frames and shared compilation work budget. Local stable ordering/ties, missing/null nonmatching keys. Vector joins, spatial/time measures, nested selectors, inner and saveBest unsupported; synthetic graph controls do not establish native-engine or Google equivalence."
+    ]
 
 
 CLIENT_ALIAS_LOWERINGS = [

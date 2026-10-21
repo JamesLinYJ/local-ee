@@ -1,10 +1,9 @@
 """Bounded decoder for the official client's serialized Earth Engine DAG."""
 from __future__ import annotations
 
-import copy
-
 from .catalog import CatalogOperations
 from .filtering import FilteringOperations
+from .geometry_values import GEOMETRY_TYPES, decode_geometry
 from .ir import Function, ParsedExpression, fail, static_truth
 
 
@@ -83,26 +82,8 @@ class Translator(CatalogOperations, FilteringOperations):
                 key: self.evaluate(item, env, depth + 1)
                 for key, item in value.get("value", {}).items()
             }
-        geometry_types = {
-            "Point", "MultiPoint", "LineString", "MultiLineString",
-            "Polygon", "MultiPolygon", "GeometryCollection",
-        }
-        if value_type in geometry_types:
-            if value.get("geodesic") is True:
-                fail("Geodesic geometries require spherical geometry support")
-            crs = value.get("crs")
-            if crs and crs not in {"EPSG:4326"}:
-                fail("Only EPSG:4326 input GeoJSON geometries are supported")
-            output = {
-                key: copy.deepcopy(item)
-                for key, item in value.items()
-                if key in {"type", "coordinates", "geometries"}
-            }
-            if value_type == "Polygon":
-                for ring in output["coordinates"]:
-                    if ring and ring[0] != ring[-1]:
-                        ring.append(ring[0])
-            return output
+        if value_type in GEOMETRY_TYPES:
+            return decode_geometry(value)
         if value_type:
             fail(f"Unsupported serialized value type: {value_type}")
         return {

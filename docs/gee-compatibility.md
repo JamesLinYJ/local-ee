@@ -1,4 +1,4 @@
-# GEE JavaScript 兼容范围
+# GEE Python／JavaScript 兼容范围
 
 基线：官方 `@google/earthengine` 1.7.49，仓库提交 `e189e4b89e785019ea5642ea8e80cb644749cd4a`。客户端构造和序列化逻辑直接复用官方构建；签名文件也固定到同一提交，见 `vendor/earthengine-js/upstream-lock.json`。
 
@@ -16,9 +16,11 @@ Python 运行器会将 `ee.Initialize()` 绑定到本地脚本令牌和 `/gee/v1
 
 ## 支持清单与验证层次
 
-S 表示固定官方 SDK 可生成表达式；C 表示本地编译；N 表示本地实际引擎与独立数值基准比较；G 表示与原始 Google 服务同数据比较。下表所有项目尚无 G 级结论。`/gee/v1/capabilities` 的函数名是 C 级处理器清单，不是 991 项服务端算法均已实现。
+S 表示固定官方 SDK 可生成表达式；C 表示本地编译；E 表示实际引擎执行；N 表示独立数值基准；G 表示与原始 Google 服务同数据比较。历史栅格 N 证据包含实际引擎执行，新静态值 N 只验证本地静态算法，不表示 GeoTrellis 栅格验收。下表所有项目尚无 G 级结论。`/gee/v1/capabilities` 的函数名是 C 级处理器清单，不是 991 项服务端算法均已实现。
 
 完整固定签名、参数与验证层次见 [全量 API 清单](gee-api-inventory.md) 和 [机器可读报告](../reports/gee-api-inventory.json)。该清单可以在没有本机数据和审计目录的干净克隆中重新生成；不会用声明数量推算兼容率。
+
+Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单](gee-python/list.md) 和 [Python API 报告](../reports/gee-python-api-inventory.json)。2026-10-22 的便携增量修复 Python 命名 GeoJSON CRS 解码，补充 `Filter.notNull`、Dictionary／List.sequence、有限元数据 Join 和静态 Array／矩阵算法。SDK 初始化也不再获取 Google 弃用资产目录；探针实际拦截并计数 Python 网络入口，不将该计数描述为内核抓包或用户代码沙箱。
 
 | 用法 | 当前支持范围 | 证据 |
 | --- | --- | --- |
@@ -42,7 +44,10 @@ S 表示固定官方 SDK 可生成表达式；C 表示本地编译；N 表示本
 | 常量与日期波段 | addBands 接受有限常量、静态算术及逐景 date().millis()，按目的影像的有限本地网格和 footprint 求值，常量有效性不继承源波段缺测 | S/C/N：14 用例、18 输出波段与独立基准均为 0 掩膜差异、0 数值误差，包括全缺测源、不同 footprint、同时间戳场景、均值／计数／样本标准差／toBands。见 reports/gee-constant-wave5.json；未做 G 对照 |
 | 缺测填充 | unmask 默认有效 0、标量、单波段广播和等波段数按顺序替换；保留输入属性、替代值掩膜与默认 footprint；map 自动按场景 footprint 展开 | S/C/N：5 项 SDK→原生输出及不同足迹、相同时间戳的逐景均值验收均为 0 掩膜差异、0 数值误差；SPI 另验缺 tile 与拒绝控制。仅有限、对齐的本地网格与相同观测时刻；global constant + sameFootprint=false 拒绝。结果为 Float64，通用后续算术需显式 toFloat，未完成 Google 对照 |
 | Number 位运算 | 标量 bitCount/bitwiseNot/bitwiseAnd/Or/Xor/leftShift/rightShift 的受限整数域 | 官方 SDK 与文档样例 C；signed64 整数输入，And/Or/Xor 限非负，左移限非负且不溢出，移位量 0..63；非整数、超范围明确拒绝；不是 Image QA 位运算 |
-| List | sequence/get/length/contains/add/cat/slice/distinct/sort/map/iterate | S/C；回调最多 1000 项，中间列表最多 10000 项，结果最多 1 MB |
+| List／Dictionary | sequence 支持 count/end 与 count/step；get/length/contains/add/cat/slice/distinct/sort/map/iterate；Dictionary get/keys/values/contains/set | S/C；序列另有 NumPy/Python 独立参考，空 keys 保持空列表，缺键必须有非 null 默认值；回调最多 1000 项，中间列表最多 10000 项，结果最多 1 MB |
+| 非空属性筛选 | Filter.notNull；多属性全部非 null；缺失/null 拒绝，0/False/空字符串等非 null 值保留 | S/C；空属性列表匹配全部，最多 1000 属性并计入编译预算；本地平面属性名，无 G 对照 |
+| 有限元数据 Join | simple/inverted/saveFirst/saveAll/apply；左右元数据字段比较、逻辑组合、排序、outer、匹配后继续读取／组合真实来源影像 | S/C；合成源身份及掩膜的图求值对照；最多 1000 景、共享 50000 步，稳定本地顺序与平分规则，无原生 E/G；不含矢量、空间／时间度量、inner/saveBest |
+| 静态 Array／矩阵 | 构造、get/length/toList/reshape/transpose、matrixTranspose/Multiply/Inverse/PseudoInverse/Solve | S/C 与静态独立 N；整数精确域不超过 2^53、最多 8 轴／10000 单元及共享工作预算；线性求解只接受满列秩方阵／超定矩阵；不含 Image.array*、栅格回归或分类器 |
 | Algorithms.If | 静态条件，惰性编译选中分支 | S/C；不把影像对象当作静态布尔条件 |
 | 几何与地图 | 平面 WGS84 Geometry；Image/Collection/Feature.geometry；Map.centerObject、setCenter、addLayer | S/C；真实地图和 RGB 预览 N |
 | 影像导出 | toDrive 适配本地 GeoTIFF/NetCDF；region 精确掩膜、scale/crs、fileNamePrefix | 真实三角形区域 N；网页文件名回读 |
@@ -90,7 +95,7 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 
 - 全球 GEE 数据目录、私有 assets、任意 `require('users/...')` 模块和 Google Drive/Cloud Storage 上传。
 - 独立纯常量栅格与纯常量集合缺少明确的本地网格，仍拒绝；绑定到本地影像的 addBands 常量与日期 band 已支持。常量投影查询、任意异构类型、逐波段投影与跨网格语义仍需独立实现和验证。
-- 分类器、回归/数组运算、复杂 join、邻域卷积、ui.Chart/ui.Panel 等完整 GEE 应用组件。
+- 分类器、栅格回归和 Image.array* 运算、超出上述有限元数据范围的 join、邻域卷积、ui.Chart/ui.Panel 等完整 GEE 应用组件。静态 Array.matrixSolve 的独立线性代数验证不能代替逐像元时序回归。
 - 分数掩膜、球面/测地线几何、非 UTC 时区、分数月/年、任意 Joda 格式 token。
 - 任意 CRS transform、导出分片、bestEffort 和自定义 tileScale；不支持的参数明确失败。
 - 整数像元类型转换、Image 位运算和原始 GEE 的边界像元加权。GeoTrellis 整型 NoData 哨兵会占用合法数值，不能简单替换 cast 名称；完整类型提升仍待实现。当前 N 验收以浮点数值、网格和二值 NoData 为准。
@@ -107,9 +112,9 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 | 工作流 | 已确认的主要阻塞 |
 | --- | --- |
 | 最绿像素合成 | 历史抽查时缺失；本轮已实现有限同构集合 `qualityMosaic` 并完成 6 个实际输出的独立像素对照；平分规则仍未与 Google 比较 |
-| s2cloudless 云影 | `Join.saveFirst`、定向距离变换、`projection/reproject`、`focalMin/focalMax`；云概率数据未入库 |
-| 谐波时序与矩阵回归 | 已补有限逐景日期 map、日期常量 band 网格绑定和受限 `Date.difference`；仍缺 `linearRegression/linearFit`、数组和 `matrixSolve`，以及相位/振幅的 `atan2/hypot` |
-| HISTARFM 插值 | 本轮已补受限 `Date.getRelative`；独立常量栅格、`int16`、`Join.saveAll`、`Filter.maxDifference` 与匹配列表属性仍缺失 |
+| s2cloudless 云影 | 有限本地影像 `Join.saveFirst` 已补；仍缺定向距离变换、`projection/reproject`、`focalMin/focalMax`；云概率数据未入库 |
+| 谐波时序与矩阵回归 | 已补有限逐景日期 map、日期常量 band、受限日期与静态 Array.matrixSolve；仍缺栅格 `linearRegression/linearFit`、Image.array*，以及相位/振幅的 `atan2/hypot` |
+| HISTARFM 插值 | 已补受限 Date.getRelative、标量元数据 saveAll 和匹配影像列表；独立常量栅格、int16、Filter.maxDifference／时间度量 Join 与真实插值仍缺失 |
 | 随机森林与验证 | 样本提取、分类器训练/预测、混淆矩阵与批量区域统计 |
 | LandTrendr | GEE 用户模块解析、真实时序分段算法、数组处理、连通像元与 Image QA 位运算仍缺失；已补有限网格的 `unmask`，不能据此运行完整 LandTrendr |
 | GEE 应用交互 | 实际原生 runner 的 `ui.Panel/ui.Chart` 返回 `ui is not defined`；`require('users/...')` 返回模块不存在 |

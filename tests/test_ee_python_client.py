@@ -61,6 +61,33 @@ def test_client_refuses_a_different_sdk_version(monkeypatch):
         client.configure_local_ee(URL, TOKEN, signatures_path=SIGNATURES)
 
 
+def test_offline_initialization_never_fetches_cloud_deprecation_metadata(
+    monkeypatch, clean_ee_module
+):
+    import socket
+
+    ee = clean_ee_module
+    attempts = []
+
+    def deny(*_args, **_kwargs):
+        attempts.append(True)
+        raise AssertionError("Offline SDK initialization attempted networking")
+
+    # The SDK swallows errors from this optional catalogue, so assert the
+    # attempted call count as well as blocking sockets and DNS.
+    monkeypatch.setattr(ee.deprecation, "_FetchDataCatalogStac", deny)
+    monkeypatch.setattr(socket, "create_connection", deny)
+    monkeypatch.setattr(socket, "getaddrinfo", deny)
+    monkeypatch.setattr(socket.socket, "connect", deny)
+    local = client.configure_local_ee(URL, TOKEN, signatures_path=SIGNATURES)
+    for _ in range(2):
+        expression = local.ImageCollection("sentinel-2-l2a").first().select("nir")
+        assert local.serializer.encode(expression, for_cloud_api=False)
+        local.Reset()
+        local.Initialize()
+    assert attempts == []
+
+
 @pytest.fixture
 def clean_ee_module():
     import ee

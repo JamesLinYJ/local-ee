@@ -4,6 +4,9 @@ from __future__ import annotations
 import math
 
 from .ir import Collection, Function, Image, UnsupportedEEError, fail, integer
+from .static_dictionary import dictionary_value
+from .static_equality import contains_value, distinct_values
+from .static_sequence import sequence
 
 
 def scalar_power(left, right):
@@ -106,7 +109,7 @@ def invoke_static(translator, name, a):
         if op in {"length", "size"}:
             return len(value)
         if op == "contains":
-            return a["element"] in value
+            return contains_value(translator, value, a["element"])
         if op == "add":
             if len(value) >= 10000:
                 fail("Computed list exceeds 10000 values")
@@ -138,34 +141,14 @@ def invoke_static(translator, name, a):
             end = None if a.get("end") is None else integer(a["end"], "List slice end")
             return value[start:end:step]
         if op == "distinct":
-            result = []
-            for item in value:
-                if item not in result:
-                    result.append(item)
-            return result
+            return distinct_values(translator, value)
         if op == "sort":
             keys = a.get("keys", value)
             if len(keys) != len(value):
                 fail("List.sort keys must match list length")
             return [v for _, v in sorted(zip(keys, value), key=lambda x: x[0])]
         if op == "sequence":
-            if a.get("count") is not None:
-                fail("List.sequence count parameter is unsupported")
-            start, end, step = a.get("start", 0), a["end"], a.get("step", 1)
-            if not step or abs((end - start) / step) > 10000:
-                fail("List.sequence limit exceeded")
-            length = max(0, int(math.floor((end - start) / step)) + 1)
-            return [start + i * step for i in range(length)]
+            return sequence(a)
     if kind == "Dictionary":
-        value = a.get("dictionary", value)
-        if op == "get":
-            return value.get(a["key"], a.get("defaultValue"))
-        if op == "keys":
-            return sorted(value)
-        if op == "values":
-            return [value[key] for key in (a.get("keys") or sorted(value))]
-        if op == "contains":
-            return a["key"] in value
-        if op == "set":
-            return {**value, a["key"]: a["value"]}
+        return dictionary_value(op, a)
     fail(f"Unsupported static operation: {name}")
