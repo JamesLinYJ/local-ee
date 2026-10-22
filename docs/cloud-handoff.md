@@ -164,6 +164,16 @@ Image.hypot 用既有 Pixel 的 max/min／比例／平方根实际计算，保�
 
 锁定依赖、Linux Python **1338 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，新增 35 项：布局／参数 31、工作流 2、SDK 一致性新增 2（总 47）。原 50 探针仍 50 S／45 C／5 拒绝且字节不变，全量 Python 清单字节重现通过，见 `reports/gee-python-wave16.json`。Luna max 独立复审 53 项通过（在最终计数转换／参数补充前）；完整最终测试和父审单独登记。S/C/采样点 N 通过，栅格 E／Google G 未运行，整体目标保持进行中。
 
+## 第十七批矩阵描述量与四景样本协方差
+
+以第十六批提交 `466248d938a70035d3a63ebf6d365b5ebc2c24b7` 为基线，新增 `raster_matrix_properties.py`（138 行）。Image.matrixDiagonal 从固定 rank2 矩形提取真实对角列并保留原单元转换；matrixToDiag 将显式 Float32 单列 1..8 行变成实际零填充对角矩阵。matrixTrace 限方阵 1..8，matrixDeterminant 限方阵 1..4，输出标量 Image；完整数组掩膜、名称／属性／来源保留，非对角线 NoData 同样掩膜结果。签名均严格接受唯一必填 value，矩形 trace 等限制是本地子集政策，固定官方说明没有证明所有形状／精度／结果类型。
+
+每次迹加法、行列式乘法及有符号累加都显式转 Float32，避免仅末尾转换造成常量和栅格中间精度不一致。正式回归 `[1e8,1,-1e8]` 在两条路径均得 0、精确值为 1；有限 Float32 输入 2e38 的迹／行列式可为正无穷，而同样字面矩阵在编译折叠时拒绝。该常量／动态错误差异和非稳定多项式算法已写 `docs/gee-python/numerical-policies.md`，不声称稳定 LU 或 Google 等价。输出构造前保守计费，4 阶行列式预充 464 步、8 行 ToDiag 216 步；64 单元、50000 工作步和 500 图节点保持。实际一般稠密 4×4 栅格行列式仍超图预算拒绝，合法小整数常量 4×4 有 Fraction 消元数值正控。
+
+示例 22 与版本化样本从四景真实合成 red／nir 数值堆为 4×2，H 中心化后计算 XᵀX/3，再取对角、对角矩阵、迹及行列式，没有替换成预计算协方差或只注册 reducer。第一样点矩阵 `[[5/3,2/3],[2/3,4/3]]`、迹 3、行列式 16/9；负协方差／奇异及零方差、联合缺测与非矩形边界均有独立 Fraction 和 NumPy ddof=1 参考。图节点为中心化 266、协方差 370、迹 310、行列式 374、对角列 308、对角矩阵 313，网络尝试 0。
+
+Linux Python **1372 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，新增 34 项：矩阵布局／参数 28、工作流 2、SDK 一致性新增 4（总 51）。Luna max 最终独立复审 30 项通过，另有 40 个只读政策样点和参数边界检查，不额外加入 pytest 数量。早期测试的掩膜索引／矩阵波段／目录名以及 toDouble 提前拒绝的预期错误均已修正，没有放宽生产类型检查。原 50 探针和全量 Python 目录字节不变；报告见 `reports/gee-python-wave17.json`。S/C/采样点 N 与未运行的栅格 E／Google G 分开登记，整体目标保持进行中。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee

@@ -1,8 +1,8 @@
 # GEE Python 兼容清单
 
-状态：2026-10-22，第十六批持续实施，整体兼容目标尚未完成。
+状态：2026-10-22，第十七批持续实施，整体兼容目标尚未完成。
 
-第十六批 [验证报告](../../reports/gee-python-wave16.json)：Linux Python **1338 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1303 passed／7 skipped](../../reports/gee-python-wave15.json)，本批增加 35 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
+第十七批 [验证报告](../../reports/gee-python-wave17.json)：Linux Python **1372 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1338 passed／7 skipped](../../reports/gee-python-wave16.json)，本批增加 34 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
 
 S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎；N＝独立数值基准；G＝Google 同数据对照。静态数值求值和合成图测试分别说明，不能标成原生栅格 E。固定的 991 项签名、方法可见数量和定向探针计数均不能换算为全 API 兼容百分比。
 
@@ -43,6 +43,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] 有限 ImageCollection.toArrayPerBand 的定长逐波段堆叠、静态 Image.arrayReshape 和 Number.sin／cos；集合日期驱动的谐波设计与栅格最小二乘链路，参数与数值边界见下文。
 - [x] 有限静态 Number／Array.hypot／atan2，以及由既有像素算子计算的 Image.hypot；独立高精度范数／方向角参考，串联谐波系数的真实振幅输出，轴约定与 Float32 溢出边界明确登记。
 - [x] 单数组 Image.arrayCat／arrayRepeat 的真实轴布局、有效常量 Image 重复次数、共同掩膜和预算拒绝；双独立响应最小二乘工作流的系数／拟合／残差与 Fraction／SVD 参考一致。
+- [x] 固定矩阵 Image.matrixDiagonal／matrixToDiag／matrixTrace／matrixDeterminant 的真实单元操作或 Float32 算术；四景双波段样本协方差、对角／迹／行列式工作流与 Fraction／NumPy 参考一致。
 - [ ] 每一签名／参数组合的 S／C、适用的独立 N，以及负向、缺测、边界验收；E 按现有环境可用条件单独记录。
 - [ ] 动态形状、其余多数组波段运算和 Image.array*、通用设计矩阵的逐像元回归、采样／图像分类／其他分类器及模式、矢量／空间和多重／歧义度量 Join、邻域及高级时序。
 - [ ] 后续阶段：Linux 执行／隔离适配、macOS Seatbelt、ARM64 JNI 和本机真实数据验收；当前阶段延期。
@@ -71,7 +72,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 
 List.contains／distinct 对嵌套数组使用显式的有界比较，避免 NumPy 隐式真值／广播错误。标量 int／float 按数值比较，bool 单独区分；Array 的 dtype／形状／元素比较仍是未做 Google 对照的本地策略。step 序列严格检查实际生成的 Float64 值，不向端点外扩展；例如 0、0.1、0.2 后的 0.30000000000000004 超过 end=0.3，因此省略，该舍入策略尚无 G 证据。
 
-另有 47 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky、QR／LU／SVD 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵、列表布局／均值／回归、最小距离 schema／预测／训练误差矩阵、栅格 linearRegression 的过原点／截距系数与 RMS、方阵／高矩形设计的栅格 matrixSolve、集合定长数组、reshape、正余弦设计，以及静态向量范数／方向角、栅格 hypot 和轴拼接／整块重复。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容或 Google 数值对照。
+另有 51 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky、QR／LU／SVD 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵、列表布局／均值／回归、最小距离 schema／预测／训练误差矩阵、栅格 linearRegression 的过原点／截距系数与 RMS、方阵／高矩形设计的栅格 matrixSolve、集合定长数组、reshape、正余弦设计，以及静态向量范数／方向角、栅格 hypot、轴拼接／整块重复与矩阵对角／迹／行列式。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容或 Google 数值对照。
 
 第四批 `examples/10_GEE_python_synthetic_pca.py` 与 `tests/fixtures/ee-pca-table-v1.json` 串联有限静态表格的中心化、样本协方差、对称特征分解、投影及重建。四条二维观测的均值为 `[2,1]`，协方差为 `[[4/3,2/3],[2/3,2/3]]`，特征值为 `1±sqrt(5)/3`；闭式向量与得分按 1e-14 容差核对，重建还提供与符号选择无关的验证。S/C/N 已通过，网络入口尝试为 0；无栅格 E 或 G。
 
@@ -235,6 +236,16 @@ Image.arrayRepeat 必须提供 input／axis／copies。固定签名中 copies �
 `examples/21_GEE_python_multi_response_arrays.py` 与 `tests/fixtures/ee-multi-response-arrays-v1.json` 将四景按实际时间排序，用 arrayRepeat 构造截距列、arrayCat 拼入自变量及两个独立响应列，再经显式 Float32 matrixSolve 求解。设计矩阵为 `[[1,0],[1,1],[1,2],[1,3]]`，正规矩阵为 `[[4,6],[6,14]]`。第一样点两响应截距／斜率分别为 `(2,3)` 和 `(-1,1/2)`；含噪声样点为 `(1,2)` 和 `(-2,1/2)`，两响应残差分别为 `[1,-1,-1,1]` 与 `[2,-2,-2,2]`。
 
 系数、拟合、残差独立编译为 208／284／328 节点，Fraction 闭式和独立 NumPy SVD 按 2e-6 容差核对。任一响应任一帧缺失会掩膜两个响应的全部结果，不进行完整行删除；保留实际帧顺序、负／零值和 bbox 内但非矩形场景外的掩膜控制。SDK 网络入口尝试为 0。S/C/采样点 N 与未运行的栅格 E／Google G 分开登记，见 [第十六批报告](../../reports/gee-python-wave16.json)。
+
+## 第十七批：矩阵描述量与样本协方差
+
+四个新方法均要求唯一必填参数 value，未知／缺失参数明确拒绝。matrixDiagonal 只接受固定 rank2 数组，将矩形对角线返回为 `min(rows,columns)×1` 列，引用真实单元并保留原有转换。matrixToDiag 要求显式 Float32 单列、1..8 行，构造 `n×n` 矩阵，原单元在对角线上，非对角线为真实 Float32 零。matrixTrace 限显式 Float32 方阵 1..8，matrixDeterminant 限方阵 1..4；均输出保留数组名称的标量 Image，沿用原元数据、来源和完整输入掩膜，包括非对角线缺失。
+
+迹的每次相加、行列式每次乘法及有符号累加都显式转 Float32，使常量折叠与栅格回调按相同阶段舍入。行列式采用有界排列多项式，奇异输入可返回零；该算法不是稳定选主元 LU，不声称消除抵消或溢出，也没有 Google 同数据对照。矩形 trace、动态／多数组波段、未显式 Float32 的算术和超出尺寸均拒绝，结构性对角提取保留单元转换不代表通用 Float64 算术已支持。共享 50000 工作、64 单元和 500 图节点限制保留，输出构造前收费，部分 4×4 栅格图仍会因节点数拒绝。
+
+`examples/22_GEE_python_synthetic_covariance.py` 与 `tests/fixtures/ee-covariance-descriptors-v1.json` 从四景实际 red／nir 样本构造 `4×2` 数组，静态中心化矩阵 H 左乘后计算 `XᵀX/(4-1)`，并输出协方差、迹、行列式、对角列及对角矩阵。第一样点协方差为 `[[5/3,2/3],[2/3,4/3]]`，迹为 3、行列式为 16/9；第二样点协方差为 `[[5/3,-5/3],[-5/3,5/3]]`，行列式为零；第三样点 red 方差为零、nir 方差为 2/3。Fraction 手算与独立 NumPy `cov(ddof=1)` 验证矩阵及半正定性，实际图采样按 2e-6 核对。
+
+真实编译图节点数为中心化 266、协方差 370、迹 310、行列式 374、对角列 308、对角矩阵 313。任一景任一波段缺失会掩膜该像元全部输出，不做行删除；顺序、负／零值和 bbox 内但多边形外样点均有控制。SDK 网络入口尝试为 0；本例是显式构造的有限样本协方差，未注册 Reducer.centeredCovariance 或声称完整采样器兼容。S/C/采样点 N 与未运行的栅格 E／Google G 见 [第十七批报告](../../reports/gee-python-wave17.json)。
 
 ## 复现与后续顺序
 

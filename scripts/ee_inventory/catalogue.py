@@ -115,6 +115,24 @@ KNOWN_PARTIAL_LIMITS["Image.arrayCat"] = [
 KNOWN_PARTIAL_LIMITS["Image.arrayRepeat"] = [
     "Single fixed-shape RasterArrayImage, required existing axis and copies Image holding one provably valid finite positive integer constant scalar band. Repeats the entire axis block in row-major order, preserving source cells, dtype, name, metadata and whole-array mask. Dynamic, masked, spatially bounded or multiband copies, zero/negative/nonintegral counts and missing/unknown arguments reject. Output rank<=8/axes<=64/cells<=64, shared50000 precharged work and500 process-node cap retained. No variable-length arrays, actual raster-engine or Google acceptance."
 ]
+KNOWN_PARTIAL_LIMITS["Image.matrixDiagonal"] = [
+    "Required value is one fixed-shape rank2 RasterArrayImage, rectangular allowed within existing64-cell budget. Returns min(rows,columns)x1 column of actual diagonal Pixel references; no numeric conversion, full input mask and image name/metadata/source retained, including off-diagonal missingness. Work precharged before output construction. Scalar/multiband arrays, non-rank2 and missing/unknown arguments reject; no actual raster-engine/Google acceptance."
+]
+KNOWN_PARTIAL_LIMITS["Image.matrixToDiag"] = [
+    "Required value is a fixed rank2 single-column RasterArrayImage,1..8 rows and explicit top-level toFloat on every input cell. Produces an nxn fixed matrix with original diagonal cells and real Float32 zero off-diagonal cells under the full input mask, retaining name/metadata/source. Output<=64 cells, shared50000 work precharged and500 graph cap unchanged. Rank1/row vectors, uncast/Double cells and missing/unknown arguments reject; not unrestricted type promotion or Google equivalence."
+]
+KNOWN_PARTIAL_LIMITS["Image.matrixTrace"] = [
+    "Required value is one fixed Float32 square RasterArrayImage with1..8 rows. Actual diagonal addition explicitly rounds each stage to Float32 and returns a scalar Image under the entire input mask, including off-diagonal missing cells. Name/metadata/source retained, work precharged and500-node cap unchanged. Rectangular trace is not exposed in this local subset, non-Float32/rank/shape/unknown/missing inputs reject. Rounding/overflow/cancellation policy is local and has no Google comparison."
+]
+KNOWN_PARTIAL_LIMITS["Image.matrixTrace"].append(
+    "Known literal Float32 overflow rejects during constant folding; finite dynamic Float32 inputs can produce infinity in local sampled evaluation. Explicit staging does not establish identical constant/dynamic error handling, actual-engine or Google overflow semantics."
+)
+KNOWN_PARTIAL_LIMITS["Image.matrixDeterminant"] = [
+    "Required value is one fixed Float32 square RasterArrayImage with1..4 rows. Real signed determinant products and sums explicitly round each arithmetic stage to Float32, return a scalar Image with full input mask and original name/metadata/source; singular matrices may return zero. Shared50000 work charged before expression construction,64-cell and500-process caps retained; general4x4 raster outputs can still exceed500. This bounded polynomial kernel is not a numerically stable pivoted LU or Google-equivalent algorithm. Non-Float32/non-square/unsupported size/unknown/missing inputs reject."
+]
+KNOWN_PARTIAL_LIMITS["Image.matrixDeterminant"].append(
+    "Known literal Float32 product overflow rejects during constant folding; dynamic finite Float32 matrix products can produce infinity or other nonfinite results in local sampling. This material numerical limitation is documented separately from mask preservation; no native/Google overflow acceptance."
+)
 for operation in ("Number.hypot", "Number.atan2"):
     KNOWN_PARTIAL_LIMITS[operation] = [
         "Finite static Number operands left/right only, integers in exact Float64 domain<=2^53; bool/nonfinite/non-numeric/missing/unknown inputs reject. Work charged before real Float64 libm kernel and nonfinite result rejected. atan2 uses x=left,y=right according to the pinned SDK vector description and explicit Array right=y documentation, so the kernel is atan2(right,left). An official community harmonic tutorial uses the opposite call order; Google same-data orientation, signed-zero and last-bit parity remain unverified."

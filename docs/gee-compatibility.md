@@ -48,6 +48,8 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 
 第十六批增加单数组波段的 Image.arrayCat／arrayRepeat：沿现有轴拼接真实行主序单元，或按可证明有效的正整数常量 Image 次数重复完整轴块。拼接合并整体掩膜，重复保留输入掩膜与 dtype；动态／带掩膜／有空间限定的次数、空轴和多数组波段拒绝。与固定设计的 matrixSolve 串联双独立响应工作流，参数及 S/C/N 证据见 [第十六批报告](../reports/gee-python-wave16.json)；原有 64 单元、50000 工作步及 500 图节点限制保留，无实际 E/G 结论。
 
+第十七批增加固定单数组的 Image.matrixDiagonal／matrixToDiag／matrixTrace／matrixDeterminant，实际提取对角列、插入零值或计算逐步 Float32 和／积。四景双波段中心化、转置乘法和无偏样本协方差串联这些描述量，独立 Fraction／NumPy 参考验证正负协方差、奇异矩阵、整体缺测及场景边界。参数子集和非稳定多项式行列式政策见 [第十七批报告](../reports/gee-python-wave17.json)；没有新增后端进程或移除图／工作预算，无实际 E/G 结论。
+
 第三批增加 `Join.inner`、唯一 maxDifference 的 And 组合，以及匹配 Feature 映射回 ImageCollection 的链路；最近前后观测插值有版本化合成来源／掩膜／目标时间参考，见 [第三批报告](../reports/gee-python-wave3.json)。S/C 与合成图 N 通过仍不构成原生引擎 E 或 Google G。
 
 | 用法 | 当前支持范围 | 证据 |

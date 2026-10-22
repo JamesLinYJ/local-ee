@@ -22529,12 +22529,15 @@
       "description": "Computes the determinant of the matrix.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Required value is one fixed Float32 square RasterArrayImage with1..4 rows. Real signed determinant products and sums explicitly round each arithmetic stage to Float32, return a scalar Image with full input mask and original name/metadata/source; singular matrices may return zero. Shared50000 work charged before expression construction,64-cell and500-process caps retained; general4x4 raster outputs can still exceed500. This bounded polynomial kernel is not a numerically stable pivoted LU or Google-equivalent algorithm. Non-Float32/non-square/unsupported size/unknown/missing inputs reject.",
+          "Known literal Float32 product overflow rejects during constant folding; dynamic finite Float32 matrix products can produce infinity or other nonfinite results in local sampling. This material numerical limitation is documented separately from mask preservation; no native/Google overflow acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22560,12 +22563,14 @@
       "description": "Computes the diagonal of the matrix in a single column.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Required value is one fixed-shape rank2 RasterArrayImage, rectangular allowed within existing64-cell budget. Returns min(rows,columns)x1 column of actual diagonal Pixel references; no numeric conversion, full input mask and image name/metadata/source retained, including off-diagonal missingness. Work precharged before output construction. Scalar/multiband arrays, non-rank2 and missing/unknown arguments reject; no actual raster-engine/Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22884,12 +22889,14 @@
       "description": "Computes a square diagonal matrix from a single column matrix.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Required value is a fixed rank2 single-column RasterArrayImage,1..8 rows and explicit top-level toFloat on every input cell. Produces an nxn fixed matrix with original diagonal cells and real Float32 zero off-diagonal cells under the full input mask, retaining name/metadata/source. Output<=64 cells, shared50000 work precharged and500 graph cap unchanged. Rank1/row vectors, uncast/Double cells and missing/unknown arguments reject; not unrestricted type promotion or Google equivalence."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22915,12 +22922,15 @@
       "description": "Computes the trace of the matrix.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Required value is one fixed Float32 square RasterArrayImage with1..8 rows. Actual diagonal addition explicitly rounds each stage to Float32 and returns a scalar Image under the entire input mask, including off-diagonal missing cells. Name/metadata/source retained, work precharged and500-node cap unchanged. Rectangular trace is not exposed in this local subset, non-Float32/rank/shape/unknown/missing inputs reject. Rounding/overflow/cancellation policy is local and has no Google comparison.",
+          "Known literal Float32 overflow rejects during constant folding; finite dynamic Float32 inputs can produce infinity in local sampled evaluation. Explicit staging does not establish identical constant/dynamic error handling, actual-engine or Google overflow semantics."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -40917,7 +40927,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 258,
+    "declared_handler_name_count": 262,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41135,7 +41145,7 @@
         "appears_in_rejected_compile_context": 31,
         "appears_in_selected_sdk_serialization": 35,
         "appears_in_successful_compile_context": 8,
-        "declared_handler_count": 65,
+        "declared_handler_count": 69,
         "signature_count": 232
       },
       "ImageCollection": {
@@ -41398,7 +41408,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 258,
+    "pinned_signatures_with_same_name_declared_handler": 262,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

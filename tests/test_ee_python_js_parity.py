@@ -54,6 +54,14 @@ const prior = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(c, c,
     leftField:'system:time_start', rightField:'system:time_start'}),
     ee.Filter.greaterThan({leftField:'system:time_start', rightField:'system:time_start'}))));
 const values = {
+  rasterMatrixDiagonal: c.first().select(['green','red','nir']).toArray().toArray(1)
+    .matrixDiagonal().arrayFlatten([['row'],['column']]),
+  rasterMatrixToDiag: c.first().select(['red','nir']).toFloat().toArray().toArray(1)
+    .matrixToDiag().arrayFlatten([['r0','r1'],['c0','c1']]),
+  rasterMatrixTrace: c.first().select(['blue','green','red','nir']).toFloat().toArray()
+    .arrayReshape(ee.Image(ee.Array([2,2])),2).toFloat().matrixTrace(),
+  rasterMatrixDeterminant: c.first().select(['blue','green','red','nir']).toFloat().toArray()
+    .arrayReshape(ee.Image(ee.Array([2,2])),2).toFloat().matrixDeterminant(),
   rasterArrayCat: c.first().select(['red','nir']).toArray().toArray(1)
     .arrayCat(c.first().select(['green','red']).toArray().toArray(1),1)
     .arrayFlatten([['row0','row1'],['left','right']]),
@@ -172,6 +180,14 @@ def parity_values():
             leftField="system:time_start", rightField="system:time_start"),
             ee.Filter.greaterThan(leftField="system:time_start", rightField="system:time_start"))))
     py = {
+        "rasterMatrixDiagonal": c.first().select(["green", "red", "nir"]).toArray().toArray(1)
+            .matrixDiagonal().arrayFlatten([["row"], ["column"]]),
+        "rasterMatrixToDiag": c.first().select(["red", "nir"]).toFloat().toArray().toArray(1)
+            .matrixToDiag().arrayFlatten([["r0", "r1"], ["c0", "c1"]]),
+        "rasterMatrixTrace": c.first().select(["blue", "green", "red", "nir"]).toFloat().toArray()
+            .arrayReshape(ee.Image(ee.Array([2, 2])), 2).toFloat().matrixTrace(),
+        "rasterMatrixDeterminant": c.first().select(["blue", "green", "red", "nir"]).toFloat().toArray()
+            .arrayReshape(ee.Image(ee.Array([2, 2])), 2).toFloat().matrixDeterminant(),
         "rasterArrayCat": c.first().select(["red", "nir"]).toArray().toArray(1)
             .arrayCat(c.first().select(["green", "red"]).toArray().toArray(1), 1)
             .arrayFlatten([["row0", "row1"], ["left", "right"]]),
@@ -281,6 +297,8 @@ def parity_values():
                                  "rasterTemporalMatrix", "rasterArrayReshape",
                                  "numberVectorMath", "arrayVectorMath", "rasterHypot",
                                  "rasterArrayCat", "rasterArrayRepeat",
+                                 "rasterMatrixDiagonal", "rasterMatrixToDiag",
+                                 "rasterMatrixTrace", "rasterMatrixDeterminant",
                                  "rasterRegressionOrigin", "rasterRegressionResidual", "rasterRegressionIntercept"])
 def test_python_and_javascript_reach_the_same_local_result(parity_values, case):
     javascript, python, metadata, items = parity_values

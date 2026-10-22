@@ -1,0 +1,50 @@
+{
+  "schema": "local-ee-synthetic-covariance-descriptors/v1",
+  "collection_id": "sentinel-2-l2a",
+  "bbox": [0, 0, 5, 1],
+  "scene_geometry": {
+    "type": "Polygon",
+    "coordinates": [[[0, 0], [5, 0], [4.5, 0.4], [3.5, 1], [0, 1], [0, 0]]]
+  },
+  "pixel_centers": [[0.5, 0.5], [1.5, 0.5], [2.5, 0.5], [3.5, 0.5], [4.5, 0.5]],
+  "bands": ["red", "nir"],
+  "frame_order": ["scene-d180", "scene-d000", "scene-d270", "scene-d090"],
+  "sorted_frame_order": ["scene-d000", "scene-d090", "scene-d180", "scene-d270"],
+  "frame_day": {
+    "scene-d000": 0,
+    "scene-d090": 90,
+    "scene-d180": 180,
+    "scene-d270": 270
+  },
+  "frame_values": {
+    "scene-d000": {
+      "red": [1, -1, 0, 4, 10],
+      "nir": [2, 1, 0, -1, 5]
+    },
+    "scene-d090": {
+      "red": [2, 0, 0, 3, 9],
+      "nir": [4, 0, 1, null, 6]
+    },
+    "scene-d180": {
+      "red": [3, 1, 0, 2, 8],
+      "nir": [2, -1, -1, 1, 7]
+    },
+    "scene-d270": {
+      "red": [4, 2, 0, 1, 7],
+      "nir": [4, -2, 0, 3, 8]
+    }
+  },
+  "hand_reference": {
+    "sample_covariance_by_pixel": [
+      [["5/3", "2/3"], ["2/3", "4/3"]],
+      [["5/3", "-5/3"], ["-5/3", "5/3"]],
+      [["0", "0"], ["0", "2/3"]],
+      null,
+      null
+    ],
+    "trace_by_pixel": ["3", "10/3", "2/3", null, null],
+    "determinant_by_pixel": ["16/9", "0", "0", null, null],
+    "joint_missing_pixel_index": 3,
+    "outside_geometry_pixel_index": 4
+  }
+}
