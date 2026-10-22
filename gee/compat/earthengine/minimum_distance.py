@@ -1,13 +1,13 @@
 """Bounded static minimum-distance classifiers over inline Features."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from fractions import Fraction
 import math
 
 from .array_core import charge_array
 from .feature_values import is_collection, validate_feature
-from .ir import fail, integer
+from .ir import DynamicMinimumDistance, SampledFeatures, fail, integer
 from .minimum_distance_metrics import predict_unique, require_metric
 
 
@@ -141,8 +141,34 @@ def _train(translator, args):
     if seed != 0:
         fail("Classifier.train only supports subsamplingSeed=0")
 
-    features = _features(translator, args["features"])
     dimension = len(schema)
+    if isinstance(args["features"], SampledFeatures):
+        from ...sampling_spec import decode_sampling_spec, sampling_columns
+
+        samples = args["features"]
+        try:
+            sample_spec = decode_sampling_spec(samples.spec)
+            columns = sampling_columns(sample_spec)
+        except (TypeError, ValueError, KeyError) as exc:
+            fail(f"Classifier.train requires a valid server-side sample table: {exc}")
+        if not sample_spec["regions"]["features"]:
+            fail("Classifier.train requires at least one sampling region")
+        if class_property not in columns:
+            fail(f"Classifier sample table is missing classProperty {class_property!r}")
+        for name in schema:
+            if name not in columns:
+                fail(f"Classifier sample table is missing input property {name!r}")
+        # Reserve the bounded schema/spec handoff before making the model IR.
+        charge_array(translator, len(samples.spec) + len(class_property)
+                     + sum(map(len, schema)) + 4 * dimension)
+        return DynamicMinimumDistance(
+            samples=samples,
+            metric=classifier.metric,
+            schema=schema,
+            class_property=class_property,
+        )
+
+    features = _features(translator, args["features"])
     # Reserve the maximum bounded row, grouping and center work before any
     # training vectors, class accumulators or model tuples are materialized.
     charge_array(
@@ -203,7 +229,17 @@ def invoke_classifier(translator, name, args):
         translator.allowed(args, {"classifier"})
         if "classifier" not in args:
             fail("Classifier.schema requires classifier")
-        classifier = _supported(args["classifier"])
+        classifier = args["classifier"]
+        if isinstance(classifier, DynamicMinimumDistance):
+            require_metric(classifier.metric)
+            if (classifier.output_mode != "CLASSIFICATION"
+                    or not classifier.schema
+                    or len(classifier.schema) > MAX_INPUT_PROPERTIES):
+                fail("Sample-trained classifier has an unsupported schema or output mode")
+            charge_array(translator, 1 + len(classifier.schema)
+                         + sum(map(len, classifier.schema)))
+            return list(classifier.schema)
+        classifier = _supported(classifier)
         if classifier.schema is None:
             charge_array(translator, 1)
             return None
@@ -212,9 +248,16 @@ def invoke_classifier(translator, name, args):
     translator.allowed(args, {"classifier", "mode"})
     if "classifier" not in args or "mode" not in args:
         fail("Classifier.setOutputMode requires classifier and mode")
-    classifier = _supported(args["classifier"])
+    classifier = args["classifier"]
     if args["mode"] != "CLASSIFICATION":
         fail("Only CLASSIFICATION output mode is supported for minimum distance")
+    if isinstance(classifier, DynamicMinimumDistance):
+        require_metric(classifier.metric)
+        if not classifier.schema or len(classifier.schema) > MAX_INPUT_PROPERTIES:
+            fail("Sample-trained classifier has an unsupported schema")
+        charge_array(translator, 2 + sum(map(len, classifier.schema)))
+        return replace(classifier, output_mode="CLASSIFICATION")
+    classifier = _supported(classifier)
     return classifier
 
 def predict_class(translator, classifier, values):

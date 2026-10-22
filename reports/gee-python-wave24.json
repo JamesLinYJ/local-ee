@@ -1,0 +1,268 @@
+{
+  "schema": "local-ee-python-wave24/v1",
+  "date": "2026-10-23",
+  "title": "Bounded sampleRegions, runtime minimum-distance training and sampled task results",
+  "base_commit": "57ce41f813d46cf2012c2831f63667d05bd2f9f1",
+  "change": [
+    "Lazy sampleRegions IR lowered into an independent training grid/source branch",
+    "Actual single-level native grid-cell sampler and typed pending/actual feature tables",
+    "Runtime exact minimumDistance training and audited classifier model references",
+    "Sample getInfo/CSV through existing task, ownership, idempotency and physical-result boundaries"
+  ],
+  "entry_inventory": {
+    "declared_handlers": 273,
+    "pinned_algorithm_signatures": 991,
+    "name_entry_percentage": 27.55,
+    "interpretation": "Dispatch names only, including restricted parameter subsets. Not full syntax, execution or computation-semantic compatibility."
+  },
+  "semantics": {
+    "geometry_policy": "Planar WGS84 Points/MultiPoints use floor half-open east/south cells; polygons/multipolygons positive-area intersection. Same-feature MultiPoint cells deduplicate; distinct overlapping features retain rows/weights. No Google boundary/spherical claim.",
+    "masks_precision": "Any selected NoData excludes row; valid selected Infinity rejects. Actual Float32/Float64 values retained. Fixed training and target schema order preserved.",
+    "grid": "Native grid, or positive projected meter scale; actual CRS units and layout cell width/height must match, relative tolerance1e-9. Training independent of target region/scale; target raster and training input budgets separate.",
+    "table": "Default non-system copied properties or explicit[]; no collisions. Optional snapped center geometry. Top-level local Feature.id=fN_rR_cC; local CSV system:index fallback. Empty table yields no features/header-only CSV.",
+    "training": "Three metrics, k1/CLASSIFICATION, explicit1..8 schema, integer classes0..63, actual rows, exact rational means and existing model/work constraints. No fabricated dry-run samples/centers.",
+    "limits": {
+      "regions": 1000,
+      "coordinates": 10000,
+      "bands": 64,
+      "result_rows": 1000,
+      "result_columns": 256,
+      "result_cells": 50000,
+      "json_csv_bytes": 1000000,
+      "compilation_work": 50000,
+      "graph_nodes": 500,
+      "candidate_tile_pixels_times_regions": 67108864,
+      "source_asset_grid_preflight_cells": 100000000
+    }
+  },
+  "validation": {
+    "evidence_levels": {
+      "S": "Pinned official Python and JS serializers passed within declared parameters",
+      "C": "Compiler/process protocol, schema, producer and grid boundaries passed",
+      "N": "Independent Shapely/Fraction/Decimal graph/reference controls and actual standalone tile kernels passed",
+      "E": "Full Spark cube/batch/sandbox/service pipeline not run; actual standalone tile components only",
+      "G": "not_run"
+    },
+    "python": {
+      "passed": 1882,
+      "skipped": 3,
+      "new_passed_vs_wave23": 131,
+      "native_runtime_tests_excluded_not_run": 4,
+      "command": "GEE_AUDIT_DIR=audit/gee-python-wave24 LOCAL_EE_RUN_SAMPLE_KERNEL_TEST=1 LOCAL_EE_RUN_CLASSIFIER_KERNEL_TEST=1 .venv/bin/python -m pytest -q --ignore=tests/test_native_runtime.py --junitxml=audit/gee-python-wave24/python-verified.xml --basetemp <task scratch>",
+      "warnings": "Three pre-existing rasterio transform PendingDeprecationWarnings",
+      "post_test_change": "Capability wording/generation rechecked with5inventory tests before final full suite; test-only bridge split then full suite repeated; staged EOF blank-line cleanup verified identical Python ASTs including attributes"
+    },
+    "frontend": {
+      "passed": 11,
+      "typescript": "passed",
+      "production_build": "passed; staged only, not deployed"
+    },
+    "full_python_inventory": {
+      "signatures": 991,
+      "arguments": 2451,
+      "classes": 48,
+      "callables": 1797,
+      "byte_identical_to_locked_report": true,
+      "sha256": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12"
+    },
+    "original_probes": {
+      "sdk_serialized": 50,
+      "compiled": 45,
+      "rejected": 5,
+      "fixture_unchanged": true,
+      "not_full_api_coverage": true
+    },
+    "python_js_sdk_parity": {
+      "total": 72,
+      "new": 4,
+      "new_scope": "One direct sample table and three mapped sampled-training classifier graphs",
+      "network_attempts": 0
+    },
+    "sample_tile_kernel": {
+      "cases": 6,
+      "positive": 3,
+      "rejected": 3,
+      "invalid_wkts": 4,
+      "tile_edge_candidate_controls": 2,
+      "provider_and_registry": "Actual ServiceLoader sample provider instantiated and registry process ID checked",
+      "oracle": "Independent Shapely cell intersections and pyproj, actual Float32 and distinguishing finite Float64 values",
+      "jar_sha256": "3bc2bf623baee7e5a4448c7813e9fcd9ec6f37ada38eeb584764399b57f44d74",
+      "spark_context_started": false,
+      "jar_deployed": false
+    },
+    "classifier_tile_kernel": {
+      "case_counts": {
+        "predictions": 141,
+        "invalid_models": 16,
+        "binary64": 9
+      },
+      "spark_context_started": false,
+      "jar_deployed": false
+    },
+    "workflow": {
+      "fixture": "tests/fixtures/ee-sampling-training-v1.json",
+      "sample_rows": 11,
+      "scenes": 2,
+      "class_centers_red_nir": [
+        [
+          "2",
+          "7/2"
+        ],
+        [
+          "13/5",
+          "7"
+        ]
+      ],
+      "scope": "SDK/compiler and independent graph N only; map/export expressions compile without submission"
+    },
+    "task_file_controls": "Real service dispatch, SaveResult, worker finish/finalizer and bounded CSV result read. Database/queue and sampled pixels are trusted test fixtures; not HTTP/native-process/browser acceptance.",
+    "independent_review": {
+      "agent": "Luna/max",
+      "final_focused_passed": 32,
+      "concrete_unresolved_defects": 0,
+      "withdrawn_concern": "Candidate take(100001) cannot truncate valid input because shared validation first limits source keys to100000. No change needed."
+    }
+  },
+  "fixes_and_observed_failures": [
+    "Initial parent export test expected wrong fixture nir value4; corrected to independent fixture value3, implementation unchanged.",
+    "PendingSampledTable now follows upstream SaveResult/with_format dry-run, retains traces and refuses output. Real upstream convert_node regression passes.",
+    "Actual layout resolution and meter units checked against declared sample scale; mismatch, geographic, feet or missing layout reject.",
+    "Classifier output budget follows target raster lineage, not model training extent. Original real compiler reproduction now625 target pixels, matching target-only; training still separately counts2000000 asset-grid cells.",
+    "Staged whitespace review found extra EOF blank lines in8new Python files; removed with exact AST equality and no semantic changes."
+  ],
+  "not_supported": [
+    "Dynamic sampled FeatureCollection general map/filter/reduceColumns",
+    "Dynamic model FeatureCollection.classify/confusionMatrix or direct JSON",
+    "Random sampling, automatic schema, other classifiers/modes and Mahalanobis",
+    "General/spherical CRS and Google boundary/dtype/numerical equivalence",
+    "Full Spark batch, native isolation/service/browser deployment and private real-data acceptance (deferred phase)"
+  ],
+  "preservation": {
+    "accounts_research_assets_existing_results": "untouched",
+    "runtime_or_native_config": "untouched",
+    "sandbox_and_network_rules": "unchanged; no fallback",
+    "containers_vms_services": "none created/restarted/deployed",
+    "goal": "active, compatibility incomplete"
+  },
+  "primary_sources": [
+    "https://developers.google.com/earth-engine/apidocs/ee-image-sampleregions",
+    "https://developers.google.com/earth-engine/apidocs/ee-classifier-train"
+  ],
+  "source_files_sha256": {
+    "AGENTS.md": "68537e0819d754a45ae4ea6b5ae29e6dcb666dd21d7182e59cca2fc5ad613568",
+    "GOAL.md": "0688dba73d9fd642a2651e3565ef86817108714a92d9564a9094f1d8de49d17e",
+    "docs/architecture.md": "2793d3bbaff5f376bb4ee047c5a3bffca9e4bf1eb5b8ac8be9ebbf86d60487aa",
+    "docs/cloud-handoff.md": "9fa2bd0b00f6b29885975498ef25f3a310364b273c01d5dc35456aa8857edb5e",
+    "docs/gee-compatibility.md": "1893116b2425a1c81c665e4c355341a814a2e08285a294524c59c76550723168",
+    "docs/gee-python/list.md": "c764f48814196516e1f69a57b63e26ed1acef46ec033e8c6f047bdbbbcd0f640",
+    "docs/gee-python/numerical-policies.md": "f3f2aebc19ced2c98898f9a83ac85cb97978bf203992a082cabf021f3b3f8dcf",
+    "docs/gee-python/sampling.md": "8feac65c15c0a01a79769bea98b3f2bd800720838a009702e380a61a555cffa0",
+    "engine/ee_process_adapters.py": "137de7d32c0275c9b6e14deeeb288c9c60f3c1366a614b07ce8846a77cf732bf",
+    "engine/ee_sample_adapter.scala": "7dd460ef1164401a5dd1e974392b55388641a6cac052b4bdc30181af8acd024f",
+    "engine/ee_sample_kernel.scala": "7995395d7ed390362a269b56968334c3614e7059327751c5be473f96e17ee000",
+    "engine/ee_sample_training.py": "ecc29cacecd166c6c1da1acd8bff4b782c0f29b82db4312ba70cb88a86e055a6",
+    "engine/ee_sampling.py": "555dcf8cfc177072ecd9f1ca4e29616781586faf01d2c642fe39e65d539ad1d5",
+    "engine/ee_sampling_result.py": "5d9ae2abbfe570e13f7a03c4ab5a08c30fc5dacf05b8bc8681928788ce0897fc",
+    "examples/29_GEE_python_sample_training.py": "10c15de37fd7886323ddee45978c51d448cb8229032905a1df6def81b6090579",
+    "gee/compat/earthengine/capabilities.py": "a34277dad8553784594e89ed01d255d70e663ddbf4f55ef4f97893e725fa46c4",
+    "gee/compat/earthengine/classification_graph.py": "25846e6dfa4f29b8bdb85096db7bb07cc363ea23fcff4bd7cf5eafcf02b6de95",
+    "gee/compat/earthengine/classifier_features.py": "b3873dc08f6457dcc78c3bf21640f457fb245b10f7b04beead2bc4837153b49b",
+    "gee/compat/earthengine/compile.py": "69c4235c0af730839e22cd291c51e9210cf6236f5444dcf549e2ba5f5e81a431",
+    "gee/compat/earthengine/dispatch.py": "aeaafebfe196f8e71ba91ad70887521752301b894d5bfd028871c973f7d3de4b",
+    "gee/compat/earthengine/feature_ops.py": "ed0e1a7a1dff8f98cfc78c8fad0838e0ac184defc3b4e8aa0ee5ffa83859b4a4",
+    "gee/compat/earthengine/graph.py": "e681db6228b1e69a98b0ac514f4b146b5c5846ed8c215e7025763a4eeb97e1a3",
+    "gee/compat/earthengine/ir.py": "1e13427e04146068866f5e2f50cccf41d09cd7d68da1ed7760f998cd48e092a6",
+    "gee/compat/earthengine/minimum_distance.py": "edf3311e52efb14cef694aea4b1c9c892aa2100858aa467abd9a731864258aee",
+    "gee/compat/earthengine/pixel_graph.py": "a8a11dd642dbbfe491ca48440219d2d529045c7f5d2b9b2381f3d40544118a49",
+    "gee/compat/earthengine/raster_classification.py": "7af3dbce2d1c6d93545eb1b3f2b30aa2eaaab92c0235e16e231f0235b169780b",
+    "gee/compat/earthengine/raster_sampling.py": "c4b8f5f58c02028508f276df6c1a983dccd430dc31210905ad25513bab54358c",
+    "gee/compat/earthengine/sampled_training.py": "f4fc3b78daaf84bcb2aa22c8ac425a2224ededb008c84156d11a9e80c7939560",
+    "gee/compat/earthengine/value_ops.py": "317542edeae6ca4bbd827d753d75f7528f85f1ce24b3a17fa02352e5640c3e46",
+    "gee/graph.py": "8d5fb216d4605458e4ff0ba3d7e279e32a9f0d01b60dc02e9a4e5a5db07d27bd",
+    "gee/local_processes.py": "f226c262c37523726c8f55969766a2c248a9e7d61852938f045ee38f567b6c34",
+    "gee/sampling_graph.py": "d8878bbaf938d3ec205c91b5ca2d132b21a07be4b7027dcab8afab8e83fc4760",
+    "gee/sampling_spec.py": "cbe1088f4422c705074bd3f0db8f1605b731bc8ef190592d34ca69f0f46ddf68",
+    "gee/sampling_values.py": "34625572906153746fa6f8eb774b7e776b96f03de05d48fe67923f1c5b6ef682",
+    "gee/services/ee.py": "16a71fab178c0befc3e0237be182dacb861b84f1f8d6d547609d40e51b675178",
+    "gee/services/ee_budget.py": "f8694a3bfe197c6c3c9e4f6dd9832aa2984ae25e38a73e4a96c0e098518d1b08",
+    "gee/services/ee_sample_results.py": "3854caf515d13d4c053cd6c7e979a8cd97959099c01bf678015c8c8947bee63d",
+    "reports/gee-api-inventory.json": "2b89cce133272808727a617e11d667dfca7308fe82b85e05032e5a3f2967793d",
+    "scripts/build_integer_adapter.py": "17b9990a0821f2cefffbc781702f0d43c9b9998c182fa438677c6bc3127baa38",
+    "scripts/ee_inventory/catalogue.py": "a2d7c33c340e7a1d29f2cc8cdcb937c0752d7a8e5630ca57a19311b1903f066b",
+    "tests/ee_sampling_bridge_helpers.py": "d85c8f5f07b9a908b59827f6ebd7c76a71dbe63801e79951e4b4237c675ef114",
+    "tests/ee_sampling_contract_helpers.py": "402bc766eb8cb88715d6d74ba83aac7442c0c3ce8cc667c8defc6cb03efa0723",
+    "tests/ee_sampling_workflow_helpers.py": "beedf5a4f4519868e8b64a370d9e86b627531cce77a3f3b3dcab1b8e7b01acc2",
+    "tests/fixtures/ee-sample-kernel-probe.scala": "6cf310805e4553242e7f9bd19f948abd29f53766854f00504e33bc702ef2d312",
+    "tests/fixtures/ee-sampling-training-v1.json": "7791a9d9b9559cf18bdcfee66c72f5621f59850a27ee87220cae42e571e2155e",
+    "tests/test_ee_budget.py": "8dc23f984573d26ba6d4aaeed04f81835349ba73d343309cbeb4c40fd949df5a",
+    "tests/test_ee_dynamic_minimum_distance_compiler.py": "3b50c431ec54709135777ff552ad4dc33998ee58242cae26e8dcb81401105c69",
+    "tests/test_ee_raster_sampling_compiler.py": "095cf3dc83e0437a87d6ff416d0db7feab609f5a008843455d931d81b3ffd96f",
+    "tests/test_ee_sample_kernel.py": "5397fb4afd6b4d4aef98426f243782dce37cfa5d14919eaa77b6ec0936a5a142",
+    "tests/test_ee_sample_native_sources.py": "9df5ac574ce529d5ae22c8e234f4db26eccf6af70f96699180c29a45328d2d61",
+    "tests/test_ee_sample_training_result.py": "4dcb6a9fe482c2e1318a35f624a75d2655954baad0b1df21129c7319d1bcf693",
+    "tests/test_ee_sampling_bridge.py": "71dbf1dd8f1310724eb52986a80a5253749d2c60bc9762f969c4ef4cc3841d15",
+    "tests/test_ee_sampling_budget.py": "2e05af74f1b53c401d5f2c0891f04c40ccfb535b4adb05b5e53e82c535495857",
+    "tests/test_ee_sampling_graph_contract.py": "6675c5e7e3c368e70fe2ff6b0be0dcfd1256daca4db11edb3adbc109922ca5bd",
+    "tests/test_ee_sampling_native_bridge.py": "a8cc2fb81f99d213d86ab25465994dcb853be444d41e07b2b79875ebe5b673cc",
+    "tests/test_ee_sampling_parity.py": "4339f459ea31102215b537b403ca5fdbf1689a7669a25dee78d6705853819eab",
+    "tests/test_ee_sampling_service.py": "b6dbfe2f55d8741f3feaa3881a012561aca28cbd724bcc7c0014f76db6976cf9",
+    "tests/test_ee_sampling_spec_contract.py": "0c9b695492a348ea3f00bcf8149f8b370f0806aba58a4f1fd2631ee9ad85d714",
+    "tests/test_ee_sampling_values_contract.py": "76a6f1a7a2f401714fa1ef7c0bdda05c65eebe7f9b562faa67c76be76c14fab8",
+    "tests/test_ee_sampling_workflow.py": "f0e30d926062f56ab8fcdc5ebde773f965456d89f89c671edec0fd3c854e0d89"
+  },
+  "local_evidence_sha256": {
+    "audit/gee-python-wave24/adapter-manifest.json": "c250370db654e94f38068e0c6a20bec4200b85085398f44cbc7e63671f46b842",
+    "audit/gee-python-wave24/capability-service.xml": "152630df415adfa135aa0ccfd217e19a120b7b484799a5712ab7dc5edefac186",
+    "audit/gee-python-wave24/classifier-kernel-cases.json": "5ce6081b073963e4347fe330c3a67f1999d9c8c7f395968b22cb0d4db633dd54",
+    "audit/gee-python-wave24/classifier-kernel.json": "9fb3d371a03ecad314b4c28d81651ca16930c3114885dd1df2b24d1d9a3774e4",
+    "audit/gee-python-wave24/cleanup.json": "0f0efdf8ee289fc97ac28c162f43808f98df97d5f481bc427c180f3c7ab2f1c9",
+    "audit/gee-python-wave24/frontend.json": "cf42d2f12c0607da479b34beccfa264e1a15f2eee3cb4f95ef78455470c0d2d8",
+    "audit/gee-python-wave24/implementation-contract.md": "50dd43954553886ea0a45ee352e846574897e887ff6e345afb57fb21355b6f03",
+    "audit/gee-python-wave24/initial-service-failure.txt": "839512d10be53fd123db71305e330873768b410869dd3866fe1bc5c9f77cc74c",
+    "audit/gee-python-wave24/python-api-inventory.json": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12",
+    "audit/gee-python-wave24/python-final.xml": "e4e35c77c0ac9dc3b5c6d463b7da1106b2d13763e15bbd4d2681ddaea6d4a46a",
+    "audit/gee-python-wave24/python-verified.xml": "7977831e8f343e6af9946cdf1bc27b94a35a82a32fe47a0bfff729accc57b078",
+    "audit/gee-python-wave24/sample-kernel-cases.json": "96921659de4a33b04e8029fa28cb45d828646ec5fdf783400f5422dd883e531f",
+    "audit/gee-python-wave24/sample-kernel.json": "b3bff86e7d959ab8500be6f544f4b6241ea7f2e3ea74a3a8c71f5836c91abf66",
+    "audit/gee-python-wave24/service-verified.xml": "cd50cfaf69c82e68d85722d5171dd564464f98114eef4b5f21b91df66a4f314e",
+    "audit/gee-python-wave24/staged-whitespace.txt": "83d711655dc7940c54d9e254309117fc2c621aeb9bcb45f50999cef00209790f"
+  },
+  "cleanup": {
+    "roots": [
+      {
+        "root_name": "gee-python-wave24-native",
+        "bytes": 1785122,
+        "regular_files": 5,
+        "owned_test_symlinks_unlinked_without_following": 0,
+        "open_files_observed": false,
+        "removed": true
+      },
+      {
+        "root_name": "gee-python-wave24-pytests",
+        "bytes": 13308255,
+        "regular_files": 93,
+        "owned_test_symlinks_unlinked_without_following": 57,
+        "open_files_observed": false,
+        "removed": true
+      },
+      {
+        "root_name": "gee-python-wave24-pytests-verified",
+        "bytes": 13310627,
+        "regular_files": 93,
+        "owned_test_symlinks_unlinked_without_following": 57,
+        "open_files_observed": false,
+        "removed": true
+      },
+      {
+        "root_name": "gee-python-wave24-web",
+        "bytes": 1669087,
+        "regular_files": 16,
+        "owned_test_symlinks_unlinked_without_following": 0,
+        "open_files_observed": false,
+        "removed": true
+      }
+    ],
+    "total_bytes": 30073091,
+    "note": "Only owned completed build/test/web scratch removed after empty lsof checks. Symlinks unlinked without following targets; audit/fixtures retained."
+  }
+}

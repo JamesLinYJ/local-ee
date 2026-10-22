@@ -1,0 +1,110 @@
+{
+  "schema": "local-ee-synthetic-sampling-training/v1",
+  "description": "A finite 4 by 3 EPSG:4326 unit-cell source grid for a real sampleRegions-to-minimumDistance training DAG. Values are synthetic; the local cell-boundary policy is not a Google Earth Engine comparison.",
+  "collection_id": "sentinel-2-l2a",
+  "catalog_bands": ["nir", "red", "aux"],
+  "input_properties": ["red", "nir"],
+  "sample_properties": ["plot_id", "landcover"],
+  "class_property": "landcover",
+  "output_name": "landcover_id",
+  "metric": "euclidean",
+  "extent": [0, 0, 4, 3],
+  "grid": {
+    "crs": "EPSG:4326",
+    "cell_size_degrees": [1, 1],
+    "upper_left": [0, 3],
+    "shape_rows_columns": [3, 4],
+    "pixel_order": "global row ascending from north to south, then column ascending west to east"
+  },
+  "pixel_centers": [
+    [0.5, 2.5], [1.5, 2.5], [2.5, 2.5], [3.5, 2.5],
+    [0.5, 1.5], [1.5, 1.5], [2.5, 1.5], [3.5, 1.5],
+    [0.5, 0.5], [1.5, 0.5], [2.5, 0.5], [3.5, 0.5]
+  ],
+  "target_export_region": {
+    "type": "Polygon",
+    "coordinates": [[[0, 0], [2, 0], [2, 3], [0, 3], [0, 0]]]
+  },
+  "training_features": [
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [1, 2.5]},
+      "properties": {"system:index": "train-point-east-edge", "landcover": 0, "plot_id": "point-edge", "unused_note": "not selected"}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "MultiPoint", "coordinates": [[0.25, 2.25], [0.75, 2.75], [1.25, 2.25]]},
+      "properties": {"system:index": "train-multipoint", "landcover": 0, "plot_id": "multipoint", "unused_note": "repeated cell deduplicates per feature"}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Polygon", "coordinates": [[[1.2, 1.2], [2.8, 1.2], [2.8, 2.8], [1.2, 2.8], [1.2, 1.2]]]},
+      "properties": {"system:index": "train-poly-west", "landcover": 0, "plot_id": "overlap-west", "unused_note": "selected red is missing in the northwest cell"}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Polygon", "coordinates": [[[3.1, 0.1], [3.9, 0.1], [3.9, 2.9], [3.1, 2.9], [3.1, 0.1]]]},
+      "properties": {"system:index": "train-outside-export", "landcover": 1, "plot_id": "outside-target-export", "unused_note": "same source scene, wholly outside target export ROI"}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Polygon", "coordinates": [[[1, 0], [2, 0], [2, 1], [1, 1], [1, 0]]]},
+      "properties": {"system:index": "train-boundary-touch", "landcover": 1, "plot_id": "positive-area-only", "unused_note": "neighboring cells only touch the polygon boundary"}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Polygon", "coordinates": [[[3.2, 1.2], [3.8, 1.2], [3.8, 1.8], [3.2, 1.8], [3.2, 1.2]]]},
+      "properties": {"system:index": "train-overlap-east", "landcover": 1, "plot_id": "overlap-east", "unused_note": "overlap with another feature keeps a separate row"}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [4, 1.5]},
+      "properties": {"system:index": "train-east-outside", "landcover": 0, "plot_id": "east-edge-outside", "unused_note": "east grid boundary is outside"}
+    }
+  ],
+  "items": [
+    {
+      "id": "wave24-sampling-a",
+      "bbox": [0, 0, 4, 3],
+      "geometry": {"type": "Polygon", "coordinates": [[[0, 0], [4, 0], [4, 3], [0, 3], [0, 0]]]},
+      "properties": {"system:index": "wave24-sampling-a", "system:time_start": 1790000000000, "fixtureVersion": "local-ee-synthetic-sampling-training/v1"},
+      "pixel_values": {
+        "nir": [1, 3, 6, 7, 2, 5, 6, 9, 4, 2, 4, 8],
+        "red": [1, 1, null, 2, 2, 4, 4, 3, 0, 1, 2, 4],
+        "aux": [100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111]
+      }
+    },
+    {
+      "id": "wave24-sampling-b",
+      "bbox": [0, 0, 4, 3],
+      "geometry": {"type": "Polygon", "coordinates": [[[0, 0], [4, 0], [4, 3], [0, 3], [0, 0]]]},
+      "properties": {"system:index": "wave24-sampling-b", "system:time_start": 1790003600000, "fixtureVersion": "local-ee-synthetic-sampling-training/v1"},
+      "pixel_values": {
+        "nir": [9, 8, 7, 6, 5, 4, 3, 2, 1, 2, 3, 4],
+        "red": [4, 3, 2, 1, 4, 3, 2, 1, 0, 1, 2, 3],
+        "aux": [200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211]
+      }
+    }
+  ],
+  "reference_expectations": {
+    "training_row_count": 11,
+    "sample_columns_with_geometry": ["system:index", "plot_id", "landcover", "red", "nir", ".geo"],
+    "sample_feature_system_indexes": [
+      "f0_r0_c1", "f1_r0_c0", "f1_r0_c1",
+      "f2_r0_c1", "f2_r1_c1", "f2_r1_c2",
+      "f3_r0_c3", "f3_r1_c3", "f3_r2_c3",
+      "f4_r2_c1", "f5_r1_c3"
+    ],
+    "class_means_in_red_nir_order": {
+      "0": [["2", "1"], ["7", "2"]],
+      "1": [["13", "5"], ["7", "1"]]
+    },
+    "target_predictions_by_metric": {
+      "euclidean": [[0, 0, null, 1, 0, 1, 1, 1, 0, 0, 0, 1], [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0]],
+      "manhattan": [[0, 0, null, 1, 0, 1, 1, 1, 0, 0, 0, 1], [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0]],
+      "cosine": [[0, 1, null, 1, 0, 0, 0, 1, 1, 0, 0, 0], [1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0]]
+    },
+    "independent_grid_cell_selection": "Points use the half-open west/north-containing cell obtained by floor on the upper-left grid transform; east and south outer boundaries are outside. MultiPoint repeats within one feature collapse by cell. Polygon cells require intersection area > 0; boundary-only contact is excluded. Distinct source features always retain separate rows.",
+    "comparison_scope": "N-style independent synthetic numerical check only. No actual engine (E) or Google (G) comparison is asserted by this fixture."
+  }
+}

@@ -13,7 +13,8 @@ from .. import db, graph
 from ..artifacts import artifact_path
 from ..ee_translate import compile_expression, UnsupportedEEError
 from .ee_exports import export_options
-from .ee_budget import pixel_budget
+from .ee_budget import pixel_budget, sample_input_budget
+from . import ee_sample_results
 from .ee_idempotency import idempotency_record, validate_request_id
 from .ee_events import check_event_capacity, record_event
 from ..table_graph import table_input_graph
@@ -150,6 +151,8 @@ def make_job(backend,account,compiled,title,fmt,context,start,request_id=None,re
     parent_id=str(parent['id']) if parent else None
     language=parent['language'] if parent else 'javascript'
     context={**context,'protocol':'earthengine','source_job_id':parent_id,'bands':compiled.get('bands',[]),'warnings':compiled.get('warnings',[]),'pixel_budget':compiled.get('pixel_budget')}
+    if compiled.get('sample_budget') is not None:
+        context['sample_budget']=compiled['sample_budget']
     if request_id is not None and request_payload is None:
         raise ValueError('EE export request payload is required for idempotency')
     idempotency=idempotency_record(request_id,request_payload)
@@ -198,6 +201,8 @@ def dispatch(backend,account,payload):
         if action=='status':return {'value':_task_status(row)}
         if row['status'] in {'error','canceled'}:raise ValueError(row.get('error') or row['status'])
         if row['status']!='finished':return {'pending':True,'job_id':str(row['id'])}
+        if row['context'].get('result_kind')=='samples':
+            return {'value':ee_sample_results.read_result(DATA,row)}
         if row['context'].get('result_kind')!='region':raise ValueError('Task is not a regional value result')
         names=[n for n in row['assets'] if n.endswith('.csv')]
         if len(names)!=1:raise ValueError('Expected one regional CSV result')
@@ -242,6 +247,8 @@ def dispatch(backend,account,payload):
         for k in ['scale','crs']:
             if options.get(k) is not None:compile_options[k]=options[k]
     compiled=compile_expression(payload.get('expression'),catalog,items,compile_options)
+    if any(node['process_id']=='local_ee_sample_regions' for node in compiled.get('process_graph',{}).values()):
+        compiled['sample_budget']=sample_input_budget(compiled,items)
     if action=='export_table' and compiled['kind']=='value':
         header=table_columns(compiled['value'])
         selected=export_options(action,options,header)['selectors'] or header
@@ -259,11 +266,14 @@ def dispatch(backend,account,payload):
             value={'type':'Image' if compiled['kind']=='image' else 'ImageCollection','bands':[{'id':b} for b in compiled['bands']],'properties':compiled.get('properties',{})}
             if compiled['kind']=='collection':value['features']=compiled.get('features',[{'type':'Image','id':i,'properties':{}} for i in compiled.get('source_item_ids',[])])
             return {'value':value,'warnings':compiled.get('warnings',[])}
+        if compiled['kind']=='sample_table':
+            result=make_job(backend,account,compiled,'GEE · 影像取样','CSV',ee_sample_results.result_context(compiled),True)
+            return {**result,'pending':True}
         result=make_job(backend,account,compiled,'GEE · 区域统计','CSV',{'result_kind':'region'},True)
         return {**result,'pending':True}
-    if compiled['kind'] not in {'image','collection','region','table'}:raise UnsupportedEEError('This export requires a raster or supported feature table')
+    if compiled['kind'] not in {'image','collection','region','table','sample_table'}:raise UnsupportedEEError('This export requires a raster or supported feature table')
     if action=='map':
-        if compiled['kind']=='region':raise UnsupportedEEError('Map.addLayer currently requires a raster')
+        if compiled['kind'] not in {'image','collection'}:raise UnsupportedEEError('Map.addLayer currently requires a raster')
         vis=visualization(options.get('vis_params') or {})
         opacity=options.get('opacity',1)
         if isinstance(opacity,bool) or not isinstance(opacity,(int,float)) or not 0<=opacity<=1:raise ValueError('opacity must be between 0 and 1')
@@ -285,7 +295,8 @@ def dispatch(backend,account,payload):
     fmt=options.get('fileFormat','CSV' if action=='export_table' else 'GeoTIFF')
     formats={'GeoTIFF':'GTiff','GTiff':'GTiff','NetCDF':'NetCDF','CSV':'CSV'}
     if not isinstance(fmt,str) or fmt not in formats:raise UnsupportedEEError('Unsupported local export format: '+str(fmt))
-    if action=='export_table' and compiled['kind'] not in {'region','table'}:raise UnsupportedEEError('Only supported feature tables can currently be exported')
+    if action=='export_table' and compiled['kind'] not in {'region','table','sample_table'}:raise UnsupportedEEError('Only supported feature tables can currently be exported')
+    if action=='export_image' and compiled['kind']=='sample_table':raise UnsupportedEEError('Use Export.table for sampled features')
     if action=='export_table' and fmt!='CSV':raise UnsupportedEEError('Local table export currently supports CSV')
     if action=='export_image' and formats[fmt]=='CSV':raise ValueError('Use Export.table for CSV')
     local_options=export_options(action,options,compiled['bands'])

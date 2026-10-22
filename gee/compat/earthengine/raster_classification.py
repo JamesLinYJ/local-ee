@@ -4,7 +4,8 @@ from __future__ import annotations
 from dataclasses import replace
 
 from .classifier_model import encode_model, model_serialization_work
-from .ir import Image, Pixel, fail
+from .ir import DynamicMinimumDistance, Image, Pixel, SampledFeatures, fail
+from .minimum_distance_metrics import require_metric
 
 
 MAX_IMAGE_BANDS = 10_000
@@ -33,8 +34,25 @@ def invoke_image_classify(translator, arguments):
         fail("Image.classify outputName must be a nonempty flat band name")
 
     classifier = arguments["classifier"]
-    serialization_work = model_serialization_work(classifier)
-    schema = classifier.schema
+    dynamic = isinstance(classifier, DynamicMinimumDistance)
+    if dynamic:
+        require_metric(classifier.metric)
+        schema = classifier.schema
+        if (not isinstance(classifier.samples, SampledFeatures)
+                or type(classifier.samples.spec) is not str
+                or type(schema) is not tuple or not 1 <= len(schema) <= 8
+                or any(type(name) is not str or not name or "." in name for name in schema)
+                or len(set(schema)) != len(schema)
+                or type(classifier.class_property) is not str
+                or not classifier.class_property or "." in classifier.class_property
+                or classifier.output_mode != "CLASSIFICATION"):
+            fail("Image.classify requires a valid sample-trained minimum-distance classifier")
+        serialization_work = (len(classifier.samples.spec)
+                              + len(classifier.class_property)
+                              + sum(map(len, schema)) + 8)
+    else:
+        serialization_work = model_serialization_work(classifier)
+        schema = classifier.schema
     bands = image.bands
     if type(bands) is not list or len(bands) > MAX_IMAGE_BANDS:
         fail("Image.classify input must have at most 10000 named bands")
@@ -46,8 +64,8 @@ def invoke_image_classify(translator, arguments):
             fail("Image.classify requires named scalar pixel bands")
         name_work += len(band[0])
 
-    # Pay for model serialization, band-name indexing, schema lookup and the
-    # replacement IR before allocating the wire object or input-band layout.
+    # Pay for model serialization/spec, band-name indexing, schema lookup and
+    # the replacement IR before allocating the wire object or input layout.
     work = (serialization_work + len(bands) * 2 + name_work
             + len(schema) * 3 + sum(map(len, schema))
             + len(output_name) + 4)
@@ -69,7 +87,10 @@ def invoke_image_classify(translator, arguments):
         if name not in found:
             fail(f"Image.classify is missing classifier schema band: {name!r}")
 
-    model = encode_model(classifier)
     inputs = tuple(found[name] for name in schema)
-    classified = Pixel("classify", (inputs, model))
+    if dynamic:
+        classified = Pixel("trained_classify", (inputs, classifier))
+    else:
+        model = encode_model(classifier)
+        classified = Pixel("classify", (inputs, model))
     return replace(image, bands=[(output_name, classified)])

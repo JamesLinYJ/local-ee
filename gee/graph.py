@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 from .local_processes import LOCAL_PROCESSES, validate_local_process
 from .table_graph import has_table_node, validate_table_graph
+from .sampling_graph import validate_sampling_dependencies
 
 SUPPORTED = {
     "load_collection", "filter_bbox", "filter_temporal", "filter_bands", "mask",
@@ -75,7 +76,7 @@ def validate(graph):
             if node["process_id"] == "load_collection" and not isinstance(args.get("id"), str):
                 raise ValueError("数据集 id 必须是字符串")
             if node["process_id"] in LOCAL_PROCESSES:
-                validate_local_process(node["process_id"], args, depth)
+                validate_local_process(node["process_id"], args, depth, node_context=g)
             if node["process_id"] == "mask_polygon" and not isinstance(args.get("mask"),dict):
                 raise ValueError("多边形掩膜需要内嵌 GeoJSON，不接受 URL 或文件路径")
             if node["process_id"] == "load_collection" and args.get("properties"):
@@ -87,6 +88,7 @@ def validate(graph):
                     raise ValueError("仅支持 GeoTIFF、NetCDF、CSV")
                 if args.get("options"):
                     raise ValueError("首版不接受自定义 save_result options")
+        validate_sampling_dependencies(g)
         done, active = set(), set()
         def check(k):
             if k in active: raise ValueError("流程有循环依赖")

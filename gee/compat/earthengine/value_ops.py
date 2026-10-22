@@ -6,7 +6,7 @@ import datetime as dt
 import re
 
 from .date_values import format_date, millis, utc_date
-from .ir import Region, fail, integer
+from .ir import Region, SampledFeatures, fail, integer
 from .string_values import construct_string
 
 
@@ -111,6 +111,11 @@ def invoke_value(translator, name, arguments):
             fail("FeatureCollection requires an inline feature list")
         if len(features) == 1 and isinstance(features[0], Region):
             return features[0]
+        dynamic = [isinstance(feature, SampledFeatures) for feature in features]
+        if any(dynamic):
+            if len(features) == 1 and dynamic[0]:
+                return features[0]
+            fail("A sampled FeatureCollection cannot be combined with static or other dynamic features")
         if not all(isinstance(feature, dict) and feature.get("type") == "Feature" for feature in features):
             fail("Only static Features or one reduceRegion Feature can be exported as a FeatureCollection")
         return {"type": "FeatureCollection", "features": features}

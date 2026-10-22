@@ -15,7 +15,7 @@ from .feature_values import (
     with_properties,
 )
 from .feature_filters import matches_feature_filter
-from .ir import Filter, Function, Image, ImageSequence, fail, integer
+from .ir import Filter, Function, Image, ImageSequence, SampledFeatures, fail, integer
 
 
 _COLLECTION_METHODS = frozenset({
@@ -29,6 +29,10 @@ _MAX_FEATURES = 1000
 def handles_feature(name, arguments):
     """Claim only operations whose receiver uses the inline Feature encoding."""
     a = arguments
+    if (name in _COLLECTION_METHODS | {"Collection.errorMatrix", "FeatureCollection.classify"}
+            and any(isinstance(a.get(key), SampledFeatures)
+                    for key in ("collection", "collection1", "collection2", "features"))):
+        return True
     if name == "Feature.geometry":
         return is_feature(a.get("feature"))
     if name in _COLLECTION_METHODS:
@@ -254,6 +258,9 @@ def _invoke_collection(translator, name, a):
 
 def invoke_feature(translator, name, arguments):
     """Evaluate a bounded operation on inline synthetic Feature data."""
+    if any(isinstance(arguments.get(key), SampledFeatures)
+           for key in ("collection", "collection1", "collection2", "features")):
+        fail("Sampled FeatureCollections support Classifier.train only")
     if name in FEATURE_VALUE_METHODS:
         return invoke_feature_value(translator, name, arguments)
     if name in _COLLECTION_METHODS:

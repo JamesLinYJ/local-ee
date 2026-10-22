@@ -6,7 +6,7 @@ import numpy as np
 from .array_core import wrap_array
 from .confusion_values import MAX_CONFUSION_CELLS, MAX_CONFUSION_CLASSES, make_confusion
 from .feature_values import charge, is_collection, property_name, validate_feature
-from .ir import fail
+from .ir import DynamicMinimumDistance, SampledFeatures, fail
 from .minimum_distance import predict_class, require_trained
 
 
@@ -46,6 +46,11 @@ def _classify_features(translator, arguments):
     translator.allowed(a, {"features", "classifier", "outputName"})
     if "features" not in a or "classifier" not in a:
         fail("FeatureCollection.classify requires features and classifier")
+
+    if isinstance(a["classifier"], DynamicMinimumDistance):
+        fail("FeatureCollection.classify does not support sample-trained classifiers")
+    if isinstance(a["features"], SampledFeatures):
+        fail("Sampled FeatureCollections support Classifier.train only")
 
     classifier = require_trained(a["classifier"])
     schema = _schema(translator, classifier)
@@ -97,6 +102,8 @@ def _classifier_confusion_matrix(translator, arguments):
     translator.allowed(a, {"classifier"})
     if "classifier" not in a:
         fail("Classifier.confusionMatrix requires classifier")
+    if isinstance(a["classifier"], DynamicMinimumDistance):
+        fail("Classifier.confusionMatrix is unsupported for sample-trained classifiers")
     classifier = require_trained(a["classifier"])
     labels = classifier.labels
     if not isinstance(labels, tuple) or not labels or len(labels) > MAX_CONFUSION_CLASSES:

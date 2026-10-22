@@ -2,7 +2,8 @@
 import json
 
 from .ir import (ImageSequence, Image, Collection, Region, Function, ParsedExpression,
-                 Filter, Reducer, UnsupportedEEError, fail)
+                 Filter, Reducer, SampledFeatures, DynamicMinimumDistance,
+                 UnsupportedEEError, fail)
 from .decoder import Translator
 from .graph import Graph
 from .public_values import public_result
@@ -38,8 +39,12 @@ def compile_expression(expression, catalog, items, options=None):
             fail("ConfusionMatrix output requires array(), order(), accuracy() or kappa(); direct server-object JSON is unsupported")
         from .minimum_distance import StaticMinimumDistance
 
-        if isinstance(value, StaticMinimumDistance):
+        if isinstance(value, (StaticMinimumDistance, DynamicMinimumDistance)):
             fail("Classifier output requires schema(), confusionMatrix() accessors or FeatureCollection.classify; direct server-object JSON is unsupported")
+        if isinstance(value, SampledFeatures):
+            from .raster_sampling import compile_sample_table
+
+            return public_result(compile_sample_table(value, translator))
         if isinstance(value, ImageSequence):
             return public_result({"kind":"collection", "bands":[n for n,_ in value.images[0].bands] if value.images else [],
                     "source_item_ids":[im.props.get("system:index",str(i)) for i,im in enumerate(value.images)],
@@ -53,7 +58,9 @@ def compile_expression(expression, catalog, items, options=None):
             return public_result({"kind": "collection" if isinstance(value, Collection) else "image",
                     "process_graph": graph.finish(ref), "bands": [n for n, _ in image.bands],
                     "properties": image.props, "warnings": translator.warnings,
-                    "has_time_dimension": timed, "source_item_ids": list(dict.fromkeys(i for source in graph.sources for i in source.ids))})
+                    "has_time_dimension": timed, "source_item_ids": list(dict.fromkeys(
+                        [i for source in graph.sources for i in source.ids]
+                        + graph.auxiliary_source_item_ids))})
         if isinstance(value, Region):
             opts = {k: v for k, v in value.options.items() if k in {"region", "scale", "crs"}}
             translator.options = opts

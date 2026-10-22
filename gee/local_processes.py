@@ -6,12 +6,13 @@ LOCAL_PROCESSES = frozenset({
     "local_ee_to_double", "local_ee_to_float", "local_ee_constant_on_grid",
     "local_ee_unmask", "local_ee_drop_single_time", "local_ee_reduce_bands",
     "local_ee_table", "local_ee_minimum_distance",
+    "local_ee_sample_regions", "local_ee_train_minimum_distance",
 })
 CUBE = {"type": "object", "subtype": "raster-cube"}
 EE_BAND_REDUCERS = frozenset({"mean", "median", "min", "max", "sum", "count", "first", "last", "sd"})
 
 
-def validate_local_process(name, arguments, depth):
+def validate_local_process(name, arguments, depth, *, node_context=None):
     """Extensions only accept bounded literals and canonical top-level cubes."""
     if name == "local_ee_table":
         raise ValueError("Inline tables require a complete top-level table-only CSV graph")
@@ -24,6 +25,8 @@ def validate_local_process(name, arguments, depth):
         required.add("reducer")
     if name == "local_ee_minimum_distance":
         required.add("model")
+    if name in {"local_ee_sample_regions", "local_ee_train_minimum_distance"}:
+        required.add("spec")
     allowed = required | ({"same_footprint"} if name == "local_ee_unmask" else set())
     if depth != 0 or not required <= set(arguments) <= allowed:
         raise ValueError("Local EE extensions require top-level cube references and supported arguments")
@@ -37,9 +40,20 @@ def validate_local_process(name, arguments, depth):
     if name == "local_ee_minimum_distance":
         from .compat.earthengine.classifier_model import model_validation_work, validate_model
 
-        if model_validation_work(arguments["model"]) > 50_000:
-            raise ValueError("Raster classifier model exceeds the 50000-step work budget")
-        validate_model(arguments["model"])
+        model = arguments["model"]
+        if type(model) is dict and set(model) == {"from_node"}:
+            producer = node_context.get(model["from_node"], {}) if type(node_context) is dict and type(model["from_node"]) is str else {}
+            if producer.get("process_id") != "local_ee_train_minimum_distance":
+                raise ValueError("Dynamic classifier models require an audited sampled-training producer")
+        else:
+            if model_validation_work(model) > 50_000:
+                raise ValueError("Raster classifier model exceeds the 50000-step work budget")
+            validate_model(model)
+    if name in {"local_ee_sample_regions", "local_ee_train_minimum_distance"}:
+        from .sampling_spec import decode_sampling_spec, decode_training_spec
+
+        decoder = decode_sampling_spec if name == "local_ee_sample_regions" else decode_training_spec
+        decoder(arguments["spec"])
     if name == "local_ee_constant_on_grid":
         value = arguments["value"]
         if (isinstance(value, bool) or not isinstance(value, (int, float))
@@ -59,6 +73,8 @@ def process_spec(name):
         return type_conversion_spec(name)
     if name == "local_ee_minimum_distance":
         return _classification_spec(name)
+    if name in {"local_ee_sample_regions", "local_ee_train_minimum_distance"}:
+        return _sampling_process_spec(name)
     descriptions = {
         "local_ee_constant_on_grid": "Create valid Float64 constants on a bounded template grid, including missing tiles. Does not expand its extent; runtime key/cell budgets apply.",
         "local_ee_unmask": "Select valid input cells, otherwise replacement cells, preserving NaN masks and Float64 precision. Requires aligned single-band cubes and identical observation instants; rejects implicit reprojection or time broadcasting.",
@@ -131,4 +147,31 @@ def type_conversion_spec(name):
         "categories": ["cubes"],
         "parameters": [{"name": "data", "description": "Input raster cube", "schema": {"type": "object", "subtype": "raster-cube"}}],
         "returns": {"description": target + " raster cube", "schema": {"type": "object", "subtype": "raster-cube"}},
+    }
+
+
+def _sampling_process_spec(name):
+    sample = name == "local_ee_sample_regions"
+    return {
+        "id": name, "experimental": True,
+        "summary": "Sample real raster cells" if sample else "Train exact class means from real samples",
+        "description": (
+            "Top-level trusted extension with a canonical version1 JSON string specification. "
+            "No URLs, callbacks or executable literal properties. Sampling uses real finite spatial "
+            "cube cells and planar WGS84 Point/MultiPoint/Polygon/MultiPolygon regions; points select "
+            "the containing half-open cell, polygons require positive intersection area. Selected "
+            "NoData drops rows; overlapping different features preserve their separate samples. "
+            "At most1000 rows/50000 cells/1MB output, with existing grid/key/decoded-cell limits. "
+            "Training accepts only a sample-table node, with existing exact minimumDistance metrics, "
+            "explicit1..8 property schema, labels0..63, k1 CLASSIFICATION and shared work bounds. "
+            "Complete runtime, spherical/global and Google equivalence are not established."),
+        "categories": ["cubes", "vector-cubes"],
+        "parameters": [
+            {"name": "data", "description": "Spatial raster cube" if sample else "Actual bounded sample table",
+             "schema": CUBE if sample else {"type": "object", "subtype": "vector-cube"}},
+            {"name": "spec", "description": "Validated canonical JSON sampling/training specification",
+             "schema": {"type": "string", "maxLength": 1_000_000}},
+        ],
+        "returns": {"description": "Actual bounded feature table" if sample else "Exact trained class-center model",
+                    "schema": {"type": "object", "subtype": "vector-cube" if sample else "classifier-model"}},
     }

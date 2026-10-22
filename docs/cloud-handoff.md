@@ -283,3 +283,12 @@ cosine 先保留点积符号，再用精确有理数交叉乘积排名，不先�
 实际 standalone tile 内核已通过141预测／掩膜／错误控制、16非法模型和9binary64解码参考，未启动SparkContext。启用可信内核测试后Python1751 passed／3 skipped，另排除4项原生测试；前端11／构建通过，Python／JS SDK图一致性为68。云端无本机JDK／JAR锁时可跳过该显式opt-in内核测试，不能算通过；便携兼容层可以继续。完整Spark cube、隔离运行器／浏览器、部署／真实数据和Google对照未验收；锁、账号、数据、运行配置未改。详见`reports/gee-python-wave23.json`。
 
 **新任务现在必须从远端最新main开始**，读取最新GOAL、清单及wave报告。旧handoff分支只保留历史，不再作为续作起点；本机未提交改动不会自动进入云端环境。Python完整兼容、采样／其他分类器、高级时序和完整运行验收仍有实质工作，目标保持进行中。
+
+
+## 第二十四批：影像取样、动态模型与样本任务
+
+从最新 main 续作；本批基线为 `57ce41f813d46cf2012c2831f63667d05bd2f9f1`。新增有限 sampleRegions 的实际 native sampler、规范规格／类型边界、样本 CSV／getInfo 和真实样本运行时 minimumDistance 训练。训练子图保留固定场景和独立网格，不受目标 map／export 影响；输出像元和训练输入分别计费。空样本如实为空，dry-run 只携带 schema／traces，不生成假数据。语法与限制见 `docs/gee-python/sampling.md`。
+
+便携 Python **1882 passed／3 skipped**，另排除 4 项原生测试；前端 **11 passed**／TypeScript／临时目录构建通过。启用两个明确 opt-in 的可信 JVM 内核，分别核对取样几何／掩膜／Float64 和分类数值，未启动 SparkContext。云端缺少本机锁定 JDK／JAR 时这些测试跳过，不能记为通过。Python／JS 官方客户端图一致性增至 **72**，原 50 定向探针仍为 45 编译／5 拒绝；完整 Python API 清单字节相同。入口清单 273／991 只表示 handler 名称，不能代替参数及计算兼容率。
+
+独立审查确认并修复 pending 样本表的上游 SaveResult dry-run、实际网格分辨率／米制 CRS 校验，以及训练范围污染输出预算。`reports/gee-python-wave24.json` 分开记录 S／C／N、真实 tile 组件与未运行的完整 E／G。没有部署、服务重启或改变隔离、账号、数据与 `.native`；整体目标继续。

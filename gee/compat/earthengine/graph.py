@@ -17,6 +17,10 @@ class Graph(PixelCompiler, BandLabels):
         self.required_bands = {}
         self.expressions = {}
         self.double_precision = {}
+        # Training inputs compiled on an independent grid are represented in
+        # this graph, but their source caches and selected-band requirements
+        # remain isolated from the primary image query.
+        self.auxiliary_source_item_ids = []
 
     def node(self, process_id, **args):
         args = self.resolve_band_references(args)
@@ -27,6 +31,49 @@ class Graph(PixelCompiler, BandLabels):
             self.graph[nid] = {"process_id": process_id, "arguments": args}
             self.cache[key] = {"from_node": nid}
         return self.cache[key]
+
+    def reserve_nodes(self, count, label="Compiled process graph"):
+        if type(count) is not int or count < 0 or len(self.graph) + count > 500:
+            fail(f"{label} exceeds the 500-node process graph budget")
+
+    @staticmethod
+    def _rewrite_imported_refs(value, references):
+        if isinstance(value, dict):
+            # Embedded reducer/callback graphs own their local from_node IDs.
+            # Specification strings are opaque JSON data and never references.
+            if "process_graph" in value:
+                return value
+            if set(value) == {"from_node"}:
+                old = value["from_node"]
+                if old not in references:
+                    fail("Auxiliary graph contains a forward or unknown process reference")
+                return {"from_node": references[old]}
+            return {key: Graph._rewrite_imported_refs(child, references)
+                    for key, child in value.items()}
+        if isinstance(value, list):
+            return [Graph._rewrite_imported_refs(child, references) for child in value]
+        if isinstance(value, tuple):
+            return tuple(Graph._rewrite_imported_refs(child, references) for child in value)
+        return value
+
+    def import_auxiliary(self, child_graph):
+        """Import child graph nodes without merging its source/band caches."""
+        if not isinstance(child_graph, Graph):
+            fail("Auxiliary graph import requires a compiler Graph")
+        self.reserve_nodes(len(child_graph.graph), "Image.sampleRegions training graph")
+        references = {}
+        for old_id, node in child_graph.graph.items():
+            new_id = "n" + str(len(self.graph))
+            arguments = self._rewrite_imported_refs(node["arguments"], references)
+            self.graph[new_id] = {
+                "process_id": node["process_id"], "arguments": arguments,
+            }
+            references[old_id] = new_id
+        self.auxiliary_source_item_ids.extend(
+            item_id for source in child_graph.sources for item_id in source.ids
+        )
+        self.auxiliary_source_item_ids[:] = list(dict.fromkeys(self.auxiliary_source_item_ids))
+        return references
 
     def callback(self, process, args):
         return {"process_graph": {"p": {"process_id": process, "arguments": args, "result": True}}}

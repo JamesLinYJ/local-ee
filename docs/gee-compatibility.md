@@ -4,6 +4,8 @@
 
 Python 编辑器同时提供官方 `earthengine-api` 客户端入口，版本 1.7.49 固定在同一上游提交的 Python 子目录；许可证、源码树及关键文件摘要见 [`vendor/earthengine-python/upstream-lock.json`](../vendor/earthengine-python/upstream-lock.json)。Python 和 JavaScript 会生成相同格式的 EE 表达式并进入同一个本地兼容层；二者都不连接 Google 计算服务。客户端语言和官方 SDK 覆盖面不表示本地编译器已支持所有调用。
 
+第二十四批补齐有限 `Image.sampleRegions → minimumDistance.train → Image.classify` 编译与运行时桥、样本 getInfo／CSV 任务合同。参数和网格政策见 [取样语法文档](gee-python/sampling.md)，证据见 [报告](../reports/gee-python-wave24.json)。当前便携 Python **1882 passed／3 skipped**（另排除 4 项原生测试），前端 **11 passed**／TypeScript／构建通过；实际取样／分类 tile 内核已验，完整 Spark、部署、浏览器、真实数据和 Google 对照仍未运行。当前声明入口 **273／991（27.55%）**，只统计 API 名称，部分参数仍受限，不能作为完整语法或计算语义兼容率。
+
 ## 执行链路
 
 JavaScript 在 macOS 原生 Seatbelt 隔离的 Node.js 进程执行；Python 脚本在独立的 Python Seatbelt 进程执行。相应官方 SDK 构造 EE 表达式，兼容模块将支持的表达式编译为 openEO 流程图，沿用已有队列、数据快照和禁止公网访问的原生 GeoTrellis 任务。Python EE 运行器仍提供原有 openEO `connection`；可选择 `import ee` 使用本地初始化的官方客户端。兼容模块没有另建计算集群或公网服务，当前部署不使用虚拟机或容器。

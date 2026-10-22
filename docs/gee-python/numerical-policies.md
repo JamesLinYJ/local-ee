@@ -90,3 +90,12 @@ Classifier.minimumDistance 的欧式、曼哈顿及 cosine 光谱角均围绕未
 API 和 Python 桥共用纯模型校验，Scala 另行独立解析。版本 1 仅五字段，Fraction 只接受规范有符号分子／正分母、约分、零0/1；每字符串≤700字符、≤2200 bits、中心有限 binary64 幅值。schema 为1..8个唯一平面名称，标签为1..64个排序唯一0..63整数。元数据顺序与实际输入 bandCount 均校验，原有网格／时间／key／cell 预算及新增67108864像元×类别×波段工作上限保持，不能通过直接提交 openEO 图绕过模型协议。
 
 独立合成图 N 覆盖源范围、单景／映射多景及元数据。另一个 opt-in 测试真实编译并调用 GeoTrellis tile 内核，141预测控制的参考使用直接有理数平方距离／L1或1600位 Decimal 的归一化与开方路径，包含固定随机、极值、次正规值、负方向及掩膜；16非法模型同时核对 Python／Scala 拒绝，9个binary64值与Fraction.from_float核对。没有 SparkContext、完整 cube执行、NativeClient／Seatbelt任务、服务或浏览器，因此 E 的完整链路仍未验证；没有 Google 同数据对照。[Image.classify](https://developers.google.com/earth-engine/apidocs/ee-image-classify) 的按名称输入与默认输出名合同已核对，本地形状／边界政策单独登记。
+
+
+## 第二十四批：有限网格取样与动态训练
+
+sampleRegions 按实际单层空间网格取值：点 floor／半开东南边界，多点同要素像元去重，多边形正面积相交；不同要素重叠保留训练权重。任一选中波段 NoData 删除该行，Infinity 拒绝；Float32／Float64 取值保持实际精度。取样中心重投影回 WGS84，optional geometry 不改变样本或类均值。此边界政策没有 Google／球面比较。
+
+显式 meter scale 要求实际投影 CRS 两轴为米，布局求得的像元宽高与 scale 按相对 1e-9 核验，容差用于投影／布局浮点往返，不容许把 30m 当 10m。训练与目标分别编译／预算；目标导出范围不缩小训练区域，模型分支也不扩大输出像素预算。实际样本经既有 Fraction 训练器得到精确有理数中心，模型 wire／预测掩膜和三度量政策延续第二十三批。
+
+版本化样本有 11 行、两类中心 red/nir=[2,7/2] 和 [13/5,7]，包括边界、多点去重、重叠权重、选中波段缺测及目标 ROI 外训练区。独立 Shapely／Fraction／Decimal 与测试图 oracle 对照，真实 GeoTrellis tile 另以六组样本和四个坏 WKT 验证；这两类 N 都不能代替完整 Spark／隔离任务／浏览器或 Google G。详见 `reports/gee-python-wave24.json`。

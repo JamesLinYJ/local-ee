@@ -5,7 +5,7 @@ from gee.services.ee_budget import pixel_budget
 
 def fixture():
     bbox={'west':113.55,'south':22.3,'east':113.57,'north':22.32}
-    compiled={'process_graph':{'load':{'process_id':'load_collection','arguments':{'id':'s','_gee_item_ids':['a'],'bands':['red'],'spatial_extent':bbox}}}}
+    compiled={'process_graph':{'load':{'process_id':'load_collection','arguments':{'id':'s','_gee_item_ids':['a'],'bands':['red'],'spatial_extent':bbox},'result':True}}}
     items={'s':[{'id':'a','assets':{'red':{'proj:epsg':32649,'proj:transform':[10,0,762680,0,-10,2470510]}}}]}
     return compiled,items
 

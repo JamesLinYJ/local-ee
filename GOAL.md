@@ -18,8 +18,8 @@
 
 - 官方客户端版本和提交见 `vendor/earthengine-js/upstream-lock.json`。
 - 官方 Python 客户端已按同一提交固定，见 `vendor/earthengine-python/upstream-lock.json`；Python 和 JS 共享本地 EE 编译器及算法支持边界，Python/openEO `connection` 继续保留。
-- 当前能力、参数限制和证据见 `docs/gee-compatibility.md`。第二十三批接通有限 minimumDistance 的 Image.classify 编译、模型／图校验与 Python／GeoTrellis 桥；精确分数类中心和真实输入精度保留，三种度量按 schema 名称取波段，输出整数类别与 NoData。示例 28 的单景／映射多景合成图 N 及可信独立 JVM tile 内核通过，Python 1751 passed／3 skipped（另排除 4 项原生测试），前端 11 passed／构建通过，见 `reports/gee-python-wave23.json`。本批未部署，完整 Spark cube、NativeClient／沙箱／浏览器、真实数据和 Google 同数据验收未运行。第二十二批 CSV 导出保持回归。其他表格格式、完整 CRS／球面语义、采样、Mahalanobis／其余分类器与模式、通用动态设计、变长数组、完整 Float64 栅格算法及 Google/EJML 等价仍有缺口。
-- Python API 清单见 `reports/gee-python-api-inventory.json`，保留 991 项签名、2451 项参数及公开 Python 绑定。原有 50 项 Python 定向探针当前为 45 项编译通过、5 项明确拒绝；方法、参数和探针数量均不代表完整兼容率。已补有限表格回归、FeatureCollection、数值时间度量及 inner Join、Number.format、有界 String 和固定形状栅格数组，并串联合成表格预测、最近前后观测插值及像素投影；动态数组、通用设计矩阵的栅格回归、采样、栅格分类及其他分类器仍有缺口，有限精度评估不能代替完整分类器实现。完整 Linux 运行按阶段调整延期。最新局部实现及限制持续写入 `docs/gee-python/list.md`。
+- 当前能力、参数限制和证据见 `docs/gee-compatibility.md`。第二十四批补齐有限 sampleRegions → 真实样本运行时 minimumDistance.train → Image.classify，以及样本 getInfo／CSV 的任务／结果合同。固定训练场景、网格和来源不受目标导出污染，输出与训练预算分别验证。便携 Python 1882 passed／3 skipped（另排除 4 项原生测试），前端 11 passed／构建通过，72 项 Python／JS SDK 图一致性；可信独立 JVM 取样／分类 tile 内核通过。见 `reports/gee-python-wave24.json` 与取样文档。本批未部署，完整 Spark、隔离运行器／浏览器、真实数据和 Google 同数据验收未运行。动态 FeatureCollection 操作、其他采样器／分类器、完整球面／CRS／Float64 算法及高级时序仍有缺口。
+- Python API 清单见 `reports/gee-python-api-inventory.json`，保留 991 项签名、2451 项参数及公开 Python 绑定。原有 50 项 Python 定向探针当前为 45 项编译通过、5 项明确拒绝；方法、参数和探针数量均不代表完整兼容率。已补有限表格回归、FeatureCollection、数值时间度量及 inner Join、Number.format、有界 String 和固定形状栅格数组，并串联合成表格预测、最近前后观测插值及像素投影；动态数组、通用设计矩阵的栅格回归、其他采样／分类算法仍有缺口，有限精度评估不能代替完整分类器实现。完整 Linux 运行按阶段调整延期。最新局部实现及限制持续写入 `docs/gee-python/list.md`。
 - 复杂工作流来源和缺口见 `audit/gee-complex-compat-v1/findings.json`。
 - 有效探针为 `audit/gee-complex-compat-v1/probe-run-v2/validation.json`：50 个表达式成功序列化，3 个阳性对照编译通过，43 个操作/语义探针被拒绝，4 个数据/波段探针被拒绝；另有 14 个规模编译检查、3 个原生 runner 检查。该定向抽查不是全 API 兼容率。
 - 历史两波段均值模拟目录探针中，30 景生成 335 节点，50 景超过现有 500 节点限制；该计数属于优化前证据。长时序执行与吞吐仍需单独验证。

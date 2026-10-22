@@ -37,6 +37,25 @@ class Image:
     footprint_is_absolute: bool = False
 
 
+@dataclass(frozen=True)
+class SampledFeatures:
+    """Server-side sampled rows; values are produced only by the backend."""
+
+    image: Image
+    spec: str
+
+
+@dataclass(frozen=True)
+class DynamicMinimumDistance:
+    """A minimum-distance model trained from a runtime sample-table node."""
+
+    samples: SampledFeatures
+    metric: str
+    schema: tuple[str, ...]
+    class_property: str
+    output_mode: str = "CLASSIFICATION"
+
+
 @dataclass
 class Collection:
     source: Source
@@ -115,7 +134,7 @@ def static_truth(value: Any) -> bool:
 
     # EE If treats empty arrays/dictionaries/strings, zero, NaN and null as
     # false. Do not accidentally use truthiness of internal IR dataclasses.
-    if isinstance(value, (Image, Collection, ImageSequence, Pixel, Region, Function, Filter, Reducer, StaticArray, Join, InnerJoin, TableReducer, RasterArrayImage, StaticConfusionMatrix, StaticMinimumDistance, RasterArrayBands)):
+    if isinstance(value, (Image, Collection, ImageSequence, Pixel, Region, Function, Filter, Reducer, StaticArray, Join, InnerJoin, TableReducer, RasterArrayImage, StaticConfusionMatrix, StaticMinimumDistance, RasterArrayBands, SampledFeatures, DynamicMinimumDistance)):
         fail("Algorithms.If currently requires a static scalar/list/dictionary condition")
     if isinstance(value, (int, float)) and not math.isfinite(value):
         return False
