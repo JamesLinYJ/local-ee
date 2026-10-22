@@ -134,7 +134,7 @@ def _sample_preparation_spec(name):
     schema = CUBE if raster else {"type": "object", "subtype": "vector-cube"}
     return {
         "id": name, "experimental": True,
-        "summary": "Exact finite numeric raster remapping" if raster else "Filter or limit real sampled features",
+        "summary": "Exact finite numeric raster remapping" if raster else "Transform real sampled features",
         "description": (
             "Top-level canonical data reference and bounded canonical JSON specification. "
             + ("One source band,0..256 unique finite numeric keys, exact actual Float32/Float64 comparison; "
@@ -143,10 +143,13 @@ def _sample_preparation_spec(name):
                "and67108864 pixel-key work limits remain. No Google dtype equivalence claim."
                if raster else
                "Actual sampled table or its audited operation producer only. Filter/unsorted limit "
-               "retain columns, original order, IDs, properties and optional center geometry. "
+               "retain current columns, order, IDs, properties and optional center geometry. "
+               "random_column adds or overwrites an ordinary numeric column with tracked schema; "
+               "typed row keys and signed64 seed use local deterministic SHA256 uniform or Box-Muller normal. "
+               "Missing/null keys and reserved output columns reject; Google RNG parity is unverified. "
                "At most16 operations,64 predicate nodes/depth16 and shared50000 runtime work; "
                "base sampler row/cell/byte limits apply before operations. Dry-run has no rows. "
-               "Sorting, randomization, new columns and arbitrary callbacks reject.")),
+               "Sorting, arbitrary computed columns and executable callbacks reject.")),
         "categories": ["cubes" if raster else "vector-cubes"],
         "parameters": [
             {"name": "data", "description": "One-band raster cube" if raster else "Audited sampled table", "schema": schema},

@@ -143,13 +143,14 @@ def _train(translator, args):
 
     dimension = len(schema)
     if isinstance(args["features"], SampledFeatures):
-        from ...sampling_spec import decode_sampling_spec, sampling_columns
-
         samples = args["features"]
+        from .sampled_feature_ops import validated_sampled_schema
+
         try:
-            sample_spec = decode_sampling_spec(samples.spec)
-            columns = sampling_columns(sample_spec)
-        except (TypeError, ValueError, KeyError) as exc:
+            sample_spec, columns, _ = validated_sampled_schema(
+                samples, translator, "Classifier.train sample table",
+            )
+        except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
             fail(f"Classifier.train requires a valid server-side sample table: {exc}")
         if not sample_spec["regions"]["features"]:
             fail("Classifier.train requires at least one sampling region")

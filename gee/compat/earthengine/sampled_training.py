@@ -129,12 +129,11 @@ def _training_spec(classifier):
 
 def compile_training_model(graph, classifier, target_inputs):
     """Emit child sample graph, auxiliary provenance, and runtime trainer node."""
-    from ...sampling_spec import decode_sampling_spec, sampling_columns
     from .decoder import Translator
     from .graph import Graph
     from .sampled_feature_ops import (
         emit_sampled_operations,
-        validate_sampled_operations,
+        validated_sampled_schema,
     )
 
     if not isinstance(classifier, DynamicMinimumDistance):
@@ -142,7 +141,7 @@ def compile_training_model(graph, classifier, target_inputs):
     sampled = classifier.samples
     if not isinstance(sampled, SampledFeatures) or not isinstance(sampled.image, Image):
         fail("Sample-trained classifier has no server-side sample image")
-    operations = validate_sampled_operations(
+    sample_spec, columns, operations = validated_sampled_schema(
         sampled, graph.t, "Classifier.train sample-table operation chain",
     )
 
@@ -166,11 +165,6 @@ def compile_training_model(graph, classifier, target_inputs):
         fail("Image.classify dynamic model compilation exceeds the 50000-step work budget")
     graph.t.steps += work
 
-    try:
-        sample_spec = decode_sampling_spec(sampled.spec)
-        columns = sampling_columns(sample_spec)
-    except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
-        fail(f"Sample-trained classifier has an invalid sampling specification: {exc}")
     if not sample_spec["regions"]["features"]:
         fail("Classifier.train requires at least one sampling region")
     if classifier.class_property not in columns:

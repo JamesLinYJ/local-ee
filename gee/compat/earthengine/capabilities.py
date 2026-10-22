@@ -10,7 +10,7 @@ SUPPORTED_FUNCTIONS = frozenset({
     *SUPPORTED_DATE_FUNCTIONS,
     *SUPPORTED_INTEGER_FUNCTIONS,
     "ImageCollection.load", "Image.load", "Image.constant", "Image", "ImageCollection",
-    "Collection.filter", "Collection.map", "Collection.limit", "Collection.sort", "Collection.size", "Collection.first",
+    "Collection.filter", "Collection.map", "Collection.limit", "Collection.sort", "Collection.size", "Collection.first", "Collection.randomColumn",
     "ImageCollection.mosaic", "ImageCollection.qualityMosaic", "Image.select", "Image.rename", "Image.bandNames", "Image.toFloat", "Image.toDouble",
     "Image.normalizedDifference", "Image.parseExpression", "Image.updateMask", "Image.mask", "Image.unmask", "Image.addBands", "Image.clip", "Image.reduceRegion",
     "Image.where", "Image.clamp", "Image.unitScale", "Image.reduce", "Image.date", "Image.geometry", "Collection.geometry", "Feature.geometry", "Image.sample", "Image.sampleRegions", "Image.remap",
@@ -65,7 +65,8 @@ def get_capabilities():
              "Model refs must identify an RF trainer, no user Java bytes/URLs/paths. Opaque matrices feed only supported accessors and cannot be returned directly or nested in dynamic containers. "
              "Actual Float32/Float64 input, selected NoData masks, valid infinity rejects, Int32 v, grid/time retained. "
              "Prediction bound1e9 pixels*keys*sum(actual tree depths), and1e9 row*actual-depth-sum prediction work for feature tables. "
-             "Optional pinned RF runtime package required; no runtime downloads. RandomColumn, explain/model persistence, other modes, generic runtime Array/Number algebra and arbitrary dynamic containers reject; "
+             "Optional pinned RF runtime package required; no runtime downloads. RandomColumn uses the local SHA-256 row-key algorithm for inline Features and lazy sampled tables; it is deterministic locally and is not Google's random oracle. "
+             "Explain/model persistence, other modes, generic runtime Array/Number algebra and arbitrary dynamic containers reject; "
              "no Google version/RNG/bagging/dtype equivalence or full Spark/deployment acceptance."),
             ("Image.remap selects one scalar bound band (first by default), returns only remapped, and retains properties/time/grid/footprint. "
              "Equal-length finite scalar from/to lists0..256; integer magnitude<=2^53; duplicate numeric keys including signed zero reject. "
@@ -75,17 +76,17 @@ def get_capabilities():
             ("Filter.expression parses bounded comparisons > >= < <= == !=, !, &&, || and parentheses into existing Filter IR; "
              "ASCII flat identifiers, finite numeric/string/bool literals, <=4096 chars/256 tokens/16 nesting/64 predicate nodes. "
              "No eval, arithmetic, functions, attributes, chained comparisons or null literals. Existing three-valued ordered-null policy and null equality rejection remain, no Google parity. "
-             "Sampled FeatureCollections support filter and unsorted limit (null or0..1000), at most16 ordered operations, unchanged schema/IDs/geometry. "
+             "Sampled FeatureCollections support filter, unsorted limit (null or0..1000), and randomColumn in at most16 ordered operations; randomColumn uses strict row keys and adds/overwrites schema fields without changing IDs or geometry. "
              "System:index resolves the original generated Feature.id during predicates only. Runtime revalidation/copy/filter/training share50000 work; "
-             "sampler output limits still apply before filtering. Sort, random columns, dynamic maps/scalar results/confusion matrices remain unsupported."),
+             "sampler output limits still apply before operations. Sort, dynamic maps/scalar results/confusion matrices remain unsupported."),
             ("Image.sampleRegions supports bounded inline Point/MultiPoint/Polygon/MultiPolygon regions over a single spatial image: "
              "1..64 named scalar bands, <=1000 regions/10000 coordinates, <=1000 output rows/256 columns/50000 cells/1MB JSON and CSV. "
              "Copied properties default to non-system names; explicit [] copies none. Selected NoData drops rows; infinity rejects. "
              "Points use half-open floor grid ownership and polygons positive-area cell intersection, preserving overlapping-feature weights; "
              "this local planar boundary policy is not Google-verified. Native grid or projected meter scale, tileScale=1, optional center geometry only. "
              "Sample CSV/getInfo and runtime minimumDistance/RF training, prediction and error-matrix inputs use actual samples, canonical JSON string specs and strict producer refs. "
-             "Training needs explicit schema1..8, labels0..63 and existing exact-model/work limits. Dynamic downstream feature operations beyond filter/unsorted limit, "
-             "sampling randomization, general projections and classifiers beyond the declared minimumDistance/Smile RF subsets reject. "
+             "Training needs explicit schema1..8, labels0..63 and existing exact-model/work limits. Dynamic downstream feature operations beyond filter, unsorted limit, and randomColumn, "
+             "general projections and classifiers beyond the declared minimumDistance/Smile RF subsets reject. "
              "Standalone actual tile kernels and synthetic task/CSV controls are not full Spark batch, deployment, browser or Google acceptance"),
             ("Image.sample uses a finite explicit region or the image's finite local footprint and a fixed source grid; "
              "it returns actual pixel rows through the native sampler, with center-covered planar polygons and half-open point-cell ownership. "

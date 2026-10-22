@@ -8,7 +8,6 @@ from ...rf_validation_spec import (
     prepare_feature_rows,
     prepare_query_rows,
 )
-from ...sampling_spec import decode_sampling_spec, sampling_columns
 from ...table_values import columns as table_columns
 from .array_core import wrap_array
 from .confusion_values import MAX_CONFUSION_CELLS, MAX_CONFUSION_CLASSES, make_confusion
@@ -125,10 +124,12 @@ def _classify_rf_features(translator, arguments):
 
     if isinstance(source, SampledFeatures):
         from ...image_sampling_spec import is_image_sample
+        from .sampled_feature_ops import validated_sampled_schema
 
         try:
-            sample_spec = decode_sampling_spec(source.spec)
-            original_columns = sampling_columns(sample_spec)
+            sample_spec, original_columns, _ = validated_sampled_schema(
+                source, translator, "FeatureCollection.classify sample table",
+            )
         except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
             fail(f"FeatureCollection.classify has an invalid sample table: {exc}")
         known_empty = not sample_spec["regions"]["features"]

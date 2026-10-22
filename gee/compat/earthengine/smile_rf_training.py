@@ -1,7 +1,6 @@
 """Bounded FeatureCollection rows and trained-model validation for Smile RF."""
 from __future__ import annotations
 
-from ...sampling_spec import decode_sampling_spec, sampling_columns
 from ...smile_rf_spec import (
     MAX_TRAINING_MAGNITUDE,
     decode_rf_rows,
@@ -150,8 +149,11 @@ def validate_trained_classifier(translator, classifier):
             sampled = classifier.samples
             if not isinstance(sampled, SampledFeatures):
                 fail("Smile RandomForest sample training IR is malformed")
-            sample_spec = decode_sampling_spec(sampled.spec)
-            columns = sampling_columns(sample_spec)
+            from .sampled_feature_ops import validated_sampled_schema
+
+            sample_spec, columns, _ = validated_sampled_schema(
+                sampled, translator, "Smile RandomForest training sample table",
+            )
             if (not sample_spec["regions"]["features"]
                     or classifier.class_property not in columns
                     or not set(classifier.schema) <= set(columns)):

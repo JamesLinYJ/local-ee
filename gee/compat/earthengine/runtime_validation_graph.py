@@ -17,8 +17,7 @@ from .runtime_feature_ir import (
     RuntimeFeatureErrorMatrix,
     RuntimeRFTrainingConfusion,
 )
-from .sampled_feature_ops import emit_sampled_operations, validate_sampled_operations
-from ...sampling_spec import decode_sampling_spec, sampling_columns
+from .sampled_feature_ops import emit_sampled_operations, validated_sampled_schema
 from .smile_rf_graph import RF_SAMPLES, compile_smile_rf_model
 
 
@@ -34,13 +33,8 @@ def _sampled_table_ref(graph, sampled, label):
     """Compile a fixed-grid sample table into the current graph."""
     from .sampled_training import image_node_estimate, image_work_estimate
 
-    operations = validate_sampled_operations(sampled, graph.t, label)
-    charge_array(graph.t, 2 * len(sampled.spec) + 2 * sum(map(len, operations)) + 8)
-    try:
-        spec = decode_sampling_spec(sampled.spec)
-        columns = sampling_columns(spec)
-    except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
-        fail(f"{label} has an invalid sample-table specification: {exc}")
+    spec, columns, operations = validated_sampled_schema(sampled, graph.t, label)
+    charge_array(graph.t, len(sampled.spec) + 2 * sum(map(len, operations)) + 8)
 
     grid = spec["grid"]
     options = {key: grid[key] for key in ("scale", "crs") if grid[key] is not None}

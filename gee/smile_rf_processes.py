@@ -52,8 +52,9 @@ def validate_rf_process(name, arguments, depth, node_context):
 
 def validate_rf_dependencies(nodes):
     """Sample chains retain schema; trusted RF models never cross algorithm types."""
-    from .sampling_graph import _sampling_origin
-    from .sampling_spec import decode_sampling_spec, sampling_columns
+    from .sampling_graph import sample_chain
+    from .sampling_spec import decode_sampling_spec
+    from .sample_table_schema import sampled_columns
     from .rf_validation_processes import MODEL_CONSUMERS
 
     for node in nodes.values():
@@ -61,10 +62,10 @@ def validate_rf_dependencies(nodes):
         if name in RF_TRAINERS and node.get("result"):
             raise ValueError("Opaque random forest models can only feed audited prediction or evaluation")
         if name == RF_SAMPLES:
-            source = _sampling_origin(nodes, arguments["data"]["from_node"])
+            source, operations = sample_chain(nodes, arguments["data"]["from_node"])
             sample = decode_sampling_spec(source["arguments"]["spec"])
             spec = decode_rf_spec(arguments["spec"])
-            columns = set(sampling_columns(sample)) - {"system:index", ".geo"}
+            columns = set(sampled_columns(sample, operations)) - {"system:index", ".geo"}
             if not {spec["class_property"], *spec["schema"]} <= columns:
                 raise ValueError("Random forest training fields must exist in sample-table columns")
         # Model objects have exactly one consumer contract. In particular they

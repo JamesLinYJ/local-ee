@@ -1,0 +1,37 @@
+{
+  "fixture_version": 1,
+  "grid": {
+    "xmin": 0.0,
+    "ymin": 0.0,
+    "xmax": 8.0,
+    "ymax": 4.0,
+    "columns": 8,
+    "rows": 4,
+    "tile_cols": 8,
+    "tile_rows": 4,
+    "epsg": 4326
+  },
+  "region_wkt": "POLYGON ((0 4, 8 4, 8 0, 0 0, 0 4))",
+  "region": {
+    "type": "Polygon",
+    "coordinates": [[[0, 4], [8, 4], [8, 0], [0, 0], [0, 4]]]
+  },
+  "options": {
+    "algorithm": "splitmix64-grid-v1",
+    "factor": 1.0,
+    "num_pixels": null,
+    "seed": 19,
+    "drop_nulls": true
+  },
+  "band_order": ["landcover", "reflectance"],
+  "bands": [
+    {
+      "name": "landcover",
+      "values": [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1]
+    },
+    {
+      "name": "reflectance",
+      "values": [0.0, 0.1, 0.2, 0.3, 0.7, 0.8, 0.9, 1.0, 0.0, 0.1, 0.2, 0.3, 0.7, 0.8, 0.9, 1.0, 0.0, 0.1, 0.2, 0.3, 0.7, 0.8, 0.9, 1.0, 0.0, 0.1, 0.2, 0.3, 0.7, 0.8, 0.9, 1.0]
+    }
+  ]
+}

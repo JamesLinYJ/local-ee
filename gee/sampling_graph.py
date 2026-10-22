@@ -1,8 +1,9 @@
 """Type edges for dynamic sample tables and models inside the existing DAG."""
 from __future__ import annotations
 
-from .sampling_spec import decode_sampling_spec, decode_training_spec, sampling_columns
+from .sampling_spec import decode_sampling_spec, decode_training_spec
 from .sample_table_spec import MAX_OPERATIONS
+from .sample_table_schema import sampled_columns
 
 
 SAMPLE_PROCESS = "local_ee_sample_regions"
@@ -11,23 +12,30 @@ CLASSIFY_PROCESS = "local_ee_minimum_distance"
 OP_PROCESS = "local_ee_sample_table_op"
 
 
-def _sampling_origin(nodes, key):
-    """Linear operation chains retain the sampler's original schema and identity."""
+def sample_chain(nodes, key):
+    """Return the fixed sampler and ordered, opaque operation specifications."""
     seen = set()
-    operations = 0
+    operations = []
     while True:
         if key in seen:
             raise ValueError("Sample-table operations contain a cycle")
         seen.add(key)
+        if key not in nodes:
+            raise ValueError("Sample-table operation references an unknown node")
         node = nodes[key]
         if node['process_id'] == SAMPLE_PROCESS:
-            return node
+            return node, tuple(reversed(operations))
         if node['process_id'] != OP_PROCESS:
             raise ValueError("Sampled training data must come directly from local_ee_sample_regions or its audited operations")
-        operations += 1
-        if operations > MAX_OPERATIONS:
+        operations.append(node['arguments']['spec'])
+        if len(operations) > MAX_OPERATIONS:
             raise ValueError("Sample-table chains support at most16 operations")
         key = node['arguments']['data']['from_node']
+
+
+def _sampling_origin(nodes, key):
+    """Retain the historical origin-only helper for existing callers."""
+    return sample_chain(nodes, key)[0]
 
 
 def validate_sampling_dependencies(nodes):
@@ -45,12 +53,13 @@ def validate_sampling_dependencies(nodes):
     for key, node in nodes.items():
         name, arguments = node["process_id"], node.get("arguments", {})
         if name == OP_PROCESS:
-            _sampling_origin(nodes, key)
+            origin, operations = sample_chain(nodes, key)
+            sampled_columns(decode_sampling_spec(origin['arguments']['spec']), operations)
         if name == TRAIN_PROCESS:
-            source = _sampling_origin(nodes, arguments['data']['from_node'])
+            source, operations = sample_chain(nodes, arguments['data']['from_node'])
             sample = decode_sampling_spec(source["arguments"]["spec"])
             training = decode_training_spec(arguments["spec"])
-            available = set(sampling_columns(sample)) - {"system:index", ".geo"}
+            available = set(sampled_columns(sample, operations)) - {"system:index", ".geo"}
             if training["class_property"] not in available or not set(training["schema"]) <= available:
                 raise ValueError("Training fields must exist in the declared sample-table columns")
         if name == CLASSIFY_PROCESS:

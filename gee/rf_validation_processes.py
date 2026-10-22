@@ -71,14 +71,15 @@ def validate_json_sink(arguments, nodes, depth):
 
 
 def _columns(nodes, reference):
-    from .sampling_graph import _sampling_origin
-    from .sampling_spec import decode_sampling_spec, sampling_columns
+    from .sampling_graph import sample_chain
+    from .sampling_spec import decode_sampling_spec
+    from .sample_table_schema import sampled_columns
 
     node = nodes[reference]
     if node["process_id"] in CLASSIFIED_PRODUCERS:
         return decode_classify_spec(node["arguments"]["spec"])["columns"]
-    origin = _sampling_origin(nodes, reference)
-    return sampling_columns(decode_sampling_spec(origin["arguments"]["spec"]))
+    origin, operations = sample_chain(nodes, reference)
+    return sampled_columns(decode_sampling_spec(origin["arguments"]["spec"]), operations)
 
 
 def _known_empty(nodes, reference):

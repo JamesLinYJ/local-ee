@@ -114,6 +114,12 @@ const entries: ReferenceEntry[] = [
     code: "// image 和 roi 为已有的有限本地影像与研究区\nvar samples = image.sample({region:roi, numPixels:100, seed:42, dropNulls:false, geometries:true});\nprint('波段', samples.get('band_order'));\nExport.table.toDrive({collection:samples, fileFormat:'CSV'});",
   },
   {
+    id: "gee-random-column",
+    title: "随机列与训练／验证拆分",
+    text: "FeatureCollection.randomColumn 支持 uniform 和 normal、种子及有序 rowKeys。默认使用已有 system:index；内联要素没有 ID 时须提供明确行键，不按行号伪造标识。相同行键与种子返回相同值，重排和筛选不会重抽；空值或复杂行键会报错。新列可被筛选、导出及训练使用，覆盖普通字段会保留列位置。使用本地固定算法，不保证与 Google 的随机值一致。表操作累计最多16步，资源预算可能限制有效行数。分类后的变换仍未支持。",
+    code: "// samples 为已有取样表\nvar split = samples.randomColumn('split', 42);\nvar training = split.filter(ee.Filter.lt('split', 0.7));\nvar validation = split.filter(ee.Filter.gte('split', 0.7));\nvar model = ee.Classifier.smileRandomForest(50).train(training, 'label', ['red', 'nir']);\nvar predictions = validation.classify(model, 'prediction');\nprint(predictions.errorMatrix('label', 'prediction', [0, 1]).array());",
+  },
+  {
     id: "gee-levels",
     title: "兼容等级与当前限制",
     text: "官方客户端签名存在仅表示能构造语法。本站区分 S 语法、C 本地编译、E 实际引擎运行、N 独立数值参考、G 与原始 GEE 同数据对照；独立 JVM/tile 组件不等于完整任务引擎验收。函数清单由 /gee/v1/capabilities 返回，每项有参数限制。没有做过 GEE 对照的项目不能标成完全等价。不支持的算法或数据集会返回 EEUnsupported，禁止静默替代。",

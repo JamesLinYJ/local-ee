@@ -17,7 +17,9 @@ from scripts.build_integer_adapter import ROOT, _engine_paths, build
 
 
 SCRATCH = ROOT.parents[1] / "work/gee-python-wave28-native"
-AUDIT = ROOT.parents[1] / "work/audit/gee-python-wave28-native"
+AUDIT = (Path(os.environ["GEE_AUDIT_DIR"]) / "image-sample-native"
+         if os.environ.get("GEE_AUDIT_DIR")
+         else ROOT.parents[1] / "work/audit/gee-python-wave28-native")
 FIXTURE = ROOT / "tests/fixtures/ee-image-sample-kernel-v1.json"
 pytestmark = pytest.mark.skipif(
     os.environ.get("LOCAL_EE_RUN_IMAGE_SAMPLE_KERNEL_TEST") != "1",

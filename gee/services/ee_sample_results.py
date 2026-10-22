@@ -3,13 +3,17 @@ from __future__ import annotations
 
 from ..artifacts import artifact_path
 from ..sampling_spec import decode_sampling_spec
+from ..sample_table_schema import sampled_columns
 from ..sampling_values import read_sample_csv
 
 
 def result_context(compiled):
     text = compiled['sample_spec']
-    decode_sampling_spec(text)
-    return {'result_kind': 'samples', 'sample_spec': text}
+    spec = decode_sampling_spec(text)
+    operations = compiled.get('sample_operations', ())
+    sampled_columns(spec, operations)
+    return {'result_kind': 'samples', 'sample_spec': text,
+            **({'sample_operations': list(operations)} if operations else {})}
 
 
 def read_result(root, row):
@@ -22,4 +26,4 @@ def read_result(root, row):
     if len(names) != 1:
         raise ValueError('Expected one sampled-feature CSV result')
     path = artifact_path(root, row['id'], names[0])
-    return read_sample_csv(path, spec)
+    return read_sample_csv(path, spec, context.get('sample_operations', ()))

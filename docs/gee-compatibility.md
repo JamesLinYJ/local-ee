@@ -1,5 +1,7 @@
 # GEE Python／JavaScript 兼容范围
 
+第二十九批新增有限 `FeatureCollection.randomColumn`，完整保留采样后新增／覆盖列的schema与结果，接通训练／验证随机划分及真实RF链路。冻结源码完整回归 **2600通过／3跳过**（另排除4项延期原生测试），六个可信JVM／栅格组件和前端11／构建通过。入口 **278／991（28.05%）** 仅为名称；原50探针45编译／5拒绝。32行真实组件样本分为16／16并进入实际Smile训练与预测，矩阵频数通过；本地随机序列不承诺Google相同，无完整Spark／批任务／浏览器／部署／Google验收。见 [语法](gee-python/random-split.md) 和 [报告](../reports/gee-python-wave29.json)。
+
 第二十八批新增实际 `Image.sample` 的有限 ROI／footprint、比例／近似数量抽样、null、中心几何及元数据，兼容既有显式 schema 分类和样本任务路径。入口 **277／991（27.95%）** 为 API 名称统计，不能当作完整兼容率；原50探针仍45编译／5拒绝。冻结源码回归2493通过／3跳过，五个可信 JVM 组件与前端11／构建通过。完整 Spark／部署／浏览器／Google 同数据未验收；本地随机算法不承诺 Google 抽中行一致。见 [语法](gee-python/image-sampling.md) 和 [报告](../reports/gee-python-wave28.json)。
 
 第二十七批扩展已有 API 的真实运行链路：RF 要素分类 → 训练重代入／独立验证矩阵 → 七种指标访问器 → 受控 JSON getInfo 或分类表 CSV 导出。相同取样表复用固定训练分支，空表／缺值／重名／未定义指标与图类型边界有回归。便携 Python **2413 passed／3 skipped**（另排除4项延期原生测试），前端 **11 passed**／类型检查／构建通过；实际 JVM 要素预测／重代入计数及四个真实栅格组件已验。入口仍为 **276／991（27.85%）**；这不是参数或完整计算兼容率。详见 [验证语法](gee-python/rf-validation.md) 和 [报告](../reports/gee-python-wave27.json)。本批未部署，完整 Spark／服务／浏览器／Google 同数据未验收。

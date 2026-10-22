@@ -11,6 +11,7 @@ import stat
 
 from .sampling_spec import MAX_BYTES, MAX_CELLS, MAX_ROWS, sampling_columns
 from .image_sampling_spec import allows_null_samples, sample_collection_properties
+from .sample_table_schema import sampled_column_lineage
 from .table_values import _cell, columns as table_columns, render_csv
 
 
@@ -104,7 +105,7 @@ def render_sample_csv(data, columns):
     return text
 
 
-def read_sample_csv(path, spec):
+def read_sample_csv(path, spec, operations=()):
     """Read one owned task result into a FeatureCollection with original value types.
 
     Copied properties are validated against the immutable input specification;
@@ -119,7 +120,7 @@ def read_sample_csv(path, spec):
         raw = stream.read(MAX_BYTES + 1)
     if len(raw) > MAX_BYTES:
         raise ValueError("Sample CSV exceeds 1 MB")
-    expected = sampling_columns(spec)
+    expected, randomized = sampled_column_lineage(spec, operations)
     limit = csv.field_size_limit(MAX_BYTES)
     features = []
     previous = None
@@ -142,11 +143,19 @@ def read_sample_csv(path, spec):
                 raise ValueError("Sample CSV rows must have unique ordered identifiers")
             previous = key
             properties = dict(spec["regions"]["features"][index]["properties"])
-            if any(row[name] != _cell(properties[name]) for name in spec["properties"]):
+            if any(row[name] != _cell(properties[name])
+                   for name in spec["properties"] if name not in randomized):
                 raise ValueError("Sample CSV copied properties differ from its immutable input")
             for name in spec["bands"]:
+                if name in randomized:
+                    continue
                 value = None if row[name] == "" and allows_null_samples(spec) else float(row[name])
                 properties[name] = _sample_number(value, spec)
+            for name, distribution in randomized.items():
+                value = _number(float(row[name]))
+                if distribution == "uniform" and not 0 <= value < 1:
+                    raise ValueError("Uniform randomColumn CSV values must be in [0,1)")
+                properties[name] = value
             geometry = json.loads(row[".geo"]) if row[".geo"] else None
             if spec["geometries"]:
                 if (type(geometry) is not dict or set(geometry) != {"type", "coordinates"}

@@ -1,6 +1,16 @@
 # 云端开发交接
 
-## 第二十八批最新起点
+## 第二十九批最新起点
+
+从远端最新main续作，不恢复历史handoff。此批基线 `f7414cfa0a91bc5e3e68df5c95d714f3bce3abf7`；有限randomColumn支持静态／采样表、typed行键、uniform／normal与新增／覆盖列。schema按完整操作链推导，训练／预测／矩阵与getInfo／CSV保留真实字段。Image.sample的根band_order严格按来源验证；无来源可信v1表保留原有合同，不能授权未追踪的变换或任意根元数据。
+
+冻结源码完整回归 **2600 passed／3 skipped**（另排除4项延期原生测试），六个可信独立JVM／栅格组件通过；新增实际authenticated-loopback Py4J链路为32行取样→16／16随机划分→真实Smile训练／预测／矩阵。仅组件证明，无SparkContext／RDD适配／完整批任务／浏览器／部署／Google同数据验收。原50探针45编译／5拒绝，Python完整目录字节不变；入口278／991（28.05%）只统计名称。
+
+本地SHA256随机序列不是Google RNG oracle。有限schema缓存以强引用的不可变身份匹配、冻结内容、返回新副本并预充既有50000预算；不缓存像素、随机值或模型。完整回归曾暴露可信直接表回归及Py4J preexec线程fork崩溃，修复后重跑，原失败证据仍保留。可信测试启动使用带认证的回环、无Python preexec回调的独立session、超时与确定回收；应用隔离未改变。
+
+前端11／类型检查／临时构建通过，未部署；语法、示例和报告见 `docs/gee-python/random-split.md`、`examples/34_GEE_python_random_split.py`、`reports/gee-python-wave29.json`。邻域／focal、自动训练schema、其他模式／分类器、通用动态指标、分类后变换、高级时序及完整API仍待做。账号、数据、现有.native、锁定依赖保留；不启动VM、容器或服务。
+
+## 第二十八批历史起点
 
 从最新 main 续作；本批基线 `b2b16450fc2b16a29ace791bf1458bf4ca5e47e7`，新增有限实际 Image.sample 取样，经同一公开进程的严格 v2 字符串规格进入内部 SPI。有限网格左连接实际瓦片，保留缺测可选 null、全局稳定抽样和结果顺序，维持独立固定来源／网格、所有解码及输出预算；band_order 为规格元数据，训练仍需显式 inputProperties。
 

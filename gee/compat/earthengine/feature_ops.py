@@ -21,7 +21,7 @@ from .ir import Filter, Function, Image, ImageSequence, SampledFeatures, fail, i
 _COLLECTION_METHODS = frozenset({
     "Collection.size", "Collection.first", "Collection.toList", "Collection.map",
     "Collection.filter", "Collection.limit", "Collection.merge", "Collection.iterate",
-    "AggregateFeatureCollection.array",
+    "Collection.randomColumn", "AggregateFeatureCollection.array",
 })
 _MAX_FEATURES = 1000
 
@@ -142,6 +142,12 @@ def _sort_features(translator, features, key, ascending):
 
 
 def _invoke_collection(translator, name, a):
+    if name == "Collection.randomColumn":
+        from .random_column import apply_inline_random_column, prepare_random_column
+
+        spec = prepare_random_column(translator, a)
+        features = _features(translator, a["collection"])
+        return _collection(apply_inline_random_column(translator, features, spec))
     if name == "Collection.size":
         translator.allowed(a, {"collection"})
         return len(_features(translator, a["collection"]))
@@ -264,7 +270,7 @@ def invoke_feature(translator, name, arguments):
         return invoke_sampled_feature_operation(translator, name, arguments)
     if any(isinstance(arguments.get(key), SampledFeatures)
            for key in ("collection1", "collection2", "features")):
-        fail("Sampled FeatureCollections support filter, limit, and Classifier.train only")
+        fail("Sampled FeatureCollections support filter, limit, randomColumn, and the declared classifier consumers only")
     if name in FEATURE_VALUE_METHODS:
         return invoke_feature_value(translator, name, arguments)
     if name in _COLLECTION_METHODS:

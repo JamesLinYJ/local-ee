@@ -118,6 +118,11 @@ def local_ee_smile_rf_classify_samples(args, env):
         raise ValueError("RF sample classification requires a sampler/filter/limit table")
     budget.charge(table.data_copy_work + table.row_count * len(columns))
     data = table.data
+    from .ee_sample_table_ops import validate_sample_collection_metadata
+
+    validate_sample_collection_metadata(
+        data, getattr(budget, "sampled_origin_spec", None), budget.charge,
+    )
     budget.audited_columns = columns
     # Reserve the bounded table reads and both JSON/CSV representations before
     # walking the data or entering the JVM.

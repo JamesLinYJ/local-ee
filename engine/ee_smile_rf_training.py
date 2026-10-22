@@ -132,6 +132,42 @@ def _table_columns(table):
     return columns
 
 
+def _table_schema(table, budget):
+    """Rebuild trusted sample columns from their immutable origin and ops."""
+    columns = _table_columns(table)
+    operations = getattr(table, "sample_operations", ())
+    verified = getattr(table, "sample_spec_verified", False)
+    has_sample_metadata = any(hasattr(table, name) for name in (
+        "sample_spec", "sample_spec_verified", "sample_operations",
+    ))
+    if type(table) is SampledFeatureTable and not has_sample_metadata:
+        # Legacy trusted tables constructed directly by the engine/test bridge
+        # predate sampler lineage. Keep their declared schema without inventing
+        # an origin; the caller separately enforces the inherited 50000 cap.
+        return columns, None
+    if (type(table) is PendingSampledTable
+            and not hasattr(table, "sample_spec_verified")
+            and not hasattr(table, "sample_operations")):
+        # Existing schema-only pending objects may be constructed directly for
+        # dry-run bridge callers. Their supplied columns are usable, but the
+        # unverified spec cannot authorize any table transformation.
+        return columns, None
+    if (type(table) is SampledFeatureTable and hasattr(table, "sample_spec")
+            and verified is not True):
+        raise ValueError("Actual sampled table carries an unverified origin specification")
+    if not has_sample_metadata:
+        raise ValueError("Pending Smile RF samples require a verified origin specification")
+    if verified is not True or type(operations) is not tuple:
+        raise ValueError("Sampled table requires a verified origin and operation chain")
+
+    from .ee_sample_table_ops import _SampleOperationContext, _table_state
+
+    audit = _SampleOperationContext(0)
+    _, _, origin_spec, _ = _table_state(table, audit)
+    budget.charge(audit.steps)
+    return columns, origin_spec
+
+
 def _check_training_columns(columns, decoded):
     missing = {decoded["class_property"], *decoded["schema"]} - set(columns)
     if missing:
@@ -154,10 +190,12 @@ def _class_label(value):
     return number
 
 
-def _feature_rows(data, row_count, decoded, budget):
-    if (type(data) is not dict or set(data) != {"type", "features"}
-            or data["type"] != "FeatureCollection"
-            or type(data["features"]) is not list or len(data["features"]) != row_count):
+def _feature_rows(data, row_count, decoded, budget, origin_spec=None):
+    from .ee_sample_table_ops import validate_sample_collection_metadata
+
+    validate_sample_collection_metadata(data, origin_spec, budget.charge)
+    if (data["type"] != "FeatureCollection"
+            or type(data.get("features")) is not list or len(data["features"]) != row_count):
         raise ValueError("Smile RF requires the actual sampled FeatureCollection")
     schema = decoded["schema"]
     budget.charge(row_count * (len(schema) + 1))
@@ -218,7 +256,7 @@ def local_ee_train_smile_rf_samples(args, env):
     budget = _RuntimeWork(prior_work)
     wire_budget = _WireScan()
     decoded = _spec(args["spec"], wire_budget)
-    columns = _table_columns(table)
+    columns, origin_spec = _table_schema(table, budget)
     _check_training_columns(columns, decoded)
     tracer = _dry_run_tracer(env)
 
@@ -246,7 +284,7 @@ def local_ee_train_smile_rf_samples(args, env):
         raise ValueError("Smile RF sample table is missing validated copy-work metadata")
     budget.charge(row_count * len(columns) + copy_work)
     data = table.data
-    rows = _feature_rows(data, row_count, decoded, budget)
+    rows = _feature_rows(data, row_count, decoded, budget, origin_spec)
 
     row_cells = row_count * (len(decoded["schema"]) + 1)
     wire_upper = _rf_wire_upper_bound(row_count, len(decoded["schema"]))

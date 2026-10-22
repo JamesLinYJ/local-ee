@@ -1,7 +1,6 @@
 """Lower trusted Smile RF Pixel nodes to audited training/prediction nodes."""
 from __future__ import annotations
 
-from ...sampling_spec import decode_sampling_spec, sampling_columns
 from ...smile_rf_spec import decode_rf_spec
 from .array_core import charge_array
 from .ir import (
@@ -59,11 +58,11 @@ def _training_model(graph, classifier, inputs):
     from .graph import Graph
     from .sampled_feature_ops import (
         emit_sampled_operations,
-        validate_sampled_operations,
+        validated_sampled_schema,
     )
     from .sampled_training import image_node_estimate, image_work_estimate
 
-    operations = validate_sampled_operations(
+    sample_spec, sample_columns, operations = validated_sampled_schema(
         sampled, graph.t, "Smile RandomForest sample-table operation chain",
     )
     operation_work = sum(6 * len(operation) for operation in operations)
@@ -82,9 +81,8 @@ def _training_model(graph, classifier, inputs):
     )
     charge_array(graph.t, work)
     try:
-        sample_spec = decode_sampling_spec(sampled.spec)
         decode_rf_spec(classifier.training_spec)
-        columns = set(sampling_columns(sample_spec)) - {"system:index", ".geo"}
+        columns = set(sample_columns) - {"system:index", ".geo"}
     except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
         fail(f"Smile RandomForest has an invalid sample or model specification: {exc}")
     if not sample_spec["regions"]["features"]:

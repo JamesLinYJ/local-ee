@@ -72,7 +72,11 @@ flowchart LR
 
 `Image.sample` 使用同一公开采样进程的严格 v2 规格，桥接独立内部 `local_ee_image_sample` SPI；v1 行为保留。有限元数据网格生成有界键并与真实瓦片左连接，缺失瓦片按 dropNulls 决定丢弃或保留 null，按全局像元行列和本地固定哈希抽样。多边形采用中心覆盖，返回结果仅在有界溢出检查后排序；保留源键／形状／重复与解码预算。band_order 来自已验证规格，像元数值仅来自实际内核／CSV。后续训练继续显式 schema，详见 [Image.sample](gee-python/image-sampling.md)。独立内核验证不能代替完整 Spark／任务／浏览器／Google 对照。
 
-标签准备使用单波段 `local_ee_remap`，保留真实 Float32／Float64 输入精度及掩膜；采样后可插入最多 16 个 `local_ee_sample_table_op` 处理筛选／无排序限量。筛选器由受限 parser 生成既有 Filter IR，不执行用户文本。表操作只追溯到原 sampler，保留 schema／ID／顺序，复制前预充资源并把工作计数传给训练器；新列、排序、动态值／验证矩阵另需结果合同。Smile 随机森林不得用 Spark MLlib 替代注册，依赖与算法状态单列在路线文档。
+标签准备使用单波段 `local_ee_remap`，保留真实 Float32／Float64 输入精度及掩膜；采样后可插入最多 16 个 `local_ee_sample_table_op` 处理筛选、无排序限量和随机列。筛选器由受限 parser 生成既有 Filter IR，不执行用户文本。表操作追溯原 sampler，并按顺序推导新增／覆盖列的 schema，保留 ID、几何、行序和源 band_order；复制前预充资源，把工作计数传给训练器。排序、任意新列和一般动态值仍需明确合同。Smile 随机森林不得用 Spark MLlib 替代注册。
+
+随机列使用版本化的 typed-row-key SHA256 算法，提供可复现 uniform／normal 值；不承诺与 Google 同种子抽样相同。静态表在编译时计算，采样表只记录不透明规范字符串，实际值由受信任表操作产生。`sample_table_schema.py` 同时服务编译、图校验、引擎和 CSV 读回，覆盖的原字段读取实际结果，不能从原始规格补回旧值。RF 训练只接受与真实取样来源完全匹配的 band_order 元数据，不能放行任意根属性。原有无来源的可信 v1 表保留独立受限合同，不据此接受无来源的变换链。见 [随机划分语法](gee-python/random-split.md)。
+
+重复训练／预测／指标编译可共享同一不可变取样 schema 的校验结果。缓存限于单个 translator 的64项、以保留强引用的 spec／operation tuple 身份匹配，内容冻结，调用方每次获得新副本；查找、复制和缓存建立均在既有50000工作预算内计费。缓存不保存样本行、随机值或训练模型，不改变来源／网格、回调作用域和运行时复核。
 
 随机森林新增独立 Smile1.5.3 模型 IR、可信串行 JVM 工厂和 GeoTrellis SPI；内联行与真实采样表分别经 `local_ee_train_smile_rf_rows`／`local_ee_train_smile_rf_samples`，opaque 模型仅可连接经过审查的栅格／要素预测或训练重代入矩阵消费者。嵌套引用也受类型检查，回调保持独立作用域，向量／标量结果不能冒充目标栅格。固定训练来源／网格与目标输出分离。依赖在独立 lock／manifest 中校验，复用固定 Spark SLF4J，不运行时下载；现有 native runner 通过本地 extraClassPath 接入，未安装不会自动获得该能力。RF 按实测分开计量对象复制（150000，含原操作最多50000）和 wire 扫描（3MB），原 compiler／表操作／minimumDistance 预算不变；树拟合及按真实树深的预测另有各10亿工作上界。详见 [RF 语法与执行合同](gee-python/random-forest.md)。本机部署与完整运行验收仍单独记录。
 

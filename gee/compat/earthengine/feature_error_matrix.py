@@ -7,13 +7,12 @@ import numpy as np
 
 from ...rf_validation_spec import prepare_matrix_spec
 from ...sample_table_spec import decode_sample_operation
-from ...sampling_spec import decode_sampling_spec, sampling_columns
 from .array_core import wrap_array
 from .confusion_values import make_confusion
 from .feature_values import charge, is_collection, property_name, validate_feature
 from .ir import SampledFeatures, fail
 from .runtime_feature_ir import RFClassifiedFeatureTable, RuntimeFeatureErrorMatrix
-from .sampled_feature_ops import validate_sampled_operations
+from .sampled_feature_ops import validated_sampled_schema
 
 
 _MAX_FEATURES = 1000
@@ -152,20 +151,26 @@ def _runtime_error_matrix(translator, arguments, table):
     known_empty = False
     if isinstance(table, SampledFeatures):
         try:
-            sampled = decode_sampling_spec(table.spec)
-            columns = sampling_columns(sampled)
+            sampled, columns, operations = validated_sampled_schema(
+                table, translator, "Collection.errorMatrix sample table",
+            )
         except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
             fail(f"Collection.errorMatrix has an invalid sample table: {exc}")
-        known_empty = _sampled_table_empty(translator, table, sampled)
+        known_empty = _sampled_table_empty(sampled, operations)
     else:
         columns = table.columns
         known_empty = table.row_count == 0
-        if not known_empty and isinstance(table.source, SampledFeatures):
+        if isinstance(table.source, SampledFeatures):
             try:
-                sampled = decode_sampling_spec(table.source.spec)
+                sampled, sampled_columns, operations = validated_sampled_schema(
+                    table.source, translator,
+                    "Collection.errorMatrix classified sample table",
+                )
             except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
                 fail(f"Collection.errorMatrix has an invalid sample table: {exc}")
-            known_empty = _sampled_table_empty(translator, table.source, sampled)
+            if not set(sampled_columns) <= set(columns):
+                fail("Collection.errorMatrix classified table lost sample-table columns")
+            known_empty = known_empty or _sampled_table_empty(sampled, operations)
 
     actual = property_name(arguments.get("actual"))
     predicted = property_name(arguments.get("predicted"))
@@ -185,12 +190,13 @@ def _runtime_error_matrix(translator, arguments, table):
     return RuntimeFeatureErrorMatrix(table=table, spec=spec)
 
 
-def _sampled_table_empty(translator, sampled_table, sampled_spec):
+def _sampled_table_empty(sampled_spec, operations):
     """Recognize empty rows only from the literal regions or limit(0)."""
-    operations = validate_sampled_operations(
-        sampled_table, translator, "Collection.errorMatrix sample table",
-    )
+    from ...image_sampling_spec import is_image_sample
+
     if not sampled_spec["regions"]["features"]:
+        return True
+    if is_image_sample(sampled_spec) and sampled_spec["image_sample"]["num_pixels"] == 0:
         return True
     for text in operations:
         try:

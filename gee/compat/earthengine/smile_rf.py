@@ -4,7 +4,6 @@ from __future__ import annotations
 from dataclasses import replace
 import math
 
-from ...sampling_spec import decode_sampling_spec, sampling_columns
 from ...smile_rf_spec import (
     prepare_rf_parameters,
     prepare_rf_spec,
@@ -111,13 +110,15 @@ def _train(translator, arguments):
 
     features = arguments["features"]
     if isinstance(features, SampledFeatures):
-        sample_bytes = len(features.spec.encode("utf-8"))
-        charge_array(translator, 2 * sample_bytes + len(training_spec))
+        from .sampled_feature_ops import validated_sampled_schema
+
         try:
-            sample_spec = decode_sampling_spec(features.spec)
-            columns = sampling_columns(sample_spec)
+            sample_spec, columns, _ = validated_sampled_schema(
+                features, translator, "Classifier.train sample table",
+            )
         except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
             fail(f"Classifier.train requires a valid server-side sample table: {exc}")
+        charge_array(translator, len(training_spec))
         if not sample_spec["regions"]["features"]:
             fail("Classifier.train requires at least one sampling region")
         if class_property not in columns or not set(schema) <= set(columns):

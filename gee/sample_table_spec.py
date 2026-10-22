@@ -138,6 +138,10 @@ def decode_sample_operation(text):
         count = spec['count']
         if count is not None and (type(count) is not int or not 0 <= count <= 1000):
             raise ValueError('Sample limit must be null or integer0..1000')
+    elif operation == 'random_column':
+        from .random_column_spec import validate_random_column_spec
+
+        validate_random_column_spec(spec)
     else:
         raise ValueError('Unsupported sample operation or fields')
     return spec

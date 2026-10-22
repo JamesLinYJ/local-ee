@@ -126,12 +126,15 @@ def sampled_table_state(table, work):
     # the stored origin and operation texts from a fresh counter, then account
     # for this new validation scan in the RF operation's separate work budget.
     audit_work = OperationBudget()
-    _table_state(table, audit_work)
+    _, _, origin_spec, derived_columns = _table_state(table, audit_work)
     work.charge(audit_work.steps)
     columns = table.columns
     if (type(columns) not in (list, tuple) or not columns
             or len(columns) > 256 or len(set(columns)) != len(columns)):
         raise ValueError("RF input table has an invalid audited column schema")
+    if tuple(columns) != tuple(derived_columns):
+        raise ValueError("RF input table columns differ from its declared operation schema")
+    work.sampled_origin_spec = origin_spec
     return tuple(columns)
 
 
@@ -234,7 +237,14 @@ def actual_table(data, work, *, allow_runtime):
     if type(copy_work) is not int or copy_work < 0:
         raise ValueError("RF runtime table is missing validated copy-work metadata")
     work.charge(row_count * len(columns) + copy_work)
-    return data.data, columns, False
+    payload = data.data
+    if type(data) is SampledFeatureTable:
+        from .ee_sample_table_ops import validate_sample_collection_metadata
+
+        validate_sample_collection_metadata(
+            payload, getattr(work, "sampled_origin_spec", None), work.charge,
+        )
+    return payload, columns, False
 
 
 def attach_lineage(result, tracer, *sources):

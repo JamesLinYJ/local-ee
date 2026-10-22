@@ -103,26 +103,19 @@ def invoke_sample_regions(translator, arguments):
 
 def compile_sample_table(sampled, translator):
     """Compile a standalone sample table to a bounded lazy process graph."""
-    from ...sampling_spec import decode_sampling_spec, sampling_columns
     from .decoder import Translator
     from .graph import Graph
     from .sampled_training import image_node_estimate, image_work_estimate
     from .sampled_feature_ops import (
         emit_sampled_operations,
-        validate_sampled_operations,
+        validated_sampled_schema,
     )
 
     if not isinstance(sampled, SampledFeatures):
         fail("Internal sample-table IR is malformed")
-    operations = validate_sampled_operations(
+    spec, columns, operations = validated_sampled_schema(
         sampled, translator, "Image.sampleRegions operation chain",
     )
-    _charge(translator, len(sampled.spec) + 1)
-    try:
-        spec = decode_sampling_spec(sampled.spec)
-        columns = sampling_columns(spec)
-    except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
-        fail(f"Invalid sample-table specification: {exc}")
     grid = spec["grid"]
     options = {key: grid[key] for key in ("scale", "crs") if grid[key] is not None}
     child = Translator(list(translator.catalog.values()), translator.items, options)
@@ -146,6 +139,7 @@ def compile_sample_table(sampled, translator):
         "process_graph": process_graph,
         "bands": columns,
         "sample_spec": sampled.spec,
+        "sample_operations": list(operations),
         "grid_options": grid,
         "source_item_ids": list(dict.fromkeys(
             item_id for source in graph.sources for item_id in source.ids

@@ -22,6 +22,9 @@ class Translator(CatalogOperations, FilteringOperations):
         self.steps = 0
         self._root_env = None
         self._root_value_cache = {}
+        # Reused only inside this compilation. Sample-table schema facts may
+        # be checked at several consumers of the same immutable IR node.
+        self._sampled_schema_cache = {}
 
     def warn(self, value):
         if value not in self.warnings:

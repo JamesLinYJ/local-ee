@@ -49,7 +49,7 @@ const entries: ReferenceEntry[] = [
     id: "gee-python-smile-rf",
     category: "GEE Python",
     title: "ee.Classifier.smileRandomForest()",
-    text: "Python ee.* 通过固定官方客户端构建本地计算图。随机森林支持显式 inputProperties 的内联训练表与 sampleRegions/filter/limit 结果，训练只在受控 JVM 中进行。最多 1–8 个数值字段、2–1000 行、2–64 个从 0 连续编号的类别、256 棵树；共同工作预算可能进一步限制行数。CLASSIFICATION 支持影像与表分类、训练重代入和验证矩阵；不支持 RF explain、随机列及其他模式。必须安装固定 RF 运行包，尚未完成本机部署及 Google 同数据验收。",
+    text: "Python ee.* 通过固定官方客户端构建本地计算图。随机森林支持显式 inputProperties 的内联训练表与 sampleRegions/filter/limit 结果，训练只在受控 JVM 中进行。最多 1–8 个数值字段、2–1000 行、2–64 个从 0 连续编号的类别、256 棵树；共同工作预算可能进一步限制行数。CLASSIFICATION 支持影像与表分类、训练重代入和验证矩阵；不支持 RF explain 及其他模式。必须安装固定 RF 运行包，尚未完成本机部署及 Google 同数据验收。",
     code: "import ee\n# image、training 为已有本地影像和训练表\nmodel = ee.Classifier.smileRandomForest(\n    numberOfTrees=100, variablesPerSplit=1, minLeafPopulation=1,\n    bagFraction=0.5, maxNodes=None, seed=42,\n).train(features=training, classProperty='label',\n        inputProperties=['red', 'nir'])\nclassified = image.classify(model, 'landcover')\nprint(classified.bandNames())",
   },
   {
@@ -60,10 +60,17 @@ const entries: ReferenceEntry[] = [
     code: "samples = image.sample(region=roi, numPixels=100, seed=42,\n                       dropNulls=False, geometries=True)\nprint(samples.get('band_order').getInfo())\nclean = samples.filter(ee.Filter.notNull(['red', 'nir']))\ntask = ee.batch.Export.table.toDrive(collection=clean, fileFormat='CSV')\ntask.start()",
   },
   {
+    id: "gee-python-random-column",
+    category: "GEE Python",
+    title: "randomColumn 与数据拆分",
+    text: "randomColumn(columnName='random', seed=0, distribution='uniform', rowKeys=None) 支持内联表及 Image.sample/sampleRegions 取样表。normal 返回本地标准正态随机列；uniform 在[0,1)内。默认行键为已有 system:index；缺少 ID 时显式传 rowKeys。相同行键得到相同值，输出可新增或覆盖普通字段。缺失／null／复杂行键会失败。固定本地算法尚未与 Google 随机值对照；筛选后的两组按相同随机列拆分，比例是近似的。资源上限和显式训练字段要求继续生效。",
+    code: "split = samples.randomColumn(columnName='split', seed=42)\ntraining = split.filter(ee.Filter.lt('split', 0.7))\nvalidation = split.filter(ee.Filter.gte('split', 0.7))\nmodel = ee.Classifier.smileRandomForest(50).train(\n    features=training, classProperty='label', inputProperties=['red', 'nir'])\npredictions = validation.classify(model, 'prediction')\nprint(predictions.errorMatrix('label', 'prediction', [0, 1]).array().getInfo())",
+  },
+  {
     id: "gee-python-rf-validation",
     category: "GEE Python",
     title: "分类验证、混淆矩阵与 getInfo()",
-    text: "内联表或 sampleRegions/filter/limit 表可交给真实 RF 模型进行 classify，并保留原始字段、几何、ID 和行顺序。errorMatrix 以实际类为行、预测类为列；order 显式控制类别顺序。支持 array/order/accuracy/kappa/consumersAccuracy/producersAccuracy/fscore，未定义分母会明确报错。训练 confusionMatrix 是重代入指标；独立验证应使用未参与训练的表。getInfo 通过受任务权限保护的本地 JSON 结果返回，导出分类表使用 CSV。分类后的筛选、随机列、任意动态指标算术和嵌套动态容器仍未支持。",
+    text: "内联表或 sampleRegions/filter/limit 表可交给真实 RF 模型进行 classify，并保留原始字段、几何、ID 和行顺序。errorMatrix 以实际类为行、预测类为列；order 显式控制类别顺序。支持 array/order/accuracy/kappa/consumersAccuracy/producersAccuracy/fscore，未定义分母会明确报错。训练 confusionMatrix 是重代入指标；独立验证应使用未参与训练的表。getInfo 通过受任务权限保护的本地 JSON 结果返回，导出分类表使用 CSV。分类后的筛选／随机列、任意动态指标算术和嵌套动态容器仍未支持。",
     code: "# model、validation 为已有模型和独立验证表\npredictions = validation.classify(model, 'prediction')\nmatrix = predictions.errorMatrix('label', 'prediction', [0, 1])\nprint(matrix.array().getInfo())\nprint(matrix.accuracy().getInfo())\nprint(model.confusionMatrix().array().getInfo())\ntask = ee.batch.Export.table.toDrive(\n    collection=predictions, description='validation', fileFormat='CSV')\ntask.start()",
   },
   {
