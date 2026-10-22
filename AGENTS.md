@@ -9,6 +9,8 @@ Read `docs/architecture.md` before changing architecture or adding a subsystem. 
 3. Keep local/offline operation and internal-only telemetry. Do not introduce external fonts, map/geocoding services, OAuth providers, analytics, ETL billing or error reporters by default.
 4. Use modular interfaces; prefer a modular control plane and isolated executors over unneeded microservices. Keep compatibility facades during incremental refactors.
 
+Current phase, per the user's 2026-10-22 instruction: defer new Linux execution/isolation adapters, macOS/ARM64 native acceptance and private real-data acceptance. They are not prerequisites for the Python-first compatibility phase. Continue portable compiler and trusted synthetic numerical tests; preserve existing runtime/sandbox checks. Do not label the compatibility goal blocked because these deferred acceptance suites cannot run. Record their unverified status separately.
+
 ## Source ownership and structure
 
 - `gee/api/`: routes, auth, typed input/output; delegate science and scheduling to services.

@@ -6,6 +6,8 @@
 
 S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎；N＝独立数值基准；G＝Google 同数据对照。静态数值求值和合成图测试分别说明，不能标成原生栅格 E。固定的 991 项签名、方法可见数量和定向探针计数均不能换算为全 API 兼容百分比。
 
+当前阶段按用户要求暂缓 Linux 隔离执行、macOS／ARM64 和本机真实数据验收，优先完成 Python API／参数／计算语义，再推进 JS。新增能力继续用版本化合成样本、独立数值参考及已有便携测试验证；延期项目不是本阶段前置条件，现有运行器与沙箱检查保留。
+
 ## 全量目录
 
 [机器可读 Python API 清单](../../reports/gee-python-api-inventory.json) 包含 991 项固定算法签名、2,451 项算法参数、48 项公开 Python 类记录及 1,797 项 callable 签名记录，包括继承方法、参数种类／默认值、opt_* 别名、嵌套导出类和绑定来源。939 项算法找到了明确的 Python 命名绑定；其余 52 项标为未解析映射，仍可通过通用 ApiFunction 调用，不能据此判定后端不支持。
@@ -27,10 +29,10 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] Number.format 的有界十进制子集，以及 String 数值构造、cat／length／compareTo 和分配前预算。
 - [x] 唯一 maxDifference 与标量条件的 And 组合；最近前／后观测筛选、inner 匹配对和 Feature.map → ImageCollection 计算链路。
 - [x] 有限静态 Array 的逐元素算术、slice／project／repeat／cat、单输出归约与累积、对称特征分解及 Cholesky；闭式 PCA 协方差、投影和重建验证。
-- [ ] 每一签名／参数组合的完整 S／C／E／N 及负向、缺测、边界验收。
+- [ ] 每一签名／参数组合的 S／C、适用的独立 N，以及负向、缺测、边界验收；E 按现有环境可用条件单独记录。
 - [ ] Image.array*、逐像元回归、分类训练／预测、矢量／空间和多重／歧义度量 Join、邻域及高级时序。
-- [ ] Linux 完整执行隔离和引擎验收；保留 macOS Seatbelt、ARM64 JNI 和真实数据验收。
-- [ ] Google 同数据数值比较与真实完整项目验收。
+- [ ] 后续阶段：Linux 执行／隔离适配、macOS Seatbelt、ARM64 JNI 和本机真实数据验收；当前阶段延期。
+- [ ] Google 同数据数值比较按可取得条件另记；本机真实完整项目验收延期。
 
 既有本机 Python 地图、任务、GeoTIFF／CSV 和下载证据见 [Python 客户端报告](../../reports/gee-python-client.json)；本次 Linux 工作没有重新执行这些本机流程，也没有复制本机账号或影像。
 
@@ -136,6 +138,6 @@ npm --prefix web test
 .venv/bin/python scripts/build_web.py
 ```
 
-继续按真实 Python 项目依赖实现 Image.array* 与栅格线性回归，然后采样／分类训练预测、矢量／空间 Join、邻域／高级时序；同时独立推进 Linux 隔离执行与引擎验收。当前剩余的 5 项定向拒绝是全局 footprint unmask、Kernel.square／邻域、focalMean、栅格 linearRegression 和 smileRandomForest；它们只是已探测缺口，不是剩余功能的完整清单。
+继续按真实 Python 项目依赖实现 Image.array* 与栅格线性回归，然后采样／分类训练预测、矢量／空间 Join、邻域／高级时序；优先使用版本化合成样本验证计算语义，本阶段不推进 Linux 隔离适配或要求原生／真实数据验收。当前剩余的 5 项定向拒绝是全局 footprint unmask、Kernel.square／邻域、focalMean、栅格 linearRegression 和 smileRandomForest；它们只是已探测缺口，不是剩余功能的完整清单。
 
 [GOAL.md](../../GOAL.md) 记录持续目标；[云端交接](../cloud-handoff.md) 保留环境和发布约束。Python 达标后再系统推进 JS，期间共享后端改动持续回归已有 JS 功能。
