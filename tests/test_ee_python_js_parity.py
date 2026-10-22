@@ -53,6 +53,12 @@ const prior = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(c, c,
     leftField:'system:time_start', rightField:'system:time_start'}),
     ee.Filter.greaterThan({leftField:'system:time_start', rightField:'system:time_start'}))));
 const values = {
+  rasterMatrixSolveSquare: ee.Image(ee.Array([[2,1],[1,2]])).toFloat().matrixSolve(
+    c.first().select(['red','nir']).toArray().toArray(1).toFloat())
+    .arrayProject([0]).arrayFlatten([['x0','x1']]),
+  rasterMatrixSolveTall: ee.Image(ee.Array([[2,1],[1,2],[1,1]])).toFloat().matrixSolve(
+    c.first().select(['green','red','nir']).toArray().toArray(1).toFloat())
+    .arrayProject([0]).arrayFlatten([['x0','x1']]),
   rasterRegressionOrigin: c.select(['red','nir']).reduce(ee.Reducer.linearRegression(1,1))
     .select('coefficients').arrayFlatten([['red'],['nir']]),
   rasterRegressionResidual: c.select(['red','nir']).reduce(ee.Reducer.linearRegression(1,1))
@@ -146,6 +152,12 @@ def parity_values():
             leftField="system:time_start", rightField="system:time_start"),
             ee.Filter.greaterThan(leftField="system:time_start", rightField="system:time_start"))))
     py = {
+        "rasterMatrixSolveSquare": ee.Image(ee.Array([[2,1],[1,2]])).toFloat().matrixSolve(
+            c.first().select(["red", "nir"]).toArray().toArray(1).toFloat())
+            .arrayProject([0]).arrayFlatten([["x0", "x1"]]),
+        "rasterMatrixSolveTall": ee.Image(ee.Array([[2,1],[1,2],[1,1]])).toFloat().matrixSolve(
+            c.first().select(["green", "red", "nir"]).toArray().toArray(1).toFloat())
+            .arrayProject([0]).arrayFlatten([["x0", "x1"]]),
         "rasterRegressionOrigin": c.select(["red", "nir"]).reduce(ee.Reducer.linearRegression(1, 1))
             .select("coefficients").arrayFlatten([["red"], ["nir"]]),
         "rasterRegressionResidual": c.select(["red", "nir"]).reduce(ee.Reducer.linearRegression(1, 1))
@@ -223,6 +235,7 @@ def parity_values():
                                  "confusionKappa", "labelErrorMatrix",
                                  "listLayout", "listRegression", "listMean",
                                  "minimumSchema", "minimumPredictions", "minimumTrainingMatrix",
+                                 "rasterMatrixSolveSquare", "rasterMatrixSolveTall",
                                  "rasterRegressionOrigin", "rasterRegressionResidual", "rasterRegressionIntercept"])
 def test_python_and_javascript_reach_the_same_local_result(parity_values, case):
     javascript, python, metadata, items = parity_values

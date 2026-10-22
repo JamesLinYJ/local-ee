@@ -22839,12 +22839,14 @@
       "description": "Solves for x in the matrix equation A * x = B, finding a least-squares solution if A is overdetermined for each matched pair of bands in image1 and image2. If either image1 or image2 has only 1 band, then it is used against all the bands in the other image. If the images have the same number of bands, but not the same names, they're used pairwise in the natural order. The output bands are named for the longer of the two inputs, or if they're equal in length, in image1's order. The type of the output pixels is the union of the input types.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Fixed-shape single RasterArrayImage operands, explicit per-cell toFloat on both sides. Literal static full-column-rank design A(m,n),1<=m<=8,1<=n<=4,m>=n; raster B(m,k),1<=k<=4. NumPy Float32 lstsq(A,I,rcond=None) computes a real finite pseudoinverse after precharged work; output(n,k) is actual Float32 pixel arithmetic with the conjunction of both whole-array masks. Constant cast chains preserve each Float32/Double rounding step and share cached literal values. Total input cells<=64, shared50000 steps and500 process nodes retained. Missing/unknown arguments, dynamic A, non-Float32 cells, underdetermined/rank-deficient designs and nonfinite coefficients reject. Float32 rank cutoff, finite local grids and callback rounding are local policies, not Google/EJML parity; not general dynamic per-pixel matrixSolve or Float64 array support."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -25931,7 +25933,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Uses the local adapter to cast raster cells to Float64. Bounded native temporal reducers support mean, median, min, max, sum, count, first, last, and sampleStdDev; general Float64 callback pixel arithmetic remains unsupported. Cast toFloat before callback arithmetic when Float32 precision is acceptable; Google parity is unverified."
+          "Uses the local adapter to cast scalar raster cells to Float64. Bounded native temporal reducers support mean, median, min, max, sum, count, first, last, and sampleStdDev; general Float64 callback pixel arithmetic and array-valued Image.toDouble remain unsupported. Cast toFloat before callback arithmetic when Float32 precision is acceptable; Google parity is unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -25964,7 +25966,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Uses the local adapter to cast raster cells to Float32; Float32 callback arithmetic is the supported path, not a claim of Google numerical parity."
+          "Uses the local adapter to cast scalar raster cells to Float32. A fixed-shape single array band casts every scalar cell and retains its whole-array mask, shape, name and metadata; no placeholder cast or bundle coercion. Float32 callback arithmetic is the supported path, not a claim of Google numerical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -40549,9 +40551,9 @@
           "same_name_handler_declared": true
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.matrixSolve",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
           "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
@@ -40893,7 +40895,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 246,
+    "declared_handler_name_count": 247,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41111,7 +41113,7 @@
         "appears_in_rejected_compile_context": 31,
         "appears_in_selected_sdk_serialization": 35,
         "appears_in_successful_compile_context": 8,
-        "declared_handler_count": 60,
+        "declared_handler_count": 61,
         "signature_count": 232
       },
       "ImageCollection": {
@@ -41374,7 +41376,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 246,
+    "pinned_signatures_with_same_name_declared_handler": 247,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

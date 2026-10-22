@@ -124,6 +124,16 @@ QR／SVD 使用 NumPy/LAPACK，符号和重复值子空间基为已注明的本�
 
 锁定依赖、Linux Python **1174 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，增加 45 项通过；其中新分解测试 38、工作流 4、Python／JS SDK 一致性新增 3，总一致性 36。Luna max 独立复审与 42 项定向测试通过。原 50 探针仍 50 S／45 C／5 拒绝且字节不变，完整 Python 清单字节重现通过，见 `reports/gee-python-wave12.json`。本批没有新增 TypeScript 层；官方 JS 序列化仅作共享后端回归。无实际栅格 E／Google G，阶段延期不阻断后续 Python API 开发。
 
+## 第十三批静态设计的栅格最小二乘
+
+以第十二批提交 `a3c39da476df310efc02b4ffac97b76232bd5046` 为基线，在独立 `raster_matrix_solve.py` 实现有限 Image.matrixSolve，单数组波段 toFloat 也执行逐 cell 的真实转换。A 为静态字面量及保留量化顺序的 cast 链，B 为实际栅格数组，双方显式 Float32；A(m,n) 限 m<=8、n<=4、m>=n，B(m,k) 限 k<=4。预充预算后计算本地 NumPy 满列秩伪逆，降成既有像素乘加，整体掩膜、左属性和源回退保留；任一 RHS 缺测掩膜完整解，不做观测行删除。
+
+父审查修复共享 cast 尾链重复求值，现按 Pixel 对象缓存每层量化；16777217 的 Float32 结果仍为 16777216。总输入 64 cells、常量 500 unique nodes、共享 50000 工作和 500 进程节点保持，最大形状的真实图仍可明确超限。动态设计、欠定／秩亏、非有限伪逆、数组 toDouble 与未知参数拒绝；NumPy 秩判定、有限源网格和 callback 舍入只声明本地政策，不宣称 Google/EJML 等价。
+
+示例 18 与版本化 `ee-raster-least-squares-v1.json` 串联实际估计／重建／残差图，分别 70／97／116 节点。手推伪逆和 Fraction 独立校核含噪解 `(119/220,97/220)` 与残差 `(-1/44,-1/44,3/44)`，覆盖零值、负丰度、缺测与非矩形景界，容差 2e-6、网络尝试 0；不是 Image.unmix 或约束解混。
+
+锁定依赖、Linux Python **1201 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，增加 27 项通过：矩阵数值／参数 22、工作流 3、Python／JS SDK 一致性新增 2（总 38）。Luna max 只读复审未发现声明范围内剩余缺陷。原 50 探针仍 50 S／45 C／5 拒绝且字节不变，完整 Python 清单字节重现通过，见 `reports/gee-python-wave13.json`。无实际栅格 E／Google G，不新增 TypeScript 层；生态核对另见 `docs/gee-python/ecosystem.md`，有限公开资料检索不构成“无人尝试”的结论。整体目标保持进行中。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee

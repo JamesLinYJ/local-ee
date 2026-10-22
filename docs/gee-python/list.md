@@ -1,12 +1,14 @@
 # GEE Python 兼容清单
 
-状态：2026-10-22，第十二批持续实施，整体兼容目标尚未完成。
+状态：2026-10-22，第十三批持续实施，整体兼容目标尚未完成。
 
-第十二批 [验证报告](../../reports/gee-python-wave12.json)：Linux Python **1174 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1129 passed／7 skipped](../../reports/gee-python-wave11.json)，本批增加 45 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
+第十三批 [验证报告](../../reports/gee-python-wave13.json)：Linux Python **1201 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1174 passed／7 skipped](../../reports/gee-python-wave12.json)，本批增加 27 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
 
 S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎；N＝独立数值基准；G＝Google 同数据对照。静态数值求值和合成图测试分别说明，不能标成原生栅格 E。固定的 991 项签名、方法可见数量和定向探针计数均不能换算为全 API 兼容百分比。
 
 当前阶段按用户要求暂缓 Linux 隔离执行、macOS／ARM64 和本机真实数据验收，优先完成 Python API／参数／计算语义，再推进 JS。新增能力继续用版本化合成样本、独立数值参考及已有便携测试验证；延期项目不是本阶段前置条件，现有运行器与沙箱检查保留。
+
+已有项目与可复用边界见 [生态核对](ecosystem.md)：本地脚本宿主、Google 客户端封装、独立本地计算后端与完整 EE 服务端兼容分别核对，不据项目名称或一次检索判断其兼容范围。
 
 ## 全量目录
 
@@ -37,6 +39,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] 有限栅格 linearRegression 的过原点／单位截距模型、1..4 响应、联合完整行、系数／RMS 数组；有限多数组波段选择／元数据，双响应分字段物化和独立 SVD／空间掩膜参考。
 - [x] 延迟单波段维度／改名元数据，保留数值与源／掩膜／类型边界；共享表达式标签、完整四系数／双响应预测、同日／重复观测及超限控制。
 - [x] 静态方阵 QR／LU／SVD 真实分解与因子字典组合；部分选主元、退化正交分解、资源预充，以及合成光谱混合／噪声丰度的独立分数参考。
+- [x] 单数组波段的真实 toFloat，以及静态满列秩设计的有限 Image.matrixSolve；栅格多响应、整体缺测掩膜、显式精度和预算拒绝；合成光谱估计／重建／残差的独立分数参考。
 - [ ] 每一签名／参数组合的 S／C、适用的独立 N，以及负向、缺测、边界验收；E 按现有环境可用条件单独记录。
 - [ ] 动态形状、其余多数组波段运算和 Image.array*、通用设计矩阵的逐像元回归、采样／图像分类／其他分类器及模式、矢量／空间和多重／歧义度量 Join、邻域及高级时序。
 - [ ] 后续阶段：Linux 执行／隔离适配、macOS Seatbelt、ARM64 JNI 和本机真实数据验收；当前阶段延期。
@@ -65,7 +68,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 
 List.contains／distinct 对嵌套数组使用显式的有界比较，避免 NumPy 隐式真值／广播错误。标量 int／float 按数值比较，bool 单独区分；Array 的 dtype／形状／元素比较仍是未做 Google 对照的本地策略。step 序列严格检查实际生成的 Float64 值，不向端点外扩展；例如 0、0.1、0.2 后的 0.30000000000000004 超过 end=0.3，因此省略，该舍入策略尚无 G 证据。
 
-另有 36 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky、QR／LU／SVD 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵、列表布局／均值／回归、最小距离 schema／预测／训练误差矩阵及栅格 linearRegression 的过原点／截距系数与 RMS。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容。
+另有 38 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky、QR／LU／SVD 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵、列表布局／均值／回归、最小距离 schema／预测／训练误差矩阵、栅格 linearRegression 的过原点／截距系数与 RMS，以及方阵／高矩形设计的栅格 matrixSolve。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容。
 
 第四批 `examples/10_GEE_python_synthetic_pca.py` 与 `tests/fixtures/ee-pca-table-v1.json` 串联有限静态表格的中心化、样本协方差、对称特征分解、投影及重建。四条二维观测的均值为 `[2,1]`，协方差为 `[[4/3,2/3],[2/3,2/3]]`，特征值为 `1±sqrt(5)/3`；闭式向量与得分按 1e-14 容差核对，重建还提供与符号选择无关的验证。S/C/N 已通过，网络入口尝试为 0；无栅格 E 或 G。
 
@@ -130,6 +133,16 @@ numX=1 为过原点，numX=2 首列必须可证明为数字字面量 1，允许�
 第十二批仅对非空静态方阵实现 `Array.matrixQRDecomposition(array)`、`matrixLUDecomposition(array)`、`matrixSingularValueDecomposition(array)`。所有因子均为 n×n、有限且只读的 typed Array；QR 返回 `{Q,R}`，LU 返回 `{L,U,P}` 且 P×A=L×U，SVD 返回 `{U,S,V}` 且 A=U×S×Vᵀ。QR／SVD 对秩亏／零矩阵验证正交性与重建，不固定符号或重复值子空间基。LU 使用首个最大值部分选主元，已生成的 L 列随行一起交换；计算零主元明确拒绝，不用容差伪造秩。非有限因子、未知参数、矩形／非矩阵输入拒绝；合并输出 cells<=10000，分解前按 factor×n³+6n² 预充共享 50000 工作步，QR／LU／SVD 的 factor 分别为 4／2／8。
 
 `examples/17_GEE_python_matrix_unmixing.py` 与 `ee-matrix-unmixing-v1.json` 用实际因子继续求解三个合成端元的四组观测，三条路径均返回实际丰度／重建。独立 Fraction 参考给出 det=9/25，含噪样本修正 `(7/360,-13/360,1/60)` 与丰度 `(151/360,131/360,13/60)`，三路在 3e-13 内通过，网络尝试 0。S/C/静态 N 已验证；不包含 `Image.unmix`、非负／和为一约束解混、栅格分解、矩形 QR／SVD 或 Google/EJML 基与数值对照。
+
+## 有限栅格 matrixSolve
+
+第十三批实现 `Image.matrixSolve(image1,image2)`：左 A 为静态字面量常量和可选 Float32／Double cast 链，形状 (m,n)，1<=m<=8、1<=n<=4、m>=n；右 B 为 (m,k)，1<=k<=4，可含实际来源像素。双方每个 cell 必须显式以 toFloat 结束。单数组波段的 Image.toFloat 对每个 cell 生成真实转换，保留形状、逻辑名、属性和整体掩膜；数组 toDouble、多数组 bundle cast 仍拒绝。标量 toDouble 后显式转成数组再 toFloat 是允许的精度选择，不隐式缩窄。
+
+A 的每层 cast 都按内到外次序执行并按 Pixel 对象缓存，保留 16777217→Float32→16777216 的精度效果，共享尾链不重复求值。先预充共享工作预算，再用 NumPy Float32 输入的 `lstsq(A,I,rcond=None)` 求有限伪逆，最后生成实际逐像元乘加及 Float32 输出。NumPy 的秩判定和 callback 舍入是已注明的本地数值政策，未证明与 Google/EJML 相同。动态 A、欠定／秩亏、非有限系数／伪逆及未知／缺参明确拒绝。
+
+总输入 <=64 cells、常量表达式 <=500 unique nodes，共享 50000 工作步和 500 进程节点上限保留；最大允许形状不保证生成图能通过。B 任意行／任意响应缺失会掩膜所有解分量，与集合回归删除不完整观测行不同。输出沿用既有有限源网格／来源及整体掩膜策略，保留左属性；不据此宣称完整全球足迹／投影语义。
+
+示例 18 与 `ee-raster-least-squares-v1.json` 使用 A=`[[2,1],[1,2],[1,1]]`，手推伪逆为 `(1/11)[[7,-4,1],[-4,7,1]]`。含噪观测得到 `(119/220,97/220)`，残差 `(-1/44,-1/44,3/44)` 与设计列正交；丰度和为 54/55，负输入可以得到负丰度，不添加非负／和为一约束。估计／重建／残差分别为 70／97／116 节点。独立 Fraction 参考量化实际 Float32 输入后按 2e-6 容差核对，覆盖零值、负值、缺测与 bbox 内多边形外点。S/C/采样点 N 通过，网络尝试 0；这不是 Image.unmix、实际栅格 E 或 Google G。
 
 ## 当前 Python 调用探针
 

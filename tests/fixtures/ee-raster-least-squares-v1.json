@@ -1,0 +1,61 @@
+{
+  "schema": "local-ee-synthetic-raster-least-squares/v1",
+  "description": "Synthetic three-band pixels and a fixed two-endmember design; no satellite observations",
+  "collection_id": "sentinel-2-l2a",
+  "item_id": "mixture-1",
+  "bbox": [0, 0, 6, 1],
+  "pixel_centers": [
+    [0.5, 0.5], [1.5, 0.5], [2.5, 0.5],
+    [3.5, 0.5], [4.5, 0.5], [5.5, 0.5]
+  ],
+  "scene_geometry": {
+    "type": "Polygon",
+    "coordinates": [[[0, 0], [6, 0], [6, 0.4], [0, 1], [0, 0]]]
+  },
+  "bands": ["green", "red", "nir"],
+  "design_matrix": [[2, 1], [1, 2], [1, 1]],
+  "endmember_bands": ["endmember_1", "endmember_2"],
+  "pixel_values": {
+    "green": [1.4, 0, 1.5, -0.5, 0.5, 9],
+    "red": [1.6, 0, 1.4, 1.2, null, 8],
+    "nir": [1, 0, 1.05, 0.1, 0.25, 7]
+  },
+  "hand_reference": {
+    "pseudoinverse": [["7/11", "-4/11", "1/11"], ["-4/11", "7/11", "1/11"]],
+    "samples": [
+      {
+        "name": "clean",
+        "pixel_index": 0,
+        "abundances": ["2/5", "3/5"],
+        "reconstruction": ["7/5", "8/5", "1"],
+        "residuals": ["0", "0", "0"]
+      },
+      {
+        "name": "zero",
+        "pixel_index": 1,
+        "abundances": ["0", "0"],
+        "reconstruction": ["0", "0", "0"],
+        "residuals": ["0", "0", "0"]
+      },
+      {
+        "name": "additive_noise",
+        "pixel_index": 2,
+        "input": ["3/2", "7/5", "21/20"],
+        "noise": ["1/10", "-1/5", "1/20"],
+        "abundances": ["119/220", "97/220"],
+        "abundance_sum": "54/55",
+        "reconstruction": ["67/44", "313/220", "54/55"],
+        "residuals": ["-1/44", "-1/44", "3/44"]
+      },
+      {
+        "name": "negative_input",
+        "pixel_index": 3,
+        "input": ["-1/2", "6/5", "1/10"],
+        "abundances": ["-41/55", "21/22"],
+        "reconstruction": ["-59/110", "64/55", "23/110"],
+        "residuals": ["2/55", "2/55", "-6/55"]
+      }
+    ],
+    "reference_method": "A^T A=[[6,5],[5,6]], so (A^T A)^-1 A^T = (1/11)[[7,-4,1],[-4,7,1]]. The exact noisy residual is orthogonal to both columns of A; its unconstrained abundance sum is 54/55. The local operation explicitly casts both operands to Float32, so the workflow comparison quantizes each source sample to IEEE Float32 before applying this hand-derived rational pseudoinverse and allows 2e-6 absolute/relative tolerance. Missing red masks the entire vector; the last center is outside the source scene polygon. No nonnegative or sum-to-one constraints are imposed."
+  }
+}
