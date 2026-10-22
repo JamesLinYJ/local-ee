@@ -15,12 +15,13 @@ from .array_arithmetic import ARRAY_ARITHMETIC_FUNCTIONS, invoke_arithmetic
 from .array_reductions import ARRAY_REDUCTION_FUNCTIONS, invoke_reduction
 from .array_layout import ARRAY_LAYOUT_FUNCTIONS, invoke_layout
 from .array_matrix_extra import ARRAY_MATRIX_FUNCTIONS, invoke_matrix_extra
+from .array_decompositions import ARRAY_DECOMPOSITION_FUNCTIONS, invoke_decomposition
 
 ARRAY_FUNCTIONS = frozenset({
     "Array", "Array.get", "Array.length", "Array.toList", "Array.reshape",
     "Array.transpose", "Array.matrixTranspose", "Array.matrixMultiply",
     "Array.matrixInverse", "Array.matrixSolve", "Array.matrixPseudoInverse",
-}) | ARRAY_ARITHMETIC_FUNCTIONS | ARRAY_REDUCTION_FUNCTIONS | ARRAY_LAYOUT_FUNCTIONS | ARRAY_MATRIX_FUNCTIONS
+}) | ARRAY_ARITHMETIC_FUNCTIONS | ARRAY_REDUCTION_FUNCTIONS | ARRAY_LAYOUT_FUNCTIONS | ARRAY_MATRIX_FUNCTIONS | ARRAY_DECOMPOSITION_FUNCTIONS
 
 
 def _axes(arguments, array):
@@ -63,6 +64,8 @@ def invoke_array(translator, name, arguments):
         return invoke_layout(translator, name, arguments)
     if name in ARRAY_MATRIX_FUNCTIONS:
         return invoke_matrix_extra(translator, name, arguments)
+    if name in ARRAY_DECOMPOSITION_FUNCTIONS:
+        return invoke_decomposition(translator, name, arguments)
     a = arguments
     if name == "Array":
         translator.allowed(a, {"values", "pixelType"})

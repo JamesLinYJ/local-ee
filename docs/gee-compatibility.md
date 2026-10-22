@@ -38,6 +38,8 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 
 第十一批只折叠待生成的单波段维度／标签元数据，保留全部数值 callback 和源／掩膜／类型边界。上述六个图缩为 333／394／337 节点各两条，完整四系数和双预测图现为 405／413；双 RMS／八字段组合仍超出 500。独立参考、共享表达式标签及同日／重复观测控制见 [第十一批报告](../reports/gee-python-wave11.json)，无实际 E/G 或吞吐声明。
 
+第十二批增加静态方阵 QR／LU／SVD 分解及真实 typed 因子字典组合，合成三端元光谱解混用独立分数参考核对丰度、噪声影响与重建。LU 零主元／非有限结果、矩形形状和预算外输入明确拒绝；QR／SVD 符号及重复值基为 NumPy/LAPACK 政策。见 [第十二批报告](../reports/gee-python-wave12.json)，不代表 Image.unmix、栅格分解或 Google/EJML 等价。
+
 第三批增加 `Join.inner`、唯一 maxDifference 的 And 组合，以及匹配 Feature 映射回 ImageCollection 的链路；最近前后观测插值有版本化合成来源／掩膜／目标时间参考，见 [第三批报告](../reports/gee-python-wave3.json)。S/C 与合成图 N 通过仍不构成原生引擎 E 或 Google G。
 
 | 用法 | 当前支持范围 | 证据 |
@@ -71,6 +73,7 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 | 有限分类评估 | 静态 ConfusionMatrix、array／order／accuracy／kappa；内联 Collection.errorMatrix | S/C 与独立标签频数 N；<=64 类／4096 单元、非负整数计数总和 <=2^53、<=1000 完整记录，共享预算；显式类别表筛选，缺失／null、零分母、原始 List／浮点计数 Array、直接对象 JSON、Feature 属性对象和逐类指标拒绝；无 E/G、采样或分类器 |
 | 有限 List 计算 | zip／unzip／flatten／repeat／reverse／set／swap，List.reduce 的单输出归约及 linearFit／linearRegression | S/C/独立静态 N；布局 <=10000 顶层值、flatten 深度 96、reduce <=1000 行／32 回归列，共享工作与公开物化预算；typed Array 保留；空值／低样本政策明确且无 G 对照，不含任意 reducer 组合／权重 |
 | 静态最小距离分类 | minimumDistance／train／schema／CLASSIFICATION 模式、FeatureCollection.classify、训练 confusionMatrix | S/C/独立静态 N；欧式、k=1、1..1000 训练行／1..8 平面属性、类别 0..63、无子采样、共享预算；唯一最近类，等距和输出名碰撞拒绝，保留要素元数据；无图像分类／随机森林／E/G |
+| 静态方阵分解 | QR 的 Q／R，部分选主元 LU 的 L／U／P，SVD 的 U／对角 S／V；typed 因子可继续矩阵计算 | S/C/闭式与分解恒等式 N；所有因子 n×n，合并输出 <=10000 cells、共享立方工作预充；LU 计算零主元和非有限消元拒绝，QR／SVD 符号／退化基未作 Google/EJML 对照；无矩形／栅格 E/G |
 | 有限栅格 linearRegression | numX=1 过原点，或 numX=2 且首列为可证明单位截距；numY=1..4，系数／RMS 命名数组波段 | S/C/独立样点 N；1..8 同序帧、所有输入共同完整行、n>numX／非退化、RMS 按 n；parallelScale=1、Float32 callback 和现有工作／图预算；多响应按需单独物化，无通用设计矩阵／E/G |
 | Algorithms.If | 静态条件，惰性编译选中分支 | S/C；不把影像对象当作静态布尔条件 |
 | 几何与地图 | 平面 WGS84 Geometry；Image/Collection/Feature.geometry；Map.centerObject、setCenter、addLayer | S/C；真实地图和 RGB 预览 N |

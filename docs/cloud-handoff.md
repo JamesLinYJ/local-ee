@@ -114,6 +114,16 @@ List.reduce 支持现有单输出归约及无权 linearFit／linearRegression，
 
 锁定依赖、Linux Python **1129 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，增加 9 项通过；Python／JS SDK 一致性仍 33 项。原 50 探针仍 50 S／45 C／5 拒绝，表达式和诊断均未改；完整 Python 清单字节重现通过。Luna max 复审未发现声明范围内缺陷。详见 `reports/gee-python-wave11.json`；证据为 S/C/独立样点 N，无实际 E/G。通用设计矩阵、动态数组和完整分类／采样继续开发，阶段延期不阻塞目标。
 
+## 第十二批静态方阵分解与光谱混合
+
+以第十一批提交 `c16a11c8a03e09d4c9d1be30fcc1d8dad69fd2aa` 为基线，在独立 `array_decompositions.py` 实现 Array.matrixQRDecomposition／matrixLUDecomposition／matrixSingularValueDecomposition，均仅接受必填 array 的非空静态方阵。返回 typed Array 字典，形状 n×n：QR 的 Q／R，LU 的 L／U／P 满足 P×A=L×U，SVD 的 U／S／V 满足 A=U×S×Vᵀ。输入不修改，输出只读；先检查合并输出 <=10000 cells 和共享 50000 步预算，再复制或分解。
+
+QR／SVD 使用 NumPy/LAPACK，符号和重复值子空间基为已注明的本地政策，尚无 Google/EJML 对照。LU 手工实现首次最大值部分选主元，同步交换已有 L 列；计算零主元和非有限消元明确拒绝，没有添加近似秩容差。QR／SVD 可重建秩亏／零矩阵，矩形 full／thin 输出形状未确认而明确拒绝，不宣称栅格分解。
+
+示例 17 与 `ee-matrix-unmixing-v1.json` 以三个正数、非正交的合成光谱端元和四组混合观测，分别走 QR、LU、SVD 因子字典 → Array.matrixSolve／Multiply，输出实际丰度和重建。独立 Fraction 验证 det=9/25、完整逆矩阵及最后样本噪声增量 `(7/360,-13/360,1/60)`，含噪解 `(151/360,131/360,13/60)`；三路误差均在 3e-13 内，网络尝试 0。属于静态矩阵工作流，不是 Image.unmix 或非负／和为一约束求解器。
+
+锁定依赖、Linux Python **1174 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，增加 45 项通过；其中新分解测试 38、工作流 4、Python／JS SDK 一致性新增 3，总一致性 36。Luna max 独立复审与 42 项定向测试通过。原 50 探针仍 50 S／45 C／5 拒绝且字节不变，完整 Python 清单字节重现通过，见 `reports/gee-python-wave12.json`。本批没有新增 TypeScript 层；官方 JS 序列化仅作共享后端回归。无实际栅格 E／Google G，阶段延期不阻断后续 Python API 开发。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee

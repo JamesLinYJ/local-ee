@@ -1,0 +1,36 @@
+{
+  "schema": "local-ee-synthetic-matrix-unmixing/v1",
+  "description": "Synthetic 3-band linear mixtures; no imagery or Google data",
+  "bands": ["green", "red", "nir"],
+  "endmembers": ["vegetation", "soil", "water"],
+  "mixing_matrix": [
+    [0.8, 0.2, 0.1],
+    [0.1, 0.7, 0.2],
+    [0.1, 0.1, 0.7]
+  ],
+  "true_abundances": [
+    [0.7, 0.1, 0.25, 0.4],
+    [0.2, 0.6, 0.25, 0.4],
+    [0.1, 0.3, 0.5, 0.2]
+  ],
+  "observations": [
+    [0.61, 0.23, 0.3, 0.43],
+    [0.23, 0.49, 0.3, 0.34],
+    [0.16, 0.28, 0.4, 0.23]
+  ],
+  "noise": {
+    "sample_index": 3,
+    "additive_by_band": [0.01, -0.02, 0.01]
+  },
+  "independent_reference": {
+    "determinant": "9/25",
+    "inverse_mixing_matrix": [
+      ["47/36", "-13/36", "-1/12"],
+      ["-5/36", "55/36", "-5/12"],
+      ["-1/6", "-1/6", "3/2"]
+    ],
+    "noise_abundance_delta": ["7/360", "-13/360", "1/60"],
+    "noisy_sample_abundances": ["151/360", "131/360", "13/60"],
+    "method": "Each clean column is the explicit product M*a. For the last sample, M^-1 is given by its adjugate divided by det(M)=9/25; multiplying it by noise [1/100,-2/100,1/100] gives the listed exact abundance delta. This is an exact rational reference independent of QR, LU, SVD, and NumPy solver implementations."
+  }
+}

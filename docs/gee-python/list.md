@@ -1,8 +1,8 @@
 # GEE Python 兼容清单
 
-状态：2026-10-22，第十一批持续实施，整体兼容目标尚未完成。
+状态：2026-10-22，第十二批持续实施，整体兼容目标尚未完成。
 
-第十一批 [验证报告](../../reports/gee-python-wave11.json)：Linux Python **1129 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1120 passed／7 skipped](../../reports/gee-python-wave10.json)，本批增加 9 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
+第十二批 [验证报告](../../reports/gee-python-wave12.json)：Linux Python **1174 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1129 passed／7 skipped](../../reports/gee-python-wave11.json)，本批增加 45 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
 
 S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎；N＝独立数值基准；G＝Google 同数据对照。静态数值求值和合成图测试分别说明，不能标成原生栅格 E。固定的 991 项签名、方法可见数量和定向探针计数均不能换算为全 API 兼容百分比。
 
@@ -36,6 +36,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] 有限欧式 minimumDistance 的实际类均值训练、唯一最近类预测、schema／默认模式、内联要素分类及真实重代入混淆矩阵；独立训练／验证样本、均值／距离和误差指标参考。
 - [x] 有限栅格 linearRegression 的过原点／单位截距模型、1..4 响应、联合完整行、系数／RMS 数组；有限多数组波段选择／元数据，双响应分字段物化和独立 SVD／空间掩膜参考。
 - [x] 延迟单波段维度／改名元数据，保留数值与源／掩膜／类型边界；共享表达式标签、完整四系数／双响应预测、同日／重复观测及超限控制。
+- [x] 静态方阵 QR／LU／SVD 真实分解与因子字典组合；部分选主元、退化正交分解、资源预充，以及合成光谱混合／噪声丰度的独立分数参考。
 - [ ] 每一签名／参数组合的 S／C、适用的独立 N，以及负向、缺测、边界验收；E 按现有环境可用条件单独记录。
 - [ ] 动态形状、其余多数组波段运算和 Image.array*、通用设计矩阵的逐像元回归、采样／图像分类／其他分类器及模式、矢量／空间和多重／歧义度量 Join、邻域及高级时序。
 - [ ] 后续阶段：Linux 执行／隔离适配、macOS Seatbelt、ARM64 JNI 和本机真实数据验收；当前阶段延期。
@@ -64,7 +65,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 
 List.contains／distinct 对嵌套数组使用显式的有界比较，避免 NumPy 隐式真值／广播错误。标量 int／float 按数值比较，bool 单独区分；Array 的 dtype／形状／元素比较仍是未做 Google 对照的本地策略。step 序列严格检查实际生成的 Float64 值，不向端点外扩展；例如 0、0.1、0.2 后的 0.30000000000000004 超过 end=0.3，因此省略，该舍入策略尚无 G 证据。
 
-另有 33 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵、列表布局／均值／回归、最小距离 schema／预测／训练误差矩阵及栅格 linearRegression 的过原点／截距系数与 RMS。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容。
+另有 36 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky、QR／LU／SVD 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵、列表布局／均值／回归、最小距离 schema／预测／训练误差矩阵及栅格 linearRegression 的过原点／截距系数与 RMS。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容。
 
 第四批 `examples/10_GEE_python_synthetic_pca.py` 与 `tests/fixtures/ee-pca-table-v1.json` 串联有限静态表格的中心化、样本协方差、对称特征分解、投影及重建。四条二维观测的均值为 `[2,1]`，协方差为 `[[4/3,2/3],[2/3,2/3]]`，特征值为 `1±sqrt(5)/3`；闭式向量与得分按 1e-14 容差核对，重建还提供与符号选择无关的验证。S/C/N 已通过，网络入口尝试为 0；无栅格 E 或 G。
 
@@ -123,6 +124,12 @@ numX=1 为过原点，numX=2 首列必须可证明为数字字面量 1，允许�
 有限多数组容器为 1..8 逻辑数组波段、总 64 cells、共享元数据来源；只能精确名称／非负索引选择、rename 与现有元数据方法。先选一个数组再 flatten／get；真正 Image.cast、bundle 通用数组算术、混合 scalar／array bands、直接输出／导出以及 regex／重复 selectors 仍拒绝。内部 If／Dictionary 保留类型，不能转成静态真值或虚构服务器 JSON。
 
 第十一批在下一真实 cube 进程之前延迟物化单波段标签，不跨越 callback、mask、cast 或时间边界。同一六条图降至 333／394／337 节点各两条，数值与 NoData 样点保持一致；完整四系数现在为 405 节点，双响应预测为 413，独立 SVD 和同日／重复行权重测试通过。完整双 RMS 与八字段组合仍明确超过 500，不能写成通过。共享 DAG 的不同输出名／操作数位置和 JSON／引用边界另有专用回归，见 [第十一批报告](../../reports/gee-python-wave11.json)。
+
+## 静态方阵分解与合成解混
+
+第十二批仅对非空静态方阵实现 `Array.matrixQRDecomposition(array)`、`matrixLUDecomposition(array)`、`matrixSingularValueDecomposition(array)`。所有因子均为 n×n、有限且只读的 typed Array；QR 返回 `{Q,R}`，LU 返回 `{L,U,P}` 且 P×A=L×U，SVD 返回 `{U,S,V}` 且 A=U×S×Vᵀ。QR／SVD 对秩亏／零矩阵验证正交性与重建，不固定符号或重复值子空间基。LU 使用首个最大值部分选主元，已生成的 L 列随行一起交换；计算零主元明确拒绝，不用容差伪造秩。非有限因子、未知参数、矩形／非矩阵输入拒绝；合并输出 cells<=10000，分解前按 factor×n³+6n² 预充共享 50000 工作步，QR／LU／SVD 的 factor 分别为 4／2／8。
+
+`examples/17_GEE_python_matrix_unmixing.py` 与 `ee-matrix-unmixing-v1.json` 用实际因子继续求解三个合成端元的四组观测，三条路径均返回实际丰度／重建。独立 Fraction 参考给出 det=9/25，含噪样本修正 `(7/360,-13/360,1/60)` 与丰度 `(151/360,131/360,13/60)`，三路在 3e-13 内通过，网络尝试 0。S/C/静态 N 已验证；不包含 `Image.unmix`、非负／和为一约束解混、栅格分解、矩形 QR／SVD 或 Google/EJML 基与数值对照。
 
 ## 当前 Python 调用探针
 
