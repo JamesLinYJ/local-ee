@@ -1,8 +1,8 @@
 # GEE Python 兼容清单
 
-状态：2026-10-22，第十五批持续实施，整体兼容目标尚未完成。
+状态：2026-10-22，第十六批持续实施，整体兼容目标尚未完成。
 
-第十五批 [验证报告](../../reports/gee-python-wave15.json)：Linux Python **1303 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1265 passed／7 skipped](../../reports/gee-python-wave14.json)，本批增加 38 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
+第十六批 [验证报告](../../reports/gee-python-wave16.json)：Linux Python **1338 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1303 passed／7 skipped](../../reports/gee-python-wave15.json)，本批增加 35 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
 
 S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎；N＝独立数值基准；G＝Google 同数据对照。静态数值求值和合成图测试分别说明，不能标成原生栅格 E。固定的 991 项签名、方法可见数量和定向探针计数均不能换算为全 API 兼容百分比。
 
@@ -42,6 +42,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] 单数组波段的真实 toFloat，以及静态满列秩设计的有限 Image.matrixSolve；栅格多响应、整体缺测掩膜、显式精度和预算拒绝；合成光谱估计／重建／残差的独立分数参考。
 - [x] 有限 ImageCollection.toArrayPerBand 的定长逐波段堆叠、静态 Image.arrayReshape 和 Number.sin／cos；集合日期驱动的谐波设计与栅格最小二乘链路，参数与数值边界见下文。
 - [x] 有限静态 Number／Array.hypot／atan2，以及由既有像素算子计算的 Image.hypot；独立高精度范数／方向角参考，串联谐波系数的真实振幅输出，轴约定与 Float32 溢出边界明确登记。
+- [x] 单数组 Image.arrayCat／arrayRepeat 的真实轴布局、有效常量 Image 重复次数、共同掩膜和预算拒绝；双独立响应最小二乘工作流的系数／拟合／残差与 Fraction／SVD 参考一致。
 - [ ] 每一签名／参数组合的 S／C、适用的独立 N，以及负向、缺测、边界验收；E 按现有环境可用条件单独记录。
 - [ ] 动态形状、其余多数组波段运算和 Image.array*、通用设计矩阵的逐像元回归、采样／图像分类／其他分类器及模式、矢量／空间和多重／歧义度量 Join、邻域及高级时序。
 - [ ] 后续阶段：Linux 执行／隔离适配、macOS Seatbelt、ARM64 JNI 和本机真实数据验收；当前阶段延期。
@@ -70,7 +71,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 
 List.contains／distinct 对嵌套数组使用显式的有界比较，避免 NumPy 隐式真值／广播错误。标量 int／float 按数值比较，bool 单独区分；Array 的 dtype／形状／元素比较仍是未做 Google 对照的本地策略。step 序列严格检查实际生成的 Float64 值，不向端点外扩展；例如 0、0.1、0.2 后的 0.30000000000000004 超过 end=0.3，因此省略，该舍入策略尚无 G 证据。
 
-另有 45 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky、QR／LU／SVD 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵、列表布局／均值／回归、最小距离 schema／预测／训练误差矩阵、栅格 linearRegression 的过原点／截距系数与 RMS、方阵／高矩形设计的栅格 matrixSolve、集合定长数组、reshape、正余弦设计，以及静态向量范数／方向角和栅格 hypot。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容或 Google 数值对照。
+另有 47 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky、QR／LU／SVD 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵、列表布局／均值／回归、最小距离 schema／预测／训练误差矩阵、栅格 linearRegression 的过原点／截距系数与 RMS、方阵／高矩形设计的栅格 matrixSolve、集合定长数组、reshape、正余弦设计，以及静态向量范数／方向角、栅格 hypot 和轴拼接／整块重复。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容或 Google 数值对照。
 
 第四批 `examples/10_GEE_python_synthetic_pca.py` 与 `tests/fixtures/ee-pca-table-v1.json` 串联有限静态表格的中心化、样本协方差、对称特征分解、投影及重建。四条二维观测的均值为 `[2,1]`，协方差为 `[[4/3,2/3],[2/3,2/3]]`，特征值为 `1±sqrt(5)/3`；闭式向量与得分按 1e-14 容差核对，重建还提供与符号选择无关的验证。S/C/N 已通过，网络入口尝试为 0；无栅格 E 或 G。
 
@@ -224,6 +225,16 @@ Image.hypot 按配对波段实际计算稳定比例范数，保留 NoData、广�
 | `classifier_constructor` | passed | rejected | Unsupported Earth Engine algorithm: Classifier.smileRandomForest |
 | `export_image_drive` | passed | passed | NIR |
 | `export_table_drive` | passed | passed | {"features":[{"geometry":{"coordinates":[[[100.1,30.1],[100.9,30.1],[100.9,30.9],[100.1,30.9],[100.1,30.1]]],"type":"Polygon"},"properties":{"mean":3,"scene"... |
+
+## 第十六批：轴拼接、整块重复与双响应数组求解
+
+Image.arrayCat 必须提供 image1／image2／axis，只接受 rank 1..8 的单个固定数组，非拼接轴长度相同。输出保留真实行主序单元和 dtype，合取两个输入的整体掩膜，沿用左名称／属性和既有来源回退政策；不做标量广播或多数组波段配对。
+
+Image.arrayRepeat 必须提供 input／axis／copies。固定签名中 copies 是 Image，Python wrapper 的 Any 注解不改变该签名。本地子集要求其为单标量波段的有效纯常量正整数，真实执行常量表达式及每层 Float32／Double 转换；有源、映射、footprint、掩膜、动态值、零／负值及非整数均拒绝。重复整个轴块，例如 `[1,2]` 重复两次得到 `[1,2,1,2]`。两项操作均限定已有非负轴，保留 rank≤8、每轴／总单元≤64、共享 50000 工作步和 500 图节点预算，输出构造前收费。这些限制是本地支持子集，不是 Google 服务的完整参数限制。
+
+`examples/21_GEE_python_multi_response_arrays.py` 与 `tests/fixtures/ee-multi-response-arrays-v1.json` 将四景按实际时间排序，用 arrayRepeat 构造截距列、arrayCat 拼入自变量及两个独立响应列，再经显式 Float32 matrixSolve 求解。设计矩阵为 `[[1,0],[1,1],[1,2],[1,3]]`，正规矩阵为 `[[4,6],[6,14]]`。第一样点两响应截距／斜率分别为 `(2,3)` 和 `(-1,1/2)`；含噪声样点为 `(1,2)` 和 `(-2,1/2)`，两响应残差分别为 `[1,-1,-1,1]` 与 `[2,-2,-2,2]`。
+
+系数、拟合、残差独立编译为 208／284／328 节点，Fraction 闭式和独立 NumPy SVD 按 2e-6 容差核对。任一响应任一帧缺失会掩膜两个响应的全部结果，不进行完整行删除；保留实际帧顺序、负／零值和 bbox 内但非矩形场景外的掩膜控制。SDK 网络入口尝试为 0。S/C/采样点 N 与未运行的栅格 E／Google G 分开登记，见 [第十六批报告](../../reports/gee-python-wave16.json)。
 
 ## 复现与后续顺序
 

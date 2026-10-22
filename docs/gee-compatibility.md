@@ -46,6 +46,8 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 
 第十五批增加静态 Number／Array 的 hypot／atan2，以及由既有像素算子实现的 Image.hypot，实际衔接谐波振幅；独立 Decimal／Fraction 参考验证稳定范数、轴约定和缺测。动态 Float32 范数超范围可能为 inf，已知常量溢出预检拒绝。SDK 与社区教程的 atan2 约定有冲突，Image.atan2 的 JVM 支持证据不足，均在 [数值政策](gee-python/numerical-policies.md) 和 [第十五批报告](../reports/gee-python-wave15.json) 明确记录；无 E/G 结论。
 
+第十六批增加单数组波段的 Image.arrayCat／arrayRepeat：沿现有轴拼接真实行主序单元，或按可证明有效的正整数常量 Image 次数重复完整轴块。拼接合并整体掩膜，重复保留输入掩膜与 dtype；动态／带掩膜／有空间限定的次数、空轴和多数组波段拒绝。与固定设计的 matrixSolve 串联双独立响应工作流，参数及 S/C/N 证据见 [第十六批报告](../reports/gee-python-wave16.json)；原有 64 单元、50000 工作步及 500 图节点限制保留，无实际 E/G 结论。
+
 第三批增加 `Join.inner`、唯一 maxDifference 的 And 组合，以及匹配 Feature 映射回 ImageCollection 的链路；最近前后观测插值有版本化合成来源／掩膜／目标时间参考，见 [第三批报告](../reports/gee-python-wave3.json)。S/C 与合成图 N 通过仍不构成原生引擎 E 或 Google G。
 
 | 用法 | 当前支持范围 | 证据 |

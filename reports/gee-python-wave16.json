@@ -1,0 +1,547 @@
+{
+  "schema": "local-ee-python-compat-wave16/v1",
+  "date": "2026-10-22",
+  "status": "partial_goal_in_progress",
+  "base_commit": "b20edec331c1e61d493a80f8c8a8a8f901e5199f",
+  "platform": {
+    "os": "Linux",
+    "architecture": "x86_64",
+    "python": "3.11.16",
+    "node": "24.19.0",
+    "uv": "0.12.12",
+    "earthengine_api": "1.7.49"
+  },
+  "phase": "Python-first compatibility; Linux isolation, macOS/ARM64 and private real-data acceptance deferred per user instruction",
+  "source_files_sha256": {
+    "GOAL.md": "249712d8e69d4e538c9587f795450148ecf85196fd46098e4eb9ec6de3902417",
+    "docs/architecture.md": "7512bb94597213db3c68a0e556d5b251ebbd9c062068858260c53774dc0a76ee",
+    "docs/cloud-handoff.md": "2159d804e8f1931503f72c09c0a8fb145a26637d510d3b10d09b991f67072f52",
+    "docs/gee-api-inventory.md": "c58ce26db3f1eaed265244bc8228a839b956a41cb723080fdc8045a293c6b95c",
+    "docs/gee-compatibility.md": "baf68fb77952162cd861a1d2d186a3862e717f4508eefc622f2a3012d07b6b38",
+    "docs/gee-python/list.md": "95cbdb749867d8d2be33125a286ed13c60d3352400cad47ec69aabeb8bd9d2e4",
+    "docs/gee-python/numerical-policies.md": "2d2e29bddbab0584d1750a34c6362de2b78ba4213af19f408e77c27e300d843d",
+    "engine/jars-lock.json": "b77e0db61533490afdb737850a717ab11d6c21df7ad0541f156c5d7ea0c49042",
+    "examples/19_GEE_python_harmonic_time_series.py": "21b443f16b92843873511af357ae0e69d974881eea280bbdb2c1eac035537846",
+    "examples/20_GEE_python_harmonic_amplitude.py": "07bcc564c3e1138e62b4a4122c757dd2147a5c6bc3543b1e14b901fe0b42ef36",
+    "examples/21_GEE_python_multi_response_arrays.py": "2272eeb51c9640f8a4f1adadc59b2350f517da83ea515dabfe7e8c92299bb7c8",
+    "gee/compat/earthengine/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "gee/compat/earthengine/array_arithmetic.py": "1906e7a372b4aa949473d28262312ca9dd7441c664b9d99510f650b66b753c31",
+    "gee/compat/earthengine/array_core.py": "96b48b561fcf3aeccea66c22dfa61bc74a85bf07c3560e1e982530cd8a178b94",
+    "gee/compat/earthengine/array_decompositions.py": "8a568d8d8043bf7e896e4c548d571058ec1fc5ebc1023af0ca2cee5fdf6c97e7",
+    "gee/compat/earthengine/array_layout.py": "c784ffc7bab5f2b89e3319b6097dc1a3bfe46cd582cfc56b40ed4c5507b916eb",
+    "gee/compat/earthengine/array_matrix_extra.py": "c2803f0100052e7696395cbf3aa4b27fd4028b36a1ebdb65ac5bb2d0a43b0f37",
+    "gee/compat/earthengine/array_reductions.py": "2b5bc821c4a194c4e5315fe573289dfe432db9ab43fed8ae3eee5e3cdbdc6d8d",
+    "gee/compat/earthengine/array_values.py": "0f93b2fc0c850a9508485e07877baa1f96d40b39fa620b4da4e278d2f379d67f",
+    "gee/compat/earthengine/band_labels.py": "d76c6be1313e5c0301faa866adeb23ff62e4e077351541f557b230291cb89b1b",
+    "gee/compat/earthengine/capabilities.py": "12ad4f89f60f24d23b5954de6f91e911eeb50434320cd541be82cef6421447ed",
+    "gee/compat/earthengine/catalog.py": "ce7b7ab0ff83b6329ece3996c211ddc16b39354fc8a201d848e2cb4cc29b20f8",
+    "gee/compat/earthengine/classifier_features.py": "e521d4e8c6e9b0f1b2a3e38b7e0fefe754076f471645d4f124f163afef00cd53",
+    "gee/compat/earthengine/collection_ops.py": "fde917a42ea264f17d8e91f6c7063b0ea08723254643bd1abc537e585f7c11ea",
+    "gee/compat/earthengine/compile.py": "e08b4bc59230dfcf96c6ba890f897a5ce44ecc6162879089ed535dca66232f86",
+    "gee/compat/earthengine/confusion_values.py": "798e5d44294d28bb4f7ad1fc7e1387e6478af723ed31565dfb09b7bb5536c043",
+    "gee/compat/earthengine/constant_bands.py": "11f2ecd2eb08e002a735304ac201539e64f105d867c06256795fd53df75b54e4",
+    "gee/compat/earthengine/constant_graph.py": "b2a57e1a0aa84d273d86877294ceae8d494b47fb856aabb2ed974e5192139a2f",
+    "gee/compat/earthengine/date_values.py": "f4580990744e78b2f72c44e449799a99d1153773739527195ba26965959bc20b",
+    "gee/compat/earthengine/decoder.py": "036171e38a74547c9c7398d06fc066583fdb7d4aa4ded1db2b3615ff1eb0346d",
+    "gee/compat/earthengine/dispatch.py": "4fca8a41a5aa1a88244e8256971d225787ebf210ff6377cb8029a1f3e251a9de",
+    "gee/compat/earthengine/feature_error_matrix.py": "dd41b9af406e7ad1ff683b4b3ff02c43c71ea7dd306eaee59577e91c7ee561b1",
+    "gee/compat/earthengine/feature_filters.py": "e9fad3a60d672000bc334db8b9779e359101c9f59c8f6889d642392877b9a6dd",
+    "gee/compat/earthengine/feature_ops.py": "1ed5b13c1672378a85a9c451385c44754f7d3da98d504b2bcfc2045ddb7e2e9f",
+    "gee/compat/earthengine/feature_values.py": "ed525f580e50e7230213ddc3b565dfb06608a8747156934f35ce1ad66f3503e2",
+    "gee/compat/earthengine/filtering.py": "ee32796a2db6216c745ff54e65584e8dc9e457ad83cca273e897d695616c4cbe",
+    "gee/compat/earthengine/geometry_values.py": "9fbc41d6ea487ae4e93f516138a0be6d217791e4189e4db6f12522590ae4912a",
+    "gee/compat/earthengine/graph.py": "7ebed060c02cdb1df76e50dd9df4e5f86fb3705ff67022b4f2805a224e6f6a72",
+    "gee/compat/earthengine/image_ops.py": "00a71bc40dc089271f7806122ba6d25294bea44bf1d818a02ed90434cde15887",
+    "gee/compat/earthengine/inner_join.py": "b56d13083f44b3691544e4a993f17654750ca16d978167464379866e697594b7",
+    "gee/compat/earthengine/ir.py": "a7c601cc37894985d22bae9e70e35f4ca03bdbdf19f6e2a38c6fb1565adbda7f",
+    "gee/compat/earthengine/join_conditions.py": "9074ea3150916c204414b15830ba42051c3cc6561fcf8269cb66481cec910064",
+    "gee/compat/earthengine/join_ops.py": "4703f99e55cfb6f333649bfd5306590d3eaed07421870b6511ef08374c485228",
+    "gee/compat/earthengine/list_layout.py": "050f99ae5a852f0358ba53738882d08be6ea82813ea20609723918a0687bdbd0",
+    "gee/compat/earthengine/list_reductions.py": "18e5a896971cbe1665b650a52bb2679b9f5ec16694dc9cbeb5043085286dd432",
+    "gee/compat/earthengine/mask_graph.py": "7bc0592a88f83b94f601e6bf9fed524a914413015cee26587b1c8a7c7c83d77c",
+    "gee/compat/earthengine/metadata_ops.py": "b373c436bb0dda1920f02ad9add40be600160de93525358e863ea51e1b726d9d",
+    "gee/compat/earthengine/minimum_distance.py": "8e45cb31b33e27cce3e792cf37175fd82e7fb4b463099472f6ff8788331f4df5",
+    "gee/compat/earthengine/number_format.py": "9d85ea670b60c6c59834457a0dda4d9a1bed1a9918340a3004bbf63f82e7d2a7",
+    "gee/compat/earthengine/number_math.py": "494f7e5fd4112fd4cfbe56c3a2a3d559d366609c4f8703175a71a19e07e3ea70",
+    "gee/compat/earthengine/pixel_graph.py": "b3d973d9b2a2607ca1f2ab3940c27ef101b03bcef2023264dc7dc1a7ad30da99",
+    "gee/compat/earthengine/public_values.py": "5d01e96a517ef2f2f975f7847fdda948ac0daa20893e3a7f00328a5d28eba56f",
+    "gee/compat/earthengine/raster_array_bands.py": "053ce9f90808800fa7cb1ac0dff2da1d52475577e62dd66f750b4e51c244ae8f",
+    "gee/compat/earthengine/raster_array_concatenation.py": "5a16b279f17d896719e330ef14af7b8f821e09397ed20b4640ec55dc0df31b1f",
+    "gee/compat/earthengine/raster_array_coordinates.py": "c4ac59f713544b2722fddd0bdfae5ae1e7f20f22adf3b576ea116b862575a961",
+    "gee/compat/earthengine/raster_array_core.py": "54592397f236ad468fcb38b8bcccf8cd3e4e1273ef47b2cbd667b9f4376add38",
+    "gee/compat/earthengine/raster_array_dispatch.py": "1583b4c510f13da494d8a2b93153f627d4be0e643abc77e8d25f571786b0a6d2",
+    "gee/compat/earthengine/raster_array_layout.py": "8eada4fb711f999d4764488b41898546b1a18ef87653d162050fc9ccd4204c16",
+    "gee/compat/earthengine/raster_array_reductions.py": "e3221910f30d824d93c65aed49d9323bc6772724aa1e8ea61e4cb5d04c1ca5fc",
+    "gee/compat/earthengine/raster_array_reshape.py": "793ed9f524ddfdb52d64a18edc5a7fb6eb259a5c1c11ef44fe805c59e0717865",
+    "gee/compat/earthengine/raster_array_values.py": "0e7a10c426b7ed019801336b9cfd6c2d87d5d224947dc7226f4ef1d31d36e899",
+    "gee/compat/earthengine/raster_collection_arrays.py": "5fc6593a7df6c8f6f51d097103f05ee28f4675ff4a701800d2f4fe7164c60112",
+    "gee/compat/earthengine/raster_linear_fit.py": "29d69d50ed7365433edb5a207bb4cab9e0a60c917ba468cb028fa342a7231a52",
+    "gee/compat/earthengine/raster_linear_regression.py": "94c4c8d0f9ec36fa89078bb363e035ad4bd94121ec0be7d5f286d8bd08ac3691",
+    "gee/compat/earthengine/raster_matrix_solve.py": "47cca8c8836d6eaeee92f28206be531792fd108fa920792dd71149bf6df523ed",
+    "gee/compat/earthengine/raster_regression_frames.py": "a61712c320983ab1195b845d3408e9fc7d6d05775ac625dfcb0cec766754b696",
+    "gee/compat/earthengine/reduction_graph.py": "628d7445641b448be1fda9557e8ca4c8f09fd9b45c743549fbdb5108413a6105",
+    "gee/compat/earthengine/static_dictionary.py": "2823714601588f528ccf9c0284bb5d62ffd12fd87399e41c5735d7627d3df619",
+    "gee/compat/earthengine/static_equality.py": "5779f199a88090d13445252a6b3e3634bf68b7d343b4a06c4f94354f226b9e5a",
+    "gee/compat/earthengine/static_sequence.py": "7c65aea263d536357e07f2ced11226e69538ecb39fe6c88a238359f64337e2b3",
+    "gee/compat/earthengine/static_values.py": "5b7cc8cbb55f404557a759db3a4dc9a8330d42c1d71616d693df829e10083a04",
+    "gee/compat/earthengine/string_values.py": "81f8433eacd32eb9dec1a98b1228cfeb65aac95347a9f5198cf456fc90b32554",
+    "gee/compat/earthengine/table_reducers.py": "fc8ced1a7b1103c1c9609aedc231191cad70dcc5182083debbe066bb1b226613",
+    "gee/compat/earthengine/temporal_graph.py": "a370582335f336b9cac38281b2ce748ee152d4226d0aaaac51b9fd8f5e2ab8a8",
+    "gee/compat/earthengine/value_ops.py": "267ef3770334788883b8bcfab685b19e5caccec92d49cadc2d0731463bb4928d",
+    "reports/gee-api-inventory.json": "ee09fdd453cecd51e22d3cd77becd5a06a2e4bd4173216b742c96131ec0507a8",
+    "reports/gee-python-api-inventory.json": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12",
+    "scripts/ee_inventory/catalogue.py": "ea73b057a5bbfd321691bf370bb8620976907252fb646b625a19578e26909978",
+    "tests/fixtures/ee-harmonic-amplitude-v1.json": "72af5677065ff912be30d09d68efd1b550bfdd28c740775bfb550f236b57a8a4",
+    "tests/fixtures/ee-multi-response-arrays-v1.json": "908df716be6bcc7fe423fd8f30eb07f871f70db3499bcb44629de046a266738d",
+    "tests/fixtures/ee-python-1.7.49.json": "5f00f0901cc858f3acce64c6052171bd810ab24bfca2271520bd76d7e9fae19c",
+    "tests/test_ee_harmonic_amplitude_workflow.py": "cab5096fc16330ec8c20c86e6fa9d054206ca1c63c1d7f7bc76bf24824930909",
+    "tests/test_ee_number_trigonometry.py": "d7add3d139e13bb957517a4224354fee714170893cedb17b2cad832429e4c4bc",
+    "tests/test_ee_python_js_parity.py": "2844bb5b64d7f46eb9991841b38369f8f1660d3df2b72580960cd6b6cd71ed96",
+    "tests/test_ee_raster_array_concatenation.py": "ffc2a604f1f1dc7ad0091859690d2dcc5c1575dc157867a68fd668664494f8b5",
+    "tests/test_ee_raster_array_concatenation_parameters.py": "e71bb1ef3200c53a14ebca890dab2dead68feb82c4138e0bf6f45921266c7339",
+    "tests/test_ee_vector_math.py": "3e57113fdb2c494a40908d11ce87e171399f74c3602f741070a09185c47057b5",
+    "tests/test_ee_vector_math_parameters.py": "14009505f7f06de591dcb6ae225a0c79d5a5c64d1895c5f743894b284c0e82e2",
+    "tests/test_ee_workflow_multi_response_arrays.py": "c028028db854307e0866170503cc4147b7330a50e331452c099e532ecce0f5b9",
+    "upstream-lock.json": "ecc23fd5af80c955a2ef439f76af3c7b67a1dd24c2e973740c02bbdcade1d830",
+    "uv.lock": "b688828aa0119bc71d098efe66aefaa9a0d93a51fae3289bfbe806c13a535b6d",
+    "vendor/earthengine-js/algorithms.json": "8279bfd5e755f10c291a0d833aed810a5aba2e360e26ecee69f2bacaeecb3d01",
+    "vendor/earthengine-python/upstream-lock.json": "c6151228962c7bf3a4b47476dd3b3b0377b49480699d97773fe2774a55e43bd4",
+    "web/package-lock.json": "23ab4ccf3a102558ff642f085e8d96c6ac8209fafe3042faebcfc04e2ce70c62"
+  },
+  "verification": {
+    "previous_code_baseline": {
+      "report": "reports/gee-python-wave15.json",
+      "passed": 1303,
+      "skipped": 7,
+      "note": "Published exact-commit validation baseline; not a fresh pre-edit local run"
+    },
+    "dependency_installation": {
+      "python": "uv sync --frozen --python 3.11: passed",
+      "frontend": "npm ci: passed with workspace activation"
+    },
+    "python": {
+      "command": "python -m pytest -q -ra --junitxml=<external-report-path>",
+      "passed": 1338,
+      "skipped": 7,
+      "failed": 0,
+      "errors": 0,
+      "junit_sha256": "14b2c11c4982850eb945550ac912ea87be0d60ab7ab10f3d578d083e1fe28a3c",
+      "wave15_passed": 1303,
+      "added_passing_cases": 35,
+      "focused_module_test_counts": {
+        "tests.test_ee_python_js_parity": 47,
+        "tests.test_ee_raster_array_concatenation": 5,
+        "tests.test_ee_raster_array_concatenation_parameters": 26,
+        "tests.test_ee_workflow_multi_response_arrays": 2
+      },
+      "skips": [
+        {
+          "module": "tests.test_ee_grid_adapter",
+          "test": "test_native_grid_and_unmask_spi_semantics",
+          "reason": "set LOCAL_EE_RUN_NATIVE_GRID_TEST=1 for the opt-in local[1] JVM/Spark probe"
+        },
+        {
+          "module": "tests.test_ee_integer",
+          "test": "test_native_adapter_builds_and_executes_real_spi_tile_conversion",
+          "reason": "set LOCAL_EE_RUN_NATIVE_INTEGER_TEST=1 for the lightweight JVM/Spark probe"
+        },
+        {
+          "module": "tests.test_ee_reduce_adapter",
+          "test": "test_native_single_time_and_band_reducer_semantics",
+          "reason": "set LOCAL_EE_RUN_NATIVE_REDUCER_TEST=1 for the opt-in local[1] JVM/Spark probe"
+        },
+        {
+          "module": "tests.test_native_runtime",
+          "test": "test_python_denies_foreign_files_symlinks_writes_and_network",
+          "reason": "macOS Seatbelt acceptance"
+        },
+        {
+          "module": "tests.test_native_runtime",
+          "test": "test_node_cannot_read_host_credentials",
+          "reason": "macOS Seatbelt acceptance"
+        },
+        {
+          "module": "tests.test_native_runtime",
+          "test": "test_only_declared_api_port_is_allowed",
+          "reason": "macOS Seatbelt acceptance"
+        },
+        {
+          "module": "tests.test_native_runtime",
+          "test": "test_supervisor_enforces_timeout_redacts_token_and_survives_reader_restart",
+          "reason": "macOS Seatbelt acceptance"
+        }
+      ],
+      "warnings": "Three existing Rasterio PendingDeprecationWarning messages"
+    },
+    "frontend": {
+      "test_command": "npm test -- --maxWorkers=2",
+      "tests_passed": 11,
+      "tests_failed": 0,
+      "build_command": "npm run build",
+      "typescript": "passed",
+      "build": "passed"
+    },
+    "probe_check": {
+      "command": ".venv/bin/python -m scripts.ee_python_probes --check",
+      "status": "passed",
+      "fixture_bytes_unchanged": true,
+      "original_expressions_unchanged": true,
+      "targeted_cases": 50,
+      "serialization_passed": 50,
+      "compilation_passed": 45,
+      "compilation_rejected": 5,
+      "engine_execution": "not_run",
+      "independent_numerical_validation": "not_run",
+      "google_same_data_comparison": "not_run",
+      "interpretation": "Original whole-expression probes only, not an API compatibility percentage. The original regression probe still rejects invalid five-band versus three-input arity. Independent numerical tests are separate below."
+    },
+    "sdk_cross_language": {
+      "actual_python_js_serialization_and_compilation_parity_cases": 47,
+      "new_cases": [
+        "Raster array axis1 concatenation",
+        "Raster array whole-block repetition with Image copies"
+      ],
+      "native_execution": "not_run",
+      "scope": "Actual pinned SDK serializers feed the shared compiler; not complete JS compatibility or Google numerical comparison"
+    },
+    "inventory_reproducibility": {
+      "status": "passed",
+      "method": "Separate pristine-process regeneration and byte comparison",
+      "sha256": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12",
+      "duplicate_scratch_removed": true
+    },
+    "fixed_probe_network_instrumentation": {
+      "attempt_count": 0,
+      "attempts_by_operation": {},
+      "instrumented_operations": [
+        "local_transport.request",
+        "socket.create_connection",
+        "socket.getaddrinfo",
+        "socket.gethostbyaddr",
+        "socket.gethostbyname",
+        "socket.gethostbyname_ex",
+        "socket.socket.connect",
+        "socket.socket.connect_ex",
+        "socket.socket.sendmsg",
+        "socket.socket.sendto"
+      ],
+      "mode": "deny_and_count_python_network_and_local_transport_entry_points",
+      "scope": "Trusted in-process SDK probes only; not packet capture or kernel isolation"
+    },
+    "independent_review": {
+      "status": "completed_no_scoped_code_defect_found",
+      "model": "gpt-6-luna",
+      "reasoning_effort": "max",
+      "focused_tests_passed": 53,
+      "timing": "Review run preceded the final Float32-count control and parameter/budget additions; final additions are checked by the parent and the complete suite separately",
+      "command": "python -m pytest -q tests/test_ee_raster_array_concatenation.py tests/test_ee_workflow_multi_response_arrays.py tests/test_ee_python_js_parity.py",
+      "checks": [
+        "Pinned 1.7.49 signatures, required argument forwarding and Image copies type",
+        "Actual row-major concatenation and complete-axis block repetition against independent NumPy maps",
+        "Whole-array mask conjunction/retention, source Pixel trees and left metadata policy",
+        "Pure constant count proof rejects spatial/dynamic/masked values; real count casts and precharged work",
+        "Shape and cell checks before output materialization, unchanged work and graph limits",
+        "Independent Fraction OLS and Float32-input SVD workflow references, joint missing response and polygon exclusion",
+        "Restrictions described as a local supported subset rather than all Google service semantics"
+      ],
+      "remaining_scoped_findings": 0,
+      "native_engine_acceptance": "not_run",
+      "google_comparison": "not_run"
+    },
+    "parent_review_fix": {
+      "problem": "Initial count decoder caught ValueError broadly, including UnsupportedEEError from the shared work budget",
+      "resolution": "Re-raise UnsupportedEEError before normalizing unexpected numeric errors; final work preflight tests preserve the budget error"
+    },
+    "integration_sequence": "One initial probe run preceded creation of the new imported module and failed with ModuleNotFoundError; rerun after integration passed unchanged original probes",
+    "focused_test_harness_corrections": [
+      "An initial expected array retained a fifth sample while actual was sliced to four; corrected reference slicing",
+      "Two negative cases initially over-specified error wording; retain actual UnsupportedEEError refusal checks",
+      "Initial64-cell scalar-output probe exceeded the unchanged500-node graph cap; a compact legitimate matrix-product/length probe validates64-cell shape, with separate observed64-cell repetition and real500-node refusal controls"
+    ],
+    "generated_report_checks": {
+      "command": "python -m pytest -q tests/test_ee_capability_inventory.py tests/test_ee_python_inventory.py tests/test_ee_python_probes.py",
+      "passed": 16,
+      "scope": "Included in full1338, not additional cases; rerun after report generation"
+    }
+  },
+  "inventory": {
+    "algorithm_signature_count": 991,
+    "algorithm_argument_count": 2451,
+    "python_class_count": 48,
+    "python_callable_count": 1797,
+    "named_binding_algorithm_count": 939,
+    "declared_handler_name_count": 258
+  },
+  "implemented_scope": {
+    "new_functions": [
+      "Image.arrayCat",
+      "Image.arrayRepeat"
+    ],
+    "pinned_signature_evidence": {
+      "sdk_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a",
+      "signatures": "vendor/earthengine-js/algorithms.json",
+      "arrayCat_required": {
+        "image1": "Image",
+        "image2": "Image",
+        "axis": "Integer"
+      },
+      "arrayRepeat_required": {
+        "input": "Image",
+        "axis": "Integer",
+        "copies": "Image"
+      },
+      "wrapper_source": "https://github.com/google/earthengine-api/blob/e189e4b89e785019ea5642ea8e80cb644749cd4a/python/ee/image.py",
+      "wrapper_lines": {
+        "arrayCat": 805,
+        "arrayRepeat": 998
+      },
+      "interpretation": "Pinned SDK serialization contract only, not Google computation or dynamic-count semantics"
+    },
+    "module": "gee/compat/earthengine/raster_array_concatenation.py",
+    "arrayCat": "Required image1/image2/axis; single fixed RasterArrayImage inputs rank1..8, equal rank and non-axis dimensions. Actual row-major axis blocks concatenated without numeric conversion. Whole-array masks conjoined; left name/metadata and existing source fallback retained.",
+    "arrayRepeat": "Required input/axis/copies. Pinned signature copies is Image, wrapper annotation Any. Require one scalar-band pure constant Image with no source/mapped/footprint. Actual cast-aware expression evaluation proves a positive integer count. Repeat complete axis blocks, retain original cells/dtype/name/metadata/mask. Dynamic/masked/spatial/multiband counts, zero/negative/nonintegral counts reject.",
+    "work": "Cat precharge left_cells+right_cells+output_cells+2*rank+left_metadata_size. Repeat first precharges bounded count Pixel evaluation, then input_cells+output_cells+copies+rank+input_metadata_size. Charge before cell copies/output construction; shared50000 work, axes/cells64 and500 process nodes retained.",
+    "workflow": {
+      "example": "examples/21_GEE_python_multi_response_arrays.py",
+      "fixture": "tests/fixtures/ee-multi-response-arrays-v1.json",
+      "schema": "local-ee-synthetic-multi-response-arrays/v1",
+      "data": "Explicitly synthetic four-frame/two-band local catalog; not actual Sentinel imagery or physical temperature units",
+      "algorithm": "Sort actual source times; construct repeated intercept and static predictor with axis1 arrayCat; stack/reshape two independent raster response columns with axis1 arrayCat, explicit Float32, static-design matrixSolve; scalarize coefficients, fitted observations and residuals separately.",
+      "design": [
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ]
+      ],
+      "normal_matrix": [
+        [
+          4,
+          6
+        ],
+        [
+          6,
+          14
+        ]
+      ],
+      "hand_coefficients": {
+        "clean": [
+          [
+            2,
+            3
+          ],
+          [
+            -1,
+            0.5
+          ]
+        ],
+        "noisy": [
+          [
+            1,
+            2
+          ],
+          [
+            -2,
+            0.5
+          ]
+        ],
+        "negative": [
+          [
+            -1,
+            0.5
+          ],
+          [
+            4,
+            -2
+          ]
+        ]
+      },
+      "noise_residuals": [
+        [
+          1,
+          -1,
+          -1,
+          1
+        ],
+        [
+          2,
+          -2,
+          -2,
+          2
+        ]
+      ],
+      "missing": "Any missing frame in either response masks every result in both columns; no incomplete-row deletion. Geometry excludes a bbox-contained finite pixel.",
+      "compiled_outputs": [
+        {
+          "fixture": "local-ee-synthetic-multi-response-arrays/v1",
+          "output": "source_ids",
+          "kind": "value",
+          "bands": null,
+          "source_item_ids": null,
+          "graph_nodes": 0
+        },
+        {
+          "fixture": "local-ee-synthetic-multi-response-arrays/v1",
+          "output": "design_matrix",
+          "kind": "value",
+          "bands": null,
+          "source_item_ids": null,
+          "graph_nodes": 0
+        },
+        {
+          "fixture": "local-ee-synthetic-multi-response-arrays/v1",
+          "output": "coefficients",
+          "kind": "image",
+          "bands": [
+            "intercept_signal",
+            "intercept_temperature",
+            "slope_signal",
+            "slope_temperature"
+          ],
+          "source_item_ids": [
+            "frame-x0",
+            "frame-x1",
+            "frame-x2",
+            "frame-x3"
+          ],
+          "graph_nodes": 208
+        },
+        {
+          "fixture": "local-ee-synthetic-multi-response-arrays/v1",
+          "output": "fitted",
+          "kind": "image",
+          "bands": [
+            "x0_signal",
+            "x0_temperature",
+            "x1_signal",
+            "x1_temperature",
+            "x2_signal",
+            "x2_temperature",
+            "x3_signal",
+            "x3_temperature"
+          ],
+          "source_item_ids": [
+            "frame-x0",
+            "frame-x1",
+            "frame-x2",
+            "frame-x3"
+          ],
+          "graph_nodes": 284
+        },
+        {
+          "fixture": "local-ee-synthetic-multi-response-arrays/v1",
+          "output": "residuals",
+          "kind": "image",
+          "bands": [
+            "x0_signal",
+            "x0_temperature",
+            "x1_signal",
+            "x1_temperature",
+            "x2_signal",
+            "x2_temperature",
+            "x3_signal",
+            "x3_temperature"
+          ],
+          "source_item_ids": [
+            "frame-x0",
+            "frame-x1",
+            "frame-x2",
+            "frame-x3"
+          ],
+          "graph_nodes": 328
+        }
+      ]
+    }
+  },
+  "numerical_evidence": {
+    "S": {
+      "status": "passed",
+      "scope": "Pinned Python SDK real wire forms, required/unknown argument controls;47 Python/JS parity cases"
+    },
+    "C": {
+      "status": "passed",
+      "scope": "Actual typed layout composition and graph-validated scalar outputs; masks/source/order/dtype/metadata and resource refusal controls"
+    },
+    "E": {
+      "status": "not_run",
+      "scope": "No actual raster-engine execution this wave"
+    },
+    "N": {
+      "status": "passed",
+      "scope": "Independent NumPy concatenate/tile maps, exact Fraction OLS and separate SVD; trusted local sample graph evaluator, not native acceptance",
+      "workflow_atol": 2e-06,
+      "workflow_rtol": 2e-06,
+      "layout_values": "Exact equality after explicit Float32 input casts",
+      "network_attempts": 0
+    },
+    "G": {
+      "status": "not_run",
+      "scope": "No Google same-data comparison"
+    }
+  },
+  "limits": {
+    "rank": 8,
+    "axis_length": 64,
+    "total_raster_array_cells": 64,
+    "shared_work_steps": 50000,
+    "graph_process_nodes": 500,
+    "scope": [
+      "Single array band and existing nonnegative axis only",
+      "No variable per-pixel counts or empty array axes",
+      "No new Pixel/backend process, Float64 arithmetic or grid/reprojection policy",
+      "No dynamic-design matrixSolve or unrestricted raster regression"
+    ],
+    "policy": "Declared restrictions are local supported-subset policies, not claims about all Google service inputs"
+  },
+  "remaining_targeted_probe_rejections": [
+    {
+      "id": "unmask_fill",
+      "reason": "Image.unmask sameFootprint=false with a global footprint is not supported"
+    },
+    {
+      "id": "neighborhood_reduce_kernel",
+      "reason": "Unsupported Earth Engine algorithm: Kernel.square"
+    },
+    {
+      "id": "focal_mean",
+      "reason": "Unsupported Earth Engine algorithm: Image.focalMean"
+    },
+    {
+      "id": "regression_reducer",
+      "reason": "ImageCollection.reduce linearRegression requires exactly 3 scalar bands per frame"
+    },
+    {
+      "id": "classifier_constructor",
+      "reason": "Unsupported Earth Engine algorithm: Classifier.smileRandomForest"
+    }
+  ],
+  "not_run": [
+    "Linux user-task execution adapter acceptance",
+    "Native raster-engine execution",
+    "macOS Seatbelt kernel acceptance",
+    "ARM64 JNI acceptance",
+    "Private real-data workflows",
+    "Google same-data comparisons"
+  ],
+  "cleanup": [
+    "Removed byte-identical regenerated Python inventory scratch after preserving a reproduction digest",
+    "Retained dependencies, frontend build and concise external JUnit/workflow/publication evidence; historical reports unchanged"
+  ],
+  "next_work": [
+    "Continue Python-first fixed inventory, remaining array/matrix/reducer semantics",
+    "Sampling/raster classification and broader classifiers with independent controls",
+    "Spatial joins, neighborhoods and advanced time series",
+    "Actual Image.atan2 backend/provenance remains unresolved; preserve explicit refusal"
+  ]
+}

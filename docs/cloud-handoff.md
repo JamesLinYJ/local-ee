@@ -154,6 +154,16 @@ Image.hypot 用既有 Pixel 的 max/min／比例／平方根实际计算，保�
 
 锁定依赖、Linux Python **1303 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，新增 38 项通过：向量数值／参数 33、振幅工作流 2、SDK 一致性新增 3（总 45）。原 50 探针仍 50 S／45 C／5 拒绝且字节不变，全量 Python 清单字节重现通过，见 `reports/gee-python-wave15.json`。独立 Luna max 复审、S/C/静态及采样点 N 与未运行的 E/G 分开记录；其余数组、采样／分类及高级工作流继续推进。
 
+## 第十六批轴布局与双响应数组求解
+
+以第十五批提交 `b20edec331c1e61d493a80f8c8a8a8f901e5199f` 为基线，新增独立 `raster_array_concatenation.py`（142 行）实现 Image.arrayCat／arrayRepeat。cat 沿现有轴拼接真实行主序单元、合并整体掩膜并沿用左元数据／来源回退；repeat 按整轴块重复，copies 固定签名为 Image，本地要求单标量波段、有效纯常量正整数，实际执行每层类型转换。动态／掩膜／空间限定次数、零／负值、空轴、多数组波段及形状不匹配明确拒绝；这是本地子集政策，不声称 Google 也有相同限制。
+
+输出构造前计费并保留 rank 8、每轴／总单元 64、共享 50000 工作步和 500 图节点预算。父审修复次数解码把预算异常归为数值错误的问题，并补次数证明阶段的预算耗尽回归。Float32 将 `2.0000000000000004` 转成 2 后实际重复两次，无转换则拒绝；64 单元成功和超限、真实大图拒绝、源／几何／NoData、不可变输入均有回归。早期测试的样点数／错误措辞预期已校正；初始 64 单元探针输出超过图预算，改用紧凑合法探针验证形状边界，未提高任何预算。
+
+示例 21 与版本化合成双响应样本串联排序、arrayRepeat 截距列、两次 axis1 arrayCat、toArrayPerBand／reshape、显式 Float32 matrixSolve，以及系数／拟合／残差。两个非比例响应由 Fraction 闭式和独立 SVD 核对，含正／负／零、噪声、联合缺测及非矩形边界，图节点分别为 208／284／328，网络入口尝试 0。
+
+锁定依赖、Linux Python **1338 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，新增 35 项：布局／参数 31、工作流 2、SDK 一致性新增 2（总 47）。原 50 探针仍 50 S／45 C／5 拒绝且字节不变，全量 Python 清单字节重现通过，见 `reports/gee-python-wave16.json`。Luna max 独立复审 53 项通过（在最终计数转换／参数补充前）；完整最终测试和父审单独登记。S/C/采样点 N 通过，栅格 E／Google G 未运行，整体目标保持进行中。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee

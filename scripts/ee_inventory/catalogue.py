@@ -109,6 +109,12 @@ KNOWN_PARTIAL_LIMITS["ImageCollection.toArrayPerBand"] = [
 KNOWN_PARTIAL_LIMITS["Image.arrayReshape"] = [
     "Single fixed-shape RasterArrayImage, typed rank1 lengths array Image with a provably valid unmasked shape, and required dimensions1..8. Constant integer lengths1..64 with at most one inferred -1; product must equal input cells<=64. Reinterprets row-major cells without arithmetic or dtype conversion and preserves input name, mask and source metadata. Dynamic/masked lengths, zero/invalid dimensions, incompatible products, multiple inferred dimensions and unknown/missing arguments reject. Shared50000 work and500 process-node budgets remain; no general dynamic reshaping or native-engine/Google acceptance."
 ]
+KNOWN_PARTIAL_LIMITS["Image.arrayCat"] = [
+    "Single fixed-shape RasterArrayImage operands with equal rank1..8, matching non-concatenated dimensions, and a required existing axis. Concatenates actual row-major cells with the conjunction of both whole-array masks, left name/metadata and existing source fallback. Output axes/cells<=64, shared50000 work precharged before output construction and500 process-node cap unchanged. Scalar/multi-array-band operands, shape mismatch, missing/unknown arguments and dynamic layouts reject; no dtype conversion or raster-engine/Google equivalence claim."
+]
+KNOWN_PARTIAL_LIMITS["Image.arrayRepeat"] = [
+    "Single fixed-shape RasterArrayImage, required existing axis and copies Image holding one provably valid finite positive integer constant scalar band. Repeats the entire axis block in row-major order, preserving source cells, dtype, name, metadata and whole-array mask. Dynamic, masked, spatially bounded or multiband copies, zero/negative/nonintegral counts and missing/unknown arguments reject. Output rank<=8/axes<=64/cells<=64, shared50000 precharged work and500 process-node cap retained. No variable-length arrays, actual raster-engine or Google acceptance."
+]
 for operation in ("Number.hypot", "Number.atan2"):
     KNOWN_PARTIAL_LIMITS[operation] = [
         "Finite static Number operands left/right only, integers in exact Float64 domain<=2^53; bool/nonfinite/non-numeric/missing/unknown inputs reject. Work charged before real Float64 libm kernel and nonfinite result rejected. atan2 uses x=left,y=right according to the pinned SDK vector description and explicit Array right=y documentation, so the kernel is atan2(right,left). An official community harmonic tutorial uses the opposite call order; Google same-data orientation, signed-zero and last-bit parity remain unverified."

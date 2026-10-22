@@ -1,0 +1,48 @@
+{
+  "schema": "local-ee-synthetic-multi-response-arrays/v1",
+  "collection_id": "sentinel-2-l2a",
+  "bbox": [0, 0, 5, 1],
+  "scene_geometry": {
+    "type": "Polygon",
+    "coordinates": [[[0, 0], [5, 0], [4.5, 0.4], [3.5, 1], [0, 1], [0, 0]]]
+  },
+  "pixel_centers": [[0.5, 0.5], [1.5, 0.5], [2.5, 0.5], [3.5, 0.5], [4.5, 0.5]],
+  "bands": ["signal", "temperature"],
+  "frame_order": ["frame-x3", "frame-x0", "frame-x2", "frame-x1"],
+  "sorted_frame_order": ["frame-x0", "frame-x1", "frame-x2", "frame-x3"],
+  "frame_x": {"frame-x0": 0, "frame-x1": 1, "frame-x2": 2, "frame-x3": 3},
+  "frame_values": {
+    "frame-x0": {
+      "signal": [2, 2, -1, 1, 2],
+      "temperature": [-1, 0, 4, 2, -1]
+    },
+    "frame-x1": {
+      "signal": [5, 2, -0.5, 3, 5],
+      "temperature": [-0.5, -3.5, 2, 1, -0.5]
+    },
+    "frame-x2": {
+      "signal": [8, 4, 0, 5, 8],
+      "temperature": [0, -3, 0, null, 0]
+    },
+    "frame-x3": {
+      "signal": [11, 8, 0.5, 7, 11],
+      "temperature": [0.5, 1.5, -2, -1, 0.5]
+    }
+  },
+  "hand_reference": {
+    "design": [[1, 0], [1, 1], [1, 2], [1, 3]],
+    "normal_matrix": [[4, 6], [6, 14]],
+    "coefficients_by_pixel": [
+      [["2", "3"], ["-1", "1/2"]],
+      [["1", "2"], ["-2", "1/2"]],
+      [["-1", "1/2"], ["4", "-2"]]
+    ],
+    "residuals_by_pixel": [
+      [["0", "0", "0", "0"], ["0", "0", "0", "0"]],
+      [["1", "-1", "-1", "1"], ["2", "-2", "-2", "2"]],
+      [["0", "0", "0", "0"], ["0", "0", "0", "0"]]
+    ],
+    "joint_missing_pixel_index": 3,
+    "outside_geometry_pixel_index": 4
+  }
+}

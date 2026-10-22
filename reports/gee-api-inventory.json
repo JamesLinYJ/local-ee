@@ -17800,12 +17800,14 @@
       "description": "Creates an array image by concatenating each array pixel along the given axis in each band.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Single fixed-shape RasterArrayImage operands with equal rank1..8, matching non-concatenated dimensions, and a required existing axis. Concatenates actual row-major cells with the conjunction of both whole-array masks, left name/metadata and existing source fallback. Output axes/cells<=64, shared50000 work precharged before output construction and500 process-node cap unchanged. Scalar/multi-array-band operands, shape mismatch, missing/unknown arguments and dynamic layouts reject; no dtype conversion or raster-engine/Google equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -18229,12 +18231,14 @@
       "description": "Repeats each array pixel along the given axis. Each output pixel will have the shape of the input pixel, except length along the repeated axis, which will be multiplied by the number of copies.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Single fixed-shape RasterArrayImage, required existing axis and copies Image holding one provably valid finite positive integer constant scalar band. Repeats the entire axis block in row-major order, preserving source cells, dtype, name, metadata and whole-array mask. Dynamic, masked, spatially bounded or multiband copies, zero/negative/nonintegral counts and missing/unknown arguments reject. Output rank<=8/axes<=64/cells<=64, shared50000 precharged work and500 process-node cap retained. No variable-length arrays, actual raster-engine or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -40913,7 +40917,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 256,
+    "declared_handler_name_count": 258,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41131,7 +41135,7 @@
         "appears_in_rejected_compile_context": 31,
         "appears_in_selected_sdk_serialization": 35,
         "appears_in_successful_compile_context": 8,
-        "declared_handler_count": 63,
+        "declared_handler_count": 65,
         "signature_count": 232
       },
       "ImageCollection": {
@@ -41394,7 +41398,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 256,
+    "pinned_signatures_with_same_name_declared_handler": 258,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

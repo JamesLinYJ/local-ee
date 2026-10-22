@@ -54,6 +54,11 @@ const prior = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(c, c,
     leftField:'system:time_start', rightField:'system:time_start'}),
     ee.Filter.greaterThan({leftField:'system:time_start', rightField:'system:time_start'}))));
 const values = {
+  rasterArrayCat: c.first().select(['red','nir']).toArray().toArray(1)
+    .arrayCat(c.first().select(['green','red']).toArray().toArray(1),1)
+    .arrayFlatten([['row0','row1'],['left','right']]),
+  rasterArrayRepeat: c.first().select(['red','nir']).toArray()
+    .arrayRepeat(0,ee.Image.constant(2)).arrayFlatten([['r0','n0','r1','n1']]),
   numberVectorMath: ee.List([ee.Number(3).hypot(4), ee.Number(3).atan2(4),
     ee.Number(-3).atan2(-4)]),
   arrayVectorMath: ee.List([ee.Array([3,0,-3]).hypot(ee.Array([4,1,4])),
@@ -167,6 +172,11 @@ def parity_values():
             leftField="system:time_start", rightField="system:time_start"),
             ee.Filter.greaterThan(leftField="system:time_start", rightField="system:time_start"))))
     py = {
+        "rasterArrayCat": c.first().select(["red", "nir"]).toArray().toArray(1)
+            .arrayCat(c.first().select(["green", "red"]).toArray().toArray(1), 1)
+            .arrayFlatten([["row0", "row1"], ["left", "right"]]),
+        "rasterArrayRepeat": c.first().select(["red", "nir"]).toArray()
+            .arrayRepeat(0, ee.Image.constant(2)).arrayFlatten([["r0", "n0", "r1", "n1"]]),
         "numberVectorMath": ee.List([ee.Number(3).hypot(4), ee.Number(3).atan2(4),
                                      ee.Number(-3).atan2(-4)]),
         "arrayVectorMath": ee.List([ee.Array([3, 0, -3]).hypot(ee.Array([4, 1, 4])),
@@ -270,6 +280,7 @@ def parity_values():
                                  "numberTrigDesign", "rasterTemporalBandArray",
                                  "rasterTemporalMatrix", "rasterArrayReshape",
                                  "numberVectorMath", "arrayVectorMath", "rasterHypot",
+                                 "rasterArrayCat", "rasterArrayRepeat",
                                  "rasterRegressionOrigin", "rasterRegressionResidual", "rasterRegressionIntercept"])
 def test_python_and_javascript_reach_the_same_local_result(parity_values, case):
     javascript, python, metadata, items = parity_values
