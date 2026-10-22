@@ -54,6 +54,15 @@ const prior = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(c, c,
     leftField:'system:time_start', rightField:'system:time_start'}),
     ee.Filter.greaterThan({leftField:'system:time_start', rightField:'system:time_start'}))));
 const values = {
+  rasterArraySelection: c.select('red').toArrayPerBand().select([0],['chosen']).arrayGet([0]),
+  rasterArrayAccumDefault: c.select('red').toArrayPerBand().toFloat().arrayAccum(0)
+    .arrayFlatten([['s0','s1','s2']]),
+  rasterArrayAccumMin: c.first().select(['blue','green','red','nir']).toArray()
+    .arrayReshape(ee.Image(ee.Array([2,2])),2).toFloat().arrayAccum(1,ee.Reducer.min())
+    .arrayFlatten([['r0','r1'],['c0','c1']]),
+  rasterArrayAccumMax: c.first().select(['green','red','nir']).toArray().toFloat()
+    .arrayAccum(0,ee.Reducer.max()).arrayFlatten([['g','r','n']]),
+  rasterMatrixFnorm: c.first().select(['red','nir']).toArray().toArray(1).toFloat().matrixFnorm(),
   rasterMatrixDiagonal: c.first().select(['green','red','nir']).toArray().toArray(1)
     .matrixDiagonal().arrayFlatten([['row'],['column']]),
   rasterMatrixToDiag: c.first().select(['red','nir']).toFloat().toArray().toArray(1)
@@ -180,6 +189,15 @@ def parity_values():
             leftField="system:time_start", rightField="system:time_start"),
             ee.Filter.greaterThan(leftField="system:time_start", rightField="system:time_start"))))
     py = {
+        "rasterArraySelection": c.select("red").toArrayPerBand().select([0], ["chosen"]).arrayGet([0]),
+        "rasterArrayAccumDefault": c.select("red").toArrayPerBand().toFloat().arrayAccum(0)
+            .arrayFlatten([["s0", "s1", "s2"]]),
+        "rasterArrayAccumMin": c.first().select(["blue", "green", "red", "nir"]).toArray()
+            .arrayReshape(ee.Image(ee.Array([2, 2])), 2).toFloat().arrayAccum(1, ee.Reducer.min())
+            .arrayFlatten([["r0", "r1"], ["c0", "c1"]]),
+        "rasterArrayAccumMax": c.first().select(["green", "red", "nir"]).toArray().toFloat()
+            .arrayAccum(0, ee.Reducer.max()).arrayFlatten([["g", "r", "n"]]),
+        "rasterMatrixFnorm": c.first().select(["red", "nir"]).toArray().toArray(1).toFloat().matrixFnorm(),
         "rasterMatrixDiagonal": c.first().select(["green", "red", "nir"]).toArray().toArray(1)
             .matrixDiagonal().arrayFlatten([["row"], ["column"]]),
         "rasterMatrixToDiag": c.first().select(["red", "nir"]).toFloat().toArray().toArray(1)
@@ -299,6 +317,9 @@ def parity_values():
                                  "rasterArrayCat", "rasterArrayRepeat",
                                  "rasterMatrixDiagonal", "rasterMatrixToDiag",
                                  "rasterMatrixTrace", "rasterMatrixDeterminant",
+                                 "rasterArrayAccumDefault", "rasterArrayAccumMin",
+                                 "rasterArrayAccumMax", "rasterMatrixFnorm",
+                                 "rasterArraySelection",
                                  "rasterRegressionOrigin", "rasterRegressionResidual", "rasterRegressionIntercept"])
 def test_python_and_javascript_reach_the_same_local_result(parity_values, case):
     javascript, python, metadata, items = parity_values

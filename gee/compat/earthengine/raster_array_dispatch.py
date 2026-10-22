@@ -8,6 +8,7 @@ from .ir import Image, fail
 from .metadata_ops import METADATA_HANDLERS, invoke_metadata
 from .raster_array_core import RasterArrayImage
 from .raster_array_concatenation import RASTER_CONCATENATION_FUNCTIONS, invoke_raster_concatenation
+from .raster_array_accumulation import RASTER_ARRAY_ACCUMULATION_FUNCTIONS, invoke_raster_accumulation
 from .raster_array_layout import RASTER_ARRAY_LAYOUT_FUNCTIONS, invoke_raster_layout
 from .raster_array_reductions import RASTER_ARRAY_REDUCTION_FUNCTIONS, invoke_raster_reduction
 from .raster_array_reshape import RASTER_RESHAPE_FUNCTIONS, invoke_raster_reshape
@@ -31,7 +32,7 @@ _METADATA_ARGUMENTS = {
 def handles_raster_array(name, arguments):
     if name in (RASTER_ARRAY_LAYOUT_FUNCTIONS | RASTER_ARRAY_REDUCTION_FUNCTIONS
                 | RASTER_MATRIX_FUNCTIONS | RASTER_MATRIX_PROPERTY_FUNCTIONS
-                | RASTER_RESHAPE_FUNCTIONS | RASTER_CONCATENATION_FUNCTIONS
+                | RASTER_RESHAPE_FUNCTIONS | RASTER_CONCATENATION_FUNCTIONS | RASTER_ARRAY_ACCUMULATION_FUNCTIONS
                 | (RASTER_ARRAY_VALUE_FUNCTIONS - _SHARED_SCALAR_NAMES)):
         return True
     if name == "Image.constant" and isinstance(arguments.get("value"), StaticArray):
@@ -41,6 +42,8 @@ def handles_raster_array(name, arguments):
 
 
 def invoke_raster_array(translator, name, arguments):
+    if name in RASTER_ARRAY_ACCUMULATION_FUNCTIONS:
+        return invoke_raster_accumulation(translator, name, arguments)
     if name in RASTER_MATRIX_PROPERTY_FUNCTIONS:
         return invoke_raster_matrix_property(translator, name, arguments)
     if name in RASTER_CONCATENATION_FUNCTIONS:
@@ -63,6 +66,19 @@ def invoke_raster_array(translator, name, arguments):
     if name == "Image.bandNames":
         translator.allowed(arguments, {"image"})
         return [arguments["image"].name]
+    if name == "Image.select":
+        from .array_core import charge_array
+        from .raster_array_bands import select_array_values
+        from .raster_array_values import _array
+
+        translator.allowed(arguments, {"input", "bandSelectors", "newNames"})
+        if "input" not in arguments or "bandSelectors" not in arguments:
+            fail("Image.select requires input and bandSelectors")
+        array = _array(arguments["input"], "Image.select input")
+        charge_array(translator, len(array.cells) + len(array.shape) + len(array.name))
+        return select_array_values(
+            translator, (array,), arguments["bandSelectors"], arguments.get("newNames"),
+        )[0]
     if name == "Image.rename":
         translator.allowed(arguments, {"input", "names"})
         array, names = arguments["input"], arguments["names"]

@@ -50,6 +50,8 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 
 第十七批增加固定单数组的 Image.matrixDiagonal／matrixToDiag／matrixTrace／matrixDeterminant，实际提取对角列、插入零值或计算逐步 Float32 和／积。四景双波段中心化、转置乘法和无偏样本协方差串联这些描述量，独立 Fraction／NumPy 参考验证正负协方差、奇异矩阵、整体缺测及场景边界。参数子集和非稳定多项式行列式政策见 [第十七批报告](../reports/gee-python-wave17.json)；没有新增后端进程或移除图／工作预算，无实际 E/G 结论。
 
+第十八批增加固定 Float32 数组的 Image.arrayAccum（默认 sum，以及 min／max）和缩放 Image.matrixFnorm，修复单数组 Image.select 的合法名称／下标选择及改名。跨年同日双景的累计 NDVI 异常使用真实前缀表达式及范数，Fraction／Decimal／NumPy 参考验证顺序、负／零值、完整数组掩膜、大小数值与预算边界，见 [第十八批报告](../reports/gee-python-wave18.json)。其他 reducer、动态形状、通用 Float64 和 Google 数值等价仍未覆盖。
+
 第三批增加 `Join.inner`、唯一 maxDifference 的 And 组合，以及匹配 Feature 映射回 ImageCollection 的链路；最近前后观测插值有版本化合成来源／掩膜／目标时间参考，见 [第三批报告](../reports/gee-python-wave3.json)。S/C 与合成图 N 通过仍不构成原生引擎 E 或 Google G。
 
 | 用法 | 当前支持范围 | 证据 |

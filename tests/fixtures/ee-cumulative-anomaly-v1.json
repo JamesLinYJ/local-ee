@@ -1,0 +1,61 @@
+{
+  "schema": "local-ee-synthetic-cumulative-anomaly/v1",
+  "collection_id": "sentinel-2-l2a",
+  "origin_millis": 1704067200000,
+  "bbox": [0, 0, 5, 1],
+  "scene_geometry": {
+    "type": "Polygon",
+    "coordinates": [[[0, 0], [5, 0], [4.5, 0.4], [3.5, 1], [0, 1], [0, 0]]]
+  },
+  "pixel_centers": [[0.5, 0.5], [1.5, 0.5], [2.5, 0.5], [3.5, 0.5], [4.5, 0.5]],
+  "bands": ["ndvi"],
+  "frame_order": ["frame-year", "frame-d180-a", "frame-d000", "frame-d180-b"],
+  "sorted_frame_order": ["frame-d000", "frame-d180-a", "frame-d180-b", "frame-year"],
+  "frame_days": {
+    "frame-d000": 0,
+    "frame-d180-a": 180,
+    "frame-d180-b": 180,
+    "frame-year": 366
+  },
+  "baseline": [0.25, 0.25, 0.25, 0.25],
+  "frame_values": {
+    "frame-d000": {"ndvi": [0.2, 0, 0.25, 0.1, 0.9]},
+    "frame-d180-a": {"ndvi": [0.4, -0.25, 0.25, 0.2, 0.8]},
+    "frame-d180-b": {"ndvi": [-0.1, 0.25, 0.25, null, 0.7]},
+    "frame-year": {"ndvi": [0.3, 0.5, 0.25, -0.3, 0.6]}
+  },
+  "hand_reference": {
+    "anomaly_by_pixel": [
+      ["-1/20", "3/20", "-7/20", "1/20"],
+      ["-1/4", "-1/2", "0", "1/4"],
+      ["0", "0", "0", "0"],
+      null,
+      null
+    ],
+    "cumulative_sum_by_pixel": [
+      ["-1/20", "1/10", "-1/4", "-1/5"],
+      ["-1/4", "-3/4", "-3/4", "-1/2"],
+      ["0", "0", "0", "0"],
+      null,
+      null
+    ],
+    "prefix_min_by_pixel": [
+      ["-1/20", "-1/20", "-7/20", "-7/20"],
+      ["-1/4", "-1/2", "-1/2", "-1/2"],
+      ["0", "0", "0", "0"],
+      null,
+      null
+    ],
+    "prefix_max_by_pixel": [
+      ["-1/20", "3/20", "3/20", "3/20"],
+      ["-1/4", "-1/4", "0", "1/4"],
+      ["0", "0", "0", "0"],
+      null,
+      null
+    ],
+    "squared_norm_by_pixel": ["3/20", "3/8", "0", null, null],
+    "frobenius_norm_by_pixel": ["sqrt(15)/10", "sqrt(6)/4", "0", null, null],
+    "joint_missing_pixel_index": 3,
+    "outside_geometry_pixel_index": 4
+  }
+}

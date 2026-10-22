@@ -86,10 +86,11 @@ def _require_bundle(translator, value, label):
     return value
 
 
-def _selection(translator, bundle, selectors, new_names=None):
+def select_array_values(translator, arrays, selectors, new_names=None):
+    """Select typed logical array bands without changing their metadata Image."""
     if not isinstance(selectors, (list, tuple)):
         selectors = [selectors]
-    if not selectors or len(selectors) > len(bundle.arrays):
+    if not selectors or len(selectors) > len(arrays):
         fail("Image.select requires one or more known array band selectors")
 
     indices = []
@@ -97,13 +98,13 @@ def _selection(translator, bundle, selectors, new_names=None):
     for selector in selectors:
         if isinstance(selector, str):
             selector_chars += len(selector)
-            matches = [index for index, array in enumerate(bundle.arrays)
+            matches = [index for index, array in enumerate(arrays)
                        if array.name == selector]
             if len(matches) != 1:
                 fail(f"Image.select requires an exact array band name: {selector!r}")
             index = matches[0]
         elif type(selector) is int:
-            if selector < 0 or selector >= len(bundle.arrays):
+            if selector < 0 or selector >= len(arrays):
                 fail("Image.select array band index is out of range")
             index = selector
         else:
@@ -121,11 +122,15 @@ def _selection(translator, bundle, selectors, new_names=None):
             fail("Image.select newNames must be unique nonempty names matching the selection")
         names = tuple(new_names)
     else:
-        names = tuple(bundle.arrays[index].name for index in indices)
+        names = tuple(arrays[index].name for index in indices)
 
     charge_array(translator, len(indices) + selector_chars + sum(map(len, names)))
-    selected = [replace(bundle.arrays[index], name=name)
-                for index, name in zip(indices, names)]
+    return tuple(replace(arrays[index], name=name)
+                 for index, name in zip(indices, names))
+
+
+def _selection(translator, bundle, selectors, new_names=None):
+    selected = select_array_values(translator, bundle.arrays, selectors, new_names)
     if len(selected) == 1:
         return selected[0]
     return wrap_array_bands(translator, bundle.image, selected)

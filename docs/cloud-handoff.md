@@ -174,6 +174,18 @@ Image.hypot 用既有 Pixel 的 max/min／比例／平方根实际计算，保�
 
 Linux Python **1372 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，新增 34 项：矩阵布局／参数 28、工作流 2、SDK 一致性新增 4（总 51）。Luna max 最终独立复审 30 项通过，另有 40 个只读政策样点和参数边界检查，不额外加入 pytest 数量。早期测试的掩膜索引／矩阵波段／目录名以及 toDouble 提前拒绝的预期错误均已修正，没有放宽生产类型检查。原 50 探针和全量 Python 目录字节不变；报告见 `reports/gee-python-wave17.json`。S/C/采样点 N 与未运行的栅格 E／Google G 分开登记，整体目标保持进行中。
 
+## 第十八批前缀运算、稳定范数与单数组选择
+
+以第十七批提交 `111d72bc14d91d50f85f35b578e9368547195f98` 为基线，新增 `raster_array_accumulation.py`（90 行），扩展 `raster_matrix_properties.py`（171 行）。Image.arrayAccum 严格接受 input／axis 和可选 reducer，省略／null 默认 sum，真实支持 sum／min／max 的包含当前位置前缀；固定 rank1..8、现有轴、显式 Float32，每次更新转换，保持完整数组掩膜／名称／Image。其他 reducer 和 unweighted 修饰符拒绝，不静默丢弃；50000 工作步、64 单元和 500 图节点保持，输出前收费。
+
+Image.matrixFnorm 对 rank2 Float32 单数组实际计算最大绝对值缩放、比例平方和、开方及乘回 scale，各阶段 Float32，保留完整输入掩膜。零安全除法使全零结果为零；3e30／4e30 和 3e-30／4e-30 分别约为 5e30／5e-30，以 Decimal、rtol3e-6／atol0 检查，未用宽绝对误差掩盖小值错误。动态最终溢出和已知常量编译拒绝有正式回归，逐步累计的抵消／溢出也分别记录于数值政策。
+
+真实示例触发单波段 `toArrayPerBand().select('ndvi')` 原有拒绝。保留合法调用，单数组与多数组复用 exact-name／index／newNames 选择规则，保留单元引用／mask／source／元数据；未通过删除 select 避开问题。空／正则／重复选择器及非法改名仍拒绝，新增 13 项选择重载回归。初始测试参考的 leading sample 轴、提前拒绝的 unweighted 错误信息，以及选择参数变异时的 SDK ValueRef／tuple scope 处理均已校正，没有放宽生产检查。
+
+示例 23 与版本化合成 NDVI 样本保留 2024-01-01 至 2025-01-01 的实际 366 天间隔与 day180 同日双景，逐景基准为明确输入的 0.25。第一像元累计和为 `[-1/20,1/10,-1/4,-1/5]`，异常平方范数 3/20；第二平方范数 3/8，第三为零，缺测／多边形外全部无效。Fraction 前缀、Decimal 根值和独立 NumPy 参考通过，网络 0；异常 88 节点、四个累计路径各 110、范数 176。初始输出标签 day365 已改为实际 day366，日期数据没有被更改。
+
+Linux Python **1428 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，新增 56 项：累计／范数数值及参数 36、单数组选择 13、工作流 2、SDK 一致性新增 5（总 56）。Luna max 独立复审 70 项通过，早于最后选择与范数边界补充，完整最终套件及父审单独登记。原 50 探针及完整 Python 目录字节不变；报告见 `reports/gee-python-wave18.json`。S/C/采样点 N 与未运行的栅格 E／Google G 分开登记，整体目标继续。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee

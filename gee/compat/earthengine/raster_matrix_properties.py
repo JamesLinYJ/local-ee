@@ -1,8 +1,8 @@
 """Bounded matrix layout and scalar properties for raster-array Images.
 
-Trace and determinant use explicit local Float32 staging.  That keeps literal
-pixel expressions and source-backed callbacks on the same rounding path; it is
-a bounded implementation policy, not a claim of GEE numeric parity.
+Trace, determinant, and the scaled Frobenius norm use explicit local Float32
+staging so literals and source-backed callbacks share the same rounding path.
+This is a bounded implementation policy, not a claim of GEE numeric parity.
 """
 from __future__ import annotations
 
@@ -20,6 +20,7 @@ RASTER_MATRIX_PROPERTY_FUNCTIONS = frozenset({
     "Image.matrixToDiag",
     "Image.matrixTrace",
     "Image.matrixDeterminant",
+    "Image.matrixFnorm",
 })
 
 
@@ -123,8 +124,38 @@ def _determinant(translator, name, arguments):
     return masked_scalar(array, _float32(result), array.name)
 
 
+def _frobenius_norm(translator, name, arguments):
+    array, rows, columns = _matrix(translator, name, arguments)
+    if rows < 1 or columns < 1:
+        fail(f"{name} requires a nonempty rank-2 array")
+    # Each cell contributes an absolute value, ratio, and square; the maximum,
+    # sum, square root, final scaling, and explicit casts are also charged.
+    charge_array(translator, 14 * len(array.cells) + 16)
+    _require_float32_cells(array, name)
+
+    magnitudes = [
+        _float32(Pixel("absolute", (pixel,))) for pixel in array.cells
+    ]
+    scale = magnitudes[0]
+    for magnitude in magnitudes[1:]:
+        scale = _float32(Pixel("max2", (scale, magnitude)))
+
+    ratios = [
+        _float32(Pixel("divide", (pixel, scale))) for pixel in array.cells
+    ]
+    squares = [
+        _float32(Pixel("multiply", (ratio, ratio))) for ratio in ratios
+    ]
+    total = squares[0]
+    for square in squares[1:]:
+        total = _float32(Pixel("add", (total, square)))
+    root = _float32(Pixel("sqrt", (total,)))
+    result = _float32(Pixel("multiply", (scale, root)))
+    return masked_scalar(array, result, array.name)
+
+
 def invoke_raster_matrix_property(translator, name, arguments):
-    """Handle the four fixed-signature raster matrix property algorithms."""
+    """Handle the five fixed-signature raster matrix property algorithms."""
     if name not in RASTER_MATRIX_PROPERTY_FUNCTIONS:
         fail(f"Unsupported raster matrix property operation: {name}")
     if not isinstance(arguments, dict):
@@ -135,4 +166,6 @@ def invoke_raster_matrix_property(translator, name, arguments):
         return _to_diagonal(translator, name, arguments)
     if name == "Image.matrixTrace":
         return _trace(translator, name, arguments)
-    return _determinant(translator, name, arguments)
+    if name == "Image.matrixDeterminant":
+        return _determinant(translator, name, arguments)
+    return _frobenius_norm(translator, name, arguments)

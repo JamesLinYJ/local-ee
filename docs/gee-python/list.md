@@ -1,8 +1,8 @@
 # GEE Python 兼容清单
 
-状态：2026-10-22，第十七批持续实施，整体兼容目标尚未完成。
+状态：2026-10-22，第十八批持续实施，整体兼容目标尚未完成。
 
-第十七批 [验证报告](../../reports/gee-python-wave17.json)：Linux Python **1372 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1338 passed／7 skipped](../../reports/gee-python-wave16.json)，本批增加 34 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
+第十八批 [验证报告](../../reports/gee-python-wave18.json)：Linux Python **1428 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1372 passed／7 skipped](../../reports/gee-python-wave17.json)，本批增加 56 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
 
 S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎；N＝独立数值基准；G＝Google 同数据对照。静态数值求值和合成图测试分别说明，不能标成原生栅格 E。固定的 991 项签名、方法可见数量和定向探针计数均不能换算为全 API 兼容百分比。
 
@@ -44,6 +44,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] 有限静态 Number／Array.hypot／atan2，以及由既有像素算子计算的 Image.hypot；独立高精度范数／方向角参考，串联谐波系数的真实振幅输出，轴约定与 Float32 溢出边界明确登记。
 - [x] 单数组 Image.arrayCat／arrayRepeat 的真实轴布局、有效常量 Image 重复次数、共同掩膜和预算拒绝；双独立响应最小二乘工作流的系数／拟合／残差与 Fraction／SVD 参考一致。
 - [x] 固定矩阵 Image.matrixDiagonal／matrixToDiag／matrixTrace／matrixDeterminant 的真实单元操作或 Float32 算术；四景双波段样本协方差、对角／迹／行列式工作流与 Fraction／NumPy 参考一致。
+- [x] 固定 Float32 数组的 Image.arrayAccum 前缀 sum／min／max 与稳定缩放 Image.matrixFnorm，补单数组选择／改名；跨年同日多景累计异常、严格相对误差范数和缺测／预算控制。
 - [ ] 每一签名／参数组合的 S／C、适用的独立 N，以及负向、缺测、边界验收；E 按现有环境可用条件单独记录。
 - [ ] 动态形状、其余多数组波段运算和 Image.array*、通用设计矩阵的逐像元回归、采样／图像分类／其他分类器及模式、矢量／空间和多重／歧义度量 Join、邻域及高级时序。
 - [ ] 后续阶段：Linux 执行／隔离适配、macOS Seatbelt、ARM64 JNI 和本机真实数据验收；当前阶段延期。
@@ -72,7 +73,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 
 List.contains／distinct 对嵌套数组使用显式的有界比较，避免 NumPy 隐式真值／广播错误。标量 int／float 按数值比较，bool 单独区分；Array 的 dtype／形状／元素比较仍是未做 Google 对照的本地策略。step 序列严格检查实际生成的 Float64 值，不向端点外扩展；例如 0、0.1、0.2 后的 0.30000000000000004 超过 end=0.3，因此省略，该舍入策略尚无 G 证据。
 
-另有 51 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky、QR／LU／SVD 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵、列表布局／均值／回归、最小距离 schema／预测／训练误差矩阵、栅格 linearRegression 的过原点／截距系数与 RMS、方阵／高矩形设计的栅格 matrixSolve、集合定长数组、reshape、正余弦设计，以及静态向量范数／方向角、栅格 hypot、轴拼接／整块重复与矩阵对角／迹／行列式。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容或 Google 数值对照。
+另有 56 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky、QR／LU／SVD 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵、列表布局／均值／回归、最小距离 schema／预测／训练误差矩阵、栅格 linearRegression 的过原点／截距系数与 RMS、方阵／高矩形设计的栅格 matrixSolve、集合定长数组、reshape、正余弦设计，以及静态向量范数／方向角、栅格 hypot、轴拼接／整块重复与矩阵对角／迹／行列式、前缀归约／缩放范数和单数组选择。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容或 Google 数值对照。
 
 第四批 `examples/10_GEE_python_synthetic_pca.py` 与 `tests/fixtures/ee-pca-table-v1.json` 串联有限静态表格的中心化、样本协方差、对称特征分解、投影及重建。四条二维观测的均值为 `[2,1]`，协方差为 `[[4/3,2/3],[2/3,2/3]]`，特征值为 `1±sqrt(5)/3`；闭式向量与得分按 1e-14 容差核对，重建还提供与符号选择无关的验证。S/C/N 已通过，网络入口尝试为 0；无栅格 E 或 G。
 
@@ -246,6 +247,18 @@ Image.arrayRepeat 必须提供 input／axis／copies。固定签名中 copies �
 `examples/22_GEE_python_synthetic_covariance.py` 与 `tests/fixtures/ee-covariance-descriptors-v1.json` 从四景实际 red／nir 样本构造 `4×2` 数组，静态中心化矩阵 H 左乘后计算 `XᵀX/(4-1)`，并输出协方差、迹、行列式、对角列及对角矩阵。第一样点协方差为 `[[5/3,2/3],[2/3,4/3]]`，迹为 3、行列式为 16/9；第二样点协方差为 `[[5/3,-5/3],[-5/3,5/3]]`，行列式为零；第三样点 red 方差为零、nir 方差为 2/3。Fraction 手算与独立 NumPy `cov(ddof=1)` 验证矩阵及半正定性，实际图采样按 2e-6 核对。
 
 真实编译图节点数为中心化 266、协方差 370、迹 310、行列式 374、对角列 308、对角矩阵 313。任一景任一波段缺失会掩膜该像元全部输出，不做行删除；顺序、负／零值和 bbox 内但多边形外样点均有控制。SDK 网络入口尝试为 0；本例是显式构造的有限样本协方差，未注册 Reducer.centeredCovariance 或声称完整采样器兼容。S/C/采样点 N 与未运行的栅格 E／Google G 见 [第十七批报告](../../reports/gee-python-wave17.json)。
+
+## 第十八批：前缀归约与累计异常
+
+Image.arrayAccum 必填 input／axis，reducer 省略或 null 时为 sum，显式 sum／min／max 计算包含当前位置的前缀；其他 reducer、unweighted 修饰符明确拒绝。输入为显式 Float32 的单个固定数组，rank 1..8，axis 为已有非负整数，行主序和数组形状不变，每个更新阶段转 Float32。保留完整输入掩膜，不通过删除缺测或只检查当前前缀制造有效像元；64 单元、50000 工作及 500 图节点预算保持。
+
+Image.matrixFnorm 必填 value，输入限显式 Float32 的固定 rank2 数组。实际计算 `scale=max(abs(x))`，再求 `scale*sqrt(sum((x/scale)^2))`，沿用零分母返回零的已有合同，使全零矩阵得到零。各算术阶段显式 Float32；既有名称／属性／来源和整体掩膜保留，未新增后端进程。3e30／4e30 与 3e-30／4e-30 分别得到约 5e30／5e-30，以 Decimal 平方和开方、rtol=3e-6／atol=0 验证；最后乘回 scale 仍可能超 Float32 范围，已知常量溢出与动态溢出分别登记，不能宣称所有有限输入都有有限输出。
+
+单数组 Image.select 复用多数组选择规则，支持原始逻辑名称或下标 0、可选单个 newNames，保留实际单元／转换／掩膜／元数据；空、重复、正则选择器或不匹配的新名称仍拒绝。真实工作流触发的单波段 `toArrayPerBand().select('ndvi')` 原先被拒绝，本批实际补上该类型重载，保留原调用作为回归。
+
+`examples/23_GEE_python_cumulative_anomaly.py` 与 `tests/fixtures/ee-cumulative-anomaly-v1.json` 对 2024-01-01 至 2025-01-01 的四次合成 NDVI 观测减去明确的逐景参考基准 0.25。实际日期相差 366 天，day180 的两个不同 ID 均保留。第一像元异常为 `[-1/20,3/20,-7/20,1/20]`，累计和 `[-1/20,1/10,-1/4,-1/5]`，平方范数 3/20；另一个像元平方范数为 3/8，全零像元为零。Fraction 前缀、Decimal 开方及独立 NumPy 参考核对负／零、同日身份、排序和跨年日期。任一景缺失及 bbox 内多边形外样点均使整体结果无效。
+
+异常图为 88 节点，默认／显式累计和、前缀 min／max 各 110 节点，范数 176 节点。SDK 网络入口尝试 0；这是真实数组表达式计算，样本和基准为明确版本化合成值，无栅格 E／Google G 结论，见 [第十八批报告](../../reports/gee-python-wave18.json)。
 
 ## 复现与后续顺序
 

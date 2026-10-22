@@ -133,6 +133,15 @@ KNOWN_PARTIAL_LIMITS["Image.matrixDeterminant"] = [
 KNOWN_PARTIAL_LIMITS["Image.matrixDeterminant"].append(
     "Known literal Float32 product overflow rejects during constant folding; dynamic finite Float32 matrix products can produce infinity or other nonfinite results in local sampling. This material numerical limitation is documented separately from mask preservation; no native/Google overflow acceptance."
 )
+KNOWN_PARTIAL_LIMITS["Image.arrayAccum"] = [
+    "Required input/axis, optional reducer omitted or null defaults to sum. Single fixed RasterArrayImage with every cell explicitly top-level toFloat, rank1..8/axes and cells<=64; existing nonnegative integer axis only. Actual inclusive prefix sum/min/max in original row-major axis order, each new arithmetic stage explicitly Float32, retaining original name/image/full-array mask. Other reducers, unweighted modifiers, raw scalar/multiple array bands, invalid axes and missing/unknown arguments reject. Work precharged before output construction,50000 work and500 graph nodes retained. No skip-missing prefixes, dynamic shapes, generic Float64 or Google rounding comparison."
+]
+KNOWN_PARTIAL_LIMITS["Image.matrixFnorm"] = [
+    "Required value is a single fixed rank2 RasterArrayImage with explicit top-level toFloat cells. Real scaled Frobenius norm: scale=max(abs(cells)), square and sum ratios to scale, sqrt then multiply by scale; existing zero-safe division makes an all-zero matrix return zero. Explicit Float32 arithmetic stages, original scalar band name/metadata/source and full-array mask retained. Avoids direct input-square overflow/underflow, but final Float32 range/cancellation remain local limitations: dynamic output may be nonfinite and known constant conversion overflow rejects. Precharged50000 work,64 cells and500 process-node cap retained; large dynamic matrices can exceed the cap. No generic Float64/Google-equivalent norm guarantee."
+]
+KNOWN_PARTIAL_LIMITS.setdefault("Image.select", []).append(
+    "Typed fixed array Images and array-band bundles share exact-name/nonnegative-integer selection and optional bounded newNames. Single-array selection preserves actual cells, casts, mask, source and logical metadata. Empty/duplicate/regex selectors and mismatched or empty rename names reject in this subtype; ordinary scalar Image selection retains its existing separate semantics. Shared work is precharged before selected wrappers; this is a bounded overload, not full Image.select parameter compatibility."
+)
 for operation in ("Number.hypot", "Number.atan2"):
     KNOWN_PARTIAL_LIMITS[operation] = [
         "Finite static Number operands left/right only, integers in exact Float64 domain<=2^53; bool/nonfinite/non-numeric/missing/unknown inputs reject. Work charged before real Float64 libm kernel and nonfinite result rejected. atan2 uses x=left,y=right according to the pinned SDK vector description and explicit Array right=y documentation, so the kernel is atan2(right,left). An official community harmonic tutorial uses the opposite call order; Google same-data orientation, signed-zero and last-bit parity remain unverified."
