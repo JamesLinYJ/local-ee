@@ -29244,12 +29244,14 @@
       "description": "Flattens any sublists into a single list.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static List layout only, <=10000 top-level values and shared 50000-step work budget before loops/allocation. Zip/unzip truncate to the shortest input/inner list; empty outer unzip returns []. Flatten recursively traverses only Lists, preserves typed Array/Image/other atoms, depth<=96 and bounded total scans/output. Repeat count 0..10000; the pinned SDK omits required value for repeat(None,count), and this wire form rejects as missing an argument. Set/swap negative indices count from end with strict bounds and no clamping. Sources are not mutated; public depth/object/1MB budgets still apply. No Google comparison."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29767,12 +29769,14 @@
       "description": "Apply a reducer to a list. If the reducer takes more than 1 input, then each element in the list is assumed to be a list of inputs. If the reducer returns a single output, it is returned directly, otherwise returns a dictionary containing the named reducer outputs.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "At most 1000 inline rows, shared work budget. Scalar count counts all non-null values; first/last return the first/last non-null typed value. Numeric sum/mean/min/max/median/sampleStdDev require finite real values, exact integers <=2^53, and skip nulls. Empty/all-null sum/count=0, other empty outputs and sample-SD below two values=null are documented local policies without Google comparison. Unweighted linearFit/linearRegression take ordered rows of exactly numX+numY inputs (<=32); null rows/fields exclude the row but other invalid fields still reject. Rank-deficient/n<=numX regression returns null outputs; typed coefficients/RMS are real computed values. Remote values, reducer combinations/weights and native raster execution are outside scope."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29871,12 +29875,14 @@
       "description": "Returns a new list containing value repeated count times.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static List layout only, <=10000 top-level values and shared 50000-step work budget before loops/allocation. Zip/unzip truncate to the shortest input/inner list; empty outer unzip returns []. Flatten recursively traverses only Lists, preserves typed Array/Image/other atoms, depth<=96 and bounded total scans/output. Repeat count 0..10000; the pinned SDK omits required value for repeat(None,count), and this wire form rejects as missing an argument. Set/swap negative indices count from end with strict bounds and no clamping. Sources are not mutated; public depth/object/1MB budgets still apply. No Google comparison."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29977,12 +29983,14 @@
       "description": "Reverses the order of the elements in list.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static List layout only, <=10000 top-level values and shared 50000-step work budget before loops/allocation. Zip/unzip truncate to the shortest input/inner list; empty outer unzip returns []. Flatten recursively traverses only Lists, preserves typed Array/Image/other atoms, depth<=96 and bounded total scans/output. Repeat count 0..10000; the pinned SDK omits required value for repeat(None,count), and this wire form rejects as missing an argument. Set/swap negative indices count from end with strict bounds and no clamping. Sources are not mutated; public depth/object/1MB budgets still apply. No Google comparison."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -30103,12 +30111,14 @@
       "description": "Replaces the value at the specified position in list with element. A negative index counts backwards from the end of the list.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static List layout only, <=10000 top-level values and shared 50000-step work budget before loops/allocation. Zip/unzip truncate to the shortest input/inner list; empty outer unzip returns []. Flatten recursively traverses only Lists, preserves typed Array/Image/other atoms, depth<=96 and bounded total scans/output. Repeat count 0..10000; the pinned SDK omits required value for repeat(None,count), and this wire form rejects as missing an argument. Set/swap negative indices count from end with strict bounds and no clamping. Sources are not mutated; public depth/object/1MB budgets still apply. No Google comparison."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -30336,12 +30346,14 @@
       "description": "Swaps the elements at the specified positions. A negative position counts backwards from the end of the list.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static List layout only, <=10000 top-level values and shared 50000-step work budget before loops/allocation. Zip/unzip truncate to the shortest input/inner list; empty outer unzip returns []. Flatten recursively traverses only Lists, preserves typed Array/Image/other atoms, depth<=96 and bounded total scans/output. Repeat count 0..10000; the pinned SDK omits required value for repeat(None,count), and this wire form rejects as missing an argument. Set/swap negative indices count from end with strict bounds and no clamping. Sources are not mutated; public depth/object/1MB budgets still apply. No Google comparison."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -30366,12 +30378,14 @@
       "description": "Transposes a list of lists, extracting the first element of each inner list into one list, the second elements into another, etc., up to the length of the shortest inner list. The remaining items are discarded. The result is a list of lists.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static List layout only, <=10000 top-level values and shared 50000-step work budget before loops/allocation. Zip/unzip truncate to the shortest input/inner list; empty outer unzip returns []. Flatten recursively traverses only Lists, preserves typed Array/Image/other atoms, depth<=96 and bounded total scans/output. Repeat count 0..10000; the pinned SDK omits required value for repeat(None,count), and this wire form rejects as missing an argument. Set/swap negative indices count from end with strict bounds and no clamping. Sources are not mutated; public depth/object/1MB budgets still apply. No Google comparison."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -30400,12 +30414,14 @@
       "description": "Pairs the elements of two lists to create a list of two-element lists. When the input lists are of different sizes, the final list has the same size as the shortest one.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static List layout only, <=10000 top-level values and shared 50000-step work budget before loops/allocation. Zip/unzip truncate to the shortest input/inner list; empty outer unzip returns []. Flatten recursively traverses only Lists, preserves typed Array/Image/other atoms, depth<=96 and bounded total scans/output. Repeat count 0..10000; the pinned SDK omits required value for repeat(None,count), and this wire form rejects as missing an argument. Set/swap negative indices count from end with strict bounds and no clamping. Sources are not mutated; public depth/object/1MB budgets still apply. No Google comparison."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -36317,7 +36333,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Unweighted inline table reduceColumns only; typed coefficient matrix and per-response residual RMS; n<=numX/rank-deficient outputs are null. No ImageCollection/raster regression or Google acceptance."
+          "Unweighted inline table reduceColumns or List.reduce over ordered numeric input rows only; typed coefficient matrix and per-response residual RMS; n<=numX/rank-deficient outputs are null. No ImageCollection/raster regression or Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -40859,7 +40875,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 229,
+    "declared_handler_name_count": 237,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41119,7 +41135,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 12,
+        "declared_handler_count": 20,
         "signature_count": 40
       },
       "Model": {
@@ -41340,7 +41356,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 229,
+    "pinned_signatures_with_same_name_declared_handler": 237,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

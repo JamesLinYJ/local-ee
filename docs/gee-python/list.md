@@ -1,8 +1,8 @@
 # GEE Python 兼容清单
 
-状态：2026-10-22，第七批持续实施，整体兼容目标尚未完成。
+状态：2026-10-22，第八批持续实施，整体兼容目标尚未完成。
 
-第七批 [验证报告](../../reports/gee-python-wave7.json)：Linux Python **955 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [907 passed／7 skipped](../../reports/gee-python-wave6.json)，本批增加 48 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
+第八批 [验证报告](../../reports/gee-python-wave8.json)：Linux Python **1036 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [955 passed／7 skipped](../../reports/gee-python-wave7.json)，本批增加 81 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
 
 S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎；N＝独立数值基准；G＝Google 同数据对照。静态数值求值和合成图测试分别说明，不能标成原生栅格 E。固定的 991 项签名、方法可见数量和定向探针计数均不能换算为全 API 兼容百分比。
 
@@ -25,13 +25,14 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] 有限静态 Array／矩阵构造、读取、变形、转置、乘法、逆、伪逆与满列秩线性求解；独立闭式数值参考。
 - [x] 移除 SDK 初始化时绕过本地 transport 的 Google 弃用目录读取；初始化／重置及探针均有实际 Python 网络入口拦截回归。
 - [x] 内联 FeatureCollection 的有界筛选、映射、排序、遍历、属性与列表操作；显式 ID 的 merge。
-- [x] 内联表格 reduceColumns 的无权 linearFit／linearRegression，保留矩阵类型及每响应残差 RMS；闭式系数／残差参考与合成预测示例。
+- [x] 内联表格 reduceColumns 及有界 List.reduce 的无权 linearFit／linearRegression，保留矩阵类型及每响应残差 RMS；闭式系数／残差参考与合成预测示例。
 - [x] Number.format 的有界十进制子集，以及 String 数值构造、cat／length／compareTo 和分配前预算。
 - [x] 唯一 maxDifference 与标量条件的 And 组合；最近前／后观测筛选、inner 匹配对和 Feature.map → ImageCollection 计算链路。
 - [x] 有限静态 Array 的逐元素算术、slice／project／repeat／cat、单输出归约与累积、对称特征分解及 Cholesky；闭式 PCA 协方差、投影和重建验证。
 - [x] 固定形状单数组波段的 Image.toArray、布局、矩阵乘法与单输出归约；静态 PCA 基投影到本地影像像素图，独立核对分量、重建和整体掩膜。
 - [x] 有限 ImageCollection.reduce(linearFit) 逐像元斜率／截距，完整行缺测删除、中心化 OLS、低样本／退化掩膜和同日多景身份；时间属性串联趋势预测，独立 SVD 参考。
 - [x] 有界静态 ConfusionMatrix 的构造／array／order／accuracy／kappa、内联 FeatureCollection.errorMatrix；显式标签顺序与有效行筛选串联分类评估，独立频数／机会一致概率参考。采样及分类器训练／预测不在该子集中。
+- [x] 有界 List 配对／转置／展开／重复／置换，以及单输出归约和 List.reduce(linearFit／linearRegression) 多输入行；列列表构造二次设计、双响应系数／RMS 和预测的闭式／残差正交性参考。
 - [ ] 每一签名／参数组合的 S／C、适用的独立 N，以及负向、缺测、边界验收；E 按现有环境可用条件单独记录。
 - [ ] 动态形状／多数组波段和其余 Image.array*、多变量／多响应逐像元回归、分类训练／预测、矢量／空间和多重／歧义度量 Join、邻域及高级时序。
 - [ ] 后续阶段：Linux 执行／隔离适配、macOS Seatbelt、ARM64 JNI 和本机真实数据验收；当前阶段延期。
@@ -50,14 +51,15 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 | 静态 Array | S/C 与闭式独立 N；OLS 残差正交性、逆及秩一伪逆；工作预算拒绝 | <=8 轴／10000 单元、整数精确域 <=2^53；显式 PixelType／空构造／负下标拒绝；矩阵限二维，Solve 限满列秩方阵或超定；不含栅格 E/G |
 | 固定形状栅格数组 | S/C；Image.toArray、arrayFlatten／Project／Transpose／Slice／Get／Length(s)／Reduce 和 matrixMultiply，同形 add／subtract／multiply／divide；独立合成图 N 验证来源、分量、重建及整体掩膜 | 单数组波段，<=8 轴／每轴 64／共 64 单元，非空维，共享 50000 工作步和 500 图节点；静态坐标、有限归约；Float32 callback 限制保留，动态形状／广播／直接数组栅格导出拒绝；无 E/G |
 | 内联 FeatureCollection | S/C；size／first／toList／map／filter／limit／sort／merge／iterate／aggregate_array，属性保留有限 Array 和具体 Image；同类 Image 回调可接 ImageCollection 计算 | <=1000 要素，共享工作预算；Feature／Image 混合回调拒绝；merge 需要显式 ID 并加 1_／2_ 前缀；不含远程要素集或矢量引擎 |
-| 表格回归 | S/C 与独立 N；linearFit、linearRegression，多响应系数／RMS；缺失／null 行跳过；秩不足／n<=numX 返回 null | <=1000 行、<=32 个平面属性列，共享预算；无权重；不支持栅格回归或 G |
+| 静态行回归 | S/C 与独立 N；表格 reduceColumns／List.reduce 的 linearFit、linearRegression，多响应系数／RMS；缺失／null 行跳过；秩不足／n<=numX 返回 null | <=1000 行、<=32 个输入列，表格只支持平面属性选择器，List 要求精确行宽；共享预算、无权重；通用栅格 linearRegression 与 G 未覆盖 |
 | 栅格 linearFit | S/C；完整 x/y 行、中心化两遍 OLS，输出 scale／offset；独立闭式与 NumPy SVD N 核对系数、重复景权重、缺测、空间范围及目标日期预测 | 1..8 帧，恰两个同名同序标量波段；binary NoData 掩膜，n<2／x 方差为零则两个输出均掩膜；parallelScale 仅 1，仍受 Float32 callback／工作／图预算约束；无实际 E/G，非通用栅格 linearRegression |
 | 有限分类评估 | S/C 与独立标签频数 N；静态 ConfusionMatrix 构造、array／order／accuracy／kappa；内联 errorMatrix 保留 actual 行／predicted 列及显式顺序 | <=64 类／4096 单元，非负整数 Array 计数总和 <=2^53、<=1000 完整标签行，共享预算；原始 List／浮点计数 Array、缺失／null、零分母、直接对象 JSON、Feature 属性对象与逐类指标拒绝；无采样／分类器或 E/G |
+| 有限 List 布局／归约 | S/C 与独立静态 N；zip／unzip 截短、flatten 只展开 List、repeat／reverse／set／swap 保留 typed 原子；单输出值、多输出回归字典／typed Array | 布局 <=10000 顶层值、flatten 深度 96，reduce <=1000 行／32 回归列，共享预算；严格下标边界，非默认 reducer 组合／权重拒绝；空值政策见下文，无 E/G |
 | Number／String | S/C；%s／%d／%f、有限符号及填充；数值 String 构造与三个基础方法；指数拼接预算负控 | Number 按 Python 最短十进制拼写半入舍入，String 按 Python code point；科学／十六进制格式等拒绝；本地政策无 G |
 
 List.contains／distinct 对嵌套数组使用显式的有界比较，避免 NumPy 隐式真值／广播错误。标量 int／float 按数值比较，bool 单独区分；Array 的 dtype／形状／元素比较仍是未做 Google 对照的本地策略。step 序列严格检查实际生成的 Float64 值，不向端点外扩展；例如 0、0.1、0.2 后的 0.30000000000000004 超过 end=0.3，因此省略，该舍入策略尚无 G 证据。
 
-另有 24 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa 和标签误差矩阵。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容。
+另有 27 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵及列表布局／均值／回归。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容。
 
 第四批 `examples/10_GEE_python_synthetic_pca.py` 与 `tests/fixtures/ee-pca-table-v1.json` 串联有限静态表格的中心化、样本协方差、对称特征分解、投影及重建。四条二维观测的均值为 `[2,1]`，协方差为 `[[4/3,2/3],[2/3,2/3]]`，特征值为 `1±sqrt(5)/3`；闭式向量与得分按 1e-14 容差核对，重建还提供与符号选择无关的验证。S/C/N 已通过，网络入口尝试为 0；无栅格 E 或 G。
 
@@ -90,6 +92,14 @@ ConfusionMatrix 只接受 typed integer Array、方阵及非负计数；最多 6
 内联要素的有序属性比较将缺失／null 视为 UNKNOWN；Not 保留 UNKNOWN，And／Or 使用三值逻辑，最终 UNKNOWN 不匹配。这能保留 SDK 的 gte／lte → Not(lt／gt) 序列化语义；该空值政策尚无 Google 对照。涉及缺失／null 的 equality 及复杂对象比较明确拒绝，不能据此宣称完整 Filter 兼容。递归谓词、成员扫描和字符串比较共享编译预算。
 
 整个公开输出共享对象数、深度和 1 MB 编码预算，字符串转义和重复匹配属性在转换期间计费，避免先分配巨大 JSON 再拒绝。静态数组和匹配影像在编译器内部保留类型，到公开边界才转换为有限 JSON；不公开 Pixel IR 或磁盘路径。
+
+## 列表设计矩阵与回归
+
+第八批 `examples/14_GEE_python_list_polynomial_regression.py` 与版本化 `ee-list-regression-v1.json` 用 repeat／unzip 组装 1/x/x² 和两个响应列，List.reduce(linearRegression(3,2)) 输出真实 typed 系数／RMS，继续进入矩阵预测。独立构造残差 e=[-1,3,-3,1,0,0]，与全部设计列正交，第二响应残差为 2e；系数 `[[1,-2],[2,0.25],[-0.5,1.5]]`、RMS sqrt(10/3)／sqrt(40/3)、x=4 预测 `[1,23]` 均有校核。工作流先验证列长度相同，不能让 unzip 的正常截短掩盖观测错配。
+
+List.reduce 限 1000 行，回归每行恰 numX+numY 个输入、最多 32 列，无权；null 行／含 null 的行剔除，其他非空字段即使处于不完整行也须合法。回归共用表格数值内核，低样本／秩不足返回具名 null 输出。标量 count 计任意非 null 值，first/last 保留第一个／最后一个非 null 的类型；其余数值归约支持 sum／mean／min／max／median／sampleStdDev，有限整数域 <=2^53。空／全 null 的 sum/count=0、其余为空以及有效值不足两个的 sampleStdDev=null，均是尚无 G 对照的明确本地边界政策，不是完整 Reducer 合同。
+
+List 布局每个顶层输入／输出最多 10000 值，flatten 递归深度 96，只展开 List、保留 Array／Image 等原子值；工作、扫描和公开 JSON 预算另行生效，达到大小上限不保证组合运算一定在工作预算内。repeat count 0..10000；set/swap 负下标从末尾计，越界拒绝且不修改源。SDK 的 repeat(None,0/1) 会省略必需 value，已分别记录 S 可序列化与 C 缺参拒绝，未猜测该 wire form 的服务端默认值。
 
 ## 当前 Python 调用探针
 

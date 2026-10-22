@@ -36,6 +36,14 @@ def invoke(translator, name, arguments):
         from .feature_error_matrix import invoke_error_matrix
 
         return invoke_error_matrix(translator, name, a)
+    if name == "List.reduce":
+        from .list_reductions import invoke_list_reduce
+
+        return invoke_list_reduce(translator, name, a)
+    from .list_layout import LIST_LAYOUT_FUNCTIONS, invoke_list_layout
+
+    if name in LIST_LAYOUT_FUNCTIONS:
+        return invoke_list_layout(translator, name, a)
     from .table_reducers import TableReducer, handles_table_reducer, invoke_table_reducer, invoke_reduce_columns
 
     if handles_table_reducer(name):

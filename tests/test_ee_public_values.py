@@ -82,6 +82,8 @@ def test_capability_inventory_covers_the_implemented_static_array_and_join_slice
     assert JOIN_FUNCTIONS <= SUPPORTED_FUNCTIONS
     assert "Filter.notNull" in SUPPORTED_FUNCTIONS
     assert "Reducer.linearRegression" in SUPPORTED_FUNCTIONS
-    assert any("inline FeatureCollection.reduceColumns only" in restriction
-               for restriction in get_capabilities()["restrictions"])
+    restrictions = get_capabilities()["restrictions"]
+    assert any("inline FeatureCollection.reduceColumns and List.reduce" in item
+               and "general raster linearRegression" in item for item in restrictions)
+    assert "List.reduce" in SUPPORTED_FUNCTIONS
     assert "Classifier.smileRandomForest" not in SUPPORTED_FUNCTIONS

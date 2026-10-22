@@ -168,6 +168,11 @@ def invoke_reduce_columns(translator, name, arguments):
         if weights:
             fail("Weighted table regression via weightSelectors is unsupported")
     rows = _rows(translator, a.get("collection"), selectors)
+    return reduce_regression_rows(translator, rows, reducer)
+
+
+def reduce_regression_rows(translator, rows, reducer):
+    """Compute already validated complete rows for table and List adapters."""
     # Charge a conservative dense least-squares estimate before constructing
     # the matrices passed to NumPy. linearFit has slope and intercept columns.
     p = 2 if reducer.name == "linearFit" else reducer.num_x

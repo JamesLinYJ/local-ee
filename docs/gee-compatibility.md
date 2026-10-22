@@ -30,6 +30,8 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 
 第七批新增有界静态 ConfusionMatrix 的构造、array／order／accuracy／kappa，以及内联 FeatureCollection.errorMatrix。版本化分类标签评估先显式筛除缺失，再按类别表计数，以独立频数核对总体准确率和 Kappa。仅有 S/C/静态 N，不含采样或分类器训练／预测；完整限制和证据见 [第七批报告](../reports/gee-python-wave7.json)。
 
+第八批增加七项有限 List 布局算法和 List.reduce，实际支持单输出归约及多输入无权回归。示例从列列表组装二次设计矩阵、拟合两个响应并预测，闭式系数、RMS 与残差正交性提供独立 N。zip/unzip 的正常截短行为与科学工作流的等长校验分别验证；空值政策、预算及未支持范围见 [第八批报告](../reports/gee-python-wave8.json)，无栅格 E/G。
+
 第三批增加 `Join.inner`、唯一 maxDifference 的 And 组合，以及匹配 Feature 映射回 ImageCollection 的链路；最近前后观测插值有版本化合成来源／掩膜／目标时间参考，见 [第三批报告](../reports/gee-python-wave3.json)。S/C 与合成图 N 通过仍不构成原生引擎 E 或 Google G。
 
 | 用法 | 当前支持范围 | 证据 |
@@ -61,6 +63,7 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 | 静态字符串和格式 | String 数值构造、cat／length／compareTo；Number.format 的有限 %s／%d／%f | S/C；拼接分配前和共享工作预算；Python Unicode code point／数值拼写及十进制半入政策均无 G；高级转换／格式拒绝 |
 | 静态 Array／矩阵 | 构造、get/length/toList/reshape/transpose、matrixTranspose/Multiply/Inverse/PseudoInverse/Solve | S/C 与静态独立 N；整数精确域不超过 2^53、最多 8 轴／10000 单元及共享工作预算；线性求解只接受满列秩方阵／超定矩阵；不含 Image.array*、栅格回归或分类器 |
 | 有限分类评估 | 静态 ConfusionMatrix、array／order／accuracy／kappa；内联 Collection.errorMatrix | S/C 与独立标签频数 N；<=64 类／4096 单元、非负整数计数总和 <=2^53、<=1000 完整记录，共享预算；显式类别表筛选，缺失／null、零分母、原始 List／浮点计数 Array、直接对象 JSON、Feature 属性对象和逐类指标拒绝；无 E/G、采样或分类器 |
+| 有限 List 计算 | zip／unzip／flatten／repeat／reverse／set／swap，List.reduce 的单输出归约及 linearFit／linearRegression | S/C/独立静态 N；布局 <=10000 顶层值、flatten 深度 96、reduce <=1000 行／32 回归列，共享工作与公开物化预算；typed Array 保留；空值／低样本政策明确且无 G 对照，不含任意 reducer 组合／权重 |
 | Algorithms.If | 静态条件，惰性编译选中分支 | S/C；不把影像对象当作静态布尔条件 |
 | 几何与地图 | 平面 WGS84 Geometry；Image/Collection/Feature.geometry；Map.centerObject、setCenter、addLayer | S/C；真实地图和 RGB 预览 N |
 | 影像导出 | toDrive 适配本地 GeoTIFF/NetCDF；region 精确掩膜、scale/crs、fileNamePrefix | 真实三角形区域 N；网页文件名回读 |

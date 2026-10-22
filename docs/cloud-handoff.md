@@ -76,6 +76,16 @@ errorMatrix 限 1000 条完整整数标签记录；默认类别顺序含 0..max 
 
 第七批锁定依赖、Linux Python **955 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，比上一批增加 48 项通过回归；Python／JS SDK 实际编译一致性增至 24 项。原 50 探针仍为 50 S／45 C／5 拒绝，完整 Python API 清单独立进程字节重现通过。Luna max 独立复审未发现声明子集内可复现缺陷。详见 `reports/gee-python-wave7.json`；证据为 S/C/静态 N，无实际栅格 E/G。采样、分类器训练／预测及其遥感流程仍待实现；阶段延期项目不阻断继续开发。
 
+## 第八批列表设计矩阵与回归
+
+以第七批提交 `20d631c5614ba15e47d8aecaea21d6eac4f67689` 为基线，增加有界 List.zip／unzip／flatten／repeat／reverse／set／swap 和 List.reduce。布局保持类型化 Array 等原子值；zip/unzip 按官方描述取最短，科学示例另显式检查输入列长度，避免配错观测。布局最多 10000 个顶层值、flatten 深度 96，并受共享扫描／分配预算约束；负下标按末尾计数，越界不截断。
+
+List.reduce 支持现有单输出归约及无权 linearFit／linearRegression，单值归约直接返回值、多输出返回具名字典；回归系数／RMS 保持 typed Array，复用内联表格的真实最小二乘内核。最多 1000 行／32 输入列，不完整行剔除，但同一行其他非空非法字段仍拒绝。示例 14 和 `ee-list-regression-v1.json` 用 1/x/x² 的列列表拟合两个响应，闭式系数为 `[[1,-2],[2,0.25],[-0.5,1.5]]`，第 4 时点预测 `[1,23]`；残差与设计列正交，RMS 分别为 sqrt(10/3)／sqrt(40/3)。无栅格 E 或 Google G。
+
+空／全 null 的 sum/count=0、其他空归约与不足两个值的 sampleStdDev=null，first/last 跳过 null，均作为尚无 G 对照的本地边界政策记录。SDK 对 repeat(None,0/1) 省略必需 value；S 可序列化、C 缺参拒绝的证据保留，不猜测服务端补值。逐类准确率和 fscore 仍待可信 shape／零分母合同，不新增猜测实现。
+
+本批锁定依赖、Linux Python **1036 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，较上一批增加 81 项通过；Python／JS SDK 实际编译一致性增至 27 项。首次全量运行发现历史测试仍断言回归仅有 reduceColumns，已按新范围更新断言并保留原失败记录；不回退真实能力来迁就旧文案。原 50 探针仍为 50 S／45 C／5 拒绝，固定 Python API 清单字节重现通过。详见 `reports/gee-python-wave8.json`，整体目标保持进行中。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee
