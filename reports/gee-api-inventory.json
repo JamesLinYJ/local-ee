@@ -17876,12 +17876,14 @@
       "description": "Converts a single-band image of equal-shape multidimensional pixels to an image of scalar pixels, with one band for each element of the array.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -17912,12 +17914,14 @@
       "description": "For each band, an output band of the same name is created with the value at the given position extracted from the input multidimensional pixel in that band.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -17948,12 +17952,14 @@
       "description": "Returns the length of each pixel's array along the given axis.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -17979,12 +17985,14 @@
       "description": "Returns a 1D array image with the length of each array axis.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -18094,12 +18102,14 @@
       "description": "Projects the array in each pixel to a lower dimensional space by specifying the axes to retain. Dropped axes must be at most length 1.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -18142,12 +18152,14 @@
       "description": "Reduces elements of each array pixel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -18283,12 +18295,14 @@
       "description": "Creates a subarray by slicing out each position along the given axis from the 'start' (inclusive) to 'end' (exclusive) by increments of 'step'.  <p>The result will have as many dimensions as the input, and the same length in all directions except the slicing axis, where the length will be the number of positions from 'start' to 'end' by 'step' that are in range of the input array's length along 'axis'. This means the result can be length 0 along the given axis if start=end, or if the start or end values are entirely out of range. ",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -18366,12 +18380,14 @@
       "description": "Transposes two dimensions of each array pixel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22662,12 +22678,14 @@
       "description": "Returns the matrix multiplication A * B for each matched pair of bands in image1 and image2. If either image1 or image2 has only 1 band, then it is used against all the bands in the other image. If the images have the same number of bands, but not the same names, they're used pairwise in the natural order. The output bands are named for the longer of the two inputs, or if they're equal in length, in image1's order. The type of the output pixels is the union of the input types.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -25814,12 +25832,14 @@
       "description": "Concatenates pixels from each band into a single array per pixel. The result will be masked if any input bands are masked.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -40468,19 +40488,19 @@
           "same_name_handler_declared": true
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.arrayFlatten",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.arrayProject",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.arraySlice",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
           "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
@@ -40591,14 +40611,14 @@
           "same_name_handler_declared": false
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.arrayFlatten",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.arrayProject",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
           "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
@@ -40716,9 +40736,9 @@
           "same_name_handler_declared": false
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.arrayFlatten",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
           "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
@@ -40726,9 +40746,9 @@
           "same_name_handler_declared": false
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.arraySlice",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
           "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
@@ -40827,7 +40847,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 213,
+    "declared_handler_name_count": 223,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41045,7 +41065,7 @@
         "appears_in_rejected_compile_context": 31,
         "appears_in_selected_sdk_serialization": 35,
         "appears_in_successful_compile_context": 8,
-        "declared_handler_count": 50,
+        "declared_handler_count": 60,
         "signature_count": 232
       },
       "ImageCollection": {
@@ -41308,7 +41328,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 213,
+    "pinned_signatures_with_same_name_declared_handler": 223,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

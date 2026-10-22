@@ -53,6 +53,11 @@ const prior = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(c, c,
     leftField:'system:time_start', rightField:'system:time_start'}),
     ee.Filter.greaterThan({leftField:'system:time_start', rightField:'system:time_start'}))));
 const values = {
+  rasterProjection: ee.Image(ee.Array([[1,2],[3,4]])).matrixMultiply(
+    c.first().select(['red','nir']).toArray().toArray(1))
+    .arrayProject([0]).arrayFlatten([['p1','p2']]),
+  rasterReduction: c.first().select(['red','nir']).toArray()
+    .arrayReduce(ee.Reducer.mean(),[0]).arrayFlatten([['mean']]),
   arrayLayout: ee.Array([[1,2,3]]).repeat(0,2).slice(1,-2).reduce(ee.Reducer.sum(),[0]).project([1]),
   arrayEigen: ee.Array([[4,1],[1,3]]).eigen(),
   arrayCholesky: ee.Array([[4,12],[12,37]]).matrixCholeskyDecomposition(),
@@ -109,6 +114,11 @@ def parity_values():
             leftField="system:time_start", rightField="system:time_start"),
             ee.Filter.greaterThan(leftField="system:time_start", rightField="system:time_start"))))
     py = {
+        "rasterProjection": ee.Image(ee.Array([[1,2],[3,4]])).matrixMultiply(
+            c.first().select(["red","nir"]).toArray().toArray(1))
+            .arrayProject([0]).arrayFlatten([["p1","p2"]]),
+        "rasterReduction": c.first().select(["red","nir"]).toArray()
+            .arrayReduce(ee.Reducer.mean(),[0]).arrayFlatten([["mean"]]),
         "arrayLayout": ee.Array([[1,2,3]]).repeat(0,2).slice(1,-2).reduce(ee.Reducer.sum(),[0]).project([1]),
         "arrayEigen": ee.Array([[4,1],[1,3]]).eigen(),
         "arrayCholesky": ee.Array([[4,12],[12,37]]).matrixCholeskyDecomposition(),
@@ -141,10 +151,11 @@ def parity_values():
                                  "matrixSolve", "notNull", "matchId", "clippedBands",
                                  "bestDelta", "tableCoefficients", "featureSum", "formatted",
                                  "stringConversion", "innerBands", "compoundDelta",
-                                 "arrayLayout", "arrayEigen", "arrayCholesky", "arrayArithmetic"])
+                                 "arrayLayout", "arrayEigen", "arrayCholesky", "arrayArithmetic",
+                                 "rasterProjection", "rasterReduction"])
 def test_python_and_javascript_reach_the_same_local_result(parity_values, case):
     javascript, python, metadata, items = parity_values
     left = compile_expression(javascript[case], metadata, items)
     right = compile_expression(python[case], metadata, items)
     assert left == right
-    assert left["kind"] == "value"
+    assert left["kind"] == ("image" if case.startswith("raster") else "value")

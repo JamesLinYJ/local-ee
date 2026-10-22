@@ -48,6 +48,16 @@ inner 输出匹配对 Feature，内部保留真实 Image；Feature 属性和同�
 
 整体目标保持进行中。当前限制针对 Linux 隔离和原生平台／真实数据／Google 对照验收，离线兼容开发可以继续；仍需推进栅格数组、逐像元回归、分类及真实遥感全流程。
 
+## 第五批固定形状栅格数组
+
+阶段调整提交 `0e5964dc83640529d40a3a689169ae15bcf30e01` 为本批基线。Linux 隔离适配、macOS／ARM64 和本机真实数据验收继续延期；第五批直接推进 Python API 与合成数值验证。
+
+新增独立的固定形状单数组波段 IR，支持 Image.toArray、arrayFlatten／Project／Transpose／Slice／Get／Length(s)／Reduce 和 matrixMultiply，并扩展同形数组 Image 算术与数组常量。算子降为既有标量像素图，不新增伪计算 handler 或公网回退。单数组波段、最多 8 轴／每轴 64／总 64 单元、非空轴，仍共享 50000 工作步和 500 图节点上限；不支持的动态形状、广播、掩膜坐标、数组直接导出和 Float64 callback 算术明确拒绝。
+
+版本化 `ee-raster-projection-v1.json` 和示例 11 从静态合成训练表求 PCA 基，应用到本地 red／nir 像素，独立核对正交投影、重建、来源与整体掩膜。任一输入波段无效则所有输出分量均无效。rank0 arrayGet、静态 If／Dictionary 默认值类型保留、逻辑波段元数据和未知参数拒绝亦有回归；坐标解析另拆为模块。既有数组再次 toArray 的保留名称规则尚无 Google 对照。
+
+本批锁定依赖、全套 Python **894 passed／7 skipped**、前端 **11 passed**、TypeScript／构建均通过；比第四批增加 64 项通过，Python／JS 官方 SDK 实际编译对照增至 21 项。固定全量 Python 清单独立进程字节重现通过；原 50 探针仍为 50 S／45 C／5 拒绝。数值证据使用独立测试图求值器，不标为实际栅格 E 或 Google G。详见 `reports/gee-python-wave5.json` 与 `docs/gee-python/list.md`。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee

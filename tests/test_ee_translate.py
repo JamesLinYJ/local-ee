@@ -81,6 +81,7 @@ def eval_process(process, args):
         warnings.simplefilter("ignore", RuntimeWarning)
         if process == "mean": return np.nanmean(data, axis=0)
         if process == "median": return np.nanmedian(data, axis=0)
+        if process == "sd": return np.nanstd(data, axis=0, ddof=1)
         if process == "min": return (np.nanmin if args.get("ignore_nodata", True) else np.min)(data, axis=0)
         if process == "max": return (np.nanmax if args.get("ignore_nodata", True) else np.max)(data, axis=0)
         if process == "sum": return np.where(np.isfinite(data).any(axis=0), np.nansum(data, axis=0), np.nan)

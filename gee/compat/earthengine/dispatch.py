@@ -24,6 +24,10 @@ _METADATA_ARGUMENTS = {
 def invoke(translator, name, arguments):
     """Dispatch in the same precedence order as the legacy translator."""
     a = arguments
+    from .raster_array_dispatch import handles_raster_array, invoke_raster_array
+
+    if handles_raster_array(name, a):
+        return invoke_raster_array(translator, name, a)
     from .table_reducers import TableReducer, handles_table_reducer, invoke_table_reducer, invoke_reduce_columns
 
     if handles_table_reducer(name):

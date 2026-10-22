@@ -1,0 +1,66 @@
+{
+  "schema": "local-ee-synthetic-raster-projection/v1",
+  "training_observations": [
+    [
+      3,
+      2
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      3,
+      1
+    ],
+    [
+      1,
+      1
+    ]
+  ],
+  "raster_bands": {
+    "red": [
+      3,
+      1,
+      null,
+      5
+    ],
+    "nir": [
+      2,
+      0,
+      1,
+      null
+    ]
+  },
+  "reference_method": "Training mean [2,1]; covariance [[4/3,2/3],[2/3,2/3]]. c=sqrt((1+1/sqrt(5))/2), s=sqrt((1-1/sqrt(5))/2); orthonormal row basis [[c,s],[-s,c]]. Scores are row dot products of centered [red,nir]. Any missing input masks every output.",
+  "independent_reference": {
+    "components": {
+      "PC1": [
+        1.3763819204711734,
+        -1.3763819204711734,
+        null,
+        null
+      ],
+      "PC2": [
+        0.3249196962329063,
+        -0.3249196962329063,
+        null,
+        null
+      ]
+    },
+    "reconstructed": {
+      "red": [
+        3,
+        1,
+        null,
+        null
+      ],
+      "nir": [
+        2,
+        0,
+        null,
+        null
+      ]
+    }
+  }
+}

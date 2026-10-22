@@ -24,6 +24,10 @@ def compile_expression(expression, catalog, items, options=None):
     translator = Translator(catalog, items, options)
     try:
         value = translator.evaluate(expression)
+        from .raster_array_core import RasterArrayImage
+
+        if isinstance(value, RasterArrayImage):
+            fail("Array image output requires arrayFlatten or arrayGet; direct array raster export is unsupported")
         if isinstance(value, ImageSequence):
             return public_result({"kind":"collection", "bands":[n for n,_ in value.images[0].bands] if value.images else [],
                     "source_item_ids":[im.props.get("system:index",str(i)) for i,im in enumerate(value.images)],
