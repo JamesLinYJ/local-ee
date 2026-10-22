@@ -42,6 +42,8 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 
 第十三批新增单数组波段的真实 toFloat 和有限 Image.matrixSolve：静态满列秩设计 A(m,n)、栅格 B(m,k)，双方显式 Float32，m<=8、n/k<=4、m>=n。真实伪逆乘像素保留整体掩膜和现有预算，任意响应缺失会掩膜完整解。合成光谱估计／重建／残差有独立 Fraction 参考，见 [第十三批报告](../reports/gee-python-wave13.json)。NumPy 秩政策和 callback 舍入不等于 Google 数值语义；动态设计、数组 Float64、实际 E/G 仍未验证。
 
+第十四批增加有限 ImageCollection.toArrayPerBand、静态 Image.arrayReshape 和 Number.sin／cos，把日期元数据驱动的七景谐波设计接入栅格 matrixSolve。各波段独立保留全帧掩膜，同日不同景保持顺序／身份，Fraction 和独立 SVD 核对系数、正交残差和未来日期预测。参数与证据见 [第十四批报告](../reports/gee-python-wave14.json)；dropMasked=true 的变长模式、动态形状、完整谐波分析及实际 E/G 不在此子集中。
+
 第三批增加 `Join.inner`、唯一 maxDifference 的 And 组合，以及匹配 Feature 映射回 ImageCollection 的链路；最近前后观测插值有版本化合成来源／掩膜／目标时间参考，见 [第三批报告](../reports/gee-python-wave3.json)。S/C 与合成图 N 通过仍不构成原生引擎 E 或 Google G。
 
 | 用法 | 当前支持范围 | 证据 |
@@ -142,7 +144,7 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 | --- | --- |
 | 最绿像素合成 | 历史抽查时缺失；本轮已实现有限同构集合 `qualityMosaic` 并完成 6 个实际输出的独立像素对照；平分规则仍未与 Google 比较 |
 | s2cloudless 云影 | 有限本地影像 `Join.saveFirst` 已补；仍缺定向距离变换、`projection/reproject`、`focalMin/focalMax`；云概率数据未入库 |
-| 谐波时序与矩阵回归 | 已补有限逐景日期 map、日期常量 band、受限日期、静态 Array.matrixSolve、固定形状数组布局／矩阵投影／归约、静态设计的有限 Image.matrixSolve 和有限逐像元 linearFit／linearRegression；仍缺通用动态设计矩阵的栅格求解、动态数组，以及相位/振幅的 `atan2/hypot` |
+| 谐波时序与矩阵回归 | 已补有限逐景日期 map、日期常量 band、受限日期、静态 Array.matrixSolve、固定形状数组布局／矩阵投影／归约、静态设计的有限 Image.matrixSolve 和有限逐像元 linearFit／linearRegression；定长时间数组、常量 reshape 和日期驱动正余弦设计已串联合成谐波拟合；仍缺通用动态设计矩阵、变长数组及相位/振幅的 `atan2/hypot` |
 | HISTARFM 插值 | 已补受限 Date.getRelative、saveAll 匹配影像列表、maxDifference 与方向比较的 And 组合；最近前后观测像素插值有合成图 N，独立常量栅格、int16、完整项目及真实引擎验收仍缺失 |
 | 随机森林与验证 | 样本提取、分类器训练/预测与批量区域统计仍缺；已补有限内联标签误差矩阵和总体指标，逐类指标／完整分类验证仍待实现 |
 | LandTrendr | GEE 用户模块解析、真实时序分段算法、数组处理、连通像元与 Image QA 位运算仍缺失；已补有限网格的 `unmask`，不能据此运行完整 LandTrendr |

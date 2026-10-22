@@ -40,6 +40,10 @@ def invoke(translator, name, arguments):
 
     if handles_raster_array(name, a):
         return invoke_raster_array(translator, name, a)
+    if name == "ImageCollection.toArrayPerBand":
+        from .raster_collection_arrays import invoke_collection_array
+
+        return invoke_collection_array(translator, name, a)
     if name == "ConfusionMatrix" or name.startswith("ConfusionMatrix."):
         from .confusion_values import invoke_confusion
 

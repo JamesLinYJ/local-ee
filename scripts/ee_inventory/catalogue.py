@@ -43,6 +43,8 @@ KNOWN_PARTIAL_LIMITS: dict[str, list[str]] = {
     "Dictionary.get": ["Missing keys require an explicit non-null default; default null/omitted rejects. Existing null values remain null."],
     "Dictionary.values": ["Explicit empty keys returns []; absent/null keys selects natural sorted keys. Missing requested keys reject."],
     "List.sequence": ["Supports count/end equal spacing and count/step ranges; at most 10000 finite values. No Google numerical comparison."],
+    "Number.sin": ["Finite static numeric radians only; integer magnitude<=2^53, bool/nonfinite/invalid inputs reject. Precharged shared work; Float64 libm argument reduction is a local policy, not Google numerical parity."],
+    "Number.cos": ["Finite static numeric radians only; integer magnitude<=2^53, bool/nonfinite/invalid inputs reject. Precharged shared work; Float64 libm argument reduction is a local policy, not Google numerical parity."],
     "Number.format": ["Bounded static %s/%d/%f and limited padding/sign flags only; exact integer %d, half-up rounding on Python shortest decimal spelling, no scientific/hex/grouping or Google rounding comparison."],
     "Filter.maxDifference": ["Finite numeric flat-field/value operands, inclusive absolute difference; missing/null does not match. A unique direct or And-nested filter provides a numeric join measure; multiple measures and measures under Or/Not reject when a measure is requested; spatial distances reject."],
     "Collection.reduceColumns": ["Static inline FeatureCollection linearFit/linearRegression only, <=1000 rows and <=32 flat selected inputs under shared compilation budgets; nonempty weights and image/raster reduction reject."],
@@ -100,6 +102,12 @@ for operation in ("Image.toArray", "Image.arrayFlatten", "Image.arrayProject", "
     ]
 KNOWN_PARTIAL_LIMITS["Image.matrixSolve"] = [
     "Fixed-shape single RasterArrayImage operands, explicit per-cell toFloat on both sides. Literal static full-column-rank design A(m,n),1<=m<=8,1<=n<=4,m>=n; raster B(m,k),1<=k<=4. NumPy Float32 lstsq(A,I,rcond=None) computes a real finite pseudoinverse after precharged work; output(n,k) is actual Float32 pixel arithmetic with the conjunction of both whole-array masks. Constant cast chains preserve each Float32/Double rounding step and share cached literal values. Total input cells<=64, shared50000 steps and500 process nodes retained. Missing/unknown arguments, dynamic A, non-Float32 cells, underdetermined/rank-deficient designs and nonfinite coefficients reject. Float32 rank cutoff, finite local grids and callback rounding are local policies, not Google/EJML parity; not general dynamic per-pixel matrixSolve or Float64 array support."
+]
+KNOWN_PARTIAL_LIMITS["ImageCollection.toArrayPerBand"] = [
+    "Bounded ordered local Collection/ImageSequence of1..8 homogeneous scalar Images with1..8 unique same-name/same-order bands, axis=0, dropMasked=false only; <=64 total array cells. Each band concatenates actual cells in frame order and conjoins that band's masks across every frame, without cross-band contamination or dropping observations. Named array bundles retain finite source/footprint provenance and have no inherited scene date. Shared50000 work/500 process nodes remain. Dynamic dropMasked=true, nonzero axis, array-valued frames and schema mismatch reject; not ImageCollection.toArray's variable-row semantics, actual raster-engine or Google acceptance."
+]
+KNOWN_PARTIAL_LIMITS["Image.arrayReshape"] = [
+    "Single fixed-shape RasterArrayImage, typed rank1 lengths array Image with a provably valid unmasked shape, and required dimensions1..8. Constant integer lengths1..64 with at most one inferred -1; product must equal input cells<=64. Reinterprets row-major cells without arithmetic or dtype conversion and preserves input name, mask and source metadata. Dynamic/masked lengths, zero/invalid dimensions, incompatible products, multiple inferred dimensions and unknown/missing arguments reject. Shared50000 work and500 process-node budgets remain; no general dynamic reshaping or native-engine/Google acceptance."
 ]
 for operation in ("ConfusionMatrix", "ConfusionMatrix.array", "ConfusionMatrix.order", "ConfusionMatrix.accuracy", "ConfusionMatrix.kappa"):
     KNOWN_PARTIAL_LIMITS[operation] = [

@@ -18,7 +18,7 @@
 
 - 官方客户端版本和提交见 `vendor/earthengine-js/upstream-lock.json`。
 - 官方 Python 客户端已按同一提交固定，见 `vendor/earthengine-python/upstream-lock.json`；Python 和 JS 共享本地 EE 编译器及算法支持边界，Python/openEO `connection` 继续保留。
-- 当前能力、参数限制和证据见 `docs/gee-compatibility.md`。第十三批补单数组波段的真实 toFloat 与有限 Image.matrixSolve：静态满列秩设计、栅格多响应、整体掩膜和显式 Float32 精度，串联合成光谱估计／重建／残差的独立分数参考；Linux Python 1201 passed／7 skipped，前端 11 passed 与构建通过，见 `reports/gee-python-wave13.json`。通用动态设计矩阵、数组 Float64 算术、矩形分解、栅格分解与 Google/EJML 等价仍未覆盖。第十一批的图压缩保持，双 RMS／八字段回归组合仍超过现有 500 节点。
+- 当前能力、参数限制和证据见 `docs/gee-compatibility.md`。第十四批补有限 ImageCollection.toArrayPerBand、静态 Image.arrayReshape 和 Number.sin／cos，串联日期驱动的七景谐波设计、栅格最小二乘、拟合／残差及目标日期预测；Linux Python 1265 passed／7 skipped，前端 11 passed 与构建通过，见 `reports/gee-python-wave14.json`。通用动态设计、变长数组、Float64 数组算术、矩形／栅格分解与 Google/EJML 等价仍未覆盖。既有共享图／工作预算保持，阶段通过不构成全量兼容。
 - Python API 清单见 `reports/gee-python-api-inventory.json`，保留 991 项签名、2451 项参数及公开 Python 绑定。原有 50 项 Python 定向探针当前为 45 项编译通过、5 项明确拒绝；方法、参数和探针数量均不代表完整兼容率。已补有限表格回归、FeatureCollection、数值时间度量及 inner Join、Number.format、有界 String 和固定形状栅格数组，并串联合成表格预测、最近前后观测插值及像素投影；动态数组、通用设计矩阵的栅格回归、采样、栅格分类及其他分类器仍有缺口，有限精度评估不能代替完整分类器实现。完整 Linux 运行按阶段调整延期。最新局部实现及限制持续写入 `docs/gee-python/list.md`。
 - 复杂工作流来源和缺口见 `audit/gee-complex-compat-v1/findings.json`。
 - 有效探针为 `audit/gee-complex-compat-v1/probe-run-v2/validation.json`：50 个表达式成功序列化，3 个阳性对照编译通过，43 个操作/语义探针被拒绝，4 个数据/波段探针被拒绝；另有 14 个规模编译检查、3 个原生 runner 检查。该定向抽查不是全 API 兼容率。

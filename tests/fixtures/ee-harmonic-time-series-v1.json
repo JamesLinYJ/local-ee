@@ -1,0 +1,71 @@
+{
+  "schema": "local-ee-synthetic-harmonic-time-series/v1",
+  "collection_id": "sentinel-2-l2a",
+  "origin_millis": 1688169600000,
+  "target_day": 540,
+  "bbox": [0, 0, 5, 1],
+  "scene_geometry": {
+    "type": "Polygon",
+    "coordinates": [[[0, 0], [5, 0], [4.5, 0.4], [3.5, 1], [0, 1], [0, 0]]]
+  },
+  "pixel_centers": [[0.5, 0.5], [1.5, 0.5], [2.5, 0.5], [3.5, 0.5], [4.5, 0.5]],
+  "bands": ["ndvi", "quality"],
+  "frame_order": [
+    "frame-d360", "frame-d180-a", "frame-d000", "frame-d450",
+    "frame-d090", "frame-d180-b", "frame-d270"
+  ],
+  "sorted_frame_order": [
+    "frame-d000", "frame-d090", "frame-d180-a", "frame-d180-b",
+    "frame-d270", "frame-d360", "frame-d450"
+  ],
+  "frame_days": {
+    "frame-d000": 0,
+    "frame-d090": 90,
+    "frame-d180-a": 180,
+    "frame-d180-b": 180,
+    "frame-d270": 270,
+    "frame-d360": 360,
+    "frame-d450": 450
+  },
+  "pixel_values_by_frame": {
+    "frame-d000": {
+      "ndvi": [0.6, 0.6, 0.13, -0.08, 0.6],
+      "quality": [10, 20, 30, 40, 50]
+    },
+    "frame-d090": {
+      "ndvi": [0.5, 0.5, 0.08, -0.07, 0.5],
+      "quality": [11, 21, null, 41, 51]
+    },
+    "frame-d180-a": {
+      "ndvi": [0.2, 0.2, 0.07, -0.12, 0.2],
+      "quality": [12, 22, 32, 42, 52]
+    },
+    "frame-d180-b": {
+      "ndvi": [0.2, 0.2, 0.07, -0.12, 0.2],
+      "quality": [13, 23, 33, 43, 53]
+    },
+    "frame-d270": {
+      "ndvi": [0.3, null, 0.12, -0.13, 0.3],
+      "quality": [14, 24, 34, 44, 54]
+    },
+    "frame-d360": {
+      "ndvi": [0.6, 0.6, 0.13, -0.08, 0.6],
+      "quality": [15, 25, 35, 45, 55]
+    },
+    "frame-d450": {
+      "ndvi": [0.57, 0.57, 0.08, -0.07, 0.57],
+      "quality": [16, 26, 36, 46, 56]
+    }
+  },
+  "hand_reference": {
+    "matrix": [
+      [7, 0, 1],
+      [0, 4, 0],
+      [1, 0, 3]
+    ],
+    "p0_actual": ["3/5", "1/2", "1/5", "1/5", "3/10", "3/5", "57/100"],
+    "p0_coefficients": ["407/1000", "1/5", "121/1000"],
+    "p0_residuals": ["-7/1000", "-28/1000", "-7/1000", "-7/1000", "14/1000", "-7/1000", "42/1000"],
+    "p0_target_prediction": "207/1000"
+  }
+}

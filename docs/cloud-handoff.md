@@ -134,6 +134,16 @@ QR／SVD 使用 NumPy/LAPACK，符号和重复值子空间基为已注明的本�
 
 锁定依赖、Linux Python **1201 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，增加 27 项通过：矩阵数值／参数 22、工作流 3、Python／JS SDK 一致性新增 2（总 38）。Luna max 只读复审未发现声明范围内剩余缺陷。原 50 探针仍 50 S／45 C／5 拒绝且字节不变，完整 Python 清单字节重现通过，见 `reports/gee-python-wave13.json`。无实际栅格 E／Google G，不新增 TypeScript 层；生态核对另见 `docs/gee-python/ecosystem.md`，有限公开资料检索不构成“无人尝试”的结论。整体目标保持进行中。
 
+## 第十四批定长时间数组与谐波拟合
+
+以第十三批提交 `f779330169face0ef752846c954e552a95c96ce2` 为基线，独立模块实现 ImageCollection.toArrayPerBand 和 Image.arrayReshape。前者限 1..8 个同名同序标量帧、1..8 bands、axis=0、dropMasked=false 和总 64 cells；按集合顺序保留重复／同日观测，每个波段独立合并所有帧的有效掩膜。后者限单数组、有效常量 rank-1 lengths 和 1..8 维，允许一个 -1 推断，总 cells 不变，逐值／dtype／mask／name／source 不变。变长或动态／掩膜形状明确拒绝。
+
+共享帧提取／schema helper 的小重构保留原回归行为和错误上下文。axis 使用既有 Integer 政策接收实际 SDK wire 0.0，拒绝 bool／非整数；dropMasked 仍须严格 bool false。静态 Number.sin／cos 使用有限弧度与 Float64 libm，整数限精确域 <=2^53，先计共享工作；独立有理数级数、象限、signed zero、缺参／非法数和预算负控共 33 项通过。libm 参数约减、同日稳定排序与有限源网格不是 Google 数值／投影等价声明。
+
+示例 19 与版本化 `ee-harmonic-time-series-v1.json` 使用乱序的七景跨年合成时间序列，日期偏移 `[0,90,180,180,270,360,450]`，同日两景保留身份。SDK Date.difference → Number.sin／cos → 7×3 静态设计，再接逐波段时间数组、reshape、Float32 matrixSolve。精确 Fraction 校核含噪系数 `(407/1000,1/5,121/1000)`、正交残差和第 540 日预测 `207/1000`；独立 SVD 验证 Float32 输入、缺测、负值和 bbox 内非矩形景界外点，容差 2e-6。六个栅格输出图为 122／122／215／296／337／219 节点，另有三个静态元数据输出，网络尝试 0。
+
+锁定依赖、Linux Python **1265 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，新增 64 项通过：集合／reshape 24、Number 33、工作流 3、SDK 一致性新增 4（总 42）。原 50 探针仍 50 S／45 C／5 拒绝且字节不变，991 项完整 Python 清单字节重现通过，见 `reports/gee-python-wave14.json`。S/C/静态及采样点 N 分别记录，无实际 E/G；动态数组、通用栅格设计、采样／分类和高级时序继续开发，整体目标保持进行中。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee

@@ -1,5 +1,6 @@
 """Shared compiler regressions from both unmodified, pinned SDK serializers."""
 import json
+import math
 from pathlib import Path
 import shutil
 import subprocess
@@ -53,6 +54,14 @@ const prior = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(c, c,
     leftField:'system:time_start', rightField:'system:time_start'}),
     ee.Filter.greaterThan({leftField:'system:time_start', rightField:'system:time_start'}))));
 const values = {
+  numberTrigDesign: ee.Array(ee.List([0, Math.PI/2, Math.PI]).map(angle =>
+    ee.List([1, ee.Number(angle).cos(), ee.Number(angle).sin()]))).matrixTranspose(),
+  rasterTemporalBandArray: c.select(['red','nir']).toArrayPerBand().select('nir')
+    .arrayFlatten([['s0','s1','s2']]),
+  rasterTemporalMatrix: c.select('red').toArrayPerBand()
+    .arrayReshape(ee.Image(ee.Array([3,1])),2).arrayFlatten([['s0','s1','s2'],['red']]),
+  rasterArrayReshape: c.first().select(['green','red','nir']).toArray()
+    .arrayReshape(ee.Image(ee.Array([1,-1])),2).arrayFlatten([['row'],['g','r','n']]),
   rasterMatrixSolveSquare: ee.Image(ee.Array([[2,1],[1,2]])).toFloat().matrixSolve(
     c.first().select(['red','nir']).toArray().toArray(1).toFloat())
     .arrayProject([0]).arrayFlatten([['x0','x1']]),
@@ -152,6 +161,16 @@ def parity_values():
             leftField="system:time_start", rightField="system:time_start"),
             ee.Filter.greaterThan(leftField="system:time_start", rightField="system:time_start"))))
     py = {
+        "numberTrigDesign": ee.Array(ee.List([0, math.pi / 2, math.pi]).map(
+            lambda angle: ee.List([1, ee.Number(angle).cos(), ee.Number(angle).sin()])
+        )).matrixTranspose(),
+        "rasterTemporalBandArray": c.select(["red", "nir"]).toArrayPerBand().select("nir")
+            .arrayFlatten([["s0", "s1", "s2"]]),
+        "rasterTemporalMatrix": c.select("red").toArrayPerBand()
+            .arrayReshape(ee.Image(ee.Array([3, 1])), 2)
+            .arrayFlatten([["s0", "s1", "s2"], ["red"]]),
+        "rasterArrayReshape": c.first().select(["green", "red", "nir"]).toArray()
+            .arrayReshape(ee.Image(ee.Array([1, -1])), 2).arrayFlatten([["row"], ["g", "r", "n"]]),
         "rasterMatrixSolveSquare": ee.Image(ee.Array([[2,1],[1,2]])).toFloat().matrixSolve(
             c.first().select(["red", "nir"]).toArray().toArray(1).toFloat())
             .arrayProject([0]).arrayFlatten([["x0", "x1"]]),
@@ -236,6 +255,8 @@ def parity_values():
                                  "listLayout", "listRegression", "listMean",
                                  "minimumSchema", "minimumPredictions", "minimumTrainingMatrix",
                                  "rasterMatrixSolveSquare", "rasterMatrixSolveTall",
+                                 "numberTrigDesign", "rasterTemporalBandArray",
+                                 "rasterTemporalMatrix", "rasterArrayReshape",
                                  "rasterRegressionOrigin", "rasterRegressionResidual", "rasterRegressionIntercept"])
 def test_python_and_javascript_reach_the_same_local_result(parity_values, case):
     javascript, python, metadata, items = parity_values

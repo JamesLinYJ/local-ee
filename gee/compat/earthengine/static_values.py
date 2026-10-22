@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import math
 
+from .array_core import charge_array
 from .ir import Collection, Function, Image, UnsupportedEEError, fail, integer
 from .static_dictionary import dictionary_value
 from .static_equality import contains_value, distinct_values
@@ -64,6 +65,18 @@ def invoke_static(translator, name, a):
     if kind == "Number":
         if any(isinstance(x, (Image, Collection)) for x in vals):
             fail("Expected a static Number")
+        if op in {"sin", "cos"}:
+            if "input" not in a:
+                fail(f"Number.{op} requires input")
+            number = a["input"]
+            if (type(number) not in (int, float)
+                    or type(number) is int and abs(number) > 2 ** 53
+                    or type(number) is float and not math.isfinite(number)):
+                fail(f"Number.{op} requires a finite static numeric input; integers must be exact Float64")
+            charge_array(translator, 1)
+            # Radians, using the host's Float64 libm argument reduction. This
+            # is a documented local numeric policy, not Google parity.
+            return (math.sin if op == "sin" else math.cos)(number)
         right = a.get("right")
         funcs = {
             "add": lambda: value + right,

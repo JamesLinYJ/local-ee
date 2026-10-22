@@ -9,6 +9,7 @@ from .metadata_ops import METADATA_HANDLERS, invoke_metadata
 from .raster_array_core import RasterArrayImage
 from .raster_array_layout import RASTER_ARRAY_LAYOUT_FUNCTIONS, invoke_raster_layout
 from .raster_array_reductions import RASTER_ARRAY_REDUCTION_FUNCTIONS, invoke_raster_reduction
+from .raster_array_reshape import RASTER_RESHAPE_FUNCTIONS, invoke_raster_reshape
 from .raster_array_values import RASTER_ARRAY_VALUE_FUNCTIONS, invoke_raster_value
 from .raster_matrix_solve import RASTER_MATRIX_FUNCTIONS, invoke_raster_matrix
 
@@ -27,7 +28,8 @@ _METADATA_ARGUMENTS = {
 
 def handles_raster_array(name, arguments):
     if name in (RASTER_ARRAY_LAYOUT_FUNCTIONS | RASTER_ARRAY_REDUCTION_FUNCTIONS
-                | RASTER_MATRIX_FUNCTIONS | (RASTER_ARRAY_VALUE_FUNCTIONS - _SHARED_SCALAR_NAMES)):
+                | RASTER_MATRIX_FUNCTIONS | RASTER_RESHAPE_FUNCTIONS
+                | (RASTER_ARRAY_VALUE_FUNCTIONS - _SHARED_SCALAR_NAMES)):
         return True
     if name == "Image.constant" and isinstance(arguments.get("value"), StaticArray):
         return True
@@ -36,6 +38,8 @@ def handles_raster_array(name, arguments):
 
 
 def invoke_raster_array(translator, name, arguments):
+    if name in RASTER_RESHAPE_FUNCTIONS:
+        return invoke_raster_reshape(translator, name, arguments)
     if name in RASTER_MATRIX_FUNCTIONS:
         return invoke_raster_matrix(translator, name, arguments)
     if name in RASTER_ARRAY_LAYOUT_FUNCTIONS:
