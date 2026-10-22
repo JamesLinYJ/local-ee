@@ -1,8 +1,8 @@
 # GEE Python 兼容清单
 
-状态：2026-10-23，第二十批持续实施，整体兼容目标尚未完成。
+状态：2026-10-23，第二十一批持续实施，整体兼容目标尚未完成。
 
-第二十批 [验证报告](../../reports/gee-python-wave20.json)：macOS ARM64 的可移植 Python 测试 **1535 passed／3 skipped**，排除 4 项原生运行测试；前端 **11 passed**、TypeScript 与构建通过。上一批 Linux 基线为 [1456 passed／7 skipped](../../reports/gee-python-wave19.json)，本批增加 79 项通过回归。本次初次全套运行中，4 项原生测试因宿主执行权限拒绝 sandbox-exec／进程枚举而失败；没有放宽隔离或将它们计作通过。原生与真实数据验收继续按当前阶段延期。
+第二十一批 [验证报告](../../reports/gee-python-wave21.json)：macOS ARM64 的可移植 Python 测试 **1583 passed／3 skipped**，排除 4 项原生运行测试；前端 **11 passed**、TypeScript 与构建通过。较[第二十批](../../reports/gee-python-wave20.json)增加 48 项通过回归。本批未重跑原生测试；上一批受宿主执行权限限制的失败继续保留，不放宽隔离或计作通过。原生与真实数据验收继续按当前阶段延期。
 
 S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎；N＝独立数值基准；G＝Google 同数据对照。静态数值求值和合成图测试分别说明，不能标成原生栅格 E。固定的 991 项签名、方法可见数量和定向探针计数均不能换算为全 API 兼容百分比。
 
@@ -35,7 +35,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] 有限 ImageCollection.reduce(linearFit) 逐像元斜率／截距，完整行缺测删除、中心化 OLS、低样本／退化掩膜和同日多景身份；时间属性串联趋势预测，独立 SVD 参考。
 - [x] 有界静态 ConfusionMatrix 的构造／array／order／accuracy／kappa、内联 FeatureCollection.errorMatrix；显式标签顺序与有效行筛选串联分类评估，独立频数／机会一致概率参考。采样及分类器训练／预测不在该子集中。
 - [x] 有界 List 配对／转置／展开／重复／置换，以及单输出归约和 List.reduce(linearFit／linearRegression) 多输入行；列列表构造二次设计、双响应系数／RMS 和预测的闭式／残差正交性参考。
-- [x] 有限欧式 minimumDistance 的实际类均值训练、唯一最近类预测、schema／默认模式、内联要素分类及真实重代入混淆矩阵；独立训练／验证样本、均值／距离和误差指标参考。
+- [x] 有限 minimumDistance 欧式／曼哈顿／cosine 光谱角的实际类均值训练、唯一最近类预测、schema／默认模式、内联要素分类及真实重代入混淆矩阵；独立训练／验证样本、均值／距离和误差指标参考。
 - [x] 有限栅格 linearRegression 的过原点／单位截距模型、1..4 响应、联合完整行、系数／RMS 数组；有限多数组波段选择／元数据，双响应分字段物化和独立 SVD／空间掩膜参考。
 - [x] 延迟单波段维度／改名元数据，保留数值与源／掩膜／类型边界；共享表达式标签、完整四系数／双响应预测、同日／重复观测及超限控制。
 - [x] 静态方阵 QR／LU／SVD 真实分解与因子字典组合；部分选主元、退化正交分解、资源预充，以及合成光谱混合／噪声丰度的独立分数参考。
@@ -69,13 +69,13 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 | 栅格 linearFit | S/C；完整 x/y 行、中心化两遍 OLS，输出 scale／offset；独立闭式与 NumPy SVD N 核对系数、重复景权重、缺测、空间范围及目标日期预测 | 1..8 帧，恰两个同名同序标量波段；binary NoData 掩膜，n<2／x 方差为零则两个输出均掩膜；parallelScale 仅 1，仍受 Float32 callback／工作／图预算约束；无实际 E/G，非通用栅格 linearRegression |
 | 有限分类评估 | S/C 与独立标签频数 N；静态 ConfusionMatrix 构造、array／order／accuracy／kappa 与有限逐类指标；内联 errorMatrix 保留 actual 行／predicted 列及显式顺序 | <=64 类／4096 单元，非负整数 Array 计数总和 <=2^53、<=1000 完整标签行，共享预算；原始 List／浮点计数 Array、缺失／null、未定义分母、直接对象 JSON、Feature 属性对象拒绝；逐类指标返回本地 rank1 Float64，Fβ 采用实际行 recall 的明确推断，无 Google 形状／数值对照 |
 | 有限 List 布局／归约 | S/C 与独立静态 N；zip／unzip 截短、flatten 只展开 List、repeat／reverse／set／swap 保留 typed 原子；单输出值、多输出回归字典／typed Array | 布局 <=10000 顶层值、flatten 深度 96，reduce <=1000 行／32 回归列，共享预算；严格下标边界，非默认 reducer 组合／权重拒绝；空值政策见下文，无 E/G |
-| 静态欧式最小距离 | S/C 与独立 N；真实类均值、唯一最近类、FeatureCollection.classify、schema 和训练重代入矩阵 | k=1／CLASSIFICATION、训练 1..1000 行、显式 1..8 平面属性、类别 0..63、subsampling=1／seed=0，共享预算；精确 binary64 有理数政策，等距和属性碰撞拒绝，无采样／图像／其他分类器或 G |
+| 静态最小距离分类 | S/C 与独立 N；欧式／曼哈顿／cosine 光谱角、真实类均值、FeatureCollection.classify、schema 和训练重代入矩阵 | k=1／CLASSIFICATION、训练 1..1000 行、显式 1..8 平面属性、类别 0..63、subsampling=1／seed=0，共享预算；精确 binary64 有理数排名，等距、属性碰撞和 cosine 零范数查询／类中心拒绝；Mahalanobis、采样、图像分类及 G 未覆盖 |
 | 有限栅格 linearRegression | S/C 与独立样点／SVD N；过原点或单位截距模型，多响应共用完整行，真实系数 (numX,numY) 与 RMS (numY,) | numX=1，或 numX=2 且首列证明为单位字面量；numY=1..4、1..8 同序标量帧，n>numX／非退化，RMS 按 n；parallelScale=1、Float32 callback、工作／500 节点限制，无通用设计矩阵／E/G |
 | Number／String | S/C；%s／%d／%f、有限符号及填充；数值 String 构造与三个基础方法；指数拼接预算负控 | Number 按 Python 最短十进制拼写半入舍入，String 按 Python code point；科学／十六进制格式等拒绝；本地政策无 G |
 
 List.contains／distinct 对嵌套数组使用显式的有界比较，避免 NumPy 隐式真值／广播错误。标量 int／float 按数值比较，bool 单独区分；Array 的 dtype／形状／元素比较仍是未做 Google 对照的本地策略。step 序列严格检查实际生成的 Float64 值，不向端点外扩展；例如 0、0.1、0.2 后的 0.30000000000000004 超过 end=0.3，因此省略，该舍入策略尚无 G 证据。
 
-另有 59 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky、QR／LU／SVD 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵、列表布局／均值／回归、最小距离 schema／预测／训练误差矩阵、栅格 linearRegression 的过原点／截距系数与 RMS、方阵／高矩形设计的栅格 matrixSolve、集合定长数组、reshape、正余弦设计，以及静态向量范数／方向角、栅格 hypot、轴拼接／整块重复与矩阵对角／迹／行列式、前缀归约／缩放范数和单数组选择，新增首个最大值坐标与 typed 空切片。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容或 Google 数值对照。
+另有 65 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky、QR／LU／SVD 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵、列表布局／均值／回归、最小距离 schema／预测／训练误差矩阵、栅格 linearRegression 的过原点／截距系数与 RMS、方阵／高矩形设计的栅格 matrixSolve、集合定长数组、reshape、正余弦设计，以及静态向量范数／方向角、栅格 hypot、轴拼接／整块重复与矩阵对角／迹／行列式、前缀归约／缩放范数和单数组选择，新增首个最大值坐标与 typed 空切片。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容或 Google 数值对照。
 
 第四批 `examples/10_GEE_python_synthetic_pca.py` 与 `tests/fixtures/ee-pca-table-v1.json` 串联有限静态表格的中心化、样本协方差、对称特征分解、投影及重建。四条二维观测的均值为 `[2,1]`，协方差为 `[[4/3,2/3],[2/3,2/3]]`，特征值为 `1±sqrt(5)/3`；闭式向量与得分按 1e-14 容差核对，重建还提供与符号选择无关的验证。S/C/N 已通过，网络入口尝试为 0；无栅格 E 或 G。
 
@@ -121,9 +121,9 @@ List 布局每个顶层输入／输出最多 10000 值，flatten 递归深度 96
 
 第九批 `examples/15_GEE_python_minimum_distance_validation.py` 和 `ee-minimum-distance-v1.json` 使用分离的训练／验证行。未归一化类均值为 `(2,2/3)`、`(7,2/3)`，训练中一个离群点会预测为另一类，证明不是以最近训练点代替类均值。训练准确率 5/6，独立验证预测 `[1,3,3,1,3]`，按 [3,1] 计数 `[[2,1],[1,1]]`，准确率 3/5、Kappa 1/6。独立 NumPy 均值／距离和手算指标校核已通过，网络入口尝试 0。
 
-minimumDistance 仅 Euclidean、kNearest=1、CLASSIFICATION；显式唯一平面 schema 1..8，完整有限数值要素 1..1000，类别为 0..63 整数，subsampling=1／seed=0。几何按官方训练描述忽略；预测按名称读取属性，不依赖字典顺序。精确 Fraction 保留 binary64 输入并计算类均值／平方距离，任何等距最近类明确拒绝；这一本地数值政策不等于已验证 Google／Smile 的浮点累加策略。共享工作上限仍生效，1000×8 的组合可能因预算拒绝。
+原第九批 minimumDistance 仅 Euclidean；第二十一批补上 Manhattan 与 cosine 光谱角分类，仍为 kNearest=1、CLASSIFICATION；显式唯一平面 schema 1..8，完整有限数值要素 1..1000，类别为 0..63 整数，subsampling=1／seed=0。几何按官方训练描述忽略；预测按名称读取属性，不依赖字典顺序。精确 Fraction 保留 binary64 输入并计算类均值：欧式比较平方距离，曼哈顿比较绝对差之和，cosine 比较带符号归一化点积的精确交叉乘积，不先用 Float64 求范数或 acos。任何等距最近类明确拒绝；cosine 的零范数查询或类中心在预测时拒绝，构造／训练／schema 不提前伪造预测结果。这一本地数值政策不等于已验证 Google／Smile 的浮点累加策略。共享工作上限仍生效，1000×8 的组合可能因预算拒绝。
 
-模型不可变，If／Dictionary.get 再包装后可用；未训练 schema 为 null。要素分类保留属性／几何／ID、拒绝输出名碰撞，训练混淆矩阵用真实重代入预测、轴为 0..max 类别并保留空档。直接／嵌套模型 JSON、模型真值、Image.classify、其他 metrics／k／modes 和自动 band_order schema／随机子采样仍拒绝；没有采样、栅格 E、随机森林或 G 的实现声明。
+模型不可变，If／Dictionary.get 再包装后可用；未训练 schema 为 null。要素分类保留属性／几何／ID、拒绝输出名碰撞，训练混淆矩阵用真实重代入预测、轴为 0..max 类别并保留空档。直接／嵌套模型 JSON、模型真值、Image.classify、Mahalanobis、kNearest≠1、REGRESSION／RAW／概率模式和自动 band_order schema／随机子采样仍拒绝；没有采样、栅格 E、随机森林或 G 的实现声明。
 
 ## 有限栅格多响应回归
 
@@ -297,3 +297,13 @@ npm --prefix web test
 继续按真实 Python 项目依赖补全栅格数组、逐像元回归，然后采样／分类训练预测、矢量／空间 Join、邻域／高级时序；优先使用版本化合成样本验证计算语义，本阶段不推进 Linux 隔离适配或要求原生／真实数据验收。当前剩余的 5 项定向拒绝是全局 footprint unmask、Kernel.square／邻域、focalMean、原回归探针的输入数量错误和 smileRandomForest；它们只是已探测缺口，不是剩余功能的完整清单。
 
 [GOAL.md](../../GOAL.md) 记录持续目标；[云端交接](../cloud-handoff.md) 保留环境和发布约束。Python 达标后再系统推进 JS，期间共享后端改动持续回归已有 JS 功能。
+
+## 第二十一批：最小距离度量与独立分类验证
+
+`examples/26_GEE_python_distance_metric_validation.py` 与 `ee-distance-metric-validation-v1.json` 使用显式 `[nir,red]` schema，从四条训练行求类中心 `(3,0)`、`(2,2)`，对六条独立验证行预测。欧式预测 `[1,1,0,0,0,1]`，验证矩阵 `[[1,1],[2,2]]`、准确率 1/2；曼哈顿预测 `[0,1,1,0,0,1]`，矩阵 `[[2,0],[1,3]]`、准确率 5/6；cosine 预测 `[1,1,1,0,0,1]`，矩阵 `[[1,1],[1,3]]`、准确率 2/3。训练矩阵三者均为 `[[2,0],[0,2]]`，不能用训练准确率代替验证表现。
+
+参考分别采用独立 NumPy 距离、Decimal 归一化点积和 Fraction 频数／指标；另以 1600 位 Decimal 的显式归一化与开方检查负方向、极大／次正规值、相近方向及正比例缩放。生产比较器不执行浮点范数或 acos，保留符号后比较精确平方交叉乘积。精确有理数及零范数／等距拒绝是本地政策，未经 Google／Smile 等价验证。工作预算在候选评分前预收，欧式原成本保留，曼哈顿与光谱角额外收费；未增加任何上限。
+
+测试验证了所选 metric 从构造到训练／预测不丢失，保留输入顺序、属性、几何及 ID，并将结果继续送入 errorMatrix、accuracy、consumersAccuracy、producersAccuracy 和 Fβ。官方 Python／JS SDK 一致性回归增至 65 项。可信进程内 SDK 测试的 OfflineGuard 记录网络入口尝试 0，这不等于内核隔离或运行流量抓包。
+
+本批 1583 passed／3 skipped，较第二十批增加 48 项通过；前端 11 项、TypeScript／临时目录构建通过。原 50 项探针仍为 45 编译／5 拒绝，完整固定 Python API 清单独立生成字节相同。证据为 S／C／独立静态 N，无栅格 E／Google G；未部署到运行服务。Mahalanobis、k>1、REGRESSION／RAW／概率、随机采样、自动 schema、Image.classify 仍未支持；内联分类要素的 CSV 任务导出也未接通，现有区域 CSV 合同不能代替这一能力。详见 [报告](../../reports/gee-python-wave21.json)。

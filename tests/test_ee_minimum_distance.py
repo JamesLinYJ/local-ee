@@ -237,14 +237,15 @@ def test_equal_distance_predictions_and_image_classification_are_unsupported(ee)
 
 
 @pytest.mark.parametrize(("metric", "k_nearest"), [
-    ("cosine", 1),
+    ("mahalanobis", 1),
     ("", 1),
     (False, 1),
+    (1, 1),
     ("euclidean", 2),
     ("euclidean", 0),
     ("euclidean", False),
 ])
-def test_only_explicit_euclidean_k_nearest_one_constructor_arguments_are_supported(
+def test_unsupported_metric_and_non_one_k_nearest_constructor_arguments_are_rejected(
         ee, metric, k_nearest):
     classifier = ee.Classifier.minimumDistance(metric=metric, kNearest=k_nearest)
     with pytest.raises(UnsupportedEEError):

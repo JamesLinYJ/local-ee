@@ -1,4 +1,4 @@
-"""Bounded Euclidean minimum-distance classifier over inline Features."""
+"""Bounded static minimum-distance classifiers over inline Features."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -8,6 +8,7 @@ import math
 from .array_core import charge_array
 from .feature_values import is_collection, validate_feature
 from .ir import fail, integer
+from .minimum_distance_metrics import predict_unique, require_metric
 
 
 MAX_TRAINING_FEATURES = 1_000
@@ -63,9 +64,9 @@ def _label(value):
 def _supported(classifier):
     if not isinstance(classifier, StaticMinimumDistance):
         fail("Expected a supported ee.Classifier.minimumDistance")
-    if (type(classifier.metric) is not str or classifier.metric != "euclidean"
-            or type(classifier.k_nearest) is not int or classifier.k_nearest != 1):
-        fail("Only Euclidean minimum-distance classifiers with kNearest=1 are supported")
+    require_metric(classifier.metric)
+    if type(classifier.k_nearest) is not int or classifier.k_nearest != 1:
+        fail("Only minimum-distance classifiers with kNearest=1 are supported")
     if (type(classifier.output_mode) is not str
             or classifier.output_mode != "CLASSIFICATION"):
         fail("Only CLASSIFICATION output mode is supported for minimum distance")
@@ -184,13 +185,11 @@ def _train(translator, args):
 
 def _construct(translator, args):
     translator.allowed(args, {"metric", "kNearest"})
-    metric = args.get("metric", "euclidean")
-    if type(metric) is not str or metric != "euclidean":
-        fail("Only the euclidean Classifier.minimumDistance metric is supported")
+    metric = require_metric(args.get("metric", "euclidean"))
     k_nearest = integer(args.get("kNearest", 1), "Classifier kNearest", 1)
     if k_nearest != 1:
         fail("Only Classifier.minimumDistance kNearest=1 is supported")
-    return StaticMinimumDistance()
+    return StaticMinimumDistance(metric=metric)
 
 def invoke_classifier(translator, name, args):
     """Evaluate the bounded minimum-distance classifier API surface."""
@@ -228,20 +227,6 @@ def predict_class(translator, classifier, values):
         _number_fraction(value, "Classifier prediction value", allow_fraction=True)
         for value in values
     )
-    charge_array(translator, len(classifier.labels) * len(classifier.schema))
-
-    best_distance = None
-    best_label = None
-    tied = False
-    for label, center in zip(classifier.labels, classifier.centers):
-        distance = sum(
-            ((value - mean) ** 2 for value, mean in zip(vector, center)),
-            Fraction(0),
-        )
-        if best_distance is None or distance < best_distance:
-            best_distance, best_label, tied = distance, label, False
-        elif distance == best_distance:
-            tied = True
-    if tied:
-        fail("Minimum-distance prediction is unsupported for equal-distance class centers")
-    return best_label
+    return predict_unique(
+        translator, classifier.metric, vector, classifier.labels, classifier.centers,
+    )

@@ -1,0 +1,513 @@
+{
+  "base_commit": "77ee87d54071d0406b75f27cff593d4e0417c7dd",
+  "cleanup": {
+    "artifacts": [
+      {
+        "bytes": 1669087,
+        "files": 16,
+        "in_use_scan": "lsof_no_open_files",
+        "name": "gee-python-wave21-web",
+        "sha256": "a512b4fc2a38366565f307917799c890f3a26e9edf31d289c2772dacdd7acb67"
+      },
+      {
+        "bytes": 3292711,
+        "files": 1,
+        "in_use_scan": "lsof_no_open_files",
+        "name": "gee-python-wave21-inventory.json",
+        "sha256": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12"
+      }
+    ],
+    "status": "removed_and_absence_verified",
+    "total_bytes": 4961798
+  },
+  "date": "2026-10-23",
+  "implementation": {
+    "centers": "Exact Fraction means of finite binary64 inputs and exact integers within +/-2^53.",
+    "metrics": [
+      "euclidean",
+      "manhattan",
+      "cosine"
+    ],
+    "policies": [
+      "Unique nearest class required; exact ties explicitly reject.",
+      "Cosine zero-norm query or any zero-norm class center explicitly rejects at prediction, not constructor/train/schema.",
+      "Metric persists through constructor, training and prediction; initial default-metric retention bug fixed and regression covered.",
+      "Work charges precede candidate score construction and loops; no limit increased.",
+      "Training and held-out classified Features preserve metadata, identity, input order and schema."
+    ],
+    "ranking": {
+      "cosine": "Minimum spectral angle via maximum signed normalized dot: compare signs, then exact dot-squared/center-norm cross-products, reversing negative-dot comparisons; no float normalization or acos.",
+      "euclidean": "Exact sum of squared differences; prior behavior and work cost preserved.",
+      "manhattan": "Exact sum of absolute differences."
+    },
+    "scope": "Bounded static inline FeatureCollection class-center training and classification; kNearest=1 and CLASSIFICATION only."
+  },
+  "local_evidence_sha256": {
+    "audit/gee-python-wave21/cleanup.json": "00ca70cf471eb71c6bc5f75ed36a05d3ec5cda6783c552e589534ed36b7a7b62",
+    "audit/gee-python-wave21/example.json": "78d4af452014fae7c8703f9fae2d592b6d80e027a60005949283ceb871da4d40",
+    "audit/gee-python-wave21/python.xml": "c8bcdefc7e0f208bc984370cf6b92886feef8c064843af6533581fb1fc99f49a",
+    "audit/gee-python-wave21/web-stage-manifest.json": "a512b4fc2a38366565f307917799c890f3a26e9edf31d289c2772dacdd7acb67",
+    "audit/gee-python-wave21/workflow-network.json": "879926d1f15026691176e9ca05e353e029cf789de197a823b32791d2c77dd824"
+  },
+  "not_claimed": [
+    "Mahalanobis, kNearest>1, REGRESSION/RAW/probability modes, random subsampling and inferred band_order schema remain unsupported.",
+    "Sampling, Image.classify, random forests and other classifiers remain unsupported.",
+    "Inline classified FeatureCollection CSV task export is not connected; existing regional CSV is a different contract.",
+    "Exact rational ranking, zero-norm/tie rejection and previous per-class metric rank/F-beta axis are explicit local policies without Google/Smile numerical equivalence.",
+    "No deployment, native engine execution, kernel packet capture, private real-data acceptance or whole-platform production acceptance in this wave."
+  ],
+  "platform": {
+    "architecture": "arm64",
+    "earthengine_api": "1.7.49",
+    "node": "v24.19.0",
+    "os": "Darwin",
+    "python": "3.11.16"
+  },
+  "preservation": {
+    "accounts_data_native_config_modified": false,
+    "dependency_locks_modified": false,
+    "deployed": false,
+    "runtime_services_restarted": false
+  },
+  "primary_sources": [
+    "https://developers.google.com/earth-engine/apidocs/ee-classifier-minimumdistance",
+    "https://developers.google.com/earth-engine/apidocs/ee-classifier-train"
+  ],
+  "schema": "local-ee-python-compat-wave21/v1",
+  "source_files_sha256": {
+    "GOAL.md": "c11206d1441e5b5424c44c84f2d2aaad53129b3c5efc257fefd23f88fa9bc89c",
+    "docs/cloud-handoff.md": "267fb98fca7ca93d5bbe7b74fa55e47d7bc30b82c8efb4f38b8aaa4856cd3a37",
+    "docs/gee-compatibility.md": "f73432b2c721eaedb85fa9bab4f10b82bc56c5795096ab26758704d0b18802a2",
+    "docs/gee-python/list.md": "130c521a159183986c391bba586a5f4d9969ddc652c2920ba34ace78e652a625",
+    "docs/gee-python/numerical-policies.md": "97983c2c58e1d4efe36ab0653f2f0ed4309a1b9b1d5e68a6b303f86417f14e3f",
+    "examples/26_GEE_python_distance_metric_validation.py": "c275c37ac021362a62863f8251a6362f3113ea0378e19df1cd3a2160c9ae34ec",
+    "gee/compat/earthengine/capabilities.py": "828be278561df535c7707da784e3d354fdfe45686a59d217be75c8a1ecd6f6e6",
+    "gee/compat/earthengine/minimum_distance.py": "587b93f9c5443e8fbcf5c2262c03afb1e9b81c8f5cc39c302fbcc9f4119f7f4c",
+    "gee/compat/earthengine/minimum_distance_metrics.py": "0733f5775d4e828272c36d3aaa66986cc2ddedb8027817ca866619623f60f6fb",
+    "reports/gee-api-inventory.json": "1d368513bf7d11a46f0aadd7dc187c0a4c95e9fb787eb88b969efdec2629d048",
+    "scripts/ee_inventory/catalogue.py": "0ffdda0b66c2fe09dcb54d0bd8ca715676458516ca1e8ddb6cfe9311fb10170f",
+    "tests/fixtures/ee-distance-metric-validation-v1.json": "b94954f8161ca724a9c69d4e3811a9ac0e66a2ec14c3456ea1b21d595434daf5",
+    "tests/test_ee_distance_metric_workflow.py": "4b706fd8bb4ba9f45c6aa0a8bbb0fa51d0f6005d3b6adeb102bf355528b009d3",
+    "tests/test_ee_metric_extremes.py": "4f361cc49a770fc2e5d62c35f491404eda3610ecd220d2cc2a37cd80b8e98c38",
+    "tests/test_ee_minimum_distance.py": "812ddac8c1f5c29aa84e18ac4cea5720acab63f8eb50b4b5ddce8ae5fde367e2",
+    "tests/test_ee_minimum_distance_metrics.py": "a89329c5312f2e7982a7e52720f70dab5ef78b9af11c22abff549dfbfe54b406",
+    "tests/test_ee_python_js_parity.py": "a8e66b09ca41109f0840f6c2bebebe44d53085e98937cdbd01fb5127368ea028"
+  },
+  "status": "partial_goal_in_progress",
+  "validation": {
+    "evidence_levels": {
+      "C": "passed_shared_compiler",
+      "E": "not_run",
+      "G": "not_run",
+      "N": "passed_independent_static_numerical_references",
+      "S": "passed_actual_pinned_Python_and_JS_SDK_serialization"
+    },
+    "extreme_reference": {
+      "decimal_significant_digits": 1600,
+      "scope": "Independent explicit normalized vectors, division and square root; negative and zero dots, max finite/subnormal inputs, close directions, scaling, over-Float64 distances and exact angular ties.",
+      "tests": 18
+    },
+    "frontend_build": "passed_in_temporary_directory_without_deployment",
+    "frontend_tests": 11,
+    "full_python_inventory": {
+      "algorithms": 991,
+      "callables": 1797,
+      "classes": 48,
+      "parameters": 2451,
+      "sha256": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12",
+      "status": "byte_identical_regeneration"
+    },
+    "native_runtime_cases": {
+      "excluded": 4,
+      "rerun_this_wave": false,
+      "status": "deferred_by_current_phase; prior wave20 permission failures retained separately"
+    },
+    "new_passing_tests_over_base": 48,
+    "python": {
+      "errors": 0,
+      "failures": 0,
+      "passed": 1583,
+      "skipped": 3,
+      "tests": 1586
+    },
+    "python_command": ".venv/bin/python -m pytest -q --ignore=tests/test_native_runtime.py --junitxml=audit/gee-python-wave21/python.xml",
+    "python_js_serializer_parity_cases": 65,
+    "read_only_review": "No remaining source/semantic finding in declared subset; stale metric wording corrected; report-link gap closed by this report.",
+    "targeted_probe": {
+      "compiled": 45,
+      "fixture_check": "unchanged",
+      "rejected": 5,
+      "serialized": 50
+    },
+    "typescript": "passed"
+  },
+  "workflow": {
+    "actual": {
+      "cosine": {
+        "accuracy": 0.6666666666666666,
+        "consumers_accuracy": [
+          0.5,
+          0.75
+        ],
+        "fscore": [
+          0.5,
+          0.75
+        ],
+        "fscore_beta2": [
+          0.5,
+          0.75
+        ],
+        "predictions": [
+          1,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "producers_accuracy": [
+          0.5,
+          0.75
+        ],
+        "schema": [
+          "nir",
+          "red"
+        ],
+        "training_confusion": [
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "validation_confusion": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            3
+          ]
+        ],
+        "validation_sample_ids": [
+          "diag-small",
+          "diag-unit",
+          "shallow-large",
+          "positive-axis",
+          "negative-diagonal",
+          "positive-red-axis"
+        ]
+      },
+      "euclidean": {
+        "accuracy": 0.5,
+        "consumers_accuracy": [
+          0.5,
+          0.5
+        ],
+        "fscore": [
+          0.4,
+          0.5714285714285714
+        ],
+        "fscore_beta2": [
+          0.45454545454545453,
+          0.5263157894736842
+        ],
+        "predictions": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        "producers_accuracy": [
+          0.3333333333333333,
+          0.6666666666666666
+        ],
+        "schema": [
+          "nir",
+          "red"
+        ],
+        "training_confusion": [
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "validation_confusion": [
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "validation_sample_ids": [
+          "diag-small",
+          "diag-unit",
+          "shallow-large",
+          "positive-axis",
+          "negative-diagonal",
+          "positive-red-axis"
+        ]
+      },
+      "manhattan": {
+        "accuracy": 0.8333333333333334,
+        "consumers_accuracy": [
+          1.0,
+          0.75
+        ],
+        "fscore": [
+          0.8,
+          0.8571428571428571
+        ],
+        "fscore_beta2": [
+          0.9090909090909091,
+          0.7894736842105263
+        ],
+        "predictions": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "producers_accuracy": [
+          0.6666666666666666,
+          1.0
+        ],
+        "schema": [
+          "nir",
+          "red"
+        ],
+        "training_confusion": [
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "validation_confusion": [
+          [
+            2,
+            0
+          ],
+          [
+            1,
+            3
+          ]
+        ],
+        "validation_sample_ids": [
+          "diag-small",
+          "diag-unit",
+          "shallow-large",
+          "positive-axis",
+          "negative-diagonal",
+          "positive-red-axis"
+        ]
+      }
+    },
+    "centers": [
+      [
+        3,
+        0
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    "class_order": [
+      0,
+      1
+    ],
+    "held_out_rows": 6,
+    "independent_methods": [
+      "NumPy Euclidean/L1 on moderate fixture",
+      "Decimal normalized dot with square roots",
+      "Fraction label counts and per-class scores"
+    ],
+    "network": {
+      "attempt_count": 0,
+      "attempts_by_operation": {},
+      "instrumented_operations": [
+        "local_transport.request",
+        "socket.create_connection",
+        "socket.getaddrinfo",
+        "socket.gethostbyaddr",
+        "socket.gethostbyname",
+        "socket.gethostbyname_ex",
+        "socket.socket.connect",
+        "socket.socket.connect_ex",
+        "socket.socket.sendmsg",
+        "socket.socket.sendto"
+      ],
+      "mode": "deny_and_count_python_network_and_local_transport_entry_points",
+      "scope": "Trusted in-process SDK probes only; not packet capture or kernel isolation"
+    },
+    "reference": {
+      "cosine": {
+        "accuracy": "2/3",
+        "consumers_accuracy": [
+          "1/2",
+          "3/4"
+        ],
+        "fscore": [
+          "1/2",
+          "3/4"
+        ],
+        "fscore_beta2": [
+          "1/2",
+          "3/4"
+        ],
+        "predictions": [
+          1,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "producers_accuracy": [
+          "1/2",
+          "3/4"
+        ],
+        "training_confusion": [
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "validation_confusion": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            3
+          ]
+        ]
+      },
+      "euclidean": {
+        "accuracy": "1/2",
+        "consumers_accuracy": [
+          "1/2",
+          "1/2"
+        ],
+        "fscore": [
+          "2/5",
+          "4/7"
+        ],
+        "fscore_beta2": [
+          "5/11",
+          "10/19"
+        ],
+        "predictions": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        "producers_accuracy": [
+          "1/3",
+          "2/3"
+        ],
+        "training_confusion": [
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "validation_confusion": [
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      },
+      "manhattan": {
+        "accuracy": "5/6",
+        "consumers_accuracy": [
+          "1",
+          "3/4"
+        ],
+        "fscore": [
+          "4/5",
+          "6/7"
+        ],
+        "fscore_beta2": [
+          "10/11",
+          "15/19"
+        ],
+        "predictions": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "producers_accuracy": [
+          "2/3",
+          "1"
+        ],
+        "training_confusion": [
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "validation_confusion": [
+          [
+            2,
+            0
+          ],
+          [
+            1,
+            3
+          ]
+        ]
+      }
+    },
+    "schema": "local-ee-distance-metric-validation/v1",
+    "schema_order": [
+      "nir",
+      "red"
+    ],
+    "standalone_result": "Reproduced via module entry point, independently matched pinned fixture; guarded rerun identical.",
+    "training_rows": 4
+  }
+}

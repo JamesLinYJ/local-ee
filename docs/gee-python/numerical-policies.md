@@ -58,3 +58,13 @@ ConfusionMatrix 的固定描述把 consumersAccuracy 定义为对角／行和，
 beta 限有限正值，按其 binary64 精确有理数计算中间量，覆盖巨大和次正规 beta，不先用浮点平方制造溢出／下溢；不声称与 Google 最后位一致。零分母明确拒绝，不填零伪造指标。Fβ 两次矩阵遍历和结果分配均预收工作预算。第二十批报告分别保留独立分数参考、合成图采样、未运行栅格 E 与 Google G。
 
 来源：[Array.sort](https://developers.google.com/earth-engine/apidocs/ee-array-sort)、[Image.arraySort](https://developers.google.com/earth-engine/apidocs/ee-image-arraysort)、[consumersAccuracy](https://developers.google.com/earth-engine/apidocs/ee-confusionmatrix-consumersaccuracy)、[producersAccuracy](https://developers.google.com/earth-engine/apidocs/ee-confusionmatrix-producersaccuracy)、[fscore](https://developers.google.com/earth-engine/apidocs/ee-confusionmatrix-fscore)。公式轴解释与输出 rank 属于上述明确推断／本地政策。
+
+## 最小距离的曼哈顿与光谱角排名
+
+Classifier.minimumDistance 的欧式、曼哈顿及 cosine 光谱角均围绕未归一化类均值计算。训练保留有限 binary64 输入的精确 Fraction 均值；欧式用距离平方排序，曼哈顿用绝对差之和。cosine 求最小光谱角等价于最大带符号归一化点积。查询范数对全部类别相同，比较时可约去；先比较点积符号，再对同号非零候选比较 dot² 与另一类范数平方的交叉乘积，负号情形反转比较方向。全过程不以 Float64 先求范数、平方或 acos，避免有限输入在中间步骤溢出／下溢或相近方向被舍入成同分。
+
+这是精确输入下的本地分类排名政策，不返回实际距离值，也没有证明与 Google／Smile 的逐步浮点结果完全一致。零范数查询或任一类中心在预测时明确拒绝；训练／schema 本身不以预测代替校验。所有度量的最近类并列继续拒绝，不任取第一个。kNearest=1、CLASSIFICATION、显式 1..8 平面属性、完整训练行及共享预算继续适用，Mahalanobis／REGRESSION／RAW／概率模式没有用其他算法代替。
+
+独立参考使用不同的 Decimal 归一化、除法和开方路径（极值控制 1600 位精度），覆盖负／零点积、最大有限值／最小次正规值、±2^53 附近的相近方向、正比例缩放与精确角度并列。中等范围的欧式／L1 另用 NumPy 距离核对；训练／验证混淆矩阵与每类指标使用独立 Fraction 频数参考。收费在候选循环和评分构造前执行，原欧式成本不变；不同度量因运算成本而可能在不同输入规模触发同一共享预算。
+
+来源：[Classifier.minimumDistance](https://developers.google.com/earth-engine/apidocs/ee-classifier-minimumdistance)。本批为静态 S／C／N，没有采样、栅格 Image.classify、原生引擎 E 或 Google G。

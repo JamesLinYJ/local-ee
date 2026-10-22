@@ -86,7 +86,7 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 | 静态 Array／矩阵 | 构造、get/length/toList/reshape/transpose、matrixTranspose/Multiply/Inverse/PseudoInverse/Solve | S/C 与静态独立 N；整数精确域不超过 2^53、最多 8 轴／10000 单元及共享工作预算；线性求解只接受满列秩方阵／超定矩阵；不含 Image.array*、栅格回归或分类器 |
 | 有限分类评估 | 静态 ConfusionMatrix、array／order／accuracy／kappa、有限 consumersAccuracy／producersAccuracy／fscore；内联 Collection.errorMatrix | S/C 与独立标签频数 N；<=64 类／4096 单元、非负整数计数总和 <=2^53、<=1000 完整记录，共享预算；缺失／null、未定义分母、原始 List／浮点计数 Array、直接对象 JSON、Feature 属性对象拒绝；逐类 rank1 Float64／Fβ 轴为本地政策，无 E/G |
 | 有限 List 计算 | zip／unzip／flatten／repeat／reverse／set／swap，List.reduce 的单输出归约及 linearFit／linearRegression | S/C/独立静态 N；布局 <=10000 顶层值、flatten 深度 96、reduce <=1000 行／32 回归列，共享工作与公开物化预算；typed Array 保留；空值／低样本政策明确且无 G 对照，不含任意 reducer 组合／权重 |
-| 静态最小距离分类 | minimumDistance／train／schema／CLASSIFICATION 模式、FeatureCollection.classify、训练 confusionMatrix | S/C/独立静态 N；欧式、k=1、1..1000 训练行／1..8 平面属性、类别 0..63、无子采样、共享预算；唯一最近类，等距和输出名碰撞拒绝，保留要素元数据；无图像分类／随机森林／E/G |
+| 静态最小距离分类 | minimumDistance／train／schema／CLASSIFICATION 模式、FeatureCollection.classify、训练 confusionMatrix | S/C/独立静态 N；欧式／曼哈顿／光谱角、k=1、1..1000 训练行／1..8 平面属性、类别 0..63、无子采样、共享预算；唯一最近类，等距和输出名碰撞拒绝，保留要素元数据；无图像分类／随机森林／E/G |
 | 静态方阵分解 | QR 的 Q／R，部分选主元 LU 的 L／U／P，SVD 的 U／对角 S／V；typed 因子可继续矩阵计算 | S/C/闭式与分解恒等式 N；所有因子 n×n，合并输出 <=10000 cells、共享立方工作预充；LU 计算零主元和非有限消元拒绝，QR／SVD 符号／退化基未作 Google/EJML 对照；无矩形／栅格 E/G |
 | 有限栅格 linearRegression | numX=1 过原点，或 numX=2 且首列为可证明单位截距；numY=1..4，系数／RMS 命名数组波段 | S/C/独立样点 N；1..8 同序帧、所有输入共同完整行、n>numX／非退化、RMS 按 n；parallelScale=1、Float32 callback 和现有工作／图预算；多响应按需单独物化，无通用设计矩阵／E/G |
 | Algorithms.If | 静态条件，惰性编译选中分支 | S/C；不把影像对象当作静态布尔条件 |
@@ -136,7 +136,7 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 
 - 全球 GEE 数据目录、私有 assets、任意 `require('users/...')` 模块和 Google Drive/Cloud Storage 上传。
 - 独立纯常量栅格与纯常量集合缺少明确的本地网格，仍拒绝；绑定到本地影像的 addBands 常量与日期 band 已支持。常量投影查询、任意异构类型、逐波段投影与跨网格语义仍需独立实现和验证。
-- 除上述静态欧式最小距离子集外的分类器、图像分类、采样、通用设计矩阵的栅格回归、动态形状及其余多数组波段／Image.array* 运算、超出上述有限元数据范围的 join、邻域卷积、ui.Chart/ui.Panel 等完整 GEE 应用组件。已补固定形状数组布局／矩阵投影／归约及有限逐像元 linearFit／linearRegression，不能据此宣称完整栅格回归支持。
+- 除上述静态最小距离子集外的分类器、图像分类、采样、通用设计矩阵的栅格回归、动态形状及其余多数组波段／Image.array* 运算、超出上述有限元数据范围的 join、邻域卷积、ui.Chart/ui.Panel 等完整 GEE 应用组件。已补固定形状数组布局／矩阵投影／归约及有限逐像元 linearFit／linearRegression，不能据此宣称完整栅格回归支持。
 - 分数掩膜、球面/测地线几何、非 UTC 时区、分数月/年、任意 Joda 格式 token。
 - 任意 CRS transform、导出分片、bestEffort 和自定义 tileScale；不支持的参数明确失败。
 - 整数像元类型转换、Image 位运算和原始 GEE 的边界像元加权。GeoTrellis 整型 NoData 哨兵会占用合法数值，不能简单替换 cast 名称；完整类型提升仍待实现。当前 N 验收以浮点数值、网格和二值 NoData 为准。
@@ -187,3 +187,5 @@ GEE_AUDIT_DIR=/absolute/new/audit-dir .venv/bin/python -m scripts.check_ee_multi
 
 
 第二十批补静态 Array.sort 和显式 Float32 固定数组 Image.arraySort：按键稳定排序整个切片，保留 NDVI／日期对应关系、完整值与键掩膜及预算；四景质量筛选有独立分数参考。有限逐类 consumersAccuracy／producersAccuracy／fscore 继续准确登记本地返回 rank 与 Fβ 轴推断，未称 Google 完整等价。最终范围、误差及未运行项见 [第二十批报告](../reports/gee-python-wave20.json) 和 [数值政策](gee-python/numerical-policies.md)。
+
+第二十一批扩展静态 minimumDistance 的曼哈顿及 cosine 光谱角分类。三种度量均以真实未归一化类均值预测独立要素，保留 schema、元数据、训练混淆矩阵和逐类指标；固定样本准确率分别为 1/2、5/6、2/3，说明所选度量实际生效。cosine 用带符号精确交叉乘积比较角度，零范数查询／类中心在预测时拒绝，等距继续拒绝。限 k=1／CLASSIFICATION，无 Mahalanobis、采样、Image.classify、栅格 E 或 Google G；详见 [第二十一批报告](../reports/gee-python-wave21.json)。

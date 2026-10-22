@@ -259,3 +259,11 @@ Linux 云端继续完成 SDK、纯编译、权限服务单测、前端和合成�
 新增有限 consumersAccuracy／producersAccuracy／fscore，保留训练和独立验证表链路。每类向量 rank1 Float64、Fβ 的实际行 recall 解释为明确本地政策，未宣称 Google shape／dtype 等价。Luna max 独立复审发现 Fβ 少计第二次矩阵扫描，已加收费和 64×64 边界回归；复审 101 项通过并确认关闭。
 
 最终 macOS ARM64 可移植 Python 1535 passed／3 skipped（另排除 4 项原生测试）、前端 11 passed、TypeScript／临时目录构建通过。初次全套 4 项原生失败源于当前执行权限拒绝 sandbox-exec／进程枚举，未放宽隔离或算通过；按阶段继续延期原生／真实数据验收。50 项探针仍为 45 编译／5 拒绝，完整固定 Python 目录重复生成字节相同；64 项 Python/JS SDK 一致性回归通过。报告 `reports/gee-python-wave20.json` 区分 S／C／静态或采样 N、未运行 E／G。账号／科研数据和 `.native` 配置未修改，未部署本批到运行服务。
+
+## 第二十一批最小距离度量
+
+2026-10-23 以已发布 main `77ee87d54071d0406b75f27cff593d4e0417c7dd` 为基线，扩展静态 minimumDistance 的 Manhattan 与 cosine 光谱角，保留 Euclidean、kNearest=1／CLASSIFICATION 及所有既有预算。真实类均值训练、独立要素预测、训练／验证混淆矩阵与逐类指标串联在示例 26 和版本化夹具中；三种度量的验证准确率分别为 1/2、5/6、2/3，不用完美训练表现掩盖独立误差。
+
+cosine 先保留点积符号，再用精确有理数交叉乘积排名，不先转换 Float64 范数或 acos；独立 1600 位 Decimal 归一化参考覆盖负方向、极值、次正规输入、相近方向和正比例缩放。零范数查询／类中心在预测时拒绝，等距继续拒绝；这些属于尚无 Google 对照的明确本地政策。审查期间发现构造器原先验证 metric 却仍保存默认值，现已修复并增加 IR 保留和实际不同预测的回归。
+
+本机 ARM64 可移植 Python 1583 passed／3 skipped，另排除 4 项原生测试，本批未重跑；前端 11 passed、TypeScript／临时构建通过，未部署。固定 50 探针不变，完整 API 清单字节重现，Python／JS SDK 一致性增至 65 项。报告 `reports/gee-python-wave21.json` 记录 S／C／独立静态 N，E／G 未运行；账号、数据与 `.native` 未改。Mahalanobis、k>1、其他模式、采样／Image.classify 和内联分类要素 CSV 任务导出仍待实现，后续从远端最新 main 核对再继续，不能停留在旧交接分支。

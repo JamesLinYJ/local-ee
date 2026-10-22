@@ -1,0 +1,202 @@
+{
+  "schema": "local-ee-distance-metric-validation/v1",
+  "input_properties": [
+    "nir",
+    "red"
+  ],
+  "class_property": "landcover",
+  "class_order": [
+    0,
+    1
+  ],
+  "prediction_property": "predicted",
+  "distance_metrics": [
+    "euclidean",
+    "manhattan",
+    "cosine"
+  ],
+  "training": [
+    {
+      "nir": 2,
+      "red": 0,
+      "landcover": 0,
+      "system:index": "train-0a"
+    },
+    {
+      "nir": 4,
+      "red": 0,
+      "landcover": 0,
+      "system:index": "train-0b"
+    },
+    {
+      "nir": 1,
+      "red": 1,
+      "landcover": 1,
+      "system:index": "train-1a"
+    },
+    {
+      "nir": 3,
+      "red": 3,
+      "landcover": 1,
+      "system:index": "train-1b"
+    }
+  ],
+  "validation": [
+    {
+      "nir": 0.25,
+      "red": 0.25,
+      "landcover": 0,
+      "sample_id": "diag-small",
+      "system:index": "held-01",
+      "note": "positive diagonal, small magnitude"
+    },
+    {
+      "red": 2,
+      "nir": 2,
+      "landcover": 1,
+      "sample_id": "diag-unit",
+      "system:index": "held-02",
+      "note": "same direction at larger magnitude"
+    },
+    {
+      "nir": 8,
+      "red": 3.6,
+      "landcover": 1,
+      "sample_id": "shallow-large",
+      "system:index": "held-03",
+      "note": "positive direction near the Euclidean boundary"
+    },
+    {
+      "nir": 6,
+      "red": 0,
+      "landcover": 1,
+      "sample_id": "positive-axis",
+      "system:index": "held-04",
+      "note": "positive nir axis"
+    },
+    {
+      "nir": -2,
+      "red": -2,
+      "landcover": 0,
+      "sample_id": "negative-diagonal",
+      "system:index": "held-05",
+      "note": "negative direction"
+    },
+    {
+      "nir": 0,
+      "red": 4,
+      "landcover": 1,
+      "sample_id": "positive-red-axis",
+      "system:index": "held-06",
+      "note": "positive red axis"
+    }
+  ],
+  "reference_method": "Class means are exactly (3,0) for class 0 and (2,2) for class 1. Independently rank squared Euclidean distance and L1 distance using NumPy/Python over exact Fraction means derived from the inline binary64 rows. Rank cosine similarity with Decimal.from_float inputs, exact Decimal Fraction means, 100-digit precision and normalized dot products; maximize signed similarity, including negative directions. Count confusion cells from held-out labels with Fraction and class order [0,1]. Expected labels are pinned here, independently of the implementation. Per-class metric vectors follow the existing local policy: consumers=diagonal/actual-row total, producers=diagonal/predicted-column total, and F-beta uses actual-row recall plus predicted-column precision.",
+  "independent_reference": {
+    "euclidean": {
+      "predictions": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "training_confusion": [
+        [2, 0],
+        [0, 2]
+      ],
+      "validation_confusion": [
+        [1, 1],
+        [2, 2]
+      ],
+      "accuracy": "1/2",
+      "consumers_accuracy": [
+        "1/2",
+        "1/2"
+      ],
+      "producers_accuracy": [
+        "1/3",
+        "2/3"
+      ],
+      "fscore": [
+        "2/5",
+        "4/7"
+      ],
+      "fscore_beta2": [
+        "5/11",
+        "10/19"
+      ]
+    },
+    "manhattan": {
+      "predictions": [
+        0,
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "training_confusion": [
+        [2, 0],
+        [0, 2]
+      ],
+      "validation_confusion": [
+        [2, 0],
+        [1, 3]
+      ],
+      "accuracy": "5/6",
+      "consumers_accuracy": [
+        "1",
+        "3/4"
+      ],
+      "producers_accuracy": [
+        "2/3",
+        "1"
+      ],
+      "fscore": [
+        "4/5",
+        "6/7"
+      ],
+      "fscore_beta2": [
+        "10/11",
+        "15/19"
+      ]
+    },
+    "cosine": {
+      "predictions": [
+        1,
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "training_confusion": [
+        [2, 0],
+        [0, 2]
+      ],
+      "validation_confusion": [
+        [1, 1],
+        [1, 3]
+      ],
+      "accuracy": "2/3",
+      "consumers_accuracy": [
+        "1/2",
+        "3/4"
+      ],
+      "producers_accuracy": [
+        "1/2",
+        "3/4"
+      ],
+      "fscore": [
+        "1/2",
+        "3/4"
+      ],
+      "fscore_beta2": [
+        "1/2",
+        "3/4"
+      ]
+    }
+  }
+}

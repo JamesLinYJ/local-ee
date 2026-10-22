@@ -54,6 +54,13 @@ const prior = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(c, c,
     leftField:'system:time_start', rightField:'system:time_start'}),
     ee.Filter.greaterThan({leftField:'system:time_start', rightField:'system:time_start'}))));
 const values = {
+  minimumMetricPredictions: ee.List(['euclidean','manhattan','cosine'].map(metric => {
+    const trained = ee.Classifier.minimumDistance(metric).train(ee.FeatureCollection(
+      [[0,3,0],[1,2,2]].map(row => ee.Feature(null,{label:row[0],x:row[1],y:row[2]}))),
+      'label',['x','y']);
+    return ee.FeatureCollection([[0.25,0.25],[-2,-1],[5,0],[0,5]].map(row =>
+      ee.Feature(null,{x:row[0],y:row[1]}))).classify(trained,'prediction').aggregate_array('prediction');
+  })),
   arraySort: ee.Array([[30,10],[20,40],[50,60]]).sort(ee.Array([[2],[1],[2]])),
   rasterArraySort: c.first().select(['green','red','nir']).toArray().toFloat()
     .arraySort(c.first().select(['nir','green','red']).toArray().toFloat())
@@ -201,6 +208,13 @@ def parity_values():
             leftField="system:time_start", rightField="system:time_start"),
             ee.Filter.greaterThan(leftField="system:time_start", rightField="system:time_start"))))
     py = {
+        "minimumMetricPredictions": ee.List([
+            ee.FeatureCollection([ee.Feature(None, {"x": row[0], "y": row[1]})
+                                  for row in [[0.25, 0.25], [-2, -1], [5, 0], [0, 5]]])
+            .classify(ee.Classifier.minimumDistance(metric).train(ee.FeatureCollection([
+                ee.Feature(None, {"label": row[0], "x": row[1], "y": row[2]})
+                for row in [[0, 3, 0], [1, 2, 2]]]), "label", ["x", "y"]), "prediction")
+            .aggregate_array("prediction") for metric in ["euclidean", "manhattan", "cosine"]]),
         "arraySort": ee.Array([[30, 10], [20, 40], [50, 60]]).sort(ee.Array([[2], [1], [2]])),
         "rasterArraySort": c.first().select(["green", "red", "nir"]).toArray().toFloat()
             .arraySort(c.first().select(["nir", "green", "red"]).toArray().toFloat())
@@ -324,7 +338,7 @@ def parity_values():
                 for key, value in py.items()}, [metadata], items
 
 
-@pytest.mark.parametrize("case", ["arraySort", "rasterArraySort", "confusionConsumers",
+@pytest.mark.parametrize("case", ["minimumMetricPredictions", "arraySort", "rasterArraySort", "confusionConsumers",
                                  "confusionProducers", "confusionFscore",
                                  "arrayArgmax", "arrayArgmaxEmpty", "rasterArrayArgmax",
                                  "sequence", "emptyKeys", "missingDefault", "matrixMultiply",
