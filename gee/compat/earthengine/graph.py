@@ -4,10 +4,11 @@ import math
 import re
 
 from .ir import Pixel, fail
+from .band_labels import BandLabels
 from .pixel_graph import PixelCompiler
 
 
-class Graph(PixelCompiler):
+class Graph(PixelCompiler, BandLabels):
     def __init__(self, translator):
         self.t = translator
         self.graph = {}
@@ -18,6 +19,7 @@ class Graph(PixelCompiler):
         self.double_precision = {}
 
     def node(self, process_id, **args):
+        args = self.resolve_band_references(args)
         key = json.dumps([process_id, args], sort_keys=True)
         if key not in self.cache:
             if len(self.graph) >= 500: fail("Compiled process graph exceeds 500 nodes; reduce the script scope")
@@ -64,7 +66,7 @@ class Graph(PixelCompiler):
                 fail("A standalone constant image needs a raster grid and unmasked constant raster support")
             if time_state is not None and timed != time_state: fail("Image bands have incompatible time dimensions")
             time_state = timed
-            ref = self.node("rename_labels", data=ref, dimension="bands", target=[name])
+            ref = self.rename_band(ref, name)
             out = ref if out is None else self.node("merge_cubes", cube1=out, cube2=ref)
         scale = self.t.options.get("scale")
         crs = self.t.options.get("crs")
@@ -77,9 +79,10 @@ class Graph(PixelCompiler):
             # A nonrectangular export region must mask pixels, not merely limit
             # the source query to the region's bounding box.
             out = self.node("mask_polygon", data=out, mask=self.t.options["region"])
-        return out, time_state
+        return self.resolve_band_references(out), time_state
 
     def finish(self, ref):
+        ref = self.resolve_band_references(ref)
         self.graph[ref["from_node"]]["result"] = True
         if len(self.graph) > 500: fail("Compiled process graph exceeds 500 nodes; reduce the script scope")
         return self.graph

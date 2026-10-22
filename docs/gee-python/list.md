@@ -1,8 +1,8 @@
 # GEE Python 兼容清单
 
-状态：2026-10-22，第十批持续实施，整体兼容目标尚未完成。
+状态：2026-10-22，第十一批持续实施，整体兼容目标尚未完成。
 
-第十批 [验证报告](../../reports/gee-python-wave10.json)：Linux Python **1120 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1091 passed／7 skipped](../../reports/gee-python-wave9.json)，本批增加 29 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
+第十一批 [验证报告](../../reports/gee-python-wave11.json)：Linux Python **1129 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1120 passed／7 skipped](../../reports/gee-python-wave10.json)，本批增加 9 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
 
 S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎；N＝独立数值基准；G＝Google 同数据对照。静态数值求值和合成图测试分别说明，不能标成原生栅格 E。固定的 991 项签名、方法可见数量和定向探针计数均不能换算为全 API 兼容百分比。
 
@@ -35,6 +35,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] 有界 List 配对／转置／展开／重复／置换，以及单输出归约和 List.reduce(linearFit／linearRegression) 多输入行；列列表构造二次设计、双响应系数／RMS 和预测的闭式／残差正交性参考。
 - [x] 有限欧式 minimumDistance 的实际类均值训练、唯一最近类预测、schema／默认模式、内联要素分类及真实重代入混淆矩阵；独立训练／验证样本、均值／距离和误差指标参考。
 - [x] 有限栅格 linearRegression 的过原点／单位截距模型、1..4 响应、联合完整行、系数／RMS 数组；有限多数组波段选择／元数据，双响应分字段物化和独立 SVD／空间掩膜参考。
+- [x] 延迟单波段维度／改名元数据，保留数值与源／掩膜／类型边界；共享表达式标签、完整四系数／双响应预测、同日／重复观测及超限控制。
 - [ ] 每一签名／参数组合的 S／C、适用的独立 N，以及负向、缺测、边界验收；E 按现有环境可用条件单独记录。
 - [ ] 动态形状、其余多数组波段运算和 Image.array*、通用设计矩阵的逐像元回归、采样／图像分类／其他分类器及模式、矢量／空间和多重／歧义度量 Join、邻域及高级时序。
 - [ ] 后续阶段：Linux 执行／隔离适配、macOS Seatbelt、ARM64 JNI 和本机真实数据验收；当前阶段延期。
@@ -120,6 +121,8 @@ minimumDistance 仅 Euclidean、kNearest=1、CLASSIFICATION；显式唯一平面
 numX=1 为过原点，numX=2 首列必须可证明为数字字面量 1，允许现有 cast／on_grid／reduce_t(first) 包装，原始像素掩膜仍参与共同完整行；其他设计矩阵拒绝。输出 n<=numX 或退化时系数与 RMS 一起掩膜；RMS 按残差平方和除以 n，不是自由度校正标准差。parallelScale 仅 1、binary NoData 和 Float32 callback 限制保留。最大帧数／维度分别有边界控制，但受图预算约束，不能保证最大配置的组合。
 
 有限多数组容器为 1..8 逻辑数组波段、总 64 cells、共享元数据来源；只能精确名称／非负索引选择、rename 与现有元数据方法。先选一个数组再 flatten／get；真正 Image.cast、bundle 通用数组算术、混合 scalar／array bands、直接输出／导出以及 regex／重复 selectors 仍拒绝。内部 If／Dictionary 保留类型，不能转成静态真值或虚构服务器 JSON。
+
+第十一批在下一真实 cube 进程之前延迟物化单波段标签，不跨越 callback、mask、cast 或时间边界。同一六条图降至 333／394／337 节点各两条，数值与 NoData 样点保持一致；完整四系数现在为 405 节点，双响应预测为 413，独立 SVD 和同日／重复行权重测试通过。完整双 RMS 与八字段组合仍明确超过 500，不能写成通过。共享 DAG 的不同输出名／操作数位置和 JSON／引用边界另有专用回归，见 [第十一批报告](../../reports/gee-python-wave11.json)。
 
 ## 当前 Python 调用探针
 

@@ -1,0 +1,462 @@
+{
+  "schema": "local-ee-python-compat-wave11/v1",
+  "date": "2026-10-22",
+  "status": "partial_goal_in_progress",
+  "base_commit": "b3ed6d2148c8472b4941e788664a8703b577061e",
+  "platform": {
+    "os": "Linux",
+    "architecture": "x86_64",
+    "python": "3.11.16",
+    "node": "24.19.0",
+    "uv": "0.12.12",
+    "earthengine_api": "1.7.49"
+  },
+  "phase": "Python-first compatibility; Linux isolation, macOS/ARM64 and private real-data acceptance deferred per user instruction",
+  "source_files_sha256": {
+    "examples/16_GEE_python_raster_multiresponse_regression.py": "f5169955c6f05382e8e2ef0f56e6442bc852406ca3c0bca40a9d563dda16cf8f",
+    "gee/compat/earthengine/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "gee/compat/earthengine/array_arithmetic.py": "a303da4d4fa6f38edaa0ff04986f989313161c218884379989d8cc8094cdcd90",
+    "gee/compat/earthengine/array_core.py": "96b48b561fcf3aeccea66c22dfa61bc74a85bf07c3560e1e982530cd8a178b94",
+    "gee/compat/earthengine/array_layout.py": "c784ffc7bab5f2b89e3319b6097dc1a3bfe46cd582cfc56b40ed4c5507b916eb",
+    "gee/compat/earthengine/array_matrix_extra.py": "c2803f0100052e7696395cbf3aa4b27fd4028b36a1ebdb65ac5bb2d0a43b0f37",
+    "gee/compat/earthengine/array_reductions.py": "2b5bc821c4a194c4e5315fe573289dfe432db9ab43fed8ae3eee5e3cdbdc6d8d",
+    "gee/compat/earthengine/array_values.py": "11683721bc0dfeb915dacfe52d5df87e8bff7e006fcaf1542e59a7d9bc9ae58f",
+    "gee/compat/earthengine/band_labels.py": "d76c6be1313e5c0301faa866adeb23ff62e4e077351541f557b230291cb89b1b",
+    "gee/compat/earthengine/capabilities.py": "2ea2180f2c5f61774cc6e2ee56cd0fad407d6a2f18a3ec8f57e2a20fb5f2a51e",
+    "gee/compat/earthengine/catalog.py": "ce7b7ab0ff83b6329ece3996c211ddc16b39354fc8a201d848e2cb4cc29b20f8",
+    "gee/compat/earthengine/classifier_features.py": "e521d4e8c6e9b0f1b2a3e38b7e0fefe754076f471645d4f124f163afef00cd53",
+    "gee/compat/earthengine/collection_ops.py": "fde917a42ea264f17d8e91f6c7063b0ea08723254643bd1abc537e585f7c11ea",
+    "gee/compat/earthengine/compile.py": "e08b4bc59230dfcf96c6ba890f897a5ce44ecc6162879089ed535dca66232f86",
+    "gee/compat/earthengine/confusion_values.py": "798e5d44294d28bb4f7ad1fc7e1387e6478af723ed31565dfb09b7bb5536c043",
+    "gee/compat/earthengine/constant_bands.py": "11f2ecd2eb08e002a735304ac201539e64f105d867c06256795fd53df75b54e4",
+    "gee/compat/earthengine/constant_graph.py": "b2a57e1a0aa84d273d86877294ceae8d494b47fb856aabb2ed974e5192139a2f",
+    "gee/compat/earthengine/date_values.py": "f4580990744e78b2f72c44e449799a99d1153773739527195ba26965959bc20b",
+    "gee/compat/earthengine/decoder.py": "036171e38a74547c9c7398d06fc066583fdb7d4aa4ded1db2b3615ff1eb0346d",
+    "gee/compat/earthengine/dispatch.py": "cdeea72a43d56b5820f7136d77e5b20a2f35c704269b6123bf5b0b06f31f5084",
+    "gee/compat/earthengine/feature_error_matrix.py": "dd41b9af406e7ad1ff683b4b3ff02c43c71ea7dd306eaee59577e91c7ee561b1",
+    "gee/compat/earthengine/feature_filters.py": "e9fad3a60d672000bc334db8b9779e359101c9f59c8f6889d642392877b9a6dd",
+    "gee/compat/earthengine/feature_ops.py": "1ed5b13c1672378a85a9c451385c44754f7d3da98d504b2bcfc2045ddb7e2e9f",
+    "gee/compat/earthengine/feature_values.py": "ed525f580e50e7230213ddc3b565dfb06608a8747156934f35ce1ad66f3503e2",
+    "gee/compat/earthengine/filtering.py": "ee32796a2db6216c745ff54e65584e8dc9e457ad83cca273e897d695616c4cbe",
+    "gee/compat/earthengine/geometry_values.py": "9fbc41d6ea487ae4e93f516138a0be6d217791e4189e4db6f12522590ae4912a",
+    "gee/compat/earthengine/graph.py": "7ebed060c02cdb1df76e50dd9df4e5f86fb3705ff67022b4f2805a224e6f6a72",
+    "gee/compat/earthengine/image_ops.py": "bda904f48ca75eaa2519bf313f957a31c279bf816aa1510e14911e36e8dd88f1",
+    "gee/compat/earthengine/inner_join.py": "b56d13083f44b3691544e4a993f17654750ca16d978167464379866e697594b7",
+    "gee/compat/earthengine/ir.py": "a7c601cc37894985d22bae9e70e35f4ca03bdbdf19f6e2a38c6fb1565adbda7f",
+    "gee/compat/earthengine/join_conditions.py": "9074ea3150916c204414b15830ba42051c3cc6561fcf8269cb66481cec910064",
+    "gee/compat/earthengine/join_ops.py": "4703f99e55cfb6f333649bfd5306590d3eaed07421870b6511ef08374c485228",
+    "gee/compat/earthengine/list_layout.py": "050f99ae5a852f0358ba53738882d08be6ea82813ea20609723918a0687bdbd0",
+    "gee/compat/earthengine/list_reductions.py": "18e5a896971cbe1665b650a52bb2679b9f5ec16694dc9cbeb5043085286dd432",
+    "gee/compat/earthengine/mask_graph.py": "7bc0592a88f83b94f601e6bf9fed524a914413015cee26587b1c8a7c7c83d77c",
+    "gee/compat/earthengine/metadata_ops.py": "b373c436bb0dda1920f02ad9add40be600160de93525358e863ea51e1b726d9d",
+    "gee/compat/earthengine/minimum_distance.py": "8e45cb31b33e27cce3e792cf37175fd82e7fb4b463099472f6ff8788331f4df5",
+    "gee/compat/earthengine/number_format.py": "9d85ea670b60c6c59834457a0dda4d9a1bed1a9918340a3004bbf63f82e7d2a7",
+    "gee/compat/earthengine/pixel_graph.py": "b3d973d9b2a2607ca1f2ab3940c27ef101b03bcef2023264dc7dc1a7ad30da99",
+    "gee/compat/earthengine/public_values.py": "5d01e96a517ef2f2f975f7847fdda948ac0daa20893e3a7f00328a5d28eba56f",
+    "gee/compat/earthengine/raster_array_bands.py": "053ce9f90808800fa7cb1ac0dff2da1d52475577e62dd66f750b4e51c244ae8f",
+    "gee/compat/earthengine/raster_array_coordinates.py": "c4ac59f713544b2722fddd0bdfae5ae1e7f20f22adf3b576ea116b862575a961",
+    "gee/compat/earthengine/raster_array_core.py": "54592397f236ad468fcb38b8bcccf8cd3e4e1273ef47b2cbd667b9f4376add38",
+    "gee/compat/earthengine/raster_array_dispatch.py": "39c0e7ebf7b445d3e796daa2510e5404df1b1c41e3385c58de1958ab658e4ed2",
+    "gee/compat/earthengine/raster_array_layout.py": "8eada4fb711f999d4764488b41898546b1a18ef87653d162050fc9ccd4204c16",
+    "gee/compat/earthengine/raster_array_reductions.py": "e3221910f30d824d93c65aed49d9323bc6772724aa1e8ea61e4cb5d04c1ca5fc",
+    "gee/compat/earthengine/raster_array_values.py": "3f19ae1c7e71a9f11e3c494a6327a54080ab297fc9898847b7978e728574dff2",
+    "gee/compat/earthengine/raster_linear_fit.py": "29d69d50ed7365433edb5a207bb4cab9e0a60c917ba468cb028fa342a7231a52",
+    "gee/compat/earthengine/raster_linear_regression.py": "94c4c8d0f9ec36fa89078bb363e035ad4bd94121ec0be7d5f286d8bd08ac3691",
+    "gee/compat/earthengine/raster_regression_frames.py": "0b38ee98ead267c7e97b96da811ea1a1a90d19dca8a88e186f26a95a2c74fd79",
+    "gee/compat/earthengine/reduction_graph.py": "628d7445641b448be1fda9557e8ca4c8f09fd9b45c743549fbdb5108413a6105",
+    "gee/compat/earthengine/static_dictionary.py": "2823714601588f528ccf9c0284bb5d62ffd12fd87399e41c5735d7627d3df619",
+    "gee/compat/earthengine/static_equality.py": "5779f199a88090d13445252a6b3e3634bf68b7d343b4a06c4f94354f226b9e5a",
+    "gee/compat/earthengine/static_sequence.py": "7c65aea263d536357e07f2ced11226e69538ecb39fe6c88a238359f64337e2b3",
+    "gee/compat/earthengine/static_values.py": "278e7dde72bbf6445205e1c15f129133176a731a39416991eec20cbb7a0be2c3",
+    "gee/compat/earthengine/string_values.py": "81f8433eacd32eb9dec1a98b1228cfeb65aac95347a9f5198cf456fc90b32554",
+    "gee/compat/earthengine/table_reducers.py": "fc8ced1a7b1103c1c9609aedc231191cad70dcc5182083debbe066bb1b226613",
+    "gee/compat/earthengine/temporal_graph.py": "a370582335f336b9cac38281b2ce748ee152d4226d0aaaac51b9fd8f5e2ab8a8",
+    "gee/compat/earthengine/value_ops.py": "267ef3770334788883b8bcfab685b19e5caccec92d49cadc2d0731463bb4928d",
+    "scripts/ee_inventory/catalogue.py": "367c6a74cdaf0e14e81ad6b452a1320e3a72500fa58d011014c95954ca78c40c",
+    "tests/fixtures/ee-python-1.7.49.json": "5f00f0901cc858f3acce64c6052171bd810ab24bfca2271520bd76d7e9fae19c",
+    "tests/fixtures/ee-raster-regression-v1.json": "6e3a90feec7aed6e633c4e6045c2ccd7dbff7b8e8b4590d02e872942c9d37fa9",
+    "tests/test_ee_band_label_compilation.py": "34073b00ea3cf7f92a97578215de557266e1223712b3785245b0d2570d34c871",
+    "tests/test_ee_compact_raster_regression.py": "748dd1c7f4c6acb688283f5ff4c996e321c6b3dd1c1b1f0f149566e717b5811a",
+    "tests/test_ee_python_js_parity.py": "f2779c72fed3c8f8d69147d6a2f7d9133a4c07215f9cbb82b7d863cb5ef3346c",
+    "tests/test_ee_raster_linear_regression_parameters.py": "2dbc337f3c3fd8c99a61e22b712ab9ec179dc404f9b55d657d349d7c942dab40",
+    "tests/test_ee_raster_regression_workflow.py": "7e1b2ea1dfa7fcf9a9a804c72f95d9998e8a0d4403f76e018e9371db3e1a7a2f",
+    "tests/test_ee_translate.py": "7c9423cb2d6a3bba35c649d21d6358e1a8681873c5d3fa7528be4753dc4b5a51",
+    "uv.lock": "b688828aa0119bc71d098efe66aefaa9a0d93a51fae3289bfbe806c13a535b6d",
+    "vendor/earthengine-js/algorithms.json": "8279bfd5e755f10c291a0d833aed810a5aba2e360e26ecee69f2bacaeecb3d01",
+    "web/package-lock.json": "23ab4ccf3a102558ff642f085e8d96c6ac8209fafe3042faebcfc04e2ce70c62"
+  },
+  "verification": {
+    "previous_code_baseline": {
+      "report": "reports/gee-python-wave10.json",
+      "passed": 1120,
+      "skipped": 7,
+      "note": "Published exact-commit validation baseline; not a fresh pre-edit local run"
+    },
+    "dependency_installation": {
+      "python": "uv sync --frozen --python 3.11: passed",
+      "frontend": "npm ci: passed with workspace activation"
+    },
+    "python": {
+      "command": "uv run pytest -q -ra --junitxml=<external-report-path>",
+      "passed": 1129,
+      "skipped": 7,
+      "failed": 0,
+      "errors": 0,
+      "junit_sha256": "05fdf45092402efd5810ee11b9aa96238206d5f0b31cc64741f4f33d17f41557",
+      "wave10_passed": 1120,
+      "added_passing_cases": 9,
+      "focused_module_test_counts": {
+        "tests.test_ee_band_label_compilation": 5,
+        "tests.test_ee_compact_raster_regression": 4,
+        "tests.test_ee_python_js_parity": 33
+      },
+      "skips": [
+        {
+          "module": "tests.test_ee_grid_adapter",
+          "test": "test_native_grid_and_unmask_spi_semantics",
+          "reason": "set LOCAL_EE_RUN_NATIVE_GRID_TEST=1 for the opt-in local[1] JVM/Spark probe"
+        },
+        {
+          "module": "tests.test_ee_integer",
+          "test": "test_native_adapter_builds_and_executes_real_spi_tile_conversion",
+          "reason": "set LOCAL_EE_RUN_NATIVE_INTEGER_TEST=1 for the lightweight JVM/Spark probe"
+        },
+        {
+          "module": "tests.test_ee_reduce_adapter",
+          "test": "test_native_single_time_and_band_reducer_semantics",
+          "reason": "set LOCAL_EE_RUN_NATIVE_REDUCER_TEST=1 for the opt-in local[1] JVM/Spark probe"
+        },
+        {
+          "module": "tests.test_native_runtime",
+          "test": "test_python_denies_foreign_files_symlinks_writes_and_network",
+          "reason": "macOS Seatbelt acceptance"
+        },
+        {
+          "module": "tests.test_native_runtime",
+          "test": "test_node_cannot_read_host_credentials",
+          "reason": "macOS Seatbelt acceptance"
+        },
+        {
+          "module": "tests.test_native_runtime",
+          "test": "test_only_declared_api_port_is_allowed",
+          "reason": "macOS Seatbelt acceptance"
+        },
+        {
+          "module": "tests.test_native_runtime",
+          "test": "test_supervisor_enforces_timeout_redacts_token_and_survives_reader_restart",
+          "reason": "macOS Seatbelt acceptance"
+        }
+      ],
+      "warnings": "Three existing Rasterio PendingDeprecationWarning messages",
+      "initial_focused_result": {
+        "passed": 88,
+        "failed": 1,
+        "explanation": "The previous 20-addition negative graph now fits after metadata folding; expanded it to 40 additions to retain a real 500-node rejection. Parameter suite then passed13; final full suite passed1129. No budget was raised."
+      }
+    },
+    "frontend": {
+      "test_command": "npm test -- --maxWorkers=2",
+      "tests_passed": 11,
+      "tests_failed": 0,
+      "build_command": "npm run build",
+      "typescript": "passed",
+      "build": "passed"
+    },
+    "probe_check": {
+      "command": ".venv/bin/python -m scripts.ee_python_probes --check",
+      "status": "passed",
+      "fixture_bytes_unchanged": true,
+      "original_expressions_unchanged": true,
+      "targeted_cases": 50,
+      "serialization_passed": 50,
+      "compilation_passed": 45,
+      "compilation_rejected": 5,
+      "engine_execution": "not_run",
+      "independent_numerical_validation": "not_run",
+      "google_same_data_comparison": "not_run",
+      "interpretation": "Original whole-expression probes only; not an API compatibility percentage. Regression probe still has invalid five-band versus three-input arity. Separate numerical evidence below."
+    },
+    "sdk_cross_language": {
+      "actual_python_js_serialization_and_compilation_parity_cases": 33,
+      "new_cases": [],
+      "native_execution": "not_run"
+    },
+    "inventory_reproducibility": {
+      "status": "passed",
+      "method": "Separate pristine-process regeneration with byte comparison",
+      "sha256": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12"
+    },
+    "fixed_probe_network_instrumentation": {
+      "attempt_count": 0,
+      "attempts_by_operation": {},
+      "instrumented_operations": [
+        "local_transport.request",
+        "socket.create_connection",
+        "socket.getaddrinfo",
+        "socket.gethostbyaddr",
+        "socket.gethostbyname",
+        "socket.gethostbyname_ex",
+        "socket.socket.connect",
+        "socket.socket.connect_ex",
+        "socket.socket.sendmsg",
+        "socket.socket.sendto"
+      ],
+      "mode": "deny_and_count_python_network_and_local_transport_entry_points",
+      "scope": "Trusted in-process SDK probes only; not packet capture or kernel isolation"
+    },
+    "independent_review": {
+      "status": "completed_no_scoped_defect_found",
+      "model": "gpt-6-luna",
+      "reasoning_effort": "max",
+      "focused_batches_passed": [
+        {
+          "scope": "Linear regression, parameters and mask compilation",
+          "count": 32
+        },
+        {
+          "scope": "Masks, constants, metadata, graph reference constants and regression workflow",
+          "count": 87
+        },
+        {
+          "scope": "Final band-label compilation cases",
+          "count": 5
+        }
+      ],
+      "batch_counts_may_overlap": true,
+      "checks": [
+        "Graph.node still returns a plain dict and counts each unique materialized process at insertion against500",
+        "Graph.image and finish serialize pending singleton metadata before returning canonical JSON",
+        "Branch label copies are immutable; numeric operand order and shared source identity preserved",
+        "Pending references materialize before masks, casts, constants, unmask and time reducers; metadata folding crosses none of these barriers",
+        "Independent four-scene two-response sample coefficients/RMS agree with NumPy lstsq within2e-5"
+      ],
+      "remaining_scoped_findings": 0,
+      "native_engine_acceptance": "not_run",
+      "google_comparison": "not_run"
+    }
+  },
+  "inventory": {
+    "algorithm_signature_count": 991,
+    "algorithm_argument_count": 2451,
+    "python_class_count": 48,
+    "python_callable_count": 1797,
+    "named_binding_algorithm_count": 939
+  },
+  "implemented_scope": [
+    "Delay only singleton bands-dimension insertion and full singleton band rename; fold a subsequent pending rename into the same final label",
+    "Materialize before every real cube process, public Graph.image result and finish; general Graph.node contract remains ordinary from_node dictionaries",
+    "Existing numerical callback code, Float32 conversions, masks, constants, source loads and temporal reductions remain separate and unchanged",
+    "Full four-coefficient and two-response prediction outputs for the versioned four-frame fixture now compile under the unchanged500-node limit"
+  ],
+  "graph_comparison": {
+    "coefficients_signal": {
+      "old_nodes": 418,
+      "new_nodes": 333,
+      "numerical_callbacks_unchanged": true,
+      "process_counts": {
+        "load_collection": 4,
+        "filter_bands": 12,
+        "rename_labels": 36,
+        "reduce_dimension": 101,
+        "local_ee_constant_on_grid": 4,
+        "mask_polygon": 4,
+        "local_ee_to_float": 16,
+        "add_dimension": 98,
+        "merge_cubes": 58
+      },
+      "sample_values_equal_with_identical_nodata_masks": true
+    },
+    "coefficients_temperature": {
+      "old_nodes": 418,
+      "new_nodes": 333,
+      "numerical_callbacks_unchanged": true,
+      "process_counts": {
+        "load_collection": 4,
+        "filter_bands": 12,
+        "rename_labels": 36,
+        "reduce_dimension": 101,
+        "local_ee_constant_on_grid": 4,
+        "mask_polygon": 4,
+        "local_ee_to_float": 16,
+        "add_dimension": 98,
+        "merge_cubes": 58
+      },
+      "sample_values_equal_with_identical_nodata_masks": true
+    },
+    "residual_signal": {
+      "old_nodes": 497,
+      "new_nodes": 394,
+      "numerical_callbacks_unchanged": true,
+      "process_counts": {
+        "load_collection": 4,
+        "filter_bands": 12,
+        "rename_labels": 36,
+        "reduce_dimension": 119,
+        "local_ee_constant_on_grid": 4,
+        "mask_polygon": 4,
+        "local_ee_to_float": 16,
+        "add_dimension": 123,
+        "merge_cubes": 76
+      },
+      "sample_values_equal_with_identical_nodata_masks": true
+    },
+    "residual_temperature": {
+      "old_nodes": 497,
+      "new_nodes": 394,
+      "numerical_callbacks_unchanged": true,
+      "process_counts": {
+        "load_collection": 4,
+        "filter_bands": 12,
+        "rename_labels": 36,
+        "reduce_dimension": 119,
+        "local_ee_constant_on_grid": 4,
+        "mask_polygon": 4,
+        "local_ee_to_float": 16,
+        "add_dimension": 123,
+        "merge_cubes": 76
+      },
+      "sample_values_equal_with_identical_nodata_masks": true
+    },
+    "prediction_signal": {
+      "old_nodes": 424,
+      "new_nodes": 337,
+      "numerical_callbacks_unchanged": true,
+      "process_counts": {
+        "load_collection": 4,
+        "filter_bands": 12,
+        "rename_labels": 36,
+        "reduce_dimension": 103,
+        "local_ee_constant_on_grid": 4,
+        "mask_polygon": 4,
+        "local_ee_to_float": 16,
+        "add_dimension": 100,
+        "merge_cubes": 58
+      },
+      "sample_values_equal_with_identical_nodata_masks": true
+    },
+    "prediction_temperature": {
+      "old_nodes": 424,
+      "new_nodes": 337,
+      "numerical_callbacks_unchanged": true,
+      "process_counts": {
+        "load_collection": 4,
+        "filter_bands": 12,
+        "rename_labels": 36,
+        "reduce_dimension": 103,
+        "local_ee_constant_on_grid": 4,
+        "mask_polygon": 4,
+        "local_ee_to_float": 16,
+        "add_dimension": 100,
+        "merge_cubes": 58
+      },
+      "sample_values_equal_with_identical_nodata_masks": true
+    }
+  },
+  "full_output_boundary": {
+    "fixture": "tests/fixtures/ee-raster-regression-v1.json",
+    "passing": {
+      "coefficients": {
+        "nodes": 405,
+        "bands": [
+          "offset_signal",
+          "offset_temperature",
+          "scale_signal",
+          "scale_temperature"
+        ]
+      },
+      "prediction": {
+        "nodes": 413,
+        "bands": [
+          "predicted_signal",
+          "predicted_temperature"
+        ]
+      }
+    },
+    "rejected": {
+      "two_response_RMS": "Compiled process graph exceeds 500 nodes; reduce the script scope",
+      "eight_field_combined_output": "Compiled process graph exceeds 500 nodes; reduce the script scope"
+    },
+    "interpretation": "Exact current fixture shape only. Max frame/dimension settings are not guaranteed to fit together; no cap increase."
+  },
+  "numerical_evidence": [
+    {
+      "scope": "Before/after six original outputs",
+      "status": "passed",
+      "fixture": "tests/fixtures/ee-raster-regression-v1.json",
+      "reference": "Direct sample-array equality including NoData masks against the immutable pre-edit graphs from base commit. Numerical reduce_dimension/apply callback multisets, source IDs, labels and time dimensions unchanged. Graph sizes418/497/424 become333/394/337 per response.",
+      "client_serialization": "passed",
+      "local_compilation": "passed",
+      "independent_numerical_validation": "not_established_by_before_after_comparison",
+      "actual_raster_engine": "not_run",
+      "google_same_data_comparison": "not_run",
+      "regression_value_equality": "passed",
+      "interpretation": "This before/after comparison preserves existing results; independent SVD and hand-value N evidence is reported separately below."
+    },
+    {
+      "scope": "Full coefficients/prediction and complete-case geometry",
+      "status": "passed",
+      "reference": "Versioned hand fractions and independent NumPy SVD for complete joint rows[4,3,4,2,2]. Four-coefficient row-major flatten and two predicted values match within2e-6. Three masked pixels remain: constant-x rank deficiency, n=numX, and nonrectangular scene coverage leaving n=numX. Same-day distinct observations and explicit repeated rows retain their regression weights.",
+      "client_serialization": "passed",
+      "local_compilation": "passed",
+      "independent_numerical_validation": "passed",
+      "network_entry_attempts": 0,
+      "actual_raster_engine": "not_run",
+      "google_same_data_comparison": "not_run"
+    },
+    {
+      "scope": "Shared graph labels and numerical barriers",
+      "status": "passed",
+      "reference": "Independent scalar arithmetic expected values for shared x+x branches in different output names and operand positions; rename/merge order; updateMask, clip and toFloat; MultiPolygon scene removes a low-count fit. Explicit Float64 arithmetic still rejects; canonical JSON scoped references validate.",
+      "client_serialization": "passed",
+      "local_compilation": "passed",
+      "independent_numerical_validation": "passed",
+      "actual_raster_engine": "not_run",
+      "google_same_data_comparison": "not_run"
+    }
+  ],
+  "limits": [
+    "Metadata-only folding does not fuse numerical callbacks, change precision or implement additional EE algorithms",
+    "Pending label metadata cannot cross any actual graph process; no speculative rewrites through casts, masks or temporal reduction",
+    "Every unique emitted top-level process remains limited at insertion to500; shared compiler work limit50000 and canonical graph validation unchanged",
+    "Four-frame full two-response RMS and eight-field outputs remain graph-limited; general design matrices, dynamic arrays and remaining classifier/sampling algorithms are still incomplete",
+    "Numerical evidence uses a trusted independent sample evaluator, not native raster-engine E, Google G or throughput measurement"
+  ],
+  "remaining_targeted_probe_rejections": [
+    {
+      "id": "unmask_fill",
+      "reason": "Image.unmask sameFootprint=false with a global footprint is not supported"
+    },
+    {
+      "id": "neighborhood_reduce_kernel",
+      "reason": "Unsupported Earth Engine algorithm: Kernel.square"
+    },
+    {
+      "id": "focal_mean",
+      "reason": "Unsupported Earth Engine algorithm: Image.focalMean"
+    },
+    {
+      "id": "regression_reducer",
+      "reason": "ImageCollection.reduce linearRegression requires exactly 3 scalar bands per frame"
+    },
+    {
+      "id": "classifier_constructor",
+      "reason": "Unsupported Earth Engine algorithm: Classifier.smileRandomForest"
+    }
+  ],
+  "not_run": [
+    "Linux user-task execution adapter acceptance",
+    "Native raster-engine execution",
+    "macOS Seatbelt kernel acceptance",
+    "ARM64 JNI acceptance",
+    "Private real-data workflows",
+    "Google same-data comparisons"
+  ],
+  "cleanup": [
+    "Removed byte-identical pristine Python API inventory copy; retained historical reports, versioned fixtures, concise comparison evidence and external JUnit"
+  ],
+  "next_work": [
+    "General design matrices and remaining raster array algorithms under bounded graph semantics",
+    "Image classification, sampling and further genuine classifiers with independent numerical validation",
+    "Remaining spatial/neighborhood and advanced temporal APIs; further compact graph paths with unchanged scientific masks and scene identity"
+  ]
+}

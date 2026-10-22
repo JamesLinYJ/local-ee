@@ -18,11 +18,11 @@
 
 - 官方客户端版本和提交见 `vendor/earthengine-js/upstream-lock.json`。
 - 官方 Python 客户端已按同一提交固定，见 `vendor/earthengine-python/upstream-lock.json`；Python 和 JS 共享本地 EE 编译器及算法支持边界，Python/openEO `connection` 继续保留。
-- 当前能力、参数限制和证据见 `docs/gee-compatibility.md`。第十批补有限栅格 linearRegression 的过原点／单位截距模型、多响应系数与 RMS 数组，并以共同完整行、空间覆盖及独立 SVD 验证；Linux Python 1120 passed／7 skipped，前端 11 passed 与构建通过，见 `reports/gee-python-wave10.json`。四景双响应按六个响应字段分别物化以满足现有 500 节点上限，完整组合仍明确超限；通用设计矩阵和实际 E/G 尚未验证。
+- 当前能力、参数限制和证据见 `docs/gee-compatibility.md`。第十一批仅延迟单波段维度／改名元数据，保留所有数值 callback、掩膜、类型转换和观测身份；Linux Python 1129 passed／7 skipped，前端 11 passed 与构建通过，见 `reports/gee-python-wave11.json`。四景双响应的完整四系数／双预测图现为 405／413 节点，六个分字段图缩至 333／394／337 节点各两条；双 RMS／八字段组合仍超过现有 500 节点。通用设计矩阵和实际 E/G 尚未验证。
 - Python API 清单见 `reports/gee-python-api-inventory.json`，保留 991 项签名、2451 项参数及公开 Python 绑定。原有 50 项 Python 定向探针当前为 45 项编译通过、5 项明确拒绝；方法、参数和探针数量均不代表完整兼容率。已补有限表格回归、FeatureCollection、数值时间度量及 inner Join、Number.format、有界 String 和固定形状栅格数组，并串联合成表格预测、最近前后观测插值及像素投影；动态数组、通用设计矩阵的栅格回归、采样、栅格分类及其他分类器仍有缺口，有限精度评估不能代替完整分类器实现。完整 Linux 运行按阶段调整延期。最新局部实现及限制持续写入 `docs/gee-python/list.md`。
 - 复杂工作流来源和缺口见 `audit/gee-complex-compat-v1/findings.json`。
 - 有效探针为 `audit/gee-complex-compat-v1/probe-run-v2/validation.json`：50 个表达式成功序列化，3 个阳性对照编译通过，43 个操作/语义探针被拒绝，4 个数据/波段探针被拒绝；另有 14 个规模编译检查、3 个原生 runner 检查。该定向抽查不是全 API 兼容率。
-- 两波段均值的模拟目录探针中，30 景生成 335 节点，50 景超过现有 500 节点限制。长时序执行需要单独改进。
+- 历史两波段均值模拟目录探针中，30 景生成 335 节点，50 景超过现有 500 节点限制；该计数属于优化前证据。长时序执行与吞吐仍需单独验证。
 
 ## 实施顺序
 

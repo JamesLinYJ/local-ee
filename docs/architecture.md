@@ -89,7 +89,7 @@ flowchart LR
 | `table_reducers.py`, `raster_linear_fit.py` | 共用回归规格；List 与内联表格复用数值内核，和有限帧逐像元 linearFit 分开适配，保留各自缺测、类型、规模和数值验证边界 |
 | `confusion_values.py`, `feature_error_matrix.py` | 有界静态混淆矩阵、精确整数计数与总体指标；内联标签表显式顺序计数；内部矩阵类型不伪装成公开服务器对象 JSON，不代替采样或分类器 |
 | `minimum_distance.py`, `classifier_features.py` | 有限静态类均值模型、欧式唯一最近类预测、要素分类及真实训练重代入误差；模型不可变，等距、未支持模式及直接对象 JSON 明确拒绝，与图像／随机森林执行分开 |
-| `graph.py`, `pixel_graph.py`, `temporal_graph.py`, `mask_graph.py` | 规范进程图组装、像素表达式编译、保留观测身份的时间归约与原生掩膜处理 |
+| `graph.py`, `pixel_graph.py`, `band_labels.py`, `temporal_graph.py`, `mask_graph.py` | 规范进程图组装、像素表达式编译、单波段标签延迟物化、保留观测身份的时间归约与原生掩膜处理；仅折叠相邻待生成元数据，不跨越数值／掩膜／类型转换边界 |
 | `compile.py`, `capabilities.py` | 稳定的编译入口、已声明处理器清单与当前限制 |
 
 模块通常以约 200 行为可维护性参考，不是硬性上限。按职责拆分，保持类型、验证和错误路径清晰；不得为满足行数而压缩代码或机械拆文件。编译器模块之间使用规范 `gee.compat.earthengine` 导入，不从 `gee.ee_translate` facade 回导形成循环；兼容期仍在根目录的辅助依赖要保持无环，并在合适的重构中迁入规范子包。拆分或新增 handler 不等于算法语义已经实现；每项公开能力仍需对应的参数、类型、边界及数值证据。

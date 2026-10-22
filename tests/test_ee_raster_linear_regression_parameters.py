@@ -128,7 +128,7 @@ def test_process_graph_still_enforces_the_existing_500_node_limit(ee, local):
     images = []
     for offset, item_id in enumerate(("a", "b", "c", "d")):
         image = ee.Image(item_id).select(["x", "y0"])
-        for _ in range(20):
+        for _ in range(40):
             image = image.add(offset + 1)
         images.append(image)
     model = ee.ImageCollection.fromImages(images).reduce(

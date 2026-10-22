@@ -50,7 +50,7 @@ class PixelCompiler:
         if p.op == "band":
             source, name = p.args
             ref = self.node("filter_bands", data=self.source(source), bands=[name])
-            return self.node("rename_labels", data=ref, dimension="bands", target=["v"]), "v", True
+            return self.rename_band(ref, "v"), "v", True
         if p.op == "on_grid":
             from .constant_graph import materialize_constant
             return materialize_constant(self, p)
@@ -112,7 +112,7 @@ class PixelCompiler:
         timed = rasters[0][1][2]
         for index, (position, (ref, _, has_time)) in enumerate(rasters):
             if has_time != timed: fail("Combining a temporal collection with a spatial image needs unsupported time broadcasting")
-            ref = self.node("rename_labels", data=ref, dimension="bands", target=[f"a{index}"])
+            ref = self.rename_band(ref, f"a{index}")
             data = ref if data is None else self.node("merge_cubes", cube1=data, cube2=ref)
             key = "a"+str(index)
             callback[key] = {"process_id": "array_element", "arguments": {"data": {"from_parameter": "data"}, "index": index}}
@@ -151,4 +151,4 @@ class PixelCompiler:
             process, op_args = "if", {"value": {"from_node": "has_values"}, "accept": {"from_node": "reduced"}, "reject": None}
         callback["result"] = {"process_id": process, "arguments": op_args, "result": True}
         result = self.node("reduce_dimension", data=data, dimension="bands", reducer={"process_graph": callback})
-        return self.node("add_dimension", data=result, name="bands", label="v", type="bands"), "v", timed
+        return self.band_dimension(result, "v"), "v", timed

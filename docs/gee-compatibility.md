@@ -36,6 +36,8 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 
 第十批新增有限栅格 linearRegression：过原点或字面量单位截距模型、1..4 响应、联合完整行与 n>numX、真实系数／RMS 数组。多数组波段须选择后标量化；四景双响应例分别输出各响应以满足现有 500 节点上限。参数、图规模和独立 SVD／掩膜证据见 [第十批报告](../reports/gee-python-wave10.json)，不代表通用多变量系统或实际 E/G。
 
+第十一批只折叠待生成的单波段维度／标签元数据，保留全部数值 callback 和源／掩膜／类型边界。上述六个图缩为 333／394／337 节点各两条，完整四系数和双预测图现为 405／413；双 RMS／八字段组合仍超出 500。独立参考、共享表达式标签及同日／重复观测控制见 [第十一批报告](../reports/gee-python-wave11.json)，无实际 E/G 或吞吐声明。
+
 第三批增加 `Join.inner`、唯一 maxDifference 的 And 组合，以及匹配 Feature 映射回 ImageCollection 的链路；最近前后观测插值有版本化合成来源／掩膜／目标时间参考，见 [第三批报告](../reports/gee-python-wave3.json)。S/C 与合成图 N 通过仍不构成原生引擎 E 或 Google G。
 
 | 用法 | 当前支持范围 | 证据 |

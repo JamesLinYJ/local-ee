@@ -12,7 +12,7 @@ def reduce_bands_double(graph, pixel):
         if time_state is not None and timed != time_state:
             fail("Float64 band reduction requires matching spatial/temporal dimensions")
         time_state = timed
-        ref = graph.node("rename_labels", data=ref, dimension="bands", target=[f"a{index}"])
+        ref = graph.rename_band(ref, f"a{index}")
         data = ref if data is None else graph.node("merge_cubes", cube1=data, cube2=ref)
     if data is None:
         fail("Cannot reduce an empty Float64 band axis")

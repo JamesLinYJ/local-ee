@@ -106,6 +106,14 @@ List.reduce 支持现有单输出归约及无权 linearFit／linearRegression，
 
 第十批锁定依赖、Linux Python **1120 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，增加 29 项通过；Python／JS SDK 一致性 33 项，Luna max 复审通过。原 50 表达式仍 50 S／45 C／5 拒绝，但原回归探针使用 5 bands 与 3 inputs 不匹配，现改为准确的数量错误；这项拒绝不再表示全体栅格回归未实现。原探针源码／参数／序列化均保持不变，完整 Python 清单字节重现通过。详见 `reports/gee-python-wave10.json`；通用多变量系统、动态数组、权重、紧凑图与实际 E/G 仍待完成。
 
+## 第十一批紧凑单波段元数据
+
+以第十批提交 `b3ed6d2148c8472b4941e788664a8703b577061e` 为基线，新增独立 `band_labels.py`：延迟 singleton bands 维度及改名，相邻待生成改名直接保存最终标签，下一真实进程使用时按原规则物化。Graph.node 仍返回普通引用，image／finish 在输出前物化；数值 callback、Float32 转换、mask／unmask／clip、常量和时间归约边界不变，不放宽 500 节点或共享工作预算。
+
+示例 16 原六条图从系数 418、RMS 497、预测 424（各两条）降至 333／394／337；同一版本化输入的数值／NoData 样点及 callback 多重集与优化前一致。完整四系数、双响应预测现在分别 405／413 节点，独立 SVD 数值通过；完整双 RMS 与八字段组合仍超过 500，测试要求明确拒绝。新增共享算术的不同标签／操作数位置、掩膜与非矩形景界、同日／重复观测及真实超限算术控制。
+
+锁定依赖、Linux Python **1129 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，增加 9 项通过；Python／JS SDK 一致性仍 33 项。原 50 探针仍 50 S／45 C／5 拒绝，表达式和诊断均未改；完整 Python 清单字节重现通过。Luna max 复审未发现声明范围内缺陷。详见 `reports/gee-python-wave11.json`；证据为 S/C/独立样点 N，无实际 E/G。通用设计矩阵、动态数组和完整分类／采样继续开发，阶段延期不阻塞目标。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee
