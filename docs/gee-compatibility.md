@@ -1,5 +1,7 @@
 # GEE Python／JavaScript 兼容范围
 
+第二十七批扩展已有 API 的真实运行链路：RF 要素分类 → 训练重代入／独立验证矩阵 → 七种指标访问器 → 受控 JSON getInfo 或分类表 CSV 导出。相同取样表复用固定训练分支，空表／缺值／重名／未定义指标与图类型边界有回归。便携 Python **2413 passed／3 skipped**（另排除4项延期原生测试），前端 **11 passed**／类型检查／构建通过；实际 JVM 要素预测／重代入计数及四个真实栅格组件已验。入口仍为 **276／991（27.85%）**；这不是参数或完整计算兼容率。详见 [验证语法](gee-python/rf-validation.md) 和 [报告](../reports/gee-python-wave27.json)。本批未部署，完整 Spark／服务／浏览器／Google 同数据未验收。
+
 基线：官方 `@google/earthengine` 1.7.49，仓库提交 `e189e4b89e785019ea5642ea8e80cb644749cd4a`。客户端构造和序列化逻辑直接复用官方构建；签名文件也固定到同一提交，见 `vendor/earthengine-js/upstream-lock.json`。
 
 Python 编辑器同时提供官方 `earthengine-api` 客户端入口，版本 1.7.49 固定在同一上游提交的 Python 子目录；许可证、源码树及关键文件摘要见 [`vendor/earthengine-python/upstream-lock.json`](../vendor/earthengine-python/upstream-lock.json)。Python 和 JavaScript 会生成相同格式的 EE 表达式并进入同一个本地兼容层；二者都不连接 Google 计算服务。客户端语言和官方 SDK 覆盖面不表示本地编译器已支持所有调用。

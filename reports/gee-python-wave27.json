@@ -1,0 +1,216 @@
+{
+  "schema": "local-ee-python-wave27/v1",
+  "date": "2026-10-23",
+  "base_commit": "05718cff1d4603ac1a9933b76298012059ef9ef6",
+  "title": "Actual RF feature prediction, runtime validation matrices and owned JSON task results",
+  "changes": [
+    "Actual Smile feature classification for inline and audited fixed sampled/filter/limit tables",
+    "Retained real training-row resubstitution matrix; validation matrix and all seven existing bounded accessors",
+    "Runtime table/value IR and strict model/matrix/table producer consumers; canonical strings remain opaque",
+    "Existing job/parent-user scope, physical no-follow JSON write/read/worker publication, CSV selectors/finalization retained",
+    "Root immutable sampled/trained IR cache and exact sample-branch reuse under unchanged compilation limits",
+    "Python/JS syntax reference and example32 for both training routes"
+  ],
+  "entry_inventory": {
+    "declared_handler_names": 276,
+    "pinned_signatures": 991,
+    "name_entry_percentage": 27.85,
+    "new_names": [],
+    "interpretation": "Existing API names gain real runtime paths; no complete argument, language, computation or Google compatibility percentage"
+  },
+  "validation": {
+    "full_portable_suite": {
+      "passed": 2413,
+      "skipped": 3,
+      "failures": 0,
+      "native_runtime_tests_excluded": 4,
+      "warnings": "3existing rasterio transform PendingDeprecationWarnings",
+      "command": "GEE_AUDIT_DIR=audit/gee-python-wave27/final LOCAL_EE_RUN_SMILE_RF_KERNEL_TEST=1 LOCAL_EE_RUN_REMAP_KERNEL_TEST=1 LOCAL_EE_RUN_SAMPLE_KERNEL_TEST=1 LOCAL_EE_RUN_CLASSIFIER_KERNEL_TEST=1 .venv/bin/python -m pytest -q --ignore=tests/test_native_runtime.py --junitxml=audit/gee-python-wave27/final/python.xml --basetemp <owned scratch>",
+      "real_components": "RF/remap/sample/minimum-distance trusted standalone JVM/tile components; no SparkContext or deployed service"
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "production_build": "passed;16files hashed",
+      "deployed": false
+    },
+    "SDK": {
+      "python_version": "1.7.49",
+      "full_inventory_byte_identical": true,
+      "signatures": 991,
+      "arguments": 2451,
+      "classes": 48,
+      "callables": 1797,
+      "inventory_sha256": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12",
+      "original_probes": {
+        "serialized": 50,
+        "compiled": 45,
+        "rejected": 5,
+        "unchanged": true
+      },
+      "workflow": "Both training modes, real graph validation, all7 training/validation accessors and direct prediction outputs; zero guarded network attempts",
+      "Python_JS": "Matching graph structure and embedded JSON numerical meaning; integral9.0 vs9 lexemes intentionally not byte-identical"
+    },
+    "actual_RF_component": {
+      "jar_sha256": "306e11ae1651f01a1d5514da0a2192bcb8cca2fe70b2d7fee30b2094f6cca350",
+      "RF_source_files": 4,
+      "markers": [
+        "SMILE_RF_VALIDATION_OK trusted-feature-predictions=2 Float64=preserved empty=accepted resubstitution-rows=32 matrix=independent-frequency-reference invalid-query-cases=7",
+        "SMILE_RF_KERNEL_OK same-seed=36 different-seed-changed=true trees=17 depth-sum=37 invalid-specs=9 invalid-rows=10 canonical-floats=270 Float64-precision=verified NoData=verified",
+        "SMILE_RF_UNICODE_OK cases=2 codepoints=129,256 schema+class_property=train-predict",
+        "SMILE_RF_SCALE_OK rows=1000 features=8 trees=100 mtry=2 bag=0.5 maxNodes=1000 seed=42 depthSum=200 predictionWork=13107200 trainingMs=29 predictionMs=73 low=0 high=1"
+      ],
+      "scope": "Actual trusted Smile predictions and retained-row frequency counts plus tile/precision/mask/seed/thread controls. Not full Spark/batch/sandbox/HTTP/browser or Google acceptance"
+    },
+    "numerical_reference": "Independent raw truth/prediction Counter frequencies, asymmetric/sparse/negative order cases, Fraction accuracy/kappa/per-class/Fbeta; no independent full RF implementation or Google same-data oracle",
+    "trusted_application_IO": "Actual result encoders/files, worker finalization and service readback/auth tested; database/queue/native launch and numerical values in those IO fixtures are explicit test substitutes, separate from actual JVM proof",
+    "post_full_source_change": "Documentation, EOF blank-line-only correction (AST including locations unchanged), and test-helper extraction:8test functions/75test+2fixture assertions retained;7test AST identical, parity setup extracted. Parent focused12passed; no production behavior changed after full suite.",
+    "G": "not_run"
+  },
+  "limits": {
+    "prediction_rows": "0..1000; schema1..8 finite exact-domain Float64 values, integerabs<=2^53; missing/null/bool/nonfinite/collision reject",
+    "matrices": "<=64classes/4096cells, explicit order<=64 unique integer labels, actual rows/predicted columns. Empty requires explicit order; undefined denominators reject. Existing local rank1 vector/metric-axis policies remain Google-unverified",
+    "RF_model": "Trusted opaque JVM only; resubstitution uses real retained rows, not OOB. No user bytes/paths/URLs or model serialization",
+    "graphs": "500nodes/compiler50000; pending never fabricates rows/counts; exact immutable sample reuse only in root environment",
+    "budgets": "Separate per-process RF150000 object/copy work and3MB cumulative wire scans; audited inherited sample-operation work<=50000. Existing table/JSON/CSV/public-materialization/CPU/RSS/time/network/filesystem caps remain; actual rowCount*treeDepthSum<=1e9 prediction bound",
+    "JSON": "Only direct audited runtime tables/accessors, owned physical job output. Classified JSON still must fit CSV/table/public-value compound bounds, not arbitrary sub1MB metadata"
+  },
+  "not_supported": [
+    "randomColumn/Image.sample, RF explain/persistence/other output modes and algorithms",
+    "Post-classification filtering/limit, arbitrary dynamic scalar/array algebra or nested dynamic result containers",
+    "Complete global Google data/service aliases and all API parameters/numerical semantics",
+    "Full Spark batch/isolation/service/browser/deployment/private-data/Google acceptance"
+  ],
+  "preservation": {
+    "accounts_research_data_results": "untouched",
+    "native_configuration_and_dependency_locks": "untouched",
+    "services_VMs_containers": "not created/restarted/deployed",
+    "sandbox_network_filesystem_permissions": "unchanged",
+    "goal": "active; full objective incomplete"
+  },
+  "cleanup": {
+    "scope": "Completed task-owned scratch only; lsof empty for every path before removal",
+    "removed": [
+      {
+        "path": "/Users/james/Documents/Codex/2026-10-21/wo/work/gee-python-wave27-native",
+        "regular_file_bytes": 447470,
+        "symlinks_unlinked_without_following": 0
+      },
+      {
+        "path": "/Users/james/Documents/Codex/2026-10-21/wo/work/gee-python-wave27-pytests",
+        "regular_file_bytes": 13450159,
+        "symlinks_unlinked_without_following": 82
+      },
+      {
+        "path": "/Users/james/Documents/Codex/2026-10-21/wo/work/gee-python-wave27-web",
+        "regular_file_bytes": 1673627,
+        "symlinks_unlinked_without_following": 0
+      },
+      {
+        "path": "/Users/james/Documents/Codex/2026-10-21/wo/work/gee-python-wave24-native",
+        "regular_file_bytes": 1801787,
+        "symlinks_unlinked_without_following": 0
+      },
+      {
+        "path": "/Users/james/Documents/Codex/2026-10-21/wo/work/gee-python-wave25-native",
+        "regular_file_bytes": 1200875,
+        "symlinks_unlinked_without_following": 0
+      },
+      {
+        "path": "/Users/james/Documents/Codex/2026-10-21/wo/work/audit/gee-python-wave27-native",
+        "regular_file_bytes": 212925,
+        "symlinks_unlinked_without_following": 0
+      }
+    ],
+    "removed_bytes_total": 18786843,
+    "retained": "Source/tests/fixtures, repository audit including actual RF JAR and manifests, four verified Smile runtime dependencies, .native/.venv, accounts/research data/results"
+  },
+  "source_files_sha256": {
+    "AGENTS.md": "02e8beb21ab6f80cc09eab23f004e118c88661fba20872405a844fac5cc097de",
+    "GOAL.md": "d4004836bd9e420bca6a490e17bbbc0ea281befdf59632d83d8b3fe4fdef1aa5",
+    "docs/architecture.md": "dd826908302c69ec52cca21bb051ef2867544edc05d9cdd00aa3cc2cbf4068a4",
+    "docs/cloud-handoff.md": "58bab0f19edffed2c1ae9d15e107ba9f51b6d015c99cdb55b8f1fb7c6692377a",
+    "docs/gee-compatibility.md": "26ddfe4a93c76e2e787abb7df63cb92b4da5f25d38e7d5ceecfb09bba5d09299",
+    "docs/gee-python/list.md": "ac8901f4ea67402d4c936df1e1b134cda93fb105f311f0bd7dd429ba23e560c2",
+    "docs/gee-python/random-forest.md": "6655997b13755d2af273fe302d80f51e2f190971d4135a58ea414aa569bd1d55",
+    "docs/gee-python/rf-validation.md": "2573404494ee21e410d7b0c2e64cee43829ee1268228849376f206d13027c358",
+    "engine/ee_json_result.py": "3d455a898441a2c9741540e84061e72f395c52bc9a263b3e602bb3bd4a63fb05",
+    "engine/ee_process_adapters.py": "03eb3578befa443a4cd6435c6fe55004bc64305f6870c61e28a916b157abaaaa",
+    "engine/ee_rf_validation.py": "ab18b7f18a24bccbb6872d819135e8558248fafa30751cbc79e17d665dd37771",
+    "engine/ee_rf_validation_matrix.py": "7c9493353dc8f3d57054ad38c7a3187415ed32438b7b4405a0d3d6308c386a9e",
+    "engine/ee_rf_validation_runtime.py": "c06ff78d62c3207fac9de4a8a7487ece29e0039a38670d2bd161f8ae6905adb9",
+    "engine/ee_smile_rf.py": "1d69f46b488f58a567628e8696ea8149627d8acb5c03ac92805035cb6046ee58",
+    "engine/ee_smile_rf_factory.scala": "a2a699c797829d99bed5095a0d47c1c6b176b0e232ed9f965aad3a19aa813b97",
+    "engine/ee_smile_rf_training.py": "2c1fee397d1d95eb206a568444f3336a4c31ec618911475b00f2486b5dc4c725",
+    "engine/ee_smile_rf_wire.scala": "3c9a41931e66e0a77788ce59bc41bcbb0700a34c12532ce0a9c1a3f2f197ef7c",
+    "examples/32_GEE_python_rf_validation.py": "16b2e2f015644cb1aaefedd44a5fb321d2935ef28e900903fd7a81cacf68a194",
+    "gee/compat/earthengine/capabilities.py": "ac02e9be22c983a68532a7bf1330eced416e925ec49642f791e17559fbae55f9",
+    "gee/compat/earthengine/classifier_features.py": "fa7acd999d77b4596eff85148527cba9939a4e66c9e69669fd24f26e5480ffdd",
+    "gee/compat/earthengine/compile.py": "e4535e35bf08c6701a5c21e2fc0d872a0196a21e77b9ebcb52f803f6b5021bae",
+    "gee/compat/earthengine/confusion_values.py": "c75d24f3c43431eabc0d1349e97e11f378f16f0517feb4a86e2fd32498b8d31e",
+    "gee/compat/earthengine/decoder.py": "7fb59f0336869b2b9d5fb0fdbcecca26da6c0d8ae75cf8d1fef65d75292e440f",
+    "gee/compat/earthengine/feature_error_matrix.py": "430183f1f81d62beeac60ecc3e4ae84a83e34c60d2c97c495a3d6d3cd719d8a3",
+    "gee/compat/earthengine/ir.py": "a03d0d094e123a873a061caea823d39248a7f0f5ab61ebaf8bb1a2c8c1aacbaa",
+    "gee/compat/earthengine/runtime_feature_ir.py": "c2065f20f015318f570e1ab0c0bb0b67ab52fca2a450a26ab3a58ae356e2b251",
+    "gee/compat/earthengine/runtime_validation_graph.py": "b384b8ccb5060eb6b730a1cf6d0868d3bae657e90ecdeac97add9e59816d02d7",
+    "gee/compat/earthengine/sampled_feature_ops.py": "aa02026c8c81abe36c93466de0c80eb707758f25743de29fc82200ad1637c127",
+    "gee/compat/earthengine/smile_rf_graph.py": "99bd9bef200ee39b45b06c61738e95fc77656d35825e26d73dc3add3d339dd88",
+    "gee/graph.py": "ec7f6122d61c45b1444a8db2b952bc62cad0723b984b280075632b3b98ed38d4",
+    "gee/local_processes.py": "f852cb66ea59a363720690cac4b92d62d9ff76d6844d2f0bf7a0778856f7978b",
+    "gee/rf_validation_processes.py": "9953a6e087f12ca538bfa1c0a54a9479590c15820faeb31af7ed75d7cc8d04f3",
+    "gee/rf_validation_spec.py": "d350ad64d4b1e99e716bb158b3f8f7558610de350140104c4701d883858bdfae",
+    "gee/sampling_graph.py": "d74e5bd6891a00c8b7465cba2d9add28ec5db45461903cd5675108cbdc508875",
+    "gee/services/ee.py": "6a6cbf2813ae3e539f2121e2811c632bece3790ac8d2ff07e6c248240d33fb49",
+    "gee/services/ee_runtime_results.py": "5af66f64e4f9fb19207f45729659052aeea8db8ba4d91ebe95c3293f3de2c085",
+    "gee/smile_rf_processes.py": "d0abc1b838e82d783c517edfd99c9038e823f0e9407a05ffdcc703f662f70e2f",
+    "gee/worker.py": "bddabd1e7f8b5ce6db6f16110d0387977e69f4318df7934ff0810d3cfe688922",
+    "reports/gee-api-inventory.json": "df5b058ed7f2b053fa9d4b1edfaa472a4c311fb283721ff956f5d7b3a5d9c24d",
+    "scripts/build_smile_rf_adapter.py": "7ea400b7dc34e2c89cce9042265f24753b51509dd781eb48237a1583d9ba828b",
+    "scripts/ee_inventory/catalogue.py": "08c64341d3ab06374ced0c9bb35269aeedb9ec9465713c735bde011acdcdacf9",
+    "tests/ee_rf_validation_parity.py": "8b1c4808aa0e65565d9aa29c3be6d191a28055bf4b51be4e596187c472f8e8a6",
+    "tests/ee_rf_validation_workflow_helpers.py": "15c0894cca89ede0ad3019ec03ade4f0607f0ad4e9d9ffc52338bd7906b36a55",
+    "tests/fixtures/ee-rf-validation-workflow-v1.json": "35c437ef76a747f19727c5c920d10dae137ddc4cb3ac3494e9dada6485c47f2a",
+    "tests/fixtures/ee-smile-rf-validation-kernel-probe.scala": "5f96c8b96813b2015f1e09cf94472f5c7ffa7b3c65c14327f9a9c3236ee675c0",
+    "tests/test_ee_rf_validation_compiler.py": "2e2063a39b7a4e1066e6d93e8cf2e96d54111e77cfa90788b48b2dd61104cc26",
+    "tests/test_ee_rf_validation_engine.py": "6bbca84499d4870f8e9495d92ee9a4778a845470a545c26a504a3405ce1fd887",
+    "tests/test_ee_rf_validation_processes.py": "19a0004ef79f339f2336aee15e456590868713d8ca03279ba01726d95e49bd9c",
+    "tests/test_ee_rf_validation_results.py": "08869df72f9a67ef1d96cea0021dca2e8a52a9d1d92b1420e424ad3afc90ad9a",
+    "tests/test_ee_rf_validation_service.py": "40aef4a87136740cf07070f4e10dbfa4d1b437915889f42fc1cf1379f19873b8",
+    "tests/test_ee_rf_validation_specs.py": "e9d754b7399f270dc798821dc4efafc6789113df43cdda94e3de447000d3762f",
+    "tests/test_ee_rf_validation_workflow.py": "1f07287aa496ae647378aa93383b300ca6e9e26f1ddb12ed731bdf720d275f15",
+    "tests/test_ee_smile_rf_compiler.py": "f52e41a1cebc8e60383ef0e317fd0e45cbece8fb51dac0113a3ad2b4fe6869d9",
+    "tests/test_ee_smile_rf_kernel.py": "7322c6df5dbe109295e6e2963c02eb787d02cf1a27ec30e3765ad8463e80aeb5",
+    "tests/test_ee_smile_rf_native_sources.py": "b4daefa09fd720b527dcd2f69bb2277f22bbbcda99dda42c28165d6cd7a280de",
+    "web/src/docs/gee-docs.ts": "5e57d598806be7c4bdcc03759a9beed3b151f7dce53f7b93fb87fbf137e07511",
+    "web/src/docs/local-docs.ts": "942bc40b6b4af7679003ab284bcb99f13ab8b6fb220d61bb219e848423fba997"
+  },
+  "local_evidence_sha256": {
+    "audit/gee-python-wave27/cleanup.json": "115039e58a72fb426902c8b9d8340269cc289264d1e5c3c41447f7c26a8cc001",
+    "audit/gee-python-wave27/final/classifier-kernel-cases.json": "5ce6081b073963e4347fe330c3a67f1999d9c8c7f395968b22cb0d4db633dd54",
+    "audit/gee-python-wave27/final/classifier-kernel.json": "24adbe7bfbf75e56a1ced53c3eb6cd6f74953ec842693bebcab6c7a19e313301",
+    "audit/gee-python-wave27/final/local-ee-smile-rf-adapter.jar": "306e11ae1651f01a1d5514da0a2192bcb8cca2fe70b2d7fee30b2094f6cca350",
+    "audit/gee-python-wave27/final/local-ee-smile-rf-adapter.jar.sha256": "a8f3af75570569485cb3e061c718e1fcf40041b87d75626bc2744cbaf6e9962f",
+    "audit/gee-python-wave27/final/python.xml": "76915a8a6b6fa9e916dc3e5c0f6f4893f1534dfbed19e9c69998c0f004a9bfdb",
+    "audit/gee-python-wave27/final/remap-adapter.manifest.json": "006b9a5522ab09e4999fe618bfb9d90bd8ee9e3c14a6aa8d741fd295550ba1bd",
+    "audit/gee-python-wave27/final/remap-cases.json": "a3cbd3153459a70827437ffe2833757226f76d9c3399335648f46564e989d37d",
+    "audit/gee-python-wave27/final/remap-result.json": "e7dcb89352b7f14ce0ff3364f5c46340444fb53d846723e013a415b3f8d244d4",
+    "audit/gee-python-wave27/final/sample-kernel-cases.json": "96921659de4a33b04e8029fa28cb45d828646ec5fdf783400f5422dd883e531f",
+    "audit/gee-python-wave27/final/sample-kernel.json": "b3bff86e7d959ab8500be6f544f4b6241ea7f2e3ea74a3a8c71f5836c91abf66",
+    "audit/gee-python-wave27/final/smile-rf-adapter.manifest.json": "aa5af334c86752dc421ccc9236405ec0e581bdd79241fa911618891f958cd415",
+    "audit/gee-python-wave27/final/smile-rf-kernel-cases.json": "f9106c8e8e5a9f74ccb8e0938459f0d10bc1fe986879a9de9d20f8d4b8e3d968",
+    "audit/gee-python-wave27/final/smile-rf-kernel-result.json": "0032a438cff6afcf89cd7b4e2206e9ce492734a816bc554393c6c34fe0d5ecd5",
+    "audit/gee-python-wave27/frontend.json": "6fead7f9e2ce5892cda8d944a788542cfca15409d37552b1854db3a7c87a1ea7",
+    "audit/gee-python-wave27/helper-extraction/before-test.py": "c5ac977c8e5ff2c37abe1d995b8ab6253c3710ec20c9e76e935024f1d6b82142",
+    "audit/gee-python-wave27/helper-extraction/python.xml": "8bde5d68d40cfffbbaf5c31d6af18800789052041114885b1ff633487a8812e1",
+    "audit/gee-python-wave27/helper-extraction/record.json": "9d3ba8bf42bbac6c89032ed0cf1b9faca137443f3e33bab190073c93841b9874",
+    "audit/gee-python-wave27/implementation-contract.md": "e22b96068b968648f25faa36d97fb6bc9ada1d8ace7741585b8ba135a609edb2",
+    "audit/gee-python-wave27/native-focused/local-ee-smile-rf-adapter.jar": "306e11ae1651f01a1d5514da0a2192bcb8cca2fe70b2d7fee30b2094f6cca350",
+    "audit/gee-python-wave27/native-focused/local-ee-smile-rf-adapter.jar.sha256": "a8f3af75570569485cb3e061c718e1fcf40041b87d75626bc2744cbaf6e9962f",
+    "audit/gee-python-wave27/native-focused/smile-rf-adapter.manifest.json": "aa5af334c86752dc421ccc9236405ec0e581bdd79241fa911618891f958cd415",
+    "audit/gee-python-wave27/native-focused/smile-rf-kernel-cases.json": "f9106c8e8e5a9f74ccb8e0938459f0d10bc1fe986879a9de9d20f8d4b8e3d968",
+    "audit/gee-python-wave27/native-focused/smile-rf-kernel-result.json": "50e8ff770a67807cdcbf1bf07c9ef27f159cca97b9d51c01e6d860796aefc3f5",
+    "audit/gee-python-wave27/python-api-inventory.json": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12",
+    "audit/gee-python-wave27/review-fixes.json": "cc1939e6ef22923793944d94a73d6710f3234d0a0c34fa2ffe88a785409ce285",
+    "audit/gee-python-wave27/staged-whitespace.json": "280a8c069b06c0f0036fe43112d336b4041d2ba7626390308c9fb83be55b1026"
+  }
+}

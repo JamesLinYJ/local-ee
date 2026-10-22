@@ -13,6 +13,7 @@ private[smile] final case class LocalEeSmileRfSpec(
 }
 
 private[smile] final case class LocalEeSmileRfRows(x: Array[Array[Double]], y: Array[Int])
+private[smile] final case class LocalEeSmileRfQueryRows(rows: Vector[Array[Double]])
 
 /** Independent, bounded parser for the Python-owned canonical training wires. */
 private[smile] object LocalEeSmileRfWire {
@@ -110,6 +111,36 @@ private[smile] object LocalEeSmileRfWire {
     require(labels.length >= 2 && labels.length <= MaxClasses && labels.sameElements(labels.indices),
       "Random forest requires 2..64 contiguous class labels starting at 0")
     LocalEeSmileRfRows(x, y)
+  }
+
+  /** Independently parse bounded, schema-ordered Float64 feature queries. */
+  def parseQueryRows(text: String, schemaSize: Int): LocalEeSmileRfQueryRows = {
+    require(schemaSize >= 1 && schemaSize <= 8,
+      "Random forest query schema must contain 1..8 columns")
+    val root = parseCanonical(text, MaxRowsBytes, "Random forest query rows")
+    require(root != null && root.isObject && fieldNames(root) == Set("version", "rows"),
+      "Random forest query rows must contain exactly version1 and rows")
+    require(integer(root.get("version"), "query version", 1, 1) == 1,
+      "Random forest query version must be integer 1")
+    val nodes = root.get("rows")
+    require(nodes != null && nodes.isArray && nodes.size() <= MaxRows,
+      s"Random forest queries support 0..$MaxRows rows")
+    val result = Vector.newBuilder[Array[Double]]
+    var rowIndex = 0
+    while (rowIndex < nodes.size()) {
+      val row = nodes.get(rowIndex)
+      require(row != null && row.isArray && row.size() == schemaSize,
+        "Random forest query row must match the ordered model schema")
+      val values = new Array[Double](schemaSize)
+      var column = 0
+      while (column < schemaSize) {
+        values(column) = queryNumber(row.get(column), rowIndex, column)
+        column += 1
+      }
+      result += values
+      rowIndex += 1
+    }
+    LocalEeSmileRfQueryRows(result.result())
   }
 
   private def parseCanonical(text: String, maxBytes: Int, name: String): JsonNode = {
@@ -283,6 +314,20 @@ private[smile] object LocalEeSmileRfWire {
     require(value.isFinite, s"Random forest row $row feature $column must be finite")
     require(math.abs(value) <= MaxTrainMagnitude,
       s"Random forest row $row feature $column exceeds the finite split-threshold domain")
+    value
+  }
+
+  private def queryNumber(node: JsonNode, row: Int, column: Int): Double = {
+    require(node != null && node.isNumber,
+      s"Random forest query row $row feature $column must be numeric")
+    if (node.isIntegralNumber) {
+      val integer = BigInt(node.bigIntegerValue())
+      require(integer.abs <= MaxIntFeature,
+        "Random forest integer queries must lie within the exact 2^53 domain")
+    }
+    val value = node.doubleValue()
+    require(value.isFinite,
+      s"Random forest query row $row feature $column must be finite")
     value
   }
 }

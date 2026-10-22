@@ -20,6 +20,8 @@ class Translator(CatalogOperations, FilteringOperations):
         self.scope = {}
         self.warnings = []
         self.steps = 0
+        self._root_env = None
+        self._root_value_cache = {}
 
     def warn(self, value):
         if value not in self.warnings:
@@ -29,7 +31,11 @@ class Translator(CatalogOperations, FilteringOperations):
         self.steps += 1
         if depth > 96 or self.steps > 50000:
             fail("Earth Engine graph exceeds compilation limits")
-        env = {} if env is None else env
+        if env is None:
+            env = {}
+        if depth == 0:
+            self._root_env = env
+            self._root_value_cache.clear()
         if isinstance(value, list):
             if len(value) > 10000:
                 fail("Inline list exceeds 10000 values")
@@ -47,7 +53,19 @@ class Translator(CatalogOperations, FilteringOperations):
             key = value.get("value")
             if key not in self.scope:
                 fail("Unknown serialized value reference")
-            return self.evaluate(self.scope[key], env, depth + 1)
+            if env is self._root_env and key in self._root_value_cache:
+                return self._root_value_cache[key]
+            result = self.evaluate(self.scope[key], env, depth + 1)
+            # The official serializer uses ValueRef for a shared, immutable
+            # server-side object. Cache only the RF table/model IR that can be
+            # reused across train(features=...) and FeatureCollection.classify;
+            # other values keep their prior per-reference evaluation rules.
+            from .ir import SampledFeatures, TrainedSmileRandomForest
+
+            if (env is self._root_env
+                    and isinstance(result, (SampledFeatures, TrainedSmileRandomForest))):
+                self._root_value_cache[key] = result
+            return result
         if value_type == "ArgumentRef":
             if value["value"] not in env:
                 fail("Unbound mapped-function argument")

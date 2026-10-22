@@ -54,11 +54,12 @@ def validate_rf_dependencies(nodes):
     """Sample chains retain schema; trusted RF models never cross algorithm types."""
     from .sampling_graph import _sampling_origin
     from .sampling_spec import decode_sampling_spec, sampling_columns
+    from .rf_validation_processes import MODEL_CONSUMERS
 
     for node in nodes.values():
         name, arguments = node["process_id"], node.get("arguments", {})
         if name in RF_TRAINERS and node.get("result"):
-            raise ValueError("Opaque random forest models can only feed raster prediction")
+            raise ValueError("Opaque random forest models can only feed audited prediction or evaluation")
         if name == RF_SAMPLES:
             source = _sampling_origin(nodes, arguments["data"]["from_node"])
             sample = decode_sampling_spec(source["arguments"]["spec"])
@@ -69,7 +70,7 @@ def validate_rf_dependencies(nodes):
         # Model objects have exactly one consumer contract. In particular they
         # cannot reach generic arithmetic, tables or a SaveResult serializer.
         for parameter, value in arguments.items():
-            direct_model = name == RF_CLASSIFY and parameter == "model"
+            direct_model = name in MODEL_CONSUMERS and parameter == "model"
             for reference, direct in _scoped_references(value):
                 if nodes[reference]["process_id"] in RF_TRAINERS:
                     if not direct_model or not direct:

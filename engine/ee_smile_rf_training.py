@@ -81,12 +81,14 @@ def _pending(spec_text, decoded, *, traces=(), data_tracer=None):
     )
 
 
-def _train(spec_text, rows_text, decoded):
+def _train(spec_text, rows_text, decoded, rows):
     from .ee_smile_rf import _train_jvm_model, _trained_model
 
     java_model = _train_jvm_model(spec_text, rows_text)
+    labels = {row[0] for row in rows["rows"]}
     return _trained_model(
         decoded["schema"], decoded["class_property"], spec_text, java_model,
+        training_row_count=len(rows["rows"]), class_count=len(labels),
     )
 
 
@@ -117,7 +119,7 @@ def local_ee_train_smile_rf_rows(args, env):
     tracer = _dry_run_tracer(env)
     if tracer is not None:
         return _pending(args["spec"], decoded, data_tracer=tracer)
-    return _train(args["spec"], rows_text, decoded)
+    return _train(args["spec"], rows_text, decoded, rows)
 
 
 def _table_columns(table):
@@ -257,5 +259,5 @@ def local_ee_train_smile_rf_samples(args, env):
         raise RuntimeError("Smile RF canonical rows exceeded the reserved wire bound")
     budget.charge(row_cells)
     wire_budget.charge(2 * wire_upper)
-    decode_rf_rows(rows_text, decoded)
-    return _train(args["spec"], rows_text, decoded)
+    decoded_rows = decode_rf_rows(rows_text, decoded)
+    return _train(args["spec"], rows_text, decoded, decoded_rows)

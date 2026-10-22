@@ -84,7 +84,11 @@ def validate(graph):
             if node["process_id"] == "aggregate_spatial" and isinstance(args.get("geometries"),str):
                 raise ValueError("区域统计需要内嵌 GeoJSON，不接受 URL 或文件路径")
             if node["process_id"] == "save_result":
-                if args.get("format", "").lower() not in {"gtiff", "geotiff", "netcdf", "csv"}:
+                if args.get("format", "").lower() == "json":
+                    from .rf_validation_processes import validate_json_sink
+
+                    validate_json_sink(args, g, depth)
+                elif args.get("format", "").lower() not in {"gtiff", "geotiff", "netcdf", "csv"}:
                     raise ValueError("仅支持 GeoTIFF、NetCDF、CSV")
                 if args.get("options"):
                     raise ValueError("首版不接受自定义 save_result options")

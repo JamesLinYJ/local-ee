@@ -10,6 +10,12 @@ from .public_values import public_result
 from .join_ops import Join
 from .table_reducers import TableReducer
 from .inner_join import InnerJoin
+from .runtime_feature_ir import (
+    RFClassifiedFeatureTable,
+    RuntimeConfusionValue,
+    RuntimeFeatureErrorMatrix,
+    RuntimeRFTrainingConfusion,
+)
 
 
 def compile_expression(expression, catalog, items, options=None):
@@ -33,6 +39,16 @@ def compile_expression(expression, catalog, items, options=None):
 
         if isinstance(value, RasterArrayBands):
             fail("Multiple array bands require select then arrayFlatten or arrayGet; direct array raster export is unsupported")
+        if isinstance(value, RFClassifiedFeatureTable):
+            from .runtime_validation_graph import compile_runtime_table
+
+            return public_result(compile_runtime_table(value, translator))
+        if isinstance(value, RuntimeConfusionValue):
+            from .runtime_validation_graph import compile_runtime_value
+
+            return public_result(compile_runtime_value(value, translator))
+        if isinstance(value, (RuntimeRFTrainingConfusion, RuntimeFeatureErrorMatrix)):
+            fail("Runtime ConfusionMatrix output requires array(), order(), accuracy(), kappa() or a supported class metric")
         from .confusion_values import StaticConfusionMatrix
 
         if isinstance(value, StaticConfusionMatrix):

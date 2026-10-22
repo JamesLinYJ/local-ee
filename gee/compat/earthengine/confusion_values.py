@@ -7,9 +7,15 @@ import math
 
 import numpy as np
 
+from ...rf_validation_spec import prepare_metric_spec
 from .array_core import StaticArray, charge_array, require_array, wrap_array
 from .confusion_metrics import CONFUSION_METRIC_FUNCTIONS, invoke_confusion_metric
 from .ir import fail
+from .runtime_feature_ir import (
+    RuntimeConfusionValue,
+    RuntimeFeatureErrorMatrix,
+    RuntimeRFTrainingConfusion,
+)
 
 
 MAX_CONFUSION_CLASSES = 64
@@ -138,6 +144,14 @@ def invoke_confusion(t, name, args):
     if "confusionMatrix" not in args:
         fail(f"{name} requires confusionMatrix")
     value = args["confusionMatrix"]
+    if isinstance(value, (RuntimeRFTrainingConfusion, RuntimeFeatureErrorMatrix)):
+        operation = name.removeprefix("ConfusionMatrix.")
+        try:
+            spec = prepare_metric_spec(operation, args.get("beta", 1.0))
+        except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
+            fail(f"{name} specification is invalid: {exc}")
+        charge_array(t, len(spec) + 1)
+        return RuntimeConfusionValue(matrix=value, spec=spec)
     if name == "ConfusionMatrix.array":
         if not isinstance(value, StaticConfusionMatrix):
             fail("ConfusionMatrix.array requires a static ConfusionMatrix")

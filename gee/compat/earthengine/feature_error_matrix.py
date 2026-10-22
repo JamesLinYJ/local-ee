@@ -5,10 +5,15 @@ import math
 
 import numpy as np
 
+from ...rf_validation_spec import prepare_matrix_spec
+from ...sample_table_spec import decode_sample_operation
+from ...sampling_spec import decode_sampling_spec, sampling_columns
 from .array_core import wrap_array
 from .confusion_values import make_confusion
 from .feature_values import charge, is_collection, property_name, validate_feature
-from .ir import fail
+from .ir import SampledFeatures, fail
+from .runtime_feature_ir import RFClassifiedFeatureTable, RuntimeFeatureErrorMatrix
+from .sampled_feature_ops import validate_sampled_operations
 
 
 _MAX_FEATURES = 1000
@@ -76,6 +81,10 @@ def invoke_error_matrix(translator, name, arguments):
     if "collection" not in a:
         fail("Collection.errorMatrix requires a collection")
 
+    table = a["collection"]
+    if isinstance(table, (SampledFeatures, RFClassifiedFeatureTable)):
+        return _runtime_error_matrix(translator, a, table)
+
     actual_name = property_name(a.get("actual"))
     predicted_name = property_name(a.get("predicted"))
     charge(translator, len(actual_name) + len(predicted_name) + 2)
@@ -136,3 +145,58 @@ def invoke_error_matrix(translator, name, arguments):
             matrix[row, column] += 1
 
     return make_confusion(translator, wrap_array(matrix), order=order_values)
+
+
+def _runtime_error_matrix(translator, arguments, table):
+    """Retain an errorMatrix over a lazy sampled or predicted feature table."""
+    known_empty = False
+    if isinstance(table, SampledFeatures):
+        try:
+            sampled = decode_sampling_spec(table.spec)
+            columns = sampling_columns(sampled)
+        except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
+            fail(f"Collection.errorMatrix has an invalid sample table: {exc}")
+        known_empty = _sampled_table_empty(translator, table, sampled)
+    else:
+        columns = table.columns
+        known_empty = table.row_count == 0
+        if not known_empty and isinstance(table.source, SampledFeatures):
+            try:
+                sampled = decode_sampling_spec(table.source.spec)
+            except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
+                fail(f"Collection.errorMatrix has an invalid sample table: {exc}")
+            known_empty = _sampled_table_empty(translator, table.source, sampled)
+
+    actual = property_name(arguments.get("actual"))
+    predicted = property_name(arguments.get("predicted"))
+    charge(translator, len(actual) + len(predicted) + 2)
+    if known_empty and arguments.get("order") is None:
+        fail("Collection.errorMatrix needs an explicit order for an empty collection")
+    if not known_empty:
+        available = set(columns)
+        for name in (actual, predicted):
+            if name not in available:
+                fail(f"Collection.errorMatrix property is missing: {name}")
+    try:
+        spec = prepare_matrix_spec(actual, predicted, arguments.get("order"))
+    except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
+        fail(f"Collection.errorMatrix specification is invalid: {exc}")
+    charge(translator, len(spec) + len(columns))
+    return RuntimeFeatureErrorMatrix(table=table, spec=spec)
+
+
+def _sampled_table_empty(translator, sampled_table, sampled_spec):
+    """Recognize empty rows only from the literal regions or limit(0)."""
+    operations = validate_sampled_operations(
+        sampled_table, translator, "Collection.errorMatrix sample table",
+    )
+    if not sampled_spec["regions"]["features"]:
+        return True
+    for text in operations:
+        try:
+            operation = decode_sample_operation(text)
+        except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
+            fail(f"Collection.errorMatrix has an invalid sample-table operation: {exc}")
+        if operation["operation"] == "limit" and operation["count"] == 0:
+            return True
+    return False

@@ -73,7 +73,7 @@ SMILE_RF_LIMIT = (
     "CLASSIFICATION only; schema and setOutputMode supported. Image.classify uses a trusted opaque JVM model from an RF trainer, "
     "preserves actual Float32/Float64, masks/grid/time/metadata, singleton Int32 v; valid infinity rejects. "
     "Prediction uses checked1e9 pixels*keys*sum(actual tree depths). Dedicated locked optional SPI/dependency package, no runtime downloads or user Java deserialization. "
-    "RF FeatureCollection.classify/explain/confusionMatrix/randomColumn and other modes unsupported. "
+    "RF FeatureCollection.classify and resubstitution/validation matrices have a separate bounded runtime table contract; explain/randomColumn and other modes remain unsupported. "
     "No Google Smile version, seed, sampling, dtype or numerical equivalence and no full Spark/sandbox/service/browser/deployment acceptance."
 )
 KNOWN_PARTIAL_LIMITS["Classifier.smileRandomForest"] = [SMILE_RF_LIMIT]
@@ -212,6 +212,19 @@ KNOWN_PARTIAL_LIMITS["Image.arraySort"] = [
 KNOWN_PARTIAL_LIMITS["Collection.errorMatrix"] = [
     "Inline FeatureCollection <=1000 complete finite integer actual/predicted labels and flat property names only. Missing/null and invalid label types reject; explicitly filter notNull first when desired. Default order spans 0..max label, at most 64 classes; explicit unique order counts only pairs whose two labels match it, including sparse/negative orders, and [] returns a typed 0x0 matrix. Empty collections need an explicit order. Shared work/cell limits apply. No remote feature sampling, classifier training or Google acceptance."
 ]
+RF_VALIDATION_LIMIT = (
+    "Actual RF runtime FeatureCollection.classify for canonical inline or audited sampleRegions/filter/limit tables, "
+    "0..1000 prediction rows, explicit trained1..8 schema, finite binary64/exact-domain integers, original logical headers/rows/IDs/geometry retained; output collisions/missing/null inputs reject. "
+    "Training confusionMatrix predicts retained real training rows (resubstitution, not OOB). Runtime errorMatrix preserves actual rows/predicted columns and explicit unique order<=64; omitted order0..max, empty requires explicit order, missing/null and undefined denominators reject. "
+    "All seven existing bounded confusion accessors return owned JSON getInfo tasks; classified tables also support CSV. "
+    "Opaque models/matrices have strict direct consumers; dry-run carries only schemas/traces. Existing50000 compiler,500nodes/table-operation caps plus separate per-process RF150000 object/3MB cumulative-wire and actual-depth prediction budgets apply. "
+    "Classified-table post-filtering, randomColumn, other modes/classifiers, arbitrary dynamic scalar/array algebra and nested dynamic containers unsupported. Existing local metric shape/axis policies are not Google-verified; no full Spark/browser/deployment or same-data Google claim."
+)
+for operation in ("Classifier.smileRandomForest", "Classifier.confusionMatrix", "FeatureCollection.classify",
+                  "Collection.errorMatrix", "ConfusionMatrix.array", "ConfusionMatrix.order",
+                  "ConfusionMatrix.accuracy", "ConfusionMatrix.kappa", "ConfusionMatrix.consumersAccuracy",
+                  "ConfusionMatrix.producersAccuracy", "ConfusionMatrix.fscore"):
+    KNOWN_PARTIAL_LIMITS.setdefault(operation, []).append(RF_VALIDATION_LIMIT)
 for operation in ("Join.simple", "Join.inverted", "Join.saveFirst", "Join.saveAll", "Join.saveBest", "Join.inner", "Join.apply"):
     KNOWN_PARTIAL_LIMITS[operation] = [
         "Bounded local ImageCollections and flat finite scalar metadata conditions only; at most 1000 frames and shared compilation work budget. A unique direct or conjunctive numeric maxDifference supplies measures; multiple measures and measures under Or/Not reject when requested. Inner emits <=1000 null-geometry Feature pairs retaining Images, with optional measure on the pair Feature and distinct keys. Inclusive threshold and local stable order/ties; vector/spatial joins and nested selectors unsupported. Synthetic graph controls do not establish native-engine or Google equivalence."

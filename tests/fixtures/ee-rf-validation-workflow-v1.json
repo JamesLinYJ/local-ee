@@ -1,0 +1,120 @@
+{
+  "schema": "local-ee-synthetic-rf-validation-workflow/v1",
+  "description": "A fixed 3 by 6 training grid, inline training features, and held-out feature rows for exercising trusted Smile RF feature prediction and runtime validation. It contains no fitted predictions or Google result.",
+  "collection_id": "sentinel-2-l2a",
+  "training_scene_id": "rf-validation-training-grid",
+  "class_property": "class_id",
+  "input_properties": ["red", "nir"],
+  "output_name": "rf_prediction",
+  "class_order": [1, 0],
+  "region_properties": ["site", "keep"],
+  "training_scale": 1,
+  "sample_filter": {
+    "not_null": ["site", "keep", "class_id", "red", "nir"],
+    "expression": "keep == true && site != \"drop\"",
+    "limit": 12
+  },
+  "classifier_parameters": {
+    "number_of_trees": 31,
+    "variables_per_split": 2,
+    "min_leaf_population": 1,
+    "bag_fraction": 0.75,
+    "max_nodes": 15,
+    "seed": 42
+  },
+  "grid": {
+    "crs": "EPSG:4326",
+    "extent": [0, 0, 6, 3],
+    "shape_rows_columns": [3, 6],
+    "pixel_centers": [
+      [0.5, 2.5], [1.5, 2.5], [2.5, 2.5], [3.5, 2.5], [4.5, 2.5], [5.5, 2.5],
+      [0.5, 1.5], [1.5, 1.5], [2.5, 1.5], [3.5, 1.5], [4.5, 1.5], [5.5, 1.5],
+      [0.5, 0.5], [1.5, 0.5], [2.5, 0.5], [3.5, 0.5], [4.5, 0.5], [5.5, 0.5]
+    ],
+    "pixel_order": "global row north to south, then column west to east"
+  },
+  "training_pixel_values": {
+    "class_id": [0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1],
+    "red": [1.0, 8.0, 1.2, 8.2, 1.4, 8.4, 8.6, 1.6, 8.8, 1.8, 9.0, 2.0, 2.2, 9.2, 2.4, 9.4, 2.6, 9.6],
+    "nir": [3.0, 10.0, 3.2, 10.2, 3.4, 10.4, 10.6, 3.6, 10.8, 3.8, 11.0, 4.0, 4.2, 11.2, 4.4, 11.4, 4.6, 11.6]
+  },
+  "training_regions": [
+    {"pixel": 0, "site": "reject-false", "keep": false},
+    {"pixel": 1, "site": "drop", "keep": true},
+    {"pixel": 8, "site": null, "keep": true},
+    {"pixel": 3, "site": "sample-03", "keep": true},
+    {"pixel": 2, "site": "sample-02", "keep": true},
+    {"pixel": 5, "site": "sample-05", "keep": true},
+    {"pixel": 4, "site": "sample-04", "keep": true},
+    {"pixel": 6, "site": "sample-06", "keep": true},
+    {"pixel": 7, "site": "sample-07", "keep": true},
+    {"pixel": 10, "site": "sample-10", "keep": true},
+    {"pixel": 9, "site": "sample-09", "keep": true},
+    {"pixel": 13, "site": "sample-13", "keep": true},
+    {"pixel": 12, "site": "sample-12", "keep": true},
+    {"pixel": 15, "site": "sample-15", "keep": true},
+    {"pixel": 11, "site": "sample-11", "keep": true},
+    {"pixel": 17, "site": "after-limit-17", "keep": true},
+    {"pixel": 14, "site": "after-limit-14", "keep": true},
+    {"pixel": 16, "site": "after-limit-16", "keep": true}
+  ],
+  "static_training_rows": [
+    {"id": "train-02", "class_id": 0, "red": 1.2, "nir": 3.2, "site": "inline-02"},
+    {"id": "train-03", "class_id": 1, "red": 8.2, "nir": 10.2, "site": "inline-03"},
+    {"id": "train-04", "class_id": 0, "red": 1.4, "nir": 3.4, "site": "inline-04"},
+    {"id": "train-05", "class_id": 1, "red": 8.4, "nir": 10.4, "site": "inline-05"},
+    {"id": "train-07", "class_id": 0, "red": 1.6, "nir": 3.6, "site": "inline-07"},
+    {"id": "train-06", "class_id": 1, "red": 8.6, "nir": 10.6, "site": "inline-06"},
+    {"id": "train-09", "class_id": 0, "red": 1.8, "nir": 3.8, "site": "inline-09"},
+    {"id": "train-10", "class_id": 1, "red": 9.0, "nir": 11.0, "site": "inline-10"},
+    {"id": "train-12", "class_id": 0, "red": 2.2, "nir": 4.2, "site": "inline-12"},
+    {"id": "train-13", "class_id": 1, "red": 9.2, "nir": 11.2, "site": "inline-13"},
+    {"id": "train-15", "class_id": 1, "red": 9.4, "nir": 11.4, "site": "inline-15"},
+    {"id": "train-14", "class_id": 0, "red": 2.4, "nir": 4.4, "site": "inline-14"}
+  ],
+  "validation_rows": [
+    {"id": "held-01", "nir": 3.1, "red": 1.1, "class_id": 0, "site": "low-a"},
+    {"id": "held-02", "nir": 3.3, "red": 1.3, "class_id": 0, "site": "low-b"},
+    {"id": "held-03", "nir": 3.5, "red": 1.5, "class_id": 0, "site": "low-c"},
+    {"id": "held-04", "nir": 3.7, "red": 1.7, "class_id": 0, "site": "low-d"},
+    {"id": "held-05", "nir": 10.1, "red": 8.1, "class_id": 0, "site": "high-a"},
+    {"id": "held-06", "nir": 10.3, "red": 8.3, "class_id": 0, "site": "high-b"},
+    {"id": "held-07", "nir": 3.9, "red": 1.9, "class_id": 1, "site": "low-e"},
+    {"id": "held-08", "nir": 10.5, "red": 8.5, "class_id": 1, "site": "high-c"},
+    {"id": "held-09", "nir": 10.7, "red": 8.7, "class_id": 1, "site": "high-d"},
+    {"id": "held-10", "nir": 10.9, "red": 8.9, "class_id": 1, "site": "high-e"}
+  ],
+  "export_selectors": ["system:index", "site", "class_id", "red", "nir", "rf_prediction", ".geo"],
+  "matrix_reference": {
+    "order": [10, -1, 3],
+    "rows": [
+      {"actual": 10, "predicted": 10, "repeat": 5},
+      {"actual": 10, "predicted": -1},
+      {"actual": -1, "predicted": 10, "repeat": 2},
+      {"actual": -1, "predicted": -1, "repeat": 3},
+      {"actual": -1, "predicted": 3},
+      {"actual": 3, "predicted": -1},
+      {"actual": 3, "predicted": 3, "repeat": 4},
+      {"actual": 99, "predicted": -1},
+      {"predicted": 10},
+      {"actual": null, "predicted": 10},
+      {"actual": 10, "predicted": null}
+    ],
+    "expected": {
+      "complete_rows": 18,
+      "evaluated_rows": 17,
+      "matrix": [[5, 1, 0], [2, 3, 1], [0, 1, 4]],
+      "accuracy": "12/17",
+      "kappa": "107/192",
+      "consumers_accuracy": ["5/6", "1/2", "4/5"],
+      "producers_accuracy": ["5/7", "3/5", "4/5"],
+      "fscore_beta_2": ["25/31", "15/29", "4/5"]
+    }
+  },
+  "empty_matrix_reference": {"order": [4, -2], "rows": []},
+  "zero_denominator_reference": {
+    "order": [0, 1],
+    "matrix": [[1, 0], [0, 0]],
+    "expect_undefined": ["consumersAccuracy[1]", "producersAccuracy[1]", "fscore[1]", "kappa"]
+  }
+}

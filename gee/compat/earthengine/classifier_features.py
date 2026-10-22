@@ -3,11 +3,20 @@ from __future__ import annotations
 
 import numpy as np
 
+from ...rf_validation_spec import (
+    prepare_classify_spec,
+    prepare_feature_rows,
+    prepare_query_rows,
+)
+from ...sampling_spec import decode_sampling_spec, sampling_columns
+from ...table_values import columns as table_columns
 from .array_core import wrap_array
 from .confusion_values import MAX_CONFUSION_CELLS, MAX_CONFUSION_CLASSES, make_confusion
 from .feature_values import charge, is_collection, property_name, validate_feature
 from .ir import DynamicMinimumDistance, SampledFeatures, fail
 from .minimum_distance import predict_class, require_trained
+from .runtime_feature_ir import RFClassifiedFeatureTable, RuntimeRFTrainingConfusion
+from .smile_rf_training import validate_trained_classifier
 
 
 _MAX_FEATURES = 1000
@@ -46,6 +55,11 @@ def _classify_features(translator, arguments):
     translator.allowed(a, {"features", "classifier", "outputName"})
     if "features" not in a or "classifier" not in a:
         fail("FeatureCollection.classify requires features and classifier")
+
+    from .ir import TrainedSmileRandomForest
+
+    if isinstance(a["classifier"], TrainedSmileRandomForest):
+        return _classify_rf_features(translator, a)
 
     if isinstance(a["classifier"], DynamicMinimumDistance):
         fail("FeatureCollection.classify does not support sample-trained classifiers")
@@ -97,11 +111,83 @@ def _classify_features(translator, arguments):
     }
 
 
+def _classify_rf_features(translator, arguments):
+    """Build a lazy FeatureCollection.classify node without predicting rows."""
+    from .ir import TrainedSmileRandomForest
+
+    source = arguments["features"]
+    classifier = arguments["classifier"]
+    if not isinstance(classifier, TrainedSmileRandomForest):
+        fail("FeatureCollection.classify requires a trained Smile RandomForest")
+    classifier = validate_trained_classifier(translator, classifier)
+    schema = classifier.schema
+    rows = None
+
+    if isinstance(source, SampledFeatures):
+        try:
+            sample_spec = decode_sampling_spec(source.spec)
+            original_columns = sampling_columns(sample_spec)
+        except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
+            fail(f"FeatureCollection.classify has an invalid sample table: {exc}")
+        row_count = 0 if not sample_spec["regions"]["features"] else None
+    else:
+        features = _features(translator, source)
+        try:
+            original_columns = table_columns(source)
+        except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
+            fail(f"FeatureCollection.classify requires a bounded GeoJSON table: {exc}")
+        row_count = len(features)
+        charge(translator, row_count * (len(schema) + 1))
+        query_rows = []
+        for feature in features:
+            properties = feature["properties"]
+            values = []
+            for name in schema:
+                if name not in properties:
+                    fail(f"FeatureCollection.classify is missing classifier property: {name}")
+                if properties[name] is None:
+                    fail(f"FeatureCollection.classify classifier property is null: {name}")
+                values.append(properties[name])
+            query_rows.append(values)
+        try:
+            prepare_query_rows(query_rows, len(schema))
+            rows = prepare_feature_rows(source)
+        except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
+            fail(f"FeatureCollection.classify rows are invalid: {exc}")
+
+    output_name = property_name(arguments.get("outputName", "classification"))
+    if not output_name or "." in output_name:
+        fail("FeatureCollection.classify outputName must be a nonempty flat property name")
+    if output_name in original_columns:
+        fail(f"FeatureCollection.classify output property already exists: {output_name}")
+    if row_count != 0 and not set(schema) <= set(original_columns):
+        fail("FeatureCollection.classify table does not contain the classifier schema")
+    output_columns = list(original_columns)
+    output_columns.insert(len(output_columns) - 1, output_name)
+    try:
+        spec = prepare_classify_spec(output_name, output_columns)
+    except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
+        fail(f"FeatureCollection.classify specification is invalid: {exc}")
+    charge(translator, len(output_name) + len(spec) + len(output_columns))
+    return RFClassifiedFeatureTable(
+        source=source,
+        classifier=classifier,
+        spec=spec,
+        columns=tuple(output_columns),
+        row_count=row_count,
+        rows=rows,
+    )
+
+
 def _classifier_confusion_matrix(translator, arguments):
     a = arguments
     translator.allowed(a, {"classifier"})
     if "classifier" not in a:
         fail("Classifier.confusionMatrix requires classifier")
+    from .ir import TrainedSmileRandomForest
+    if isinstance(a["classifier"], TrainedSmileRandomForest):
+        classifier = validate_trained_classifier(translator, a["classifier"])
+        return RuntimeRFTrainingConfusion(classifier)
     if isinstance(a["classifier"], DynamicMinimumDistance):
         fail("Classifier.confusionMatrix is unsupported for sample-trained classifiers")
     classifier = require_trained(a["classifier"])

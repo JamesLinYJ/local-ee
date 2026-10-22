@@ -28,14 +28,22 @@ class TrainedSmileRfModel:
     spec: str
     _java_model: Any = field(repr=False, compare=False)
     _token: Any = field(default=None, repr=False, compare=False)
+    training_row_count: int = 0
+    class_count: int = 0
 
     def __post_init__(self):
         if self._token is not _MODEL_TOKEN:
             raise TypeError("Trained Smile models can only be created by the trusted JVM factory")
         object.__setattr__(self, "schema", tuple(self.schema))
+        if ((self.training_row_count != 0 or self.class_count != 0)
+                and (type(self.training_row_count) is not int or not 2 <= self.training_row_count <= 1000
+                     or type(self.class_count) is not int or not 2 <= self.class_count <= 64)):
+            raise ValueError("Trained Smile model metadata is outside its validated row/class bounds")
 
 
-def _trained_model(schema, class_property, spec, java_model) -> TrainedSmileRfModel:
+def _trained_model(
+    schema, class_property, spec, java_model, training_row_count=0, class_count=0,
+) -> TrainedSmileRfModel:
     """Wrap only a model object returned directly by the trusted Java factory."""
     try:
         from py4j.java_gateway import JavaObject
@@ -43,7 +51,10 @@ def _trained_model(schema, class_property, spec, java_model) -> TrainedSmileRfMo
         raise RuntimeError("Py4J is required to verify the pinned Smile RF JVM model") from exc
     if not isinstance(java_model, JavaObject):
         raise RuntimeError("Pinned Smile RF factory did not return a JVM model object")
-    return TrainedSmileRfModel(schema, class_property, spec, java_model, _MODEL_TOKEN)
+    return TrainedSmileRfModel(
+        schema, class_property, spec, java_model, _MODEL_TOKEN,
+        training_row_count, class_count,
+    )
 
 
 def _train_jvm_model(spec_text: str, rows_text: str):
@@ -58,6 +69,38 @@ def _train_jvm_model(spec_text: str, rows_text: str):
             "Pinned Smile random-forest JVM factory is unavailable or failed"
         ) from exc
     return model
+
+
+def _predict_jvm_rows(java_model, rows_text: str) -> str:
+    """Ask the trusted factory to predict bounded feature rows with a real model."""
+    try:
+        from openeogeotrellis.utils import get_jvm
+
+        factory = get_jvm().local.ee.smile.LocalEeSmileRfFactory
+        result = factory.predictRows(java_model, rows_text)
+    except Exception as exc:
+        raise RuntimeError(
+            "Pinned Smile random-forest JVM row predictor is unavailable or failed"
+        ) from exc
+    if type(result) is not str:
+        raise RuntimeError("Pinned Smile random-forest JVM predictor did not return JSON text")
+    return result
+
+
+def _confusion_jvm(java_model) -> str:
+    """Request resubstitution counts from the trusted model's retained training rows."""
+    try:
+        from openeogeotrellis.utils import get_jvm
+
+        factory = get_jvm().local.ee.smile.LocalEeSmileRfFactory
+        result = factory.confusionMatrix(java_model)
+    except Exception as exc:
+        raise RuntimeError(
+            "Pinned Smile random-forest JVM confusionMatrix is unavailable or failed"
+        ) from exc
+    if type(result) is not str:
+        raise RuntimeError("Pinned Smile random-forest JVM confusionMatrix did not return JSON text")
+    return result
 
 
 def _model_metadata(cube, schema):

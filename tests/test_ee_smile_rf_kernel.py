@@ -14,6 +14,7 @@ import pytest
 
 from gee.sampling_spec import encode_spec
 from gee.smile_rf_spec import decode_rf_spec, prepare_rf_parameters, prepare_rf_rows, prepare_rf_spec
+from gee.rf_validation_spec import prepare_query_rows
 from scripts.build_integer_adapter import _engine_paths, build as build_base_adapter, sha256
 from scripts.build_smile_rf_adapter import ROOT, WORK_ROOT, build as build_rf_adapter
 
@@ -168,6 +169,19 @@ def _case():
         "scale_rows": prepare_rf_rows(scale_rows, decode_rf_spec(scale_spec)),
         "scale_row_count": len(scale_rows),
         "scale_training_work": len(scale_rows) * 100 * 8 * len(scale_rows),
+        "validation_spec": precision_spec,
+        "validation_training_rows": prepare_rf_rows(precision_rows, decode_rf_spec(precision_spec)),
+        "validation_query_rows": prepare_query_rows([[16777216], [16777217]], 1),
+        "validation_empty_query_rows": prepare_query_rows([], 1),
+        "validation_invalid_queries": [
+            prepare_query_rows([[16777216]], 1) + " ",
+            encode_spec({"rows": [[1, 2]], "version": 1}),
+            encode_spec({"rows": [[True]], "version": 1}),
+            encode_spec({"rows": [[2**53 + 1]], "version": 1}),
+            encode_spec({"rows": [[None]], "version": 1}),
+            '{"rows":[[1e309]],"version":1}',
+            encode_spec({"rows": [[float(index)] for index in range(1001)], "version": 1}),
+        ],
     }
 
 
@@ -186,13 +200,58 @@ def test_actual_smile_training_and_geotrellis_tile_kernel():
         directory.mkdir(parents=True, exist_ok=True)
     base_jar = base_dir / "local-ee-integer-adapter.jar"
     base_manifest_path = base_jar.with_suffix(base_jar.suffix + ".manifest.json")
-    base_manifest = build_base_adapter(base_jar)
     adapter_jar = adapter_dir / "local-ee-smile-rf-adapter.jar"
-    adapter_manifest = build_rf_adapter(adapter_jar, scratch / "dependencies", base_jar, base_manifest_path)
+    dependencies = ROOT.parents[1] / "work" / "gee-python-wave26-native" / "dependencies"
+
+    # The adapter build is intentionally serialized and may be reused by the
+    # probe after it has completed. Verify the retained manifests against the
+    # current sources before reuse; otherwise build into this wave's scratch.
+    base_sources = [ROOT / path for path in (
+        "engine/ee_integer_adapter.scala", "engine/ee_grid_adapter.scala",
+        "engine/ee_mask_adapter.scala", "engine/ee_reduce_support.scala",
+        "engine/ee_reduce_numeric.scala", "engine/ee_reduce_adapter.scala",
+        "engine/ee_classify_numeric.scala", "engine/ee_classify_model.scala",
+        "engine/ee_classify_adapter.scala", "engine/ee_sample_kernel.scala",
+        "engine/ee_sample_adapter.scala", "engine/ee_remap_numeric.scala",
+        "engine/ee_remap_adapter.scala",
+    )]
+    rf_sources = [ROOT / path for path in (
+        "engine/ee_smile_rf_wire.scala", "engine/ee_smile_rf_factory.scala",
+        "engine/ee_smile_rf_numeric.scala", "engine/ee_smile_rf_adapter.scala",
+    )]
+
+    def matches_sources(manifest_path, sources):
+        try:
+            manifest = json.loads(manifest_path.read_text())
+            expected = {str(path.relative_to(ROOT)): sha256(path) for path in sources}
+            return manifest.get("sources") == expected
+        except (OSError, json.JSONDecodeError):
+            return False
+
+    can_reuse = (
+        base_jar.is_file() and base_manifest_path.is_file()
+        and adapter_jar.is_file()
+        and matches_sources(base_manifest_path, base_sources)
+        and matches_sources(adapter_jar.with_suffix(adapter_jar.suffix + ".manifest.json"), rf_sources)
+    )
+    if can_reuse:
+        base_manifest = json.loads(base_manifest_path.read_text())
+        adapter_manifest_path = adapter_jar.with_suffix(adapter_jar.suffix + ".manifest.json")
+        adapter_manifest = json.loads(adapter_manifest_path.read_text())
+        can_reuse = (
+            base_manifest.get("jar_sha256") == sha256(base_jar)
+            and adapter_manifest.get("jar_sha256") == sha256(adapter_jar)
+            and adapter_manifest.get("base_adapter", {}).get("jar_sha256") == sha256(base_jar)
+            and adapter_manifest.get("base_adapter", {}).get("manifest_sha256") == sha256(base_manifest_path)
+            and adapter_manifest.get("build_script_sha256") == sha256(ROOT / "scripts/build_smile_rf_adapter.py")
+        )
+    if not can_reuse:
+        base_manifest = build_base_adapter(base_jar)
+        adapter_manifest = build_rf_adapter(adapter_jar, dependencies, base_jar, base_manifest_path)
 
     java, _, scala_tools, runtime_jars, _ = _engine_paths()
     lock = json.loads((ROOT / "deploy/smile-rf-lock.json").read_text())
-    dependencies = [scratch / "dependencies" / name for name in sorted(lock["smile_jars"])]
+    dependencies = [dependencies / name for name in sorted(lock["smile_jars"])]
     classpath_paths = [adapter_jar, base_jar, *dependencies, *runtime_jars]
     classpath = os.pathsep.join(str(path) for path in classpath_paths)
     compiler_classpath = os.pathsep.join(str(path) for path in scala_tools)
@@ -202,9 +261,10 @@ def test_actual_smile_training_and_geotrellis_tile_kernel():
         shutil.rmtree(classes)
     classes.mkdir(parents=True)
     source = ROOT / "tests/fixtures/ee-smile-rf-kernel-probe.scala"
+    validation_source = ROOT / "tests/fixtures/ee-smile-rf-validation-kernel-probe.scala"
     compile_result = subprocess.run(
         [str(java), "-cp", compiler_classpath, "scala.tools.nsc.Main", "-classpath", classpath,
-         "-d", str(classes), str(source)],
+         "-d", str(classes), str(source), str(validation_source)],
         capture_output=True, text=True, timeout=120,
     )
     assert compile_result.returncode == 0, compile_result.stderr
@@ -224,6 +284,26 @@ def test_actual_smile_training_and_geotrellis_tile_kernel():
     assert "SMILE_RF_SCALE_OK rows=1000 features=8 trees=100 mtry=2 bag=0.5 maxNodes=1000 seed=42" in run.stdout
     assert "low=0 high=1" in run.stdout
 
+    validation_fixture = {
+        "spec": fixture["validation_spec"],
+        "training_rows": fixture["validation_training_rows"],
+        "query_rows": fixture["validation_query_rows"],
+        "empty_query_rows": fixture["validation_empty_query_rows"],
+        "invalid_queries": fixture["validation_invalid_queries"],
+    }
+    validation_case_path = probe_dir / "smile-rf-validation-kernel-cases.json"
+    validation_case_path.write_text(
+        json.dumps(validation_fixture, ensure_ascii=False, allow_nan=False, indent=2) + "\n"
+    )
+    validation_run = subprocess.run(
+        [str(java), "-cp", str(classes) + os.pathsep + classpath,
+         "local.ee.smile.EeSmileRfValidationKernelProbe", str(validation_case_path)],
+        capture_output=True, text=True, timeout=120,
+    )
+    assert validation_run.returncode == 0, validation_run.stderr
+    assert "SMILE_RF_VALIDATION_OK trusted-feature-predictions=2 Float64=preserved" in validation_run.stdout
+    assert "resubstitution-rows=32 matrix=independent-frequency-reference" in validation_run.stdout
+
     guard = subprocess.run(
         [str(java), "-cp", str(classes) + os.pathsep + classpath,
          "local.ee.smile.EeSmileRfKernelProbe", "--parallel-preinitialized",
@@ -241,6 +321,8 @@ def test_actual_smile_training_and_geotrellis_tile_kernel():
         "compile_stderr": compile_result.stderr,
         "parallel_guard_stdout": guard.stdout,
         "parallel_guard_stderr": guard.stderr,
+        "validation_stdout": validation_run.stdout,
+        "validation_stderr": validation_run.stderr,
         "case_counts": {
             "primary_rows": fixture["primary_row_count"],
             "invalid_specs": len(fixture["invalid_specs"]),
@@ -253,7 +335,9 @@ def test_actual_smile_training_and_geotrellis_tile_kernel():
         "adapter_manifest": adapter_manifest,
         "base_manifest_sha256": sha256(base_manifest_path),
         "probe_source_sha256": sha256(source),
+        "validation_probe_source_sha256": sha256(validation_source),
         "case_sha256": sha256(case_path),
+        "validation_case_sha256": sha256(validation_case_path),
         "limitations": [
             "No SparkContext, distributed Spark job, engine service, sandbox, data account, or deployment acceptance",
             "No Google Earth Engine same-data result or RandomForest implementation parity claim",

@@ -58,6 +58,7 @@ flowchart LR
 | `gee/graph.py` 与 openEO adapter | 严格校验规范进程图，冻结本地数据目录 | 不接受 URL/UDF/远程 namespace 或隐藏执行表示 |
 | `gee/worker.py` / runtime registry | 排队、独立沙箱进程、限额、取消、恢复、结果发布 | 不信任脚本输出的路径、用户 ID、状态或资产清单 |
 | `gee/artifacts.py` | 所有结果目录与文件的物理路径校验 | 不跟随符号链接，不允许跨任务路径或非普通文件 |
+| `rf_validation_*`、`engine/ee_json_result.py`、`services/ee_runtime_results.py` | 真实 RF 要素预测、矩阵访问器及受任务权限保护的 JSON 结果 | 模型／矩阵仅连接规定消费者；JSON 不开放给通用图，结果与 CSV 共用物理文件边界 |
 | `gee/table_values.py`、`table_geometry.py`、`table_graph.py` | 内联表格的 JSON／几何校验、CSV 编码、封闭的表格进程图及受信任写出 | 属性不能变成可执行节点；不访问 URL／路径，不混入栅格算子，不在 API 进程发布结果 |
 | identity / access | 账号、OIDC 身份映射、角色、项目权限、会话与审计 | 不仅靠前端隐藏按钮，不信任未验证 JWT 或用户自报角色 |
 | ingestion / catalog | 来源检查、标准化、质量控制、STAC、版本与处理记录 | 不写任务目录，不使用数据库管理员账号，不擅自新增出站地址 |
@@ -71,7 +72,9 @@ flowchart LR
 
 标签准备使用单波段 `local_ee_remap`，保留真实 Float32／Float64 输入精度及掩膜；采样后可插入最多 16 个 `local_ee_sample_table_op` 处理筛选／无排序限量。筛选器由受限 parser 生成既有 Filter IR，不执行用户文本。表操作只追溯到原 sampler，保留 schema／ID／顺序，复制前预充资源并把工作计数传给训练器；新列、排序、动态值／验证矩阵另需结果合同。Smile 随机森林不得用 Spark MLlib 替代注册，依赖与算法状态单列在路线文档。
 
-随机森林新增独立 Smile1.5.3 模型 IR、可信串行 JVM 工厂和 GeoTrellis SPI；内联行与真实采样表分别经 `local_ee_train_smile_rf_rows`／`local_ee_train_smile_rf_samples`，opaque 模型仅可连接 `local_ee_smile_rf.model`。嵌套引用也受类型检查，回调保持独立作用域，向量／标量结果不能冒充目标栅格。固定训练来源／网格与目标输出分离。依赖在独立 lock／manifest 中校验，复用固定 Spark SLF4J，不运行时下载；现有 native runner 通过本地 extraClassPath 接入，未安装不会自动获得该能力。RF 按实测分开计量对象复制（150000，含原操作最多50000）和 wire 扫描（3MB），原 compiler／表操作／minimumDistance 预算不变；树拟合及按真实树深的预测另有各10亿工作上界。详见 [RF 语法与执行合同](gee-python/random-forest.md)。本机部署与完整运行验收仍单独记录。
+随机森林新增独立 Smile1.5.3 模型 IR、可信串行 JVM 工厂和 GeoTrellis SPI；内联行与真实采样表分别经 `local_ee_train_smile_rf_rows`／`local_ee_train_smile_rf_samples`，opaque 模型仅可连接经过审查的栅格／要素预测或训练重代入矩阵消费者。嵌套引用也受类型检查，回调保持独立作用域，向量／标量结果不能冒充目标栅格。固定训练来源／网格与目标输出分离。依赖在独立 lock／manifest 中校验，复用固定 Spark SLF4J，不运行时下载；现有 native runner 通过本地 extraClassPath 接入，未安装不会自动获得该能力。RF 按实测分开计量对象复制（150000，含原操作最多50000）和 wire 扫描（3MB），原 compiler／表操作／minimumDistance 预算不变；树拟合及按真实树深的预测另有各10亿工作上界。详见 [RF 语法与执行合同](gee-python/random-forest.md)。本机部署与完整运行验收仍单独记录。
+
+RF 要素分类与矩阵计算保留独立运行时 IR 和生产者合同。真实模型预测原始要素与保留的训练行，训练矩阵为重代入；矩阵仅进入七种明确访问器，JSON sink 只接受实际分类表／指标值。结果通过现有任务、父脚本权限及物理文件边界写出、复核和发布，worker 不收集其他任务的 JSON。纯内联 CSV 两节点分支保持封闭。同一个根作用域取样 IR 可复用训练分支，mapped 环境不缓存，原始输入及训练网格不改变；空样本不生成假行，未定义指标明确失败。详见 [要素验证语法](gee-python/rf-validation.md)。
 
 文件规模按职责评审：多数业务模块约 150–250 行，接近 300 行时检查是否混合职责，超过 400 行通常先拆分再扩展。行数不是硬限制，不压缩代码、不把完整算法切成难以追踪的碎片；生成数据和固定上游源码不机械拆分。前端控制器负责状态和副作用，面板负责渲染，通过显式类型接口连接。
 

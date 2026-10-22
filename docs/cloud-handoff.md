@@ -1,5 +1,13 @@
 # 云端开发交接
 
+## 第二十七批最新起点
+
+从远端最新 main 继续，不恢复旧 handoff 分支。此批基线为 `05718cff1d4603ac1a9933b76298012059ef9ef6`，实现真实 RF 要素分类、训练重代入与验证矩阵访问器、受控 JSON getInfo 与原有 CSV 导出。既有静态混淆矩阵／指标内核继续复用；分类器只在可信 JVM 训练与预测。相同根取样 IR 可复用训练分支，mapped 环境不缓存，训练网格独立。空表不造数据，未定义指标失败；规范字符串中的节点样式属性仍为数据。
+
+最终便携 Python **2413 passed／3 skipped**，另排除4项延期原生测试。前端11／类型检查／临时构建通过；四个明确 opt-in 的实际栅格组件与新增实际 Float64 要素预测、32行重代入频数、空查询及7非法查询通过。无 SparkContext、完整沙箱／HTTP／浏览器、部署或 Google 同数据验收。Python／JS 新图比较按嵌入 JSON 的数值语义对齐，整数浮点拼写不保证字节一致。完整 Python 目录字节保持；入口276／991不变，本批扩展已有名字的实际语义。
+
+规范见 `docs/gee-python/rf-validation.md` 和 `reports/gee-python-wave27.json`。新的 JSON sink 只接受直接受审查分类表／指标生产者；worker 仅发布可信 EE 任务的命名 JSON，所有读写沿用物理任务目录、权限及 no-follow 边界。JSON 分类表仍受 CSV／表／公开值／对象与 wire 复合限制。随机列、其他模式／算法、动态标量一般算术、分类后过滤及完整运行验收仍有缺口，目标保持 active。保留账号、数据、现有 .native 和四个固定 Smile 依赖；不启动服务、VM 或容器。
+
 2026-10-21。用户明确要求由云端 Codex 继续开发与兼容性测试，当前优先 GEE Python：先探测、整理 `docs/gee-python/list.md`，再持续补齐兼容。完整平台目标仍见 `GOAL.md`、`AGENTS.md` 和 `docs/architecture.md`，不能把本轮客户端接入当成整个目标完成。
 
 ## 2026-10-22 云端续作

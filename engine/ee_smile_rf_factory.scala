@@ -12,6 +12,8 @@ final class LocalEeSmileRfModel private (
   val classCount: Int,
   val actualTreeCount: Int,
   val maxDepthSum: Long,
+  private[smile] val trainingRows: Vector[Vector[Double]],
+  private[smile] val trainingLabels: Vector[Int],
   val variablesPerSplit: Int,
   val minLeafPopulation: Int,
   val bagFraction: Double,
@@ -22,10 +24,11 @@ final class LocalEeSmileRfModel private (
 object LocalEeSmileRfModel {
   private[smile] def fromForest(schema: Vector[String], forest: RandomForest,
                                 classes: Int, treeCount: Int, depthSum: Long,
+                                trainingRows: Vector[Vector[Double]], trainingLabels: Vector[Int],
                                 variablesPerSplit: Int, minLeafPopulation: Int,
                                 bagFraction: Double, maxNodes: Int, seed: Int): LocalEeSmileRfModel =
-    new LocalEeSmileRfModel(schema, forest, classes, treeCount, depthSum, variablesPerSplit,
-      minLeafPopulation, bagFraction, maxNodes, seed)
+    new LocalEeSmileRfModel(schema, forest, classes, treeCount, depthSum,
+      trainingRows, trainingLabels, variablesPerSplit, minLeafPopulation, bagFraction, maxNodes, seed)
 }
 
 /** Sole production factory for opaque Smile model instances. */
@@ -56,8 +59,53 @@ object LocalEeSmileRfFactory {
       "Smile RandomForest returned a tree outside the bounded leaf domain")
     val depthSum = depths.iterator.map(_.toLong).foldLeft(0L)(java.lang.Math.addExact)
     require(depthSum > 0L, "Smile RandomForest has no bounded decision-tree nodes")
+    // Keep a detached immutable resubstitution sample inside the trusted model.
+    // The mutable parser arrays are not retained by the JVM handle.
+    val retainedRows = checkedRows.x.iterator.map(row => row.clone().toVector).toVector
+    val retainedLabels = checkedRows.y.toVector
     LocalEeSmileRfModel.fromForest(checkedSpec.schema, forest, checkedRows.y.distinct.length,
-      trees.length, depthSum, checkedSpec.mtry, checkedSpec.minLeaf, checkedSpec.bagFraction,
-      effectiveLeaves, checkedSpec.seed)
+      trees.length, depthSum, retainedRows, retainedLabels, checkedSpec.mtry,
+      checkedSpec.minLeaf, checkedSpec.bagFraction, effectiveLeaves, checkedSpec.seed)
+  }
+
+  /** Predict only bounded canonical query rows through the retained real forest. */
+  def predictRows(model: LocalEeSmileRfModel, rowsText: String): String = {
+    require(model != null && model.forest != null && model.actualTreeCount > 0 && model.maxDepthSum > 0L,
+      "Random forest predictions require a trusted trained model")
+    val rows = LocalEeSmileRfWire.parseQueryRows(rowsText, model.schema.length).rows
+    val work = java.lang.Math.multiplyExact(rows.length.toLong, model.maxDepthSum)
+    require(work <= 1000000000L,
+      "Random forest row prediction exceeds the 1000000000 node-visit budget")
+    val labels = rows.map(values => LocalEeSmileRfNumeric.predictValue(values, model))
+    labels.mkString("{\"predictions\":[", ",", "],\"version\":1}")
+  }
+
+  /** Predict each retained training row and return the resubstitution counts. */
+  def confusionMatrix(model: LocalEeSmileRfModel): String = {
+    require(model != null && model.forest != null && model.actualTreeCount > 0 && model.maxDepthSum > 0L,
+      "Random forest confusionMatrix requires a trusted trained model")
+    require(model.trainingRows != null && model.trainingLabels != null &&
+      model.trainingRows.length == model.trainingLabels.length &&
+      model.trainingRows.length >= 2 && model.trainingRows.length <= 1000,
+      "Random forest model has invalid retained training rows")
+    val work = java.lang.Math.multiplyExact(model.trainingRows.length.toLong, model.maxDepthSum)
+    require(work <= 1000000000L,
+      "Random forest resubstitution exceeds the 1000000000 node-visit budget")
+    require(model.classCount >= 2 && model.classCount <= 64,
+      "Random forest model has an invalid class count")
+    val counts = Array.ofDim[Long](model.classCount, model.classCount)
+    var index = 0
+    while (index < model.trainingRows.length) {
+      val actual = model.trainingLabels(index)
+      require(actual >= 0 && actual < model.classCount &&
+        model.trainingRows(index).length == model.schema.length,
+        "Random forest model has an invalid retained training row")
+      val predicted = LocalEeSmileRfNumeric.predictValue(model.trainingRows(index).toArray, model)
+      counts(actual)(predicted) = java.lang.Math.addExact(counts(actual)(predicted), 1L)
+      index += 1
+    }
+    val matrix = counts.iterator.map(_.mkString("[", ",", "]")).mkString("[", ",", "]")
+    val order = (0 until model.classCount).mkString("[", ",", "]")
+    s"{\"matrix\":$matrix,\"order\":$order,\"version\":1}"
   }
 }

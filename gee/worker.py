@@ -69,10 +69,18 @@ def finish(row,container):
             from .services.ee_exports import finalize_export
             finalize_export(ROOT,row)
             folder=output_dir(ROOT,jid)
+            runtime_json=(row.get('context',{}).get('protocol')=='earthengine'
+                          and row.get('context',{}).get('result_kind')=='runtime_json')
             for path in folder.iterdir():
                 if path.suffix.lower() in {".tif",".tiff",".nc",".csv"}:
                     path=artifact_path(ROOT,jid,path.name)
                     assets[path.name]={"type":{".tif":"image/tiff; application=geotiff",".tiff":"image/tiff; application=geotiff",".nc":"application/x-netcdf",".csv":"text/csv"}[path.suffix.lower()],"roles":["data"],"file:size":path.stat().st_size}
+                elif runtime_json and path.name=='openEO.json':
+                    path=artifact_path(ROOT,jid,path.name)
+                    assets[path.name]={'type':'application/json','roles':['data'],'file:size':path.stat().st_size}
+            if runtime_json:
+                from .services.ee_runtime_results import read_result
+                read_result(ROOT,{**row,'assets':assets})
         except (ValueError,OSError):
             assets={};status="error";error="结果目录或文件不符合隔离要求"
         if not assets: status="error";error="计算没有生成支持的结果文件"

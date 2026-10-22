@@ -150,6 +150,21 @@ def validate_sampled_operations(sampled, translator, label="Sample table"):
     return operations
 
 
+def sampled_table_known_empty(sampled):
+    """Report only emptiness proved by a literal region list or limit(0)."""
+    from ...sample_table_spec import decode_sample_operation
+    from ...sampling_spec import decode_sampling_spec
+
+    spec = decode_sampling_spec(sampled.spec)
+    if not spec["regions"]["features"]:
+        return True
+    for text in _current_operations(sampled):
+        operation = decode_sample_operation(text)
+        if operation["operation"] == "limit" and operation["count"] == 0:
+            return True
+    return False
+
+
 def emit_sampled_operations(graph, table_ref, operations):
     """Lower opaque specs as table metadata, retaining exact data references."""
     for operation in operations:

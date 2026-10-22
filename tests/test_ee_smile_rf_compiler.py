@@ -305,7 +305,6 @@ def test_unsupported_rf_modes_and_result_consumers_remain_rejected(ee, local):
         ee.Image("target-a").classify(rf(ee)),
         classifier,
         classifier.confusionMatrix(),
-        literal_features(ee).classify(classifier),
         classifier.explain(),
     ):
         with pytest.raises(UnsupportedEEError):

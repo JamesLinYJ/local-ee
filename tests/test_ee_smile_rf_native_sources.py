@@ -71,6 +71,27 @@ def test_native_factory_revalidates_bounded_canonical_wire_and_trains_real_smile
     assert "ObjectInputStream" not in factory and "readObject" not in factory
 
 
+def test_feature_validation_factory_keeps_training_rows_and_uses_real_smile_predictions():
+    wire = (ROOT / "engine/ee_smile_rf_wire.scala").read_text()
+    factory = (ROOT / "engine/ee_smile_rf_factory.scala").read_text()
+    probe = (ROOT / "tests/fixtures/ee-smile-rf-validation-kernel-probe.scala").read_text()
+    assert "def parseQueryRows(text: String, schemaSize: Int)" in wire
+    assert "private def queryNumber(node: JsonNode, row: Int, column: Int)" in wire
+    assert "integer.abs <= MaxIntFeature" in wire
+    assert "value.isFinite" in wire
+    assert "val trainingRows: Vector[Vector[Double]]" in factory
+    assert "val trainingLabels: Vector[Int]" in factory
+    assert "row.clone().toVector" in factory and "checkedRows.y.toVector" in factory
+    assert "def predictRows(model: LocalEeSmileRfModel, rowsText: String): String" in factory
+    assert "LocalEeSmileRfNumeric.predictValue(values, model)" in factory
+    assert "def confusionMatrix(model: LocalEeSmileRfModel): String" in factory
+    assert "LocalEeSmileRfNumeric.predictValue(model.trainingRows(index).toArray, model)" in factory
+    assert "resubstitution counts" in factory
+    assert "Float64=preserved" in probe
+    assert "independent frequency reference" in probe
+    assert "invalid_queries" in probe
+
+
 def test_prediction_uses_actual_smile_forest_preserves_tile_precision_and_masks():
     numeric = (ROOT / "engine/ee_smile_rf_numeric.scala").read_text()
     assert "model.forest.predict(values)" in numeric

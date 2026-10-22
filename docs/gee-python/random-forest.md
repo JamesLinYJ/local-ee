@@ -67,8 +67,8 @@ Int32 NoData 波段，默认名称 `classification` 或显式 `outputName`，保
 ## 模型、预算与运行包
 
 内联行生成 `local_ee_train_smile_rf_rows`；采样行生成
-`local_ee_train_smile_rf_samples`；两者的受控模型只允许作为
-`local_ee_smile_rf.model` 输入。模型不能藏进其他参数容器或 `save_result`，
+`local_ee_train_smile_rf_samples`；两者的受控模型只允许进入
+经审查的栅格／要素预测或训练重代入矩阵消费者。模型不能藏进其他参数容器或 `save_result`，
 也不接受用户提供的 Java 序列化、URL 或模型路径。回调引用保留独立作用域；
 规范 JSON 字符串中的属性名不会变成流程引用。
 
@@ -95,8 +95,13 @@ Int32 NoData 波段，默认名称 `classification` 或显式 `outputName`，保
 
 ## 尚未支持与证据范围
 
-RF 的 `FeatureCollection.classify`、`explain`、训练／验证混淆矩阵、其他输出
-模式、随机列、`Image.sample` 和模型保存／恢复尚未实现。`schema()` 和
+第二十七批补充了有界 `FeatureCollection.classify`、真实训练重代入矩阵及
+验证表 `errorMatrix` 的七种指标访问器，结果通过原有任务的 JSON／CSV 边界
+返回；具体参数、空表及预算见 [要素验证语法](rf-validation.md)。模型也可进入
+受控的要素预测／训练矩阵节点，不能进入通用运算或直接输出。
+
+RF 的 `explain`、其他输出模式、随机列、`Image.sample` 和模型保存／恢复
+尚未实现。`schema()` 和
 `setOutputMode('CLASSIFICATION')` 支持，其他模式明确拒绝。
 
 省略 `inputProperties` 并依赖 `band_order` 的重载尚未支持。固定 Python SDK

@@ -15,6 +15,7 @@ from ..ee_translate import compile_expression, UnsupportedEEError
 from .ee_exports import export_options
 from .ee_budget import pixel_budget, sample_input_budget
 from . import ee_sample_results
+from . import ee_runtime_results
 from .ee_idempotency import idempotency_record, validate_request_id
 from .ee_events import check_event_capacity, record_event
 from ..table_graph import table_input_graph
@@ -86,7 +87,7 @@ def _check_task_scope(row,account,parent):
 
 def _task_type(row):
     context=row.get('context') or {}
-    if context.get('result_kind')=='region':return 'EXPORT_FEATURES'
+    if context.get('result_kind') in {'region','runtime_json'}:return 'EXPORT_FEATURES'
     for node in (row.get('process') or {}).get('process_graph',{}).values():
         if node.get('process_id')=='save_result':
             return 'EXPORT_FEATURES' if node.get('arguments',{}).get('format')=='CSV' else 'EXPORT_IMAGE'
@@ -203,6 +204,8 @@ def dispatch(backend,account,payload):
         if row['status']!='finished':return {'pending':True,'job_id':str(row['id'])}
         if row['context'].get('result_kind')=='samples':
             return {'value':ee_sample_results.read_result(DATA,row)}
+        if row['context'].get('result_kind')=='runtime_json':
+            return {'value':ee_runtime_results.read_result(DATA,row)}
         if row['context'].get('result_kind')!='region':raise ValueError('Task is not a regional value result')
         names=[n for n in row['assets'] if n.endswith('.csv')]
         if len(names)!=1:raise ValueError('Expected one regional CSV result')
@@ -269,9 +272,12 @@ def dispatch(backend,account,payload):
         if compiled['kind']=='sample_table':
             result=make_job(backend,account,compiled,'GEE · 影像取样','CSV',ee_sample_results.result_context(compiled),True)
             return {**result,'pending':True}
+        if compiled['kind'] in {'runtime_table','runtime_value'}:
+            result=make_job(backend,account,compiled,'GEE · 分类评估','JSON',ee_runtime_results.result_context(compiled),True)
+            return {**result,'pending':True}
         result=make_job(backend,account,compiled,'GEE · 区域统计','CSV',{'result_kind':'region'},True)
         return {**result,'pending':True}
-    if compiled['kind'] not in {'image','collection','region','table','sample_table'}:raise UnsupportedEEError('This export requires a raster or supported feature table')
+    if compiled['kind'] not in {'image','collection','region','table','sample_table','runtime_table'}:raise UnsupportedEEError('This export requires a raster or supported feature table')
     if action=='map':
         if compiled['kind'] not in {'image','collection'}:raise UnsupportedEEError('Map.addLayer currently requires a raster')
         vis=visualization(options.get('vis_params') or {})
@@ -295,8 +301,8 @@ def dispatch(backend,account,payload):
     fmt=options.get('fileFormat','CSV' if action=='export_table' else 'GeoTIFF')
     formats={'GeoTIFF':'GTiff','GTiff':'GTiff','NetCDF':'NetCDF','CSV':'CSV'}
     if not isinstance(fmt,str) or fmt not in formats:raise UnsupportedEEError('Unsupported local export format: '+str(fmt))
-    if action=='export_table' and compiled['kind'] not in {'region','table','sample_table'}:raise UnsupportedEEError('Only supported feature tables can currently be exported')
-    if action=='export_image' and compiled['kind']=='sample_table':raise UnsupportedEEError('Use Export.table for sampled features')
+    if action=='export_table' and compiled['kind'] not in {'region','table','sample_table','runtime_table'}:raise UnsupportedEEError('Only supported feature tables can currently be exported')
+    if action=='export_image' and compiled['kind'] in {'sample_table','runtime_table'}:raise UnsupportedEEError('Use Export.table for feature tables')
     if action=='export_table' and fmt!='CSV':raise UnsupportedEEError('Local table export currently supports CSV')
     if action=='export_image' and formats[fmt]=='CSV':raise ValueError('Use Export.table for CSV')
     local_options=export_options(action,options,compiled['bands'])

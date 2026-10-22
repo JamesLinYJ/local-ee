@@ -38,8 +38,10 @@ def validate_sampling_dependencies(nodes):
     property dictionaries as process nodes or graph dependencies.
     """
     from .smile_rf_processes import validate_rf_dependencies
+    from .rf_validation_processes import validate_validation_dependencies
 
     validate_rf_dependencies(nodes)
+    validate_validation_dependencies(nodes)
     for key, node in nodes.items():
         name, arguments = node["process_id"], node.get("arguments", {})
         if name == OP_PROCESS:

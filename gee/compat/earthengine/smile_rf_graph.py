@@ -120,6 +120,11 @@ def _training_model(graph, classifier, inputs):
     return graph.node(RF_SAMPLES, data=table, spec=classifier.training_spec)
 
 
+def compile_smile_rf_model(graph, classifier):
+    """Compile only a trusted RF model producer for table or matrix consumers."""
+    return _training_model(graph, classifier, ())
+
+
 def compile_smile_rf_pixel(graph, pixel):
     """Compile schema-selected input bands and a trusted RF producer chain."""
     if not isinstance(pixel, Pixel) or pixel.op != "smile_rf_classify" or len(pixel.args) != 2:

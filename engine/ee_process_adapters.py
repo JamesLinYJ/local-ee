@@ -179,6 +179,31 @@ def local_ee_train_smile_rf_samples(args, env):
     return handler(args, env)
 
 
+def local_ee_smile_rf_classify_rows(args, env):
+    from .ee_rf_validation import local_ee_smile_rf_classify_rows as handler
+    return handler(args, env)
+
+
+def local_ee_smile_rf_classify_samples(args, env):
+    from .ee_rf_validation import local_ee_smile_rf_classify_samples as handler
+    return handler(args, env)
+
+
+def local_ee_smile_rf_confusion(args, env):
+    from .ee_rf_validation import local_ee_smile_rf_confusion as handler
+    return handler(args, env)
+
+
+def local_ee_error_matrix(args, env):
+    from .ee_rf_validation import local_ee_error_matrix as handler
+    return handler(args, env)
+
+
+def local_ee_confusion_value(args, env):
+    from .ee_rf_validation import local_ee_confusion_value as handler
+    return handler(args, env)
+
+
 def local_ee_smile_rf(args, env):
     from .ee_smile_rf import local_ee_smile_rf as handler
 
@@ -195,6 +220,11 @@ _HANDLERS = {
     "local_ee_sample_table_op": local_ee_sample_table_op,
     "local_ee_train_smile_rf_rows": local_ee_train_smile_rf_rows,
     "local_ee_train_smile_rf_samples": local_ee_train_smile_rf_samples,
+    "local_ee_smile_rf_classify_rows": local_ee_smile_rf_classify_rows,
+    "local_ee_smile_rf_classify_samples": local_ee_smile_rf_classify_samples,
+    "local_ee_smile_rf_confusion": local_ee_smile_rf_confusion,
+    "local_ee_error_matrix": local_ee_error_matrix,
+    "local_ee_confusion_value": local_ee_confusion_value,
     "local_ee_smile_rf": local_ee_smile_rf,
 }
 

@@ -1,7 +1,7 @@
 """Build the separately locked native Smile 1.5.3 random-forest SPI adapter.
 
 All inputs are explicit local files. This builder never downloads dependencies
-and writes only below the dedicated Wave26 work scratch directory.
+and writes only below the dedicated Wave27 work scratch directory.
 """
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-WORK_ROOT = ROOT.parents[1] / "work" / "gee-python-wave26-native"
+WORK_ROOT = ROOT.parents[1] / "work" / "gee-python-wave27-native"
 LOCK_PATH = ROOT / "deploy/smile-rf-lock.json"
 SOURCES = [
     ROOT / "engine/ee_smile_rf_wire.scala",

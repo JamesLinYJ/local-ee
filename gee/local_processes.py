@@ -2,6 +2,9 @@
 import math
 
 from .smile_rf_processes import RF_PROCESSES, rf_process_spec, validate_rf_process
+from .rf_validation_processes import (
+    VALIDATION_PROCESSES, validate_validation_process, validation_process_spec,
+)
 
 
 LOCAL_PROCESSES = frozenset({
@@ -10,13 +13,16 @@ LOCAL_PROCESSES = frozenset({
     "local_ee_table", "local_ee_minimum_distance",
     "local_ee_sample_regions", "local_ee_train_minimum_distance",
     "local_ee_remap", "local_ee_sample_table_op",
-}) | RF_PROCESSES
+}) | RF_PROCESSES | VALIDATION_PROCESSES
 CUBE = {"type": "object", "subtype": "raster-cube"}
 EE_BAND_REDUCERS = frozenset({"mean", "median", "min", "max", "sum", "count", "first", "last", "sd"})
 
 
 def validate_local_process(name, arguments, depth, *, node_context=None):
     """Extensions only accept bounded literals and canonical top-level cubes."""
+    if name in VALIDATION_PROCESSES:
+        validate_validation_process(name, arguments, depth, node_context)
+        return
     if name in RF_PROCESSES:
         validate_rf_process(name, arguments, depth, node_context)
         return
@@ -82,6 +88,8 @@ def validate_local_process(name, arguments, depth, *, node_context=None):
 
 
 def process_spec(name):
+    if name in VALIDATION_PROCESSES:
+        return validation_process_spec(name)
     if name in RF_PROCESSES:
         return rf_process_spec(name)
     if name == "local_ee_table":
