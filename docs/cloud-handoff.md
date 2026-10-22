@@ -301,3 +301,11 @@ cosine 先保留点积符号，再用精确有理数交叉乘积排名，不先�
 示例30与原始标签网格夹具独立验证15有效样本→14非空→11条件→8训练行，类均值 red/nir 为 `[6/5,17/5]` 与 `[11/3,20/3]`，保留重叠权重和目标ROI外训练。Python/JS5条新图一致性全部通过，累计77；45/50原定向脚本编译及完整Python目录字节保持。便携Python **2068 passed／3 skipped**（另排除4项原生测试），前端11／TypeScript／临时构建通过。Remap6正向／23非法spec／3有效Infinity拒绝，以及已有取样／分类实际tile内核通过，均无SparkContext。云端缺少锁定JVM依赖时须按opt-in明确跳过，不算实际内核通过。
 
 独立复审发现并修复system:index过滤、谓词语义深度与wire容器深度错配，以及预算未覆盖复核／复制的问题。报告 `reports/gee-python-wave25.json` 分开记录S/C/N和未运行完整E/G。没有部署或修改账号／数据／运行配置／隔离。Smile依赖不在锁中，未用SparkRF替代；后续路线与许可证版本依据见 `docs/gee-python/random-forest-roadmap.md`，不能把本批当作随机森林完成。继续从远端最新main，不从旧handoff起点恢复。
+
+## 第二十六批：真实 Smile RF 与受控模型边界
+
+基线 `2a4d8b2c691607ce30c2b14d169a6f2c18652b36`。RF独立IR、六参数、内联／采样表可信JVM训练、影像预测与schema/CLASSIFICATION；训练／目标来源网格分离。模型只接RF predictor，嵌套ref与callback scope也检查，标量／向量不能当栅格。复制计费覆盖完整嵌套结构的保守上界，原表操作50000不变。RF按1000×8实测分开150000对象工作与3MB wire字节，prior table work仍须0..50000；原compiler/MD50000、单JSON1MB和其他预算保持。省略inputProperties依赖band_order的重载尚未支持，不从sampleRegions猜schema。
+
+完整便携回归2293 passed／3 skipped，另排除4项延期原生测试；前端11／TS／临时构建通过。原50探针仍45通过／5拒绝，唯RF构造器直接JSON结果的拒绝原因改变并审阅；完整PythonAPI目录字节相同。新增3项Python/JS图一致性为S/C。四个opt-in真实JVM tile组件包括RF1000行×8特征×100树控制；没有SparkContext、完整batch/sandbox/browser或Google证据。最终Unicode扫描器改按码点限制，129／256码点的schema及class_property实际train→predict通过，257拒绝；变更后79项定向复核通过，未重复宽套件，原full-run证据保留。
+
+Smile1.5.3四JAR与复用SLF4J固定于`deploy/smile-rf-lock.json`，`scripts/build_smile_rf_adapter.py`只用显式本地依赖、构建到专属work scratch并出独立SPI/manifest；不下载、不安装到.native。原runner在SparkContext前验证可选包，缺包保留旧行为；部分包／摘要／重复SLF4J／未知classpath项失败。新增sandbox只读精确文件为`.native/engine-lock.json`、`deploy/smile-rf-lock.json`、`scripts/build_smile_rf_adapter.py`，未开放整个目录或外网。云端缺少锁定JDK/JAR时RF kernel保持opt-in skip，不记作通过。继续从最新main；RF explain／随机列／表分类／动态矩阵、模型保存和完整运行部署仍待做。

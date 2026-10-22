@@ -179,7 +179,15 @@ def _result_table(table, data, sample_spec, operations, operation_text, context)
         result.sample_operations = chain
         result.sample_operation_work = context.steps
         return result
-    context.charge(len(data["features"]) * len(table.columns))
+    # The result constructor validates, deep-copies, and caches work over the
+    # full nested FeatureCollection (including unselected properties and
+    # geometry). Measure that owned structure before constructing it, then
+    # charge the same conservative node/slot bound used by SampledFeatureTable
+    # before its deep copy can allocate.
+    output_copy_work = SampledFeatureTable._measure_copy_work(data)
+    context.charge(
+        len(data["features"]) * len(table.columns) + output_copy_work
+    )
     result = SampledFeatureTable(data=data, columns=list(table.columns))
     for name, value in common.items():
         setattr(result, name, value)
@@ -207,7 +215,12 @@ def local_ee_sample_table_op(args, env):
     if type(row_count) is not int or not 0 <= row_count <= 1000:
         raise ValueError("Actual sample table exceeds 1000 rows")
     columns = table.columns
-    context.charge(row_count * len(columns))
+    copy_work = table.data_copy_work
+    if type(copy_work) is not int or copy_work < 0:
+        raise ValueError("Actual sample table has invalid cached copy-work metadata")
+    # ``data`` returns a complete deep copy, so charge the cached full-tree
+    # bound before invoking its getter. Cell work remains separately charged.
+    context.charge(row_count * len(columns) + copy_work)
     data = table.data
     if type(data) is not dict or data.get("type") != "FeatureCollection":
         raise ValueError("Actual sample table must contain a FeatureCollection")

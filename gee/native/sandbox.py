@@ -24,7 +24,9 @@ def profile(*, reads=(), writes=(), api_port=None, spark=False):
              ' (literal "/dev/null") (literal "/dev/random") (literal "/dev/urandom") (subpath "/dev/fd"))',
              '(allow file-write* (literal "/dev/null") (subpath "/dev/fd"))']
     for path in reads:
-        rules.append(f'(allow file-read* (subpath {quoted(path)}))')
+        resolved = Path(path).resolve()
+        scope = 'literal' if resolved.is_file() else 'subpath'
+        rules.append(f'(allow file-read* ({scope} {quoted(resolved)}))')
     for path in writes:
         rules.append(f'(allow file-read* file-write* (subpath {quoted(path)}))')
     if api_port is not None:
@@ -47,6 +49,8 @@ def runtime_reads(root, python, node=None, engine=False):
     if engine:
         paths.extend([root / '.native/engine', root / '.native/jars', root / 'engine',
                       Path(os.environ['JAVA_HOME']).resolve(), Path('/opt/homebrew/Cellar')])
+        paths.extend([root / '.native/engine-lock.json', root / 'deploy/smile-rf-lock.json',
+                      root / 'scripts/build_smile_rf_adapter.py'])
     # C extensions may link Homebrew libraries. Cellar contains packages, not user state.
     paths.append(Path('/opt/homebrew/Cellar'))
     return [p for p in paths if p.exists()]

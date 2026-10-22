@@ -26,6 +26,25 @@ class SampledFeatureTable(SaveResult):
         super().__init__(format="CSV")
         self._data = copy.deepcopy(data)
         self._columns = tuple(columns)
+        # Cache the work of copying the full owned FeatureCollection, including
+        # unselected properties and geometry. Strings are immutable, while
+        # nested containers and their field/value slots are copied per node.
+        self._data_copy_work = self._measure_copy_work(self._data)
+
+    @staticmethod
+    def _measure_copy_work(data: dict[str, Any]) -> int:
+        stack = [data]
+        work = 0
+        while stack:
+            value = stack.pop()
+            work += 1  # container or scalar value node
+            if type(value) is dict:
+                work += len(value)  # copied mapping field slots
+                stack.extend(value.values())
+            elif type(value) in (list, tuple):
+                work += len(value)  # copied sequence slots
+                stack.extend(value)
+        return work
 
     @property
     def data(self) -> dict[str, Any]:
@@ -40,6 +59,11 @@ class SampledFeatureTable(SaveResult):
     def row_count(self) -> int:
         """Return the validated row count without copying sampled features."""
         return len(self._data["features"])
+
+    @property
+    def data_copy_work(self) -> int:
+        """Cached full-structure work needed before returning ``data`` copy."""
+        return self._data_copy_work
 
     def _csv_bytes(self) -> bytes:
         from gee.sampling_values import render_sample_csv

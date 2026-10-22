@@ -167,6 +167,24 @@ def local_ee_sample_table_op(args, env):
     return handler(args, env)
 
 
+def local_ee_train_smile_rf_rows(args, env):
+    from .ee_smile_rf_training import local_ee_train_smile_rf_rows as handler
+
+    return handler(args, env)
+
+
+def local_ee_train_smile_rf_samples(args, env):
+    from .ee_smile_rf_training import local_ee_train_smile_rf_samples as handler
+
+    return handler(args, env)
+
+
+def local_ee_smile_rf(args, env):
+    from .ee_smile_rf import local_ee_smile_rf as handler
+
+    return handler(args, env)
+
+
 _HANDLERS = {
     "local_ee_drop_single_time": local_ee_drop_single_time,
     "local_ee_reduce_bands": local_ee_reduce_bands,
@@ -175,6 +193,9 @@ _HANDLERS = {
     "local_ee_train_minimum_distance": local_ee_train_minimum_distance,
     "local_ee_remap": local_ee_remap,
     "local_ee_sample_table_op": local_ee_sample_table_op,
+    "local_ee_train_smile_rf_rows": local_ee_train_smile_rf_rows,
+    "local_ee_train_smile_rf_samples": local_ee_train_smile_rf_samples,
+    "local_ee_smile_rf": local_ee_smile_rf,
 }
 
 

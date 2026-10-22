@@ -8,4 +8,7 @@
 *.yaml text eol=lf
 *.command text eol=lf
 vendor/** -text linguist-vendored
+# These two upstream files are byte-pinned, including their original whitespace.
+vendor/smile-1.5.3/LICENSE -whitespace
+vendor/smile-1.5.3/README.md -whitespace
 tests/fixtures/** linguist-generated

@@ -4,7 +4,15 @@ from __future__ import annotations
 from dataclasses import replace
 
 from .classifier_model import encode_model, model_serialization_work
-from .ir import DynamicMinimumDistance, Image, Pixel, SampledFeatures, fail
+from .ir import (
+    DynamicMinimumDistance,
+    Image,
+    Pixel,
+    SmileRandomForest,
+    SampledFeatures,
+    TrainedSmileRandomForest,
+    fail,
+)
 from .minimum_distance_metrics import require_metric
 
 
@@ -34,8 +42,18 @@ def invoke_image_classify(translator, arguments):
         fail("Image.classify outputName must be a nonempty flat band name")
 
     classifier = arguments["classifier"]
+    if isinstance(classifier, SmileRandomForest):
+        fail("Image.classify requires a trained Smile RandomForest classifier")
+    from .smile_rf_training import validate_trained_classifier
+
+    smile_rf = isinstance(classifier, TrainedSmileRandomForest)
+    if smile_rf:
+        validate_trained_classifier(translator, classifier)
     dynamic = isinstance(classifier, DynamicMinimumDistance)
-    if dynamic:
+    if smile_rf:
+        schema = classifier.schema
+        serialization_work = 0  # validate_trained_classifier charged the full wire first.
+    elif dynamic:
         require_metric(classifier.metric)
         schema = classifier.schema
         if (not isinstance(classifier.samples, SampledFeatures)
@@ -88,7 +106,9 @@ def invoke_image_classify(translator, arguments):
             fail(f"Image.classify is missing classifier schema band: {name!r}")
 
     inputs = tuple(found[name] for name in schema)
-    if dynamic:
+    if smile_rf:
+        classified = Pixel("smile_rf_classify", (inputs, classifier))
+    elif dynamic:
         classified = Pixel("trained_classify", (inputs, classifier))
     else:
         model = encode_model(classifier)

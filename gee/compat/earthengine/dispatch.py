@@ -45,6 +45,14 @@ def invoke(translator, name, arguments):
 
         return invoke_classifier_features(translator, name, a)
     if name.startswith("Classifier."):
+        from .ir import SmileRandomForest, TrainedSmileRandomForest
+
+        if (name == "Classifier.smileRandomForest"
+                or isinstance(a.get("classifier"),
+                              (SmileRandomForest, TrainedSmileRandomForest))):
+            from .smile_rf import invoke_classifier
+
+            return invoke_classifier(translator, name, a)
         from .minimum_distance import invoke_classifier
 
         return invoke_classifier(translator, name, a)

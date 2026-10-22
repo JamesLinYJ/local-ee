@@ -1,10 +1,12 @@
 # GEE Python 兼容清单
 
+第二十六批 [报告](../../reports/gee-python-wave26.json) 与 [RF语法文档](random-forest.md)：新增实际 Smile1.5.3 随机森林，内联／采样表运行时训练、影像分类、六参数、独立 SPI／依赖锁与对象类型边界。完整回归 **2293 passed／3 skipped**（另排除4项延期原生测试），前端11／构建通过；新增3项Python／JS SDK图一致性，四个真实tile组件通过。1000×8／100树的真实组件训练与256²像元预测通过；Unicode名称码点控制另有最终定向核验。入口 **276／991（27.85%）** 只表示名称，参数／数值仍有明确限制；RF explain／表分类／混淆矩阵／随机列／其他模式／band_order推断尚未实现，完整Spark／部署／浏览器／真实数据／Google对照仍未验收。
 
-第二十五批 [报告](../../reports/gee-python-wave25.json)：新增标签 Image.remap、受限 Filter.expression、取样表 filter／无排序 limit 及累计资源计费。示例 30 的标签掩膜、17 个几何候选位置、15 行有效样本、14 行 notNull、11 行条件通过和 8 行限量训练，以及三度量预测，有独立原始网格参考。便携 Python **2068 passed／3 skipped**（另排除 4 项原生测试），前端 **11 passed**／构建通过，SDK 图一致性 **77**，真实 tile 内核通过。入口 **275／991（27.75%）** 只表示名称，不是完整参数或计算兼容率。完整 Spark／部署／浏览器／真实数据／Google 验收未运行；[随机森林仍未实现](random-forest-roadmap.md)。
+
+第二十五批 [报告](../../reports/gee-python-wave25.json)：新增标签 Image.remap、受限 Filter.expression、取样表 filter／无排序 limit 及累计资源计费。示例 30 的标签掩膜、17 个几何候选位置、15 行有效样本、14 行 notNull、11 行条件通过和 8 行限量训练，以及三度量预测，有独立原始网格参考。便携 Python **2068 passed／3 skipped**（另排除 4 项原生测试），前端 **11 passed**／构建通过，SDK 图一致性 **77**，真实 tile 内核通过。入口 **275／991（27.75%）** 只表示名称，不是完整参数或计算兼容率。完整 Spark／部署／浏览器／真实数据／Google 验收未运行；[该批尚未实现随机森林](random-forest-roadmap.md)。
 
 第二十四批 [报告](../../reports/gee-python-wave24.json) 与 [取样语法文档](sampling.md)：接通有限 sampleRegions、实际样本运行时训练、栅格分类与样本 getInfo／CSV 任务合同。便携 Python **1882 passed／3 skipped**（另排除 4 项原生测试）、前端 **11 passed**／构建通过，Python／JS 官方客户端一致性 **72** 项；取样与分类的可信独立 JVM tile 内核均通过。API 名称入口 **273／991（27.55%）**，参数和数值语义仍需逐项验证；此数值不代表完整兼容率。完整 Spark cube、部署／浏览器、真实数据和 Google 对照未运行。
-状态：2026-10-23，第二十三批持续实施，整体兼容目标尚未完成。
+状态：2026-10-23，第二十六批持续实施，整体兼容目标尚未完成。
 
 第二十三批 [验证报告](../../reports/gee-python-wave23.json)：新增有限 `Image.classify` 的 schema 选择、精确模型编译、Python 桥与真实 GeoTrellis tile 内核，训练仍使用内联要素。macOS ARM64 Python **1751 passed／3 skipped**（启用可信独立 JVM 内核测试，另排除 4 项原生运行测试），前端 **11 passed**、TypeScript／构建通过；较[第二十二批](../../reports/gee-python-wave22.json)增加 66 项通过。独立 tile 内核是组件运行证据，完整 Spark cube、沙箱任务、HTTP／浏览器、部署和 Google 对照均未在本批验收。
 
@@ -232,7 +234,7 @@ Image.hypot 按配对波段实际计算稳定比例范数，保留 NoData、广�
 | `join_save_first` | passed | passed | blue, green, red, nir, SCL |
 | `array_matrix_multiply` | passed | passed | [[3],[7]] |
 | `regression_reducer` | passed | rejected | ImageCollection.reduce linearRegression requires exactly 3 scalar bands per frame；原探针实际使用 5 bands，属于输入数量不匹配 |
-| `classifier_constructor` | passed | rejected | Unsupported Earth Engine algorithm: Classifier.smileRandomForest |
+| `classifier_constructor` | passed | rejected | Unsupported internal value at the public JSON boundary；分类器构造值需接入 train／classify，不能单独作为公开 JSON 结果 |
 | `export_image_drive` | passed | passed | NIR |
 | `export_table_drive` | passed | passed | {"features":[{"geometry":{"coordinates":[[[100.1,30.1],[100.9,30.1],[100.9,30.9],[100.1,30.9],[100.1,30.1]]],"type":"Polygon"},"properties":{"mean":3,"scene"... |
 

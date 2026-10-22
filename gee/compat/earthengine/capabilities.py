@@ -23,7 +23,7 @@ SUPPORTED_FUNCTIONS = frozenset({
     "ConfusionMatrix", "ConfusionMatrix.array", "ConfusionMatrix.order",
     "ConfusionMatrix.accuracy", "ConfusionMatrix.kappa", "Collection.errorMatrix",
     "ConfusionMatrix.consumersAccuracy", "ConfusionMatrix.producersAccuracy", "ConfusionMatrix.fscore",
-    "Classifier.minimumDistance", "Classifier.train", "Classifier.schema",
+    "Classifier.minimumDistance", "Classifier.smileRandomForest", "Classifier.train", "Classifier.schema",
     "Classifier.setOutputMode", "Classifier.confusionMatrix", "FeatureCollection.classify", "Image.classify",
     *("List." + n for n in ("zip", "unzip", "flatten", "repeat", "reverse", "set", "swap", "reduce")),
     *("Image." + n for n in ("toArray", "arrayFlatten", "arrayProject", "arraySlice",
@@ -54,6 +54,16 @@ def get_capabilities():
         "level": "C",
         "numerical_equivalence_to_google_verified": False,
         "restrictions": [
+            ("Classifier.smileRandomForest uses actual pinned Apache-2.0 Smile1.5.3 with all six constructor parameters, "
+             "1..256 trees, mtry null or1..p, minLeaf1..1000, bagFraction(0,1], maxNodes null or2..1000 and signed32 seed. "
+             "Static inline rows and actual sampleRegions tables train only in the trusted JVM; the compiler does not fit models. "
+             "Explicit1..8 numeric schema,2..1000 rows,2..64 contiguous class labels from0, training float magnitude<=Double.MAX_VALUE/2; "
+             "RF150000 object/copy/operation work plus3MB cumulative wire scans and1e9 tree-row-feature-leaf bound can reduce effective row capacity; prior table operations still cap at50000. "
+             "Serial calling-thread seed, actual Smile stratified bagging, null maxNodes uses nonbinding N, CLASSIFICATION only. "
+             "Schema/setOutputMode and Image.classify supported; model refs must identify an RF trainer, no user Java bytes/URLs/paths. "
+             "Actual Float32/Float64 input, selected NoData masks, valid infinity rejects, Int32 v, grid/time retained. "
+             "Prediction bound1e9 pixels*keys*sum(actual tree depths). Optional pinned RF runtime package required; no runtime downloads. "
+             "Dynamic table classification/confusionMatrix/explain/randomColumn and other modes reject; no Google version/RNG/bagging/dtype equivalence or full Spark/deployment acceptance."),
             ("Image.remap selects one scalar bound band (first by default), returns only remapped, and retains properties/time/grid/footprint. "
              "Equal-length finite scalar from/to lists0..256; integer magnitude<=2^53; duplicate numeric keys including signed zero reject. "
              "Exact actual Float32/Float64 lookup, selected NoData remains masked, unmatched values mask or use finite default including0; valid infinity rejects. "
@@ -72,7 +82,7 @@ def get_capabilities():
              "this local planar boundary policy is not Google-verified. Native grid or projected meter scale, tileScale=1, optional center geometry only. "
              "Sample CSV/getInfo and runtime minimumDistance training use actual samples, canonical JSON string specs and strict producer refs. "
              "Training needs explicit schema1..8, labels0..63 and existing exact-model/work limits. Dynamic downstream feature operations beyond filter/unsorted limit, "
-             "dynamic confusionMatrix, sampling randomization, general projections and other classifiers reject. "
+             "dynamic confusionMatrix, sampling randomization, general projections and classifiers beyond the declared minimumDistance/Smile RF subsets reject. "
              "Standalone actual tile kernels and synthetic task/CSV controls are not full Spark batch, deployment, browser or Google acceptance"),
             ("Export.table.toDrive supports regional CSV and bounded static inline FeatureCollection CSV "
              "through the existing isolated batch entry point, without a JVM for pure tables. "

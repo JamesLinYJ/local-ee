@@ -57,6 +57,31 @@ class DynamicMinimumDistance:
     output_mode: str = "CLASSIFICATION"
 
 
+@dataclass(frozen=True)
+class SmileRandomForest:
+    """Validated constructor parameters for the distinct Smile RF algorithm."""
+
+    number_of_trees: int
+    variables_per_split: int | None
+    min_leaf_population: int
+    bag_fraction: float
+    max_nodes: int | None
+    seed: int
+    output_mode: str = "CLASSIFICATION"
+
+
+@dataclass(frozen=True)
+class TrainedSmileRandomForest:
+    """Runtime-training IR backed by literal rows or a lazy sampled table."""
+
+    classifier: SmileRandomForest
+    schema: tuple[str, ...]
+    class_property: str
+    training_spec: str
+    rows: str | None = None
+    samples: SampledFeatures | None = None
+
+
 @dataclass
 class Collection:
     source: Source
@@ -135,7 +160,7 @@ def static_truth(value: Any) -> bool:
 
     # EE If treats empty arrays/dictionaries/strings, zero, NaN and null as
     # false. Do not accidentally use truthiness of internal IR dataclasses.
-    if isinstance(value, (Image, Collection, ImageSequence, Pixel, Region, Function, Filter, Reducer, StaticArray, Join, InnerJoin, TableReducer, RasterArrayImage, StaticConfusionMatrix, StaticMinimumDistance, RasterArrayBands, SampledFeatures, DynamicMinimumDistance)):
+    if isinstance(value, (Image, Collection, ImageSequence, Pixel, Region, Function, Filter, Reducer, StaticArray, Join, InnerJoin, TableReducer, RasterArrayImage, StaticConfusionMatrix, StaticMinimumDistance, RasterArrayBands, SampledFeatures, DynamicMinimumDistance, SmileRandomForest, TrainedSmileRandomForest)):
         fail("Algorithms.If currently requires a static scalar/list/dictionary condition")
     if isinstance(value, (int, float)) and not math.isfinite(value):
         return False

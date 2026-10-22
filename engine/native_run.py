@@ -1,5 +1,4 @@
 """Native ARM64 GeoTrellis adapter, preserving upstream batch evaluation."""
-import hashlib
 import json
 import os
 import sys
@@ -14,14 +13,13 @@ def setup(log_dir):
     jars = Path(os.environ['GEOPYSPARK_JARS_PATH'])
     conf = geopyspark_conf(master='local[1]',appName='private-gee-native')
     paths = conf.get('spark.jars').split(',')
-    adapter = jars/'local-ee-integer-adapter.jar'
-    if adapter.exists():
-        manifest = json.loads(adapter.with_suffix('.jar.manifest.json').read_text())
-        if hashlib.sha256(adapter.read_bytes()).hexdigest() != manifest['jar_sha256']:
-            raise RuntimeError('Local EE adapter checksum mismatch; rebuild the native adapter')
-        if str(adapter) not in paths:
-            paths.append(str(adapter))
-    paths.sort(key=lambda p:'geotrellis-extensions' not in p and 'geotrellis-dependencies' not in p)
+    from engine.smile_rf_runtime import prepare_local_classpath
+    paths = prepare_local_classpath(
+        paths,
+        jars,
+        Path(__file__).resolve().parent.parent,
+        Path(os.environ['SPARK_HOME']) if os.environ.get('SPARK_HOME') else None,
+    )
     # local[1] shares one JVM. Use its classpath instead of serving/copying JARs
     # through Spark's network FileServer (Darwin sendfile needs broader rights).
     conf.set('spark.jars','')
@@ -43,7 +41,7 @@ def setup(log_dir):
     SparkContext.getOrCreate(conf).setLogLevel('WARN')
     # Register the audited bridge before run_graph_locally constructs GpsProcessing,
     # which snapshots processes advertised by the GeoTrellis SPI.
-    from ee_process_adapters import register_local_ee_processes
+    from engine.ee_process_adapters import register_local_ee_processes
     register_local_ee_processes()
     os.environ['PYTEST_CONFIGURE']=''
 

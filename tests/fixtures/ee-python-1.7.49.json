@@ -4337,7 +4337,7 @@
     },
     {
       "compilation": {
-        "reason": "Unsupported Earth Engine algorithm: Classifier.smileRandomForest",
+        "reason": "Unsupported internal value at the public JSON boundary",
         "status": "rejected"
       },
       "engine_execution": {

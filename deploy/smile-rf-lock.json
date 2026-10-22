@@ -1,0 +1,43 @@
+{
+  "format": "local-ee-smile-rf-dependency-lock-v1",
+  "implementation": "smile-1.5.3",
+  "source": {
+    "repository": "https://github.com/haifengl/smile",
+    "tag": "v1.5.3",
+    "license": "Apache-2.0",
+    "license_url": "https://raw.githubusercontent.com/haifengl/smile/v1.5.3/LICENSE",
+    "license_sha256": "cb5e8e7e5f4a3988e1063c142c60dc2df75605f4c46515e776e3aca6df976e14",
+    "readme_url": "https://raw.githubusercontent.com/haifengl/smile/v1.5.3/README.md",
+    "readme_sha256": "4c5d290d5baa2a96d09ebb42dbcbae418360037901052655eab031e6e14364b0",
+    "notice_url": "https://raw.githubusercontent.com/haifengl/smile/v1.5.3/NOTICE",
+    "notice_status": 404
+  },
+  "smile_jars": {
+    "smile-core-1.5.3.jar": {
+      "coordinate": "com.github.haifengl:smile-core:1.5.3",
+      "url": "https://repo.maven.apache.org/maven2/com/github/haifengl/smile-core/1.5.3/smile-core-1.5.3.jar",
+      "sha256": "b1feff4a302e82390377bb7501c0dbfc99ee8c5d556b01c73334a14c3214ea62"
+    },
+    "smile-data-1.5.3.jar": {
+      "coordinate": "com.github.haifengl:smile-data:1.5.3",
+      "url": "https://repo.maven.apache.org/maven2/com/github/haifengl/smile-data/1.5.3/smile-data-1.5.3.jar",
+      "sha256": "9c50d585450cf054d8cf8d201bf53a11b5c724a5a2ee0f0a7e704676a4c3757a"
+    },
+    "smile-math-1.5.3.jar": {
+      "coordinate": "com.github.haifengl:smile-math:1.5.3",
+      "url": "https://repo.maven.apache.org/maven2/com/github/haifengl/smile-math/1.5.3/smile-math-1.5.3.jar",
+      "sha256": "7c079bcdc80d66c04f259cbb78ac390ac0e0a677aecc7fd222276107eedc5925"
+    },
+    "smile-graph-1.5.3.jar": {
+      "coordinate": "com.github.haifengl:smile-graph:1.5.3",
+      "url": "https://repo.maven.apache.org/maven2/com/github/haifengl/smile-graph/1.5.3/smile-graph-1.5.3.jar",
+      "sha256": "e7aa77327518587b6e9931b6fd320b56b79c12076a9fe8b0ecb64fdd15fe119a"
+    }
+  },
+  "reused_slf4j_api": {
+    "coordinate": "org.slf4j:slf4j-api:2.0.16",
+    "spark_version": "4.0.4",
+    "filename": "slf4j-api-2.0.16.jar",
+    "sha256": "a12578dde1ba00bd9b816d388a0b879928d00bab3c83c240f7013bf4196c579a"
+  }
+}

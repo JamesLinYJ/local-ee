@@ -96,9 +96,15 @@ const entries: ReferenceEntry[] = [
     code: "var out = image.select('B8').unitScale(0,10000).clamp(0,1);\nout = out.where(out.gt(0.8), 0.8);\nvar average = image.select(['B8','B4']).reduce(ee.Reducer.mean());",
   },
   {
+    id: "gee-smile-rf",
+    title: "随机森林训练与影像分类",
+    text: "smileRandomForest 使用固定的本地 Smile 1.5.3。支持内联 FeatureCollection 或 sampleRegions 后 filter/无排序 limit 的训练表；必须列出 1–8 个数值输入字段，训练标签为从 0 连续编号的 2–64 类。六个构造参数均参与实际训练，最多 256 棵树、1000 行，仍受工作预算限制。仅支持 CLASSIFICATION 与影像分类；explain、RF 混淆矩阵、随机列和表分类尚不支持。执行需要安装固定的本地 RF 运行包，未安装时明确失败；源码/组件验证与本机部署验收分开记录，尚无 Google 同数据对照。",
+    code: "// image、training 为已有影像和带 label 属性的训练表\nvar model = ee.Classifier.smileRandomForest({\n  numberOfTrees:100, variablesPerSplit:1, minLeafPopulation:1,\n  bagFraction:0.5, maxNodes:null, seed:42\n}).train({features:training, classProperty:'label',\n  inputProperties:['red','nir']});\nvar classified = image.classify(model, 'landcover');\nMap.addLayer(classified, {min:0,max:1,palette:['386a4d','d9b76e']}, '分类');",
+  },
+  {
     id: "gee-levels",
     title: "兼容等级与当前限制",
-    text: "官方客户端签名存在仅表示能构造语法。本站依次区分 S 语法、C 本地编译、N 本地数值验收、G 与原始 GEE 同数据对照。函数清单由 /gee/v1/capabilities 返回，每项有参数限制。没有做过 GEE 对照的项目不能标成完全等价。不支持的算法或数据集会返回 EEUnsupported，禁止静默替代。",
+    text: "官方客户端签名存在仅表示能构造语法。本站区分 S 语法、C 本地编译、E 实际引擎运行、N 独立数值参考、G 与原始 GEE 同数据对照；独立 JVM/tile 组件不等于完整任务引擎验收。函数清单由 /gee/v1/capabilities 返回，每项有参数限制。没有做过 GEE 对照的项目不能标成完全等价。不支持的算法或数据集会返回 EEUnsupported，禁止静默替代。",
   },
 ];
 export default entries.map((d) => ({

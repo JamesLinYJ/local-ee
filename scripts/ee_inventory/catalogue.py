@@ -63,9 +63,26 @@ for operation in ("Classifier.minimumDistance", "Classifier.train", "Classifier.
 KNOWN_PARTIAL_LIMITS["Classifier.train"].append(
     "Also accepts the bounded local Image.sampleRegions table directly: train runs on actual sampled rows, requires explicit schema1..8/class property present in declared columns, and emits the same exact rational v1 model. Graph input must directly reference the audited sampler; dry-run retains only schema/source traces. Fixed training source/grid is independent of target map/export options. Dynamic confusionMatrix/FeatureCollection.classify and direct model JSON still reject. See Image.sampleRegions limits."
 )
+SMILE_RF_LIMIT = (
+    "Actual pinned Apache-2.0 Smile1.5.3 RandomForest, not Spark MLlib. Six constructor parameters retained: "
+    "trees1..256, mtry null or1..p, minLeaf1..1000, bagFraction(0,1], maxNodes null or2..1000, seed signed32. "
+    "Runtime-only training from canonical inline numeric rows or audited sampleRegions/filter/unsorted-limit producers; "
+    "explicit1..8 schema,2..1000rows,2..64 contiguous labels from0, exact-domain integers and finite training magnitude<=Double.MAX_VALUE/2. "
+    "RF150000 object/copy/operation work, separate3MB cumulative wire scans and1e9 tree-row-feature-leaf bound may reduce effective row capacity; inherited table operations remain bounded at50000. "
+    "Serial calling-thread RNG, stratified bagging with replacement at1 and without replacement below1, null maxNodes uses N with no hidden depth cap. "
+    "CLASSIFICATION only; schema and setOutputMode supported. Image.classify uses a trusted opaque JVM model from an RF trainer, "
+    "preserves actual Float32/Float64, masks/grid/time/metadata, singleton Int32 v; valid infinity rejects. "
+    "Prediction uses checked1e9 pixels*keys*sum(actual tree depths). Dedicated locked optional SPI/dependency package, no runtime downloads or user Java deserialization. "
+    "RF FeatureCollection.classify/explain/confusionMatrix/randomColumn and other modes unsupported. "
+    "No Google Smile version, seed, sampling, dtype or numerical equivalence and no full Spark/sandbox/service/browser/deployment acceptance."
+)
+KNOWN_PARTIAL_LIMITS["Classifier.smileRandomForest"] = [SMILE_RF_LIMIT]
+for operation in ("Classifier.train", "Classifier.schema", "Classifier.setOutputMode"):
+    KNOWN_PARTIAL_LIMITS[operation].append(SMILE_RF_LIMIT)
 KNOWN_PARTIAL_LIMITS["Image.classify"] = [
     "Trained static minimumDistance only: Euclidean/Manhattan/cosine, k=1 CLASSIFICATION, schema1..8 scalar bands selected by name and explicitly ordered. Extra bands and masks excluded. Version1 exact reduced rational centers (strings<=700 chars/2200 bits, finite binary64 magnitude), sorted integer labels0..63; API/engine/Scala validate independently. Real input Float32/Float64 retained without generic callback narrowing; output is one Int32 NoData band, default classification or explicit flat outputName, preserving source metadata/time/finite footprint. Selected NoData masks output; valid Infinity, unique-nearest ties and cosine zero queries reject; zero center rejects when encoding prediction. Shared50000-work/500-node/grid/key/cell limits plus67108864 pixel-class-band operations apply. S/C and independent sampled graph N plus actual standalone GeoTrellis tile-kernel controls only: full Spark cube, batch sandbox, HTTP/browser, deployed runtime, Google dtype/tie/numerical equivalence unverified. Bounded sampleRegions runtime models also compile through strict sampler/train producer references; their fixed training scene/grid stays independent of target map/export options. Dynamic feature classification/confusionMatrix, other classifiers/modes/k, arrays and unbound constant rasters unsupported. See reports/gee-python-wave24.json."
 ]
+KNOWN_PARTIAL_LIMITS["Image.classify"].append(SMILE_RF_LIMIT)
 KNOWN_PARTIAL_LIMITS["Image.remap"] = [
     "One bound scalar band, first by default or exact unique bandName. Equal-length finite scalar mappings0..256; int magnitude<=2^53, numeric duplicate keys including signed zero reject. Exact actual Float32/Float64 lookup, selected NoData never filled, unmatched mask or finite default including0; valid Infinity rejects. Only output band remapped, retaining properties/time/grid/source/footprint. Local physical Float64/NaN output; generic Float32 arithmetic needs explicit toFloat. Array-valued mappings/global constants reject. Work/graph/grid/key/decoded bounds plus67108864 pixel-key work; standalone tile controls do not establish full Spark/service/browser or Google dtype/numerical equivalence."
 ]

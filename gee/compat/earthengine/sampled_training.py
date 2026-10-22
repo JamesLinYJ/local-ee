@@ -62,6 +62,16 @@ def image_work_estimate(image):
     seen, sources = set(), set()
     work = 3 * len(image.bands) + sum(len(name) for name, _ in image.bands)
 
+    def include_sample_image(sampled):
+        nonlocal work
+        if not isinstance(sampled, SampledFeatures) or not isinstance(sampled.image, Image):
+            return
+        work += len(sampled.spec) + sum(map(len, sampled.operations))
+        work += 3 * len(sampled.image.bands)
+        work += sum(len(name) for name, _ in sampled.image.bands)
+        for _, child_pixel in sampled.image.bands:
+            scan(child_pixel)
+
     def scan(value):
         nonlocal work
         if isinstance(value, Pixel):
@@ -78,9 +88,17 @@ def image_work_estimate(image):
             if value.op == "trained_classify" and len(value.args) == 2:
                 model = value.args[1]
                 if isinstance(model, DynamicMinimumDistance):
-                    work += len(model.samples.spec) + len(model.class_property)
+                    work += len(model.class_property)
                     work += sum(map(len, model.schema))
-                    work += sum(map(len, model.samples.operations))
+                    include_sample_image(model.samples)
+            if value.op == "smile_rf_classify" and len(value.args) == 2:
+                from .ir import TrainedSmileRandomForest
+
+                model = value.args[1]
+                if isinstance(model, TrainedSmileRandomForest):
+                    work += len(model.training_spec) + len(model.rows or "")
+                    work += len(model.class_property) + sum(map(len, model.schema))
+                    include_sample_image(model.samples)
             if value.op == "remap" and len(value.args) == 2 and type(value.args[1]) is str:
                 # The parent graph precharges specifications in both the target
                 # and independently compiled sample-image lineages.

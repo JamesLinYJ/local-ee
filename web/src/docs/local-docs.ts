@@ -42,8 +42,15 @@ const entries: ReferenceEntry[] = [
     id: "imports",
     category: "Python 语法",
     title: "导入、异常与输出",
-    text: "import 导入已安装的模块。try / except 捕获预期错误；未捕获异常会使 Python 任务失败，完整信息在日志中。print 输出到控制台。运行容器不能联网安装新软件包。",
+    text: "import 导入已安装的模块。try / except 捕获预期错误；未捕获异常会使 Python 任务失败，完整信息在日志中。print 输出到控制台。脚本运行环境不能联网安装新软件包。",
     code: 'from datetime import date\ntry:\n    metadata = connection.describe_collection("sentinel-2-l2a")\n    print(metadata["id"], date.today())\nexcept Exception as error:\n    print(type(error).__name__, str(error))\n    raise',
+  },
+  {
+    id: "gee-python-smile-rf",
+    category: "GEE Python",
+    title: "ee.Classifier.smileRandomForest()",
+    text: "Python ee.* 通过固定官方客户端构建本地计算图。随机森林支持显式 inputProperties 的内联训练表与 sampleRegions/filter/limit 结果，训练只在受控 JVM 中进行。最多 1–8 个数值字段、2–1000 行、2–64 个从 0 连续编号的类别、256 棵树；共同工作预算可能进一步限制行数。模式仅为 CLASSIFICATION；不支持 RF explain、混淆矩阵和表分类。必须安装固定 RF 运行包，尚未完成本机部署及 Google 同数据验收。",
+    code: "import ee\n# image、training 为已有本地影像和训练表\nmodel = ee.Classifier.smileRandomForest(\n    numberOfTrees=100, variablesPerSplit=1, minLeafPopulation=1,\n    bagFraction=0.5, maxNodes=None, seed=42,\n).train(features=training, classProperty='label',\n        inputProperties=['red', 'nir'])\nclassified = image.classify(model, 'landcover')\nprint(classified.bandNames())",
   },
   {
     id: "graph",

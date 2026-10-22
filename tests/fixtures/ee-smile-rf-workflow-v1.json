@@ -1,0 +1,104 @@
+{
+  "schema": "local-ee-synthetic-smile-rf-workflow/v1",
+  "description": "A finite 4 by 2 unit-cell synthetic raster for testing the pinned Smile RandomForest API and its static and sampled graph paths. Raw class ranges are separated on both predictor axes; this is not a forest result, Google comparison, or real Earth Engine grid.",
+  "collection_id": "sentinel-2-l2a",
+  "training_scene_id": "smile-rf-training-scene",
+  "catalog_bands": ["red", "nir", "class_id", "qa"],
+  "input_properties": ["red", "nir"],
+  "class_property": "class_id",
+  "output_name": "rf_class",
+  "sample_properties": ["site", "keep"],
+  "training_scale": 1,
+  "target_export_scale": 25,
+  "sample_filter": {
+    "not_null": ["site", "keep", "class_id", "red", "nir"],
+    "expression": "keep == true && site != \"drop\"",
+    "limit": 4
+  },
+  "example_parameters": {
+    "number_of_trees": 15,
+    "variables_per_split": 2,
+    "min_leaf_population": 1,
+    "bag_fraction": 0.75,
+    "max_nodes": 15,
+    "seed": 42
+  },
+  "alternate_parameters": {
+    "number_of_trees": 9,
+    "variables_per_split": 1,
+    "min_leaf_population": 2,
+    "bag_fraction": 0.5,
+    "max_nodes": 8,
+    "seed": -7
+  },
+  "extent": [0, 0, 4, 2],
+  "grid": {
+    "crs": "EPSG:4326",
+    "cell_size_units": [1, 1],
+    "upper_left": [0, 2],
+    "shape_rows_columns": [2, 4],
+    "pixel_order": "global row ascending from north to south, then column ascending west to east"
+  },
+  "pixel_centers": [
+    [0.5, 1.5], [1.5, 1.5], [2.5, 1.5], [3.5, 1.5],
+    [0.5, 0.5], [1.5, 0.5], [2.5, 0.5], [3.5, 0.5]
+  ],
+  "target_export_region": {
+    "type": "Polygon",
+    "coordinates": [[[0, 0], [4, 0], [4, 2], [0, 2], [0, 0]]]
+  },
+  "training_regions": [
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [0.5, 1.5]}, "properties": {"site": "reject-false", "keep": false}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [1.5, 1.5]}, "properties": {"site": null, "keep": true}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [2.5, 1.5]}, "properties": {"site": "drop", "keep": true}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [0.5, 0.5]}, "properties": {"site": "keep-0a", "keep": true}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [1.5, 0.5]}, "properties": {"site": "keep-0b", "keep": true}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [2.5, 0.5]}, "properties": {"site": "keep-1a", "keep": true}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [3.5, 0.5]}, "properties": {"site": "keep-1b", "keep": true}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [3.5, 1.5]}, "properties": {"site": "keep-1c-after-limit", "keep": true}}
+  ],
+  "static_training_features": [
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [0.5, 0.5]}, "properties": {"site": "static-0a", "keep": true, "class_id": 0, "red": 1, "nir": 1.5}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [1.5, 0.5]}, "properties": {"site": "static-0b", "keep": true, "class_id": 0, "red": 2, "nir": 2.25}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [0.5, 1.5]}, "properties": {"site": "static-0c", "keep": true, "class_id": 0, "red": 1.5, "nir": 2.5}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [1.5, 1.5]}, "properties": {"site": "static-0d", "keep": true, "class_id": 0, "red": 1.25, "nir": 1.75}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [2.5, 0.5]}, "properties": {"site": "static-1a", "keep": true, "class_id": 1, "red": 10, "nir": 10.5}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [3.5, 0.5]}, "properties": {"site": "static-1b", "keep": true, "class_id": 1, "red": 11, "nir": 11.75}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [2.5, 1.5]}, "properties": {"site": "static-1c", "keep": true, "class_id": 1, "red": 10.5, "nir": 12}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [3.5, 1.5]}, "properties": {"site": "static-1d", "keep": true, "class_id": 1, "red": 11.25, "nir": 10.75}}
+  ],
+  "items": [
+    {
+      "id": "smile-rf-training-scene",
+      "bbox": [0, 0, 4, 2],
+      "geometry": {"type": "Polygon", "coordinates": [[[0, 0], [4, 0], [4, 2], [0, 2], [0, 0]]]},
+      "properties": {"system:index": "smile-rf-training-scene", "role": "training"},
+      "pixel_values": {
+        "red": [1, 2, 10, 11, 1.5, 1.25, 10.5, 11.25],
+        "nir": [1.5, 2.25, 10.5, 11.75, 2.5, 1.75, 12, 10.75],
+        "class_id": [0, 0, 1, 1, 0, 0, 1, 1],
+        "qa": [1, 1, 1, 1, 1, 1, 1, 1]
+      }
+    },
+    {
+      "id": "smile-rf-target-scene",
+      "bbox": [0, 0, 4, 2],
+      "geometry": {"type": "Polygon", "coordinates": [[[0, 0], [4, 0], [4, 2], [0, 2], [0, 0]]]},
+      "properties": {"system:index": "smile-rf-target-scene", "role": "target"},
+      "pixel_values": {
+        "red": [1.25, 1.75, 10.5, 11, 1.5, null, 6, 11.25],
+        "nir": [2, 1.5, 10.75, 11.5, 2.25, 2.5, 6.5, 10.5],
+        "class_id": [null, null, null, null, null, null, null, null],
+        "qa": [1, 1, 1, 1, 1, 1, 1, 1]
+      }
+    }
+  ],
+  "raw_separation_oracle": {
+    "description": "Raw-value range facts only. For either individual predictor, every training class-0 value is below every class-1 value. Target points within the class-0 or class-1 training ranges are separated from any threshold that perfectly separates the complete raw training ranges. This does not predict or validate a fitted random forest, whose sampling, tree structure, tie, and mask behavior require a real pinned Smile JVM probe.",
+    "class_0_ranges": {"red": [1, 2], "nir": [1.5, 2.5]},
+    "class_1_ranges": {"red": [10, 11.25], "nir": [10.5, 12]},
+    "unambiguous_target_pixel_indices": [0, 1, 2, 3, 4, 7],
+    "ambiguous_gap_target_pixel_indices": [6],
+    "selected_band_nodata_pixel_indices": [5]
+  }
+}

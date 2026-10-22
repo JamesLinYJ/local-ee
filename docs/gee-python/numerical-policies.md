@@ -108,3 +108,13 @@ Image.remap 在实际 Float32／Float64 值上精确匹配有限唯一数值键�
 样本filter复用现有有界FilterIR及UNKNOWN规则，表达式parser只产生该IR。操作链保留行序及重叠样本权重，limit在filter之前／之后按真实顺序执行。system:index临时解析原Feature.id，输出属性保持原样；规格复核、输入／输出复制、筛选与训练累计计费。谓词语义depth16和wire容器预扫描depth64分别计量，不把中间dict/list算成额外谓词层。
 
 独立标签网格有17个几何候选、一个未知标签和一个选中波段NoData，保留15有效行，notNull／条件／limit后分别14／11／8行；两类 red/nir 精确中心为 `[6/5,17/5]`、`[11/3,20/3]`。三度量预测和来源／波段／ROI边界以Shapely／Fraction／Decimal及测试图oracle分别核对。真实remap tile另核对6正向、23非法规格和3Infinity拒绝，并回归已有sample/classify内核。组件N不能代替完整Spark／隔离任务／浏览器／GoogleG；随机森林仍未实现。详见第二十五批报告。
+
+## 第二十六批：实际 Smile1.5.3 随机森林
+
+固定Apache-2.0 Smile1.5.3；实际RandomForest训练，不用另一RF或minimumDistance近似。六参数保留；mtry默认floor sqrt，maxNodes默认用N作为非约束的上限，无隐藏深度截断。按类分层抽样，bag=1有放回、<1无放回且按类取整；调用线程串行设种并验证pool=1。Google版本／抽样／种子／投票平分未知，不能声称同seed同树。连续从0的有限分类标签、明确schema和CLASSIFICATION子集见RF语法文档。
+
+训练float绝对值<=Double.MAX_VALUE/2，避免该版本阈值加法溢出；整数<=2^53，非有限值／缺失不静默删除。预测直接读取实际Float32／Float64值，任何选中NoData掩膜、validInfinity拒绝；Int32分类结果保留目标网格／时间。固定sample图与目标ROI／scale分离。独立N包括严格分离的原始类范围及阈值控制、2^24以上Float64与真实Float32舍入、NoData与270个binary64 wire bit patterns；不是独立重写整套RF算法或Google比较。
+
+真实Smile工厂／GeoTrellis组件控制覆盖同seed重复、不同seed变化、可信内部对象序列化、错误线程池拒绝、非法规格／行、实际ServiceLoader与唯一SLF4J。1000×8／100树规模拟合和256²真实tile预测通过，按树实际maxDepthSum计预测上界。最终Unicode扫描器按码点计256字符，与Python一致；schema／class_property补充129和256非BMP码点实际训练预测，257拒绝。完整Spark／沙箱／HTTP／浏览器／部署及GoogleG均未在本批验收。
+
+Python桥按实测将RF对象／复制工作150000与累计wire扫描3MB分开，每条JSON1MB不变；原table操作／MD／compiler50000不变。完整元数据复制使用缓存结构保守上界，alias可高估，不冒称精确CPU次数；旧limit／filter遗漏嵌套复制计费也已补齐，无alias的实际assembler回归在getter／结果constructor前拒绝超限。相应报告保留旧预算拒绝、微基准、完整回归与最终原生定向复核。

@@ -37,6 +37,9 @@ def validate_sampling_dependencies(nodes):
     JSON string specifications stay data; this function never traverses their
     property dictionaries as process nodes or graph dependencies.
     """
+    from .smile_rf_processes import validate_rf_dependencies
+
+    validate_rf_dependencies(nodes)
     for key, node in nodes.items():
         name, arguments = node["process_id"], node.get("arguments", {})
         if name == OP_PROCESS:
