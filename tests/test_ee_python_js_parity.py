@@ -54,6 +54,11 @@ const prior = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(c, c,
     leftField:'system:time_start', rightField:'system:time_start'}),
     ee.Filter.greaterThan({leftField:'system:time_start', rightField:'system:time_start'}))));
 const values = {
+  arrayArgmax: ee.Array([[1,9,9],[9,-1,0]]).argmax(),
+  arrayArgmaxEmpty: ee.Array([1]).slice(0,0,0).argmax(),
+  rasterArrayArgmax: c.first().select(['blue','green','red','nir']).toArray()
+    .arrayReshape(ee.Image(ee.Array([2,2])),2).toFloat().arrayArgmax()
+    .arrayFlatten([['row','column']]),
   rasterArraySelection: c.select('red').toArrayPerBand().select([0],['chosen']).arrayGet([0]),
   rasterArrayAccumDefault: c.select('red').toArrayPerBand().toFloat().arrayAccum(0)
     .arrayFlatten([['s0','s1','s2']]),
@@ -189,6 +194,11 @@ def parity_values():
             leftField="system:time_start", rightField="system:time_start"),
             ee.Filter.greaterThan(leftField="system:time_start", rightField="system:time_start"))))
     py = {
+        "arrayArgmax": ee.Array([[1, 9, 9], [9, -1, 0]]).argmax(),
+        "arrayArgmaxEmpty": ee.Array([1]).slice(0, 0, 0).argmax(),
+        "rasterArrayArgmax": c.first().select(["blue", "green", "red", "nir"]).toArray()
+            .arrayReshape(ee.Image(ee.Array([2, 2])), 2).toFloat().arrayArgmax()
+            .arrayFlatten([["row", "column"]]),
         "rasterArraySelection": c.select("red").toArrayPerBand().select([0], ["chosen"]).arrayGet([0]),
         "rasterArrayAccumDefault": c.select("red").toArrayPerBand().toFloat().arrayAccum(0)
             .arrayFlatten([["s0", "s1", "s2"]]),
@@ -300,7 +310,8 @@ def parity_values():
                 for key, value in py.items()}, [metadata], items
 
 
-@pytest.mark.parametrize("case", ["sequence", "emptyKeys", "missingDefault", "matrixMultiply",
+@pytest.mark.parametrize("case", ["arrayArgmax", "arrayArgmaxEmpty", "rasterArrayArgmax",
+                                 "sequence", "emptyKeys", "missingDefault", "matrixMultiply",
                                  "matrixSolve", "notNull", "matchId", "clippedBands",
                                  "bestDelta", "tableCoefficients", "featureSum", "formatted",
                                  "stringConversion", "innerBands", "compoundDelta",

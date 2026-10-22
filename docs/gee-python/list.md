@@ -1,8 +1,8 @@
 # GEE Python 兼容清单
 
-状态：2026-10-22，第十八批持续实施，整体兼容目标尚未完成。
+状态：2026-10-22，第十九批持续实施，整体兼容目标尚未完成。
 
-第十八批 [验证报告](../../reports/gee-python-wave18.json)：Linux Python **1428 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1372 passed／7 skipped](../../reports/gee-python-wave17.json)，本批增加 56 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
+第十九批 [验证报告](../../reports/gee-python-wave19.json)：Linux Python **1456 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1428 passed／7 skipped](../../reports/gee-python-wave18.json)，本批增加 28 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
 
 S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎；N＝独立数值基准；G＝Google 同数据对照。静态数值求值和合成图测试分别说明，不能标成原生栅格 E。固定的 991 项签名、方法可见数量和定向探针计数均不能换算为全 API 兼容百分比。
 
@@ -73,7 +73,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 
 List.contains／distinct 对嵌套数组使用显式的有界比较，避免 NumPy 隐式真值／广播错误。标量 int／float 按数值比较，bool 单独区分；Array 的 dtype／形状／元素比较仍是未做 Google 对照的本地策略。step 序列严格检查实际生成的 Float64 值，不向端点外扩展；例如 0、0.1、0.2 后的 0.30000000000000004 超过 end=0.3，因此省略，该舍入策略尚无 G 证据。
 
-另有 56 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky、QR／LU／SVD 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵、列表布局／均值／回归、最小距离 schema／预测／训练误差矩阵、栅格 linearRegression 的过原点／截距系数与 RMS、方阵／高矩形设计的栅格 matrixSolve、集合定长数组、reshape、正余弦设计，以及静态向量范数／方向角、栅格 hypot、轴拼接／整块重复与矩阵对角／迹／行列式、前缀归约／缩放范数和单数组选择。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容或 Google 数值对照。
+另有 59 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky、QR／LU／SVD 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵、列表布局／均值／回归、最小距离 schema／预测／训练误差矩阵、栅格 linearRegression 的过原点／截距系数与 RMS、方阵／高矩形设计的栅格 matrixSolve、集合定长数组、reshape、正余弦设计，以及静态向量范数／方向角、栅格 hypot、轴拼接／整块重复与矩阵对角／迹／行列式、前缀归约／缩放范数和单数组选择，新增首个最大值坐标与 typed 空切片。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容或 Google 数值对照。
 
 第四批 `examples/10_GEE_python_synthetic_pca.py` 与 `tests/fixtures/ee-pca-table-v1.json` 串联有限静态表格的中心化、样本协方差、对称特征分解、投影及重建。四条二维观测的均值为 `[2,1]`，协方差为 `[[4/3,2/3],[2/3,2/3]]`，特征值为 `1±sqrt(5)/3`；闭式向量与得分按 1e-14 容差核对，重建还提供与符号选择无关的验证。S/C/N 已通过，网络入口尝试为 0；无栅格 E 或 G。
 
@@ -259,6 +259,18 @@ Image.matrixFnorm 必填 value，输入限显式 Float32 的固定 rank2 数组�
 `examples/23_GEE_python_cumulative_anomaly.py` 与 `tests/fixtures/ee-cumulative-anomaly-v1.json` 对 2024-01-01 至 2025-01-01 的四次合成 NDVI 观测减去明确的逐景参考基准 0.25。实际日期相差 366 天，day180 的两个不同 ID 均保留。第一像元异常为 `[-1/20,3/20,-7/20,1/20]`，累计和 `[-1/20,1/10,-1/4,-1/5]`，平方范数 3/20；另一个像元平方范数为 3/8，全零像元为零。Fraction 前缀、Decimal 开方及独立 NumPy 参考核对负／零、同日身份、排序和跨年日期。任一景缺失及 bbox 内多边形外样点均使整体结果无效。
 
 异常图为 88 节点，默认／显式累计和、前缀 min／max 各 110 节点，范数 176 节点。SDK 网络入口尝试 0；这是真实数组表达式计算，样本和基准为明确版本化合成值，无栅格 E／Google G 结论，见 [第十八批报告](../../reports/gee-python-wave18.json)。
+
+## 第十九批：最大值坐标与光谱原型选择
+
+Array.argmax 严格要求唯一必填 array，保留 typed Array 的数值类型，直接按行主序扫描，仅在严格更大时更新，因此并列取第一个。返回每轴整数坐标列表，rank0 为 []，已有 typed 空切片为 null；直接空构造、显式 PixelType、非有限值和整数超出既有 ±2^53 精确域仍拒绝。rank≤8、10000 单元、共享 50000 工作预算不变，扫描及结果构造前预充 `2*cells+rank+1`。
+
+Image.arrayArgmax 的固定参数名为 image，只接受每个单元显式顶层 toFloat 的单个固定 rank1..8 数组，真实构建 gt／if 求首个最大值的坐标，输出 shape(rank,)。坐标为 0..63 内的整数值 Float32，是当前回调后端的明确类型子集，未证明 Google Integer dtype 等价；不同 Double 值显式量化后可能形成并列，按量化后的值选首个。rank0 所需空向量、Double、标量及多数组波段明确拒绝。
+
+全部输出保留原名称／Image 元数据／来源和完整输入掩膜，非赢家单元的缺测也使全部坐标无效，不局部删除缺测。构造前按 `cells*(2*rank+4)+rank²+2*rank+metadata_work` 预充，64 单元和 500 图节点保持；大动态图即使维度合法仍可能拒绝。
+
+`examples/24_GEE_python_spectral_prototypes.py` 与 `tests/fixtures/ee-spectral-prototypes-v1.json` 对实际合成 red／nir 像素和明确的三个原型逐项计算差、平方和、负分数及 argmax。前五个有效像元选择 `[0,1,2,0,0]`；第四像元距离 `[1/32,1/32,5/32]` 按首个并列选择，第五像元所有分数为负，精确匹配的零分数仍有效。Fraction／Decimal 与独立 NumPy 参考、单波段缺测和 bbox 内多边形外控制分别验证。距离／分数／索引图实际为 113／125／136 节点，SDK 网络入口尝试 0。
+
+这是固定原型的真实光谱选择表达式，未注册 Image.classify 或替代分类训练。S／C／采样点 N 与未运行的栅格 E／Google G 分别见 [第十九批报告](../../reports/gee-python-wave19.json)。
 
 ## 复现与后续顺序
 

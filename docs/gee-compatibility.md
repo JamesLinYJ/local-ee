@@ -52,6 +52,8 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 
 第十八批增加固定 Float32 数组的 Image.arrayAccum（默认 sum，以及 min／max）和缩放 Image.matrixFnorm，修复单数组 Image.select 的合法名称／下标选择及改名。跨年同日双景的累计 NDVI 异常使用真实前缀表达式及范数，Fraction／Decimal／NumPy 参考验证顺序、负／零值、完整数组掩膜、大小数值与预算边界，见 [第十八批报告](../reports/gee-python-wave18.json)。其他 reducer、动态形状、通用 Float64 和 Google 数值等价仍未覆盖。
 
+第十九批增加 Array.argmax 与 Image.arrayArgmax：真实按行主序求首个最大值的每轴坐标，静态 typed 空切片返回 null、rank0 返回 []；栅格限显式 Float32 固定单数组，保留包括非赢家缺测在内的完整掩膜。合成 red／nir 光谱用三个明确原型的真实平方距离选择索引，独立 Fraction／Decimal／NumPy 验证并列、零、负分数和空间边界。栅格坐标以整数值 Float32 表示，未宣称 Google Integer dtype 等价，也未实现 Image.classify，见 [第十九批报告](../reports/gee-python-wave19.json) 与 [数值政策](gee-python/numerical-policies.md)。
+
 第三批增加 `Join.inner`、唯一 maxDifference 的 And 组合，以及匹配 Feature 映射回 ImageCollection 的链路；最近前后观测插值有版本化合成来源／掩膜／目标时间参考，见 [第三批报告](../reports/gee-python-wave3.json)。S/C 与合成图 N 通过仍不构成原生引擎 E 或 Google G。
 
 | 用法 | 当前支持范围 | 证据 |

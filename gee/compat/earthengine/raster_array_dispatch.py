@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import replace
 
 from .array_core import StaticArray
+from .array_argmax import RASTER_ARGMAX_FUNCTIONS, invoke_raster_argmax
 from .ir import Image, fail
 from .metadata_ops import METADATA_HANDLERS, invoke_metadata
 from .raster_array_core import RasterArrayImage
@@ -30,7 +31,7 @@ _METADATA_ARGUMENTS = {
 
 
 def handles_raster_array(name, arguments):
-    if name in (RASTER_ARRAY_LAYOUT_FUNCTIONS | RASTER_ARRAY_REDUCTION_FUNCTIONS
+    if name in (RASTER_ARGMAX_FUNCTIONS | RASTER_ARRAY_LAYOUT_FUNCTIONS | RASTER_ARRAY_REDUCTION_FUNCTIONS
                 | RASTER_MATRIX_FUNCTIONS | RASTER_MATRIX_PROPERTY_FUNCTIONS
                 | RASTER_RESHAPE_FUNCTIONS | RASTER_CONCATENATION_FUNCTIONS | RASTER_ARRAY_ACCUMULATION_FUNCTIONS
                 | (RASTER_ARRAY_VALUE_FUNCTIONS - _SHARED_SCALAR_NAMES)):
@@ -42,6 +43,8 @@ def handles_raster_array(name, arguments):
 
 
 def invoke_raster_array(translator, name, arguments):
+    if name in RASTER_ARGMAX_FUNCTIONS:
+        return invoke_raster_argmax(translator, name, arguments)
     if name in RASTER_ARRAY_ACCUMULATION_FUNCTIONS:
         return invoke_raster_accumulation(translator, name, arguments)
     if name in RASTER_MATRIX_PROPERTY_FUNCTIONS:

@@ -85,6 +85,7 @@ flowchart LR
 | `number_math.py` | 有限静态正余弦、稳定范数与方向角，先校验／计费再运行 Float64 内核；显式记录 pinned SDK 轴约定和未做 Google 对照的数值政策 |
 | `array_core.py`, `array_values.py`, `array_layout.py`, `array_arithmetic.py`, `array_reductions.py`, `array_matrix_extra.py` | 有限静态数组类型、形状／资源校验及分组数值内核 |
 | `array_decompositions.py` | 静态方阵 QR／LU／SVD 的真实分解、有限输出与立方工作预充；通过既有 typed Array／Dictionary 接口组合，不另建前端计算层 |
+| `array_argmax.py` | 有限静态数组与固定 Float32 栅格数组的首个行主序最大值坐标；静态路径保留原数值类型比较，栅格路径生成真实比较／条件坐标并保留整体掩膜，扫描及构图前预充预算 |
 | `raster_array_core.py`, `raster_array_values.py`, `raster_array_layout.py`, `raster_array_coordinates.py`, `raster_array_reductions.py`, `raster_array_dispatch.py` | 单数组波段固定形状 IR、整体掩膜、常量坐标与分组操作；降为既有标量像素图，公开输出前必须转换为标量波段 |
 | `raster_matrix_solve.py` | 静态满列秩设计的有限栅格最小二乘；双方显式 Float32、预充工作预算、常量 cast 链按对象缓存，输出真实像素乘加及整体掩膜，不宣称通用动态矩阵或 Google 数值等价 |
 | `raster_collection_arrays.py`, `raster_array_reshape.py` | 有限标量集合按波段堆叠定长数组，各波段独立合并所有帧掩膜；常量有效长度向量重解释行主序形状，保留像素、类型和来源，拒绝变长数组及动态／掩膜形状 |

@@ -773,12 +773,14 @@
       "description": "Returns the position, as a list of indices in each array axis, of the maximum value in an array, or null if the array is empty. If there are multiple occurrences of the maximum, returns the position of the first.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Required array is a typed finite static Array within existing rank<=8/cells<=10000/exact integer domain<=2^53. Returns one integer coordinate per axis for the first row-major maximum, [] for rank0 and null for typed empty slices. No Float64 copy before comparison. Shared50000 work precharged before the scan; raw Lists, nonfinite/unsupported types and missing/unknown arguments reject. Direct empty constructors still require unsupported PixelType. No Google comparison."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -17761,12 +17763,14 @@
       "description": "Computes the positional indices of the maximum value in image of array values. If there are multiple occurrences of the maximum, the indices reflect the first.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Required image is one fixed rank1..8 RasterArrayImage with every cell explicitly top-level toFloat, axes/cells<=64. Actual strict-greater comparisons and conditional coordinate selection retain the first row-major maximum, returning shape(rank,) under the entire input mask including nonwinning missing cells, with original name/image/source. Local coordinate values are explicit Float32 integers; Google Integer result dtype and rounding equivalence are unverified. Rank0/Double/scalar/multiple array bands and missing/unknown arguments reject. Shared50000 work precharged before Pixel/output construction;500 graph cap unchanged. No variable arrays, raster-engine or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -40933,7 +40937,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 264,
+    "declared_handler_name_count": 266,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -40948,7 +40952,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 35,
+        "declared_handler_count": 36,
         "signature_count": 124
       },
       "BACCINI/ModisComposite": {
@@ -41151,7 +41155,7 @@
         "appears_in_rejected_compile_context": 31,
         "appears_in_selected_sdk_serialization": 35,
         "appears_in_successful_compile_context": 8,
-        "declared_handler_count": 71,
+        "declared_handler_count": 72,
         "signature_count": 232
       },
       "ImageCollection": {
@@ -41414,7 +41418,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 264,
+    "pinned_signatures_with_same_name_declared_handler": 266,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

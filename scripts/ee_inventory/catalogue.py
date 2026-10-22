@@ -133,6 +133,12 @@ KNOWN_PARTIAL_LIMITS["Image.matrixDeterminant"] = [
 KNOWN_PARTIAL_LIMITS["Image.matrixDeterminant"].append(
     "Known literal Float32 product overflow rejects during constant folding; dynamic finite Float32 matrix products can produce infinity or other nonfinite results in local sampling. This material numerical limitation is documented separately from mask preservation; no native/Google overflow acceptance."
 )
+KNOWN_PARTIAL_LIMITS["Array.argmax"] = [
+    "Required array is a typed finite static Array within existing rank<=8/cells<=10000/exact integer domain<=2^53. Returns one integer coordinate per axis for the first row-major maximum, [] for rank0 and null for typed empty slices. No Float64 copy before comparison. Shared50000 work precharged before the scan; raw Lists, nonfinite/unsupported types and missing/unknown arguments reject. Direct empty constructors still require unsupported PixelType. No Google comparison."
+]
+KNOWN_PARTIAL_LIMITS["Image.arrayArgmax"] = [
+    "Required image is one fixed rank1..8 RasterArrayImage with every cell explicitly top-level toFloat, axes/cells<=64. Actual strict-greater comparisons and conditional coordinate selection retain the first row-major maximum, returning shape(rank,) under the entire input mask including nonwinning missing cells, with original name/image/source. Local coordinate values are explicit Float32 integers; Google Integer result dtype and rounding equivalence are unverified. Rank0/Double/scalar/multiple array bands and missing/unknown arguments reject. Shared50000 work precharged before Pixel/output construction;500 graph cap unchanged. No variable arrays, raster-engine or Google acceptance."
+]
 KNOWN_PARTIAL_LIMITS["Image.arrayAccum"] = [
     "Required input/axis, optional reducer omitted or null defaults to sum. Single fixed RasterArrayImage with every cell explicitly top-level toFloat, rank1..8/axes and cells<=64; existing nonnegative integer axis only. Actual inclusive prefix sum/min/max in original row-major axis order, each new arithmetic stage explicitly Float32, retaining original name/image/full-array mask. Other reducers, unweighted modifiers, raw scalar/multiple array bands, invalid axes and missing/unknown arguments reject. Work precharged before output construction,50000 work and500 graph nodes retained. No skip-missing prefixes, dynamic shapes, generic Float64 or Google rounding comparison."
 ]

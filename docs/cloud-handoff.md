@@ -186,6 +186,18 @@ Image.matrixFnorm 对 rank2 Float32 单数组实际计算最大绝对值缩放�
 
 Linux Python **1428 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，新增 56 项：累计／范数数值及参数 36、单数组选择 13、工作流 2、SDK 一致性新增 5（总 56）。Luna max 独立复审 70 项通过，早于最后选择与范数边界补充，完整最终套件及父审单独登记。原 50 探针及完整 Python 目录字节不变；报告见 `reports/gee-python-wave18.json`。S/C/采样点 N 与未运行的栅格 E／Google G 分开登记，整体目标继续。
 
+## 第十九批最大值坐标与光谱原型选择
+
+以第十八批 `1352470cce5695fb64d0ff9693cb58436fe46671` 为基线，新增 `array_argmax.py`（131 行），静态／栅格路由分别接入 Array.argmax(array) 和 Image.arrayArgmax(image)，严格拒绝未知／缺失参数。静态保留 dtype，按行主序严格大于更新，typed 空切片为 null、rank0 为 []，已有有限值／整数 ±2^53／10000 单元／rank8 限制保持。
+
+栅格要求单个固定 rank1..8 数组，每个单元显式顶层 toFloat，通过真实 gt／if 构造首个最大值的每轴坐标，返回 shape(rank,)；完整输入掩膜、名称／Image 元数据／来源保持，非赢家单元缺测也使全部坐标无效。坐标暂以整数值 Float32 表示，没有证明 Google Integer dtype 等价；Double 输入需要用户显式量化，`[16777216,16777217]` 量化后并列选 0 有正式回归。rank0 空向量、标量／多数组波段明确拒绝。
+
+静态扫描前计费 `2*cells+rank+1`，栅格扫描／构造前计费 `cells*(2*rank+4)+rank²+2*rank+metadata_work`。50000 工作、64 栅格单元和 500 图节点保持；63 个常量加一个真实栅格单元的 64 单元正控实际得到位置 63，而独立 64 动态单元图仍触发 500 节点拒绝，没有放宽限制。
+
+示例 24 与版本化 red／nir 样本实际计算三个固定原型的逐项差、平方距离、负分数和 argmax，前五有效像元索引 `[0,1,2,0,0]`；距离 `[1/32,1/32,5/32]` 取首个并列，精确匹配零分数和全负分数均有效。独立 Fraction／Decimal／NumPy 参考、单波段缺测、多边形外控制及来源／波段保持通过；距离／分数／索引图 113／125／136 节点，网络入口尝试 0。这是固定原型选择，没有注册 Image.classify 或声称分类训练已完成。
+
+Linux Python **1456 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，新增 28 项：argmax 数值／参数 22、工作流 3、SDK 一致性新增 3（总 59）。Luna max 对最终冻结的四组 84 项以 `-W error` 独立重跑通过；另以形状 `(2,3,2)` 的并列最大值手算核对 `[0,2,1]`，实际 357 节点且来源／元数据保持。初始测试的 fixture 未导入、NumPy 不支持的断言参数、SDK ValueRef 解析，以及提前触发的 bundle／解码器拒绝路径均修正为正确参考；生产限制未放宽。原 50 探针和完整 Python 目录字节不变，报告 `reports/gee-python-wave19.json` 单列 S／C／静态或采样 N 和未运行 E／G。整体目标继续。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee

@@ -16,12 +16,13 @@ from .array_reductions import ARRAY_REDUCTION_FUNCTIONS, invoke_reduction
 from .array_layout import ARRAY_LAYOUT_FUNCTIONS, invoke_layout
 from .array_matrix_extra import ARRAY_MATRIX_FUNCTIONS, invoke_matrix_extra
 from .array_decompositions import ARRAY_DECOMPOSITION_FUNCTIONS, invoke_decomposition
+from .array_argmax import STATIC_ARGMAX_FUNCTIONS, invoke_static_argmax
 
 ARRAY_FUNCTIONS = frozenset({
     "Array", "Array.get", "Array.length", "Array.toList", "Array.reshape",
     "Array.transpose", "Array.matrixTranspose", "Array.matrixMultiply",
     "Array.matrixInverse", "Array.matrixSolve", "Array.matrixPseudoInverse",
-}) | ARRAY_ARITHMETIC_FUNCTIONS | ARRAY_REDUCTION_FUNCTIONS | ARRAY_LAYOUT_FUNCTIONS | ARRAY_MATRIX_FUNCTIONS | ARRAY_DECOMPOSITION_FUNCTIONS
+}) | ARRAY_ARITHMETIC_FUNCTIONS | ARRAY_REDUCTION_FUNCTIONS | ARRAY_LAYOUT_FUNCTIONS | ARRAY_MATRIX_FUNCTIONS | ARRAY_DECOMPOSITION_FUNCTIONS | STATIC_ARGMAX_FUNCTIONS
 
 
 def _axes(arguments, array):
@@ -56,6 +57,8 @@ def invoke_array(translator, name, arguments):
     """Evaluate only the explicitly listed pinned static array algorithms."""
     if name not in ARRAY_FUNCTIONS:
         fail(f"Unsupported static Array operation: {name}")
+    if name in STATIC_ARGMAX_FUNCTIONS:
+        return invoke_static_argmax(translator, name, arguments)
     if name in ARRAY_ARITHMETIC_FUNCTIONS:
         return invoke_arithmetic(translator, name, arguments)
     if name in ARRAY_REDUCTION_FUNCTIONS:
