@@ -5,7 +5,7 @@ import math
 LOCAL_PROCESSES = frozenset({
     "local_ee_to_double", "local_ee_to_float", "local_ee_constant_on_grid",
     "local_ee_unmask", "local_ee_drop_single_time", "local_ee_reduce_bands",
-    "local_ee_table",
+    "local_ee_table", "local_ee_minimum_distance",
 })
 CUBE = {"type": "object", "subtype": "raster-cube"}
 EE_BAND_REDUCERS = frozenset({"mean", "median", "min", "max", "sum", "count", "first", "last", "sd"})
@@ -22,6 +22,8 @@ def validate_local_process(name, arguments, depth):
         required.add("value")
     if name == "local_ee_reduce_bands":
         required.add("reducer")
+    if name == "local_ee_minimum_distance":
+        required.add("model")
     allowed = required | ({"same_footprint"} if name == "local_ee_unmask" else set())
     if depth != 0 or not required <= set(arguments) <= allowed:
         raise ValueError("Local EE extensions require top-level cube references and supported arguments")
@@ -32,6 +34,12 @@ def validate_local_process(name, arguments, depth):
             raise ValueError("Local EE same_footprint must be a boolean")
     if any(not isinstance(value, dict) or set(value) != {"from_node"} for value in cubes):
         raise ValueError("Local EE extensions require top-level cube references")
+    if name == "local_ee_minimum_distance":
+        from .compat.earthengine.classifier_model import model_validation_work, validate_model
+
+        if model_validation_work(arguments["model"]) > 50_000:
+            raise ValueError("Raster classifier model exceeds the 50000-step work budget")
+        validate_model(arguments["model"])
     if name == "local_ee_constant_on_grid":
         value = arguments["value"]
         if (isinstance(value, bool) or not isinstance(value, (int, float))
@@ -49,6 +57,8 @@ def process_spec(name):
         return table_process_spec()
     if name in {"local_ee_to_double", "local_ee_to_float"}:
         return type_conversion_spec(name)
+    if name == "local_ee_minimum_distance":
+        return _classification_spec(name)
     descriptions = {
         "local_ee_constant_on_grid": "Create valid Float64 constants on a bounded template grid, including missing tiles. Does not expand its extent; runtime key/cell budgets apply.",
         "local_ee_unmask": "Select valid input cells, otherwise replacement cells, preserving NaN masks and Float64 precision. Requires aligned single-band cubes and identical observation instants; rejects implicit reprojection or time broadcasting.",
@@ -73,6 +83,41 @@ def _cube_process_spec(name, description, parameters):
     return {"id": name, "summary": description.split(".")[0], "description": description,
             "experimental": True, "categories": ["cubes"], "parameters": parameters,
             "returns": {"description": "Float64 raster cube", "schema": CUBE}}
+
+
+def _classification_spec(name):
+    description = (
+        "Classify schema-ordered finite raster bands against exact rational class centers. "
+        "Version 1 supports Euclidean, Manhattan and cosine, k=1 CLASSIFICATION, "
+        "1..8 unique flat schema names and 1..64 sorted labels in 0..63. "
+        "Input band names and order must equal the schema. Actual Float32/Float64 values "
+        "are preserved; output is one Int32 NoData band v with input grid and time. "
+        "Any selected NoData masks the pixel; valid infinity, nearest-class ties and "
+        "cosine zero vectors reject. Reduced center fractions use canonical decimal "
+        "string pairs, at most 700 characters/2200 bits each and finite Float64 magnitude. "
+        "Shared grid/key/cell limits and 67108864 pixel-class-band operations apply. "
+        "Full Spark batch execution and Google numerical equivalence remain unverified."
+    )
+    return {
+        "id": name, "summary": "Exact bounded minimum-distance raster classification",
+        "description": description, "experimental": True, "categories": ["cubes"],
+        "parameters": [
+            {"name": "data", "description": "Schema-ordered input raster cube", "schema": CUBE},
+            {"name": "model", "description": "Strict version-1 exact rational model",
+             "schema": {"type": "object", "additionalProperties": False,
+                        "required": ["version", "metric", "schema", "labels", "centers"],
+                        "properties": {
+                            "version": {"type": "integer", "enum": [1]},
+                            "metric": {"type": "string", "enum": ["euclidean", "manhattan", "cosine"]},
+                            "schema": {"type": "array", "minItems": 1, "maxItems": 8,
+                                       "uniqueItems": True, "items": {"type": "string", "minLength": 1}},
+                            "labels": {"type": "array", "minItems": 1, "maxItems": 64,
+                                       "uniqueItems": True, "items": {"type": "integer", "minimum": 0, "maximum": 63}},
+                            "centers": {"type": "array", "minItems": 1, "maxItems": 64},
+                        }}},
+        ],
+        "returns": {"description": "Singleton integer classification band v with Int32 NoData", "schema": CUBE},
+    }
 
 
 def type_conversion_spec(name):

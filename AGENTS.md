@@ -16,6 +16,7 @@ Current phase, per the user's 2026-10-22 instruction: defer new Linux execution/
 - `gee/api/`: routes, auth, typed input/output; delegate science and scheduling to services.
 - `gee/services/`: use cases, permissions, quotas, persistent lifecycle.
 - `gee/compat/earthengine/`: canonical pure EE DAG decoder, IR and compiler; no user-code execution or external fetches. `gee/ee_translate.py` is a 23-line backward-compatible import facade; add and change compiler behavior in the canonical package, then preserve the facade's public names.
+- Raster minimum-distance classification uses an exact versioned model in `classifier_model.py`, schema selection in `raster_classification.py`, and native graph lowering in `classification_graph.py`. Keep model validation in the API/engine bridge and Scala parser aligned; preserve rational centers, real input precision and masks. Standalone trusted tile-kernel checks do not establish full Spark batch or production runtime acceptance.
 - `runtimes/eejs/`: offline official SDK and isolated JS runner. Preserve vendor licenses and hash/version locks.
 - `gee/ee_python_*.py`: pinned official Python SDK offline initialization, bounded loopback transport, local map/task/export adapters. Keep legacy EE serialization shared with the JS compiler, preserve openEO `connection`, and reject cloud authentication/discovery or unsupported export parameters. SDK method existence is not backend support.
 - `gee/graph.py`: canonical process graph validation; every newly exposed process needs source review and focused validation.

@@ -33,7 +33,8 @@ class PixelCompiler:
         # than silently narrowing an explicitly requested Float64 raster.
         key = id(p)
         if key not in self.double_precision:
-            if p.op in {"to_double", "unmask", "unmask_constant", "on_grid"}: result = True
+            if p.op == "classify": result = False
+            elif p.op in {"to_double", "unmask", "unmask_constant", "on_grid"}: result = True
             elif p.op in {"to_float", "is_nodata"}: result = False
             else:
                 operands = p.args[0] if p.op == "reduce_bands" else p.args[:1] if p.op in {"clip", "preserve_mask"} else p.args
@@ -42,6 +43,10 @@ class PixelCompiler:
         return self.double_precision[key][1]
 
     def _expression(self, p):
+        if p.op == "classify":
+            from .classification_graph import classify_pixel
+
+            return classify_pixel(self, p)
         if p.op == "constant":
             # GeoTrellis's scalar callback builder represents logical pixels as
             # 0/1; a Boolean false literal is not a numeric accept value there.

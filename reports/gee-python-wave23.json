@@ -1,0 +1,432 @@
+{
+  "architecture": {
+    "compiler": [
+      "classifier_model.py: strict immutable-shape wire validation and exact rational encoding",
+      "raster_classification.py: parameters/schema selection and bounded Pixel IR",
+      "classification_graph.py: schema-order cube assembly and local process lowering"
+    ],
+    "engine": "Trusted Python bridge/dry-run metadata plus independent Scala model parser, exact BigInt rational ranking and GeoTrellis tile output; existing NativeClient sandbox entry unchanged",
+    "output": "Single band classification/outputName; physical native v band uses IntConstantNoDataCellType, labels0..63, Int.MinValue=NoData",
+    "process": "local_ee_minimum_distance(data,model), top-level canonical cube references only"
+  },
+  "base_commit": "d8be821ee1dbe1a434545724c1dee984aa81309d",
+  "change": "Bounded Image.classify with trained minimumDistance now compiles through a strictly validated rational model to a dedicated GeoTrellis tile kernel; schema order, real input precision, masks and metadata are preserved.",
+  "cleanup": {
+    "artifacts": [
+      {
+        "bytes": 135188,
+        "content_manifest_sha256": "d3e0bc84c4e4cca79d2d9663dde4bcd6cbbb51b21cf82442e9d2d2c90cc4aec6",
+        "files": 5,
+        "in_use_scan": "lsof_no_open_files",
+        "internal_test_symlinks": 0,
+        "name": "gee-python-wave23-native"
+      },
+      {
+        "bytes": 175692,
+        "content_manifest_sha256": "221d34d168f2ac5b8510c0482ed31a6a67f31914ebcba85a9346be96fae38c29",
+        "files": 5,
+        "in_use_scan": "lsof_no_open_files",
+        "internal_test_symlinks": 1,
+        "name": "gee-python-wave23-kernel"
+      },
+      {
+        "bytes": 12237508,
+        "content_manifest_sha256": "b81a318640cab5242f09c75dd3edd252ea2670818c3e9647f7f4b13f39a32819",
+        "files": 75,
+        "in_use_scan": "lsof_no_open_files",
+        "internal_test_symlinks": 45,
+        "name": "gee-python-wave23-pytest"
+      },
+      {
+        "bytes": 12171437,
+        "content_manifest_sha256": "c299c1613d542a7f76ab4329411c37bad5f6eb673bc35179051fb9ad1a558b59",
+        "files": 72,
+        "in_use_scan": "lsof_no_open_files",
+        "internal_test_symlinks": 45,
+        "name": "gee-python-wave23-final"
+      },
+      {
+        "bytes": 186168,
+        "content_manifest_sha256": "2a559ae43e127817864fb8810c00ebeb9a41c7e27d5e1570eb1d6f03eccd316f",
+        "files": 5,
+        "in_use_scan": "lsof_no_open_files",
+        "internal_test_symlinks": 1,
+        "name": "gee-python-wave23-kernel-extended"
+      },
+      {
+        "bytes": 12246433,
+        "content_manifest_sha256": "5da71907c6124bada29d2f1c21a2aed7fe1141572531474ba5bcb76b13fcec58",
+        "files": 75,
+        "in_use_scan": "lsof_no_open_files",
+        "internal_test_symlinks": 45,
+        "name": "gee-python-wave23-verified"
+      },
+      {
+        "bytes": 1669087,
+        "content_manifest_sha256": "ab4d884b2f68e60723be510181b52c5b8cf9b10daadaac5ad5ef0d93941d9f07",
+        "files": 16,
+        "in_use_scan": "lsof_no_open_files",
+        "internal_test_symlinks": 0,
+        "name": "gee-python-wave23-web"
+      },
+      {
+        "bytes": 3292711,
+        "content_manifest_sha256": "dbb7ea64941b0a026c3a6d843c442fef7fd7ce1c4af9d74f4dbac9756e76d4fa",
+        "files": 1,
+        "in_use_scan": "lsof_no_open_files",
+        "internal_test_symlinks": 0,
+        "name": "gee-python-wave23-inventory.json"
+      }
+    ],
+    "preserved": "Audit records, committed probe/fixtures, runtime dependencies, locks, accounts, data and services",
+    "status": "removed_and_absence_verified",
+    "total_bytes": 42114224
+  },
+  "date": "2026-10-23",
+  "fixes_and_observed_failures": [
+    "Updated old Image.classify algorithm-unsupported assertions to concrete missing/unbound-schema rejection; preserved valid negative checks.",
+    "Reconciled Scala/Python 700-character policy to fraction strings only; schema names retain shared model/work/envelope budgets.",
+    "Expanded probe initially failed to compile after adding Java ServiceLoader method access; corrected Scala reserved type method escaping and compiler diagnostics. Failure junit kept; final whole suite passed.",
+    "Cleanup first refused test symlinks; inspected and confirmed only internal task test links, then safely unlinked them without following targets."
+  ],
+  "local_evidence_sha256": {
+    "audit/gee-python-wave23/classifier-kernel-cases.json": "5ce6081b073963e4347fe330c3a67f1999d9c8c7f395968b22cb0d4db633dd54",
+    "audit/gee-python-wave23/classifier-kernel.json": "520b00f91f51111b559460f904e8c4d2aeeebc96f14e193dc61191ac7f85e969",
+    "audit/gee-python-wave23/cleanup.json": "862c8fd4326b5ffcbfc03e293e37114be1e55cf05f5f296d664df8804c87b321",
+    "audit/gee-python-wave23/frontend.json": "320fe7c2df29e90dd2df1bd5d04ee727a1b5612450c900ed29d3762d2651d5fb",
+    "audit/gee-python-wave23/inventory.xml": "e6554071828edecc1c8cadea219bc27f95ebe4e08ad58fb5b0a9f2f567a912de",
+    "audit/gee-python-wave23/kernel-extended.xml": "0d0d8581044e07d99bd5ae0af6957baf98482b849eec9f57303f5327587d528d",
+    "audit/gee-python-wave23/kernel.xml": "d1d8eb27e2e8c0000db564a955ec66e06331524696aa4567d3bf82295e19fe66",
+    "audit/gee-python-wave23/python-final.xml": "b5ac15729b1967892d34a85f639917e73aa8d2daff6abcbc4ca71a9efaff2e29",
+    "audit/gee-python-wave23/python-first.xml": "19f3786b9029cc45d67a3b6bfbbc8ac8d5cdc1a7f687e14cfb6fdbb08bd6406d",
+    "audit/gee-python-wave23/python-verified.xml": "6da98f1738cd0c545b0efaf37f951ad246b35e783d1e66eaeffe89c6b855cafd",
+    "audit/gee-python-wave23/web-stage-manifest.json": "c778cc3ae14dbb9a25a07c20f6a817b19061ba90cb6c3c13d35f25111acab8fb",
+    "audit/gee-python-wave23/workflow.json": "216ebf7d4f12e70056442795b7df580a15d1cbdaae7c7f6437d264dbfcc8ca2a"
+  },
+  "model_contract": {
+    "bands": [
+      1,
+      8
+    ],
+    "classes": [
+      1,
+      64
+    ],
+    "compiler_work_limit": 50000,
+    "fraction_integer_bits": 2200,
+    "fraction_policy": "Canonical reduced signed numerator/positive denominator strings; zero0/1; finite binary64 center magnitude. No rounding of exact 1/3 class means.",
+    "fraction_string_characters": 700,
+    "graph_node_limit": 500,
+    "kNearest": 1,
+    "keys": [
+      "version",
+      "metric",
+      "schema",
+      "labels",
+      "centers"
+    ],
+    "labels": [
+      0,
+      63
+    ],
+    "metrics": [
+      "euclidean",
+      "manhattan",
+      "cosine"
+    ],
+    "mode": "CLASSIFICATION",
+    "other_runtime_limits": "Existing grid, tile/key/time, decoded-cell budgets and supervision remain; no sandbox fallback",
+    "runtime_pixel_class_band_limit": 67108864,
+    "version": 1
+  },
+  "not_supported": [
+    "Sampling or raster-derived training tables; other classifiers including random forest, Mahalanobis, k>1 and other modes.",
+    "Standalone unbound constant raster classification, array inputs, missing/ambiguous schema and unsupported output names.",
+    "Full Google global data/services/assets/Drive semantics, Google numerical and dtype/tie equivalence.",
+    "Full Spark cube, sandboxed batch runner, HTTP/browser, real private data, deployed runtime or production acceptance for this new classifier."
+  ],
+  "platform": {
+    "architecture": "arm64",
+    "node": "v24.19.0",
+    "os": "Darwin",
+    "python": "3.11.16"
+  },
+  "preservation": {
+    "accounts_private_data_native_config_modified": false,
+    "dependency_locks_modified": false,
+    "deployed": false,
+    "new_vm_container_or_database_created": false,
+    "runtime_services_restarted": false
+  },
+  "primary_sources": [
+    "https://developers.google.com/earth-engine/apidocs/ee-image-classify",
+    "https://developers.google.com/earth-engine/apidocs/ee-classifier-minimumdistance"
+  ],
+  "schema": "local-ee-python-compat-wave23/v1",
+  "semantics": {
+    "ambiguity": "Unique nearest label only. Exact ties and cosine zero query reject; cosine zero center rejects when encoding prediction model.",
+    "cosine": "Sign-aware exact squared cross-products of dot and center norm; no floating norm or acos",
+    "euclidean": "Exact maximum of 2*q dot center - center squared norm; common query norm omitted",
+    "input": "Extract selected scalar bands by classifier schema names; explicitly assemble schema order. Extra bands and their masks are excluded. Actual finite Float32/Float64 input values retained; earlier quantization is not reversed.",
+    "manhattan": "Exact minimum L1 distance",
+    "masks": "Any selected NaN/NoData masks output. Valid Infinity rejects, including another selected band with NoData.",
+    "metadata": "Properties, time/source IDs and finite footprint preserved; mapped rebind, rename and addBands compose. Google shape/dtype/tie equivalence unverified."
+  },
+  "source_files_sha256": {
+    "AGENTS.md": "ba1c8c99677d27868b318f23fdc1cbd6343b3ebe62907adbf83bf0325a4045f4",
+    "GOAL.md": "6523537c7d82d908dbfecfafaa4f213abde68972e261c74f9029971931c0a3a7",
+    "docs/architecture.md": "2506a70f0b839a4493dec70275ddfc60740ffb9a9bf445fc9e9b2a88c25a764c",
+    "docs/cloud-handoff.md": "6fd79fc2932ff05bc41ee7151e1cb1b55d2aed8e4819539cd4c1270a8504f3e7",
+    "docs/gee-compatibility.md": "b84a0e72ee0866509e58cd45d2231ffada98119ab903834577ea9543c91d3233",
+    "docs/gee-python/list.md": "6e85be5fcbc32aeb0a641a492145ca857eb3464b5f4320c453a7e28d81ab4efb",
+    "docs/gee-python/numerical-policies.md": "b1e637bb147f5e2d994aba6becb7fbc666b9baa560a52118969310d2140cfc41",
+    "engine/ee_classify_adapter.scala": "1e616f29120867c6396bee2056a57c77129f94ee071adb0d80459e887e04e311",
+    "engine/ee_classify_model.scala": "f4da8842ab596d4ce5fead8a2734fd9f938c6498cd6f70f6dc346e4fe75d8bcf",
+    "engine/ee_classify_numeric.scala": "b971b4d2fa4f0536027fb1316a878de43d889d49b2d630f276f4fbce6e06433d",
+    "engine/ee_process_adapters.py": "c147adc2949f3bbb8669fb021a77202e39bccef28e92fde303bdf06725262bd5",
+    "examples/28_GEE_python_raster_classification.py": "9a997d255471fdcbad306b42034b40c503106ba6cba9f90f6b5b85e4f637e466",
+    "gee/compat/earthengine/capabilities.py": "4f7ad2cd70b75003d0dc12b48962425847446d7d197823a7e73a45f2e86f23f4",
+    "gee/compat/earthengine/classification_graph.py": "3ea980e4e171f3462c9a3f4b98d1d4ce670bdb334564535790e905c3741e4f5b",
+    "gee/compat/earthengine/classifier_model.py": "bd35fa32efc48e102128848841642c590ef961e02d6e5fa1c922fcef30727fca",
+    "gee/compat/earthengine/dispatch.py": "9c1c280f46f59edea3b206ba82e7ce80713c377e04c6de31684ae49ccb188e2b",
+    "gee/compat/earthengine/pixel_graph.py": "8c586126d9709acdfec037deb6f600b4cf1940ac6e71c9746142784ed9b0408e",
+    "gee/compat/earthengine/raster_classification.py": "b9676562ffb65594622134b7d48022b6748d2f3e88e72121e14a2ad0de61391e",
+    "gee/local_processes.py": "bb67ad25588a01ff296a20419c1d59cd076a259e6f1e43685e030f2c51ebbe0c",
+    "reports/gee-api-inventory.json": "372a1b43285f8ce6c871bfce93837e257fa18b44d502b0678acabbca8bd8825e",
+    "scripts/build_integer_adapter.py": "abd0de31b587cb325419c281e0ae73c134aeee6bd9928166754391867b242511",
+    "scripts/ee_inventory/catalogue.py": "add5088af6a651c9e454b467fb5b3d5e83b6cb98727e1fba6e1d93faa64342bc",
+    "tests/ee_raster_classification_helpers.py": "d5320291baa4cd5fda5cda333de95350d4bb1eb6929120615faf27ae3f5537a0",
+    "tests/fixtures/ee-classifier-kernel-probe.scala": "f21c39b84ccd3bb0b030e202c7728d603f54d5a9dda761dfd2f901002859196d",
+    "tests/fixtures/ee-raster-classification-v1.json": "b2bc0b403c911cfeba2fe759f04009f4d8bb99b672697868b941195283eeb3c8",
+    "tests/test_ee_classification_process.py": "841b9c58c39adab6d4a609541217994bcf3364c078ea802794c75a62a38ef51c",
+    "tests/test_ee_classifier_model.py": "10ce5544134a608bfb7e59613b17493dd25ad6b92e07cd8996cdd985a56bf614",
+    "tests/test_ee_classify_kernel.py": "4b8012854b98e6c27260474b7eb51411ec1b92a49ac446f7891e94079c8c2324",
+    "tests/test_ee_classify_native_sources.py": "d873cba17b1e2191cbc70c50bc975c36cb5f04b4e85b35999c8e1e74b77c63cd",
+    "tests/test_ee_minimum_distance.py": "7686394360c8a150eff1b46c3a3251cf670d8e8778160236def78289fb41abee",
+    "tests/test_ee_minimum_distance_metrics.py": "a386be709ff74b04bcd0d15be38eb340aaa1a87a68452ecbdeece4107e52729c",
+    "tests/test_ee_raster_classification_parameters.py": "a8b44e528d8c903cef718862002568f10e10bb7d5faef340114f2eae860db501",
+    "tests/test_ee_raster_classification_parity.py": "f4945a8e9ed12b952b1fae7e14a4140cd00b229e3e29f4582555fc5752f16749",
+    "tests/test_ee_raster_classification_workflow.py": "76dab9d2a5994b3e06fbc7457e6824d9d8a4846875f835586007143b6c822abb",
+    "tests/test_ee_translate.py": "a129e8e0749fb1b7b48e414211f521c29f919b444abeda6b3200857d7b0116e9"
+  },
+  "validation": {
+    "current_capability_inventory": {
+      "note": "New Image.classify handler and bounded limitations recorded. Historical sanitized audit snapshot unchanged; per-signature E/N/G coverage is not upgraded by a declaration.",
+      "regenerated": "reports/gee-api-inventory.json",
+      "tests_passed": 5
+    },
+    "evidence_levels": {
+      "C": "passed within declared compiler/process protocol",
+      "E": "full Spark cube/batch pipeline not run; standalone tile component only",
+      "G": "not_run",
+      "N": "passed independent static and sampled graph controls plus actual native tile component",
+      "S": "passed within declared examples/parameters"
+    },
+    "frontend": {
+      "commands": [
+        "npm test",
+        "npm run build -- --outDir <task scratch>"
+      ],
+      "observed_exit_codes": [
+        0,
+        0
+      ],
+      "production_build": "passed; staged only, not deployed",
+      "source": "Observed exec command results on 2026-10-23; not browser acceptance",
+      "tests_passed": 11,
+      "typescript": "passed as build prerequisite"
+    },
+    "full_python_inventory": {
+      "algorithm_arguments": 2451,
+      "algorithm_signatures": 991,
+      "byte_identical_to_locked_report": true,
+      "callables": 1797,
+      "classes": 48,
+      "sha256": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12"
+    },
+    "independent_review": {
+      "agent": "Luna/max read-only review",
+      "concrete_runtime_defects_found": 0,
+      "focused_passed": 194,
+      "scope": "Compiler/native numerical and wire/metadata boundaries. Independent review ran before the final additional precision/provider probe controls; parent verified all final tests.",
+      "standalone_kernel_test_passed": 1
+    },
+    "native_kernel": {
+      "case_counts": {
+        "binary64": 9,
+        "invalid_models": 16,
+        "predictions": 141
+      },
+      "full_cube_native_client_seatbelt_service_browser_acceptance": "not_run",
+      "independent_oracle": "Direct Fraction squared/L1 distances or 1600-digit Decimal dot/norm/sqrt; independent IEEE Fraction.from_float values. Fixed random seed23023.",
+      "jar_deployed": false,
+      "jar_sha256": "7ed364c10184417cb8038f8cc8b8655757bf6845edf020b9b4b23431aa629d8b",
+      "mask_controls": 9,
+      "model_python_scala_rejection_parity": 16,
+      "precision_controls": [
+        {
+          "expected_and_asserted_label": 0,
+          "input_type": "float32",
+          "metric": "euclidean"
+        },
+        {
+          "expected_and_asserted_label": 1,
+          "input_type": "float64",
+          "metric": "euclidean"
+        },
+        {
+          "expected_and_asserted_label": 0,
+          "input_type": "float32",
+          "metric": "manhattan"
+        },
+        {
+          "expected_and_asserted_label": 1,
+          "input_type": "float64",
+          "metric": "manhattan"
+        },
+        {
+          "expected_and_asserted_label": 0,
+          "input_type": "float32",
+          "metric": "cosine"
+        },
+        {
+          "expected_and_asserted_label": 1,
+          "input_type": "float64",
+          "metric": "cosine"
+        }
+      ],
+      "provider": "Actual ServiceLoader classifier provider found and instantiated from built artifact",
+      "rejection_controls": 12,
+      "spark_context_started": false,
+      "status": "passed; trusted standalone actual GeoTrellis tile kernel, not full raster engine acceptance",
+      "toolchain": {
+        "architecture": "arm64",
+        "java_home": "/opt/homebrew/Cellar/openjdk@21/21.0.12.1/libexec/openjdk.jdk/Contents/Home",
+        "scala_version": "2.13.16",
+        "spark_version": "4.0.4"
+      }
+    },
+    "original_probes": {
+      "compiled": 45,
+      "fixture_drift": "unchanged; --check passed",
+      "not_a_full_api_compatibility_rate": true,
+      "rejected": 5,
+      "sdk_serialized": 50,
+      "total": 50
+    },
+    "python": {
+      "command": "GEE_AUDIT_DIR=audit/gee-python-wave23 LOCAL_EE_RUN_CLASSIFIER_KERNEL_TEST=1 .venv/bin/python -m pytest -q --ignore=tests/test_native_runtime.py --junitxml=audit/gee-python-wave23/python-verified.xml --basetemp <task scratch>",
+      "native_tests_excluded_not_run": 4,
+      "new_passed_vs_wave22": 66,
+      "opt_in_note": "Without LOCAL_EE_RUN_CLASSIFIER_KERNEL_TEST=1, the new trusted kernel test explicitly skips. Linux CI also skips macOS-native tests.",
+      "passed": 1751,
+      "skipped": 3,
+      "warnings": "Three pre-existing rasterio transform PendingDeprecationWarnings"
+    },
+    "python_js_official_sdk_result_parity": {
+      "new": 3,
+      "scope": "Actual pinned offline serializers, shared compiled graphs for three mapped raster metrics. Network entry guards recorded zero attempts; no actual browser/task execution.",
+      "total": 68
+    },
+    "workflow": {
+      "centers": [
+        [
+          "3",
+          "0"
+        ],
+        [
+          "2",
+          "2"
+        ],
+        [
+          "1/3",
+          "1/2"
+        ]
+      ],
+      "classes": 3,
+      "example": "examples/28_GEE_python_raster_classification.py",
+      "fixture": "tests/fixtures/ee-raster-classification-v1.json",
+      "network_attempts": 0,
+      "nodes_per_metric": {
+        "cosine": 8,
+        "euclidean": 8,
+        "manhattan": 8
+      },
+      "sample_labels": {
+        "cosine": [
+          [
+            [
+              1,
+              1,
+              1,
+              0,
+              0,
+              null
+            ]
+          ],
+          [
+            [
+              1,
+              1,
+              1,
+              0,
+              null,
+              2
+            ]
+          ]
+        ],
+        "euclidean": [
+          [
+            [
+              2,
+              1,
+              0,
+              0,
+              2,
+              null
+            ]
+          ],
+          [
+            [
+              2,
+              1,
+              0,
+              2,
+              null,
+              1
+            ]
+          ]
+        ],
+        "manhattan": [
+          [
+            [
+              2,
+              1,
+              1,
+              0,
+              2,
+              null
+            ]
+          ],
+          [
+            [
+              2,
+              1,
+              1,
+              2,
+              null,
+              1
+            ]
+          ]
+        ]
+      },
+      "sample_shape": [
+        2,
+        1,
+        6
+      ],
+      "scene_count": 2,
+      "scope": "Independent test graph N, actual SDK S and protocol C. Map and unstarted export expressions compile; no raster result exported or map rendered by this wave."
+    }
+  }
+}

@@ -124,7 +124,7 @@ def test_image_classification_remains_explicitly_unsupported(ee):
         ]),
         classProperty="actual", inputProperties=["x", "y"],
     )
-    with pytest.raises(UnsupportedEEError, match="Unsupported Earth Engine algorithm: Image.classify"):
+    with pytest.raises(UnsupportedEEError, match="missing classifier schema band"):
         output(ee, ee.Image.constant(1).classify(classifier))
 
 

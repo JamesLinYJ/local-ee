@@ -3,8 +3,8 @@ from __future__ import annotations
 
 from typing import Any
 
-# The isolated engine reads only its trusted source directory, not the API's
-# package root. Keep this small wire contract in sync through the parity test.
+# These reducers are a small fixed engine contract. The classifier additionally
+# reuses the pure audited model validator in the sandbox-readable gee package.
 EE_BAND_REDUCERS = frozenset({"mean", "median", "min", "max", "sum", "count", "first", "last", "sd"})
 
 
@@ -94,9 +94,29 @@ def local_ee_reduce_bands(args, env):
     )
 
 
+def local_ee_minimum_distance(args, env):
+    """Validate the exact model and preserve spatial/temporal cube metadata."""
+    from openeo_driver.dry_run import DryRunDataCube
+    from gee.compat.earthengine.classifier_model import model_validation_work, validate_model
+
+    args = _checked_args(args, "local_ee_minimum_distance", {"data", "model"})
+    cube = _driver_cube(args, "local_ee_minimum_distance")
+    model = args["model"]
+    if model_validation_work(model) > 50_000:
+        raise ValueError("Raster classifier model exceeds the 50000-step work budget")
+    validate_model(model)
+    if not cube.metadata.has_band_dimension() or cube.metadata.band_names != model["schema"]:
+        raise ValueError("Classifier input cube bands must match model schema names and order")
+    metadata = _reduce_bands_metadata(cube.metadata)
+    if isinstance(cube, DryRunDataCube):
+        return cube._process_metadata(metadata)
+    return _apply_native(cube, "local_ee_minimum_distance", {"model": model}, metadata)
+
+
 _HANDLERS = {
     "local_ee_drop_single_time": local_ee_drop_single_time,
     "local_ee_reduce_bands": local_ee_reduce_bands,
+    "local_ee_minimum_distance": local_ee_minimum_distance,
 }
 
 

@@ -80,3 +80,13 @@ Classifier.minimumDistance 的欧式、曼哈顿及 cosine 光谱角均围绕未
 最终化器仍通过统一物理结果解析器处理文件；选列时用 newline='' 保留单元内部原换行，允许既有文件预算内超过默认 128 KiB 的字段，之后恢复进程 CSV 字段限制。编码或 CSV 解析错误作为发布失败处理，不让它们逸出调度循环。示例和集成使用临时文件实际验证内容，但数据库、队列和脚本传输有替身；没有据此宣称原生隔离、浏览器、栅格 E 或 Google G 已通过。
 
 来源：[Export.table.toDrive](https://developers.google.com/earth-engine/apidocs/export-table-todrive)。本地目录／文件规则和预算不等于 Google Drive 的存储语义。
+
+## 精确模型的影像分类与内核验证
+
+第二十三批将同一 minimumDistance 精确类均值用于 Image.classify。模型中的 1/3 等分数不先取整为 Double；原生内核将实际 Float32／Float64 tile 样本读作 Double，并按 IEEE 位恢复精确值，再进行与静态模型一致的距离排名。此前 callback 已发生的 Float32 舍入不会被恢复。欧式通过约去共同 q·q 比较 2q·c−c·c，不计算可能溢出的浮点距离；曼哈顿为精确 L1，cosine 为带符号精确交叉比较。
+
+所选任一波段 NaN／NoData 令输出缺测；额外未选波段不参与。有效 Infinity 即使与另一选中波段的 NoData 同处一像元也明确拒绝。最近类精确并列会令任务失败，不取首个、不伪造 NoData；cosine 零查询在预测时拒绝，零类中心在编译预测模型时拒绝。单输出物理类型 IntConstantNoDataCellType（Int32），0..63 为有效标签、Int.MinValue 为 NoData。它是本地输出合同，不表示已验证 Google dtype、tie 或逐步浮点算法。
+
+API 和 Python 桥共用纯模型校验，Scala 另行独立解析。版本 1 仅五字段，Fraction 只接受规范有符号分子／正分母、约分、零0/1；每字符串≤700字符、≤2200 bits、中心有限 binary64 幅值。schema 为1..8个唯一平面名称，标签为1..64个排序唯一0..63整数。元数据顺序与实际输入 bandCount 均校验，原有网格／时间／key／cell 预算及新增67108864像元×类别×波段工作上限保持，不能通过直接提交 openEO 图绕过模型协议。
+
+独立合成图 N 覆盖源范围、单景／映射多景及元数据。另一个 opt-in 测试真实编译并调用 GeoTrellis tile 内核，141预测控制的参考使用直接有理数平方距离／L1或1600位 Decimal 的归一化与开方路径，包含固定随机、极值、次正规值、负方向及掩膜；16非法模型同时核对 Python／Scala 拒绝，9个binary64值与Fraction.from_float核对。没有 SparkContext、完整 cube执行、NativeClient／Seatbelt任务、服务或浏览器，因此 E 的完整链路仍未验证；没有 Google 同数据对照。[Image.classify](https://developers.google.com/earth-engine/apidocs/ee-image-classify) 的按名称输入与默认输出名合同已核对，本地形状／边界政策单独登记。

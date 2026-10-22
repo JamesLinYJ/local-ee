@@ -1,0 +1,83 @@
+{
+  "schema": "local-ee-synthetic-raster-classification/v1",
+  "description": "Synthetic two-scene raster samples based on the independent vectors from examples 26 and 27; no satellite pixel values are asserted.",
+  "collection_id": "sentinel-2-l2a",
+  "catalog_bands": ["aux", "red", "nir"],
+  "input_properties": ["nir", "red"],
+  "class_property": "landcover",
+  "output_name": "landcover_id",
+  "training_rows": [
+    {"nir": 2, "red": 0, "landcover": 0, "system:index": "train-0a"},
+    {"nir": 4, "red": 0, "landcover": 0, "system:index": "train-0b"},
+    {"nir": 1, "red": 1, "landcover": 1, "system:index": "train-1a"},
+    {"nir": 3, "red": 3, "landcover": 1, "system:index": "train-1b"},
+    {"nir": 1, "red": 0, "landcover": 2, "system:index": "train-2a"},
+    {"nir": 0, "red": 1, "landcover": 2, "system:index": "train-2b"},
+    {"nir": 0, "red": 0.5, "landcover": 2, "system:index": "train-2c"}
+  ],
+  "validation_vectors": [
+    {"nir": 0.25, "red": 0.25, "sample_id": "diag-small"},
+    {"nir": 2, "red": 2, "sample_id": "diag-unit"},
+    {"nir": 8, "red": 3.6, "sample_id": "shallow-large"},
+    {"nir": 6, "red": 0, "sample_id": "positive-axis"},
+    {"nir": -2, "red": -2, "sample_id": "negative-diagonal"},
+    {"nir": 0, "red": 4, "sample_id": "positive-red-axis"}
+  ],
+  "pixel_centers": [
+    [0.5, 0.5], [1.5, 0.5], [2.5, 0.5],
+    [3.5, 0.5], [4.5, 0.5], [5.5, 0.5]
+  ],
+  "sample_reference": {
+    "euclidean": [[2, 1, 0, 0, 2, null], [2, 1, 0, 2, null, 1]],
+    "manhattan": [[2, 1, 1, 0, 2, null], [2, 1, 1, 2, null, 1]],
+    "cosine": [[1, 1, 1, 0, 0, null], [1, 1, 1, 0, null, 2]]
+  },
+  "items": [
+    {
+      "id": "synthetic-classification-a",
+      "bbox": [0, 0, 6, 1],
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[0, 0], [6, 0], [6, 0.35], [0, 1], [0, 0]]]
+      },
+      "properties": {
+        "system:index": "synthetic-classification-a",
+        "system:time_start": 1700000000000,
+        "orbit": 41,
+        "fixtureVersion": "local-ee-synthetic-raster-classification/v1"
+      },
+      "pixel_values": {
+        "aux": [null, 11, 12, 13, 14, 15],
+        "red": [0.25, 2, 3.6, 0, -2, 4],
+        "nir": [0.25, 2, 8, 6, -2, 0]
+      }
+    },
+    {
+      "id": "synthetic-classification-b",
+      "bbox": [0, 0, 6, 1],
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[0, 0], [6, 0], [6, 1], [0, 1], [0, 0]]]
+      },
+      "properties": {
+        "system:index": "synthetic-classification-b",
+        "system:time_start": 1700003600000,
+        "orbit": 42,
+        "fixtureVersion": "local-ee-synthetic-raster-classification/v1"
+      },
+      "pixel_values": {
+        "aux": [null, null, null, null, null, null],
+        "red": [0.4, 2.1, 2.1, 0.25, null, 2.5],
+        "nir": [0.5, 1.9, 5, 1, -1, 1.2]
+      }
+    }
+  ],
+  "reference_policy": {
+    "model_centers": {
+      "0": [[3, 1], [0, 1]],
+      "1": [[2, 1], [2, 1]],
+      "2": [[1, 3], [1, 2]]
+    },
+    "notes": "Centers are exact Fraction numerator/denominator pairs in inputProperties order. Raster inputs are interpreted as their exact finite binary Float64 values. Euclidean ranks squared rational distances, Manhattan ranks rational L1 distances, and cosine ranks signed angular similarity at high Decimal precision. A missing required nir/red value or a sample center outside that scene geometry is masked; aux is not a classifier input."
+  }
+}

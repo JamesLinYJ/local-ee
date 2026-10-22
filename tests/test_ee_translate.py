@@ -107,12 +107,15 @@ def callback(graph, parameters):
     return out
 
 
-def evaluate_graph(result, arrays, grid=None, source_geometries=None):
+def evaluate_graph(result, arrays, grid=None, source_geometries=None,
+                   process_handlers=None):
     """Independent sample-vector reference; grid gives mask sample centers.
 
     Rasters have [time,band,pixel] axes until time is reduced. With grid, source
     extents and optional per-item geometries mask the supplied sample values.
     Point masks do not establish native/fractional-boundary raster acceptance.
+    Optional process_handlers are test-only numerical oracles keyed by process
+    id; they do not execute a native process or change the default evaluator.
     """
     def positions_for(data):
         positions = np.asarray(grid, dtype=float)
@@ -185,6 +188,8 @@ def evaluate_graph(result, arrays, grid=None, source_geometries=None):
             data,names,timed = cube(a["data"])
             inside = polygon_mask(a["mask"], positions_for(data))
             v = (np.where(inside, data, np.nan), names, timed)
+        elif process_handlers is not None and p in process_handlers:
+            v = process_handlers[p](a, values)
         else: raise AssertionError(p)
         values[key] = v
         if node.get("result"): result_value = v

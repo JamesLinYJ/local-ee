@@ -129,6 +129,8 @@ EE Python 与现有 openEO Python 共用一个脚本运行器，但 API 含义�
 
 本地编译器的规范实现位于 `gee/compat/earthengine/`，包含 decoder/catalog/filtering、分组 dispatch、IR/static/date、graph/pixel/temporal 编译、compile 入口及 capabilities。`gee/ee_translate.py` 仅作为旧导入的兼容 facade；新增实现和内部依赖留在规范子包中。
 
+`Image.classify` 的有限 minimumDistance 模型沿现有 IR／批任务链路进入 `local_ee_minimum_distance`，不通过 Float32 通用 callback 猜测分类。编译器按训练 schema 名称选择并排列真实输入波段，将精确类中心编码为版本化分数字符串；API 图校验、受信任 Python 桥与 Scala 模型解析分别检查合同。GeoTrellis tile 内核按输入 binary64 位恢复有理数并排名，输出单个 Int32 NoData `v` 波段，再由编译器恢复 SDK 输出名。沿用既有网格／时间／物理结果边界和沙箱，不新增执行或隔离回退。可信独立 tile 内核验证不等于完整 Spark cube、生产任务、浏览器或 Google 同数据验收。
+
 ### 4.2 分层验收
 
 | 等级 | 含义 | 所需证据 |

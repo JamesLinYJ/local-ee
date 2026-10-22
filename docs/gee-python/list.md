@@ -1,8 +1,8 @@
 # GEE Python 兼容清单
 
-状态：2026-10-23，第二十二批持续实施，整体兼容目标尚未完成。
+状态：2026-10-23，第二十三批持续实施，整体兼容目标尚未完成。
 
-第二十二批 [验证报告](../../reports/gee-python-wave22.json)：macOS ARM64 的可移植 Python 测试 **1685 passed／3 skipped**，排除 4 项原生运行测试；前端 **11 passed**、TypeScript 与构建通过。较[第二十一批](../../reports/gee-python-wave21.json)增加 102 项通过回归，独立只读复核的表格相关测试 113 项通过。新增导出已在可信合成队列中真实写出并读回 CSV；数据库／进程启动／脚本传输使用替身，没有据此宣称原生沙箱、HTTP、浏览器或生产部署通过。原生与真实数据验收继续按当前阶段延期。
+第二十三批 [验证报告](../../reports/gee-python-wave23.json)：新增有限 `Image.classify` 的 schema 选择、精确模型编译、Python 桥与真实 GeoTrellis tile 内核，训练仍使用内联要素。macOS ARM64 Python **1751 passed／3 skipped**（启用可信独立 JVM 内核测试，另排除 4 项原生运行测试），前端 **11 passed**、TypeScript／构建通过；较[第二十二批](../../reports/gee-python-wave22.json)增加 66 项通过。独立 tile 内核是组件运行证据，完整 Spark cube、沙箱任务、HTTP／浏览器、部署和 Google 对照均未在本批验收。
 
 S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎；N＝独立数值基准；G＝Google 同数据对照。静态数值求值和合成图测试分别说明，不能标成原生栅格 E。固定的 991 项签名、方法可见数量和定向探针计数均不能换算为全 API 兼容百分比。
 
@@ -36,6 +36,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] 有界静态 ConfusionMatrix 的构造／array／order／accuracy／kappa、内联 FeatureCollection.errorMatrix；显式标签顺序与有效行筛选串联分类评估，独立频数／机会一致概率参考。采样及分类器训练／预测不在该子集中。
 - [x] 有界 List 配对／转置／展开／重复／置换，以及单输出归约和 List.reduce(linearFit／linearRegression) 多输入行；列列表构造二次设计、双响应系数／RMS 和预测的闭式／残差正交性参考。
 - [x] 有限 minimumDistance 欧式／曼哈顿／cosine 光谱角的实际类均值训练、唯一最近类预测、schema／默认模式、内联要素分类及真实重代入混淆矩阵；独立训练／验证样本、均值／距离和误差指标参考。
+- [x] 有限 Image.classify 接入训练后的 minimumDistance，schema 按名称选取／排列，保留精确分数类中心、输入实际精度与掩膜；三种度量的合成图 N 和真实 JVM tile 内核独立参考通过，完整 Spark／运行器验收另记。
 - [x] 有限内联 FeatureCollection 的本地 CSV 批导出；Python 官方 Task 与 JS Export.table wrapper 串联真实 CSV 写出／发布／读取的可信合成验证，保留 selectors、身份、元数据和权限。
 - [x] 有限栅格 linearRegression 的过原点／单位截距模型、1..4 响应、联合完整行、系数／RMS 数组；有限多数组波段选择／元数据，双响应分字段物化和独立 SVD／空间掩膜参考。
 - [x] 延迟单波段维度／改名元数据，保留数值与源／掩膜／类型边界；共享表达式标签、完整四系数／双响应预测、同日／重复观测及超限控制。
@@ -49,7 +50,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] Array.sort／Image.arraySort 的真实按键排序和成组切片置换；质量排序保留 NDVI／日期配对，独立分数及 Float32 参考核对并列、同日多景和完整掩膜。
 - [x] 有限 ConfusionMatrix 逐类 consumersAccuracy／producersAccuracy／fscore；精确分数中间量及训练／验证表组合，返回形状和 Fβ 轴方向是明确的本地政策，未验证 Google 等价。
 - [ ] 每一签名／参数组合的 S／C、适用的独立 N，以及负向、缺测、边界验收；E 按现有环境可用条件单独记录。
-- [ ] 动态形状、其余多数组波段运算和 Image.array*、通用设计矩阵的逐像元回归、采样／图像分类／其他分类器及模式、矢量／空间和多重／歧义度量 Join、邻域及高级时序。
+- [ ] 动态形状、其余多数组波段运算和 Image.array*、通用设计矩阵的逐像元回归、采样／其余图像分类器及模式、矢量／空间和多重／歧义度量 Join、邻域及高级时序。
 - [ ] 后续阶段：Linux 执行／隔离适配、macOS Seatbelt、ARM64 JNI 和本机真实数据验收；当前阶段延期。
 - [ ] Google 同数据数值比较按可取得条件另记；本机真实完整项目验收延期。
 
@@ -124,7 +125,7 @@ List 布局每个顶层输入／输出最多 10000 值，flatten 递归深度 96
 
 原第九批 minimumDistance 仅 Euclidean；第二十一批补上 Manhattan 与 cosine 光谱角分类，仍为 kNearest=1、CLASSIFICATION；显式唯一平面 schema 1..8，完整有限数值要素 1..1000，类别为 0..63 整数，subsampling=1／seed=0。几何按官方训练描述忽略；预测按名称读取属性，不依赖字典顺序。精确 Fraction 保留 binary64 输入并计算类均值：欧式比较平方距离，曼哈顿比较绝对差之和，cosine 比较带符号归一化点积的精确交叉乘积，不先用 Float64 求范数或 acos。任何等距最近类明确拒绝；cosine 的零范数查询或类中心在预测时拒绝，构造／训练／schema 不提前伪造预测结果。这一本地数值政策不等于已验证 Google／Smile 的浮点累加策略。共享工作上限仍生效，1000×8 的组合可能因预算拒绝。
 
-模型不可变，If／Dictionary.get 再包装后可用；未训练 schema 为 null。要素分类保留属性／几何／ID、拒绝输出名碰撞，训练混淆矩阵用真实重代入预测、轴为 0..max 类别并保留空档。直接／嵌套模型 JSON、模型真值、Image.classify、Mahalanobis、kNearest≠1、REGRESSION／RAW／概率模式和自动 band_order schema／随机子采样仍拒绝；没有采样、栅格 E、随机森林或 G 的实现声明。
+模型不可变，If／Dictionary.get 再包装后可用；未训练 schema 为 null。要素分类保留属性／几何／ID、拒绝输出名碰撞，训练混淆矩阵用真实重代入预测、轴为 0..max 类别并保留空档。直接／嵌套模型 JSON、模型真值、Mahalanobis、kNearest≠1、REGRESSION／RAW／概率模式和自动 band_order schema／随机子采样仍拒绝。Image.classify 的第二十三批子集见文末；没有采样、完整栅格 E、随机森林或 G 的实现声明。
 
 ## 有限栅格多响应回归
 
@@ -318,3 +319,15 @@ npm --prefix web test
 默认 system:index、首次出现的属性、.geo 列及 null／嵌套 JSON 单元均采用明确[本地序列化政策](numerical-policies.md)。支持的几何限二维平面 WGS84；其他 CRS、geodesic=true、evenOdd=false 和 west>east 的跨反经线 bbox 明确拒绝，bbox 需包住该层实际几何，属性中同名字段仍是普通数据。1000 行／256 列／50000 默认单元及 UTF-8 输入输出各 1 MB 上限，与既有转义后 EE 表达式／进程图 1 MB 限制共同生效。
 
 复核发现并修复了 CRS 被忽略、bbox 未检查包含性、CSV 内部 CRLF 被归一化、大文本字段超过 Python 默认解析限制，以及 macOS 临时根别名被错误拒绝；对应边界均有回归。根别名校验仍由共享物理解析器拒绝 jobs／job／out 子符号链接，目标文件用独占且不跟随链接的方式创建。最终可移植 Python 1685／3，较上一批增加 102 项通过；前端 11、TypeScript／构建通过。原 50 探针和完整 Python API 目录不变，65 项 Python／JS SDK 结果一致性继续通过。报告区分 S／C、独立静态 N、实际 CSV 夹具执行与未运行的栅格 E／Google G；GeoJSON／SHP 等其他表格格式、云端目的地、采样／Image.classify、完整原生和生产验收仍未完成。
+
+## 第二十三批：精确模型的影像分类
+
+`Image.classify(image,classifier,outputName="classification")` 接受现有已训练的 minimumDistance 子集（Euclidean／Manhattan／cosine，k=1／CLASSIFICATION）。按训练 schema 名称读取 1..8 个标量波段并明确排列，额外波段的掩膜不参与；缺少／重复名称、非影像／数组输入、非法输出名和未绑定的纯常量栅格拒绝。单输出替换为分类波段，沿用属性、时间、网格和有限来源／足迹；map／rebind、rename、addBands、地图及未提交的导出表达式有回归。
+
+精确类中心通过五字段 version-1 wire（version／metric／schema／labels／centers）传输。中心为已约分的十进制分子／正分母字符串；每项最多 700 字符、2200 bits，绝对值不超过最大有限 binary64。零只编码为 0/1，标签为 0..63 的有序唯一整数。API 图校验、受信任 Python 桥和 Scala 解析均检查模型；共享 50000 工作／500 图节点及原有网格、key、decoded-cell 限制保留，原生分类另限制 pixel×class×band≤67108864。
+
+专用 `local_ee_minimum_distance` 接收按 schema 排列的 cube，Double 按 IEEE 位恢复精确分数，不经过通用 Float32 callback；已由其他运算量化的输入不会恢复丢失精度。欧式可约去共同查询平方范数，比较 `2q·c−c·c`；曼哈顿求绝对差和，cosine 使用带符号交叉乘积比较归一化点积。输出物理类型为 Int32 NoData，单波段先名为 v，再恢复 SDK 输出名。任一所选 NoData 掩膜输出；有效 Infinity、最近类精确并列、cosine 零查询明确拒绝，cosine 零类中心在生成预测模型时拒绝。上述 ties／dtype／精确累积均属明确本地政策，没有 G 对照。
+
+示例 28 与 `ee-raster-classification-v1.json` 使用两景／三个类中心 `(3,0)`、`(2,2)`、`(1/3,1/2)`，覆盖 schema／源波段顺序不同、aux 缺测不污染、必须波段缺测及 bbox 内多边形外样点。三种度量各 12 个采样位置用 Fraction 距离／Decimal 开方归一化参考核对，真实官方 Python／JS 序列化图一致性新增 3 项（总 68）。
+
+可信 standalone JVM 内核另有 141 项预测／掩膜／错误控制、16 项非法模型及 9 项 binary64 精确解码；含固定随机、最大有限／次正规数、混合极值、1/3、负方向、0／63 标签与等距拒绝，实际调用 GeoTrellis tile 内核。启用 `LOCAL_EE_RUN_CLASSIFIER_KERNEL_TEST=1` 后全套 1751 passed／3 skipped，较第二十二批增加 66 项；未启用时新增内核测试会单独跳过。完整 Spark cube、运行器／Seatbelt、HTTP／浏览器／部署及 Google G 均未运行；这项组件验证不能替代这些验收。采样、随机森林、Mahalanobis、k>1 和其他模式仍待实现。[报告](../../reports/gee-python-wave23.json)。

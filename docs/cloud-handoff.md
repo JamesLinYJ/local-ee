@@ -198,11 +198,11 @@ Linux Python **1428 passed／7 skipped**、前端 **11 passed**、TypeScript／�
 
 Linux Python **1456 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，新增 28 项：argmax 数值／参数 22、工作流 3、SDK 一致性新增 3（总 59）。Luna max 对最终冻结的四组 84 项以 `-W error` 独立重跑通过；另以形状 `(2,3,2)` 的并列最大值手算核对 `[0,2,1]`，实际 357 节点且来源／元数据保持。初始测试的 fixture 未导入、NumPy 不支持的断言参数、SDK ValueRef 解析，以及提前触发的 bundle／解码器拒绝路径均修正为正确参考；生产限制未放宽。原 50 探针和完整 Python 目录字节不变，报告 `reports/gee-python-wave19.json` 单列 S／C／静态或采样 N 和未运行 E／G。整体目标继续。
 
-## 获取正确状态
+## 初始交接状态（历史）
 
 - 仓库：https://github.com/JamesLinYJ/local-ee
 - 已发布基线：`d774f01af26dc002d3193fdd2c4c7f035c277b2b`，包括 `130b527` 的 Python 官方客户端、常量波段及 Float64 归约，以及 Python 地图事件前端。该基线的 GitHub `python`、`frontend` 检查通过。
-- 从 `handoff/gee-python-cloud-20261021` 分支继续；这个分支包含交接时尚未完成的 Python 探针和 notNull 改动。先检查分支最新提交，不要只克隆旧 main。
+- 初次交接使用 `handoff/gee-python-cloud-20261021`。其内容已被后续 main 实现取代；现在续作必须获取远端最新 main，不能把旧交接分支当作最新开发状态。
 - 交接时已无存活的开发子 agent；不需要等待旧 agent 句柄。本机工作台服务不是这些开发子任务的一部分。
 
 ## 已有实现和证据
@@ -275,3 +275,11 @@ cosine 先保留点积符号，再用精确有理数交叉乘积排名，不先�
 新增示例 27 真实训练／预测后导出三个六行 CSV；Python Task 与 JS runner 对象／位置参数通过可信夹具实际写出、最终化并由 Jobs reader 读回。该夹具替代数据库、队列、传输和 NativeTask 启动，不是实际 HTTP／PostgreSQL／Seatbelt／浏览器验收。数据、账号、原生配置／进程和锁定依赖未改，未部署本批。CRS／bbox 包含性、保留数据字段、CSV 引号／内部换行／大字段、根目录别名及子 symlink 拒绝均有回归；默认列／null／嵌套单元属于明确本地政策，跨反经线 bbox 和其他格式仍拒绝。
 
 最终 ARM64 可移植 Python 1685 passed／3 skipped，另排除 4 项原生测试、未重跑；前端 11、TypeScript／临时构建通过。独立只读复核 113 项通过。50 探针保持 45 编译／5 拒绝，完整 991 项 Python 目录字节重现，65 项 Python／JS SDK 一致性继续通过。审计生成器首次在 macOS 默认 /var 临时根别名上错误拒绝，现经共享物理解析器后比较规范路径，独立重现已成功。详见 reports/gee-python-wave22.json，栅格 E／Google G／生产与私有真实数据验收继续单列。
+
+## 第二十三批：影像分类与最新起点
+
+2026-10-23 以已发布 main `d8be821ee1dbe1a434545724c1dee984aa81309d` 为基线，完成已训练 minimumDistance 的有限 Image.classify：schema 按名称选波段／排列，精确分数类中心进入专用 GeoTrellis 内核，输出整数类别与NoData。三种度量、精确1/3、额外波段掩膜独立、单景／多景map、元数据与后续组合有合成图N；Map与导出表达式可编译，但本批未提交真实原生任务。
+
+实际 standalone tile 内核已通过141预测／掩膜／错误控制、16非法模型和9binary64解码参考，未启动SparkContext。启用可信内核测试后Python1751 passed／3 skipped，另排除4项原生测试；前端11／构建通过，Python／JS SDK图一致性为68。云端无本机JDK／JAR锁时可跳过该显式opt-in内核测试，不能算通过；便携兼容层可以继续。完整Spark cube、隔离运行器／浏览器、部署／真实数据和Google对照未验收；锁、账号、数据、运行配置未改。详见`reports/gee-python-wave23.json`。
+
+**新任务现在必须从远端最新main开始**，读取最新GOAL、清单及wave报告。旧handoff分支只保留历史，不再作为续作起点；本机未提交改动不会自动进入云端环境。Python完整兼容、采样／其他分类器、高级时序和完整运行验收仍有实质工作，目标保持进行中。

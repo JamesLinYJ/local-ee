@@ -5492,7 +5492,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Bounded static Euclidean, Manhattan and cosine spectral-angle minimum-distance, kNearest=1 and CLASSIFICATION. Training 1..1000 inline Features, explicit unique flat schema 1..8 numeric properties, complete finite inputs/exact integers <=2^53 and integer labels 0..63; subsampling=1, seed=0 only. Exact binary64-rational class means and Euclidean/L1 distances; cosine ranks signed dot/center-norm by exact cross-products without floating normalization or acos. Equal nearest distances and cosine zero-norm queries/centers reject at prediction. These are local numeric policies without Google parity. Untrained schema returns null, trained schema retains input order. Feature classification copies original metadata, rejects output-name collisions, <=1000 features and shared 50000-step work. Training confusionMatrix resubstitutes real predictions with axes 0..max class including gaps, <=4096 cells. Direct/nested server-object JSON, Image.classify, remote sampling, Mahalanobis/k>1/other modes and other classifiers remain unsupported; no Google comparison or whole classification compatibility claim."
+          "Bounded static Euclidean, Manhattan and cosine spectral-angle minimum-distance, kNearest=1 and CLASSIFICATION. Training 1..1000 inline Features, explicit unique flat schema 1..8 numeric properties, complete finite inputs/exact integers <=2^53 and integer labels 0..63; subsampling=1, seed=0 only. Exact binary64-rational class means and Euclidean/L1 distances; cosine ranks signed dot/center-norm by exact cross-products without floating normalization or acos. Equal nearest distances and cosine zero-norm queries/centers reject at prediction. These are local numeric policies without Google parity. Untrained schema returns null, trained schema retains input order. Feature classification copies original metadata, rejects output-name collisions, <=1000 features and shared 50000-step work. Training confusionMatrix resubstitutes real predictions with axes 0..max class including gaps, <=4096 cells. Image.classify has its own bounded model/native-kernel contract. Direct/nested server-object JSON, remote sampling, Mahalanobis/k>1/other modes and other classifiers remain unsupported; no Google comparison or whole classification compatibility claim."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -5970,7 +5970,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Bounded static Euclidean, Manhattan and cosine spectral-angle minimum-distance, kNearest=1 and CLASSIFICATION. Training 1..1000 inline Features, explicit unique flat schema 1..8 numeric properties, complete finite inputs/exact integers <=2^53 and integer labels 0..63; subsampling=1, seed=0 only. Exact binary64-rational class means and Euclidean/L1 distances; cosine ranks signed dot/center-norm by exact cross-products without floating normalization or acos. Equal nearest distances and cosine zero-norm queries/centers reject at prediction. These are local numeric policies without Google parity. Untrained schema returns null, trained schema retains input order. Feature classification copies original metadata, rejects output-name collisions, <=1000 features and shared 50000-step work. Training confusionMatrix resubstitutes real predictions with axes 0..max class including gaps, <=4096 cells. Direct/nested server-object JSON, Image.classify, remote sampling, Mahalanobis/k>1/other modes and other classifiers remain unsupported; no Google comparison or whole classification compatibility claim."
+          "Bounded static Euclidean, Manhattan and cosine spectral-angle minimum-distance, kNearest=1 and CLASSIFICATION. Training 1..1000 inline Features, explicit unique flat schema 1..8 numeric properties, complete finite inputs/exact integers <=2^53 and integer labels 0..63; subsampling=1, seed=0 only. Exact binary64-rational class means and Euclidean/L1 distances; cosine ranks signed dot/center-norm by exact cross-products without floating normalization or acos. Equal nearest distances and cosine zero-norm queries/centers reject at prediction. These are local numeric policies without Google parity. Untrained schema returns null, trained schema retains input order. Feature classification copies original metadata, rejects output-name collisions, <=1000 features and shared 50000-step work. Training confusionMatrix resubstitutes real predictions with axes 0..max class including gaps, <=4096 cells. Image.classify has its own bounded model/native-kernel contract. Direct/nested server-object JSON, remote sampling, Mahalanobis/k>1/other modes and other classifiers remain unsupported; no Google comparison or whole classification compatibility claim."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -6483,7 +6483,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Bounded static Euclidean, Manhattan and cosine spectral-angle minimum-distance, kNearest=1 and CLASSIFICATION. Training 1..1000 inline Features, explicit unique flat schema 1..8 numeric properties, complete finite inputs/exact integers <=2^53 and integer labels 0..63; subsampling=1, seed=0 only. Exact binary64-rational class means and Euclidean/L1 distances; cosine ranks signed dot/center-norm by exact cross-products without floating normalization or acos. Equal nearest distances and cosine zero-norm queries/centers reject at prediction. These are local numeric policies without Google parity. Untrained schema returns null, trained schema retains input order. Feature classification copies original metadata, rejects output-name collisions, <=1000 features and shared 50000-step work. Training confusionMatrix resubstitutes real predictions with axes 0..max class including gaps, <=4096 cells. Direct/nested server-object JSON, Image.classify, remote sampling, Mahalanobis/k>1/other modes and other classifiers remain unsupported; no Google comparison or whole classification compatibility claim."
+          "Bounded static Euclidean, Manhattan and cosine spectral-angle minimum-distance, kNearest=1 and CLASSIFICATION. Training 1..1000 inline Features, explicit unique flat schema 1..8 numeric properties, complete finite inputs/exact integers <=2^53 and integer labels 0..63; subsampling=1, seed=0 only. Exact binary64-rational class means and Euclidean/L1 distances; cosine ranks signed dot/center-norm by exact cross-products without floating normalization or acos. Equal nearest distances and cosine zero-norm queries/centers reject at prediction. These are local numeric policies without Google parity. Untrained schema returns null, trained schema retains input order. Feature classification copies original metadata, rejects output-name collisions, <=1000 features and shared 50000-step work. Training confusionMatrix resubstitutes real predictions with axes 0..max class including gaps, <=4096 cells. Image.classify has its own bounded model/native-kernel contract. Direct/nested server-object JSON, remote sampling, Mahalanobis/k>1/other modes and other classifiers remain unsupported; no Google comparison or whole classification compatibility claim."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -6521,7 +6521,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Bounded static Euclidean, Manhattan and cosine spectral-angle minimum-distance, kNearest=1 and CLASSIFICATION. Training 1..1000 inline Features, explicit unique flat schema 1..8 numeric properties, complete finite inputs/exact integers <=2^53 and integer labels 0..63; subsampling=1, seed=0 only. Exact binary64-rational class means and Euclidean/L1 distances; cosine ranks signed dot/center-norm by exact cross-products without floating normalization or acos. Equal nearest distances and cosine zero-norm queries/centers reject at prediction. These are local numeric policies without Google parity. Untrained schema returns null, trained schema retains input order. Feature classification copies original metadata, rejects output-name collisions, <=1000 features and shared 50000-step work. Training confusionMatrix resubstitutes real predictions with axes 0..max class including gaps, <=4096 cells. Direct/nested server-object JSON, Image.classify, remote sampling, Mahalanobis/k>1/other modes and other classifiers remain unsupported; no Google comparison or whole classification compatibility claim."
+          "Bounded static Euclidean, Manhattan and cosine spectral-angle minimum-distance, kNearest=1 and CLASSIFICATION. Training 1..1000 inline Features, explicit unique flat schema 1..8 numeric properties, complete finite inputs/exact integers <=2^53 and integer labels 0..63; subsampling=1, seed=0 only. Exact binary64-rational class means and Euclidean/L1 distances; cosine ranks signed dot/center-norm by exact cross-products without floating normalization or acos. Equal nearest distances and cosine zero-norm queries/centers reject at prediction. These are local numeric policies without Google parity. Untrained schema returns null, trained schema retains input order. Feature classification copies original metadata, rejects output-name collisions, <=1000 features and shared 50000-step work. Training confusionMatrix resubstitutes real predictions with axes 0..max class including gaps, <=4096 cells. Image.classify has its own bounded model/native-kernel contract. Direct/nested server-object JSON, remote sampling, Mahalanobis/k>1/other modes and other classifiers remain unsupported; no Google comparison or whole classification compatibility claim."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -6985,7 +6985,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Bounded static Euclidean, Manhattan and cosine spectral-angle minimum-distance, kNearest=1 and CLASSIFICATION. Training 1..1000 inline Features, explicit unique flat schema 1..8 numeric properties, complete finite inputs/exact integers <=2^53 and integer labels 0..63; subsampling=1, seed=0 only. Exact binary64-rational class means and Euclidean/L1 distances; cosine ranks signed dot/center-norm by exact cross-products without floating normalization or acos. Equal nearest distances and cosine zero-norm queries/centers reject at prediction. These are local numeric policies without Google parity. Untrained schema returns null, trained schema retains input order. Feature classification copies original metadata, rejects output-name collisions, <=1000 features and shared 50000-step work. Training confusionMatrix resubstitutes real predictions with axes 0..max class including gaps, <=4096 cells. Direct/nested server-object JSON, Image.classify, remote sampling, Mahalanobis/k>1/other modes and other classifiers remain unsupported; no Google comparison or whole classification compatibility claim."
+          "Bounded static Euclidean, Manhattan and cosine spectral-angle minimum-distance, kNearest=1 and CLASSIFICATION. Training 1..1000 inline Features, explicit unique flat schema 1..8 numeric properties, complete finite inputs/exact integers <=2^53 and integer labels 0..63; subsampling=1, seed=0 only. Exact binary64-rational class means and Euclidean/L1 distances; cosine ranks signed dot/center-norm by exact cross-products without floating normalization or acos. Equal nearest distances and cosine zero-norm queries/centers reject at prediction. These are local numeric policies without Google parity. Untrained schema returns null, trained schema retains input order. Feature classification copies original metadata, rejects output-name collisions, <=1000 features and shared 50000-step work. Training confusionMatrix resubstitutes real predictions with axes 0..max class including gaps, <=4096 cells. Image.classify has its own bounded model/native-kernel contract. Direct/nested server-object JSON, remote sampling, Mahalanobis/k>1/other modes and other classifiers remain unsupported; no Google comparison or whole classification compatibility claim."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -12761,7 +12761,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Bounded static Euclidean, Manhattan and cosine spectral-angle minimum-distance, kNearest=1 and CLASSIFICATION. Training 1..1000 inline Features, explicit unique flat schema 1..8 numeric properties, complete finite inputs/exact integers <=2^53 and integer labels 0..63; subsampling=1, seed=0 only. Exact binary64-rational class means and Euclidean/L1 distances; cosine ranks signed dot/center-norm by exact cross-products without floating normalization or acos. Equal nearest distances and cosine zero-norm queries/centers reject at prediction. These are local numeric policies without Google parity. Untrained schema returns null, trained schema retains input order. Feature classification copies original metadata, rejects output-name collisions, <=1000 features and shared 50000-step work. Training confusionMatrix resubstitutes real predictions with axes 0..max class including gaps, <=4096 cells. Direct/nested server-object JSON, Image.classify, remote sampling, Mahalanobis/k>1/other modes and other classifiers remain unsupported; no Google comparison or whole classification compatibility claim."
+          "Bounded static Euclidean, Manhattan and cosine spectral-angle minimum-distance, kNearest=1 and CLASSIFICATION. Training 1..1000 inline Features, explicit unique flat schema 1..8 numeric properties, complete finite inputs/exact integers <=2^53 and integer labels 0..63; subsampling=1, seed=0 only. Exact binary64-rational class means and Euclidean/L1 distances; cosine ranks signed dot/center-norm by exact cross-products without floating normalization or acos. Equal nearest distances and cosine zero-norm queries/centers reject at prediction. These are local numeric policies without Google parity. Untrained schema returns null, trained schema retains input order. Feature classification copies original metadata, rejects output-name collisions, <=1000 features and shared 50000-step work. Training confusionMatrix resubstitutes real predictions with axes 0..max class including gaps, <=4096 cells. Image.classify has its own bounded model/native-kernel contract. Direct/nested server-object JSON, remote sampling, Mahalanobis/k>1/other modes and other classifiers remain unsupported; no Google comparison or whole classification compatibility claim."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -19265,12 +19265,14 @@
       "description": "Classifies an image.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Trained static minimumDistance only: Euclidean/Manhattan/cosine, k=1 CLASSIFICATION, schema1..8 scalar bands selected by name and explicitly ordered. Extra bands and masks excluded. Version1 exact reduced rational centers (strings<=700 chars/2200 bits, finite binary64 magnitude), sorted integer labels0..63; API/engine/Scala validate independently. Real input Float32/Float64 retained without generic callback narrowing; output is one Int32 NoData band, default classification or explicit flat outputName, preserving source metadata/time/finite footprint. Selected NoData masks output; valid Infinity, unique-nearest ties and cosine zero queries reject; zero center rejects when encoding prediction. Shared50000-work/500-node/grid/key/cell limits plus67108864 pixel-class-band operations apply. S/C and independent sampled graph N plus actual standalone GeoTrellis tile-kernel controls only: full Spark cube, batch sandbox, HTTP/browser, deployed runtime, Google dtype/tie/numerical equivalence unverified. Sampling, other classifiers/modes/k, arrays and unbound constant rasters unsupported. See reports/gee-python-wave23.json."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -40651,9 +40653,9 @@
           "same_name_handler_declared": true
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.classify",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
           "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
@@ -40947,7 +40949,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 271,
+    "declared_handler_name_count": 272,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41165,7 +41167,7 @@
         "appears_in_rejected_compile_context": 31,
         "appears_in_selected_sdk_serialization": 35,
         "appears_in_successful_compile_context": 8,
-        "declared_handler_count": 73,
+        "declared_handler_count": 74,
         "signature_count": 232
       },
       "ImageCollection": {
@@ -41428,7 +41430,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 271,
+    "pinned_signatures_with_same_name_declared_handler": 272,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

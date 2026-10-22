@@ -221,7 +221,7 @@ def test_direct_nested_json_and_truth_coercion_of_classifier_are_rejected(ee):
         output(ee, ee.Algorithms.If(model, 1, 0))
 
 
-def test_equal_distance_predictions_and_image_classification_are_unsupported(ee):
+def test_equal_distance_predictions_and_missing_image_schema_are_rejected(ee):
     tied_training = [
         {"x": 0, "actual": 1},
         {"x": 2, "actual": 3},
@@ -232,7 +232,7 @@ def test_equal_distance_predictions_and_image_classification_are_unsupported(ee)
         output(ee, tied)
 
     image_classification = ee.Image.constant(1).classify(model)
-    with pytest.raises(UnsupportedEEError, match="Unsupported Earth Engine algorithm: Image.classify"):
+    with pytest.raises(UnsupportedEEError, match="missing classifier schema band"):
         output(ee, image_classification)
 
 
