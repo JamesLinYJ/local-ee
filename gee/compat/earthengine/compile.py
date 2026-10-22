@@ -28,6 +28,10 @@ def compile_expression(expression, catalog, items, options=None):
 
         if isinstance(value, RasterArrayImage):
             fail("Array image output requires arrayFlatten or arrayGet; direct array raster export is unsupported")
+        from .raster_array_bands import RasterArrayBands
+
+        if isinstance(value, RasterArrayBands):
+            fail("Multiple array bands require select then arrayFlatten or arrayGet; direct array raster export is unsupported")
         from .confusion_values import StaticConfusionMatrix
 
         if isinstance(value, StaticConfusionMatrix):

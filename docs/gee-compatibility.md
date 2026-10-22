@@ -34,6 +34,8 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 
 第九批增加有限静态欧式最小距离模型，真正训练类均值、预测独立要素并计算训练／验证误差矩阵。只支持 kNearest=1、CLASSIFICATION、完整平面数值属性和唯一最近类；精确 binary64 有理数政策及限制见 [第九批报告](../reports/gee-python-wave9.json)。S/C/静态 N 通过，不含图像分类、采样、随机森林或 Google 对照。
 
+第十批新增有限栅格 linearRegression：过原点或字面量单位截距模型、1..4 响应、联合完整行与 n>numX、真实系数／RMS 数组。多数组波段须选择后标量化；四景双响应例分别输出各响应以满足现有 500 节点上限。参数、图规模和独立 SVD／掩膜证据见 [第十批报告](../reports/gee-python-wave10.json)，不代表通用多变量系统或实际 E/G。
+
 第三批增加 `Join.inner`、唯一 maxDifference 的 And 组合，以及匹配 Feature 映射回 ImageCollection 的链路；最近前后观测插值有版本化合成来源／掩膜／目标时间参考，见 [第三批报告](../reports/gee-python-wave3.json)。S/C 与合成图 N 通过仍不构成原生引擎 E 或 Google G。
 
 | 用法 | 当前支持范围 | 证据 |
@@ -67,6 +69,7 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 | 有限分类评估 | 静态 ConfusionMatrix、array／order／accuracy／kappa；内联 Collection.errorMatrix | S/C 与独立标签频数 N；<=64 类／4096 单元、非负整数计数总和 <=2^53、<=1000 完整记录，共享预算；显式类别表筛选，缺失／null、零分母、原始 List／浮点计数 Array、直接对象 JSON、Feature 属性对象和逐类指标拒绝；无 E/G、采样或分类器 |
 | 有限 List 计算 | zip／unzip／flatten／repeat／reverse／set／swap，List.reduce 的单输出归约及 linearFit／linearRegression | S/C/独立静态 N；布局 <=10000 顶层值、flatten 深度 96、reduce <=1000 行／32 回归列，共享工作与公开物化预算；typed Array 保留；空值／低样本政策明确且无 G 对照，不含任意 reducer 组合／权重 |
 | 静态最小距离分类 | minimumDistance／train／schema／CLASSIFICATION 模式、FeatureCollection.classify、训练 confusionMatrix | S/C/独立静态 N；欧式、k=1、1..1000 训练行／1..8 平面属性、类别 0..63、无子采样、共享预算；唯一最近类，等距和输出名碰撞拒绝，保留要素元数据；无图像分类／随机森林／E/G |
+| 有限栅格 linearRegression | numX=1 过原点，或 numX=2 且首列为可证明单位截距；numY=1..4，系数／RMS 命名数组波段 | S/C/独立样点 N；1..8 同序帧、所有输入共同完整行、n>numX／非退化、RMS 按 n；parallelScale=1、Float32 callback 和现有工作／图预算；多响应按需单独物化，无通用设计矩阵／E/G |
 | Algorithms.If | 静态条件，惰性编译选中分支 | S/C；不把影像对象当作静态布尔条件 |
 | 几何与地图 | 平面 WGS84 Geometry；Image/Collection/Feature.geometry；Map.centerObject、setCenter、addLayer | S/C；真实地图和 RGB 预览 N |
 | 影像导出 | toDrive 适配本地 GeoTIFF/NetCDF；region 精确掩膜、scale/crs、fileNamePrefix | 真实三角形区域 N；网页文件名回读 |
@@ -114,7 +117,7 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 
 - 全球 GEE 数据目录、私有 assets、任意 `require('users/...')` 模块和 Google Drive/Cloud Storage 上传。
 - 独立纯常量栅格与纯常量集合缺少明确的本地网格，仍拒绝；绑定到本地影像的 addBands 常量与日期 band 已支持。常量投影查询、任意异构类型、逐波段投影与跨网格语义仍需独立实现和验证。
-- 除上述静态欧式最小距离子集外的分类器、图像分类、采样、多变量／多响应栅格回归、动态形状／多数组波段和其余 Image.array* 运算、超出上述有限元数据范围的 join、邻域卷积、ui.Chart/ui.Panel 等完整 GEE 应用组件。已补固定形状数组布局／矩阵投影／归约及有限逐像元 linearFit，不能据此宣称完整栅格回归支持。
+- 除上述静态欧式最小距离子集外的分类器、图像分类、采样、通用设计矩阵的栅格回归、动态形状及其余多数组波段／Image.array* 运算、超出上述有限元数据范围的 join、邻域卷积、ui.Chart/ui.Panel 等完整 GEE 应用组件。已补固定形状数组布局／矩阵投影／归约及有限逐像元 linearFit／linearRegression，不能据此宣称完整栅格回归支持。
 - 分数掩膜、球面/测地线几何、非 UTC 时区、分数月/年、任意 Joda 格式 token。
 - 任意 CRS transform、导出分片、bestEffort 和自定义 tileScale；不支持的参数明确失败。
 - 整数像元类型转换、Image 位运算和原始 GEE 的边界像元加权。GeoTrellis 整型 NoData 哨兵会占用合法数值，不能简单替换 cast 名称；完整类型提升仍待实现。当前 N 验收以浮点数值、网格和二值 NoData 为准。
@@ -132,7 +135,7 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 | --- | --- |
 | 最绿像素合成 | 历史抽查时缺失；本轮已实现有限同构集合 `qualityMosaic` 并完成 6 个实际输出的独立像素对照；平分规则仍未与 Google 比较 |
 | s2cloudless 云影 | 有限本地影像 `Join.saveFirst` 已补；仍缺定向距离变换、`projection/reproject`、`focalMin/focalMax`；云概率数据未入库 |
-| 谐波时序与矩阵回归 | 已补有限逐景日期 map、日期常量 band、受限日期、静态 Array.matrixSolve、固定形状数组布局／矩阵投影／归约和有限逐像元 linearFit；仍缺栅格多变量 `linearRegression`、动态数组和逐像元矩阵求解，以及相位/振幅的 `atan2/hypot` |
+| 谐波时序与矩阵回归 | 已补有限逐景日期 map、日期常量 band、受限日期、静态 Array.matrixSolve、固定形状数组布局／矩阵投影／归约和有限逐像元 linearFit／linearRegression；仍缺通用设计矩阵的栅格回归、动态数组和逐像元矩阵求解，以及相位/振幅的 `atan2/hypot` |
 | HISTARFM 插值 | 已补受限 Date.getRelative、saveAll 匹配影像列表、maxDifference 与方向比较的 And 组合；最近前后观测像素插值有合成图 N，独立常量栅格、int16、完整项目及真实引擎验收仍缺失 |
 | 随机森林与验证 | 样本提取、分类器训练/预测与批量区域统计仍缺；已补有限内联标签误差矩阵和总体指标，逐类指标／完整分类验证仍待实现 |
 | LandTrendr | GEE 用户模块解析、真实时序分段算法、数组处理、连通像元与 Image QA 位运算仍缺失；已补有限网格的 `unmask`，不能据此运行完整 LandTrendr |

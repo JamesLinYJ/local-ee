@@ -27264,7 +27264,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Only implemented reducer families and local collection/data semantics are available. Two-input linearFit supports 1..8 scalar-image frames with identical ordered band names, complete-row NoData deletion, centered two-pass OLS and scale/offset scalar output. Only parallelScale=1; shared work/graph limits and existing Float32 callback limits apply; no actual raster-engine or Google acceptance for this path."
+          "Only implemented reducer families and local collection/data semantics are available. linearFit supports1..8 ordered two-band frames, complete rows and centered OLS. linearRegression supports numX=1 through-origin or numX=2 with proven numeric literal-one first predictor, numY=1..4,1..8 homogeneous frames. All inputs/responses share complete-case masks; n<=numX/rank-degenerate masks coefficients and RMS. Typed coefficient/residual array bands must be selected then scalarized; only parallelScale=1, shared work/500-node cap and Float32 callback limits. Max dimensions/frames are not jointly guaranteed; combined four-frame two-response output exceeds cap, individual response paths are verified. No raster E/Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -36345,7 +36345,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Unweighted inline table reduceColumns or List.reduce over ordered numeric input rows only; typed coefficient matrix and per-response residual RMS; n<=numX/rank-deficient outputs are null. No ImageCollection/raster regression or Google acceptance."
+          "Unweighted inline table/List rows have typed coefficients/RMS and null underdetermined outputs. Raster ImageCollection path supports numX=1 through-origin or numX=2 with proven literal-one first predictor, numY=1..4 and1..8 ordered homogeneous frames; joint complete-case rows, n>numX, and both output arrays masked on degeneracy. RMS uses residual sum squares/n; repeated observations preserve row weights. Binary NoData, parallelScale=1, shared work/graph and Float32 callback limits; generic independent predictor systems, image/reduceRegion, fractional weights and Google acceptance remain unsupported."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,

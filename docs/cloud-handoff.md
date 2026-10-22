@@ -96,6 +96,16 @@ List.reduce 支持现有单输出归约及无权 linearFit／linearRegression，
 
 第九批锁定依赖、Linux Python **1091 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，增加 55 项通过；Python／JS 实际 SDK 一致性增至 30 项。父审查发现并修复 falsey 参数被默认值吞掉和带点属性名验证不一致；回归保留明确拒绝。Luna max 复审未发现声明范围内剩余缺陷。原 50 探针仍 50 S／45 C／5 拒绝，完整清单字节重现通过；证据为 S/C/静态 N，无栅格 E/G，详见 `reports/gee-python-wave9.json`。
 
+## 第十批栅格 linearRegression 与多响应
+
+以第九批提交 `dd255b08d97ed799672b975fba92e1a9c7051a3b` 为基线，补 ImageCollection.reduce(linearRegression) 的有限实际计算：numX=1 过原点，或 numX=2 且首列为可证明的字面量单位截距；numY=1..4、1..8 同名同序标量帧、parallelScale=1。所有预测变量／响应共用完整行删除，n<=numX 或退化时系数与 RMS 全掩膜；RMS 分母为 n，系数保持 (numX,numY) 行主序，残差为 (numY,)。现有 linearFit 共用帧校验，数值方法不变。
+
+新增真实多数组波段容器保存 coefficients／residuals，逻辑名／掩膜／来源独立于标量存储。选择单数组后继续 flatten／get；bundle 仅精确选择／rename／元数据和 typed Image 包装，真正 cast、通用数组组合和直接导出拒绝。总 array cells<=64，50000 工作与 500 图节点上限保留。
+
+示例 16 使用四景双响应，在同一联合完整行模型下分别物化六个响应输出。完整系数／RMS／预测组合确实超过 500 节点；单响应系数各 418、RMS 各 497、预测各 424 节点，不提高上限或丢弃另一响应掩膜。版本化样本 pixel0 的 offset/scale 为 `(0.7,2.2)` 与 `(5,2)`；pixel1 因第二响应缺测，两个响应都删除一行，第一响应变为 `(17/14,29/14)`、RMS sqrt(3/14)、x=2 预测 75/14。另三个位置因秩不足／低样本掩膜，包括在所有 bbox 内但不被两景梯形覆盖的点。独立 SVD 与样点图求值验证，非 E/G。
+
+第十批锁定依赖、Linux Python **1120 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，增加 29 项通过；Python／JS SDK 一致性 33 项，Luna max 复审通过。原 50 表达式仍 50 S／45 C／5 拒绝，但原回归探针使用 5 bands 与 3 inputs 不匹配，现改为准确的数量错误；这项拒绝不再表示全体栅格回归未实现。原探针源码／参数／序列化均保持不变，完整 Python 清单字节重现通过。详见 `reports/gee-python-wave10.json`；通用多变量系统、动态数组、权重、紧凑图与实际 E/G 仍待完成。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee

@@ -2,51 +2,9 @@
 from __future__ import annotations
 
 from .array_core import charge_array
-from .ir import Collection, Image, ImageSequence, Pixel, const, fail, rebind
+from .ir import Image, ImageSequence, Pixel, const, fail
+from .raster_regression_frames import regression_frames, scalar_regression_rows
 from .table_reducers import TableReducer
-
-
-MAX_LINEAR_FIT_FRAMES = 8
-
-
-def _frames(translator, value):
-    """Normalize a small collection without losing each source item's identity."""
-    if isinstance(value, ImageSequence):
-        count = len(value.images)
-        if count == 0:
-            fail("ImageCollection.reduce linearFit requires at least one frame")
-        if count > MAX_LINEAR_FIT_FRAMES:
-            fail("ImageCollection.reduce linearFit supports at most 8 frames")
-        return list(value.images)
-    if isinstance(value, Collection):
-        count = len(value.source.ids)
-        if count == 0:
-            fail("ImageCollection.reduce linearFit requires at least one frame")
-        if count > MAX_LINEAR_FIT_FRAMES:
-            fail("ImageCollection.reduce linearFit supports at most 8 frames")
-        return [translator.first(rebind(value, (item_id,))) for item_id in value.source.ids]
-    fail("ImageCollection.reduce linearFit requires an ImageCollection")
-
-
-def _validate_frames(images):
-    expected_names = None
-    rows = []
-    for image in images:
-        if not isinstance(image, Image) or len(image.bands) != 2:
-            fail("ImageCollection.reduce linearFit requires exactly two scalar bands per frame")
-        names = tuple(name for name, _ in image.bands)
-        if (any(not isinstance(name, str) or not name for name in names)
-                or len(set(names)) != 2):
-            fail("ImageCollection.reduce linearFit requires two distinct named bands")
-        if expected_names is None:
-            expected_names = names
-        elif names != expected_names:
-            fail("ImageCollection.reduce linearFit requires the same band names and order in every frame")
-        x, y = (pixel for _, pixel in image.bands)
-        if not isinstance(x, Pixel) or not isinstance(y, Pixel):
-            fail("ImageCollection.reduce linearFit supports scalar bands only")
-        rows.append((x, y))
-    return rows
 
 
 def invoke_raster_linear_fit(translator, name, arguments):
@@ -66,8 +24,8 @@ def invoke_raster_linear_fit(translator, name, arguments):
                 or parallel_scale != 1):
             fail("ImageCollection.reduce linearFit supports only the default parallelScale of 1")
 
-    images = _frames(translator, arguments.get("collection"))
-    rows = _validate_frames(images)
+    images = regression_frames(translator, arguments.get("collection"), "linearFit")
+    rows = scalar_regression_rows(images, 2, "linearFit")
     footprint = translator.footprint(ImageSequence(images))
 
     # Reserve the bounded per-frame normalization, two centered passes, and

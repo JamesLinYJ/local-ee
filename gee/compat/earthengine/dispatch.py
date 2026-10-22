@@ -24,6 +24,10 @@ _METADATA_ARGUMENTS = {
 def invoke(translator, name, arguments):
     """Dispatch in the same precedence order as the legacy translator."""
     a = arguments
+    from .raster_array_bands import handles_array_bands, invoke_array_bands
+
+    if handles_array_bands(name, a):
+        return invoke_array_bands(translator, name, a)
     if name in {"Classifier.confusionMatrix", "FeatureCollection.classify"}:
         from .classifier_features import invoke_classifier_features
 
@@ -63,6 +67,11 @@ def invoke(translator, name, arguments):
         from .raster_linear_fit import invoke_raster_linear_fit
 
         return invoke_raster_linear_fit(translator, name, a)
+    if (name == "ImageCollection.reduce" and isinstance(a.get("reducer"), TableReducer)
+            and a["reducer"].name == "linearRegression"):
+        from .raster_linear_regression import invoke_raster_linear_regression
+
+        return invoke_raster_linear_regression(translator, name, a)
     if isinstance(a.get("reducer"), TableReducer) and name in {
         "Image.reduce", "Image.reduceRegion", "ImageCollection.reduce",
     }:

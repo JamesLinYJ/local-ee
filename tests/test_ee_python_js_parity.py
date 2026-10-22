@@ -53,6 +53,14 @@ const prior = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(c, c,
     leftField:'system:time_start', rightField:'system:time_start'}),
     ee.Filter.greaterThan({leftField:'system:time_start', rightField:'system:time_start'}))));
 const values = {
+  rasterRegressionOrigin: c.select(['red','nir']).reduce(ee.Reducer.linearRegression(1,1))
+    .select('coefficients').arrayFlatten([['red'],['nir']]),
+  rasterRegressionResidual: c.select(['red','nir']).reduce(ee.Reducer.linearRegression(1,1))
+    .select('residuals').arrayFlatten([['rms']]),
+  rasterRegressionIntercept: c.map(image => ee.Image(image).select(['red','nir'])
+    .addBands(ee.Image.constant(1).rename('intercept')).select(['intercept','red','nir']).toFloat())
+    .reduce(ee.Reducer.linearRegression(2,1)).select('coefficients')
+    .arrayProject([0]).arrayFlatten([['offset','slope']]),
   minimumSchema: ee.Classifier.minimumDistance().train(ee.FeatureCollection(
     [[1,0,0],[1,0,2],[1,6,0],[3,5,0],[3,5,2],[3,11,0]].map(row =>
       ee.Feature(null,{label:row[0],x:row[1],y:row[2]}))), 'label', ['x','y']).schema(),
@@ -135,6 +143,15 @@ def parity_values():
             leftField="system:time_start", rightField="system:time_start"),
             ee.Filter.greaterThan(leftField="system:time_start", rightField="system:time_start"))))
     py = {
+        "rasterRegressionOrigin": c.select(["red", "nir"]).reduce(ee.Reducer.linearRegression(1, 1))
+            .select("coefficients").arrayFlatten([["red"], ["nir"]]),
+        "rasterRegressionResidual": c.select(["red", "nir"]).reduce(ee.Reducer.linearRegression(1, 1))
+            .select("residuals").arrayFlatten([["rms"]]),
+        "rasterRegressionIntercept": c.map(lambda image: ee.Image(image).select(["red", "nir"])
+            .addBands(ee.Image.constant(1).rename("intercept"))
+            .select(["intercept", "red", "nir"]).toFloat())
+            .reduce(ee.Reducer.linearRegression(2, 1)).select("coefficients")
+            .arrayProject([0]).arrayFlatten([["offset", "slope"]]),
         "minimumSchema": ee.Classifier.minimumDistance().train(ee.FeatureCollection([
             ee.Feature(None, {"label": label, "x": x, "y": y})
             for label,x,y in [[1,0,0],[1,0,2],[1,6,0],[3,5,0],[3,5,2],[3,11,0]]]),
@@ -198,7 +215,8 @@ def parity_values():
                                  "rasterProjection", "rasterReduction", "rasterLinearFit",
                                  "confusionKappa", "labelErrorMatrix",
                                  "listLayout", "listRegression", "listMean",
-                                 "minimumSchema", "minimumPredictions", "minimumTrainingMatrix"])
+                                 "minimumSchema", "minimumPredictions", "minimumTrainingMatrix",
+                                 "rasterRegressionOrigin", "rasterRegressionResidual", "rasterRegressionIntercept"])
 def test_python_and_javascript_reach_the_same_local_result(parity_values, case):
     javascript, python, metadata, items = parity_values
     left = compile_expression(javascript[case], metadata, items)

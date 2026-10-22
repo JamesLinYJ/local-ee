@@ -1,0 +1,20 @@
+{
+  "schema": "local-ee-synthetic-raster-regression/v1",
+  "collection_id": "sentinel-2-l2a",
+  "extent": [0,0,5,1],
+  "pixel_centers": [[0.5,0.5],[1.5,0.5],[2.5,0.5],[3.5,0.5],[4.5,0.5]],
+  "geometry_full": {"type":"Polygon","coordinates":[[[0,0],[5,0],[5,1],[0,1],[0,0]]]},
+  "geometry_cut_corner": {"type":"Polygon","coordinates":[[[0,0],[5,0],[5,0.4],[0,1],[0,0]]]},
+  "target_x": 2,
+  "rows": [
+    {"id":"reg-a","time_millis":1704067200000,"geometry":"geometry_full","x":[0,0,2,0,0],"signal":[1,1,1,1,1],"temperature":[5,5,5,5,5]},
+    {"id":"reg-b","time_millis":1704067200000,"geometry":"geometry_full","x":[1,1,2,1,1],"signal":[2,2,2,2,2],"temperature":[7,null,7,7,7]},
+    {"id":"reg-c","time_millis":1704153600000,"geometry":"geometry_cut_corner","x":[2,2,2,2,2],"signal":[6,6,6,null,6],"temperature":[9,9,9,9,9]},
+    {"id":"reg-d","time_millis":1704240000000,"geometry":"geometry_cut_corner","x":[3,3,2,3,3],"signal":[7,7,7,7,7],"temperature":[11,11,11,null,11]}
+  ],
+  "reference_method": "Complete rows require all predictor/response values and actual scene-polygon coverage. Pixel0: coefficients [[7/10,5],[11/5,2]], RMS [sqrt(9/20),0], target2 gives [51/10,9]. Pixel1: temperature null in b removes the entire row from BOTH responses, coefficients [[17/14,5],[29/14,2]], RMS [sqrt(3/14),0], target2 gives [75/14,9]. Pixel2 has constant x, pixel3 only two complete rows, and pixel4 lies inside every bbox but outside c/d trapezoids so has only two covered rows; both output arrays and predictions mask. Two same-timestamp scenes remain distinct. Independently verify using numpy.linalg.lstsq with joint complete cases and geometric coverage; this is a sample-point reference, not native raster or fractional-boundary acceptance.",
+  "valid_row_counts": [4,3,4,2,2],
+  "coefficients": [[0.7,1.2142857142857142,null,null,null],[5,5,null,null,null],[2.2,2.0714285714285716,null,null,null],[2,2,null,null,null]],
+  "residuals": [[0.6708203932499369,0.4629100498862757,null,null,null],[0,0,null,null,null]],
+  "prediction": [[5.1,5.357142857142857,null,null,null],[9,9,null,null,null]]
+}

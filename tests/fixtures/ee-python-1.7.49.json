@@ -4269,7 +4269,7 @@
     },
     {
       "compilation": {
-        "reason": "This regression Reducer currently supports static table reduceColumns only",
+        "reason": "ImageCollection.reduce linearRegression requires exactly 3 scalar bands per frame",
         "status": "rejected"
       },
       "engine_execution": {
