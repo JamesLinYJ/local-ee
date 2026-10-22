@@ -18,8 +18,8 @@
 
 - 官方客户端版本和提交见 `vendor/earthengine-js/upstream-lock.json`。
 - 官方 Python 客户端已按同一提交固定，见 `vendor/earthengine-python/upstream-lock.json`；Python 和 JS 共享本地 EE 编译器及算法支持边界，Python/openEO `connection` 继续保留。
-- 当前能力、参数限制和证据见 `docs/gee-compatibility.md`。第八批增加有限 List 布局、单输出归约及多输入回归，列列表组装二次设计矩阵、拟合两个响应并预测，以闭式系数及残差正交性校核；Linux Python 1036 passed／7 skipped，前端 11 passed 与构建通过，见 `reports/gee-python-wave8.json`。此前有限分类评估、逐像元 linearFit 和时间预测证据保留在第六、七批报告。
-- Python API 清单见 `reports/gee-python-api-inventory.json`，保留 991 项签名、2451 项参数及公开 Python 绑定。原有 50 项 Python 定向探针当前为 45 项编译通过、5 项明确拒绝；方法、参数和探针数量均不代表完整兼容率。已补有限表格回归、FeatureCollection、数值时间度量及 inner Join、Number.format、有界 String 和固定形状栅格数组，并串联合成表格预测、最近前后观测插值及像素投影；动态数组、多变量栅格回归、采样及分类训练／预测仍有缺口，有限精度评估不能代替分类器实现。完整 Linux 运行按阶段调整延期。最新局部实现及限制持续写入 `docs/gee-python/list.md`。
+- 当前能力、参数限制和证据见 `docs/gee-compatibility.md`。第九批增加有限静态欧式最小距离分类，实际训练类均值、分类独立验证要素并计算误差矩阵；Linux Python 1091 passed／7 skipped，前端 11 passed 与构建通过，见 `reports/gee-python-wave9.json`。训练准确率 5/6、独立验证准确率 3/5 与 Kappa 1/6 均有独立参考；这不是采样、图像分类或随机森林的实现。
+- Python API 清单见 `reports/gee-python-api-inventory.json`，保留 991 项签名、2451 项参数及公开 Python 绑定。原有 50 项 Python 定向探针当前为 45 项编译通过、5 项明确拒绝；方法、参数和探针数量均不代表完整兼容率。已补有限表格回归、FeatureCollection、数值时间度量及 inner Join、Number.format、有界 String 和固定形状栅格数组，并串联合成表格预测、最近前后观测插值及像素投影；动态数组、多变量栅格回归、采样、栅格分类及其他分类器仍有缺口，有限精度评估不能代替完整分类器实现。完整 Linux 运行按阶段调整延期。最新局部实现及限制持续写入 `docs/gee-python/list.md`。
 - 复杂工作流来源和缺口见 `audit/gee-complex-compat-v1/findings.json`。
 - 有效探针为 `audit/gee-complex-compat-v1/probe-run-v2/validation.json`：50 个表达式成功序列化，3 个阳性对照编译通过，43 个操作/语义探针被拒绝，4 个数据/波段探针被拒绝；另有 14 个规模编译检查、3 个原生 runner 检查。该定向抽查不是全 API 兼容率。
 - 两波段均值的模拟目录探针中，30 景生成 335 节点，50 景超过现有 500 节点限制。长时序执行需要单独改进。

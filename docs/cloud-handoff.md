@@ -86,6 +86,16 @@ List.reduce 支持现有单输出归约及无权 linearFit／linearRegression，
 
 本批锁定依赖、Linux Python **1036 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，较上一批增加 81 项通过；Python／JS SDK 实际编译一致性增至 27 项。首次全量运行发现历史测试仍断言回归仅有 reduceColumns，已按新范围更新断言并保留原失败记录；不回退真实能力来迁就旧文案。原 50 探针仍为 50 S／45 C／5 拒绝，固定 Python API 清单字节重现通过。详见 `reports/gee-python-wave8.json`，整体目标保持进行中。
 
+## 第九批最小距离训练与独立验证
+
+以第八批提交 `3fdaf8d2f0e11dd05335ed2b69204f10ba398782` 为基线，增加 Classifier.minimumDistance／train／schema／setOutputMode、FeatureCollection.classify 和 Classifier.confusionMatrix 的有限真实计算。仅 Euclidean、kNearest=1、CLASSIFICATION，显式 1..8 个唯一平面输入属性，训练 1..1000 完整数值要素、整数类别 0..63，subsampling=1／seed=0；受共享工作预算限制，大小上限的组合不保证可全部执行。
+
+模型以不可变 Fraction 保存 binary64 输入的精确均值，用距离平方验证唯一最近类；等距拒绝，不猜 tie。这是本地数值政策，尚无 Google／Smile 逐步浮点对照。要素分类保留原属性／几何／ID，输出属性碰撞拒绝；重代入混淆矩阵真实重预测训练行，轴从 0 到最大类别并含空档。直接／嵌套模型 JSON、图像分类、其他模式／距离／k 和随机子采样仍拒绝。
+
+示例 15 与 `ee-minimum-distance-v1.json` 的两类均值为 `(2,2/3)`、`(7,2/3)`，训练离群点实际分错，准确率 5/6；独立验证预测 `[1,3,3,1,3]`，顺序 [3,1] 的矩阵为 `[[2,1],[1,1]]`，准确率 3/5、Kappa 1/6。NumPy 独立均值／距离与手算矩阵验证了真实训练和验证分离，不以最近训练点冒充最近类均值。
+
+第九批锁定依赖、Linux Python **1091 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，增加 55 项通过；Python／JS 实际 SDK 一致性增至 30 项。父审查发现并修复 falsey 参数被默认值吞掉和带点属性名验证不一致；回归保留明确拒绝。Luna max 复审未发现声明范围内剩余缺陷。原 50 探针仍 50 S／45 C／5 拒绝，完整清单字节重现通过；证据为 S/C/静态 N，无栅格 E/G，详见 `reports/gee-python-wave9.json`。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee

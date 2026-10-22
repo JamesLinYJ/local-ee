@@ -1,0 +1,23 @@
+{
+  "schema": "local-ee-synthetic-minimum-distance/v1",
+  "input_properties": ["nir", "red"],
+  "training": [
+    {"nir": 0, "red": 0, "landcover": 1},
+    {"nir": 0, "red": 2, "landcover": 1},
+    {"nir": 6, "red": 0, "landcover": 1},
+    {"nir": 5, "red": 0, "landcover": 3},
+    {"nir": 5, "red": 2, "landcover": 3},
+    {"nir": 11, "red": 0, "landcover": 3}
+  ],
+  "validation": [
+    {"red": 0, "nir": 1, "landcover": 1},
+    {"red": 1, "nir": 6, "landcover": 1},
+    {"red": 2, "nir": 8, "landcover": 3},
+    {"red": 1, "nir": 0, "landcover": 3},
+    {"red": 0, "nir": 7, "landcover": 3}
+  ],
+  "reference_method": "Class means (nir,red) are (2,2/3) for label 1 and (7,2/3) for label 3. Equal second coordinates make the decision boundary nir=4.5. All sample points have a unique nearest mean. Outlier (6,0) from training class 1 must predict class 3, proving this is nearest class mean rather than nearest training observation. Training accuracy=5/6 and kappa=2/3. Held-out predictions [1,3,3,1,3] with order [3,1] yield [[2,1],[1,1]], accuracy 3/5 and kappa 1/6.",
+  "training_confusion": [[0,0,0,0],[0,2,0,1],[0,0,0,0],[0,0,0,3]],
+  "predictions": [1,3,3,1,3],
+  "validation_confusion": [[2,1],[1,1]]
+}

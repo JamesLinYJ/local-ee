@@ -32,6 +32,8 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 
 第八批增加七项有限 List 布局算法和 List.reduce，实际支持单输出归约及多输入无权回归。示例从列列表组装二次设计矩阵、拟合两个响应并预测，闭式系数、RMS 与残差正交性提供独立 N。zip/unzip 的正常截短行为与科学工作流的等长校验分别验证；空值政策、预算及未支持范围见 [第八批报告](../reports/gee-python-wave8.json)，无栅格 E/G。
 
+第九批增加有限静态欧式最小距离模型，真正训练类均值、预测独立要素并计算训练／验证误差矩阵。只支持 kNearest=1、CLASSIFICATION、完整平面数值属性和唯一最近类；精确 binary64 有理数政策及限制见 [第九批报告](../reports/gee-python-wave9.json)。S/C/静态 N 通过，不含图像分类、采样、随机森林或 Google 对照。
+
 第三批增加 `Join.inner`、唯一 maxDifference 的 And 组合，以及匹配 Feature 映射回 ImageCollection 的链路；最近前后观测插值有版本化合成来源／掩膜／目标时间参考，见 [第三批报告](../reports/gee-python-wave3.json)。S/C 与合成图 N 通过仍不构成原生引擎 E 或 Google G。
 
 | 用法 | 当前支持范围 | 证据 |
@@ -64,6 +66,7 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 | 静态 Array／矩阵 | 构造、get/length/toList/reshape/transpose、matrixTranspose/Multiply/Inverse/PseudoInverse/Solve | S/C 与静态独立 N；整数精确域不超过 2^53、最多 8 轴／10000 单元及共享工作预算；线性求解只接受满列秩方阵／超定矩阵；不含 Image.array*、栅格回归或分类器 |
 | 有限分类评估 | 静态 ConfusionMatrix、array／order／accuracy／kappa；内联 Collection.errorMatrix | S/C 与独立标签频数 N；<=64 类／4096 单元、非负整数计数总和 <=2^53、<=1000 完整记录，共享预算；显式类别表筛选，缺失／null、零分母、原始 List／浮点计数 Array、直接对象 JSON、Feature 属性对象和逐类指标拒绝；无 E/G、采样或分类器 |
 | 有限 List 计算 | zip／unzip／flatten／repeat／reverse／set／swap，List.reduce 的单输出归约及 linearFit／linearRegression | S/C/独立静态 N；布局 <=10000 顶层值、flatten 深度 96、reduce <=1000 行／32 回归列，共享工作与公开物化预算；typed Array 保留；空值／低样本政策明确且无 G 对照，不含任意 reducer 组合／权重 |
+| 静态最小距离分类 | minimumDistance／train／schema／CLASSIFICATION 模式、FeatureCollection.classify、训练 confusionMatrix | S/C/独立静态 N；欧式、k=1、1..1000 训练行／1..8 平面属性、类别 0..63、无子采样、共享预算；唯一最近类，等距和输出名碰撞拒绝，保留要素元数据；无图像分类／随机森林／E/G |
 | Algorithms.If | 静态条件，惰性编译选中分支 | S/C；不把影像对象当作静态布尔条件 |
 | 几何与地图 | 平面 WGS84 Geometry；Image/Collection/Feature.geometry；Map.centerObject、setCenter、addLayer | S/C；真实地图和 RGB 预览 N |
 | 影像导出 | toDrive 适配本地 GeoTIFF/NetCDF；region 精确掩膜、scale/crs、fileNamePrefix | 真实三角形区域 N；网页文件名回读 |
@@ -111,7 +114,7 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 
 - 全球 GEE 数据目录、私有 assets、任意 `require('users/...')` 模块和 Google Drive/Cloud Storage 上传。
 - 独立纯常量栅格与纯常量集合缺少明确的本地网格，仍拒绝；绑定到本地影像的 addBands 常量与日期 band 已支持。常量投影查询、任意异构类型、逐波段投影与跨网格语义仍需独立实现和验证。
-- 分类器、多变量／多响应栅格回归、动态形状／多数组波段和其余 Image.array* 运算、超出上述有限元数据范围的 join、邻域卷积、ui.Chart/ui.Panel 等完整 GEE 应用组件。已补固定形状数组布局／矩阵投影／归约及有限逐像元 linearFit，不能据此宣称完整栅格回归支持。
+- 除上述静态欧式最小距离子集外的分类器、图像分类、采样、多变量／多响应栅格回归、动态形状／多数组波段和其余 Image.array* 运算、超出上述有限元数据范围的 join、邻域卷积、ui.Chart/ui.Panel 等完整 GEE 应用组件。已补固定形状数组布局／矩阵投影／归约及有限逐像元 linearFit，不能据此宣称完整栅格回归支持。
 - 分数掩膜、球面/测地线几何、非 UTC 时区、分数月/年、任意 Joda 格式 token。
 - 任意 CRS transform、导出分片、bestEffort 和自定义 tileScale；不支持的参数明确失败。
 - 整数像元类型转换、Image 位运算和原始 GEE 的边界像元加权。GeoTrellis 整型 NoData 哨兵会占用合法数值，不能简单替换 cast 名称；完整类型提升仍待实现。当前 N 验收以浮点数值、网格和二值 NoData 为准。

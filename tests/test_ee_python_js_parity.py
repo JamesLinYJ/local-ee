@@ -53,6 +53,18 @@ const prior = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(c, c,
     leftField:'system:time_start', rightField:'system:time_start'}),
     ee.Filter.greaterThan({leftField:'system:time_start', rightField:'system:time_start'}))));
 const values = {
+  minimumSchema: ee.Classifier.minimumDistance().train(ee.FeatureCollection(
+    [[1,0,0],[1,0,2],[1,6,0],[3,5,0],[3,5,2],[3,11,0]].map(row =>
+      ee.Feature(null,{label:row[0],x:row[1],y:row[2]}))), 'label', ['x','y']).schema(),
+  minimumPredictions: ee.FeatureCollection([1,6,8].map(x => ee.Feature(null,{x:x,y:1})))
+    .classify(ee.Classifier.minimumDistance().train(ee.FeatureCollection(
+      [[1,0,0],[1,0,2],[1,6,0],[3,5,0],[3,5,2],[3,11,0]].map(row =>
+        ee.Feature(null,{label:row[0],x:row[1],y:row[2]}))), 'label', ['x','y']), 'pred')
+    .aggregate_array('pred'),
+  minimumTrainingMatrix: ee.Classifier.minimumDistance().train(ee.FeatureCollection(
+    [[1,0,0],[1,0,2],[1,6,0],[3,5,0],[3,5,2],[3,11,0]].map(row =>
+      ee.Feature(null,{label:row[0],x:row[1],y:row[2]}))), 'label', ['x','y'])
+    .confusionMatrix().array(),
   listLayout: ee.List.repeat(2,3).zip([10,20]).unzip().flatten().reverse().swap(0,-1).set(1,99),
   listRegression: ee.Dictionary(ee.List([[1,0,1],[1,1,2],[1,2,6],[1,3,7]])
     .reduce(ee.Reducer.linearRegression(2,1))).get('coefficients'),
@@ -123,6 +135,19 @@ def parity_values():
             leftField="system:time_start", rightField="system:time_start"),
             ee.Filter.greaterThan(leftField="system:time_start", rightField="system:time_start"))))
     py = {
+        "minimumSchema": ee.Classifier.minimumDistance().train(ee.FeatureCollection([
+            ee.Feature(None, {"label": label, "x": x, "y": y})
+            for label,x,y in [[1,0,0],[1,0,2],[1,6,0],[3,5,0],[3,5,2],[3,11,0]]]),
+            "label", ["x", "y"]).schema(),
+        "minimumPredictions": ee.FeatureCollection([ee.Feature(None, {"x": x, "y": 1})
+            for x in [1,6,8]]).classify(ee.Classifier.minimumDistance().train(ee.FeatureCollection([
+                ee.Feature(None, {"label": label, "x": x, "y": y})
+                for label,x,y in [[1,0,0],[1,0,2],[1,6,0],[3,5,0],[3,5,2],[3,11,0]]]),
+                "label", ["x", "y"]), "pred").aggregate_array("pred"),
+        "minimumTrainingMatrix": ee.Classifier.minimumDistance().train(ee.FeatureCollection([
+            ee.Feature(None, {"label": label, "x": x, "y": y})
+            for label,x,y in [[1,0,0],[1,0,2],[1,6,0],[3,5,0],[3,5,2],[3,11,0]]]),
+            "label", ["x", "y"]).confusionMatrix().array(),
         "listLayout": ee.List.repeat(2, 3).zip([10, 20]).unzip().flatten().reverse().swap(0, -1).set(1, 99),
         "listRegression": ee.Dictionary(ee.List([[1, 0, 1], [1, 1, 2], [1, 2, 6], [1, 3, 7]])
             .reduce(ee.Reducer.linearRegression(2, 1))).get('coefficients'),
@@ -172,7 +197,8 @@ def parity_values():
                                  "arrayLayout", "arrayEigen", "arrayCholesky", "arrayArithmetic",
                                  "rasterProjection", "rasterReduction", "rasterLinearFit",
                                  "confusionKappa", "labelErrorMatrix",
-                                 "listLayout", "listRegression", "listMean"])
+                                 "listLayout", "listRegression", "listMean",
+                                 "minimumSchema", "minimumPredictions", "minimumTrainingMatrix"])
 def test_python_and_javascript_reach_the_same_local_result(parity_values, case):
     javascript, python, metadata, items = parity_values
     left = compile_expression(javascript[case], metadata, items)

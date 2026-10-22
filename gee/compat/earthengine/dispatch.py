@@ -24,6 +24,14 @@ _METADATA_ARGUMENTS = {
 def invoke(translator, name, arguments):
     """Dispatch in the same precedence order as the legacy translator."""
     a = arguments
+    if name in {"Classifier.confusionMatrix", "FeatureCollection.classify"}:
+        from .classifier_features import invoke_classifier_features
+
+        return invoke_classifier_features(translator, name, a)
+    if name.startswith("Classifier."):
+        from .minimum_distance import invoke_classifier
+
+        return invoke_classifier(translator, name, a)
     from .raster_array_dispatch import handles_raster_array, invoke_raster_array
 
     if handles_raster_array(name, a):
