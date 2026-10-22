@@ -115,6 +115,15 @@ def sampling_columns(spec):
 
 def decode_sampling_spec(text):
     spec = _parse(text)
+    if type(spec) is dict and type(spec.get("version")) is int and spec["version"] == 2:
+        from .image_sampling_spec import validate_image_sample_spec
+
+        return validate_image_sample_spec(spec)
+    return _check_regions_spec(spec)
+
+
+def _check_regions_spec(spec):
+    """Shared v1 shape validation; callers must already enforce JSON bounds."""
     if type(spec) is not dict or set(spec) != SAMPLE_KEYS or type(spec["version"]) is not int or spec["version"] != 1:
         raise ValueError("Unsupported sampling specification fields or version")
     bands = _names(spec["bands"], 1, MAX_BANDS, "Sampling bands")

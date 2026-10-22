@@ -1,5 +1,7 @@
 # GEE Python 兼容清单
 
+第二十八批新增有限实际 `Image.sample`，支持全像元、factor／近似 numPixels、固定本地随机种子、缺测保留／删除、像元中心几何与 band_order。冻结源码回归 **2493 passed／3 skipped**（另排除4项延期原生测试），前端11／类型检查／构建通过；五个可信独立 JVM／栅格组件通过。取样内核与独立网格／哈希参考对比，已有 getInfo／CSV、filter／limit 和显式 schema 分类链路继续可用。入口 **277／991（27.95%）** 只统计名称，部分参数和数值语义仍受限。见 [语法](image-sampling.md)、[示例33](../../examples/33_GEE_python_image_sample.py)、[报告](../../reports/gee-python-wave28.json)。Google 抽样序列、完整 Spark／部署／浏览器验收未完成；邻域、随机列和自动训练 schema 仍待实现。
+
 第二十七批补齐真实 RF 要素分类、训练重代入与验证矩阵的七种访问器。完整便携回归 **2413 passed／3 skipped**（另排除4项延期原生测试），前端11／类型检查／构建通过；实际 JVM 要素预测、训练频数及四个栅格组件通过。支持内联及固定取样表；`getInfo()` 走受任务权限保护的 JSON 结果，分类表继续支持 CSV。相同训练／预测取样 IR 复用固定来源分支，空表不产生假行，零分母明确失败。新增内容扩展了已有 API 的运行语义，入口仍为 **276／991（27.85%）**，不能作为完整兼容率。见 [要素验证语法](rf-validation.md)、[示例 32](../../examples/32_GEE_python_rf_validation.py) 和 [报告](../../reports/gee-python-wave27.json)。完整 Spark／部署／浏览器／Google 对照仍未验收。
 
 第二十六批 [报告](../../reports/gee-python-wave26.json) 与 [RF语法文档](random-forest.md)：新增实际 Smile1.5.3 随机森林，内联／采样表运行时训练、影像分类、六参数、独立 SPI／依赖锁与对象类型边界。完整回归 **2293 passed／3 skipped**（另排除4项延期原生测试），前端11／构建通过；新增3项Python／JS SDK图一致性，四个真实tile组件通过。1000×8／100树的真实组件训练与256²像元预测通过；Unicode名称码点控制另有最终定向核验。入口 **276／991（27.85%）** 只表示名称，参数／数值仍有明确限制；RF explain／表分类／混淆矩阵／随机列／其他模式／band_order推断尚未实现，完整Spark／部署／浏览器／真实数据／Google对照仍未验收。
@@ -8,7 +10,7 @@
 第二十五批 [报告](../../reports/gee-python-wave25.json)：新增标签 Image.remap、受限 Filter.expression、取样表 filter／无排序 limit 及累计资源计费。示例 30 的标签掩膜、17 个几何候选位置、15 行有效样本、14 行 notNull、11 行条件通过和 8 行限量训练，以及三度量预测，有独立原始网格参考。便携 Python **2068 passed／3 skipped**（另排除 4 项原生测试），前端 **11 passed**／构建通过，SDK 图一致性 **77**，真实 tile 内核通过。入口 **275／991（27.75%）** 只表示名称，不是完整参数或计算兼容率。完整 Spark／部署／浏览器／真实数据／Google 验收未运行；[该批尚未实现随机森林](random-forest-roadmap.md)。
 
 第二十四批 [报告](../../reports/gee-python-wave24.json) 与 [取样语法文档](sampling.md)：接通有限 sampleRegions、实际样本运行时训练、栅格分类与样本 getInfo／CSV 任务合同。便携 Python **1882 passed／3 skipped**（另排除 4 项原生测试）、前端 **11 passed**／构建通过，Python／JS 官方客户端一致性 **72** 项；取样与分类的可信独立 JVM tile 内核均通过。API 名称入口 **273／991（27.55%）**，参数和数值语义仍需逐项验证；此数值不代表完整兼容率。完整 Spark cube、部署／浏览器、真实数据和 Google 对照未运行。
-状态：2026-10-23，第二十六批持续实施，整体兼容目标尚未完成。
+状态：2026-10-23，第二十八批已验证，整体兼容目标尚未完成。
 
 第二十三批 [验证报告](../../reports/gee-python-wave23.json)：新增有限 `Image.classify` 的 schema 选择、精确模型编译、Python 桥与真实 GeoTrellis tile 内核，训练仍使用内联要素。macOS ARM64 Python **1751 passed／3 skipped**（启用可信独立 JVM 内核测试，另排除 4 项原生运行测试），前端 **11 passed**、TypeScript／构建通过；较[第二十二批](../../reports/gee-python-wave22.json)增加 66 项通过。独立 tile 内核是组件运行证据，完整 Spark cube、沙箱任务、HTTP／浏览器、部署和 Google 对照均未在本批验收。
 

@@ -154,9 +154,12 @@ def sampled_table_known_empty(sampled):
     """Report only emptiness proved by a literal region list or limit(0)."""
     from ...sample_table_spec import decode_sample_operation
     from ...sampling_spec import decode_sampling_spec
+    from ...image_sampling_spec import is_image_sample
 
     spec = decode_sampling_spec(sampled.spec)
     if not spec["regions"]["features"]:
+        return True
+    if is_image_sample(spec) and spec["image_sample"]["num_pixels"] == 0:
         return True
     for text in _current_operations(sampled):
         operation = decode_sample_operation(text)

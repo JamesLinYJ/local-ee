@@ -53,6 +53,13 @@ const entries: ReferenceEntry[] = [
     code: "import ee\n# image、training 为已有本地影像和训练表\nmodel = ee.Classifier.smileRandomForest(\n    numberOfTrees=100, variablesPerSplit=1, minLeafPopulation=1,\n    bagFraction=0.5, maxNodes=None, seed=42,\n).train(features=training, classProperty='label',\n        inputProperties=['red', 'nir'])\nclassified = image.classify(model, 'landcover')\nprint(classified.bandNames())",
   },
   {
+    id: "gee-python-image-sample",
+    category: "GEE Python",
+    title: "Image.sample 像元取样",
+    text: "sample 支持显式 region 或有限影像范围、factor 或近似 numPixels、seed、dropNulls 和像元中心 geometries。随机选择采用本地固定算法，未保证与 Google 抽中相同行。dropNulls=False 保留空值，训练前可用 notNull 筛除。get('band_order') 返回波段顺序，训练仍须显式 inputProperties。最多1000行；近似数量超过上限会失败。仅支持 tileScale=1 和本站已声明网格／投影范围。完整原生任务与 Google 对照仍须单独验收。",
+    code: "samples = image.sample(region=roi, numPixels=100, seed=42,\n                       dropNulls=False, geometries=True)\nprint(samples.get('band_order').getInfo())\nclean = samples.filter(ee.Filter.notNull(['red', 'nir']))\ntask = ee.batch.Export.table.toDrive(collection=clean, fileFormat='CSV')\ntask.start()",
+  },
+  {
     id: "gee-python-rf-validation",
     category: "GEE Python",
     title: "分类验证、混淆矩阵与 getInfo()",

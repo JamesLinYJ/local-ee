@@ -38,6 +38,10 @@ def invoke(translator, name, arguments):
         from .raster_sampling import invoke_sample_regions
 
         return invoke_sample_regions(translator, a)
+    if name == "Image.sample":
+        from .image_sampling import invoke_image_sample
+
+        return invoke_image_sample(translator, a)
     if handles_array_bands(name, a):
         return invoke_array_bands(translator, name, a)
     if name in {"Classifier.confusionMatrix", "FeatureCollection.classify"}:

@@ -211,11 +211,15 @@ def _sampling_process_spec(name):
         "id": name, "experimental": True,
         "summary": "Sample real raster cells" if sample else "Train exact class means from real samples",
         "description": (
-            "Top-level trusted extension with a canonical version1 JSON string specification. "
+            "Top-level trusted extension with a canonical JSON string specification: "
+            "version1 for sampleRegions, version2 for Image.sample, version1 for training. "
             "No URLs, callbacks or executable literal properties. Sampling uses real finite spatial "
             "cube cells and planar WGS84 Point/MultiPoint/Polygon/MultiPolygon regions; points select "
-            "the containing half-open cell, polygons require positive intersection area. Selected "
-            "NoData drops rows; overlapping different features preserve their separate samples. "
+            "the containing half-open cell. Version1 polygons require positive intersection area; "
+            "version2 polygons cover pixel centers and preserve band_order metadata. Version2 "
+            "supports local deterministic factor/approximate numPixels selection before null filtering, "
+            "optional retained null cells and finite missing tiles. Google RNG is not promised. "
+            "Version1 NoData drops rows; overlapping different features preserve separate samples. "
             "At most1000 rows/50000 cells/1MB output, with existing grid/key/decoded-cell limits. "
             "Training accepts only a sample-table node, with existing exact minimumDistance metrics, "
             "explicit1..8 property schema, labels0..63, k1 CLASSIFICATION and shared work bounds. "

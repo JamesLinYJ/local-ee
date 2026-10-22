@@ -1,0 +1,251 @@
+{
+  "schema": "local-ee-python-wave28/v1",
+  "date": "2026-10-23",
+  "base_commit": "b2b16450fc2b16a29ace791bf1458bf4ca5e47e7",
+  "title": "Finite-grid Image.sample with nullable results and grid-stable bounded subsampling",
+  "entry_inventory": {
+    "declared_handler_names": 277,
+    "pinned_signatures": 991,
+    "name_entry_percentage": 27.95,
+    "new_names": [
+      "Image.sample"
+    ],
+    "interpretation": "Name entries only, not complete parameter, language, numerical or Google compatibility"
+  },
+  "changes": [
+    "Strict v2 opaque sample spec through existing audited sample process; v1 sampleRegions preserved",
+    "Actual finite-grid native sampler and source-tile left join, center-covered ROI, true Float64 and optional nulls",
+    "Local seeded factor or approximate numPixels selection before dropNulls; global row/column deterministic ordering",
+    "band_order metadata and existing filter/limit/explicit-schema training/RF validation/getInfo/CSV/map/GeoTIFF graph consumers",
+    "Separate finite candidate bounds and actual source bounds, inherited decoded/key/work/output caps and serializable Spark closure captures"
+  ],
+  "validation": {
+    "full_portable_suite": {
+      "passed": 2493,
+      "skipped": 3,
+      "failures": 0,
+      "native_runtime_tests_excluded": 4,
+      "warnings": "3 existing rasterio PendingDeprecationWarnings",
+      "source_digest_unchanged": true,
+      "evidence": "audit/gee-python-wave28/final-reviewed/python.xml",
+      "command": "GEE_AUDIT_DIR=audit/gee-python-wave28/final-reviewed and all five LOCAL_EE_RUN_*_KERNEL_TEST=1; .venv/bin/python -m pytest -q --ignore=tests/test_native_runtime.py --junitxml=<evidence> --basetemp=<owned scratch>",
+      "real_components": "Image.sample, sampleRegions, remap, minimumDistance, Smile RF trusted standalone JVM/tile checks; no SparkContext"
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "production_build": "passed",
+      "deployed": false
+    },
+    "SDK": {
+      "version": "1.7.49",
+      "signatures": 991,
+      "arguments": 2451,
+      "classes": 48,
+      "callables": 1797,
+      "full_inventory_byte_identical": true,
+      "inventory_sha256": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12",
+      "original_probes": {
+        "serialized": 50,
+        "compiled": 45,
+        "rejected": 5
+      },
+      "Python_JS": "Offline official SDK semantic graph parity, including embedded JSON numeric values; no claim of byte-identical integer/float lexemes or numerical output equivalence"
+    },
+    "actual_Image_sample_component": {
+      "jar_sha256": "d5023d0ec7bca396dd40e240cfd224861157b1e10b98c793186277671bd16ac0",
+      "case_rows": {
+        "whole-finite-grid-nullable": 32,
+        "whole-finite-grid-drop-nulls": 26,
+        "center-boundary-and-hole": 24,
+        "multi-point-half-open-and-deduplicated": 3,
+        "factor-seed-77": 22,
+        "approx-num-pixels-4": 6,
+        "num-pixels-zero-empty": 0,
+        "valid-geometry-outside-grid-empty": 0
+      },
+      "missing_edge_tile_rows": 4,
+      "invalid_options_rejected": 11,
+      "controls": "32 all-pixel nullable rows;26 after4missing+2masked; Float64 nextafter(1); polygon boundaries/holes; duplicate half-open multipoints; factor; approximate numPixels4 ->6 actualrows; zero/outside empty; tile-order invariance; Infinity/key/row/output controls",
+      "scope": "Actual trusted GeoTrellis pixel kernel against independently enumerated raw grid/hash reference. The missing-edge regression separates finite candidate bounds from narrower source bounds. RDD adapter source/closure contracts checked; actual Spark RDD join/batch not run"
+    },
+    "trusted_task_IO": "Real CSV writers, worker finalization, owned result readback and parent-user permission logic tested with explicit fixture queue/storage/pixels. These tests are separate from native pixel proof.",
+    "review_correction": "Independent review found finite candidate bounds incorrectly reused narrower source bounds. Fixed and regressed before final reviewed full run. Preliminary2491/2492 suites are historical pre-fix evidence, not final acceptance.",
+    "G": "not_run"
+  },
+  "limits": {
+    "sampler": "1..64 scalar bands,1finiteROI,10000coordinates,1000rows/256columns/50000cells/1MB JSON and CSV; candidate work67108864,100000source/candidate keys,10M decoded cells/tile and100M source decoded cells; compound budgets apply",
+    "selection": "All pixels by default; factor finite(0,1] or numPixels integer0..1000 mutually exclusive. numPixels Bernoulli probability=min(1,n/ROI-grid-population) including masked/missing pixels; may exceed row cap then explicitly fails without truncation/reseeding. Signed32 seed; splitmix64-grid-v1; selection precedes null filtering",
+    "geometry_grid": "Finite planar WGS84 ROI/default footprint; polygon centers covered including boundary, point half-open cell ownership. Optional actual WGS84 center geometries. Existing projected EPSG/meter resampling+actual-grid verification; projection without scale, geographic meter scale and tileScale!=1 reject",
+    "metadata_values": "band_order is declared collection metadata; native/CSV only supplies actual values. dropNulls=false alone allows null samples. Training remains explicit inputProperties; default schema inference not guessed"
+  },
+  "not_supported": [
+    "Google RNG/selected-row parity and spherical boundary equivalence",
+    "Cross-tile neighborhoods,randomColumn,automatic classifier schema,other RF modes/explain/model persistence",
+    "Arbitrary dynamic metric algebra,post-classification transforms,all remaining APIs/parameters/global data/services",
+    "Full Spark/batch/sandbox/HTTP/browser/deployment/private-data and Google same-data acceptance"
+  ],
+  "preservation": {
+    "accounts_research_data_results": "untouched",
+    "native_configuration_and_dependency_locks": "untouched",
+    "VMs_containers_services": "not created,restarted or deployed",
+    "sandbox_network_filesystem_policy": "unchanged",
+    "goal": "active; full objective incomplete"
+  },
+  "cleanup": {
+    "removed": [
+      {
+        "path": "work/gee-python-wave28-native",
+        "regular_file_bytes": 251769,
+        "symlinks_unlinked_without_following": 0
+      },
+      {
+        "path": "work/gee-python-wave28-pytests",
+        "regular_file_bytes": 13507208,
+        "symlinks_unlinked_without_following": 89
+      },
+      {
+        "path": "work/gee-python-wave28-frozen-pytests",
+        "regular_file_bytes": 13507947,
+        "symlinks_unlinked_without_following": 89
+      },
+      {
+        "path": "work/gee-python-wave28-reviewed-pytests",
+        "regular_file_bytes": 13508629,
+        "symlinks_unlinked_without_following": 89
+      },
+      {
+        "path": "work/gee-python-wave28-web",
+        "regular_file_bytes": 1675464,
+        "symlinks_unlinked_without_following": 0
+      },
+      {
+        "path": "work/gee-python-wave24-native",
+        "regular_file_bytes": 1853660,
+        "symlinks_unlinked_without_following": 0
+      },
+      {
+        "path": "work/gee-python-wave25-native",
+        "regular_file_bytes": 3758374,
+        "symlinks_unlinked_without_following": 0
+      },
+      {
+        "path": "work/gee-python-wave27-native",
+        "regular_file_bytes": 499343,
+        "symlinks_unlinked_without_following": 0
+      },
+      {
+        "path": "work/audit/gee-python-wave28-native",
+        "regular_file_bytes": 14053,
+        "symlinks_unlinked_without_following": 0
+      }
+    ],
+    "removed_bytes_total": 48576447,
+    "preliminary_probe_binaries_removed": [
+      {
+        "path": "audit/gee-python-wave28/final/local-ee-smile-rf-adapter.jar",
+        "bytes": 53832
+      },
+      {
+        "path": "audit/gee-python-wave28/final-frozen/local-ee-smile-rf-adapter.jar",
+        "bytes": 53832
+      }
+    ],
+    "retained": "Final Image.sample and RF JARs/manifests, numerical JSON/XML evidence and source fixtures; pinned Smile dependencies, .native/.venv, accounts/data/results untouched",
+    "check": "Every removed scratch directory had empty lsof stdout/stderr before deletion; no symlink targets followed"
+  },
+  "source_files_sha256": {
+    "AGENTS.md": "42edabc1b3160290b8869ea64bf31ad319ec3404541696403e608f15e511e6c9",
+    "GOAL.md": "92b2f0694701cdf940da118755e89f243656d38fd308ea41614b1803e359f709",
+    "docs/architecture.md": "3f8bcbdcb5059b54b0dedbf42beb3770c3d2e0914bfbaf35a965175f0eaf30f3",
+    "docs/cloud-handoff.md": "a4ff1fcfa31f5a770d8d04b1be14c958ce47324b646dbd7b4d8c15b3cbe6c538",
+    "docs/gee-compatibility.md": "f513980c6a0490981eb3ce26887b84a5faf977ce8714125a474c5e8bdbf50c8c",
+    "docs/gee-python/image-sampling.md": "de82f09652a5b2f1b6e9a0dc4e8feae03eefe37c9ff2337e749d7c42b3004161",
+    "docs/gee-python/list.md": "3c7479b4dd6f65a100c075591dcc7a781c6f44a5b115480afd6d889f39fc0087",
+    "engine/ee_image_sample_adapter.scala": "952fdaa816a05e5a256eda0c90ce4a51b14f4f0bcab8c52805e4a5f42ae987cd",
+    "engine/ee_image_sample_kernel.scala": "d0cff74dfd115f35f8b5a55373e21d60b3b140b04c87a4ac5d5987394a60b937",
+    "engine/ee_image_sample_options.scala": "b5e01a21a9ca2141919d30188b8504e39d78e90325ef89342767116181f1a900",
+    "engine/ee_sampling.py": "c38463d48da81ab4dc866131d8c5c2c71bab1566374e78fda67561f4f3d4f2ea",
+    "examples/33_GEE_python_image_sample.py": "c44b547a6305e6d5720ea1667fbd441ebf184249978a1758d6cb60dba67424de",
+    "gee/compat/earthengine/capabilities.py": "73f5bcd0ba72b7c5bb437cdd2b823108cb1a3cd4089d02e0f52762425d944e20",
+    "gee/compat/earthengine/classifier_features.py": "1716acf6df686381ee9867f0983f7d605140995eb775180df376c075825fcd33",
+    "gee/compat/earthengine/dispatch.py": "2a265500304caf3c22702cf87a83b53f0ca3b73df23bc02f86311b3c54423526",
+    "gee/compat/earthengine/image_sampling.py": "6151965b58e905860913212999094cc2c18cc88f677d43ea7a73b39fa46e0756",
+    "gee/compat/earthengine/metadata_ops.py": "24ff582e2e94acb11dbb5f672f032b19bddc0b92ea6564eb46e68bfd20ed7bd5",
+    "gee/compat/earthengine/sampled_feature_ops.py": "7677e920853faec6a3b6d01cef9b580770b31bc4f873e00c0cfe30350c9145b7",
+    "gee/image_sampling_spec.py": "a2f9d0c1ec7705a88d5133a2f8383a6c02dabf977076cbf73403a827730a2fd4",
+    "gee/local_processes.py": "c6a978a04476a290eae27568b86c0717f2266ca58b38d0578179cf849301eedc",
+    "gee/sampling_spec.py": "1b5d2339526b8619f6ec97dd5b20a3e789ee347b2cfcfed4f0627c47a4fd38c7",
+    "gee/sampling_values.py": "0a069c13597e6c2a3327f48a90e740252b1108231ecbb2c384bbd8176377557f",
+    "reports/gee-api-inventory.json": "6a851083008d60659532a9ad87c02437740901b99faa2a0017e9e6a23a088675",
+    "scripts/build_integer_adapter.py": "29f0248a12d4982b4e0ffbc9a8ecbe2c4aff6e981747eadbfff174ab5acdae15",
+    "scripts/ee_inventory/catalogue.py": "e480e740dfa907e253b0e4429140c4ca8679599f944ca657478937d2361d4028",
+    "tests/ee_image_sample_assertions.py": "a1116dd885ed20f978c80f7e8cb207377ef2d380d9a1fedda97674997ea0b7d8",
+    "tests/ee_image_sample_parity.py": "fcdd13a6aca8e4aeb487197bf4a60d4d1b540421d10d6e52ae64557a45ede18e",
+    "tests/ee_image_sample_reference.py": "0c17ef97ba8046cf7611706e07e5d9164d1a0e21bda728d4043d6951316d2fe8",
+    "tests/ee_image_sample_workflow_helpers.py": "8f7f9fe74f006fa0750bf6da88b70a06e30f64b6f64c29cb98ca54c21ee2fd45",
+    "tests/fixtures/ee-image-sample-kernel-probe.scala": "5a9d355fe77820860afcc02dea44abde1e7ee3c81f5512acf20bf54ff0e4e36f",
+    "tests/fixtures/ee-image-sample-kernel-v1.json": "3ba021aafbb6c9d822d366fbd6d07aac186ca182b0906f628f0cdfe3024ca4e3",
+    "tests/fixtures/ee-image-sample-rf-v1.json": "929f7629ecd9de0ba66a176f0047f37ea06f4e7b4b5b2975c74961b0e494fd4d",
+    "tests/test_ee_image_sample_kernel.py": "6b106381bbb605a473a179436d0a73f49b147662e270a641f9ee87606ae22ac2",
+    "tests/test_ee_image_sample_native_sources.py": "360d6f12b64eef14a34d3a9c02620ef0160d28d085b820cb4d1ead26a0618c32",
+    "tests/test_ee_image_sample_workflow.py": "2044d69610bf68cb3a8ce3bf0fefe99a78166be7ea6616d1144cb74382a7c7e7",
+    "tests/test_ee_image_sampling_compiler.py": "d25dcecf51913298cc9f8251e61b50e4c3a790939c2e81c85c941ab9bea76d45",
+    "tests/test_ee_image_sampling_native_bridge.py": "882a1781dd991f7799cf7bae321e4122b6a6ed1e2b1cd712728d170f16159ccc",
+    "tests/test_ee_image_sampling_service.py": "b1a352fb1dad303ab485cc3b4def2042dcb7f92abf8b76b76a6b20109be805df",
+    "tests/test_ee_image_sampling_spec.py": "370177081f013d32fcfc671f5f06624ab8a458a12eca1a2c4c80b5b457e99ccf",
+    "tests/test_ee_image_sampling_values.py": "91223758e786344590f86514558c8bda9aa80386110bb58e1eb6e343c366c44b",
+    "web/src/docs/gee-docs.ts": "18c128c9d76bdb8f94479c59a32e7c94719f19486f3dc18f7cfc0d38c68e28d9",
+    "web/src/docs/local-docs.ts": "c6cb88de3bd8c60af394e3821de7a0361d7a4f88e261fd0f19e8eb6bd0949830"
+  },
+  "local_evidence_sha256": {
+    "audit/gee-python-wave28/cleanup.json": "58008ab4ebbf8e8d400220ee71a894cfb1158eac8f134ec1f8787b50f57d1ff3",
+    "audit/gee-python-wave28/final/classifier-kernel-cases.json": "5ce6081b073963e4347fe330c3a67f1999d9c8c7f395968b22cb0d4db633dd54",
+    "audit/gee-python-wave28/final/classifier-kernel.json": "9426ec9a9ef5cefb313b92d66cdb1927f92e4863325790b03dc65c78d0c847a2",
+    "audit/gee-python-wave28/final/local-ee-smile-rf-adapter.jar.sha256": "a305517b64f74ce18905458f40d2917853290d6f77ef1e686851b125b90fac74",
+    "audit/gee-python-wave28/final/python.xml": "d478ccfb1140556fb0ecf4cfcfad6e3926c2aebf613a6545e0912f4dc6c12cd1",
+    "audit/gee-python-wave28/final/remap-adapter.manifest.json": "5cd063834019edc6de10abd5bc27e5a0516e4ac7a9e78c26d5363a7ea2c56675",
+    "audit/gee-python-wave28/final/remap-cases.json": "a3cbd3153459a70827437ffe2833757226f76d9c3399335648f46564e989d37d",
+    "audit/gee-python-wave28/final/remap-result.json": "3af618595f6af21c6c495f14e1995e0a0addec1afe0f75f6707f898595ac8d53",
+    "audit/gee-python-wave28/final/sample-kernel-cases.json": "96921659de4a33b04e8029fa28cb45d828646ec5fdf783400f5422dd883e531f",
+    "audit/gee-python-wave28/final/sample-kernel.json": "b3bff86e7d959ab8500be6f544f4b6241ea7f2e3ea74a3a8c71f5836c91abf66",
+    "audit/gee-python-wave28/final/smile-rf-adapter.manifest.json": "13c9a52e966acd4737013a29e2184804e2627a3c2cad20f0324b8da7f1a0e112",
+    "audit/gee-python-wave28/final/smile-rf-kernel-cases.json": "f9106c8e8e5a9f74ccb8e0938459f0d10bc1fe986879a9de9d20f8d4b8e3d968",
+    "audit/gee-python-wave28/final/smile-rf-kernel-result.json": "c9b1a8441ee18f5a6d2131a22877cd6108ccebcd95ea67a2b63f9f2457f2aea6",
+    "audit/gee-python-wave28/final-frozen/classifier-kernel-cases.json": "5ce6081b073963e4347fe330c3a67f1999d9c8c7f395968b22cb0d4db633dd54",
+    "audit/gee-python-wave28/final-frozen/classifier-kernel.json": "c51243cec3a55e486ba4d6ebd6683d7033092dbe342167cf2349d6b2ef8aef32",
+    "audit/gee-python-wave28/final-frozen/local-ee-smile-rf-adapter.jar.sha256": "89ebdaece15d52a5a688efe2fe57afbe00822a133cec39367ae92154a0d0e72f",
+    "audit/gee-python-wave28/final-frozen/python.xml": "b53be6ba7d02e45255257f4ba0f5df448c2cfd0da3237d3dea52786b1304b1b1",
+    "audit/gee-python-wave28/final-frozen/remap-adapter.manifest.json": "6e82ac0d8bac2ad2f220e9dc6f32719edbafcaf5ddbe0a3b1bb62eb17995abab",
+    "audit/gee-python-wave28/final-frozen/remap-cases.json": "a3cbd3153459a70827437ffe2833757226f76d9c3399335648f46564e989d37d",
+    "audit/gee-python-wave28/final-frozen/remap-result.json": "8d8956106f5b79491f0a582e1e2bd293823834bef3fcdaee50780165841159ac",
+    "audit/gee-python-wave28/final-frozen/sample-kernel-cases.json": "96921659de4a33b04e8029fa28cb45d828646ec5fdf783400f5422dd883e531f",
+    "audit/gee-python-wave28/final-frozen/sample-kernel.json": "b3bff86e7d959ab8500be6f544f4b6241ea7f2e3ea74a3a8c71f5836c91abf66",
+    "audit/gee-python-wave28/final-frozen/smile-rf-adapter.manifest.json": "01fc4d1712eef8c0cb2b242c1022ea3de578908ad55ca12de08cefdeb729032e",
+    "audit/gee-python-wave28/final-frozen/smile-rf-kernel-cases.json": "f9106c8e8e5a9f74ccb8e0938459f0d10bc1fe986879a9de9d20f8d4b8e3d968",
+    "audit/gee-python-wave28/final-frozen/smile-rf-kernel-result.json": "3d3fbb65c29042f8aaa4787c105bdf5e27fdbdb048e02b5ec4bfea698871bd7d",
+    "audit/gee-python-wave28/final-reviewed/classifier-kernel-cases.json": "5ce6081b073963e4347fe330c3a67f1999d9c8c7f395968b22cb0d4db633dd54",
+    "audit/gee-python-wave28/final-reviewed/classifier-kernel.json": "a5aa33fa1b725cb260e29b619a2af9a239ea6aefb57be64235d614c4ab179186",
+    "audit/gee-python-wave28/final-reviewed/image-sample-native-kernel.json": "9e475ae8b842292888a8727d626942dca40214403ddac0aa6daf2d376b37df0f",
+    "audit/gee-python-wave28/final-reviewed/local-ee-integer-adapter.jar": "d5023d0ec7bca396dd40e240cfd224861157b1e10b98c793186277671bd16ac0",
+    "audit/gee-python-wave28/final-reviewed/local-ee-integer-adapter.jar.manifest.json": "65807e1da43989d50ce594f428e254997e242e97f3d8993a73c83fc37cef5048",
+    "audit/gee-python-wave28/final-reviewed/local-ee-smile-rf-adapter.jar": "e5967bc6bff596867505fed3b76609c8487bb56076f739f8321027c032e98cfd",
+    "audit/gee-python-wave28/final-reviewed/local-ee-smile-rf-adapter.jar.sha256": "8bacc04b782146a181177e48ae376f085bc5fe6c2912381a54874438a1ed18a4",
+    "audit/gee-python-wave28/final-reviewed/python.xml": "d4ec4d290d2d7155c9d066f0ac4357373aba28e23e091d2bc1f34c3044d750ae",
+    "audit/gee-python-wave28/final-reviewed/remap-adapter.manifest.json": "0221bb788f0cae7c688319b05e22b975696f689836b58e652dacb345252432b3",
+    "audit/gee-python-wave28/final-reviewed/remap-cases.json": "a3cbd3153459a70827437ffe2833757226f76d9c3399335648f46564e989d37d",
+    "audit/gee-python-wave28/final-reviewed/remap-result.json": "472c2e3370cc6995cfa700ebf66f18843d7c89315c2b1207014dc4c709ff5b77",
+    "audit/gee-python-wave28/final-reviewed/sample-kernel-cases.json": "96921659de4a33b04e8029fa28cb45d828646ec5fdf783400f5422dd883e531f",
+    "audit/gee-python-wave28/final-reviewed/sample-kernel.json": "b3bff86e7d959ab8500be6f544f4b6241ea7f2e3ea74a3a8c71f5836c91abf66",
+    "audit/gee-python-wave28/final-reviewed/smile-rf-adapter.manifest.json": "ea781b23f1e7393f7d1f2c644a610a97c157109607b9b442ba81910bf3c9de5a",
+    "audit/gee-python-wave28/final-reviewed/smile-rf-kernel-cases.json": "f9106c8e8e5a9f74ccb8e0938459f0d10bc1fe986879a9de9d20f8d4b8e3d968",
+    "audit/gee-python-wave28/final-reviewed/smile-rf-kernel-result.json": "132f51e1d8cb0dbf545746d029b1673c443530bbb1a74afc834db3a3b1a5ec83",
+    "audit/gee-python-wave28/frontend.json": "857b09a605eece20ff1f3b285c94391b4356c982aebdd498ab2f486a8e789261",
+    "audit/gee-python-wave28/frozen-source-before.json": "51cea4111df72d5c12bbc33258e6982682d321facf1590aefe4d2bdb398e0023",
+    "audit/gee-python-wave28/implementation-contract.md": "4ee370ba8dc487336d6269d3e5137965d11e1f22f9e6adc925fd206aa5f14471",
+    "audit/gee-python-wave28/python-api-inventory.json": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12",
+    "audit/gee-python-wave28/python-probes.json": "e8cabef9b8eb92eb56208d6d8117e977efc0c75b83af2cbf9d901a676697a728",
+    "audit/gee-python-wave28/review-record.json": "748704e12a9d7027513ac49055f7a671a28d3f548f15382410a6c40fa63e3c90",
+    "audit/gee-python-wave28/reviewed-source-before.json": "4dfecfd6a1256d7189a55db31bac22649d00c4a63f0e8afc74328705f08c8146"
+  }
+}

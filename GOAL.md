@@ -16,7 +16,9 @@
 
 ## 当前基线
 
-- 最新第二十七批接通真实 RF 的 FeatureCollection.classify、训练重代入矩阵与独立表 errorMatrix 的七种访问器，以及受原有任务权限／物理文件边界保护的 JSON getInfo／CSV 导出。根作用域仅缓存不可变取样／训练 IR；相同训练与预测表复用固定 sampler，mapped 环境不缓存。空表保留空行，显式顺序空矩阵为零，未定义指标失败。完整便携回归2413 passed／3 skipped（另排除4项延期原生测试），前端11／类型检查／构建通过；实际可信 JVM 验证 Float64 要素预测、32行重代入频数、空查询与7非法查询，并继续通过四个栅格组件。入口仍为276／991（27.85%），本批扩展已有方法语义；未部署，无完整Spark／浏览器／Google同数据验收。随机列、其他模式／分类器、动态指标通用算术、分类后筛选、模型保存及完整API兼容仍待做。见 reports/gee-python-wave27.json 与 docs/gee-python/rf-validation.md。
+- 最新第二十八批新增实际 Image.sample：有限 footprint／ROI、factor 或近似 numPixels、固定本地 seed、dropNulls、中心几何与 band_order 元数据，继续复用采样表筛选／训练／RF验证／getInfo／CSV 路由。原 sampleRegions v1 保留，v2 经同一公开进程进入独立原生 SPI；缺失瓦片可保留空值，所有源键／形状／重复／解码和输出预算仍验证。冻结源码完整回归2493 passed／3 skipped（另排除4项延期原生测试），前端11／类型检查／构建通过；五个可信独立 JVM／栅格组件通过，取样有独立网格／随机参考。入口277／991（27.95%）仅表示名称，不是完整参数／数值兼容率。未部署，无完整Spark／服务／浏览器／Google对照；邻域、随机列、自动schema及完整API仍待实现。见 reports/gee-python-wave28.json、docs/gee-python/image-sampling.md。
+
+- 第二十七批历史记录：接通真实 RF 的 FeatureCollection.classify、训练重代入矩阵与独立表 errorMatrix 的七种访问器，以及受原有任务权限／物理文件边界保护的 JSON getInfo／CSV 导出。根作用域仅缓存不可变取样／训练 IR；相同训练与预测表复用固定 sampler，mapped 环境不缓存。空表保留空行，显式顺序空矩阵为零，未定义指标失败。完整便携回归2413 passed／3 skipped（另排除4项延期原生测试），前端11／类型检查／构建通过；实际可信 JVM 验证 Float64 要素预测、32行重代入频数、空查询与7非法查询，并继续通过四个栅格组件。入口仍为276／991（27.85%），本批扩展已有方法语义；未部署，无完整Spark／浏览器／Google同数据验收。随机列、其他模式／分类器、动态指标通用算术、分类后筛选、模型保存及完整API兼容仍待做。见 reports/gee-python-wave27.json 与 docs/gee-python/rf-validation.md。
 
 - 官方客户端版本和提交见 `vendor/earthengine-js/upstream-lock.json`。
 - 官方 Python 客户端已按同一提交固定，见 `vendor/earthengine-python/upstream-lock.json`；Python 和 JS 共享本地 EE 编译器及算法支持边界，Python/openEO `connection` 继续保留。

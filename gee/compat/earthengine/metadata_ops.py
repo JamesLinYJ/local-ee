@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from dataclasses import replace
 
-from .ir import fail
+from .ir import SampledFeatures, fail
 from .public_values import public_result
 
 
@@ -17,6 +17,24 @@ def invoke_metadata(translator, name, arguments):
     a = arguments
     if name in {"Element.get", "Element.propertyNames", "Image.get"}:
         obj = a.get("object", a.get("image", a.get("element")))
+        if isinstance(obj, SampledFeatures):
+            from ...image_sampling_spec import sample_collection_properties
+            from ...sampling_spec import decode_sampling_spec
+
+            if translator.steps + 2 * len(obj.spec) + 2 > 50_000:
+                fail("Sampled collection metadata exceeds the 50000-step compilation work budget")
+            translator.steps += 2 * len(obj.spec) + 2
+            try:
+                spec = decode_sampling_spec(obj.spec)
+                properties = sample_collection_properties(spec)
+            except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
+                fail(f"Sampled collection metadata has an invalid specification: {exc}")
+            if name.endswith("propertyNames"):
+                return list(properties)
+            key = a["property"]
+            if type(key) is not str:
+                fail("Feature property name must be a string")
+            return properties.get(key)
         if name.endswith("propertyNames"):
             if obj.mapped:
                 fail("propertyNames inside map depends on per-item metadata")

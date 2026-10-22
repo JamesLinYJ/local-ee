@@ -25003,12 +25003,14 @@
       "description": "Samples the pixels of an image, returning them as a FeatureCollection. Each feature will have 1 property per band in the input image. Note that the default behavior is to drop features that intersect masked pixels, which result in null-valued properties (see dropNulls argument).",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite local spatial image with explicit planar WGS84 Point/MultiPoint/Polygon/MultiPolygon ROI or finite source footprint. Fixed source grid,1..64 scalar bands; polygon pixel centers covered including boundary, points half-open containing cell and duplicates once. All pixels by default; factor(0,1] or approximate numPixels0..1000 mutually exclusive, signed32 seed, local splitmix64-grid-v1 Bernoulli choices before dropNulls. Google RNG/selected-row parity unverified. numPixels population includes masked pixels; may exceed1000 rows and fails without truncation/reseeding. dropNulls=false preserves null selected values and missing finite-grid tiles. Optional actual WGS84 center geometries; band_order metadata, explicit classifier inputProperties. Native source key/shape/duplicate checks and bounded global row/column ordering. Shared1000rows/256columns/50000cells/1MB JSON+CSV,10000coordinates,67108864 work and finite grid/key budgets. Existing actual-grid EPSG/meter restrictions,tileScale1 only. Full Spark/batch/service/browser/deployment/Google acceptance remains separate."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -40691,9 +40693,9 @@
           "same_name_handler_declared": false
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.sample",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
           "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
@@ -40977,7 +40979,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 276,
+    "declared_handler_name_count": 277,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41195,7 +41197,7 @@
         "appears_in_rejected_compile_context": 31,
         "appears_in_selected_sdk_serialization": 35,
         "appears_in_successful_compile_context": 8,
-        "declared_handler_count": 76,
+        "declared_handler_count": 77,
         "signature_count": 232
       },
       "ImageCollection": {
@@ -41458,7 +41460,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 276,
+    "pinned_signatures_with_same_name_declared_handler": 277,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

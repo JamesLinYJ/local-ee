@@ -108,6 +108,12 @@ const entries: ReferenceEntry[] = [
     code: "// model、validation 为已有模型和独立验证表\nvar predictions = validation.classify(model, 'prediction');\nvar matrix = predictions.errorMatrix('label', 'prediction', [0,1]);\nprint('验证矩阵', matrix.array());\nprint('总体精度', matrix.accuracy());\nprint('训练重代入', model.confusionMatrix().array());\nExport.table.toDrive({collection:predictions, fileFormat:'CSV'});",
   },
   {
+    id: "gee-image-sample",
+    title: "影像像元取样",
+    text: "Image.sample 默认遍历有限影像范围内的像元，也可显式指定 region。factor 与近似 numPixels 二选一，seed 固定本地抽样；不保证与 Google 抽中相同像元。dropNulls 默认删除任一波段缺测的行，false 保留空值；训练前用 notNull 清理。geometries=true 输出真实像元中心。返回 band_order，分类器仍需显式 inputProperties。结果最多1000行，近似抽样超过上限会报错。tileScale 仅支持1，投影与米制 scale 遵循本站网格限制。独立组件验证与完整任务运行验收分别记录。",
+    code: "// image 和 roi 为已有的有限本地影像与研究区\nvar samples = image.sample({region:roi, numPixels:100, seed:42, dropNulls:false, geometries:true});\nprint('波段', samples.get('band_order'));\nExport.table.toDrive({collection:samples, fileFormat:'CSV'});",
+  },
+  {
     id: "gee-levels",
     title: "兼容等级与当前限制",
     text: "官方客户端签名存在仅表示能构造语法。本站区分 S 语法、C 本地编译、E 实际引擎运行、N 独立数值参考、G 与原始 GEE 同数据对照；独立 JVM/tile 组件不等于完整任务引擎验收。函数清单由 /gee/v1/capabilities 返回，每项有参数限制。没有做过 GEE 对照的项目不能标成完全等价。不支持的算法或数据集会返回 EEUnsupported，禁止静默替代。",

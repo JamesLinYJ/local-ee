@@ -13,7 +13,7 @@ SUPPORTED_FUNCTIONS = frozenset({
     "Collection.filter", "Collection.map", "Collection.limit", "Collection.sort", "Collection.size", "Collection.first",
     "ImageCollection.mosaic", "ImageCollection.qualityMosaic", "Image.select", "Image.rename", "Image.bandNames", "Image.toFloat", "Image.toDouble",
     "Image.normalizedDifference", "Image.parseExpression", "Image.updateMask", "Image.mask", "Image.unmask", "Image.addBands", "Image.clip", "Image.reduceRegion",
-    "Image.where", "Image.clamp", "Image.unitScale", "Image.reduce", "Image.date", "Image.geometry", "Collection.geometry", "Feature.geometry", "Image.sampleRegions", "Image.remap",
+    "Image.where", "Image.clamp", "Image.unitScale", "Image.reduce", "Image.date", "Image.geometry", "Collection.geometry", "Feature.geometry", "Image.sample", "Image.sampleRegions", "Image.remap",
     "Collection.toList", "AggregateFeatureCollection.array", "ImageCollection.reduce", "ImageCollection.toBands", "ImageCollection.toArrayPerBand", "ImageCollection.fromImages", "ImageCollection.merge", "If", "List.map", "List.iterate",
     "Collection.merge", "Collection.iterate", "Collection.reduceColumns", "Reducer.linearFit", "Reducer.linearRegression", "Number.format",
     "Element.get", "Image.get", "Element.propertyNames", "Element.set", "Element.setMulti", "Element.copyProperties", "Image.copyProperties",
@@ -87,6 +87,13 @@ def get_capabilities():
              "Training needs explicit schema1..8, labels0..63 and existing exact-model/work limits. Dynamic downstream feature operations beyond filter/unsorted limit, "
              "sampling randomization, general projections and classifiers beyond the declared minimumDistance/Smile RF subsets reject. "
              "Standalone actual tile kernels and synthetic task/CSV controls are not full Spark batch, deployment, browser or Google acceptance"),
+            ("Image.sample uses a finite explicit region or the image's finite local footprint and a fixed source grid; "
+             "it returns actual pixel rows through the native sampler, with center-covered planar polygons and half-open point-cell ownership. "
+             "Bounded factor/approximate-numPixels subsampling uses the versioned deterministic grid hash; selection precedes null dropping. "
+             "dropNulls, center geometries, source band order, and the shared table/work/output limits are explicit. "
+             "Projection requires explicit scale in a supported projected EPSG meter grid; tileScale must be1. "
+             "Approximate numPixels may exceed the row cap and then fails; Google RNG/row parity and spherical boundaries are unverified. "
+             "Only explicit classifier inputProperties are supported; the declared minimumDistance, Smile RF, sampled-table and RF validation consumers accept this producer"),
             ("Export.table.toDrive supports regional CSV and bounded static inline FeatureCollection CSV "
              "through the existing isolated batch entry point, without a JVM for pure tables. "
              "Limits include 1000 rows, 256 columns, 50000 default cells, 1 MB UTF-8 input/output "

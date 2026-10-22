@@ -90,13 +90,24 @@ def _sampling_wkts(spec: dict) -> list[str]:
 
 
 def _invoke_native_sampler(cube, level, band_names: list[str], spec: dict) -> str:
-    """Invoke the single-level Scala SPI with WGS84 region WKT only."""
+    """Invoke the single-level Scala SPI with bounded WGS84 regions and options."""
     from openeogeotrellis.utils import get_jvm
+    from gee.sampling_spec import encode_spec
+    from gee.image_sampling_spec import is_image_sample
 
     jvm = get_jvm()
     wrapped = jvm.org.openeo.geotrellis.OpenEOProcesses().wrapCube(level.srdd.rdd())
     wrapped.openEOMetadata().setBandNames(band_names)
     registry = jvm.org.openeo.geotrelliscommon.CubeProcessRegistry
+    if is_image_sample(spec):
+        return registry.invoke(
+            wrapped,
+            "local_ee_image_sample",
+            {
+                "regions": _sampling_wkts(spec),
+                "options": encode_spec(spec["image_sample"]),
+            },
+        )
     return registry.invoke(
         wrapped,
         "local_ee_sample_regions",

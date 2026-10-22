@@ -124,12 +124,18 @@ def _classify_rf_features(translator, arguments):
     rows = None
 
     if isinstance(source, SampledFeatures):
+        from ...image_sampling_spec import is_image_sample
+
         try:
             sample_spec = decode_sampling_spec(source.spec)
             original_columns = sampling_columns(sample_spec)
         except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
             fail(f"FeatureCollection.classify has an invalid sample table: {exc}")
-        row_count = 0 if not sample_spec["regions"]["features"] else None
+        known_empty = not sample_spec["regions"]["features"]
+        if (is_image_sample(sample_spec)
+                and sample_spec["image_sample"]["num_pixels"] == 0):
+            known_empty = True
+        row_count = 0 if known_empty else None
     else:
         features = _features(translator, source)
         try:

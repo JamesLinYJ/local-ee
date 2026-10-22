@@ -10,6 +10,7 @@ import re
 import stat
 
 from .sampling_spec import MAX_BYTES, MAX_CELLS, MAX_ROWS, sampling_columns
+from .image_sampling_spec import allows_null_samples, sample_collection_properties
 from .table_values import _cell, columns as table_columns, render_csv
 
 
@@ -31,6 +32,18 @@ def _number(value):
     if not valid:
         raise ValueError("Sample values must be finite numbers")
     return value
+
+
+def _sample_number(value, spec):
+    if value is None and allows_null_samples(spec):
+        return None
+    return _number(value)
+
+
+def _collection(spec, features):
+    metadata = sample_collection_properties(spec)
+    return {"type": "FeatureCollection", "features": features,
+            **({"properties": metadata} if metadata else {})}
 
 
 def assemble_sample_features(spec, rows):
@@ -60,12 +73,12 @@ def assemble_sample_features(spec, rows):
         if type(values) is not list or len(values) != len(spec["bands"]):
             raise ValueError("Sample row values do not match the declared bands")
         properties = {**source[index]["properties"],
-                      **{name: _number(value) for name, value in zip(spec["bands"], values)}}
+                      **{name: _sample_number(value, spec) for name, value in zip(spec["bands"], values)}}
         identifier = f"f{index}_r{y_index}_c{x_index}"
         geometry = {"type": "Point", "coordinates": [x, y]} if spec["geometries"] else None
         features.append({"type": "Feature", "id": identifier,
                          "geometry": geometry, "properties": properties})
-    data = {"type": "FeatureCollection", "features": features}
+    data = _collection(spec, features)
     table_columns(data)
     render_sample_csv(data, headers)  # response/CSV budget before publishing or training
     return data
@@ -132,7 +145,8 @@ def read_sample_csv(path, spec):
             if any(row[name] != _cell(properties[name]) for name in spec["properties"]):
                 raise ValueError("Sample CSV copied properties differ from its immutable input")
             for name in spec["bands"]:
-                properties[name] = _number(float(row[name]))
+                value = None if row[name] == "" and allows_null_samples(spec) else float(row[name])
+                properties[name] = _sample_number(value, spec)
             geometry = json.loads(row[".geo"]) if row[".geo"] else None
             if spec["geometries"]:
                 if (type(geometry) is not dict or set(geometry) != {"type", "coordinates"}
@@ -146,6 +160,6 @@ def read_sample_csv(path, spec):
         raise ValueError("Invalid bounded UTF-8 sample CSV") from exc
     finally:
         csv.field_size_limit(limit)
-    data = {"type": "FeatureCollection", "features": features}
+    data = _collection(spec, features)
     render_sample_csv(data, expected)
     return data

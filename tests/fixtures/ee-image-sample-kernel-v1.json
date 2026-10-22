@@ -1,0 +1,78 @@
+{
+  "fixture_version": 1,
+  "grid": {
+    "xmin": 0.0,
+    "ymin": 0.0,
+    "xmax": 8.0,
+    "ymax": 4.0,
+    "columns": 8,
+    "rows": 4,
+    "tile_cols": 2,
+    "tile_rows": 2,
+    "epsg": 4326
+  },
+  "tiles": [
+    {"col": 0, "row": 0, "cell_type": "float64", "bands": [[1.0000000000000002, 1.25, 2.25, 2.5], [10.0, null, 11.0, 12.0]]},
+    {"col": 1, "row": 0, "cell_type": "float64", "bands": [[3.25, 3.5, 4.25, 4.5], [13.0, 14.0, 15.0, 16.0]]},
+    {"col": 2, "row": 0, "cell_type": "float64", "bands": [[5.25, 5.5, 6.25, 6.5], [17.0, 18.0, 19.0, 20.0]]},
+    {"col": 3, "row": 0, "cell_type": "float64", "bands": [[7.25, 7.5, 8.25, 8.5], [21.0, 22.0, 23.0, null]]},
+    {"col": 0, "row": 1, "cell_type": "float64", "bands": [[9.25, 9.5, 10.25, 10.5], [24.0, 25.0, 26.0, 27.0]]},
+    {"col": 2, "row": 1, "cell_type": "float64", "bands": [[13.25, 13.5, 14.25, 14.5], [28.0, 29.0, 30.0, 31.0]]},
+    {"col": 3, "row": 1, "cell_type": "float64", "bands": [[15.25, 15.5, 16.25, 16.5], [32.0, 33.0, 34.0, 35.0]]}
+  ],
+  "regions": [
+    {
+      "name": "whole-finite-grid-nullable",
+      "wkt": "POLYGON ((0 4, 8 4, 8 0, 0 0, 0 4))",
+      "options": {"algorithm": "splitmix64-grid-v1", "factor": null, "num_pixels": null, "seed": 0, "drop_nulls": false}
+    },
+    {
+      "name": "whole-finite-grid-drop-nulls",
+      "wkt": "POLYGON ((0 4, 8 4, 8 0, 0 0, 0 4))",
+      "options": {"algorithm": "splitmix64-grid-v1", "factor": null, "num_pixels": null, "seed": 0, "drop_nulls": true}
+    },
+    {
+      "name": "center-boundary-and-hole",
+      "wkt": "POLYGON ((0.5 3.5, 7.5 3.5, 7.5 0.5, 0.5 0.5, 0.5 3.5), (2 3, 6 3, 6 1, 2 1, 2 3))",
+      "options": {"algorithm": "splitmix64-grid-v1", "factor": null, "num_pixels": null, "seed": 0, "drop_nulls": false}
+    },
+    {
+      "name": "multi-point-half-open-and-deduplicated",
+      "wkt": "MULTIPOINT ((2 2.5), (2.1 2.5), (4 2.5), (8 2), (0 0.5))",
+      "options": {"algorithm": "splitmix64-grid-v1", "factor": null, "num_pixels": null, "seed": 0, "drop_nulls": false}
+    },
+    {
+      "name": "factor-seed-77",
+      "wkt": "POLYGON ((0 4, 8 4, 8 0, 0 0, 0 4))",
+      "options": {"algorithm": "splitmix64-grid-v1", "factor": 0.5, "num_pixels": null, "seed": 77, "drop_nulls": false}
+    },
+    {
+      "name": "approx-num-pixels-4",
+      "wkt": "POLYGON ((0 4, 8 4, 8 0, 0 0, 0 4))",
+      "options": {"algorithm": "splitmix64-grid-v1", "factor": null, "num_pixels": 4, "seed": -13, "drop_nulls": false}
+    },
+    {
+      "name": "num-pixels-zero-empty",
+      "wkt": "POLYGON ((0 4, 8 4, 8 0, 0 0, 0 4))",
+      "options": {"algorithm": "splitmix64-grid-v1", "factor": null, "num_pixels": 0, "seed": 3, "drop_nulls": false}
+    },
+    {
+      "name": "valid-geometry-outside-grid-empty",
+      "wkt": "POLYGON ((20 20, 30 20, 30 10, 20 10, 20 20))",
+      "options": {"algorithm": "splitmix64-grid-v1", "factor": null, "num_pixels": null, "seed": 0, "drop_nulls": false}
+    }
+  ],
+  "invalid_options": [
+    "{\"algorithm\":\"splitmix64-grid-v1\",\"factor\":null,\"num_pixels\":null,\"seed\":0,\"drop_nulls\":false,\"drop_nulls\":true}",
+    "{\"algorithm\":\"splitmix64-grid-v1\",\"factor\":null,\"num_pixels\":null,\"seed\":0,\"drop_nulls\":false} false",
+    "{\"algorithm\":\"splitmix64-grid-v1\",\"factor\":null,\"num_pixels\":null,\"seed\":0,\"drop_nulls\":false,\"extra\":0}",
+    "{\"algorithm\":\"splitmix64-grid-v1\",\"factor\":0,\"num_pixels\":null,\"seed\":0,\"drop_nulls\":false}",
+    "{\"algorithm\":\"splitmix64-grid-v1\",\"factor\":1.1,\"num_pixels\":null,\"seed\":0,\"drop_nulls\":false}",
+    "{\"algorithm\":\"splitmix64-grid-v1\",\"factor\":0.5,\"num_pixels\":4,\"seed\":0,\"drop_nulls\":false}",
+    "{\"algorithm\":\"splitmix64-grid-v1\",\"factor\":null,\"num_pixels\":1.0,\"seed\":0,\"drop_nulls\":false}",
+    "{\"algorithm\":\"splitmix64-grid-v1\",\"factor\":null,\"num_pixels\":1001,\"seed\":0,\"drop_nulls\":false}",
+    "{\"algorithm\":\"splitmix64-grid-v1\",\"factor\":null,\"num_pixels\":null,\"seed\":2147483648,\"drop_nulls\":false}",
+    "{\"algorithm\":\"splitmix64-grid-v1\",\"factor\":null,\"num_pixels\":null,\"seed\":0,\"drop_nulls\":0}",
+    "{\"algorithm\":\"other\",\"factor\":null,\"num_pixels\":null,\"seed\":0,\"drop_nulls\":false}"
+  ]
+}

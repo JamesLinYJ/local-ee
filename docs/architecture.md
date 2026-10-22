@@ -70,6 +70,8 @@ flowchart LR
 
 影像取样另走 `local_ee_sample_regions → local_ee_train_minimum_distance → local_ee_minimum_distance` 的类型化计算图。采样／训练规格通过规范 JSON 字符串传递，避免要素属性成为流程指令；采样表和模型引用限定生产者。固定训练影像由独立子图保留来源和网格，不受目标导出范围污染；训练输入与输出像元分别计费。dry-run 只携带 schema／traces，真实样本表复用上游 SaveResult 和既有任务物理输出／CSV／权限边界。此链路不放宽沙箱，不改变纯内联表格的封闭执行分支；支持和证据边界见 [取样文档](gee-python/sampling.md)。
 
+`Image.sample` 使用同一公开采样进程的严格 v2 规格，桥接独立内部 `local_ee_image_sample` SPI；v1 行为保留。有限元数据网格生成有界键并与真实瓦片左连接，缺失瓦片按 dropNulls 决定丢弃或保留 null，按全局像元行列和本地固定哈希抽样。多边形采用中心覆盖，返回结果仅在有界溢出检查后排序；保留源键／形状／重复与解码预算。band_order 来自已验证规格，像元数值仅来自实际内核／CSV。后续训练继续显式 schema，详见 [Image.sample](gee-python/image-sampling.md)。独立内核验证不能代替完整 Spark／任务／浏览器／Google 对照。
+
 标签准备使用单波段 `local_ee_remap`，保留真实 Float32／Float64 输入精度及掩膜；采样后可插入最多 16 个 `local_ee_sample_table_op` 处理筛选／无排序限量。筛选器由受限 parser 生成既有 Filter IR，不执行用户文本。表操作只追溯到原 sampler，保留 schema／ID／顺序，复制前预充资源并把工作计数传给训练器；新列、排序、动态值／验证矩阵另需结果合同。Smile 随机森林不得用 Spark MLlib 替代注册，依赖与算法状态单列在路线文档。
 
 随机森林新增独立 Smile1.5.3 模型 IR、可信串行 JVM 工厂和 GeoTrellis SPI；内联行与真实采样表分别经 `local_ee_train_smile_rf_rows`／`local_ee_train_smile_rf_samples`，opaque 模型仅可连接经过审查的栅格／要素预测或训练重代入矩阵消费者。嵌套引用也受类型检查，回调保持独立作用域，向量／标量结果不能冒充目标栅格。固定训练来源／网格与目标输出分离。依赖在独立 lock／manifest 中校验，复用固定 Spark SLF4J，不运行时下载；现有 native runner 通过本地 extraClassPath 接入，未安装不会自动获得该能力。RF 按实测分开计量对象复制（150000，含原操作最多50000）和 wire 扫描（3MB），原 compiler／表操作／minimumDistance 预算不变；树拟合及按真实树深的预测另有各10亿工作上界。详见 [RF 语法与执行合同](gee-python/random-forest.md)。本机部署与完整运行验收仍单独记录。

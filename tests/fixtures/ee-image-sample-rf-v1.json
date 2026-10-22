@@ -1,0 +1,84 @@
+{
+  "schema": "local-ee-synthetic-image-sample-rf/v1",
+  "description": "A finite 4 by 4 synthetic EPSG:4326 grid for Image.sample subsampling and sampled Smile RF graph checks. Values are local fixture data, not satellite data or a Google Earth Engine comparison.",
+  "collection_id": "sentinel-2-l2a",
+  "scene_id": "wave28-image-sample-grid",
+  "catalog_bands": ["red", "landcover", "nir", "aux"],
+  "sample_bands": ["landcover", "nir", "red"],
+  "input_properties": ["nir", "red"],
+  "class_property": "landcover",
+  "output_name": "predicted_class",
+  "class_order": [0, 1],
+  "extent": [0, 0, 4, 4],
+  "grid": {
+    "crs": "EPSG:4326",
+    "upper_left": [0, 4],
+    "shape_rows_columns": [4, 4],
+    "pixel_order": "global row ascending from north to south, then column ascending west to east"
+  },
+  "explicit_region": {
+    "type": "Polygon",
+    "coordinates": [[[1, 0], [4, 0], [4, 4], [1, 4], [1, 0]]]
+  },
+  "export_region": {
+    "type": "Polygon",
+    "coordinates": [[[0, 0], [4, 0], [4, 4], [0, 4], [0, 0]]]
+  },
+  "sample_seed": 7,
+  "training_limit": 6,
+  "rf_parameters": {
+    "number_of_trees": 5,
+    "variables_per_split": 2,
+    "min_leaf_population": 1,
+    "bag_fraction": 1.0,
+    "max_nodes": 15,
+    "seed": 42
+  },
+  "items": [
+    {
+      "id": "wave28-image-sample-grid",
+      "bbox": [0, 0, 4, 4],
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[0, 0], [4, 0], [4, 4], [0, 4], [0, 0]]]
+      },
+      "properties": {
+        "system:index": "wave28-image-sample-grid",
+        "system:time_start": 1792600000000,
+        "fixtureVersion": "local-ee-synthetic-image-sample-rf/v1"
+      },
+      "pixel_values": {
+        "red": [0, 1, 1, 4, 0, 0, null, 4, 0, 3, 4, 5, 1, 3, 5, 6],
+        "landcover": [0, 0, 0, 1, 0, 0, null, 1, 0, 1, 1, 1, 0, 1, 1, 1],
+        "nir": [1, 1, 2, 5, 1, 2, 3, 5, 0, 4, 5, 6, 1, null, 6, 7],
+        "aux": [50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65]
+      }
+    }
+  ],
+  "validation_features": [
+    {"type": "Feature", "geometry": null, "properties": {"landcover": 0, "nir": 1, "red": 0, "site": "v0"}},
+    {"type": "Feature", "geometry": null, "properties": {"landcover": 0, "nir": 1, "red": 1, "site": "v1"}},
+    {"type": "Feature", "geometry": null, "properties": {"landcover": 0, "nir": 2, "red": 1, "site": "v2"}},
+    {"type": "Feature", "geometry": null, "properties": {"landcover": 0, "nir": 0, "red": 0, "site": "v3"}},
+    {"type": "Feature", "geometry": null, "properties": {"landcover": 1, "nir": 5, "red": 4, "site": "v4"}},
+    {"type": "Feature", "geometry": null, "properties": {"landcover": 1, "nir": 6, "red": 5, "site": "v5"}},
+    {"type": "Feature", "geometry": null, "properties": {"landcover": 1, "nir": 4, "red": 3, "site": "v6"}},
+    {"type": "Feature", "geometry": null, "properties": {"landcover": 1, "nir": 7, "red": 6, "site": "v7"}}
+  ],
+  "reference_expectations": {
+    "whole_image_population": 16,
+    "whole_image_drop_null_false_rows": 2,
+    "whole_image_drop_null_true_ids": [
+      "f0_r0_c0", "f0_r0_c1", "f0_r0_c2", "f0_r0_c3",
+      "f0_r1_c0", "f0_r1_c1", "f0_r1_c3",
+      "f0_r2_c0", "f0_r2_c1", "f0_r2_c2", "f0_r2_c3",
+      "f0_r3_c0", "f0_r3_c2", "f0_r3_c3"
+    ],
+    "explicit_region_population_before_null_drop": 12,
+    "factor_half_seed_7_global_pixels": [1, 2, 3, 5, 6, 11, 15],
+    "num_pixels_8_approx_seed_7_global_pixels": [1, 2, 3, 5, 6, 9, 10, 11, 15],
+    "factor_half_complete_class_counts": {"0": 3, "1": 3},
+    "num_pixels_8_complete_class_counts": {"0": 3, "1": 5},
+    "comparison_scope": "Independent raw-grid/hash/frequency references define deterministic local subsampling and grid-center ROI behavior; they do not establish Google RNG, boundary, or model parity."
+  }
+}
