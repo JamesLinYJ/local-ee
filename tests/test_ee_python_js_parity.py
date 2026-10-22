@@ -54,6 +54,12 @@ const prior = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(c, c,
     leftField:'system:time_start', rightField:'system:time_start'}),
     ee.Filter.greaterThan({leftField:'system:time_start', rightField:'system:time_start'}))));
 const values = {
+  numberVectorMath: ee.List([ee.Number(3).hypot(4), ee.Number(3).atan2(4),
+    ee.Number(-3).atan2(-4)]),
+  arrayVectorMath: ee.List([ee.Array([3,0,-3]).hypot(ee.Array([4,1,4])),
+    ee.Array([3,0,-3]).atan2(ee.Array([4,1,4]))]),
+  rasterHypot: c.first().select(['red','nir']).toFloat()
+    .hypot(c.first().select(['nir','red']).toFloat()),
   numberTrigDesign: ee.Array(ee.List([0, Math.PI/2, Math.PI]).map(angle =>
     ee.List([1, ee.Number(angle).cos(), ee.Number(angle).sin()]))).matrixTranspose(),
   rasterTemporalBandArray: c.select(['red','nir']).toArrayPerBand().select('nir')
@@ -161,6 +167,12 @@ def parity_values():
             leftField="system:time_start", rightField="system:time_start"),
             ee.Filter.greaterThan(leftField="system:time_start", rightField="system:time_start"))))
     py = {
+        "numberVectorMath": ee.List([ee.Number(3).hypot(4), ee.Number(3).atan2(4),
+                                     ee.Number(-3).atan2(-4)]),
+        "arrayVectorMath": ee.List([ee.Array([3, 0, -3]).hypot(ee.Array([4, 1, 4])),
+                                    ee.Array([3, 0, -3]).atan2(ee.Array([4, 1, 4]))]),
+        "rasterHypot": c.first().select(["red", "nir"]).toFloat()
+            .hypot(c.first().select(["nir", "red"]).toFloat()),
         "numberTrigDesign": ee.Array(ee.List([0, math.pi / 2, math.pi]).map(
             lambda angle: ee.List([1, ee.Number(angle).cos(), ee.Number(angle).sin()])
         )).matrixTranspose(),
@@ -257,6 +269,7 @@ def parity_values():
                                  "rasterMatrixSolveSquare", "rasterMatrixSolveTall",
                                  "numberTrigDesign", "rasterTemporalBandArray",
                                  "rasterTemporalMatrix", "rasterArrayReshape",
+                                 "numberVectorMath", "arrayVectorMath", "rasterHypot",
                                  "rasterRegressionOrigin", "rasterRegressionResidual", "rasterRegressionIntercept"])
 def test_python_and_javascript_reach_the_same_local_result(parity_values, case):
     javascript, python, metadata, items = parity_values

@@ -871,12 +871,14 @@
       "description": "On an element-wise basis, calculates the angle formed by the 2D vector [x, y].",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Typed static Array operands of exactly matching shape, rank<=8/cells<=10000, no broadcasting; precharge5*cells+1 before Float64 copies and actual NumPy hypot/atan2 kernel, shared50000 work. Finite readonly Float64 output, inputs unchanged. atan2 explicitly follows pinned SDK left=x,right=y and computes NumPy arctan2(right,left); the official community harmonic example conflicts, and Google numerical/axis parity is unverified. Direct empty constructors still reject; existing typed empty slices retain their shape."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -2185,12 +2187,14 @@
       "description": "On an element-wise basis, calculates the magnitude of the 2D vector [x, y].",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Typed static Array operands of exactly matching shape, rank<=8/cells<=10000, no broadcasting; precharge5*cells+1 before Float64 copies and actual NumPy hypot/atan2 kernel, shared50000 work. Finite readonly Float64 output, inputs unchanged. atan2 explicitly follows pinned SDK left=x,right=y and computes NumPy arctan2(right,left); the official community harmonic example conflicts, and Google numerical/axis parity is unverified. Direct empty constructors still reject; existing typed empty slices retain their shape."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -21706,12 +21710,14 @@
       "description": "Calculates the magnitude of the 2D vector [x, y] for each matched pair of bands in image1 and image2. If either image1 or image2 has only 1 band, then it is used against all the bands in the other image. If the images have the same number of bands, but not the same names, they're used pairwise in the natural order. The output bands are named for the longer of the two inputs, or if they're equal in length, in image1's order. The type of the output pixels is float.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Scalar raster bands only, normal single-band broadcast/natural-order pairing and longer-input labels, left metadata/source fallback and NoData propagation. Actual existing Pixel operations implement high=max(abs(x),abs(y)),low=min(abs(x),abs(y)),high*sqrt(1+(low/high)^2), with zero-safe division and explicit Float32 output. Precharged band/expression work, operands<=10000 bands and unchanged500-process cap; nonrepresentable direct constant Float32 output rejects. A dynamic norm exceeding Float32 range can become infinity in local sample evaluation, e.g. two finite3.3e38 inputs; actual native/Google overflow handling remains unverified. Explicit Float64 callbacks still require user-chosen toFloat. Staged local rounding differs from a fused hypot and has no Google bitwise proof. Raster arrays/bundles and Image.atan2 remain unsupported."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -31002,12 +31008,14 @@
       "description": "Calculates the angle formed by the 2D vector [x, y].",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static Number operands left/right only, integers in exact Float64 domain<=2^53; bool/nonfinite/non-numeric/missing/unknown inputs reject. Work charged before real Float64 libm kernel and nonfinite result rejected. atan2 uses x=left,y=right according to the pinned SDK vector description and explicit Array right=y documentation, so the kernel is atan2(right,left). An official community harmonic tutorial uses the opposite call order; Google same-data orientation, signed-zero and last-bit parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -32230,12 +32238,14 @@
       "description": "Calculates the magnitude of the 2D vector [x, y].",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static Number operands left/right only, integers in exact Float64 domain<=2^53; bool/nonfinite/non-numeric/missing/unknown inputs reject. Work charged before real Float64 libm kernel and nonfinite result rejected. atan2 uses x=left,y=right according to the pinned SDK vector description and explicit Array right=y documentation, so the kernel is atan2(right,left). An official community harmonic tutorial uses the opposite call order; Google same-data orientation, signed-zero and last-bit parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -40692,9 +40702,9 @@
           "same_name_handler_declared": false
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.hypot",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
           "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
@@ -40903,7 +40913,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 251,
+    "declared_handler_name_count": 256,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -40918,7 +40928,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 33,
+        "declared_handler_count": 35,
         "signature_count": 124
       },
       "BACCINI/ModisComposite": {
@@ -41121,7 +41131,7 @@
         "appears_in_rejected_compile_context": 31,
         "appears_in_selected_sdk_serialization": 35,
         "appears_in_successful_compile_context": 8,
-        "declared_handler_count": 62,
+        "declared_handler_count": 63,
         "signature_count": 232
       },
       "ImageCollection": {
@@ -41177,7 +41187,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 29,
+        "declared_handler_count": 31,
         "signature_count": 94
       },
       "ObjectType": {
@@ -41384,7 +41394,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 251,
+    "pinned_signatures_with_same_name_declared_handler": 256,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

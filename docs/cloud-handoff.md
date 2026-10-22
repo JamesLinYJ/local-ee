@@ -144,6 +144,16 @@ QR／SVD 使用 NumPy/LAPACK，符号和重复值子空间基为已注明的本�
 
 锁定依赖、Linux Python **1265 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，新增 64 项通过：集合／reshape 24、Number 33、工作流 3、SDK 一致性新增 4（总 42）。原 50 探针仍 50 S／45 C／5 拒绝且字节不变，991 项完整 Python 清单字节重现通过，见 `reports/gee-python-wave14.json`。S/C/静态及采样点 N 分别记录，无实际 E/G；动态数组、通用栅格设计、采样／分类和高级时序继续开发，整体目标保持进行中。
 
+## 第十五批稳定范数与谐波振幅
+
+以第十四批提交 `bcefdcee9ff2ca5f1a4a489797c40c6869e60ae1` 为基线，新增 `number_math.py` 统一有限静态 sin／cos／hypot／atan2 的严格参数、Float64 内核和工作预充。Array.hypot／atan2 使用同形 typed Array 和真实 NumPy 内核，结果有限只读，复制／内核前按 5×cells+1 计费。Number／Array.atan2 按 pinned SDK 文档采用 x=left、y=right；社区教程使用相反顺序，已在 `docs/gee-python/numerical-policies.md` 登记冲突和未做 Google 对照，不能把独立数学参考说成服务端轴顺序实测。
+
+Image.hypot 用既有 Pixel 的 max/min／比例／平方根实际计算，保留广播／命名、左属性、来源和各波段掩膜，最后显式 Float32。3e30／4e30 与 3e-30／4e-30 避免直接平方问题；动态范数超 Float32 仍可能为 inf，已知常量溢出预检拒绝，回归覆盖两种路径。父审修复预检将另一非 bool 值截成 int 和 NoData int(None) 的问题。Float64 callback 拒绝、共享 50000 工作／500 图节点保持，没有新增数学进程白名单。
+
+固定 GeoTrellis ScriptBuilder 源码的 arctan2 仍标 TODO，JAR 到 source commit 的构建映射未证明；Image.atan2 继续明确拒绝，这是一项 API 缺口，不把整个兼容目标标为受阻。示例 20 复用七景日期／集合数组／矩阵求解 builder，通过实际 Image.hypot 输出振幅；正负 `(3/10,2/5)` 均为 1/2，零向量为 0，含噪为 `sqrt(54641)/1000`。Fraction 正规方程／平方根参考、独立 Decimal 向量控制和缺测／非矩形景界验证通过，振幅／系数／截距／预测为 200／215／139／219 节点，网络尝试 0，不包含栅格相位。
+
+锁定依赖、Linux Python **1303 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，新增 38 项通过：向量数值／参数 33、振幅工作流 2、SDK 一致性新增 3（总 45）。原 50 探针仍 50 S／45 C／5 拒绝且字节不变，全量 Python 清单字节重现通过，见 `reports/gee-python-wave15.json`。独立 Luna max 复审、S/C/静态及采样点 N 与未运行的 E/G 分开记录；其余数组、采样／分类及高级工作流继续推进。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee

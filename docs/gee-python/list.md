@@ -1,8 +1,8 @@
 # GEE Python 兼容清单
 
-状态：2026-10-22，第十四批持续实施，整体兼容目标尚未完成。
+状态：2026-10-22，第十五批持续实施，整体兼容目标尚未完成。
 
-第十四批 [验证报告](../../reports/gee-python-wave14.json)：Linux Python **1265 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1201 passed／7 skipped](../../reports/gee-python-wave13.json)，本批增加 64 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
+第十五批 [验证报告](../../reports/gee-python-wave15.json)：Linux Python **1303 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1265 passed／7 skipped](../../reports/gee-python-wave14.json)，本批增加 38 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
 
 S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎；N＝独立数值基准；G＝Google 同数据对照。静态数值求值和合成图测试分别说明，不能标成原生栅格 E。固定的 991 项签名、方法可见数量和定向探针计数均不能换算为全 API 兼容百分比。
 
@@ -41,6 +41,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] 静态方阵 QR／LU／SVD 真实分解与因子字典组合；部分选主元、退化正交分解、资源预充，以及合成光谱混合／噪声丰度的独立分数参考。
 - [x] 单数组波段的真实 toFloat，以及静态满列秩设计的有限 Image.matrixSolve；栅格多响应、整体缺测掩膜、显式精度和预算拒绝；合成光谱估计／重建／残差的独立分数参考。
 - [x] 有限 ImageCollection.toArrayPerBand 的定长逐波段堆叠、静态 Image.arrayReshape 和 Number.sin／cos；集合日期驱动的谐波设计与栅格最小二乘链路，参数与数值边界见下文。
+- [x] 有限静态 Number／Array.hypot／atan2，以及由既有像素算子计算的 Image.hypot；独立高精度范数／方向角参考，串联谐波系数的真实振幅输出，轴约定与 Float32 溢出边界明确登记。
 - [ ] 每一签名／参数组合的 S／C、适用的独立 N，以及负向、缺测、边界验收；E 按现有环境可用条件单独记录。
 - [ ] 动态形状、其余多数组波段运算和 Image.array*、通用设计矩阵的逐像元回归、采样／图像分类／其他分类器及模式、矢量／空间和多重／歧义度量 Join、邻域及高级时序。
 - [ ] 后续阶段：Linux 执行／隔离适配、macOS Seatbelt、ARM64 JNI 和本机真实数据验收；当前阶段延期。
@@ -69,7 +70,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 
 List.contains／distinct 对嵌套数组使用显式的有界比较，避免 NumPy 隐式真值／广播错误。标量 int／float 按数值比较，bool 单独区分；Array 的 dtype／形状／元素比较仍是未做 Google 对照的本地策略。step 序列严格检查实际生成的 Float64 值，不向端点外扩展；例如 0、0.1、0.2 后的 0.30000000000000004 超过 end=0.3，因此省略，该舍入策略尚无 G 证据。
 
-另有 42 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky、QR／LU／SVD 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵、列表布局／均值／回归、最小距离 schema／预测／训练误差矩阵、栅格 linearRegression 的过原点／截距系数与 RMS、方阵／高矩形设计的栅格 matrixSolve，以及集合定长数组、reshape 和正余弦设计矩阵。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容。
+另有 45 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky、QR／LU／SVD 和逐元素算术，以及栅格数组投影／归约、逐像元 linearFit 计算图、混淆矩阵 Kappa、标签误差矩阵、列表布局／均值／回归、最小距离 schema／预测／训练误差矩阵、栅格 linearRegression 的过原点／截距系数与 RMS、方阵／高矩形设计的栅格 matrixSolve、集合定长数组、reshape、正余弦设计，以及静态向量范数／方向角和栅格 hypot。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容或 Google 数值对照。
 
 第四批 `examples/10_GEE_python_synthetic_pca.py` 与 `tests/fixtures/ee-pca-table-v1.json` 串联有限静态表格的中心化、样本协方差、对称特征分解、投影及重建。四条二维观测的均值为 `[2,1]`，协方差为 `[[4/3,2/3],[2/3,2/3]]`，特征值为 `1±sqrt(5)/3`；闭式向量与得分按 1e-14 容差核对，重建还提供与符号选择无关的验证。S/C/N 已通过，网络入口尝试为 0；无栅格 E 或 G。
 
@@ -155,7 +156,15 @@ A 的每层 cast 都按内到外次序执行并按 Pixel 对象缓存，保留 1
 
 示例 19 与 `ee-harmonic-time-series-v1.json` 从乱序影像元数据按时间排序，得到 day=`[0,90,180,180,270,360,450]`；两条同日观测保持各自身份。Date.difference 和 Number.sin／cos 生成周期 360 天的 7×3 设计矩阵 `[1,cos,sin]`，逐波段堆叠 → reshape → 显式 toFloat → matrixSolve，输出系数、拟合、残差及第 540 日预测。手算 AᵀA=`[[7,0,1],[0,4,0],[1,0,3]]`，含噪样点系数为 `(407/1000,1/5,121/1000)`，预测 `207/1000`；Fraction 精确残差与设计列正交，另用 Float32 输入的独立 SVD 对照，容差 2e-6。
 
-NDVI／quality 时间数组各 122 节点，系数／拟合／残差／预测为 215／296／337／219；三个静态元数据输出另计，不当作栅格执行。测试覆盖整段缺测、另一波段独立有效、负值及 bbox 内非矩形景界外样点。网络尝试 0，S/C/采样点 N 通过，无实际 E/G；不宣称缺测观测行压缩、完整谐波分析或相位／振幅算子已实现。
+NDVI／quality 时间数组各 122 节点，系数／拟合／残差／预测为 215／296／337／219；三个静态元数据输出另计，不当作栅格执行。测试覆盖整段缺测、另一波段独立有效、负值及 bbox 内非矩形景界外样点。网络尝试 0，S/C/采样点 N 通过，无实际 E/G；这批历史结果不包含缺测观测行压缩或完整谐波分析。后续振幅算子见下节，栅格相位仍未实现。
+
+## 向量范数与静态方向角
+
+第十五批 Number／Array.hypot 使用真实稳定 Float64 内核，Number／Array.atan2 按固定 SDK 的 x=left、y=right 解释调用 `atan2(right,left)`。Number 仅有限静态 int／float、整数绝对值<=2^53；Array 要求同形 typed 数组、rank<=8／cells<=10000，共享 50000 工作；复制／内核前预充，输出有限、只读，不修改输入。未实现广播，非法／缺参／未知参数明确拒绝。既有 sin／cos 迁入独立数值模块，公开调用保持。
+
+Image.hypot 按配对波段实际计算稳定比例范数，保留 NoData、广播／命名、左属性和来源；显式 Float32 输出，Float64 callback 输入仍拒绝，500 图节点上限不变。3e30／4e30 与 3e-30／4e-30 避免中间平方问题；动态真实范数超过 Float32 仍可产生 inf，可预知的常量溢出则提前拒绝。SDK 文档和社区教程的 atan2 约定冲突、动态溢出与未运行的 E/G 见 [数值政策](numerical-policies.md)，不能把这些本地结果当作 Google 等价证明。Image.atan2 及其底层 arctan2 进程仍未开放。
+
+示例 20 与 `ee-harmonic-amplitude-v1.json` 复用前批日期／集合数组／矩阵求解链路，实际计算 cosine／sine 系数的振幅。正负 `(3/10,2/5)` 均得到 1/2，零向量为 0，含噪 `(1/5,121/1000)` 为 `sqrt(54641)/1000`；独立 Fraction 正规方程与平方根参考验证，向量算子另有 Decimal 高精度控制；缺测与非矩形景界仍掩膜。振幅／完整系数／截距／目标预测各为 200／215／139／219 节点，网络尝试 0；S/C/静态及采样点 N 通过，无实际 E/G，也没有伪造栅格相位。
 
 ## 当前 Python 调用探针
 

@@ -9,7 +9,7 @@ from .ir import fail
 
 ARRAY_ARITHMETIC_FUNCTIONS = frozenset({
     "Array.add", "Array.subtract", "Array.multiply", "Array.divide",
-    "Array.abs", "Array.sqrt",
+    "Array.abs", "Array.sqrt", "Array.hypot", "Array.atan2",
 })
 _EXACT_BINARY = {"Array.add": np.add, "Array.subtract": np.subtract,
                  "Array.multiply": np.multiply}
@@ -41,9 +41,20 @@ def invoke_arithmetic(translator, name, arguments):
         return wrap_array(result)
 
     translator.allowed(arguments, {"left", "right"})
+    if name in {"Array.hypot", "Array.atan2"}:
+        missing = {"left", "right"} - arguments.keys()
+        if missing:
+            fail(f"{name} requires {', '.join(sorted(missing))}")
     left, right = (require_array(arguments[key]) for key in ("left", "right"))
     if left.shape != right.shape:
         fail("Static Array arithmetic currently requires the same shape; broadcasting is unsupported")
+    if name in {"Array.hypot", "Array.atan2"}:
+        charge_array(translator, int(left.size) * 5 + 1)
+        with np.errstate(over="ignore", invalid="ignore"):
+            x, y = left.astype(np.float64), right.astype(np.float64)
+            # The pinned Array.atan2 documentation calls right the y values.
+            result = np.hypot(x, y) if name == "Array.hypot" else np.arctan2(y, x)
+        return wrap_array(result)
     charge_array(translator, int(left.size) * 3 + 1)
     if name != "Array.divide" and left.dtype.kind in {"i", "u"} and right.dtype.kind in {"i", "u"}:
         # Object arithmetic uses bounded Python integers, preventing int64 wrap

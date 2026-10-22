@@ -27,6 +27,9 @@ _IMAGE_UNARY = {
     "sin": "sin", "cos": "cos", "tan": "tan", "not": "not",
 }
 _METADATA_NAMES = {"Image.get", "Image.copyProperties"}
+_MAX_IMAGE_WORK = 50000
+_MAX_IMAGE_BANDS = 10000
+_FLOAT32_MAX = 3.4028234663852886e38
 
 
 def handles_image(name):
@@ -37,8 +40,80 @@ def handles_image(name):
     )
 
 
+def _charge_hypot(translator, left, right):
+    def count(value):
+        if isinstance(value, Image):
+            amount, scan = len(value.bands), 0
+        elif isinstance(value, list):
+            amount, scan = len(value), len(value)
+        elif isinstance(value, (int, float, bool)):
+            amount, scan = 1, 0
+        else:
+            fail("Image.hypot requires Image or scalar operands")
+        if amount > _MAX_IMAGE_BANDS:
+            fail("Image.hypot operand exceeds 10000 bands")
+        if not amount:
+            fail("Image.hypot requires at least one band per operand")
+        return amount, scan
+
+    left_count, left_scan = count(left)
+    right_count, right_scan = count(right)
+    if left_count != 1 and right_count != 1 and left_count != right_count:
+        fail("Image operands need equal band counts or a single broadcast band")
+    output_count = max(left_count, right_count)
+    # Account for list validation/materialization, band pairing, and the two
+    # constants plus ten Pixel nodes emitted for each stable hypot expression.
+    work = 2 * (left_scan + right_scan) + left_count + right_count + 16 * output_count
+    if translator.steps + work > _MAX_IMAGE_WORK:
+        fail("Image.hypot exceeds the shared compilation work budget")
+    translator.steps += work
+
+
+def _check_constant_float32(matched):
+    """Reject constant results that the backend's Float32 cast cannot encode."""
+    import struct
+
+    for _, left, right in matched:
+        if left.op != "constant" or right.op != "constant":
+            continue
+        x, y = left.args[0], right.args[0]
+        if not isinstance(x, (int, float)) or not isinstance(y, (int, float)):
+            continue
+        try:
+            result = math.hypot(x, y)
+            if not math.isfinite(result) or result > _FLOAT32_MAX:
+                fail("Image.hypot constant result exceeds finite Float32 range")
+            struct.pack("!f", result)
+        except OverflowError:
+            fail("Image.hypot constant result exceeds finite Float32 range")
+
+
 def invoke_image(translator, name, arguments):
     a = arguments
+    if name == "Image.hypot":
+        translator.allowed(a, {"image1", "image2"})
+        for parameter in ("image1", "image2"):
+            if parameter not in a:
+                fail(f"Image.hypot requires the {parameter} argument")
+        _charge_hypot(translator, a["image1"], a["image2"])
+        try:
+            image, other, matched = pairs(a["image1"], a["image2"])
+        except OverflowError:
+            fail("Image.hypot operands must be finite numeric values")
+        _check_constant_float32(matched)
+        bands = []
+        for band_name, left, right in matched:
+            left_abs = Pixel("absolute", (left,))
+            right_abs = Pixel("absolute", (right,))
+            high = Pixel("max2", (left_abs, right_abs))
+            low = Pixel("min2", (left_abs, right_abs))
+            ratio = Pixel("divide", (low, high))
+            square = Pixel("power", (ratio, const(2)))
+            radicand = Pixel("add", (const(1), square))
+            magnitude = Pixel("multiply", (high, Pixel("sqrt", (radicand,))))
+            bands.append((band_name, Pixel("to_float", (magnitude,))))
+        return replace(image, bands=bands, source=image.source or other.source,
+                       mapped=image.mapped or other.mapped)
     if name == "Image.select":
         translator.allowed(a, {"input", "bandSelectors", "newNames"})
         return translator.select(a["input"], a["bandSelectors"], a.get("newNames"))

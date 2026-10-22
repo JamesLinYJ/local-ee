@@ -51,10 +51,10 @@ JSON 为每一个 `vendor/earthengine-js/algorithms.json` 条目保留官方算�
 
 | 工作流 | 主要计算或运行时缺口 |
 |---|---|
-| Sentinel-2 云影处理 | `Join.saveFirst`、投影/重投影、定向距离变换、`focalMin` / `focalMax`；云概率集合也未本地入库 |
-| 谐波时序 | 逐景元数据读取现在可通过 `Collection.map(dropNulls=true)` 的有限 per-image 路径处理，仍受 1,000 景上限约束；`Date.difference` 有局部 UTC 标量实现，但年/月使用平均时长策略且没有 Google 数值对照；线性回归、数组变换、`atan2` / `hypot` 和所需 Landsat 数据仍是主要缺口 |
-| 随机森林分类 | 样本提取、分类器训练与预测、混淆矩阵、批量区域统计 |
-| 矩阵 OLS | 集合转数组、`arraySlice` / `arrayProject` / `arrayFlatten`、`matrixSolve` |
+| Sentinel-2 云影处理 | 有限影像元数据 `Join.saveFirst` 已补；完整云概率数据配准、投影/重投影、定向距离变换、`focalMin` / `focalMax` 仍缺，不能把本地有限别名视为完整数据镜像 |
+| 谐波时序 | 已补有限逐景日期、定长集合数组、布局、静态设计矩阵求解、受限回归和合成谐波拟合／振幅；静态 Number／Array.atan2 采用 SDK 轴政策，Image.atan2 相位、变长数组、通用动态设计和所需 Landsat 数据仍有缺口；没有 Google 同数据对照 |
+| 随机森林分类 | 有限标签混淆矩阵、总体指标与静态最小距离模型已补；遥感样本提取、随机森林训练／栅格预测及完整批量区域统计仍缺 |
+| 矩阵 OLS | 已补有限静态矩阵、定长逐波段集合数组、固定形状布局与静态设计的 Image.matrixSolve；有效行压缩、动态设计及完整 Float64 栅格矩阵计算仍缺 |
 | HISTARFM 插值 | `Date.difference` / `getRelative` 有限 UTC 标量实现不能覆盖所有时间 Join 场景；独立常量栅格与完整投影语义、`int16`、时间 Join 与匹配列表属性仍是主要缺口 |
 | LandTrendr | 用户模块解析、高级时序分段、数组/像元连通语义与 Image QA 位运算 |
 
