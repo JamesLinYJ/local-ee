@@ -84,7 +84,7 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 | 有限表格回归 | 内联 FeatureCollection.reduceColumns，linearFit／linearRegression、类型化系数矩阵和各响应残差 RMS；缺失/null 行跳过 | S/C 与闭式独立 N；最多 1000 行／32 输入列，非空权重拒绝；秩不足和 n<=numX 返回 null；不含影像／栅格回归或 G |
 | 静态字符串和格式 | String 数值构造、cat／length／compareTo；Number.format 的有限 %s／%d／%f | S/C；拼接分配前和共享工作预算；Python Unicode code point／数值拼写及十进制半入政策均无 G；高级转换／格式拒绝 |
 | 静态 Array／矩阵 | 构造、get/length/toList/reshape/transpose、matrixTranspose/Multiply/Inverse/PseudoInverse/Solve | S/C 与静态独立 N；整数精确域不超过 2^53、最多 8 轴／10000 单元及共享工作预算；线性求解只接受满列秩方阵／超定矩阵；不含 Image.array*、栅格回归或分类器 |
-| 有限分类评估 | 静态 ConfusionMatrix、array／order／accuracy／kappa；内联 Collection.errorMatrix | S/C 与独立标签频数 N；<=64 类／4096 单元、非负整数计数总和 <=2^53、<=1000 完整记录，共享预算；显式类别表筛选，缺失／null、零分母、原始 List／浮点计数 Array、直接对象 JSON、Feature 属性对象和逐类指标拒绝；无 E/G、采样或分类器 |
+| 有限分类评估 | 静态 ConfusionMatrix、array／order／accuracy／kappa、有限 consumersAccuracy／producersAccuracy／fscore；内联 Collection.errorMatrix | S/C 与独立标签频数 N；<=64 类／4096 单元、非负整数计数总和 <=2^53、<=1000 完整记录，共享预算；缺失／null、未定义分母、原始 List／浮点计数 Array、直接对象 JSON、Feature 属性对象拒绝；逐类 rank1 Float64／Fβ 轴为本地政策，无 E/G |
 | 有限 List 计算 | zip／unzip／flatten／repeat／reverse／set／swap，List.reduce 的单输出归约及 linearFit／linearRegression | S/C/独立静态 N；布局 <=10000 顶层值、flatten 深度 96、reduce <=1000 行／32 回归列，共享工作与公开物化预算；typed Array 保留；空值／低样本政策明确且无 G 对照，不含任意 reducer 组合／权重 |
 | 静态最小距离分类 | minimumDistance／train／schema／CLASSIFICATION 模式、FeatureCollection.classify、训练 confusionMatrix | S/C/独立静态 N；欧式、k=1、1..1000 训练行／1..8 平面属性、类别 0..63、无子采样、共享预算；唯一最近类，等距和输出名碰撞拒绝，保留要素元数据；无图像分类／随机森林／E/G |
 | 静态方阵分解 | QR 的 Q／R，部分选主元 LU 的 L／U／P，SVD 的 U／对角 S／V；typed 因子可继续矩阵计算 | S/C/闭式与分解恒等式 N；所有因子 n×n，合并输出 <=10000 cells、共享立方工作预充；LU 计算零主元和非有限消元拒绝，QR／SVD 符号／退化基未作 Google/EJML 对照；无矩形／栅格 E/G |
@@ -156,7 +156,7 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 | s2cloudless 云影 | 有限本地影像 `Join.saveFirst` 已补；仍缺定向距离变换、`projection/reproject`、`focalMin/focalMax`；云概率数据未入库 |
 | 谐波时序与矩阵回归 | 已补有限日期、数组布局／矩阵投影／归约、静态设计的 Image.matrixSolve、逐像元 linearFit／受限 linearRegression，以及定长日期驱动谐波拟合和 Image.hypot 振幅；静态 Number／Array.atan2 按 SDK 轴政策计算；通用动态设计、变长数组和栅格 Image.atan2 相位仍有缺口 |
 | HISTARFM 插值 | 已补受限 Date.getRelative、saveAll 匹配影像列表、maxDifference 与方向比较的 And 组合；最近前后观测像素插值有合成图 N，独立常量栅格、int16、完整项目及真实引擎验收仍缺失 |
-| 随机森林与验证 | 样本提取、分类器训练/预测与批量区域统计仍缺；已补有限内联标签误差矩阵和总体指标，逐类指标／完整分类验证仍待实现 |
+| 随机森林与验证 | 样本提取、随机森林训练/预测与批量区域统计仍缺；已补有限内联标签误差矩阵、总体及有限逐类指标，不能代替完整分类验证 |
 | LandTrendr | GEE 用户模块解析、真实时序分段算法、数组处理、连通像元与 Image QA 位运算仍缺失；已补有限网格的 `unmask`，不能据此运行完整 LandTrendr |
 | GEE 应用交互 | 实际原生 runner 的 `ui.Panel/ui.Chart` 返回 `ui is not defined`；`require('users/...')` 返回模块不存在 |
 
@@ -184,3 +184,6 @@ GEE_AUDIT_DIR=/absolute/new/audit-dir .venv/bin/python -m scripts.check_ee_multi
 多景 harness 使用明确标注的合成影像、同日毫秒时间戳和不同波段掩膜，通过原生 Seatbelt 运行固定依赖的引擎，不写入生产目录或数据库。独立 NumPy 基准通过 Rasterio 投影到实际输出网格。保留失败尝试的日志；历史容器验证见 `audit/ee-compat-wave1-r5/validation.json`、`audit/ee-compat-wave2/validation.json`，当前原生 23 项输出见 `audit/native-macos-multiscene-v5/validation.json`。
 
 源码依据：[官方客户端固定版本](https://github.com/google/earthengine-api/tree/e189e4b89e785019ea5642ea8e80cb644749cd4a)、[where 规则](https://developers.google.com/earth-engine/apidocs/ee-image-where)、[unitScale](https://developers.google.com/earth-engine/apidocs/ee-image-unitscale)、[Date.advance](https://developers.google.com/earth-engine/apidocs/ee-date-advance)。
+
+
+第二十批补静态 Array.sort 和显式 Float32 固定数组 Image.arraySort：按键稳定排序整个切片，保留 NDVI／日期对应关系、完整值与键掩膜及预算；四景质量筛选有独立分数参考。有限逐类 consumersAccuracy／producersAccuracy／fscore 继续准确登记本地返回 rank 与 Fβ 轴推断，未称 Google 完整等价。最终范围、误差及未运行项见 [第二十批报告](../reports/gee-python-wave20.json) 和 [数值政策](gee-python/numerical-policies.md)。

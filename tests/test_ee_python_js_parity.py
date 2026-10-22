@@ -54,6 +54,13 @@ const prior = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(c, c,
     leftField:'system:time_start', rightField:'system:time_start'}),
     ee.Filter.greaterThan({leftField:'system:time_start', rightField:'system:time_start'}))));
 const values = {
+  arraySort: ee.Array([[30,10],[20,40],[50,60]]).sort(ee.Array([[2],[1],[2]])),
+  rasterArraySort: c.first().select(['green','red','nir']).toArray().toFloat()
+    .arraySort(c.first().select(['nir','green','red']).toArray().toFloat())
+    .arrayFlatten([['a','b','c']]),
+  confusionConsumers: ee.ConfusionMatrix(ee.Array([[5,1],[2,3]])).consumersAccuracy(),
+  confusionProducers: ee.ConfusionMatrix(ee.Array([[5,1],[2,3]])).producersAccuracy(),
+  confusionFscore: ee.ConfusionMatrix(ee.Array([[5,1],[2,3]])).fscore(2),
   arrayArgmax: ee.Array([[1,9,9],[9,-1,0]]).argmax(),
   arrayArgmaxEmpty: ee.Array([1]).slice(0,0,0).argmax(),
   rasterArrayArgmax: c.first().select(['blue','green','red','nir']).toArray()
@@ -194,6 +201,13 @@ def parity_values():
             leftField="system:time_start", rightField="system:time_start"),
             ee.Filter.greaterThan(leftField="system:time_start", rightField="system:time_start"))))
     py = {
+        "arraySort": ee.Array([[30, 10], [20, 40], [50, 60]]).sort(ee.Array([[2], [1], [2]])),
+        "rasterArraySort": c.first().select(["green", "red", "nir"]).toArray().toFloat()
+            .arraySort(c.first().select(["nir", "green", "red"]).toArray().toFloat())
+            .arrayFlatten([["a", "b", "c"]]),
+        "confusionConsumers": ee.ConfusionMatrix(ee.Array([[5, 1], [2, 3]])).consumersAccuracy(),
+        "confusionProducers": ee.ConfusionMatrix(ee.Array([[5, 1], [2, 3]])).producersAccuracy(),
+        "confusionFscore": ee.ConfusionMatrix(ee.Array([[5, 1], [2, 3]])).fscore(2),
         "arrayArgmax": ee.Array([[1, 9, 9], [9, -1, 0]]).argmax(),
         "arrayArgmaxEmpty": ee.Array([1]).slice(0, 0, 0).argmax(),
         "rasterArrayArgmax": c.first().select(["blue", "green", "red", "nir"]).toArray()
@@ -310,7 +324,9 @@ def parity_values():
                 for key, value in py.items()}, [metadata], items
 
 
-@pytest.mark.parametrize("case", ["arrayArgmax", "arrayArgmaxEmpty", "rasterArrayArgmax",
+@pytest.mark.parametrize("case", ["arraySort", "rasterArraySort", "confusionConsumers",
+                                 "confusionProducers", "confusionFscore",
+                                 "arrayArgmax", "arrayArgmaxEmpty", "rasterArrayArgmax",
                                  "sequence", "emptyKeys", "missingDefault", "matrixMultiply",
                                  "matrixSolve", "notNull", "matchId", "clippedBands",
                                  "bestDelta", "tableCoefficients", "featureSum", "formatted",

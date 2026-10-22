@@ -172,11 +172,13 @@ def test_undefined_accuracy_and_expected_agreement_fail_explicitly(ee):
         output(ee, perfect.kappa())
 
 
-@pytest.mark.parametrize("method", ["producersAccuracy", "consumersAccuracy", "fscore"])
-def test_other_sdk_confusion_methods_remain_explicitly_unsupported(ee, method):
-    value = getattr(confusion_matrix(ee), method)()
-    with pytest.raises(UnsupportedEEError, match="Unsupported Earth Engine algorithm"):
-        output(ee, value)
+@pytest.mark.parametrize(("method", "expected"), [
+    ("consumersAccuracy", [5 / 6, 1 / 2, 4 / 5]),
+    ("producersAccuracy", [5 / 7, 3 / 5, 4 / 5]),
+    ("fscore", [10 / 13, 6 / 11, 4 / 5]),
+])
+def test_per_class_confusion_metrics_are_supported(ee, method, expected):
+    assert output(ee, getattr(confusion_matrix(ee), method)()) == expected
 
 
 def test_unknown_constructor_and_method_arguments_are_rejected(ee):

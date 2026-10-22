@@ -4027,12 +4027,14 @@
       "description": "Sorts elements of the array along one axis.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Typed static finite numeric Array, same-rank optional keys (null defaults to values); one key-selected axis matches the payload length while other key dimensions are singleton. Default matrices with multiple varying dimensions reject. Actual stable ascending permutation moves complete slices and retains dtype; ties and one-cell scalar identity are local policies, not Google verified. Unambiguous typed empty slices preserve shape. Rank8/cells10000/exact integer domain and precharged shared50000 work apply; valid shapes may exceed nlogn work budget."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -8682,7 +8684,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Static typed integer Array square matrices only, 0..64 classes, <=4096 cells and nonnegative total counts <=2^53 under shared 50000-step work. Explicit unique integral order labels within +/-2^53 are retained; [] is not a default-order alias. Accuracy/Kappa use exact integer intermediates and finite Float64 ratios; undefined denominators reject. Raw lists, floating count arrays, direct/nested ConfusionMatrix JSON, Feature property storage and unimplemented per-class metrics reject. If and Dictionary.get preserve the internal type. No Google comparison or classifier training claim."
+          "Static typed integer Array square matrices only, 0..64 classes, <=4096 cells and nonnegative total counts <=2^53 under shared 50000-step work. Explicit unique integral order labels within +/-2^53 are retained; [] is not a default-order alias. Accuracy/Kappa use exact integer intermediates and finite Float64 ratios; undefined denominators reject. Raw lists, floating count arrays, direct/nested ConfusionMatrix JSON and Feature property storage reject. If and Dictionary.get preserve the internal type. Per-class metrics are separately declared partial handlers. No Google comparison or classifier training claim."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -8714,7 +8716,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Static typed integer Array square matrices only, 0..64 classes, <=4096 cells and nonnegative total counts <=2^53 under shared 50000-step work. Explicit unique integral order labels within +/-2^53 are retained; [] is not a default-order alias. Accuracy/Kappa use exact integer intermediates and finite Float64 ratios; undefined denominators reject. Raw lists, floating count arrays, direct/nested ConfusionMatrix JSON, Feature property storage and unimplemented per-class metrics reject. If and Dictionary.get preserve the internal type. No Google comparison or classifier training claim."
+          "Static typed integer Array square matrices only, 0..64 classes, <=4096 cells and nonnegative total counts <=2^53 under shared 50000-step work. Explicit unique integral order labels within +/-2^53 are retained; [] is not a default-order alias. Accuracy/Kappa use exact integer intermediates and finite Float64 ratios; undefined denominators reject. Raw lists, floating count arrays, direct/nested ConfusionMatrix JSON and Feature property storage reject. If and Dictionary.get preserve the internal type. Per-class metrics are separately declared partial handlers. No Google comparison or classifier training claim."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -8746,7 +8748,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Static typed integer Array square matrices only, 0..64 classes, <=4096 cells and nonnegative total counts <=2^53 under shared 50000-step work. Explicit unique integral order labels within +/-2^53 are retained; [] is not a default-order alias. Accuracy/Kappa use exact integer intermediates and finite Float64 ratios; undefined denominators reject. Raw lists, floating count arrays, direct/nested ConfusionMatrix JSON, Feature property storage and unimplemented per-class metrics reject. If and Dictionary.get preserve the internal type. No Google comparison or classifier training claim."
+          "Static typed integer Array square matrices only, 0..64 classes, <=4096 cells and nonnegative total counts <=2^53 under shared 50000-step work. Explicit unique integral order labels within +/-2^53 are retained; [] is not a default-order alias. Accuracy/Kappa use exact integer intermediates and finite Float64 ratios; undefined denominators reject. Raw lists, floating count arrays, direct/nested ConfusionMatrix JSON and Feature property storage reject. If and Dictionary.get preserve the internal type. Per-class metrics are separately declared partial handlers. No Google comparison or classifier training claim."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -8773,12 +8775,14 @@
       "description": "Computes the consumer's accuracy (reliability) of a confusion matrix defined as (correct / total) for each row.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded typed static ConfusionMatrix counts and existing class/work limits only. Consumers uses diagonal/row sum and producers diagonal/column sum per pinned documentation. Fbeta uses actual-row recall and predicted-column precision as an explicit inference; positive finite beta with exact rational intermediates avoids overflow/underflow. Returns a local rank1 Float64 vector, not verified Google rank/dtype equivalence. Undefined class denominators and invalid/unknown inputs reject; original label order retained. Independent rational and trained inline-feature workflows are not raster-engine or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -8810,12 +8814,14 @@
       "description": "Computes the Fβ-score for the confusion matrix.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded typed static ConfusionMatrix counts and existing class/work limits only. Consumers uses diagonal/row sum and producers diagonal/column sum per pinned documentation. Fbeta uses actual-row recall and predicted-column precision as an explicit inference; positive finite beta with exact rational intermediates avoids overflow/underflow. Returns a local rank1 Float64 vector, not verified Google rank/dtype equivalence. Undefined class denominators and invalid/unknown inputs reject; original label order retained. Independent rational and trained inline-feature workflows are not raster-engine or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -8845,7 +8851,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Static typed integer Array square matrices only, 0..64 classes, <=4096 cells and nonnegative total counts <=2^53 under shared 50000-step work. Explicit unique integral order labels within +/-2^53 are retained; [] is not a default-order alias. Accuracy/Kappa use exact integer intermediates and finite Float64 ratios; undefined denominators reject. Raw lists, floating count arrays, direct/nested ConfusionMatrix JSON, Feature property storage and unimplemented per-class metrics reject. If and Dictionary.get preserve the internal type. No Google comparison or classifier training claim."
+          "Static typed integer Array square matrices only, 0..64 classes, <=4096 cells and nonnegative total counts <=2^53 under shared 50000-step work. Explicit unique integral order labels within +/-2^53 are retained; [] is not a default-order alias. Accuracy/Kappa use exact integer intermediates and finite Float64 ratios; undefined denominators reject. Raw lists, floating count arrays, direct/nested ConfusionMatrix JSON and Feature property storage reject. If and Dictionary.get preserve the internal type. Per-class metrics are separately declared partial handlers. No Google comparison or classifier training claim."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -8877,7 +8883,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Static typed integer Array square matrices only, 0..64 classes, <=4096 cells and nonnegative total counts <=2^53 under shared 50000-step work. Explicit unique integral order labels within +/-2^53 are retained; [] is not a default-order alias. Accuracy/Kappa use exact integer intermediates and finite Float64 ratios; undefined denominators reject. Raw lists, floating count arrays, direct/nested ConfusionMatrix JSON, Feature property storage and unimplemented per-class metrics reject. If and Dictionary.get preserve the internal type. No Google comparison or classifier training claim."
+          "Static typed integer Array square matrices only, 0..64 classes, <=4096 cells and nonnegative total counts <=2^53 under shared 50000-step work. Explicit unique integral order labels within +/-2^53 are retained; [] is not a default-order alias. Accuracy/Kappa use exact integer intermediates and finite Float64 ratios; undefined denominators reject. Raw lists, floating count arrays, direct/nested ConfusionMatrix JSON and Feature property storage reject. If and Dictionary.get preserve the internal type. Per-class metrics are separately declared partial handlers. No Google comparison or classifier training claim."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -8904,12 +8910,14 @@
       "description": "Computes the producer's accuracy of a confusion matrix defined as (correct / total) for each column.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded typed static ConfusionMatrix counts and existing class/work limits only. Consumers uses diagonal/row sum and producers diagonal/column sum per pinned documentation. Fbeta uses actual-row recall and predicted-column precision as an explicit inference; positive finite beta with exact rational intermediates avoids overflow/underflow. Returns a local rank1 Float64 vector, not verified Google rank/dtype equivalence. Undefined class denominators and invalid/unknown inputs reject; original label order retained. Independent rational and trained inline-feature workflows are not raster-engine or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -18381,12 +18389,14 @@
       "description": "Sorts elements of each array pixel along one axis.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "One fixed rank1..8 array with explicit top-level Float32 value and key cells; same-rank keys identify one matching non-singleton axis with other dimensions singleton. Stable strict-gt adjacent compare-exchange moves full slices together, preserves input name/metadata/source fallback and conjunction of all payload/key validity. Default/null keys sort values, ambiguous keys/Double/scalar/bundles reject. Work is precharged before quadratic DAG construction;64 cells/shared50000 work/500 graph nodes retained. Float32 key quantization can change ties; no Google tie/dtype or actual raster-engine acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -40937,7 +40947,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 266,
+    "declared_handler_name_count": 271,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -40952,7 +40962,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 36,
+        "declared_handler_count": 37,
         "signature_count": 124
       },
       "BACCINI/ModisComposite": {
@@ -41022,7 +41032,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 5,
+        "declared_handler_count": 8,
         "signature_count": 8
       },
       "CrossCorrelation": {
@@ -41155,7 +41165,7 @@
         "appears_in_rejected_compile_context": 31,
         "appears_in_selected_sdk_serialization": 35,
         "appears_in_successful_compile_context": 8,
-        "declared_handler_count": 72,
+        "declared_handler_count": 73,
         "signature_count": 232
       },
       "ImageCollection": {
@@ -41418,7 +41428,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 266,
+    "pinned_signatures_with_same_name_declared_handler": 271,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

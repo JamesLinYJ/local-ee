@@ -1,0 +1,22 @@
+{
+  "schema": "local-ee-quality-sorted-observations/v1",
+  "collection_id": "sentinel-2-l2a",
+  "bands": ["red", "nir", "cloud_score"],
+  "scene_geometry": {"type": "Polygon", "coordinates": [[[0, 0], [4, 0], [0, 4], [0, 0]]]},
+  "bbox": [0, 0, 4, 4],
+  "pixel_centers": [[0.5, 0.5], [1.5, 0.5], [0.5, 1.5], [1.5, 1.5], [3.5, 3.5]],
+  "frames": [
+    {"id": "quality-a", "time": "2024-01-01T00:00:00Z", "day": 0,
+     "red": [1, 1, 1, 1, 1], "nir": [1, 1, 1, 1, 1], "cloud_score": [30, 0, 10, 0, 0]},
+    {"id": "quality-b", "time": "2024-01-11T00:00:00Z", "day": 10,
+     "red": [1, 1, 1, 1, 1], "nir": [3, 3, 3, 3, 3], "cloud_score": [10, 0, 20, 1, 1]},
+    {"id": "quality-c", "time": "2024-01-11T00:00:00Z", "day": 10,
+     "red": [1, 1, 1, 1, 1], "nir": [5, 5, 5, 5, 5], "cloud_score": [10, 0, null, 2, 2]},
+    {"id": "quality-d", "time": "2025-01-01T00:00:00Z", "day": 366,
+     "red": [1, 1, 1, null, 1], "nir": [7, 7, 7, 7, 7], "cloud_score": [20, 0, 40, 3, 3]}
+  ],
+  "hand_reference": {
+    "sorted_scene_ids_by_pixel": [["quality-b", "quality-c", "quality-d", "quality-a"], ["quality-a", "quality-b", "quality-c", "quality-d"], null, null, null],
+    "best_mean_by_pixel": ["7/12", "1/4", null, null, null]
+  }
+}

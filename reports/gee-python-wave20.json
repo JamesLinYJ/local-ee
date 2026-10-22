@@ -1,0 +1,288 @@
+{
+  "base_commit": "ce8362dc6c3698219eae9fccd8430ab124a2ec35",
+  "cleanup": {
+    "repeated_inventory_bytes": 3292711,
+    "status": "task-owned staging removed after retained hashes and byte comparison; runtime dependencies and historical evidence retained",
+    "temporary_build_bytes": 1669087,
+    "temporary_build_files": 16
+  },
+  "date": "2026-10-23",
+  "evidence_levels": {
+    "C": "passed typed routing, strict params, mask/metadata and original budgets",
+    "E": "not_run actual raster engine this wave",
+    "G": "not_run Google same-data comparison",
+    "N": "passed independent Python index permutations, Fraction confusion/ranking references and synthetic compiled graph sample evaluator",
+    "S": "passed pinned Python serialization and both official SDK serializer parity"
+  },
+  "frontend_build_files_sha256": {
+    "assets/AdminApp-CberucYy.css": "8908f3ea433a2c83de8f0689e3124704b96d4c7e8c85cd2dfccbbf378bef3619",
+    "assets/AdminApp-m3QqiO5D.js": "c6d621bd25f241f577d0167345df8ba14b7d12f55359dfe51c1a8df0aafbabc7",
+    "assets/CodeEditor-DubImaKf.js": "e0c05b284f3f6f07d756ba3951633970d344900244b28df6b5f9e99af1453304",
+    "assets/GraphEditor-BBSUAalY.css": "79b9af64a24dd09655161496f9081430ab93009e1688e69e5103f4c477abbb30",
+    "assets/GraphEditor-BigqPm52.js": "714a6fdc3254fdca0216ee32f4f5430354c71f8af0387f450af362e46d8f81de",
+    "assets/Workbench-Deo-D45l.js": "b56a65e5a24780b7000438b2ed345caa2639d34c0381ae673ebde066a38b0d81",
+    "assets/editor-5UsZrAHJ.js": "6eb81fd3ebb71dcb79f40073f4ba85a3feb4dc3bdd533b51e05d9989427d5765",
+    "assets/fileHash.worker-BDNCRKBE.js": "01fa7f1b1493e5a4661558c513d26ddad258a83fa438c1d12ac3cde651b63323",
+    "assets/index-DyD_0F2d.js": "957fcf08e0df72c13d2844491bef6ff9acfbd503aaa143fed8c154a3099a719c",
+    "assets/index-HrqOZ6hc.css": "67305b63a786d9f0dae2510961d7e21c534c54caed090698066a64070f7db0bd",
+    "assets/map-Dx-ML1gg.js": "37304ad513bcd0ed5fd489858f868e46187a813dc351e88838095951182c7250",
+    "assets/map-c_1sG1-7.css": "3a2b8467811c3aa89ce93c07ec06cb0598e8c8c6e9570c10da44590ddfd08c77",
+    "assets/motion-C5PynPuY.js": "09016d08acfe8898fc5dc921de52238b9afd747e13b4912cd1d7590091e942c0",
+    "assets/react-VPJ4IFiM.js": "b080bf5b6fe7973608f872d3b54faadaf8af2dc0c335119f70c0b6ba2ebe6b33",
+    "assets/rolldown-runtime-pP25SEvz.js": "c7d5a9b5d4023712538018b5b2ca9c285054e9b3ad27dc9f9189d24e73ce8395",
+    "index.html": "37debd370b4a22dc2d0dddda1bfffb2fd3aed1fde9d92f990064a737e05e9c5f"
+  },
+  "implemented_algorithms": [
+    "Array.sort",
+    "Image.arraySort",
+    "ConfusionMatrix.consumersAccuracy",
+    "ConfusionMatrix.producersAccuracy",
+    "ConfusionMatrix.fscore"
+  ],
+  "independent_review": {
+    "final_related_tests_passed": 101,
+    "initial_findings": [
+      "Fbeta second matrix traversal was not fully charged"
+    ],
+    "remaining_reported_findings": [],
+    "resolution": "Added second data.size charge before traversal/allocation and 64x64 work controls for 8256 units and 42000 prior work rejection",
+    "reviewer": "Luna max"
+  },
+  "limits": [
+    "Static Array.sort rank<=8,cells<=10000,exact integer range<=2^53 and precharged shared50000 work; keys same-rank with one unambiguous axis. Stable ties and rank0 one-cell identity are local policies.",
+    "Raster arraySort requires explicit Float32 payload/key cells, rank1..8,cells<=64,shared50000 work and500 graph nodes. Whole payload/key masks and coupled slices retained. Large valid shapes may exceed graph cap; dynamic16 sort negative control retained.",
+    "ConfusionMatrix consumers=diagonal/row and producers=diagonal/column per pinned method descriptions. Fbeta actual-row recall is an explicit inference; local rank1 Float64 outputs are not verified Google shapes/dtypes. Beta finite positive only, undefined denominator rejects.",
+    "No standalone arbitrary constant grids, dynamic array shapes, general Float64 callbacks, Image.classify, random forest, neighborhood or full compatibility claim.",
+    "No runtime service restart, native deployment, account/data/.native modifications or production acceptance this wave."
+  ],
+  "phase": "Python-first compatibility; native isolation, ARM64 JNI and private real-data acceptance deferred, existing security boundaries preserved",
+  "platform": {
+    "architecture": "arm64",
+    "earthengine_api": "1.7.49",
+    "node": "v24.19.0",
+    "os": "Darwin",
+    "python": "3.11.16"
+  },
+  "primary_sources": [
+    "https://developers.google.com/earth-engine/apidocs/ee-array-sort",
+    "https://developers.google.com/earth-engine/apidocs/ee-image-arraysort",
+    "https://developers.google.com/earth-engine/apidocs/ee-confusionmatrix-consumersaccuracy",
+    "https://developers.google.com/earth-engine/apidocs/ee-confusionmatrix-producersaccuracy",
+    "https://developers.google.com/earth-engine/apidocs/ee-confusionmatrix-fscore"
+  ],
+  "schema": "local-ee-python-compat-wave20/v1",
+  "source_files_sha256": {
+    "GOAL.md": "0f5bdad4267662e11097d9552e95984da39fb97ed313b71581084723e66c2a73",
+    "docs/cloud-handoff.md": "b820f136543d39f49730453dd4e2a1ab138ec7b36598ff43f4aee170b5aeb767",
+    "docs/gee-compatibility.md": "27f33bc5f6f3625594116ab83881648959f9beb9be8c0e87bbbf4d150600e6d0",
+    "docs/gee-python/list.md": "472863a0aa6102837e580a73fdfc067b20ad83ad46e6a17ea0b4cc6e676354e3",
+    "docs/gee-python/numerical-policies.md": "c3664078a10528f38645fab6aa0f4df8a9a31e3ec10dbc93b5f1d8bef4ffe6f9",
+    "examples/25_GEE_python_quality_sorted_observations.py": "eb7b61d5902421c83b5fb43cfad1f673bac8781f7a1c917b95b567376ff2e0cf",
+    "gee/compat/earthengine/array_sort.py": "3babf876fc22d963aecdc375b698dafb9b5d89366d772d84feb50f053297504d",
+    "gee/compat/earthengine/array_values.py": "d0b16802c5cef0f43400120e834c8b2d3843af74f34efdc7258b34849817efd1",
+    "gee/compat/earthengine/capabilities.py": "9f8862be8b2ecd9cc2e2e29b8f77e4530f7c25a95e43642a1ebb80b669b259a2",
+    "gee/compat/earthengine/confusion_metrics.py": "7a8d707ee5e516c2d0a3da77b64b42cca2b9fe24e7efda34906a59b4b2974d3e",
+    "gee/compat/earthengine/confusion_values.py": "1754cafbfee4bfa820d02d0112ca11f730fcff6457f7ae5f68919af96c688da6",
+    "gee/compat/earthengine/raster_array_dispatch.py": "04cd6ec62acd3d3f4f7052cd769b2801a5ea78dac00c95859e029c61eedd7265",
+    "gee/compat/earthengine/raster_array_sort.py": "ab21c2f7c579ca0bed9faea7efe665a39177a4fd6b314160886b04a4fe080605",
+    "scripts/ee_inventory/catalogue.py": "f1150df25284b3c18a2ec544f3e4634bc4c6c37a105e366155f9b9386dcb0be7",
+    "tests/fixtures/ee-quality-sorted-observations-v1.json": "8d9162f349334a0d8841ab327bc584e20a80d4d5227cc24e4f5100e9fcff47f3",
+    "tests/test_ee_confusion_matrix.py": "1de8b69c7f8de6e3c32644bf34be84fc70d887ff0473de731c328a4bbbb5aebf",
+    "tests/test_ee_confusion_metrics.py": "9c2b6af51dc108e5f1d1682c625f94aa99c3402fb7f47a26eb32b55b82431bb6",
+    "tests/test_ee_python_js_parity.py": "a4a0e5e419503d3bfcd678678a7082acc52933b569969829967f457322e300f4",
+    "tests/test_ee_quality_sorted_workflow.py": "bbf0c9f034a6ddb8d620ffa147144139707431c751948cfa259addb31b9c0abd",
+    "tests/test_ee_raster_array_sort.py": "7bc42f55196eaf6c51c13d9803ffcb6a94f9facfeab827d4056d8a11e1545551",
+    "tests/test_ee_raster_array_sort_parameters.py": "2762dedfe08bbcf4e31bb083d0402efd9f8b480a1cce1d4a8e285a40af48870b",
+    "tests/test_ee_static_array_sort.py": "0c776f6bb2b30fecaf6f651eb318981aa6764ac91c881a3c1e8a70eb12b1bf69"
+  },
+  "status": "partial_goal_in_progress",
+  "validation": {
+    "frontend_build": "passed_in_temporary_directory_without_deployment",
+    "frontend_tests": 11,
+    "full_python_inventory": {
+      "algorithms": 991,
+      "callables": 1797,
+      "classes": 48,
+      "sha256": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12",
+      "status": "byte_identical_regeneration"
+    },
+    "initial_full_suite_attempt": {
+      "command": ".venv/bin/python -m pytest -q",
+      "failed": 4,
+      "passed": 1456,
+      "scope": "test_native_runtime.py blocked by outer execution permissions: sandbox-exec sandbox_apply and psutil process enumeration. Not counted as passing; no security boundary was relaxed.",
+      "skipped": 3
+    },
+    "new_passing_tests_over_base": 79,
+    "python": {
+      "errors": 0,
+      "failures": 0,
+      "passed": 1535,
+      "skipped": 3,
+      "tests": 1538
+    },
+    "python_command": ".venv/bin/python -m pytest -q --ignore=tests/test_native_runtime.py --junitxml=audit/gee-python-wave20/python-final.xml",
+    "python_js_serializer_parity_cases": 64,
+    "targeted_probe": {
+      "compiled": 45,
+      "fixture_check": "unchanged",
+      "rejected": 5,
+      "serialized": 50
+    },
+    "typescript": "passed"
+  },
+  "workflow": {
+    "network": {
+      "attempt_count": 0,
+      "attempts_by_operation": {},
+      "instrumented_operations": [
+        "local_transport.request",
+        "socket.create_connection",
+        "socket.getaddrinfo",
+        "socket.gethostbyaddr",
+        "socket.gethostbyname",
+        "socket.gethostbyname_ex",
+        "socket.socket.connect",
+        "socket.socket.connect_ex",
+        "socket.socket.sendmsg",
+        "socket.socket.sendto"
+      ],
+      "mode": "deny_and_count_python_network_and_local_transport_entry_points",
+      "scope": "Trusted in-process SDK probes only; not packet capture or kernel isolation"
+    },
+    "outputs": {
+      "best_mean": {
+        "bands": [
+          "best_mean"
+        ],
+        "mask_mismatches": 0,
+        "max_abs_error": 9.93410742555767e-09,
+        "nodes": 348,
+        "sample_values": [
+          [
+            0.5833333432674408,
+            0.25,
+            null,
+            null,
+            null
+          ]
+        ]
+      },
+      "best_two": {
+        "bands": [
+          "rank_0_ndvi",
+          "rank_0_day",
+          "rank_1_ndvi",
+          "rank_1_day"
+        ],
+        "mask_mismatches": 0,
+        "max_abs_error": 1.9868214962137642e-08,
+        "nodes": 433,
+        "sample_values": [
+          [
+            0.5,
+            0.0,
+            null,
+            null,
+            null
+          ],
+          [
+            10.0,
+            0.0,
+            null,
+            null,
+            null
+          ],
+          [
+            0.6666666865348816,
+            0.5,
+            null,
+            null,
+            null
+          ],
+          [
+            10.0,
+            10.0,
+            null,
+            null,
+            null
+          ]
+        ]
+      },
+      "ordered": {
+        "bands": [
+          "rank_0_ndvi",
+          "rank_0_day",
+          "rank_1_ndvi",
+          "rank_1_day",
+          "rank_2_ndvi",
+          "rank_2_day",
+          "rank_3_ndvi",
+          "rank_3_day"
+        ],
+        "mask_mismatches": 0,
+        "max_abs_error": 1.9868214962137642e-08,
+        "nodes": 481,
+        "sample_values": [
+          [
+            0.5,
+            0.0,
+            null,
+            null,
+            null
+          ],
+          [
+            10.0,
+            0.0,
+            null,
+            null,
+            null
+          ],
+          [
+            0.6666666865348816,
+            0.5,
+            null,
+            null,
+            null
+          ],
+          [
+            10.0,
+            10.0,
+            null,
+            null,
+            null
+          ],
+          [
+            0.75,
+            0.6666666865348816,
+            null,
+            null,
+            null
+          ],
+          [
+            366.0,
+            10.0,
+            null,
+            null,
+            null
+          ],
+          [
+            0.0,
+            0.75,
+            null,
+            null,
+            null
+          ],
+          [
+            0.0,
+            366.0,
+            null,
+            null,
+            null
+          ]
+        ]
+      }
+    },
+    "schema": "local-ee-quality-sorted-observations/v1"
+  }
+}

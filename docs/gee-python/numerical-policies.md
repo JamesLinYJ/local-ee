@@ -47,3 +47,14 @@ Image.matrixFnorm 采用最大绝对值缩放、比例平方和、开方后再�
 Image.arrayArgmax 当前只接受 rank1..8、≤64 单元且每个单元显式顶层 toFloat 的单数组影像。比较在该显式 Float32 输入上执行：原来不同的 Double 值可能量化成相同值，再按首个最大值取坐标。这是用户选择 toFloat 后的本地子集行为，不是对 Google Double 比较的替代。输出为 shape(rank,) 的实际条件表达式，坐标在 0..63 内，以整数值 Float32 表示；尚未实现或证明 Google Integer 结果 dtype 等价。
 
 整个输入数组的掩膜和来源／名称／元数据保留，即使缺测单元不会成为最大值，也掩膜全部坐标。rank0 栅格所需的空坐标向量不能由现有非空数组 IR 表示，因此明确拒绝；Double、标量和多数组波段不静默转换。扫描及构造前收费，50000 工作和 500 图节点预算保持。合成光谱原型选择用真实平方距离的负值求 argmax，是明确固定原型的计算流程，未实现 Image.classify 或完整分类训练。无栅格 E／Google G 结论。
+
+
+## 按键排序与逐类指标
+
+Array.sort／Image.arraySort 的可选 keys 按唯一非单例轴确定方向，保持整个切片的对应关系。并列键使用稳定升序的本地政策，未经过 Google 验证。静态数组保留原始 dtype；栅格值和键都要求显式 Float32，量化后不同 Double 可能成为并列。完整值／键掩膜共同作用，保留非赢家缺测，不删除观测。静态 rank0 单单元 identity 和 typed 空切片行为也是本地子集；栅格仍要求非空固定维度。工作收费在排序／DAG 分配前执行，图规模保持 500 节点。
+
+ConfusionMatrix 的固定描述把 consumersAccuracy 定义为对角／行和，producersAccuracy 定义为对角／列和，尽管同一参考说明 actual 为行、predicted 为列。实现按固定方法描述计算，不暗中交换两个名字。Fβ 参考页只说 beta 加权 recall，故采用实际行 recall、预测列 precision 的明确推断：`(1+β²)TP/(β²·rowTotal+columnTotal)`。返回 rank1 Float64 是本地物化政策，官方 Array 返回声明不足以证明其与 Google rank／dtype 相同。相同数值不等于完整形状兼容。
+
+beta 限有限正值，按其 binary64 精确有理数计算中间量，覆盖巨大和次正规 beta，不先用浮点平方制造溢出／下溢；不声称与 Google 最后位一致。零分母明确拒绝，不填零伪造指标。Fβ 两次矩阵遍历和结果分配均预收工作预算。第二十批报告分别保留独立分数参考、合成图采样、未运行栅格 E 与 Google G。
+
+来源：[Array.sort](https://developers.google.com/earth-engine/apidocs/ee-array-sort)、[Image.arraySort](https://developers.google.com/earth-engine/apidocs/ee-image-arraysort)、[consumersAccuracy](https://developers.google.com/earth-engine/apidocs/ee-confusionmatrix-consumersaccuracy)、[producersAccuracy](https://developers.google.com/earth-engine/apidocs/ee-confusionmatrix-producersaccuracy)、[fscore](https://developers.google.com/earth-engine/apidocs/ee-confusionmatrix-fscore)。公式轴解释与输出 rank 属于上述明确推断／本地政策。

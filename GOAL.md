@@ -1,6 +1,6 @@
 # GEE 兼容目标（Python 优先）
 
-更新日期：2026-10-22。状态：进行中。用户要求：先尽量完整兼容固定版本 GEE Python API、参数及计算语义，再完善 GEE JavaScript；持续实际修改代码、运行测试并保存证据。
+更新日期：2026-10-23。状态：进行中。用户要求：先尽量完整兼容固定版本 GEE Python API、参数及计算语义，再完善 GEE JavaScript；持续实际修改代码、运行测试并保存证据。
 
 ## 目标
 
@@ -18,7 +18,7 @@
 
 - 官方客户端版本和提交见 `vendor/earthengine-js/upstream-lock.json`。
 - 官方 Python 客户端已按同一提交固定，见 `vendor/earthengine-python/upstream-lock.json`；Python 和 JS 共享本地 EE 编译器及算法支持边界，Python/openEO `connection` 继续保留。
-- 当前能力、参数限制和证据见 `docs/gee-compatibility.md`。第十九批补静态／固定栅格数组的首个最大值坐标，串联真实平方距离的固定光谱原型选择；Linux Python 1456 passed／7 skipped，前端 11 passed 与构建通过，见 `reports/gee-python-wave19.json`。栅格坐标暂为整数值 Float32，Image.classify、Image.atan2、通用动态设计、变长数组、Float64 栅格数组算术、矩形／栅格分解与 Google/EJML 等价仍未覆盖。既有共享图／工作预算保持，阶段通过不构成全量兼容。
+- 当前能力、参数限制和证据见 `docs/gee-compatibility.md`。第二十批补静态／固定栅格数组按键排序与质量观测筛选，增加有限逐类准确率及 Fβ 指标。macOS ARM64 可移植测试 1535 passed／3 skipped，另 4 项原生测试受执行权限限制，未计通过；前端 11 passed 与构建通过，见 `reports/gee-python-wave20.json`。指标 rank／Fβ 轴方向仍为显式本地政策，Image.classify、Image.atan2、通用动态设计、变长数组、Float64 栅格数组算术、矩形／栅格分解与 Google/EJML 等价仍未覆盖。既有共享图／工作预算保持，阶段通过不构成全量兼容。
 - Python API 清单见 `reports/gee-python-api-inventory.json`，保留 991 项签名、2451 项参数及公开 Python 绑定。原有 50 项 Python 定向探针当前为 45 项编译通过、5 项明确拒绝；方法、参数和探针数量均不代表完整兼容率。已补有限表格回归、FeatureCollection、数值时间度量及 inner Join、Number.format、有界 String 和固定形状栅格数组，并串联合成表格预测、最近前后观测插值及像素投影；动态数组、通用设计矩阵的栅格回归、采样、栅格分类及其他分类器仍有缺口，有限精度评估不能代替完整分类器实现。完整 Linux 运行按阶段调整延期。最新局部实现及限制持续写入 `docs/gee-python/list.md`。
 - 复杂工作流来源和缺口见 `audit/gee-complex-compat-v1/findings.json`。
 - 有效探针为 `audit/gee-complex-compat-v1/probe-run-v2/validation.json`：50 个表达式成功序列化，3 个阳性对照编译通过，43 个操作/语义探针被拒绝，4 个数据/波段探针被拒绝；另有 14 个规模编译检查、3 个原生 runner 检查。该定向抽查不是全 API 兼容率。

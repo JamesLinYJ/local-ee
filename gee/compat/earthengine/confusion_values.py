@@ -8,6 +8,7 @@ import math
 import numpy as np
 
 from .array_core import StaticArray, charge_array, require_array, wrap_array
+from .confusion_metrics import CONFUSION_METRIC_FUNCTIONS, invoke_confusion_metric
 from .ir import fail
 
 
@@ -21,7 +22,7 @@ CONFUSION_FUNCTIONS = frozenset({
     "ConfusionMatrix.order",
     "ConfusionMatrix.accuracy",
     "ConfusionMatrix.kappa",
-})
+}) | CONFUSION_METRIC_FUNCTIONS
 
 
 @dataclass(frozen=True)
@@ -123,7 +124,7 @@ def _float64_ratio(numerator, denominator, label):
 
 
 def invoke_confusion(t, name, args):
-    """Evaluate only the constructor and four pinned ConfusionMatrix methods."""
+    """Evaluate explicitly supported pinned ConfusionMatrix operations."""
     if name not in CONFUSION_FUNCTIONS:
         fail(f"Unsupported Earth Engine algorithm: {name}")
     if name == "ConfusionMatrix":
@@ -132,7 +133,8 @@ def invoke_confusion(t, name, args):
             fail("ConfusionMatrix requires array")
         return make_confusion(t, args["array"], args.get("order"))
 
-    t.allowed(args, {"confusionMatrix"})
+    allowed = {"confusionMatrix", "beta"} if name == "ConfusionMatrix.fscore" else {"confusionMatrix"}
+    t.allowed(args, allowed)
     if "confusionMatrix" not in args:
         fail(f"{name} requires confusionMatrix")
     value = args["confusionMatrix"]
@@ -147,6 +149,8 @@ def invoke_confusion(t, name, args):
         return list(value.order)
 
     data = _matrix(t, value)
+    if name in CONFUSION_METRIC_FUNCTIONS:
+        return invoke_confusion_metric(t, name, data, args.get("beta", 1.0))
     total, trace, rows, columns = _totals(data)
     if name == "ConfusionMatrix.accuracy":
         return _float64_ratio(trace, total, "accuracy")

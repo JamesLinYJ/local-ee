@@ -1,8 +1,8 @@
 # GEE Python 兼容清单
 
-状态：2026-10-22，第十九批持续实施，整体兼容目标尚未完成。
+状态：2026-10-23，第二十批持续实施，整体兼容目标尚未完成。
 
-第十九批 [验证报告](../../reports/gee-python-wave19.json)：Linux Python **1456 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [1428 passed／7 skipped](../../reports/gee-python-wave18.json)，本批增加 28 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
+第二十批 [验证报告](../../reports/gee-python-wave20.json)：macOS ARM64 的可移植 Python 测试 **1535 passed／3 skipped**，排除 4 项原生运行测试；前端 **11 passed**、TypeScript 与构建通过。上一批 Linux 基线为 [1456 passed／7 skipped](../../reports/gee-python-wave19.json)，本批增加 79 项通过回归。本次初次全套运行中，4 项原生测试因宿主执行权限拒绝 sandbox-exec／进程枚举而失败；没有放宽隔离或将它们计作通过。原生与真实数据验收继续按当前阶段延期。
 
 S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎；N＝独立数值基准；G＝Google 同数据对照。静态数值求值和合成图测试分别说明，不能标成原生栅格 E。固定的 991 项签名、方法可见数量和定向探针计数均不能换算为全 API 兼容百分比。
 
@@ -45,6 +45,8 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] 单数组 Image.arrayCat／arrayRepeat 的真实轴布局、有效常量 Image 重复次数、共同掩膜和预算拒绝；双独立响应最小二乘工作流的系数／拟合／残差与 Fraction／SVD 参考一致。
 - [x] 固定矩阵 Image.matrixDiagonal／matrixToDiag／matrixTrace／matrixDeterminant 的真实单元操作或 Float32 算术；四景双波段样本协方差、对角／迹／行列式工作流与 Fraction／NumPy 参考一致。
 - [x] 固定 Float32 数组的 Image.arrayAccum 前缀 sum／min／max 与稳定缩放 Image.matrixFnorm，补单数组选择／改名；跨年同日多景累计异常、严格相对误差范数和缺测／预算控制。
+- [x] Array.sort／Image.arraySort 的真实按键排序和成组切片置换；质量排序保留 NDVI／日期配对，独立分数及 Float32 参考核对并列、同日多景和完整掩膜。
+- [x] 有限 ConfusionMatrix 逐类 consumersAccuracy／producersAccuracy／fscore；精确分数中间量及训练／验证表组合，返回形状和 Fβ 轴方向是明确的本地政策，未验证 Google 等价。
 - [ ] 每一签名／参数组合的 S／C、适用的独立 N，以及负向、缺测、边界验收；E 按现有环境可用条件单独记录。
 - [ ] 动态形状、其余多数组波段运算和 Image.array*、通用设计矩阵的逐像元回归、采样／图像分类／其他分类器及模式、矢量／空间和多重／歧义度量 Join、邻域及高级时序。
 - [ ] 后续阶段：Linux 执行／隔离适配、macOS Seatbelt、ARM64 JNI 和本机真实数据验收；当前阶段延期。
@@ -65,7 +67,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 | 内联 FeatureCollection | S/C；size／first／toList／map／filter／limit／sort／merge／iterate／aggregate_array，属性保留有限 Array 和具体 Image；同类 Image 回调可接 ImageCollection 计算 | <=1000 要素，共享工作预算；Feature／Image 混合回调拒绝；merge 需要显式 ID 并加 1_／2_ 前缀；不含远程要素集或矢量引擎 |
 | 静态行回归 | S/C 与独立 N；表格 reduceColumns／List.reduce 的 linearFit、linearRegression，多响应系数／RMS；缺失／null 行跳过；秩不足／n<=numX 返回 null | <=1000 行、<=32 个输入列，表格只支持平面属性选择器，List 要求精确行宽；共享预算、无权重；通用栅格 linearRegression 与 G 未覆盖 |
 | 栅格 linearFit | S/C；完整 x/y 行、中心化两遍 OLS，输出 scale／offset；独立闭式与 NumPy SVD N 核对系数、重复景权重、缺测、空间范围及目标日期预测 | 1..8 帧，恰两个同名同序标量波段；binary NoData 掩膜，n<2／x 方差为零则两个输出均掩膜；parallelScale 仅 1，仍受 Float32 callback／工作／图预算约束；无实际 E/G，非通用栅格 linearRegression |
-| 有限分类评估 | S/C 与独立标签频数 N；静态 ConfusionMatrix 构造、array／order／accuracy／kappa；内联 errorMatrix 保留 actual 行／predicted 列及显式顺序 | <=64 类／4096 单元，非负整数 Array 计数总和 <=2^53、<=1000 完整标签行，共享预算；原始 List／浮点计数 Array、缺失／null、零分母、直接对象 JSON、Feature 属性对象与逐类指标拒绝；无采样／分类器或 E/G |
+| 有限分类评估 | S/C 与独立标签频数 N；静态 ConfusionMatrix 构造、array／order／accuracy／kappa 与有限逐类指标；内联 errorMatrix 保留 actual 行／predicted 列及显式顺序 | <=64 类／4096 单元，非负整数 Array 计数总和 <=2^53、<=1000 完整标签行，共享预算；原始 List／浮点计数 Array、缺失／null、未定义分母、直接对象 JSON、Feature 属性对象拒绝；逐类指标返回本地 rank1 Float64，Fβ 采用实际行 recall 的明确推断，无 Google 形状／数值对照 |
 | 有限 List 布局／归约 | S/C 与独立静态 N；zip／unzip 截短、flatten 只展开 List、repeat／reverse／set／swap 保留 typed 原子；单输出值、多输出回归字典／typed Array | 布局 <=10000 顶层值、flatten 深度 96，reduce <=1000 行／32 回归列，共享预算；严格下标边界，非默认 reducer 组合／权重拒绝；空值政策见下文，无 E/G |
 | 静态欧式最小距离 | S/C 与独立 N；真实类均值、唯一最近类、FeatureCollection.classify、schema 和训练重代入矩阵 | k=1／CLASSIFICATION、训练 1..1000 行、显式 1..8 平面属性、类别 0..63、subsampling=1／seed=0，共享预算；精确 binary64 有理数政策，等距和属性碰撞拒绝，无采样／图像／其他分类器或 G |
 | 有限栅格 linearRegression | S/C 与独立样点／SVD N；过原点或单位截距模型，多响应共用完整行，真实系数 (numX,numY) 与 RMS (numY,) | numX=1，或 numX=2 且首列证明为单位字面量；numY=1..4、1..8 同序标量帧，n>numX／非退化，RMS 按 n；parallelScale=1、Float32 callback、工作／500 节点限制，无通用设计矩阵／E/G |
@@ -97,7 +99,7 @@ eigen 限非空二维实对称矩阵，Cholesky 另需正定，输出下三角 L
 
 ConfusionMatrix 只接受 typed integer Array、方阵及非负计数；最多 64 类／4096 单元，总和 <=2^53，整数中间计算避免计数乘积溢出。显式顺序为唯一整数标签，保留负数／稀疏顺序；[] 仅匹配 0×0。errorMatrix 默认使用 0..max（含空档），显式顺序仅计入两列都存在于顺序表的行，空集合必须给顺序；完整整数值 float 标签可转成 int。缺失／null 不自动跳过，先显式筛选。零分母指标拒绝，不伪造 0；这些边界尚无 G 对照。
 
-原始嵌套 List 虽可被 SDK 序列化，本地构造仍要求 typed Array；浮点计数 dtype、显式 Array PixelType、producersAccuracy／consumersAccuracy／fscore 和直接／嵌套矩阵对象 JSON 仍拒绝，须选 array／order／accuracy／kappa。内部矩阵可经 If／Dictionary.get 再调用方法，但尚不能存入 Feature 属性。独立 Luna max 复审未发现声明子集内可复现缺陷；S/C/静态 N 通过，网络入口尝试 0，不涉及栅格 E、G 或采样／分类器训练预测。
+原始嵌套 List 虽可被 SDK 序列化，本地构造仍要求 typed Array；浮点计数 dtype、显式 Array PixelType 和直接／嵌套矩阵对象 JSON 仍拒绝。内部矩阵可经 If／Dictionary.get 再调用方法，但尚不能存入 Feature 属性。该批仅实现 array／order／accuracy／kappa；第二十批补上有限逐类指标，具体形状政策与限制见后文。原批次的独立 Luna max 复审未发现声明子集内可复现缺陷；S/C/静态 N 通过，网络入口尝试 0，不涉及栅格 E、G 或采样／分类器训练预测。
 
 第三批的 `tests/fixtures/ee-temporal-interpolation-v1.json` 与 `examples/09_GEE_python_temporal_interpolation.py` 串联最近前／后观测、毫秒权重及像素插值；合成信号的手算输出为 `[6, masked, masked]`，保留目标时间及两个邻居的有效像素交集。inner 匹配后组合两个来源的波段也有独立来源／掩膜参考。示例函数需要调用方提供实际本地集合，测试使用明确版本化的合成目录／数组；本轮尚未运行实际栅格引擎。
 
@@ -271,6 +273,16 @@ Image.arrayArgmax 的固定参数名为 image，只接受每个单元显式顶�
 `examples/24_GEE_python_spectral_prototypes.py` 与 `tests/fixtures/ee-spectral-prototypes-v1.json` 对实际合成 red／nir 像素和明确的三个原型逐项计算差、平方和、负分数及 argmax。前五个有效像元选择 `[0,1,2,0,0]`；第四像元距离 `[1/32,1/32,5/32]` 按首个并列选择，第五像元所有分数为负，精确匹配的零分数仍有效。Fraction／Decimal 与独立 NumPy 参考、单波段缺测和 bbox 内多边形外控制分别验证。距离／分数／索引图实际为 113／125／136 节点，SDK 网络入口尝试 0。
 
 这是固定原型的真实光谱选择表达式，未注册 Image.classify 或替代分类训练。S／C／采样点 N 与未运行的栅格 E／Google G 分别见 [第十九批报告](../../reports/gee-python-wave19.json)。
+
+## 第二十批：按键排序、质量筛选与逐类指标
+
+Array.sort 与 Image.arraySort 接受可选 keys，省略或 null 时使用值本身。keys 与值 rank 相同，恰有一个非单例轴，其长度与值的相应轴一致，其余键维度为 1；按升序置换整个切片，不能把各列独立排序。并列键保持输入顺序是本地明确政策，无 Google 对照。静态 typed Array 保留 dtype，支持可唯一确定排序轴的空切片；单单元／rank0 identity 也是本地政策。静态矩阵默认键具有多个非单例轴时明确拒绝。
+
+栅格排序只接受 rank1..8 的固定单数组，值与键单元均显式 toFloat。严格 gt 的相邻比较交换构造实际条件表达式，所有键和所有值的有效性共同约束输出；保留输入名称、元数据、来源回退与行主序。Float32 量化可能产生新并列，缺失的非赢家输入也不会变成有效值。64 单元、50000 工作与 500 图节点限制保持，构造前收费；16 个动态单元排序的超图预算有拒绝回归。直接 Double、标量、多数组波段及含糊键形状不自动转换。
+
+`examples/25_GEE_python_quality_sorted_observations.py` 和 `tests/fixtures/ee-quality-sorted-observations-v1.json` 对四景合成 red／nir 计算 NDVI，将 NDVI／距起点天数成对排序，再选质量最好的两次观测求均值。时间跨度含闰年 366 天和两个同日不同 ID；第一像元的顺序为 b、c、d、a，最佳两次均值为 7/12，全部键并列的第二像元均值为 1/4。缺失键、缺失反射率及 bbox 内多边形外像元都保持整体无效。独立 Fraction 行排序与实际编译图采样按 2e-6 核对；三个输出的图规模和误差记录在报告，无真实栅格 E／Google G 结论。
+
+ConfusionMatrix.consumersAccuracy 按固定描述取对角／行和，producersAccuracy 取对角／列和；注意官方名称与实际行／预测列的统计惯例并不一致。Fβ 采用实际行 recall、预测列 precision 的显式推断，使用精确 Fraction 中间量避免巨大／次正规正 beta 平方溢出或下溢。结果是本地 rank1 Float64 向量；官方页仅声明 Array 返回，没有足够证据证明其 rank／dtype 与 Google 相同。零分母、非有限／非正 beta 及未知参数明确拒绝，原有计数、类别和工作预算不变。训练重代入和独立验证表的 errorMatrix 组合均有回归。
 
 ## 复现与后续顺序
 
