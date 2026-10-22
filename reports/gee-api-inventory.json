@@ -7810,12 +7810,14 @@
       "description": "Computes a 2D error matrix for a collection by comparing two columns of a collection: one containing the actual values, and one containing predicted values. The values are expected to be small contiguous integers, starting from 0. Axis 0 (the rows) of the matrix correspond to the actual values, and Axis 1 (the columns) to the predicted values. ",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Inline FeatureCollection <=1000 complete finite integer actual/predicted labels and flat property names only. Missing/null and invalid label types reject; explicitly filter notNull first when desired. Default order spans 0..max label, at most 64 classes; explicit unique order counts only pairs whose two labels match it, including sparse/negative orders, and [] returns a typed 0x0 matrix. Empty collections need an explicit order. Shared work/cell limits apply. No remote feature sampling, classifier training or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -8653,12 +8655,14 @@
       "description": "Creates a confusion matrix. Axis 0 (the rows) of the matrix correspond to the actual values, and Axis 1 (the columns) to the predicted values.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static typed integer Array square matrices only, 0..64 classes, <=4096 cells and nonnegative total counts <=2^53 under shared 50000-step work. Explicit unique integral order labels within +/-2^53 are retained; [] is not a default-order alias. Accuracy/Kappa use exact integer intermediates and finite Float64 ratios; undefined denominators reject. Raw lists, floating count arrays, direct/nested ConfusionMatrix JSON, Feature property storage and unimplemented per-class metrics reject. If and Dictionary.get preserve the internal type. No Google comparison or classifier training claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -8683,12 +8687,14 @@
       "description": "Computes the overall accuracy of a confusion matrix defined as correct / total.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static typed integer Array square matrices only, 0..64 classes, <=4096 cells and nonnegative total counts <=2^53 under shared 50000-step work. Explicit unique integral order labels within +/-2^53 are retained; [] is not a default-order alias. Accuracy/Kappa use exact integer intermediates and finite Float64 ratios; undefined denominators reject. Raw lists, floating count arrays, direct/nested ConfusionMatrix JSON, Feature property storage and unimplemented per-class metrics reject. If and Dictionary.get preserve the internal type. No Google comparison or classifier training claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -8713,12 +8719,14 @@
       "description": "Returns a confusion matrix as an Array.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static typed integer Array square matrices only, 0..64 classes, <=4096 cells and nonnegative total counts <=2^53 under shared 50000-step work. Explicit unique integral order labels within +/-2^53 are retained; [] is not a default-order alias. Accuracy/Kappa use exact integer intermediates and finite Float64 ratios; undefined denominators reject. Raw lists, floating count arrays, direct/nested ConfusionMatrix JSON, Feature property storage and unimplemented per-class metrics reject. If and Dictionary.get preserve the internal type. No Google comparison or classifier training claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -8810,12 +8818,14 @@
       "description": "Computes the Kappa statistic for the confusion matrix.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static typed integer Array square matrices only, 0..64 classes, <=4096 cells and nonnegative total counts <=2^53 under shared 50000-step work. Explicit unique integral order labels within +/-2^53 are retained; [] is not a default-order alias. Accuracy/Kappa use exact integer intermediates and finite Float64 ratios; undefined denominators reject. Raw lists, floating count arrays, direct/nested ConfusionMatrix JSON, Feature property storage and unimplemented per-class metrics reject. If and Dictionary.get preserve the internal type. No Google comparison or classifier training claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -8840,12 +8850,14 @@
       "description": "Returns the name and order of the rows and columns of the matrix.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static typed integer Array square matrices only, 0..64 classes, <=4096 cells and nonnegative total counts <=2^53 under shared 50000-step work. Explicit unique integral order labels within +/-2^53 are retained; [] is not a default-order alias. Accuracy/Kappa use exact integer intermediates and finite Float64 ratios; undefined denominators reject. Raw lists, floating count arrays, direct/nested ConfusionMatrix JSON, Feature property storage and unimplemented per-class metrics reject. If and Dictionary.get preserve the internal type. No Google comparison or classifier training claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -40847,7 +40859,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 223,
+    "declared_handler_name_count": 229,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -40925,14 +40937,14 @@
         "appears_in_rejected_compile_context": 6,
         "appears_in_selected_sdk_serialization": 7,
         "appears_in_successful_compile_context": 2,
-        "declared_handler_count": 11,
+        "declared_handler_count": 12,
         "signature_count": 25
       },
       "ConfusionMatrix": {
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 0,
+        "declared_handler_count": 5,
         "signature_count": 8
       },
       "CrossCorrelation": {
@@ -41328,7 +41340,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 223,
+    "pinned_signatures_with_same_name_declared_handler": 229,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

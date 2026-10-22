@@ -53,6 +53,10 @@ const prior = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(c, c,
     leftField:'system:time_start', rightField:'system:time_start'}),
     ee.Filter.greaterThan({leftField:'system:time_start', rightField:'system:time_start'}))));
 const values = {
+  confusionKappa: ee.ConfusionMatrix(ee.Array([[5,1,0],[2,3,1],[0,1,4]])).kappa(),
+  labelErrorMatrix: ee.FeatureCollection([[10,20],[20,20],[20,20],[20,10],[20,10],[20,10]]
+    .map(pair => ee.Feature(null,{truth:pair[0],pred:pair[1]})))
+    .errorMatrix('truth','pred',[20,10]).array(),
   rasterLinearFit: c.select(['red','nir']).reduce(ee.Reducer.linearFit()),
   rasterProjection: ee.Image(ee.Array([[1,2],[3,4]])).matrixMultiply(
     c.first().select(['red','nir']).toArray().toArray(1))
@@ -115,6 +119,10 @@ def parity_values():
             leftField="system:time_start", rightField="system:time_start"),
             ee.Filter.greaterThan(leftField="system:time_start", rightField="system:time_start"))))
     py = {
+        "confusionKappa": ee.ConfusionMatrix(ee.Array([[5,1,0],[2,3,1],[0,1,4]])).kappa(),
+        "labelErrorMatrix": ee.FeatureCollection([ee.Feature(None,{"truth":a,"pred":b})
+            for a,b in [[10,20],[20,20],[20,20],[20,10],[20,10],[20,10]]])
+            .errorMatrix("truth","pred",[20,10]).array(),
         "rasterLinearFit": c.select(["red","nir"]).reduce(ee.Reducer.linearFit()),
         "rasterProjection": ee.Image(ee.Array([[1,2],[3,4]])).matrixMultiply(
             c.first().select(["red","nir"]).toArray().toArray(1))
@@ -154,7 +162,8 @@ def parity_values():
                                  "bestDelta", "tableCoefficients", "featureSum", "formatted",
                                  "stringConversion", "innerBands", "compoundDelta",
                                  "arrayLayout", "arrayEigen", "arrayCholesky", "arrayArithmetic",
-                                 "rasterProjection", "rasterReduction", "rasterLinearFit"])
+                                 "rasterProjection", "rasterReduction", "rasterLinearFit",
+                                 "confusionKappa", "labelErrorMatrix"])
 def test_python_and_javascript_reach_the_same_local_result(parity_values, case):
     javascript, python, metadata, items = parity_values
     left = compile_expression(javascript[case], metadata, items)

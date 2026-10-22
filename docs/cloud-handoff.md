@@ -68,6 +68,14 @@ inner 输出匹配对 Feature，内部保留真实 Image；Feature 属性和同�
 
 第六批锁定依赖、全套 Python **907 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，较上一批增加 13 项通过；Python／JS SDK 实际编译一致性增至 22 项。完整 Python API 清单独立进程字节重现通过。证据见 `reports/gee-python-wave6.json`；N 是独立采样点求值，不标为实际栅格 E、分数边界权重或 Google G。隔离／原生平台／私有数据验收继续按用户要求延期。
 
+## 第七批误差矩阵与分类评估
+
+以第六批提交 `66516d64ad0f143cdf0498c35fdf86b7061fcdcb` 为基线，新增有界静态 ConfusionMatrix 构造、array／order／accuracy／kappa 和内联 FeatureCollection.errorMatrix。typed integer Array 的计数非负，总和不超过 2^53；最多 64 类／4096 单元，共享工作预算。总体指标使用精确整数中间量；零分母明确拒绝。直接服务器对象 JSON、逐类指标和 Feature 属性中的矩阵对象仍拒绝，不能宣称完整 ConfusionMatrix 类兼容。
+
+errorMatrix 限 1000 条完整整数标签记录；默认类别顺序含 0..max 的空档，显式顺序只计入两列都在类别表中的行，可用稀疏／负标签；显式 [] 是 0×0，空集合须给顺序。缺失／null 不静默跳过，示例 13 先调用 notNull，分别报告完整行数和实际计入行数。版本化样本有 18 完整行、17 计入行，按 [30,10,20] 输出不对称矩阵，总体准确率 12/17、Kappa 107/192；独立标签频数与机会一致概率复核数值。
+
+第七批锁定依赖、Linux Python **955 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，比上一批增加 48 项通过回归；Python／JS SDK 实际编译一致性增至 24 项。原 50 探针仍为 50 S／45 C／5 拒绝，完整 Python API 清单独立进程字节重现通过。Luna max 独立复审未发现声明子集内可复现缺陷。详见 `reports/gee-python-wave7.json`；证据为 S/C/静态 N，无实际栅格 E/G。采样、分类器训练／预测及其遥感流程仍待实现；阶段延期项目不阻断继续开发。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee

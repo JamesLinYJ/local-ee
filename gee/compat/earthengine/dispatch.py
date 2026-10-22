@@ -28,6 +28,14 @@ def invoke(translator, name, arguments):
 
     if handles_raster_array(name, a):
         return invoke_raster_array(translator, name, a)
+    if name == "ConfusionMatrix" or name.startswith("ConfusionMatrix."):
+        from .confusion_values import invoke_confusion
+
+        return invoke_confusion(translator, name, a)
+    if name == "Collection.errorMatrix":
+        from .feature_error_matrix import invoke_error_matrix
+
+        return invoke_error_matrix(translator, name, a)
     from .table_reducers import TableReducer, handles_table_reducer, invoke_table_reducer, invoke_reduce_columns
 
     if handles_table_reducer(name):

@@ -1,0 +1,117 @@
+{
+  "schema": "local-ee-synthetic-classification-validation/v1",
+  "order": [
+    30,
+    10,
+    20
+  ],
+  "rows": [
+    {
+      "actual": 10,
+      "predicted": 10
+    },
+    {
+      "actual": 10,
+      "predicted": 10
+    },
+    {
+      "actual": 10,
+      "predicted": 10
+    },
+    {
+      "actual": 10,
+      "predicted": 10
+    },
+    {
+      "actual": 10,
+      "predicted": 10
+    },
+    {
+      "actual": 10,
+      "predicted": 20
+    },
+    {
+      "actual": 20,
+      "predicted": 10
+    },
+    {
+      "actual": 20,
+      "predicted": 10
+    },
+    {
+      "actual": 20,
+      "predicted": 20
+    },
+    {
+      "actual": 20,
+      "predicted": 20
+    },
+    {
+      "actual": 20,
+      "predicted": 20
+    },
+    {
+      "actual": 20,
+      "predicted": 30
+    },
+    {
+      "actual": 30,
+      "predicted": 20
+    },
+    {
+      "actual": 30,
+      "predicted": 30
+    },
+    {
+      "actual": 30,
+      "predicted": 30
+    },
+    {
+      "actual": 30,
+      "predicted": 30
+    },
+    {
+      "actual": 30,
+      "predicted": 30
+    },
+    {
+      "predicted": 20
+    },
+    {
+      "actual": null,
+      "predicted": 10
+    },
+    {
+      "actual": 30,
+      "predicted": null
+    },
+    {
+      "actual": 99,
+      "predicted": 20
+    }
+  ],
+  "reference_method": "Original class order [10,20,30] has counts [[5,1,0],[2,3,1],[0,1,4]]. Reorder rows AND columns to [30,10,20]. Three missing/null records are explicitly filtered; a complete row with actual=99 is excluded by the declared class order. N=17, trace=12, row/column marginal cross-product sum=97; accuracy=12/17 and Kappa=(17*12-97)/(17^2-97)=107/192. Independently check label-frequency chance agreement.",
+  "independent_reference": {
+    "matrix": [
+      [
+        4,
+        0,
+        1
+      ],
+      [
+        0,
+        5,
+        1
+      ],
+      [
+        1,
+        2,
+        3
+      ]
+    ],
+    "complete_rows": 18,
+    "evaluated_rows": 17,
+    "accuracy": "12/17",
+    "kappa": "107/192"
+  }
+}

@@ -18,8 +18,8 @@
 
 - 官方客户端版本和提交见 `vendor/earthengine-js/upstream-lock.json`。
 - 官方 Python 客户端已按同一提交固定，见 `vendor/earthengine-python/upstream-lock.json`；Python 和 JS 共享本地 EE 编译器及算法支持边界，Python/openEO `connection` 继续保留。
-- 当前能力、参数限制和证据见 `docs/gee-compatibility.md`。第六批新增有限逐像元 linearFit，串联真实观测时间、完整行掩膜、斜率／截距和目标日期预测，并以闭式与独立 SVD 校核；Linux Python 907 passed／7 skipped，前端 11 passed 与构建通过，见 `reports/gee-python-wave6.json`。
-- Python API 清单见 `reports/gee-python-api-inventory.json`，保留 991 项签名、2451 项参数及公开 Python 绑定。原有 50 项 Python 定向探针当前为 45 项编译通过、5 项明确拒绝；方法、参数和探针数量均不代表完整兼容率。已补有限表格回归、FeatureCollection、数值时间度量及 inner Join、Number.format、有界 String 和固定形状栅格数组，并串联合成表格预测、最近前后观测插值及像素投影；动态数组、逐像元回归和分类仍有缺口，完整 Linux 运行按阶段调整延期。最新局部实现及限制持续写入 `docs/gee-python/list.md`。
+- 当前能力、参数限制和证据见 `docs/gee-compatibility.md`。第七批增加有限静态 ConfusionMatrix 与内联 errorMatrix，串联显式类别顺序、有效标签筛选、计数、总体准确率和 Kappa，并以独立标签频数校核；Linux Python 955 passed／7 skipped，前端 11 passed 与构建通过，见 `reports/gee-python-wave7.json`。此前逐像元 linearFit 和时间预测证据保留在第六批报告。
+- Python API 清单见 `reports/gee-python-api-inventory.json`，保留 991 项签名、2451 项参数及公开 Python 绑定。原有 50 项 Python 定向探针当前为 45 项编译通过、5 项明确拒绝；方法、参数和探针数量均不代表完整兼容率。已补有限表格回归、FeatureCollection、数值时间度量及 inner Join、Number.format、有界 String 和固定形状栅格数组，并串联合成表格预测、最近前后观测插值及像素投影；动态数组、多变量栅格回归、采样及分类训练／预测仍有缺口，有限精度评估不能代替分类器实现。完整 Linux 运行按阶段调整延期。最新局部实现及限制持续写入 `docs/gee-python/list.md`。
 - 复杂工作流来源和缺口见 `audit/gee-complex-compat-v1/findings.json`。
 - 有效探针为 `audit/gee-complex-compat-v1/probe-run-v2/validation.json`：50 个表达式成功序列化，3 个阳性对照编译通过，43 个操作/语义探针被拒绝，4 个数据/波段探针被拒绝；另有 14 个规模编译检查、3 个原生 runner 检查。该定向抽查不是全 API 兼容率。
 - 两波段均值的模拟目录探针中，30 景生成 335 节点，50 景超过现有 500 节点限制。长时序执行需要单独改进。
@@ -55,4 +55,4 @@
 
 ## 目标的记录与关闭
 
-本文件是当前可持久化、可审查的工程目标。当前会话没有系统级目标管理工具，不将文件更新描述为创建了后台自动执行任务。后续提交持续更新兼容清单、实测结果和剩余缺口；目标在全部约定验收满足前保持进行中。
+本文件是当前可持久化、可审查的工程目标，后台任务状态以运行平台为准。后续提交持续更新兼容清单、实测结果和剩余缺口；目标在全部约定验收满足前保持进行中。

@@ -109,10 +109,11 @@ def static_truth(value: Any) -> bool:
     from .table_reducers import TableReducer
     from .inner_join import InnerJoin
     from .raster_array_core import RasterArrayImage
+    from .confusion_values import StaticConfusionMatrix
 
     # EE If treats empty arrays/dictionaries/strings, zero, NaN and null as
     # false. Do not accidentally use truthiness of internal IR dataclasses.
-    if isinstance(value, (Image, Collection, ImageSequence, Pixel, Region, Function, Filter, Reducer, StaticArray, Join, InnerJoin, TableReducer, RasterArrayImage)):
+    if isinstance(value, (Image, Collection, ImageSequence, Pixel, Region, Function, Filter, Reducer, StaticArray, Join, InnerJoin, TableReducer, RasterArrayImage, StaticConfusionMatrix)):
         fail("Algorithms.If currently requires a static scalar/list/dictionary condition")
     if isinstance(value, (int, float)) and not math.isfinite(value):
         return False

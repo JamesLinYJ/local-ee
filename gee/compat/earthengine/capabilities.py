@@ -20,6 +20,8 @@ SUPPORTED_FUNCTIONS = frozenset({
     "Date", "DateRange", "Date.millis", "Date.advance", "Date.fromYMD", "Date.get", "Date.format", "Projection", "Projection.crs", "Feature", "Collection", "FeatureCollection",
     "Number", "String", "List", "Dictionary",
     "Array",
+    "ConfusionMatrix", "ConfusionMatrix.array", "ConfusionMatrix.order",
+    "ConfusionMatrix.accuracy", "ConfusionMatrix.kappa", "Collection.errorMatrix",
     *("Image." + n for n in ("toArray", "arrayFlatten", "arrayProject", "arraySlice",
         "arrayGet", "arrayLength", "arrayLengths", "arrayTranspose", "arrayReduce", "matrixMultiply")),
     *("Array." + n for n in ("add", "subtract", "multiply", "divide", "abs", "sqrt",

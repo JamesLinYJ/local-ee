@@ -28,6 +28,10 @@ def compile_expression(expression, catalog, items, options=None):
 
         if isinstance(value, RasterArrayImage):
             fail("Array image output requires arrayFlatten or arrayGet; direct array raster export is unsupported")
+        from .confusion_values import StaticConfusionMatrix
+
+        if isinstance(value, StaticConfusionMatrix):
+            fail("ConfusionMatrix output requires array(), order(), accuracy() or kappa(); direct server-object JSON is unsupported")
         if isinstance(value, ImageSequence):
             return public_result({"kind":"collection", "bands":[n for n,_ in value.images[0].bands] if value.images else [],
                     "source_item_ids":[im.props.get("system:index",str(i)) for i,im in enumerate(value.images)],
