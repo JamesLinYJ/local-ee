@@ -7,6 +7,7 @@ LOCAL_PROCESSES = frozenset({
     "local_ee_unmask", "local_ee_drop_single_time", "local_ee_reduce_bands",
     "local_ee_table", "local_ee_minimum_distance",
     "local_ee_sample_regions", "local_ee_train_minimum_distance",
+    "local_ee_remap", "local_ee_sample_table_op",
 })
 CUBE = {"type": "object", "subtype": "raster-cube"}
 EE_BAND_REDUCERS = frozenset({"mean", "median", "min", "max", "sum", "count", "first", "last", "sd"})
@@ -25,7 +26,8 @@ def validate_local_process(name, arguments, depth, *, node_context=None):
         required.add("reducer")
     if name == "local_ee_minimum_distance":
         required.add("model")
-    if name in {"local_ee_sample_regions", "local_ee_train_minimum_distance"}:
+    if name in {"local_ee_sample_regions", "local_ee_train_minimum_distance",
+                "local_ee_remap", "local_ee_sample_table_op"}:
         required.add("spec")
     allowed = required | ({"same_footprint"} if name == "local_ee_unmask" else set())
     if depth != 0 or not required <= set(arguments) <= allowed:
@@ -35,7 +37,8 @@ def validate_local_process(name, arguments, depth, *, node_context=None):
         cubes.append(arguments["value"])
         if not isinstance(arguments.get("same_footprint", True), bool):
             raise ValueError("Local EE same_footprint must be a boolean")
-    if any(not isinstance(value, dict) or set(value) != {"from_node"} for value in cubes):
+    if any(not isinstance(value, dict) or set(value) != {"from_node"}
+           or type(value['from_node']) is not str or not value['from_node'] for value in cubes):
         raise ValueError("Local EE extensions require top-level cube references")
     if name == "local_ee_minimum_distance":
         from .compat.earthengine.classifier_model import model_validation_work, validate_model
@@ -54,6 +57,14 @@ def validate_local_process(name, arguments, depth, *, node_context=None):
 
         decoder = decode_sampling_spec if name == "local_ee_sample_regions" else decode_training_spec
         decoder(arguments["spec"])
+    if name == "local_ee_remap":
+        from .remap_spec import decode_remap_spec
+
+        decode_remap_spec(arguments["spec"])
+    if name == "local_ee_sample_table_op":
+        from .sample_table_spec import decode_sample_operation
+
+        decode_sample_operation(arguments["spec"])
     if name == "local_ee_constant_on_grid":
         value = arguments["value"]
         if (isinstance(value, bool) or not isinstance(value, (int, float))
@@ -75,6 +86,8 @@ def process_spec(name):
         return _classification_spec(name)
     if name in {"local_ee_sample_regions", "local_ee_train_minimum_distance"}:
         return _sampling_process_spec(name)
+    if name in {"local_ee_remap", "local_ee_sample_table_op"}:
+        return _sample_preparation_spec(name)
     descriptions = {
         "local_ee_constant_on_grid": "Create valid Float64 constants on a bounded template grid, including missing tiles. Does not expand its extent; runtime key/cell budgets apply.",
         "local_ee_unmask": "Select valid input cells, otherwise replacement cells, preserving NaN masks and Float64 precision. Requires aligned single-band cubes and identical observation instants; rejects implicit reprojection or time broadcasting.",
@@ -99,6 +112,33 @@ def _cube_process_spec(name, description, parameters):
     return {"id": name, "summary": description.split(".")[0], "description": description,
             "experimental": True, "categories": ["cubes"], "parameters": parameters,
             "returns": {"description": "Float64 raster cube", "schema": CUBE}}
+
+
+def _sample_preparation_spec(name):
+    raster = name == "local_ee_remap"
+    schema = CUBE if raster else {"type": "object", "subtype": "vector-cube"}
+    return {
+        "id": name, "experimental": True,
+        "summary": "Exact finite numeric raster remapping" if raster else "Filter or limit real sampled features",
+        "description": (
+            "Top-level canonical data reference and bounded canonical JSON specification. "
+            + ("One source band,0..256 unique finite numeric keys, exact actual Float32/Float64 comparison; "
+               "selected NoData stays masked, unmatched values use a finite default or mask. "
+               "Output physically Float64 with NaN NoData and band v; existing cube/time/grid/key/cell "
+               "and67108864 pixel-key work limits remain. No Google dtype equivalence claim."
+               if raster else
+               "Actual sampled table or its audited operation producer only. Filter/unsorted limit "
+               "retain columns, original order, IDs, properties and optional center geometry. "
+               "At most16 operations,64 predicate nodes/depth16 and shared50000 runtime work; "
+               "base sampler row/cell/byte limits apply before operations. Dry-run has no rows. "
+               "Sorting, randomization, new columns and arbitrary callbacks reject.")),
+        "categories": ["cubes" if raster else "vector-cubes"],
+        "parameters": [
+            {"name": "data", "description": "One-band raster cube" if raster else "Audited sampled table", "schema": schema},
+            {"name": "spec", "description": "Canonical version1 specification", "schema": {"type": "string"}},
+        ],
+        "returns": {"description": "Float64 raster cube" if raster else "Actual filtered sampled table", "schema": schema},
+    }
 
 
 def _classification_spec(name):

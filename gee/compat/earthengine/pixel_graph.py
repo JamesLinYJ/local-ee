@@ -34,7 +34,7 @@ class PixelCompiler:
         key = id(p)
         if key not in self.double_precision:
             if p.op in {"classify", "trained_classify"}: result = False
-            elif p.op in {"to_double", "unmask", "unmask_constant", "on_grid"}: result = True
+            elif p.op in {"to_double", "unmask", "unmask_constant", "on_grid", "remap"}: result = True
             elif p.op in {"to_float", "is_nodata"}: result = False
             else:
                 operands = p.args[0] if p.op == "reduce_bands" else p.args[:1] if p.op in {"clip", "preserve_mask"} else p.args
@@ -51,6 +51,10 @@ class PixelCompiler:
             from .classification_graph import trained_classify_pixel
 
             return trained_classify_pixel(self, p)
+        if p.op == "remap":
+            from .remap_graph import compile_remap_pixel
+
+            return compile_remap_pixel(self, p)
         if p.op == "constant":
             # GeoTrellis's scalar callback builder represents logical pixels as
             # 0/1; a Boolean false literal is not a numeric accept value there.

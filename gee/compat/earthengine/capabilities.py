@@ -13,7 +13,7 @@ SUPPORTED_FUNCTIONS = frozenset({
     "Collection.filter", "Collection.map", "Collection.limit", "Collection.sort", "Collection.size", "Collection.first",
     "ImageCollection.mosaic", "ImageCollection.qualityMosaic", "Image.select", "Image.rename", "Image.bandNames", "Image.toFloat", "Image.toDouble",
     "Image.normalizedDifference", "Image.parseExpression", "Image.updateMask", "Image.mask", "Image.unmask", "Image.addBands", "Image.clip", "Image.reduceRegion",
-    "Image.where", "Image.clamp", "Image.unitScale", "Image.reduce", "Image.date", "Image.geometry", "Collection.geometry", "Feature.geometry", "Image.sampleRegions",
+    "Image.where", "Image.clamp", "Image.unitScale", "Image.reduce", "Image.date", "Image.geometry", "Collection.geometry", "Feature.geometry", "Image.sampleRegions", "Image.remap",
     "Collection.toList", "AggregateFeatureCollection.array", "ImageCollection.reduce", "ImageCollection.toBands", "ImageCollection.toArrayPerBand", "ImageCollection.fromImages", "ImageCollection.merge", "If", "List.map", "List.iterate",
     "Collection.merge", "Collection.iterate", "Collection.reduceColumns", "Reducer.linearFit", "Reducer.linearRegression", "Number.format",
     "Element.get", "Image.get", "Element.propertyNames", "Element.set", "Element.setMulti", "Element.copyProperties", "Image.copyProperties",
@@ -36,7 +36,7 @@ SUPPORTED_FUNCTIONS = frozenset({
         "matrixLUDecomposition", "matrixSingularValueDecomposition")),
     *("Array." + n for n in ("get", "length", "toList", "reshape", "transpose", "matrixTranspose", "matrixMultiply", "matrixInverse", "matrixSolve", "matrixPseudoInverse")),
     *("Join." + n for n in ("simple", "inverted", "saveFirst", "saveAll", "saveBest", "inner", "apply")),
-    *("Filter." + n for n in ("and", "or", "not", "dateRangeContains", "intersects", "equals", "lessThan", "greaterThan", "stringContains", "inList", "listContains", "calendarRange", "notNull", "maxDifference")),
+    *("Filter." + n for n in ("and", "or", "not", "dateRangeContains", "intersects", "equals", "lessThan", "greaterThan", "stringContains", "inList", "listContains", "calendarRange", "notNull", "maxDifference", "expression")),
     *("reduce." + n for n in ("median", "mean", "min", "max", "sum", "count")),
     *("Reducer." + n for n in ("mean", "median", "min", "max", "sum", "count", "first", "last", "sampleStdDev")),
     *("Image." + n for n in ("add", "subtract", "multiply", "divide", "pow", "mod", "eq", "neq", "gt", "gte", "lt", "lte", "and", "or", "min", "max", "abs", "sqrt", "log", "log10", "exp", "round", "floor", "ceil", "sin", "cos", "tan", "hypot", "not")),
@@ -54,13 +54,24 @@ def get_capabilities():
         "level": "C",
         "numerical_equivalence_to_google_verified": False,
         "restrictions": [
+            ("Image.remap selects one scalar bound band (first by default), returns only remapped, and retains properties/time/grid/footprint. "
+             "Equal-length finite scalar from/to lists0..256; integer magnitude<=2^53; duplicate numeric keys including signed zero reject. "
+             "Exact actual Float32/Float64 lookup, selected NoData remains masked, unmatched values mask or use finite default including0; valid infinity rejects. "
+             "Physical output Float64 with NaN NoData, not verified Google dtype; generic Float32 callbacks require explicit toFloat. "
+             "Array-valued mappings and global constant rasters reject. Native67108864 pixel-key work plus existing grid/key/decoded/work/graph caps remain."),
+            ("Filter.expression parses bounded comparisons > >= < <= == !=, !, &&, || and parentheses into existing Filter IR; "
+             "ASCII flat identifiers, finite numeric/string/bool literals, <=4096 chars/256 tokens/16 nesting/64 predicate nodes. "
+             "No eval, arithmetic, functions, attributes, chained comparisons or null literals. Existing three-valued ordered-null policy and null equality rejection remain, no Google parity. "
+             "Sampled FeatureCollections support filter and unsorted limit (null or0..1000), at most16 ordered operations, unchanged schema/IDs/geometry. "
+             "System:index resolves the original generated Feature.id during predicates only. Runtime revalidation/copy/filter/training share50000 work; "
+             "sampler output limits still apply before filtering. Sort, random columns, dynamic maps/scalar results/confusion matrices remain unsupported."),
             ("Image.sampleRegions supports bounded inline Point/MultiPoint/Polygon/MultiPolygon regions over a single spatial image: "
              "1..64 named scalar bands, <=1000 regions/10000 coordinates, <=1000 output rows/256 columns/50000 cells/1MB JSON and CSV. "
              "Copied properties default to non-system names; explicit [] copies none. Selected NoData drops rows; infinity rejects. "
              "Points use half-open floor grid ownership and polygons positive-area cell intersection, preserving overlapping-feature weights; "
              "this local planar boundary policy is not Google-verified. Native grid or projected meter scale, tileScale=1, optional center geometry only. "
              "Sample CSV/getInfo and runtime minimumDistance training use actual samples, canonical JSON string specs and strict producer refs. "
-             "Training needs explicit schema1..8, labels0..63 and existing exact-model/work limits. Dynamic downstream feature operations, "
+             "Training needs explicit schema1..8, labels0..63 and existing exact-model/work limits. Dynamic downstream feature operations beyond filter/unsorted limit, "
              "dynamic confusionMatrix, sampling randomization, general projections and other classifiers reject. "
              "Standalone actual tile kernels and synthetic task/CSV controls are not full Spark batch, deployment, browser or Google acceptance"),
             ("Export.table.toDrive supports regional CSV and bounded static inline FeatureCollection CSV "

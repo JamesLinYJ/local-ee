@@ -292,3 +292,12 @@ cosine 先保留点积符号，再用精确有理数交叉乘积排名，不先�
 便携 Python **1882 passed／3 skipped**，另排除 4 项原生测试；前端 **11 passed**／TypeScript／临时目录构建通过。启用两个明确 opt-in 的可信 JVM 内核，分别核对取样几何／掩膜／Float64 和分类数值，未启动 SparkContext。云端缺少本机锁定 JDK／JAR 时这些测试跳过，不能记为通过。Python／JS 官方客户端图一致性增至 **72**，原 50 定向探针仍为 45 编译／5 拒绝；完整 Python API 清单字节相同。入口清单 273／991 只表示 handler 名称，不能代替参数及计算兼容率。
 
 独立审查确认并修复 pending 样本表的上游 SaveResult dry-run、实际网格分辨率／米制 CRS 校验，以及训练范围污染输出预算。`reports/gee-python-wave24.json` 分开记录 S／C／N、真实 tile 组件与未运行的完整 E／G。没有部署、服务重启或改变隔离、账号、数据与 `.native`；整体目标继续。
+
+
+## 第二十五批：标签准备与真实样本筛选
+
+本批基线 `8b3ba4cd29f22c046938f5a382d5fe3da5534716`。新增 Image.remap 的真实 Float64 精确查找内核、有限 Filter.expression parser 和取样后 filter／无排序 limit。保留原 sample spec／schema／顺序／ID；条件可读 system:index，副本不写进结果属性。最多16操作，原规格／前序操作复核、表复制、筛选及模型训练累计共享50000工作预算，在复制／构造前拒绝超限。原 sampler 上限仍先执行。固定训练来源／网格与目标输出预算分开，literal-only CSV 图仍封闭。
+
+示例30与原始标签网格夹具独立验证15有效样本→14非空→11条件→8训练行，类均值 red/nir 为 `[6/5,17/5]` 与 `[11/3,20/3]`，保留重叠权重和目标ROI外训练。Python/JS5条新图一致性全部通过，累计77；45/50原定向脚本编译及完整Python目录字节保持。便携Python **2068 passed／3 skipped**（另排除4项原生测试），前端11／TypeScript／临时构建通过。Remap6正向／23非法spec／3有效Infinity拒绝，以及已有取样／分类实际tile内核通过，均无SparkContext。云端缺少锁定JVM依赖时须按opt-in明确跳过，不算实际内核通过。
+
+独立复审发现并修复system:index过滤、谓词语义深度与wire容器深度错配，以及预算未覆盖复核／复制的问题。报告 `reports/gee-python-wave25.json` 分开记录S/C/N和未运行完整E/G。没有部署或修改账号／数据／运行配置／隔离。Smile依赖不在锁中，未用SparkRF替代；后续路线与许可证版本依据见 `docs/gee-python/random-forest-roadmap.md`，不能把本批当作随机森林完成。继续从远端最新main，不从旧handoff起点恢复。

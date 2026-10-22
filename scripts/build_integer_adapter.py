@@ -23,6 +23,7 @@ SOURCES = [SOURCE, ROOT / "engine/ee_grid_adapter.scala", ROOT / "engine/ee_mask
            ROOT / "engine/ee_reduce_adapter.scala", ROOT / "engine/ee_classify_numeric.scala",
            ROOT / "engine/ee_classify_model.scala", ROOT / "engine/ee_classify_adapter.scala",
            ROOT / "engine/ee_sample_kernel.scala", ROOT / "engine/ee_sample_adapter.scala"]
+SOURCES += [ROOT / "engine/ee_remap_numeric.scala", ROOT / "engine/ee_remap_adapter.scala"]
 SERVICE_NAME = "org.openeo.geotrelliscommon.CubeProcessProvider"
 SERVICE_ENTRY = ("local.ee.integer.LocalEeIntegerCubeProcessProvider\n"
                  "local.ee.grid.LocalEeGridCubeProcessProvider\n"
@@ -30,6 +31,7 @@ SERVICE_ENTRY = ("local.ee.integer.LocalEeIntegerCubeProcessProvider\n"
                  "local.ee.reduce.LocalEeReduceCubeProcessProvider\n"
                  "local.ee.classify.LocalEeClassifyCubeProcessProvider\n"
                  "local.ee.sample.LocalEeSampleCubeProcessProvider\n")
+SERVICE_ENTRY += "local.ee.remap.LocalEeRemapCubeProcessProvider\n"
 
 
 def sha256(path: Path) -> str:

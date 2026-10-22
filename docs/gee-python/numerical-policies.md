@@ -99,3 +99,12 @@ sampleRegions 按实际单层空间网格取值：点 floor／半开东南边界
 显式 meter scale 要求实际投影 CRS 两轴为米，布局求得的像元宽高与 scale 按相对 1e-9 核验，容差用于投影／布局浮点往返，不容许把 30m 当 10m。训练与目标分别编译／预算；目标导出范围不缩小训练区域，模型分支也不扩大输出像素预算。实际样本经既有 Fraction 训练器得到精确有理数中心，模型 wire／预测掩膜和三度量政策延续第二十三批。
 
 版本化样本有 11 行、两类中心 red/nir=[2,7/2] 和 [13/5,7]，包括边界、多点去重、重叠权重、选中波段缺测及目标 ROI 外训练区。独立 Shapely／Fraction／Decimal 与测试图 oracle 对照，真实 GeoTrellis tile 另以六组样本和四个坏 WKT 验证；这两类 N 都不能代替完整 Spark／隔离任务／浏览器或 Google G。详见 `reports/gee-python-wave24.json`。
+
+
+## 第二十五批：精确标签映射与样本操作
+
+Image.remap 在实际 Float32／Float64 值上精确匹配有限唯一数值键；±0按数值相同处理并禁止重复键，未匹配按默认值或掩膜，选中波段NoData不会被默认值复活。未选波段的掩膜不参与。本地输出物理Float64／NaN，不冒称Google整型dtype；数组映射、非有限值、过大整数和未绑定常量图拒绝。
+
+样本filter复用现有有界FilterIR及UNKNOWN规则，表达式parser只产生该IR。操作链保留行序及重叠样本权重，limit在filter之前／之后按真实顺序执行。system:index临时解析原Feature.id，输出属性保持原样；规格复核、输入／输出复制、筛选与训练累计计费。谓词语义depth16和wire容器预扫描depth64分别计量，不把中间dict/list算成额外谓词层。
+
+独立标签网格有17个几何候选、一个未知标签和一个选中波段NoData，保留15有效行，notNull／条件／limit后分别14／11／8行；两类 red/nir 精确中心为 `[6/5,17/5]`、`[11/3,20/3]`。三度量预测和来源／波段／ROI边界以Shapely／Fraction／Decimal及测试图oracle分别核对。真实remap tile另核对6正向、23非法规格和3Infinity拒绝，并回归已有sample/classify内核。组件N不能代替完整Spark／隔离任务／浏览器／GoogleG；随机森林仍未实现。详见第二十五批报告。

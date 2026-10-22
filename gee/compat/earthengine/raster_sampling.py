@@ -107,9 +107,16 @@ def compile_sample_table(sampled, translator):
     from .decoder import Translator
     from .graph import Graph
     from .sampled_training import image_node_estimate, image_work_estimate
+    from .sampled_feature_ops import (
+        emit_sampled_operations,
+        validate_sampled_operations,
+    )
 
     if not isinstance(sampled, SampledFeatures):
         fail("Internal sample-table IR is malformed")
+    operations = validate_sampled_operations(
+        sampled, translator, "Image.sampleRegions operation chain",
+    )
     _charge(translator, len(sampled.spec) + 1)
     try:
         spec = decode_sampling_spec(sampled.spec)
@@ -124,13 +131,14 @@ def compile_sample_table(sampled, translator):
     # Bound the preflight estimate before compiling any source or pixel node.
     # Each band may need a filter, a temporal drop, a final band label and one
     # merge; nested expressions are still checked by the 500-node graph limit.
-    estimated_nodes = image_node_estimate(sampled.image, options) + 1
+    estimated_nodes = image_node_estimate(sampled.image, options) + 1 + len(operations)
     graph.reserve_nodes(estimated_nodes, "Image.sampleRegions")
     _charge(translator, len(columns) + image_work_estimate(sampled.image) + 1)
     ref, timed = graph.image(sampled.image)
     if timed:
         fail("Image.sampleRegions requires a spatial Image without a time dimension")
     result = graph.node("local_ee_sample_regions", data=ref, spec=sampled.spec)
+    result = emit_sampled_operations(graph, result, operations)
     process_graph = graph.finish(result)
     warnings = list(translator.warnings)
     return {

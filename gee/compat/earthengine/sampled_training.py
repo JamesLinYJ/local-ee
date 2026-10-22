@@ -80,6 +80,11 @@ def image_work_estimate(image):
                 if isinstance(model, DynamicMinimumDistance):
                     work += len(model.samples.spec) + len(model.class_property)
                     work += sum(map(len, model.schema))
+                    work += sum(map(len, model.samples.operations))
+            if value.op == "remap" and len(value.args) == 2 and type(value.args[1]) is str:
+                # The parent graph precharges specifications in both the target
+                # and independently compiled sample-image lineages.
+                work += 6 * len(value.args[1]) + 1
             for argument in value.args:
                 scan(argument)
         elif isinstance(value, (tuple, list)):
@@ -109,12 +114,19 @@ def compile_training_model(graph, classifier, target_inputs):
     from ...sampling_spec import decode_sampling_spec, sampling_columns
     from .decoder import Translator
     from .graph import Graph
+    from .sampled_feature_ops import (
+        emit_sampled_operations,
+        validate_sampled_operations,
+    )
 
     if not isinstance(classifier, DynamicMinimumDistance):
         fail("Internal dynamic classifier IR is malformed")
     sampled = classifier.samples
     if not isinstance(sampled, SampledFeatures) or not isinstance(sampled.image, Image):
         fail("Sample-trained classifier has no server-side sample image")
+    operations = validate_sampled_operations(
+        sampled, graph.t, "Classifier.train sample-table operation chain",
+    )
 
     # The shared spec decoder and encoder walk bounded JSON, so reserve their
     # cost before parsing or serializing either wire value. Six bytes per
@@ -162,7 +174,7 @@ def compile_training_model(graph, classifier, target_inputs):
     node_bound = (
         image_node_estimate(sampled.image, options)
         + pixel_node_estimate(target_inputs, graph.t.options)
-        + 4
+        + 4 + len(operations)
     )
     graph.reserve_nodes(node_bound, "Image.classify dynamic training graph")
 
@@ -174,6 +186,7 @@ def compile_training_model(graph, classifier, target_inputs):
     sampler = graph.node(
         "local_ee_sample_regions", data=sample_image_ref, spec=sampled.spec,
     )
+    sampler = emit_sampled_operations(graph, sampler, operations)
     return graph.node(
         "local_ee_train_minimum_distance", data=sampler,
         spec=training_spec,

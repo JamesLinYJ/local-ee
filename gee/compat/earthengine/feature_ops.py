@@ -258,9 +258,13 @@ def _invoke_collection(translator, name, a):
 
 def invoke_feature(translator, name, arguments):
     """Evaluate a bounded operation on inline synthetic Feature data."""
+    if isinstance(arguments.get("collection"), SampledFeatures):
+        from .sampled_feature_ops import invoke_sampled_feature_operation
+
+        return invoke_sampled_feature_operation(translator, name, arguments)
     if any(isinstance(arguments.get(key), SampledFeatures)
-           for key in ("collection", "collection1", "collection2", "features")):
-        fail("Sampled FeatureCollections support Classifier.train only")
+           for key in ("collection1", "collection2", "features")):
+        fail("Sampled FeatureCollections support filter, limit, and Classifier.train only")
     if name in FEATURE_VALUE_METHODS:
         return invoke_feature_value(translator, name, arguments)
     if name in _COLLECTION_METHODS:

@@ -14,8 +14,10 @@ MAX_CLASSIFIER_WORK = 50_000
 class _TrainingContext:
     """Minimal budget interface consumed by the existing static EE trainer."""
 
-    def __init__(self):
-        self.steps = 0
+    def __init__(self, steps: int = 0):
+        if type(steps) is not int or not 0 <= steps <= MAX_CLASSIFIER_WORK:
+            raise ValueError("Raster classifier training exceeds the 50000-step work budget")
+        self.steps = steps
 
     @staticmethod
     def allowed(args, names):
@@ -33,7 +35,10 @@ def _train_table(table: SampledFeatureTable, training_spec: dict) -> dict:
     unknown = required - set(table.columns)
     if unknown:
         raise ValueError(f"Sample table is missing training property {sorted(unknown)[0]!r}")
-    context = _TrainingContext()
+    # Sample-table operations and exact model training share one runtime work
+    # budget. Directly constructed trusted test tables have no operation cost.
+    operation_work = getattr(table, "sample_operation_work", 0)
+    context = _TrainingContext(operation_work)
     classifier = StaticMinimumDistance(metric=training_spec["metric"])
     trained = _train(context, {
         "classifier": classifier,

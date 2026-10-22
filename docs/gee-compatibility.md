@@ -4,6 +4,8 @@
 
 Python 编辑器同时提供官方 `earthengine-api` 客户端入口，版本 1.7.49 固定在同一上游提交的 Python 子目录；许可证、源码树及关键文件摘要见 [`vendor/earthengine-python/upstream-lock.json`](../vendor/earthengine-python/upstream-lock.json)。Python 和 JavaScript 会生成相同格式的 EE 表达式并进入同一个本地兼容层；二者都不连接 Google 计算服务。客户端语言和官方 SDK 覆盖面不表示本地编译器已支持所有调用。
 
+第二十五批新增有限 `Image.remap`、`Filter.expression` 和取样后 filter／无排序 limit，贯通标签准备、样本筛选及真实样本训练的编译和运行时桥。便携 Python **2068 passed／3 skipped**（另排除 4 项原生测试）、前端 **11 passed**／构建通过，77 项 Python／JS SDK 一致性；三个真实 tile 内核通过。入口清单 **275／991（27.75%）** 仅是 handler 名称统计，部分参数仍受限；完整 Spark／部署／浏览器／真实数据／Google 同数据均未在本批验收。见 [语法文档](gee-python/sampling.md) 和 [报告](../reports/gee-python-wave25.json)。随机森林仍未实现。
+
 第二十四批补齐有限 `Image.sampleRegions → minimumDistance.train → Image.classify` 编译与运行时桥、样本 getInfo／CSV 任务合同。参数和网格政策见 [取样语法文档](gee-python/sampling.md)，证据见 [报告](../reports/gee-python-wave24.json)。当前便携 Python **1882 passed／3 skipped**（另排除 4 项原生测试），前端 **11 passed**／TypeScript／构建通过；实际取样／分类 tile 内核已验，完整 Spark、部署、浏览器、真实数据和 Google 对照仍未运行。当前声明入口 **273／991（27.55%）**，只统计 API 名称，部分参数仍受限，不能作为完整语法或计算语义兼容率。
 
 ## 执行链路

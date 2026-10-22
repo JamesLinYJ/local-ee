@@ -44,14 +44,17 @@ def integration(tmp_path, monkeypatch):
     assert guard.evidence()['attempt_count'] == 0
 
 
-def expression(fixture):
+def sample_collection(fixture):
     ee, data = fixture.ee, fixture.source
     image = ee.Image(data['items'][0]['id']).select(data['input_properties'])
-    samples = image.sampleRegions(
+    return image.sampleRegions(
         collection=ee.FeatureCollection(data['training_features']),
         properties=data['sample_properties'], geometries=True,
     )
-    return ee.serializer.encode(samples, for_cloud_api=False)
+
+
+def expression(fixture):
+    return fixture.ee.serializer.encode(sample_collection(fixture), for_cloud_api=False)
 
 
 def finish_with_fixture_pixels(fixture, row, *, empty=False):
@@ -64,9 +67,33 @@ def finish_with_fixture_pixels(fixture, row, *, empty=False):
         for value in reference_sample_rows(fixture.source)
     ]
     data = assemble_sample_features(spec, rows)
+    table = SampledFeatureTable(data, sampling_columns(spec))
+    table.sample_spec = sampler['arguments']['spec']
+    table.sample_spec_verified = True
+    table.sample_operations = ()
+    table.sample_operation_work = 0
+    processes = row['process']['process_graph']
+
+    def table_result(key):
+        from engine.ee_process_adapters import local_ee_sample_table_op
+
+        node = processes[key]
+        if node['process_id'] == 'local_ee_sample_regions':
+            return table
+        assert node['process_id'] == 'local_ee_sample_table_op'
+        arguments = node['arguments']
+        return local_ee_sample_table_op({
+            'data': table_result(arguments['data']['from_node']),
+            'spec': arguments['spec'],
+        }, env=None)
+
+    result = next(node for node in processes.values() if node.get('result'))
+    assert result['process_id'] == 'save_result'
+    table = table_result(result['arguments']['data']['from_node'])
+    data = table.data
     folder = fixture.root / 'jobs' / row['id'] / 'out'
     folder.mkdir(parents=True)
-    SampledFeatureTable(data, sampling_columns(spec)).write_assets(folder / 'out')
+    table.write_assets(folder / 'out')
     row['status'] = 'running'
     fixture.worker.finish(row, FinishedTask())
     assert row['status'] == 'finished'
@@ -143,6 +170,36 @@ def test_invalid_sample_actions_or_metadata_do_not_enqueue(integration):
     with pytest.raises(ValueError, match='preflight'):
         fixture.dispatch({'action': 'evaluate', 'expression': value})
     assert fixture.backend.batch_jobs.create_calls == 0
+
+
+@pytest.mark.parametrize('action', ['evaluate', 'export_table'])
+def test_filtered_sample_tasks_keep_ids_schema_and_actual_csv_values(integration, action):
+    fixture = integration
+    ee = fixture.ee
+    value = sample_collection(fixture).filter(
+        ee.Filter.expression('red > 1 && nir >= 2')
+    ).filter(ee.Filter.notNull(['landcover'])).limit(4)
+    response = fixture.dispatch({
+        'action': action, 'expression': ee.serializer.encode(value, for_cloud_api=False),
+    })
+    row = fixture.store.job(response['job_id'], USER)
+    assert sum(node['process_id'] == 'local_ee_sample_table_op'
+               for node in row['process']['process_graph'].values()) == 3
+    graph.validate(row['process']['process_graph'])
+    actual = finish_with_fixture_pixels(fixture, row)
+    # Independent raw-fixture predicate/order; do not evaluate the production
+    # parser or predicate engine to construct these expected rows.
+    expected = [value for value in reference_sample_rows(fixture.source)
+                if value['properties']['red'] > 1 and value['properties']['nir'] >= 2][:4]
+    assert len(actual['features']) == len(expected) == 4
+    assert [f['id'] for f in actual['features']] == [r['id'] for r in expected]
+    assert [f['properties'] for f in actual['features']] == [r['properties'] for r in expected]
+    if action == 'evaluate':
+        assert fixture.dispatch({'action': 'result', 'job_id': row['id']})['value'] == actual
+    else:
+        with (fixture.root / 'jobs' / row['id'] / 'out' / 'openEO.csv').open(newline='') as stream:
+            records = list(csv.DictReader(stream))
+        assert [r['system:index'] for r in records] == [r['id'] for r in expected]
 
 
 def test_sampling_preflight_counts_ancestors_only_and_retains_runtime_guard():

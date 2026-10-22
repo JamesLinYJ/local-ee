@@ -10,7 +10,7 @@ from .ir import Filter, fail, integer
 _FILTERS = {
     "and", "or", "not", "dateRangeContains", "intersects", "equals",
     "lessThan", "greaterThan", "stringContains", "inList", "listContains",
-    "calendarRange", "notNull", "maxDifference",
+    "calendarRange", "notNull", "maxDifference", "expression",
 }
 _MAX_NOT_NULL_PROPERTIES = 1000
 
@@ -56,6 +56,13 @@ def invoke_filter(translator, name, arguments):
     operation = name.split(".", 1)[1]
     if operation not in _FILTERS:
         fail(f"Unsupported filter: {name}")
+    if operation == "expression":
+        translator.allowed(arguments, {"expression"})
+        from .filter_expression import parse_filter_expression
+
+        if "expression" not in arguments:
+            fail("Filter.expression requires an expression string")
+        return parse_filter_expression(translator, arguments["expression"])
     if operation in {"and", "or"}:
         translator.allowed(arguments, {"filters"})
     elif operation == "not":

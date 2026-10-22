@@ -129,12 +129,40 @@ def local_ee_minimum_distance(args, env):
 
 def local_ee_sample_regions(args, env):
     from .ee_sampling import local_ee_sample_regions as handler
+    from .ee_sampling_result import PendingSampledTable, SampledFeatureTable
 
-    return handler(args, env)
+    table = handler(args, env)
+    if type(table) is SampledFeatureTable:
+        cube = args["data"]
+        table.sample_spec = args["spec"]
+        table.sample_spec_verified = True
+        table.traces = tuple(getattr(cube, "_traces", ()))
+        table.data_tracer = getattr(cube, "_data_tracer", None)
+        table.sample_operations = ()
+        table.sample_operation_work = 0
+    elif type(table) is PendingSampledTable:
+        table.sample_spec_verified = True
+        table.sample_operations = ()
+        table.sample_operation_work = 0
+    else:
+        raise ValueError("SampleRegions returned an unsupported sampled table type")
+    return table
 
 
 def local_ee_train_minimum_distance(args, env):
     from .ee_sampling import local_ee_train_minimum_distance as handler
+
+    return handler(args, env)
+
+
+def local_ee_remap(args, env):
+    from .ee_remap import local_ee_remap as handler
+
+    return handler(args, env)
+
+
+def local_ee_sample_table_op(args, env):
+    from .ee_sample_table_ops import local_ee_sample_table_op as handler
 
     return handler(args, env)
 
@@ -145,6 +173,8 @@ _HANDLERS = {
     "local_ee_minimum_distance": local_ee_minimum_distance,
     "local_ee_sample_regions": local_ee_sample_regions,
     "local_ee_train_minimum_distance": local_ee_train_minimum_distance,
+    "local_ee_remap": local_ee_remap,
+    "local_ee_sample_table_op": local_ee_sample_table_op,
 }
 
 

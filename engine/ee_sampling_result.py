@@ -36,6 +36,11 @@ class SampledFeatureTable(SaveResult):
     def columns(self) -> list[str]:
         return list(self._columns)
 
+    @property
+    def row_count(self) -> int:
+        """Return the validated row count without copying sampled features."""
+        return len(self._data["features"])
+
     def _csv_bytes(self) -> bytes:
         from gee.sampling_values import render_sample_csv
 

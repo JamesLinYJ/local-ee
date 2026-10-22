@@ -43,6 +43,7 @@ class SampledFeatures:
 
     image: Image
     spec: str
+    operations: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)

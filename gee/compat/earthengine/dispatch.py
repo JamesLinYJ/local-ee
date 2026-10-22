@@ -26,6 +26,10 @@ def invoke(translator, name, arguments):
     a = arguments
     from .raster_array_bands import handles_array_bands, invoke_array_bands
 
+    if name == "Image.remap":
+        from .image_remap import invoke_image_remap
+
+        return invoke_image_remap(translator, a)
     if name == "Image.classify":
         from .raster_classification import invoke_image_classify
 
