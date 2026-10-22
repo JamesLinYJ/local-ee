@@ -1,8 +1,8 @@
 # GEE Python 兼容清单
 
-状态：2026-10-21，第三批持续实施，整体兼容目标尚未完成。
+状态：2026-10-22，第四批持续实施，整体兼容目标尚未完成。
 
-第三批 [验证报告](../../reports/gee-python-wave3.json)：Linux Python **745 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [709 passed／7 skipped](../../reports/gee-python-wave2.json)，本批增加 36 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
+第四批 [验证报告](../../reports/gee-python-wave4.json)：Linux Python **830 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [745 passed／7 skipped](../../reports/gee-python-wave3.json)，本批增加 85 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
 
 S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎；N＝独立数值基准；G＝Google 同数据对照。静态数值求值和合成图测试分别说明，不能标成原生栅格 E。固定的 991 项签名、方法可见数量和定向探针计数均不能换算为全 API 兼容百分比。
 
@@ -26,6 +26,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] 内联表格 reduceColumns 的无权 linearFit／linearRegression，保留矩阵类型及每响应残差 RMS；闭式系数／残差参考与合成预测示例。
 - [x] Number.format 的有界十进制子集，以及 String 数值构造、cat／length／compareTo 和分配前预算。
 - [x] 唯一 maxDifference 与标量条件的 And 组合；最近前／后观测筛选、inner 匹配对和 Feature.map → ImageCollection 计算链路。
+- [x] 有限静态 Array 的逐元素算术、slice／project／repeat／cat、单输出归约与累积、对称特征分解及 Cholesky；闭式 PCA 协方差、投影和重建验证。
 - [ ] 每一签名／参数组合的完整 S／C／E／N 及负向、缺测、边界验收。
 - [ ] Image.array*、逐像元回归、分类训练／预测、矢量／空间和多重／歧义度量 Join、邻域及高级时序。
 - [ ] Linux 完整执行隔离和引擎验收；保留 macOS Seatbelt、ARM64 JNI 和真实数据验收。
@@ -48,7 +49,13 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 
 List.contains／distinct 对嵌套数组使用显式的有界比较，避免 NumPy 隐式真值／广播错误。标量 int／float 按数值比较，bool 单独区分；Array 的 dtype／形状／元素比较仍是未做 Google 对照的本地策略。step 序列严格检查实际生成的 Float64 值，不向端点外扩展；例如 0、0.1、0.2 后的 0.30000000000000004 超过 end=0.3，因此省略，该舍入策略尚无 G 证据。
 
-另有 15 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容。
+另有 19 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；新增数组布局／归约、特征分解、Cholesky 和逐元素算术。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容。
+
+第四批 `examples/10_GEE_python_synthetic_pca.py` 与 `tests/fixtures/ee-pca-table-v1.json` 串联有限静态表格的中心化、样本协方差、对称特征分解、投影及重建。四条二维观测的均值为 `[2,1]`，协方差为 `[[4/3,2/3],[2/3,2/3]]`，特征值为 `1±sqrt(5)/3`；闭式向量与得分按 1e-14 容差核对，重建还提供与符号选择无关的验证。S/C/N 已通过，网络入口尝试为 0；无栅格 E 或 G。
+
+这批 Array 新增能力均受 10000 单元／每轴长度、8 轴及共享 50000 步预算限制。二元算术只接受同形数组，除零返回零，负数平方根和非有限结果拒绝。slice 接受负偏移和正步长，可产生空轴；project 仅接受升序不重复轴，删除轴长度必须恰为 1。repeat 拼接整个数组；cat 需要类型化 Array，尚不支持原始嵌套列表的强制转换。reduce 支持 sum／mean／min／max／count／median／sampleStdDev，归约轴保留长度 1；fieldAxis、多输出归约、空输入及少于两个值的样本标准差明确拒绝。accum 限 sum／min／max，浮点前缀按顺序相加；显式 PixelType 和完整广播仍待实现。
+
+eigen 限非空二维实对称矩阵，Cholesky 另需正定，输出下三角 L；determinant 限方阵，trace／diagonal 支持矩形。eigen 按特征值降序输出行向量，每行首个最大绝对值分量取正；重根子空间沿用 LAPACK 基。该符号／重根呈现规则是尚无 Google／EJML 对照的本地政策。浮点 sum／mean／median／trace 对有限抵消使用稳定求和，必要时在有界二进制有理数域完成中间求和，避免可表示结果因中间溢出而失败；这不代表所有浮点内核具有相同的极值稳定性。
 
 版本化样本 `tests/fixtures/ee-table-workflow-v1.json` 和可运行示例 `examples/08_GEE_python_synthetic_regression.py` 串联有效值筛选、表格 OLS、矩阵预测和格式化。手算系数为 0.5／2.5、残差 RMS 为 sqrt(0.5)、第 3 日预测为 8。它是静态合成表格工作流，不是实际影像、栅格 E 或 Google 对照。
 

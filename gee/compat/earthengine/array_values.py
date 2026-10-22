@@ -1,80 +1,26 @@
 """Bounded static EE arrays; raster array pixels and explicit PixelTypes reject."""
 from __future__ import annotations
 
-from dataclasses import dataclass
 import math
 
 import numpy as np
 
 from .ir import fail, integer
+from .array_core import (
+    MAX_ARRAY_CELLS, MAX_ARRAY_RANK, MAX_ARRAY_WORK, StaticArray,
+    charge_array as _charge, check_array_values as _shape,
+    require_array as _array, require_matrix as _matrix, wrap_array as _wrap,
+)
+from .array_arithmetic import ARRAY_ARITHMETIC_FUNCTIONS, invoke_arithmetic
+from .array_reductions import ARRAY_REDUCTION_FUNCTIONS, invoke_reduction
+from .array_layout import ARRAY_LAYOUT_FUNCTIONS, invoke_layout
+from .array_matrix_extra import ARRAY_MATRIX_FUNCTIONS, invoke_matrix_extra
 
-
-MAX_ARRAY_CELLS = 10_000
-MAX_ARRAY_RANK = 8
-MAX_ARRAY_WORK = 50_000
 ARRAY_FUNCTIONS = frozenset({
     "Array", "Array.get", "Array.length", "Array.toList", "Array.reshape",
     "Array.transpose", "Array.matrixTranspose", "Array.matrixMultiply",
     "Array.matrixInverse", "Array.matrixSolve", "Array.matrixPseudoInverse",
-})
-
-
-@dataclass(frozen=True)
-class StaticArray:
-    """Typed array value, distinct from the ordinary EE List representation."""
-
-    data: np.ndarray
-
-    def to_value(self):
-        return self.data.tolist()
-
-
-def _shape(value, depth=0, count=None):
-    count = [0] if count is None else count
-    if depth > MAX_ARRAY_RANK:
-        fail("Static Array rank exceeds 8")
-    if isinstance(value, list):
-        if not value:
-            fail("Empty Array values require an unsupported explicit PixelType")
-        if len(value) > MAX_ARRAY_CELLS:
-            fail("Static Array exceeds 10000 cells")
-        shapes = [_shape(child, depth + 1, count) for child in value]
-        if any(shape != shapes[0] for shape in shapes[1:]):
-            fail("Array values must form a rectangular numeric array")
-        return (len(value), *shapes[0])
-    if type(value) not in (int, float):
-        fail("Array values must be finite real numbers")
-    if isinstance(value, int) and abs(value) > 2**53:
-        fail("Static Array integers outside the exact Float64 domain are unsupported")
-    if not math.isfinite(value):
-        fail("Array values must be finite real numbers")
-    count[0] += 1
-    if count[0] > MAX_ARRAY_CELLS:
-        fail("Static Array exceeds 10000 cells")
-    return ()
-
-
-def _wrap(value):
-    result = np.asarray(value)
-    if result.size > MAX_ARRAY_CELLS or result.ndim > MAX_ARRAY_RANK:
-        fail("Static Array result exceeds the cell/rank budget")
-    if not np.isfinite(result).all():
-        fail("Static Array computation must produce finite real numbers")
-    result = result.copy()
-    result.flags.writeable = False
-    return StaticArray(result)
-
-
-def _array(value):
-    if not isinstance(value, StaticArray):
-        fail("Expected a static ee.Array, not a List or raster array")
-    return value.data
-
-
-def _charge(translator, work):
-    if work > MAX_ARRAY_WORK or translator.steps + work > 50_000:
-        fail("Static Array operation exceeds the compilation work budget")
-    translator.steps += work
+}) | ARRAY_ARITHMETIC_FUNCTIONS | ARRAY_REDUCTION_FUNCTIONS | ARRAY_LAYOUT_FUNCTIONS | ARRAY_MATRIX_FUNCTIONS
 
 
 def _axes(arguments, array):
@@ -83,13 +29,6 @@ def _axes(arguments, array):
     if any(axis >= array.ndim for axis in axes):
         fail("Array transpose axis is outside the array rank")
     return axes
-
-
-def _matrix(value):
-    array = _array(value)
-    if array.ndim != 2:
-        fail("Static matrix operations currently require rank-2 arrays")
-    return array
 
 
 def _reshape(translator, array, shape):
@@ -116,6 +55,14 @@ def invoke_array(translator, name, arguments):
     """Evaluate only the explicitly listed pinned static array algorithms."""
     if name not in ARRAY_FUNCTIONS:
         fail(f"Unsupported static Array operation: {name}")
+    if name in ARRAY_ARITHMETIC_FUNCTIONS:
+        return invoke_arithmetic(translator, name, arguments)
+    if name in ARRAY_REDUCTION_FUNCTIONS:
+        return invoke_reduction(translator, name, arguments)
+    if name in ARRAY_LAYOUT_FUNCTIONS:
+        return invoke_layout(translator, name, arguments)
+    if name in ARRAY_MATRIX_FUNCTIONS:
+        return invoke_matrix_extra(translator, name, arguments)
     a = arguments
     if name == "Array":
         translator.allowed(a, {"values", "pixelType"})

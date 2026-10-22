@@ -36,6 +36,16 @@ inner 输出匹配对 Feature，内部保留真实 Image；Feature 属性和同�
 
 原有 50 项表达式及 45 编译通过／5 拒绝不变，Python／JS 官方 SDK 共享编译回归增至 15 项。后续继续优先 Image.array*、逐像元回归、采样／分类训练预测与真实项目，Python 完整目标仍未完成。
 
+## 第四批静态数组与 PCA
+
+第三批提交 `ca9fdc9a9e0215e5ef98befd93a58e9f0f82d6b9` 已通过精确提交的 GitHub `python`／`frontend` 检查并快进 main。第四批在此基础上将 Array 类型／资源校验、布局、算术、归约及矩阵分解拆为独立模块，保留原导出与已有矩阵调用。
+
+增加 19 项有限静态 Array 方法：同形算术、slice／project／repeat／cat、单输出 reduce／accum、实对称 eigen、Cholesky、行列式／迹／对角线／Frobenius 范数。版本化静态 PCA 串联中心化、样本协方差、投影、重建，并以独立闭式结果验证。审查发现的极值求和／均值抵消、中位数和矩阵迹中间溢出已修复，有限结果与真实溢出均有回归。方法存在、矩阵内核和静态 N 均不能代替 Image.array* 或栅格引擎验收。
+
+本批 `uv sync --frozen`、全套 Python **830 passed／7 skipped**、`npm ci`、前端 **11 passed**、TypeScript／构建均通过。固定 Python 清单独立进程字节重现通过；原 50 探针仍为 50 S／45 C／5 拒绝，Python／JS 共享编译回归增至 19 项。新增参数限制、浮点／特征向量呈现政策和未运行项目见 `reports/gee-python-wave4.json` 与 `docs/gee-python/list.md`。
+
+整体目标保持进行中。当前限制针对 Linux 隔离和原生平台／真实数据／Google 对照验收，离线兼容开发可以继续；仍需推进栅格数组、逐像元回归、分类及真实遥感全流程。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee

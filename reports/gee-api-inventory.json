@@ -591,12 +591,14 @@
       "description": "On an element-wise basis, computes the absolute value of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static finite arrays only, <=10000 cells/rank 8 and shared 50000-step budget. Binary operands require identical shapes; scalar/broadcast coercion rejects. Divide by zero returns zero; negative square roots and nonfinite results reject. Integer add/subtract/multiply/abs preserve exact results up to 2^53. No raster or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -634,12 +636,14 @@
       "description": "Accumulates elements of an array along the given axis, by setting each element of the result to the reduction of elements along that axis up to and including the current position. May be used to make a cumulative sum, a monotonically increasing sequence, etc.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded nonempty static arrays only. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev, unique valid axes and retained singleton dimensions; fieldAxis and sampleStdDev counts below two reject. Accum supports sum/min/max only. Integer sums outside 2^53 reject. Float64 stable sum/mean/median control finite intermediate overflow; cumulative sums use ordered Float64 addition. No raster or Google comparison."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -701,12 +705,14 @@
       "description": "On an element-wise basis, adds the first value to the second.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static finite arrays only, <=10000 cells/rank 8 and shared 50000-step budget. Binary operands require identical shapes; scalar/broadcast coercion rejects. Divide by zero returns zero; negative square roots and nonfinite results reject. Integer add/subtract/multiply/abs preserve exact results up to 2^53. No raster or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1274,12 +1280,14 @@
       "description": "Concatenates multiple arrays into a single array along the given axis. Each array must have the same dimensionality and the same length on all axes except the concatenation axis.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static typed arrays, <=10000 cells/axis, rank 8 and shared 50000-step budget. Slice supports negative offsets and positive step; derived empty axes are retained. Project requires ascending unique retained axes and every dropped axis length exactly one. Repeat concatenates whole arrays, with copies 0..10000; cat requires 1..1000 typed Arrays with matching other dimensions. Raw nested-list cat coercion and unordered projection are unverified and reject. No raster/Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1501,12 +1509,14 @@
       "description": "On an element-wise basis, divides the first value by the second, returning 0 for division by 0.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static finite arrays only, <=10000 cells/rank 8 and shared 50000-step budget. Binary operands require identical shapes; scalar/broadcast coercion rejects. Divide by zero returns zero; negative square roots and nonfinite results reject. Integer add/subtract/multiply/abs preserve exact results up to 2^53. No raster or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1599,12 +1609,14 @@
       "description": "Computes the real eigenvectors and eigenvalues of a square 2D array of A rows and A columns. Returns an array with A rows and A+1 columns, where each row contains an eigenvalue in the first column, and the corresponding eigenvector in the remaining A columns. The rows are sorted by eigenvalue, in descending order.  <p>This implementation uses DecompositionFactory.eig() from https://ejml.org. ",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded nonempty rank-2 finite static arrays only; work and output preflight before allocation/factorization. Eigen and Cholesky require exact real symmetry, Cholesky positive definiteness; determinant requires square input. Eigen returns descending values with row eigenvectors, largest-component-positive signs and LAPACK basis for repeated values: these local presentation policies lack Google/EJML comparison. Diagonal is a column; toDiag requires a column; rectangular trace/diagonal supported. Independent static controls are not raster-engine acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -2727,12 +2739,14 @@
       "description": "Calculates the Cholesky decomposition of a matrix. The Cholesky decomposition is a decomposition into the form L * L' where L is a lower triangular matrix. The input must be a symmetric positive-definite matrix. Returns a dictionary with 1 entry named 'L'.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded nonempty rank-2 finite static arrays only; work and output preflight before allocation/factorization. Eigen and Cholesky require exact real symmetry, Cholesky positive definiteness; determinant requires square input. Eigen returns descending values with row eigenvectors, largest-component-positive signs and LAPACK basis for repeated values: these local presentation policies lack Google/EJML comparison. Diagonal is a column; toDiag requires a column; rectangular trace/diagonal supported. Independent static controls are not raster-engine acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -2758,12 +2772,14 @@
       "description": "Computes the determinant of the matrix.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded nonempty rank-2 finite static arrays only; work and output preflight before allocation/factorization. Eigen and Cholesky require exact real symmetry, Cholesky positive definiteness; determinant requires square input. Eigen returns descending values with row eigenvectors, largest-component-positive signs and LAPACK basis for repeated values: these local presentation policies lack Google/EJML comparison. Diagonal is a column; toDiag requires a column; rectangular trace/diagonal supported. Independent static controls are not raster-engine acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -2789,12 +2805,14 @@
       "description": "Computes the diagonal of the matrix in a single column.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded nonempty rank-2 finite static arrays only; work and output preflight before allocation/factorization. Eigen and Cholesky require exact real symmetry, Cholesky positive definiteness; determinant requires square input. Eigen returns descending values with row eigenvectors, largest-component-positive signs and LAPACK basis for repeated values: these local presentation policies lack Google/EJML comparison. Diagonal is a column; toDiag requires a column; rectangular trace/diagonal supported. Independent static controls are not raster-engine acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -2820,12 +2838,14 @@
       "description": "Computes the Frobenius norm of the matrix.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded nonempty rank-2 finite static arrays only; work and output preflight before allocation/factorization. Eigen and Cholesky require exact real symmetry, Cholesky positive definiteness; determinant requires square input. Eigen returns descending values with row eigenvectors, largest-component-positive signs and LAPACK basis for repeated values: these local presentation policies lack Google/EJML comparison. Diagonal is a column; toDiag requires a column; rectangular trace/diagonal supported. Independent static controls are not raster-engine acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3086,12 +3106,14 @@
       "description": "Computes a square diagonal matrix from a single column matrix.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded nonempty rank-2 finite static arrays only; work and output preflight before allocation/factorization. Eigen and Cholesky require exact real symmetry, Cholesky positive definiteness; determinant requires square input. Eigen returns descending values with row eigenvectors, largest-component-positive signs and LAPACK basis for repeated values: these local presentation policies lack Google/EJML comparison. Diagonal is a column; toDiag requires a column; rectangular trace/diagonal supported. Independent static controls are not raster-engine acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3117,12 +3139,14 @@
       "description": "Computes the trace of the matrix.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded nonempty rank-2 finite static arrays only; work and output preflight before allocation/factorization. Eigen and Cholesky require exact real symmetry, Cholesky positive definiteness; determinant requires square input. Eigen returns descending values with row eigenvectors, largest-component-positive signs and LAPACK basis for repeated values: these local presentation policies lack Google/EJML comparison. Diagonal is a column; toDiag requires a column; rectangular trace/diagonal supported. Independent static controls are not raster-engine acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3308,12 +3332,14 @@
       "description": "On an element-wise basis, multiplies the first value by the second.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static finite arrays only, <=10000 cells/rank 8 and shared 50000-step budget. Binary operands require identical shapes; scalar/broadcast coercion rejects. Divide by zero returns zero; negative square roots and nonfinite results reject. Integer add/subtract/multiply/abs preserve exact results up to 2^53. No raster or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3526,12 +3552,14 @@
       "description": "Projects an array to a lower dimensional space by specifying the axes to retain. Dropped axes must be at most length 1.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static typed arrays, <=10000 cells/axis, rank 8 and shared 50000-step budget. Slice supports negative offsets and positive step; derived empty axes are retained. Project requires ascending unique retained axes and every dropped axis length exactly one. Repeat concatenates whole arrays, with copies 0..10000; cat requires 1..1000 typed Arrays with matching other dimensions. Raw nested-list cat coercion and unordered projection are unverified and reject. No raster/Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3574,12 +3602,14 @@
       "description": "Apply a reducer to an array by collapsing all the input values along each specified axis into a single output value computed by the reducer. <p>The output always has the same dimensionality as the input, and the individual axes are affected as follows: <p><ul><li>The axes specified in the 'axes' parameter have their length reduced to 1 (by applying the reducer). <li>If the reducer has multiple inputs or multiple outputs, the axis specified in 'fieldAxis' will be used to provide the reducer's inputs and store the reducer's outputs.<li>All other axes are unaffected (independent reductions are performed).</ul>",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded nonempty static arrays only. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev, unique valid axes and retained singleton dimensions; fieldAxis and sampleStdDev counts below two reject. Accum supports sum/min/max only. Integer sums outside 2^53 reject. Float64 stable sum/mean/median control finite intermediate overflow; cumulative sums use ordered Float64 addition. No raster or Google comparison."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3619,12 +3649,14 @@
       "description": "Repeats the array along the given axis. The result will have the shape of the input, except length along the repeated axis will be multiplied by the given number of copies.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static typed arrays, <=10000 cells/axis, rank 8 and shared 50000-step budget. Slice supports negative offsets and positive step; derived empty axes are retained. Project requires ascending unique retained axes and every dropped axis length exactly one. Repeat concatenates whole arrays, with copies 0..10000; cat requires 1..1000 typed Arrays with matching other dimensions. Raw nested-list cat coercion and unordered projection are unverified and reject. No raster/Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3943,12 +3975,14 @@
       "description": "Creates a subarray by slicing out each position along the given axis from the 'start' (inclusive) to 'end' (exclusive) by increments of 'step'. The result will have as many dimensions as the input, and the same length in all directions except the slicing axis, where the length will be the number of positions from 'start' to 'end' by 'step' that are in range of the input array's length along 'axis'. This means the result can be length 0 along the given axis if start=end, or if the start or end values are entirely out of range.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static typed arrays, <=10000 cells/axis, rank 8 and shared 50000-step budget. Slice supports negative offsets and positive step; derived empty axes are retained. Project requires ascending unique retained axes and every dropped axis length exactly one. Repeat concatenates whole arrays, with copies 0..10000; cat requires 1..1000 typed Arrays with matching other dimensions. Raw nested-list cat coercion and unordered projection are unverified and reject. No raster/Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -4012,12 +4046,14 @@
       "description": "On an element-wise basis, computes the square root of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static finite arrays only, <=10000 cells/rank 8 and shared 50000-step budget. Binary operands require identical shapes; scalar/broadcast coercion rejects. Divide by zero returns zero; negative square roots and nonfinite results reject. Integer add/subtract/multiply/abs preserve exact results up to 2^53. No raster or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -4048,12 +4084,14 @@
       "description": "On an element-wise basis, subtracts the second value from the first.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Static finite arrays only, <=10000 cells/rank 8 and shared 50000-step budget. Binary operands require identical shapes; scalar/broadcast coercion rejects. Divide by zero returns zero; negative square roots and nonfinite results reject. Integer add/subtract/multiply/abs preserve exact results up to 2^53. No raster or Google acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -40789,7 +40827,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 194,
+    "declared_handler_name_count": 213,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -40804,7 +40842,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 11,
+        "declared_handler_count": 30,
         "signature_count": 124
       },
       "BACCINI/ModisComposite": {
@@ -41270,7 +41308,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 194,
+    "pinned_signatures_with_same_name_declared_handler": 213,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

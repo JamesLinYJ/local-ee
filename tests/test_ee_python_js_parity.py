@@ -53,6 +53,10 @@ const prior = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(c, c,
     leftField:'system:time_start', rightField:'system:time_start'}),
     ee.Filter.greaterThan({leftField:'system:time_start', rightField:'system:time_start'}))));
 const values = {
+  arrayLayout: ee.Array([[1,2,3]]).repeat(0,2).slice(1,-2).reduce(ee.Reducer.sum(),[0]).project([1]),
+  arrayEigen: ee.Array([[4,1],[1,3]]).eigen(),
+  arrayCholesky: ee.Array([[4,12],[12,37]]).matrixCholeskyDecomposition(),
+  arrayArithmetic: ee.Array([1,4,9]).sqrt().multiply(ee.Array([2,3,4])).accum(0),
   sequence: ee.List.sequence(0, 1, 99, 5),
   emptyKeys: ee.Dictionary({a:1}).values([]),
   missingDefault: ee.Dictionary({a:1}).get('missing', false),
@@ -105,6 +109,10 @@ def parity_values():
             leftField="system:time_start", rightField="system:time_start"),
             ee.Filter.greaterThan(leftField="system:time_start", rightField="system:time_start"))))
     py = {
+        "arrayLayout": ee.Array([[1,2,3]]).repeat(0,2).slice(1,-2).reduce(ee.Reducer.sum(),[0]).project([1]),
+        "arrayEigen": ee.Array([[4,1],[1,3]]).eigen(),
+        "arrayCholesky": ee.Array([[4,12],[12,37]]).matrixCholeskyDecomposition(),
+        "arrayArithmetic": ee.Array([1,4,9]).sqrt().multiply(ee.Array([2,3,4])).accum(0),
         "sequence": ee.List.sequence(0, 1, 99, 5),
         "emptyKeys": ee.Dictionary({"a": 1}).values([]),
         "missingDefault": ee.Dictionary({"a": 1}).get("missing", False),
@@ -132,7 +140,8 @@ def parity_values():
 @pytest.mark.parametrize("case", ["sequence", "emptyKeys", "missingDefault", "matrixMultiply",
                                  "matrixSolve", "notNull", "matchId", "clippedBands",
                                  "bestDelta", "tableCoefficients", "featureSum", "formatted",
-                                 "stringConversion", "innerBands", "compoundDelta"])
+                                 "stringConversion", "innerBands", "compoundDelta",
+                                 "arrayLayout", "arrayEigen", "arrayCholesky", "arrayArithmetic"])
 def test_python_and_javascript_reach_the_same_local_result(parity_values, case):
     javascript, python, metadata, items = parity_values
     left = compile_expression(javascript[case], metadata, items)

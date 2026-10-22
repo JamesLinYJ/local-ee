@@ -63,6 +63,22 @@ for operation in ("Array", "Array.get", "Array.length", "Array.toList", "Array.r
     KNOWN_PARTIAL_LIMITS[operation] = [
         "Static finite numeric arrays only, exact integer domain <=2^53, rank <=8, cells <=10000 and shared 50000-step work budget. Explicit PixelType, empty constructors, negative indices and raster array pixels are unsupported; matrix kernels require rank 2 and matrixSolve full column rank. Independent static numerical controls are not native raster-engine or Google acceptance."
     ]
+for operation in ("Array.add", "Array.subtract", "Array.multiply", "Array.divide", "Array.abs", "Array.sqrt"):
+    KNOWN_PARTIAL_LIMITS[operation] = [
+        "Static finite arrays only, <=10000 cells/rank 8 and shared 50000-step budget. Binary operands require identical shapes; scalar/broadcast coercion rejects. Divide by zero returns zero; negative square roots and nonfinite results reject. Integer add/subtract/multiply/abs preserve exact results up to 2^53. No raster or Google acceptance."
+    ]
+for operation in ("Array.reduce", "Array.accum"):
+    KNOWN_PARTIAL_LIMITS[operation] = [
+        "Bounded nonempty static arrays only. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev, unique valid axes and retained singleton dimensions; fieldAxis and sampleStdDev counts below two reject. Accum supports sum/min/max only. Integer sums outside 2^53 reject. Float64 stable sum/mean/median control finite intermediate overflow; cumulative sums use ordered Float64 addition. No raster or Google comparison."
+    ]
+for operation in ("Array.slice", "Array.project", "Array.repeat", "Array.cat"):
+    KNOWN_PARTIAL_LIMITS[operation] = [
+        "Static typed arrays, <=10000 cells/axis, rank 8 and shared 50000-step budget. Slice supports negative offsets and positive step; derived empty axes are retained. Project requires ascending unique retained axes and every dropped axis length exactly one. Repeat concatenates whole arrays, with copies 0..10000; cat requires 1..1000 typed Arrays with matching other dimensions. Raw nested-list cat coercion and unordered projection are unverified and reject. No raster/Google acceptance."
+    ]
+for operation in ("Array.eigen", "Array.matrixCholeskyDecomposition", "Array.matrixDeterminant", "Array.matrixTrace", "Array.matrixDiagonal", "Array.matrixToDiag", "Array.matrixFnorm"):
+    KNOWN_PARTIAL_LIMITS[operation] = [
+        "Bounded nonempty rank-2 finite static arrays only; work and output preflight before allocation/factorization. Eigen and Cholesky require exact real symmetry, Cholesky positive definiteness; determinant requires square input. Eigen returns descending values with row eigenvectors, largest-component-positive signs and LAPACK basis for repeated values: these local presentation policies lack Google/EJML comparison. Diagonal is a column; toDiag requires a column; rectangular trace/diagonal supported. Independent static controls are not raster-engine acceptance."
+    ]
 for operation in ("Join.simple", "Join.inverted", "Join.saveFirst", "Join.saveAll", "Join.saveBest", "Join.inner", "Join.apply"):
     KNOWN_PARTIAL_LIMITS[operation] = [
         "Bounded local ImageCollections and flat finite scalar metadata conditions only; at most 1000 frames and shared compilation work budget. A unique direct or conjunctive numeric maxDifference supplies measures; multiple measures and measures under Or/Not reject when requested. Inner emits <=1000 null-geometry Feature pairs retaining Images, with optional measure on the pair Feature and distinct keys. Inclusive threshold and local stable order/ties; vector/spatial joins and nested selectors unsupported. Synthetic graph controls do not establish native-engine or Google equivalence."

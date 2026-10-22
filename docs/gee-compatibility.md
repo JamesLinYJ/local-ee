@@ -20,7 +20,7 @@ S 表示固定官方 SDK 可生成表达式；C 表示本地编译；E 表示实
 
 完整固定签名、参数与验证层次见 [全量 API 清单](gee-api-inventory.md) 和 [机器可读报告](../reports/gee-api-inventory.json)。该清单可以在没有本机数据和审计目录的干净克隆中重新生成；不会用声明数量推算兼容率。
 
-Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单](gee-python/list.md) 和 [Python API 报告](../reports/gee-python-api-inventory.json)。2026-10-22 的便携增量修复 Python 命名 GeoJSON CRS 解码，补充 `Filter.notNull`、Dictionary／List.sequence、有限元数据 Join 和静态 Array／矩阵算法。SDK 初始化也不再获取 Google 弃用资产目录；探针实际拦截并计数 Python 网络入口，不将该计数描述为内核抓包或用户代码沙箱。
+Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单](gee-python/list.md) 和 [Python API 报告](../reports/gee-python-api-inventory.json)。2026-10-22 的便携增量修复 Python 命名 GeoJSON CRS 解码，补充 `Filter.notNull`、Dictionary／List.sequence、有限元数据 Join 和静态 Array／矩阵算法。第四批新增有限数组算术／布局／归约、对称特征分解及 Cholesky，闭式 PCA 验证中心化至重建；完整参数限制和本地数值政策见 [第四批报告](../reports/gee-python-wave4.json)。这些静态证据不覆盖栅格 `Image.array*` 或 Google 对照。SDK 初始化也不再获取 Google 弃用资产目录；探针实际拦截并计数 Python 网络入口，不将该计数描述为内核抓包或用户代码沙箱。
 
 第二批增加有界内联 FeatureCollection、表格 linearFit／linearRegression、数值时间差度量 Join、Number.format 和 String 的构造／工作预算。静态合成表格工作流有独立手算数值参考；本轮原生引擎与 Google 同数据对照未运行，见 [分层验证报告](../reports/gee-python-wave2.json)。
 
