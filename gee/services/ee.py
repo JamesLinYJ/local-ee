@@ -16,6 +16,8 @@ from .ee_exports import export_options
 from .ee_budget import pixel_budget
 from .ee_idempotency import idempotency_record, validate_request_id
 from .ee_events import check_event_capacity, record_event
+from ..table_graph import table_input_graph
+from ..table_values import columns as table_columns
 
 DATA=Path(os.environ.get('DATA_ROOT','/data'))
 EE_TASK_STATES={'created':'UNSUBMITTED','queued':'READY','running':'RUNNING','finished':'COMPLETED','error':'FAILED','canceled':'CANCELLED'}
@@ -240,6 +242,11 @@ def dispatch(backend,account,payload):
         for k in ['scale','crs']:
             if options.get(k) is not None:compile_options[k]=options[k]
     compiled=compile_expression(payload.get('expression'),catalog,items,compile_options)
+    if action=='export_table' and compiled['kind']=='value':
+        header=table_columns(compiled['value'])
+        selected=export_options(action,options,header)['selectors'] or header
+        compiled={'kind':'table','bands':header,'warnings':compiled.get('warnings',[]),
+                  'process_graph':table_input_graph(compiled['value'],selected)}
     if compiled['kind']=='region':
         grid=compiled['grid_options'];compiled['pixel_budget']=pixel_budget(compiled,items,grid,grid.get('maxPixels',10000000))
     elif compiled['kind'] in {'image','collection'} and action!='evaluate':
@@ -254,7 +261,7 @@ def dispatch(backend,account,payload):
             return {'value':value,'warnings':compiled.get('warnings',[])}
         result=make_job(backend,account,compiled,'GEE · 区域统计','CSV',{'result_kind':'region'},True)
         return {**result,'pending':True}
-    if compiled['kind'] not in {'image','collection','region'}:raise UnsupportedEEError('This export requires a raster or supported regional table')
+    if compiled['kind'] not in {'image','collection','region','table'}:raise UnsupportedEEError('This export requires a raster or supported feature table')
     if action=='map':
         if compiled['kind']=='region':raise UnsupportedEEError('Map.addLayer currently requires a raster')
         vis=visualization(options.get('vis_params') or {})
@@ -277,9 +284,9 @@ def dispatch(backend,account,payload):
         return result
     fmt=options.get('fileFormat','CSV' if action=='export_table' else 'GeoTIFF')
     formats={'GeoTIFF':'GTiff','GTiff':'GTiff','NetCDF':'NetCDF','CSV':'CSV'}
-    if fmt not in formats:raise UnsupportedEEError('Unsupported local export format: '+str(fmt))
-    if action=='export_table' and compiled['kind']!='region':raise UnsupportedEEError('Only supported regional tables can currently be exported')
-    if action=='export_table' and fmt!='CSV':raise UnsupportedEEError('Local regional table export currently supports CSV')
+    if not isinstance(fmt,str) or fmt not in formats:raise UnsupportedEEError('Unsupported local export format: '+str(fmt))
+    if action=='export_table' and compiled['kind'] not in {'region','table'}:raise UnsupportedEEError('Only supported feature tables can currently be exported')
+    if action=='export_table' and fmt!='CSV':raise UnsupportedEEError('Local table export currently supports CSV')
     if action=='export_image' and formats[fmt]=='CSV':raise ValueError('Use Export.table for CSV')
     local_options=export_options(action,options,compiled['bands'])
     warnings=list(compiled.get('warnings',[]))

@@ -4,6 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 from .local_processes import LOCAL_PROCESSES, validate_local_process
+from .table_graph import has_table_node, validate_table_graph
 
 SUPPORTED = {
     "load_collection", "filter_bbox", "filter_temporal", "filter_bands", "mask",
@@ -21,6 +22,9 @@ SUPPORTED = {
 def validate(graph):
     if not isinstance(graph, dict) or not graph or len(json.dumps(graph)) > 1000000:
         raise ValueError("需要非空 openEO process_graph（最大 1 MB）")
+    if has_table_node(graph):
+        validate_table_graph(graph)
+        return
     def walk(g, depth=0):
         if depth > 32:
             raise ValueError("流程嵌套超过 32 层")
@@ -68,6 +72,8 @@ def validate(graph):
                 ids=args["_gee_item_ids"]
                 if not isinstance(ids,list) or not ids or len(ids)>1000 or any(not isinstance(x,str) or not x or len(x)>256 for x in ids) or len(set(ids))!=len(ids):
                     raise ValueError("GEE item selection must contain 1..1000 unique item IDs")
+            if node["process_id"] == "load_collection" and not isinstance(args.get("id"), str):
+                raise ValueError("数据集 id 必须是字符串")
             if node["process_id"] in LOCAL_PROCESSES:
                 validate_local_process(node["process_id"], args, depth)
             if node["process_id"] == "mask_polygon" and not isinstance(args.get("mask"),dict):
@@ -95,6 +101,8 @@ def materialize(graph, collections, output):
     """Freeze the local catalog at submission; workers never resolve external URLs."""
     validate(graph)
     g = copy.deepcopy(graph)
+    if has_table_node(graph):
+        return g
     def visit(value):
         if isinstance(value, dict):
             if value.get("process_id") == "load_collection":
@@ -123,6 +131,8 @@ def catalog_key(collection, item_ids=None):
 def collection_loads(process_graph):
     """Only canonical validated nodes can declare a trusted snapshot selection."""
     validate(process_graph)
+    if has_table_node(process_graph):
+        return {}
     result={}
     def visit(value):
         if isinstance(value,dict):

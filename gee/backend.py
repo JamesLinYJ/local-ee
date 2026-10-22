@@ -77,17 +77,11 @@ class Jobs(BatchJobs):
         if job_options:
             raise OpenEOApiException("首版资源限额由管理员统一配置", code="JobOptionsInvalid", status_code=400)
         # Freeze all referenced collection metadata and item versions in one transaction.
-        ids = set()
-        def scan(v):
-            if isinstance(v, dict):
-                if v.get("process_id") == "load_collection":
-                    cid = v.get("arguments", {}).get("id")
-                    if not isinstance(cid, str): raise ValueError("数据集 id 必须是字符串")
-                    ids.add(cid)
-                for x in v.values(): scan(x)
-            elif isinstance(v,list):
-                for x in v: scan(x)
-        try: scan(process)
+        try:
+            ids = {cid for cid, _selection in
+                   graph.collection_loads(process["process_graph"]).values()}
+            if any(not isinstance(cid, str) for cid in ids):
+                raise ValueError("数据集 id 必须是字符串")
         except ValueError as e: raise OpenEOApiException(str(e), code="ProcessGraphInvalid", status_code=400)
         internal=user.internal_auth_data or {}
         parent=internal.get('job_id') if internal.get('scope')=='script' else None

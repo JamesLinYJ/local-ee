@@ -68,3 +68,15 @@ Classifier.minimumDistance 的欧式、曼哈顿及 cosine 光谱角均围绕未
 独立参考使用不同的 Decimal 归一化、除法和开方路径（极值控制 1600 位精度），覆盖负／零点积、最大有限值／最小次正规值、±2^53 附近的相近方向、正比例缩放与精确角度并列。中等范围的欧式／L1 另用 NumPy 距离核对；训练／验证混淆矩阵与每类指标使用独立 Fraction 频数参考。收费在候选循环和评分构造前执行，原欧式成本不变；不同度量因运算成本而可能在不同输入规模触发同一共享预算。
 
 来源：[Classifier.minimumDistance](https://developers.google.com/earth-engine/apidocs/ee-classifier-minimumdistance)。本批为静态 S／C／N，没有采样、栅格 Image.classify、原生引擎 E 或 Google G。
+
+## 内联表格的 CSV 序列化
+
+官方 Export.table.toDrive 的 collection／selectors 被映射为本地持久批任务；toDrive 不向 Google Drive 传输数据。只接受已编译为静态 GeoJSON FeatureCollection 的值及 CSV，保留原有区域统计 CSV 分支；其他格式、云端目的地、maxVertices／priority 不以近似方式接收。表格在现有沙箱入口的受信任批任务代码中写出，图仅允许一个字面表输入直连 CSV sink，不能与栅格或回调混合。
+
+默认列是 system:index、按首次出现顺序收集的其他属性、.geo。system:index 优先使用属性，否则使用 Feature.id；缺失为空。选择器为不重复的已知列，保持用户顺序；.geo 写紧凑 GeoJSON，null 几何为空，普通同名属性拒绝以免覆盖。字符串原文保留，包括逗号、引号、Unicode、回车和换行，使用标准 CSV 引号规则；缺失／null 为空，布尔为小写 true／false，有限数值使用 JSON 表示，数组和对象用紧凑 JSON。上述列序、缺失值及嵌套单元表示均为本地政策，没有 Google CSV 文件对照。
+
+上限为 1000 行、含保留列的 256 列、行数×默认列数≤50000，紧凑 UTF-8 JSON 输入和 CSV 输出各≤1000000 字节、元数据容器深度≤32；选择少数列不会绕过全部输入校验或默认表格单元预算。既有 EE 表达式与进程图还有包含包装和 Unicode ASCII 转义的 1 MB 限制，故达到独立表值上限的输入未必能提交。几何只按明确的二维平面 WGS84 合同接受，不自动重投影或忽略不支持的坐标系／球面解释；bbox 与实际几何也独立校验；west>east 的跨反经线 bbox 明确拒绝，不宣称完整 RFC 7946 bbox 支持。
+
+最终化器仍通过统一物理结果解析器处理文件；选列时用 newline='' 保留单元内部原换行，允许既有文件预算内超过默认 128 KiB 的字段，之后恢复进程 CSV 字段限制。编码或 CSV 解析错误作为发布失败处理，不让它们逸出调度循环。示例和集成使用临时文件实际验证内容，但数据库、队列和脚本传输有替身；没有据此宣称原生隔离、浏览器、栅格 E 或 Google G 已通过。
+
+来源：[Export.table.toDrive](https://developers.google.com/earth-engine/apidocs/export-table-todrive)。本地目录／文件规则和预算不等于 Google Drive 的存储语义。

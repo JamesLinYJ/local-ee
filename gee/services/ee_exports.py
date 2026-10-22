@@ -21,8 +21,32 @@ def export_options(action, options, bands):
     if selectors is not None:
         selectors = selectors.split(',') if isinstance(selectors, str) else selectors
         if not isinstance(selectors, list) or not selectors or any(not isinstance(x,str) or x not in bands for x in selectors) or len(set(selectors)) != len(selectors):
-            raise UnsupportedEEError('Local regional CSV selectors must be distinct output band names: '+', '.join(bands))
+            raise UnsupportedEEError('Local CSV selectors must be distinct output column names: '+', '.join(bands))
     return {'file_prefix': prefix or '', 'selectors': selectors}
+
+
+def _select_csv(path, selectors):
+    if path.stat().st_size > 1048576:
+        raise ValueError('CSV exceeds 1 MB')
+    # The file is already bounded. Support a valid large single cell without
+    # leaving Python's process-wide CSV limit changed after finalization.
+    previous_limit = csv.field_size_limit(1048576)
+    try:
+        with path.open(encoding='utf-8', newline='') as stream:
+            source = csv.DictReader(stream)
+            if any(x not in (source.fieldnames or []) for x in selectors):
+                raise ValueError('Result columns do not match requested selectors')
+            rows = list(source)
+    except (csv.Error, UnicodeError) as error:
+        raise ValueError('Invalid UTF-8 CSV result') from error
+    finally:
+        csv.field_size_limit(previous_limit)
+    text = io.StringIO(newline='')
+    writer = csv.DictWriter(text, fieldnames=selectors, extrasaction='ignore')
+    writer.writeheader()
+    writer.writerows(rows)
+    with path.open('w', encoding='utf-8', newline='') as stream:
+        stream.write(text.getvalue())
 
 
 def finalize_export(root, row):
@@ -34,12 +58,7 @@ def finalize_export(root, row):
     if selectors is not None:
         for path in files:
             if path.suffix.lower() != '.csv': raise ValueError('Selectors require CSV output')
-            if path.stat().st_size > 1048576: raise ValueError('Regional CSV exceeds 1 MB')
-            source = csv.DictReader(io.StringIO(path.read_text()))
-            if any(x not in (source.fieldnames or []) for x in selectors): raise ValueError('Regional result columns do not match requested selectors')
-            rows = list(source); text = io.StringIO(newline='')
-            writer = csv.DictWriter(text, fieldnames=selectors, extrasaction='ignore'); writer.writeheader(); writer.writerows(rows)
-            path.write_text(text.getvalue())
+            _select_csv(path, selectors)
     prefix = context.get('file_prefix')
     if prefix:
         # Revalidate persisted options before they reach a physical operation.

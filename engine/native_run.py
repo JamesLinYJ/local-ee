@@ -50,11 +50,15 @@ def setup(log_dir):
 
 def run(job):
     os.umask(0o077)
+    from gee.table_graph import execute_table_graph
+    process = json.loads((job/'graph.json').read_text())
+    if execute_table_graph(process, job):
+        return
     from openeogeotrellis.deploy import run_graph_locally as runner
     runner.setup_environment=setup
     output=job/'out'
     try:
-        runner.run_graph_locally(json.loads((job/'graph.json').read_text()),output)
+        runner.run_graph_locally(process,output)
     finally:
         for path in output.rglob('*'):
             if path.is_file() and not path.is_symlink():

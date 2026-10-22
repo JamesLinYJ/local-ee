@@ -36,3 +36,28 @@ def test_export_finalizer_keeps_regular_file_boundary(tmp_path):
     with pytest.raises(ValueError):
         finalize_export(tmp_path,{'id':jid,'context':{'protocol':'earthengine','result_kind':'export','file_prefix':'result'}})
     assert outside.read_text()=='secret\n'
+
+
+@pytest.mark.parametrize('text', ['雪,"甲"\r\n保持回车\r和换行\n', 'x'*200000])
+def test_csv_finalizer_preserves_line_endings_and_bounded_large_cells(tmp_path,text):
+    jid=str(uuid.uuid4()); folder=tmp_path/'jobs'/jid/'out'; folder.mkdir(parents=True)
+    target=folder/'openEO.csv'
+    with target.open('w',encoding='utf-8',newline='') as stream:
+        writer=csv.writer(stream);writer.writerow(['note','unused']);writer.writerow([text,1])
+    prior=csv.field_size_limit()
+    finalize_export(tmp_path,{'id':jid,'context':{'protocol':'earthengine','result_kind':'export','selectors':['note']}})
+    assert csv.field_size_limit()==prior
+    try:
+        csv.field_size_limit(1048576)
+        with target.open(encoding='utf-8',newline='') as stream:
+            assert list(csv.reader(stream))==[['note'],[text]]
+    finally:csv.field_size_limit(prior)
+
+
+def test_invalid_csv_encoding_is_a_normal_publication_failure(tmp_path):
+    jid=str(uuid.uuid4()); folder=tmp_path/'jobs'/jid/'out'; folder.mkdir(parents=True)
+    (folder/'openEO.csv').write_bytes(b'note\n\xff\n')
+    prior=csv.field_size_limit()
+    with pytest.raises(ValueError,match='UTF-8 CSV'):
+        finalize_export(tmp_path,{'id':jid,'context':{'protocol':'earthengine','result_kind':'export','selectors':['note']}})
+    assert csv.field_size_limit()==prior

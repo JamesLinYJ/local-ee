@@ -1,8 +1,8 @@
 # GEE Python 兼容清单
 
-状态：2026-10-23，第二十一批持续实施，整体兼容目标尚未完成。
+状态：2026-10-23，第二十二批持续实施，整体兼容目标尚未完成。
 
-第二十一批 [验证报告](../../reports/gee-python-wave21.json)：macOS ARM64 的可移植 Python 测试 **1583 passed／3 skipped**，排除 4 项原生运行测试；前端 **11 passed**、TypeScript 与构建通过。较[第二十批](../../reports/gee-python-wave20.json)增加 48 项通过回归。本批未重跑原生测试；上一批受宿主执行权限限制的失败继续保留，不放宽隔离或计作通过。原生与真实数据验收继续按当前阶段延期。
+第二十二批 [验证报告](../../reports/gee-python-wave22.json)：macOS ARM64 的可移植 Python 测试 **1685 passed／3 skipped**，排除 4 项原生运行测试；前端 **11 passed**、TypeScript 与构建通过。较[第二十一批](../../reports/gee-python-wave21.json)增加 102 项通过回归，独立只读复核的表格相关测试 113 项通过。新增导出已在可信合成队列中真实写出并读回 CSV；数据库／进程启动／脚本传输使用替身，没有据此宣称原生沙箱、HTTP、浏览器或生产部署通过。原生与真实数据验收继续按当前阶段延期。
 
 S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎；N＝独立数值基准；G＝Google 同数据对照。静态数值求值和合成图测试分别说明，不能标成原生栅格 E。固定的 991 项签名、方法可见数量和定向探针计数均不能换算为全 API 兼容百分比。
 
@@ -36,6 +36,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] 有界静态 ConfusionMatrix 的构造／array／order／accuracy／kappa、内联 FeatureCollection.errorMatrix；显式标签顺序与有效行筛选串联分类评估，独立频数／机会一致概率参考。采样及分类器训练／预测不在该子集中。
 - [x] 有界 List 配对／转置／展开／重复／置换，以及单输出归约和 List.reduce(linearFit／linearRegression) 多输入行；列列表构造二次设计、双响应系数／RMS 和预测的闭式／残差正交性参考。
 - [x] 有限 minimumDistance 欧式／曼哈顿／cosine 光谱角的实际类均值训练、唯一最近类预测、schema／默认模式、内联要素分类及真实重代入混淆矩阵；独立训练／验证样本、均值／距离和误差指标参考。
+- [x] 有限内联 FeatureCollection 的本地 CSV 批导出；Python 官方 Task 与 JS Export.table wrapper 串联真实 CSV 写出／发布／读取的可信合成验证，保留 selectors、身份、元数据和权限。
 - [x] 有限栅格 linearRegression 的过原点／单位截距模型、1..4 响应、联合完整行、系数／RMS 数组；有限多数组波段选择／元数据，双响应分字段物化和独立 SVD／空间掩膜参考。
 - [x] 延迟单波段维度／改名元数据，保留数值与源／掩膜／类型边界；共享表达式标签、完整四系数／双响应预测、同日／重复观测及超限控制。
 - [x] 静态方阵 QR／LU／SVD 真实分解与因子字典组合；部分选主元、退化正交分解、资源预充，以及合成光谱混合／噪声丰度的独立分数参考。
@@ -307,3 +308,13 @@ npm --prefix web test
 测试验证了所选 metric 从构造到训练／预测不丢失，保留输入顺序、属性、几何及 ID，并将结果继续送入 errorMatrix、accuracy、consumersAccuracy、producersAccuracy 和 Fβ。官方 Python／JS SDK 一致性回归增至 65 项。可信进程内 SDK 测试的 OfflineGuard 记录网络入口尝试 0，这不等于内核隔离或运行流量抓包。
 
 本批 1583 passed／3 skipped，较第二十批增加 48 项通过；前端 11 项、TypeScript／临时目录构建通过。原 50 项探针仍为 45 编译／5 拒绝，完整固定 Python API 清单独立生成字节相同。证据为 S／C／独立静态 N，无栅格 E／Google G；未部署到运行服务。Mahalanobis、k>1、REGRESSION／RAW／概率、随机采样、自动 schema、Image.classify 仍未支持；内联分类要素的 CSV 任务导出也未接通，现有区域 CSV 合同不能代替这一能力。详见 [报告](../../reports/gee-python-wave21.json)。
+
+## 第二十二批：分类要素 CSV 批任务导出
+
+内联 FeatureCollection 的 Export.table.toDrive 现能从真实编译结果创建本地批任务，经 worker.prepare、既有受限批任务入口的 CSV 分支、worker.finish／最终化器和统一结果解析器完成文件生成、选列、命名、发布及读取。图严格限定为 local_ee_table 字面输入直连 save_result(CSV)，不初始化 Spark/JVM；同名 process_id／from_node／process_graph 属性保持数据，目录快照和物化不扫描它们。原有区域 CSV 与栅格分支保留，未开发新的隔离适配器。
+
+示例 27 实际串联三种最小距离度量、验证准确率与三个导出任务，每份 CSV 含六行，预测与上一批独立参考一致。Python 官方 Task 路径、JS runner 的对象／位置参数 wrapper、选择器列表／逗号字符串均有实际 CSV 内容检查；训练、任务状态、列表、取消、幂等重试、兄弟脚本及其他用户拒绝也有回归。这里数据库／队列和传输／进程启动由测试替身接管，不表示实际 PostgreSQL、HTTP、Seatbelt 或浏览器已运行。可信 SDK 与 JS 网络入口守卫为 0，不能等同流量抓包。
+
+默认 system:index、首次出现的属性、.geo 列及 null／嵌套 JSON 单元均采用明确[本地序列化政策](numerical-policies.md)。支持的几何限二维平面 WGS84；其他 CRS、geodesic=true、evenOdd=false 和 west>east 的跨反经线 bbox 明确拒绝，bbox 需包住该层实际几何，属性中同名字段仍是普通数据。1000 行／256 列／50000 默认单元及 UTF-8 输入输出各 1 MB 上限，与既有转义后 EE 表达式／进程图 1 MB 限制共同生效。
+
+复核发现并修复了 CRS 被忽略、bbox 未检查包含性、CSV 内部 CRLF 被归一化、大文本字段超过 Python 默认解析限制，以及 macOS 临时根别名被错误拒绝；对应边界均有回归。根别名校验仍由共享物理解析器拒绝 jobs／job／out 子符号链接，目标文件用独占且不跟随链接的方式创建。最终可移植 Python 1685／3，较上一批增加 102 项通过；前端 11、TypeScript／构建通过。原 50 探针和完整 Python API 目录不变，65 项 Python／JS SDK 结果一致性继续通过。报告区分 S／C、独立静态 N、实际 CSV 夹具执行与未运行的栅格 E／Google G；GeoJSON／SHP 等其他表格格式、云端目的地、采样／Image.classify、完整原生和生产验收仍未完成。

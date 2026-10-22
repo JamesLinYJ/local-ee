@@ -54,6 +54,13 @@ def get_capabilities():
         "level": "C",
         "numerical_equivalence_to_google_verified": False,
         "restrictions": [
+            ("Export.table.toDrive supports regional CSV and bounded static inline FeatureCollection CSV "
+             "through the existing isolated batch entry point, without a JVM for pure tables. "
+             "Limits include 1000 rows, 256 columns, 50000 default cells, 1 MB UTF-8 input/output "
+             "and existing serialized EE/graph caps. Selectors retain order; default index/property/geometry "
+             "columns, null/JSON cell encoding and planar WGS84 validation are explicit local policies "
+             "without Google CSV parity. Other table formats/cloud destinations/maxVertices/priority reject. "
+             "Trusted synthetic service/writer tests are not deployed/native-process/browser acceptance"),
             "Array.sort and Image.arraySort use same-rank keys with one selected non-singleton axis and matching axis length; all other key dimensions are singleton. Stable ascending ties are a local policy without Google comparison. Static typed arrays retain dtype within rank8/cells10000/shared50000 work, including unambiguous typed empty arrays and local scalar identity. Raster sorting requires explicit Float32 value/key cells, retains coupled slices and full value/key masks; rank1..8/cells64/500 graph cap. No raster-engine or Google acceptance",
             "ConfusionMatrix consumersAccuracy uses diagonal/row totals and producersAccuracy diagonal/column totals per pinned descriptions. fscore uses actual-row recall/predicted-column precision as an explicit inference. All return local finite rank1 Float64 arrays; Google shape/dtype parity is unverified. Finite positive beta, exact rational intermediates, undefined denominator rejection and existing counts/class/work limits apply",
             "Array.argmax returns the first row-major maximum's coordinate list, [] for rank0 and null for typed empty slices, within existing finite exact-domain/static budgets. Image.arrayArgmax supports one fixed rank1..8 array with explicit top-level Float32 cells, returning actual first-maximum coordinates under the full input mask. Raster coordinate values are locally Float32 integers, not verified Google Integer dtype equivalence; scalar/Double/bundle inputs reject. Work is precharged and64-cell/50000-work/500-node limits remain. No raster-engine or Google acceptance",

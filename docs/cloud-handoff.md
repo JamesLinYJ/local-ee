@@ -267,3 +267,11 @@ Linux 云端继续完成 SDK、纯编译、权限服务单测、前端和合成�
 cosine 先保留点积符号，再用精确有理数交叉乘积排名，不先转换 Float64 范数或 acos；独立 1600 位 Decimal 归一化参考覆盖负方向、极值、次正规输入、相近方向和正比例缩放。零范数查询／类中心在预测时拒绝，等距继续拒绝；这些属于尚无 Google 对照的明确本地政策。审查期间发现构造器原先验证 metric 却仍保存默认值，现已修复并增加 IR 保留和实际不同预测的回归。
 
 本机 ARM64 可移植 Python 1583 passed／3 skipped，另排除 4 项原生测试，本批未重跑；前端 11 passed、TypeScript／临时构建通过，未部署。固定 50 探针不变，完整 API 清单字节重现，Python／JS SDK 一致性增至 65 项。报告 `reports/gee-python-wave21.json` 记录 S／C／独立静态 N，E／G 未运行；账号、数据与 `.native` 未改。Mahalanobis、k>1、其他模式、采样／Image.classify 和内联分类要素 CSV 任务导出仍待实现，后续从远端最新 main 核对再继续，不能停留在旧交接分支。
+
+## 第二十二批内联表格 CSV
+
+2026-10-23 以已发布 main `e9b3b34c3489eb87d7c4454071577ab5824319c9` 为基线，接通内联 FeatureCollection／分类要素的 Export.table.toDrive(CSV)。复用现有持久任务、身份／父脚本、去重及物理文件发布合同；新增 local_ee_table 仅接受字面输入直连 CSV sink，两节点数据图不允许混合栅格／回调。engine/native_run.py 在原有受限批任务入口直接写 CSV，不启动 JVM，也不更换隔离适配器。原有区域 CSV／GeoTrellis 分支保持。
+
+新增示例 27 真实训练／预测后导出三个六行 CSV；Python Task 与 JS runner 对象／位置参数通过可信夹具实际写出、最终化并由 Jobs reader 读回。该夹具替代数据库、队列、传输和 NativeTask 启动，不是实际 HTTP／PostgreSQL／Seatbelt／浏览器验收。数据、账号、原生配置／进程和锁定依赖未改，未部署本批。CRS／bbox 包含性、保留数据字段、CSV 引号／内部换行／大字段、根目录别名及子 symlink 拒绝均有回归；默认列／null／嵌套单元属于明确本地政策，跨反经线 bbox 和其他格式仍拒绝。
+
+最终 ARM64 可移植 Python 1685 passed／3 skipped，另排除 4 项原生测试、未重跑；前端 11、TypeScript／临时构建通过。独立只读复核 113 项通过。50 探针保持 45 编译／5 拒绝，完整 991 项 Python 目录字节重现，65 项 Python／JS SDK 一致性继续通过。审计生成器首次在 macOS 默认 /var 临时根别名上错误拒绝，现经共享物理解析器后比较规范路径，独立重现已成功。详见 reports/gee-python-wave22.json，栅格 E／Google G／生产与私有真实数据验收继续单列。

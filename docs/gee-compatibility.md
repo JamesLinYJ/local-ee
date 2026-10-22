@@ -92,7 +92,7 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 | Algorithms.If | 静态条件，惰性编译选中分支 | S/C；不把影像对象当作静态布尔条件 |
 | 几何与地图 | 平面 WGS84 Geometry；Image/Collection/Feature.geometry；Map.centerObject、setCenter、addLayer | S/C；真实地图和 RGB 预览 N |
 | 影像导出 | toDrive 适配本地 GeoTIFF/NetCDF；region 精确掩膜、scale/crs、fileNamePrefix | 真实三角形区域 N；网页文件名回读 |
-| 区域统计与表格 | reduceRegion、单 FeatureCollection 包装导出 CSV、selectors 选择/排序输出波段 | 单景区域均值 N；不支持任意静态表格导出 |
+| 区域统计与表格 | reduceRegion、区域 CSV、有限内联 FeatureCollection／分类要素 CSV，selectors 选择和排序 | 区域单景均值 N；内联表格为真实 CSV 合成路径，≤1000 行／256 列／50000 单元及输入输出预算；本地序列化政策与真实部署验收分别记录 |
 | maxPixels | 正有限整数；允许常见 `1e13` 上限，但保守像素预检与本地 1 亿像素/波段上限同时生效 | 正/负测试与实际导出；不提高 CPU/内存/时间预算 |
 
 ## 网格、逐景与开销
@@ -189,3 +189,5 @@ GEE_AUDIT_DIR=/absolute/new/audit-dir .venv/bin/python -m scripts.check_ee_multi
 第二十批补静态 Array.sort 和显式 Float32 固定数组 Image.arraySort：按键稳定排序整个切片，保留 NDVI／日期对应关系、完整值与键掩膜及预算；四景质量筛选有独立分数参考。有限逐类 consumersAccuracy／producersAccuracy／fscore 继续准确登记本地返回 rank 与 Fβ 轴推断，未称 Google 完整等价。最终范围、误差及未运行项见 [第二十批报告](../reports/gee-python-wave20.json) 和 [数值政策](gee-python/numerical-policies.md)。
 
 第二十一批扩展静态 minimumDistance 的曼哈顿及 cosine 光谱角分类。三种度量均以真实未归一化类均值预测独立要素，保留 schema、元数据、训练混淆矩阵和逐类指标；固定样本准确率分别为 1/2、5/6、2/3，说明所选度量实际生效。cosine 用带符号精确交叉乘积比较角度，零范数查询／类中心在预测时拒绝，等距继续拒绝。限 k=1／CLASSIFICATION，无 Mahalanobis、采样、Image.classify、栅格 E 或 Google G；详见 [第二十一批报告](../reports/gee-python-wave21.json)。
+
+第二十二批接通内联 FeatureCollection 的 `Export.table.toDrive` 到本地 CSV 批任务，示例 27 串联三种度量的训练、验证、任务启动与真实 CSV 写出。Python 官方 Task 接口和既有 JS 导出 wrapper 均经可信合成控制验证；JS 覆盖对象与位置参数，传输／数据库／队列由测试替身接管，不是实际 HTTP／浏览器／Seatbelt 验收。新分支复用现有权限、结果解析器与受限批任务入口，未部署到运行服务。CSV 默认列、空值、嵌套值和几何规则是明确本地政策，不宣称 Google 文件逐字节相同；其他格式、云端目的地、maxVertices／priority 仍拒绝。范围和剩余项见 [第二十二批报告](../reports/gee-python-wave22.json) 及 [数值与序列化政策](gee-python/numerical-policies.md)。

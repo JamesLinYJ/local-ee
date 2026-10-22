@@ -1,0 +1,295 @@
+{
+  "architecture": {
+    "execution": "Existing NativeClient batch sandbox entry point is preserved. engine/native_run.py executes a trusted data-only CSV writer before any Spark/JVM initialization. No new isolation adapter or fallback.",
+    "graph": "Exactly local_ee_table literal input directly connected to save_result(CSV); mixed graphs/callbacks/URL or path inputs reject. Literal properties never participate in graph scanning or materialization.",
+    "lifecycle": "Existing backend job metadata, user/parent-script scope, idempotency, queue lifecycle, worker preparation/finalization, shared output resolver and result reader are reused.",
+    "modules": [
+      "gee/table_values.py",
+      "gee/table_geometry.py",
+      "gee/table_graph.py"
+    ]
+  },
+  "base_commit": "e9b3b34c3489eb87d7c4454071577ab5824319c9",
+  "change": "Inline FeatureCollection/classifier output can create local CSV batch tasks through official Python Task APIs and the existing JS Export.table wrapper; real CSV writing and reading are tested.",
+  "cleanup": {
+    "artifacts": [
+      {
+        "bytes": 1669087,
+        "files": 16,
+        "in_use_scan": "lsof_no_open_files",
+        "name": "gee-python-wave22-web",
+        "sha256": "a512b4fc2a38366565f307917799c890f3a26e9edf31d289c2772dacdd7acb67"
+      },
+      {
+        "bytes": 3292711,
+        "files": 1,
+        "in_use_scan": "lsof_no_open_files",
+        "name": "gee-python-wave22-inventory.json",
+        "sha256": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12"
+      }
+    ],
+    "status": "removed_and_absence_verified",
+    "total_bytes": 4961798
+  },
+  "date": "2026-10-23",
+  "local_evidence_sha256": {
+    "audit/gee-python-wave22/cleanup.json": "d21c2f7ee6cc310dab22e8a8ae726cc3759e23204d3a845f2de36f7ae64237d4",
+    "audit/gee-python-wave22/python-final.xml": "14f31655b3c453116c92215414c872a208d1b1bb7e689a245662bd8c17fe60c6",
+    "audit/gee-python-wave22/python-first.xml": "f2171ee7b815d3173bb0ff72cc868165c23259d16cafd5b6227d4b7bee5e6aa2",
+    "audit/gee-python-wave22/python-verified.xml": "2541885544fca1c0731ba20eb3d0e54c87be3127dffa42e7471f65eda8dd1d03",
+    "audit/gee-python-wave22/web-stage-manifest.json": "a512b4fc2a38366565f307917799c890f3a26e9edf31d289c2772dacdd7acb67",
+    "audit/gee-python-wave22/workflow-root-alias-failure.json": "7eeff327a3d251912c99d6af48b6698de521fed9ed362bdd58532051df2a95eb",
+    "audit/gee-python-wave22/workflow.json": "b420ed321aa21c1223cc9e8c6c6d4b5054e142c641b9fdcab07b5be4a193bbf8"
+  },
+  "not_supported": [
+    "Non-CSV table formats, Google Drive/Cloud Storage/assets as actual destinations, maxVertices and priority.",
+    "Raster Image.classify, sampling, Mahalanobis, other minimum-distance modes/k and unimplemented EE algorithms remain separate gaps.",
+    "Full RFC 7946 antimeridian bbox semantics, reprojection or spherical geometry interpretations."
+  ],
+  "platform": {
+    "architecture": "arm64",
+    "earthengine_api": "1.7.49",
+    "node": "v24.19.0",
+    "os": "Darwin",
+    "python": "3.11.16"
+  },
+  "preservation": {
+    "accounts_private_data_native_config_modified": false,
+    "dependency_locks_modified": false,
+    "deployed": false,
+    "new_vm_container_or_database_created": false,
+    "runtime_services_restarted": false
+  },
+  "primary_sources": [
+    "https://developers.google.com/earth-engine/apidocs/export-table-todrive"
+  ],
+  "schema": "local-ee-python-compat-wave22/v1",
+  "serialization_policy": {
+    "combined_limits": "Existing EE expression and process graph caps also count JSON envelope and ASCII Unicode escaping. Smaller tables can reject; renderer boundary tests do not establish public acceptance at every individual maximum.",
+    "default_columns": "system:index first (property wins, otherwise Feature.id), then properties in first-seen order, .geo last.",
+    "geometry": "Only valid finite planar 2D WGS84 GeoJSON. Named EPSG:4326/null/absent CRS accepted at collection/feature/geometry levels. Other CRS, geodesic=true, evenOdd=false and west>east antimeridian bboxes reject. Provided bboxes must enclose actual nonempty geometry at their layer; no coordinate/bbox rewriting.",
+    "google_csv_parity": "not_verified; default order/null/nested cell policies are local",
+    "limits": {
+      "columns_including_reserved": 256,
+      "compact_utf8_json_bytes": 1000000,
+      "csv_utf8_bytes": 1000000,
+      "metadata_container_depth": 32,
+      "property_name_characters": 256,
+      "rows": 1000,
+      "rows_times_default_columns": 50000
+    },
+    "values": "Strings verbatim; missing/null blank; booleans lowercase; finite numerics JSON; list/dict compact UTF-8 JSON; geometry compact JSON or blank. Standard CSV quoting and CRLF record terminators."
+  },
+  "source_files_sha256": {
+    "AGENTS.md": "ccd5f19fadeb64897fa41e2a218e657dad34317df7a7ca41a856380e180e403c",
+    "GOAL.md": "382d955d55e81cb5d72ae406236496418aca625c709acf18df8e3733ce31f5d9",
+    "docs/architecture.md": "ff28eacedad60b5e648d3772a003433596d32759255276289db05379d9861856",
+    "docs/cloud-handoff.md": "7bfd437e5cbf084830881c0c419f49559e7effd32632f617ca9870ec00f40671",
+    "docs/gee-compatibility.md": "0e5168edb1136b8bcc9b0be3603fa81eb8c9556703c7aab64a89452d2b1f80c5",
+    "docs/gee-python/list.md": "1c736f5a75c6883db4204ff8d8110aeb6b0e56156a5841fd8b825df5220cb463",
+    "docs/gee-python/numerical-policies.md": "38df3edf5d0fdc59c1dfaefca2012f1a3803d742447e0a38f86d9ead57d8c686",
+    "engine/native_run.py": "64a65bbe2af9d2449dc3c844eff659185cc8278e84ba2b1a26be0183575af1ce",
+    "examples/27_GEE_python_classification_csv.py": "f92d84fcfa3cb49b1b90484b1a609d392b5b62c5b8c31c4a457893ae2ecb03a1",
+    "gee/backend.py": "720e51abd527eaf72d269f7741b21ba27ce8a74d1ea0c62efa10d5d10f2ea02a",
+    "gee/compat/earthengine/capabilities.py": "9bdf2365a80a60ff31f90f8de1357a3defc813a0073eb2bd51d2083defe99009",
+    "gee/graph.py": "e57618c07bbf30afec81cae8adfbaf18efc2ec12b5acbcb68c188d9cac2f17a2",
+    "gee/local_processes.py": "2b5b4d3dd29fcd5abe16a586fa1e36d54420992bac1f1b7e8db14afefcf1f288",
+    "gee/services/ee.py": "a5cdd2949135c74d75e62a58e7ee4a1239c74a0f75177091f556f996baa1cad5",
+    "gee/services/ee_exports.py": "048ddc9051b0c495a6d36d4b2c47d14d86cdfdb0cc17a53a6baee8dfb0f75c11",
+    "gee/table_geometry.py": "81a694b3cd7c12471ab718eb24dccab231336e94a248ec9a153f59e16bc5f3e3",
+    "gee/table_graph.py": "0ae8d28056ee9e354607300e18a4e5fc1dcee4db7cd353588d8781b253b5c23b",
+    "gee/table_values.py": "eff54adbabc3c140a30e327ab01fb15e4097e41680813d5cd2b52ad0b250bc07",
+    "tests/table_export_support.py": "50ff6719cee792e065addf3525819b59f6865f1779c74df556a7bb612ad54bb0",
+    "tests/test_ee_exports.py": "10e50e9d360bf2658a04b3b371695f7c8d540fb76fa51da72151bb08f497c487",
+    "tests/test_ee_table_export_examples.py": "5b092637ec2a8b9aec14b8986cab3a1844299f34d043b744ef62d1db17f071f7",
+    "tests/test_ee_table_export_workflow.py": "f10f21c90223e9b617e7b6bd98dfcf572e9043d039e05319627073b5d9d0b637",
+    "tests/test_table_graph.py": "115f6150e1dfc51a2894fd6ca309bcae5ab4d33e71cdc685b09c3d923c9739d0",
+    "tests/test_table_values.py": "3696a38ce6534e7a51c041f93132bbc8ea640ec912520d73de11c2bc4ff59101"
+  },
+  "status": "partial_goal_in_progress",
+  "validation": {
+    "acceptance_not_established": [
+      "PostgreSQL-backed queue execution",
+      "NativeClient/Seatbelt kernel isolation",
+      "Actual HTTP/browser workbench session",
+      "Deployed running service",
+      "Private real imagery and whole-platform production acceptance"
+    ],
+    "evidence_levels": {
+      "C": "passed_shared_compiler_and_canonical_graph_validation",
+      "E_raster_engine": "not_run",
+      "G_google": "not_run",
+      "N": "independent_classification_references_and_CSV_content_controls",
+      "S": "passed_actual_Python_SDK_and_JS_runner_serialization",
+      "trusted_csv_execution": "real_files_through_worker_prepare_native_run_finish_result_reader"
+    },
+    "frontend_build": "passed_in_temporary_directory_without_deployment",
+    "frontend_tests": 11,
+    "full_python_inventory": {
+      "algorithms": 991,
+      "callables": 1797,
+      "classes": 48,
+      "parameters": 2451,
+      "sha256": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12",
+      "status": "byte_identical_regeneration"
+    },
+    "independent_review": {
+      "closures": [
+        "Non-WGS84 CRS/EE geometry semantics no longer silently ignored.",
+        "All geometry/feature/collection bboxes enclose actual extents; antimeridian rejection documented.",
+        "CSV finalization preserves cell CRLF and bounded >128 KiB fields; restores CSV field limit and reports encoding/parse failures normally.",
+        "Canonical root alias passes only after shared physical boundary checks; job/output/target symlinks and collisions reject.",
+        "Original mixed-graph negative-test monkeypatch leak was fixed before final validation."
+      ],
+      "focused_passed": 113,
+      "remaining_code_findings": 0
+    },
+    "native_runtime_cases": {
+      "excluded": 4,
+      "rerun_this_wave": false,
+      "status": "deferred_by_current_phase"
+    },
+    "new_passing_tests_over_base": 102,
+    "new_test_groups": {
+      "test_ee_table_export_examples": 7,
+      "test_ee_table_export_workflow": 2,
+      "test_table_graph": 28,
+      "test_table_values": 62
+    },
+    "python": {
+      "errors": 0,
+      "failures": 0,
+      "passed": 1685,
+      "skipped": 3,
+      "tests": 1688
+    },
+    "python_command": ".venv/bin/python -m pytest -q --ignore=tests/test_native_runtime.py --junitxml=audit/gee-python-wave22/python-verified.xml",
+    "python_js_serializer_parity_cases": 65,
+    "targeted_probe": {
+      "compiled": 45,
+      "fixture_check": "unchanged",
+      "rejected": 5,
+      "serialized": 50
+    },
+    "test_doubles": [
+      "Database storage and batch queue state",
+      "NativeTask process launch/completion input",
+      "Python local task/value transport; JS bridge child captures payloads for real-service replay"
+    ],
+    "typescript": "passed"
+  },
+  "workflow": {
+    "actions": [
+      "evaluate",
+      "export_table",
+      "start",
+      "status"
+    ],
+    "created_tasks": 3,
+    "metrics": {
+      "cosine": {
+        "accuracy_reference": "2/3",
+        "bytes": 559,
+        "file": "classification_cosine.csv",
+        "geometry_preserved": true,
+        "header": [
+          "system:index",
+          "sample_id",
+          "landcover",
+          "predicted",
+          "nir",
+          "red",
+          ".geo"
+        ],
+        "predictions": [
+          1,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "rows": 6,
+        "sha256": "a74d6a3b8ce7c6149e03420fa33b04176f01e3f2aeb2bc9eb96af6048d6d1ac7",
+        "status": "finished",
+        "task_type": "EXPORT_FEATURES"
+      },
+      "euclidean": {
+        "accuracy_reference": "1/2",
+        "bytes": 559,
+        "file": "classification_euclidean.csv",
+        "geometry_preserved": true,
+        "header": [
+          "system:index",
+          "sample_id",
+          "landcover",
+          "predicted",
+          "nir",
+          "red",
+          ".geo"
+        ],
+        "predictions": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        "rows": 6,
+        "sha256": "5f2094251b55a533dc55bcfbff2a81bf9c7f3533dff0ffe9b000c2abcba53c4b",
+        "status": "finished",
+        "task_type": "EXPORT_FEATURES"
+      },
+      "manhattan": {
+        "accuracy_reference": "5/6",
+        "bytes": 559,
+        "file": "classification_manhattan.csv",
+        "geometry_preserved": true,
+        "header": [
+          "system:index",
+          "sample_id",
+          "landcover",
+          "predicted",
+          "nir",
+          "red",
+          ".geo"
+        ],
+        "predictions": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "rows": 6,
+        "sha256": "96816bd40661757837f7dd72bc78937c56d391fb5856c678daa084dfb64d38a4",
+        "status": "finished",
+        "task_type": "EXPORT_FEATURES"
+      }
+    },
+    "network": {
+      "attempt_count": 0,
+      "attempts_by_operation": {},
+      "instrumented_operations": [
+        "local_transport.request",
+        "socket.create_connection",
+        "socket.getaddrinfo",
+        "socket.gethostbyaddr",
+        "socket.gethostbyname",
+        "socket.gethostbyname_ex",
+        "socket.socket.connect",
+        "socket.socket.connect_ex",
+        "socket.socket.sendmsg",
+        "socket.socket.sendto"
+      ],
+      "mode": "deny_and_count_python_network_and_local_transport_entry_points",
+      "scope": "Trusted in-process SDK probes only; not packet capture or kernel isolation"
+    },
+    "schema": "local-ee-table-export-workflow/v1",
+    "scope": "Trusted in-process service/worker/CSV execution with database, queue and task launch test doubles; no native sandbox, browser, HTTP deployment or raster engine acceptance.",
+    "source_example": "examples/27_GEE_python_classification_csv.py",
+    "start_calls": 3
+  }
+}

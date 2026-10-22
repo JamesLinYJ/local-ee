@@ -5,6 +5,7 @@ import math
 LOCAL_PROCESSES = frozenset({
     "local_ee_to_double", "local_ee_to_float", "local_ee_constant_on_grid",
     "local_ee_unmask", "local_ee_drop_single_time", "local_ee_reduce_bands",
+    "local_ee_table",
 })
 CUBE = {"type": "object", "subtype": "raster-cube"}
 EE_BAND_REDUCERS = frozenset({"mean", "median", "min", "max", "sum", "count", "first", "last", "sd"})
@@ -12,6 +13,8 @@ EE_BAND_REDUCERS = frozenset({"mean", "median", "min", "max", "sum", "count", "f
 
 def validate_local_process(name, arguments, depth):
     """Extensions only accept bounded literals and canonical top-level cubes."""
+    if name == "local_ee_table":
+        raise ValueError("Inline tables require a complete top-level table-only CSV graph")
     if not isinstance(arguments, dict):
         raise ValueError("Local EE extensions require an argument object")
     required = {"data"}
@@ -41,6 +44,9 @@ def validate_local_process(name, arguments, depth):
 
 
 def process_spec(name):
+    if name == "local_ee_table":
+        from .table_graph import table_process_spec
+        return table_process_spec()
     if name in {"local_ee_to_double", "local_ee_to_float"}:
         return type_conversion_spec(name)
     descriptions = {
