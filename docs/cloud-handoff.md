@@ -58,6 +58,16 @@ inner 输出匹配对 Feature，内部保留真实 Image；Feature 属性和同�
 
 本批锁定依赖、全套 Python **894 passed／7 skipped**、前端 **11 passed**、TypeScript／构建均通过；比第四批增加 64 项通过，Python／JS 官方 SDK 实际编译对照增至 21 项。固定全量 Python 清单独立进程字节重现通过；原 50 探针仍为 50 S／45 C／5 拒绝。数值证据使用独立测试图求值器，不标为实际栅格 E 或 Google G。详见 `reports/gee-python-wave5.json` 与 `docs/gee-python/list.md`。
 
+## 第六批逐像元 linearFit
+
+以第五批提交 `9b5ab413c070635f93ef8a9030e4d893b4095043` 为基线，将 linearFit 从内联表格扩展到有限 ImageCollection。规范模块 `raster_linear_fit.py` 用既有 Pixel IR 实现 x/y 完整行删除和两遍中心化 OLS，输出 scale／offset；n<2 或 x 方差为零时两者均掩膜。Collection 与显式 ImageSequence 支持 1..8 帧，保留同日和重复观测的身份／权重，输出 footprint 为各景并集，系数不继承某景日期。
+
+仅接受两个同名同序标量波段、binary NoData 和 parallelScale=1；不忽略内存提示，非默认值明确拒绝。共享工作／500 节点和既有 Float32 callback 约束保留，显式不支持的 Float64 组合拒绝。通用多变量／多响应 linearRegression 仍未实现，原 50 探针仍为 50 S／45 C／5 拒绝。
+
+示例 12 与版本化 `ee-raster-linear-trend-v1.json` 从每景真实时间生成相对 day，绑定本地网格、显式 toFloat，拟合并预测目标日期。闭式分数再经独立 numpy.linalg.lstsq 复核，涵盖同日两景、缺测、常数信号、低样本及范围外采样点。审查指出参考器曾未应用逐景空间范围：测试数据已改为一致的重叠覆盖，参考器在 grid 存在时施加查询 extent 与逐景多边形，另有点在 bbox 内但在三角景界外的控制；不能通过忽略几何来制造数值通过。
+
+第六批锁定依赖、全套 Python **907 passed／7 skipped**、前端 **11 passed**、TypeScript／构建通过，较上一批增加 13 项通过；Python／JS SDK 实际编译一致性增至 22 项。完整 Python API 清单独立进程字节重现通过。证据见 `reports/gee-python-wave6.json`；N 是独立采样点求值，不标为实际栅格 E、分数边界权重或 Google G。隔离／原生平台／私有数据验收继续按用户要求延期。
+
 ## 获取正确状态
 
 - 仓库：https://github.com/JamesLinYJ/local-ee

@@ -1,8 +1,8 @@
 # GEE Python 兼容清单
 
-状态：2026-10-22，第五批持续实施，整体兼容目标尚未完成。
+状态：2026-10-22，第六批持续实施，整体兼容目标尚未完成。
 
-第五批 [验证报告](../../reports/gee-python-wave5.json)：Linux Python **894 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [830 passed／7 skipped](../../reports/gee-python-wave4.json)，本批增加 64 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
+第六批 [验证报告](../../reports/gee-python-wave6.json)：Linux Python **907 passed／7 skipped**，前端 **11 passed**、TypeScript 与构建通过；上一批为 [894 passed／7 skipped](../../reports/gee-python-wave5.json)，本批增加 13 项通过回归。7 项平台／配置跳过为 3 项 opt-in JVM/Spark 检查及 4 项 macOS Seatbelt 检查；它们不构成原生平台验收。
 
 S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎；N＝独立数值基准；G＝Google 同数据对照。静态数值求值和合成图测试分别说明，不能标成原生栅格 E。固定的 991 项签名、方法可见数量和定向探针计数均不能换算为全 API 兼容百分比。
 
@@ -30,8 +30,9 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] 唯一 maxDifference 与标量条件的 And 组合；最近前／后观测筛选、inner 匹配对和 Feature.map → ImageCollection 计算链路。
 - [x] 有限静态 Array 的逐元素算术、slice／project／repeat／cat、单输出归约与累积、对称特征分解及 Cholesky；闭式 PCA 协方差、投影和重建验证。
 - [x] 固定形状单数组波段的 Image.toArray、布局、矩阵乘法与单输出归约；静态 PCA 基投影到本地影像像素图，独立核对分量、重建和整体掩膜。
+- [x] 有限 ImageCollection.reduce(linearFit) 逐像元斜率／截距，完整行缺测删除、中心化 OLS、低样本／退化掩膜和同日多景身份；时间属性串联趋势预测，独立 SVD 参考。
 - [ ] 每一签名／参数组合的 S／C、适用的独立 N，以及负向、缺测、边界验收；E 按现有环境可用条件单独记录。
-- [ ] 动态形状／多数组波段和其余 Image.array*、逐像元回归、分类训练／预测、矢量／空间和多重／歧义度量 Join、邻域及高级时序。
+- [ ] 动态形状／多数组波段和其余 Image.array*、多变量／多响应逐像元回归、分类训练／预测、矢量／空间和多重／歧义度量 Join、邻域及高级时序。
 - [ ] 后续阶段：Linux 执行／隔离适配、macOS Seatbelt、ARM64 JNI 和本机真实数据验收；当前阶段延期。
 - [ ] Google 同数据数值比较按可取得条件另记；本机真实完整项目验收延期。
 
@@ -49,11 +50,12 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 | 固定形状栅格数组 | S/C；Image.toArray、arrayFlatten／Project／Transpose／Slice／Get／Length(s)／Reduce 和 matrixMultiply，同形 add／subtract／multiply／divide；独立合成图 N 验证来源、分量、重建及整体掩膜 | 单数组波段，<=8 轴／每轴 64／共 64 单元，非空维，共享 50000 工作步和 500 图节点；静态坐标、有限归约；Float32 callback 限制保留，动态形状／广播／直接数组栅格导出拒绝；无 E/G |
 | 内联 FeatureCollection | S/C；size／first／toList／map／filter／limit／sort／merge／iterate／aggregate_array，属性保留有限 Array 和具体 Image；同类 Image 回调可接 ImageCollection 计算 | <=1000 要素，共享工作预算；Feature／Image 混合回调拒绝；merge 需要显式 ID 并加 1_／2_ 前缀；不含远程要素集或矢量引擎 |
 | 表格回归 | S/C 与独立 N；linearFit、linearRegression，多响应系数／RMS；缺失／null 行跳过；秩不足／n<=numX 返回 null | <=1000 行、<=32 个平面属性列，共享预算；无权重；不支持栅格回归或 G |
+| 栅格 linearFit | S/C；完整 x/y 行、中心化两遍 OLS，输出 scale／offset；独立闭式与 NumPy SVD N 核对系数、重复景权重、缺测、空间范围及目标日期预测 | 1..8 帧，恰两个同名同序标量波段；binary NoData 掩膜，n<2／x 方差为零则两个输出均掩膜；parallelScale 仅 1，仍受 Float32 callback／工作／图预算约束；无实际 E/G，非通用栅格 linearRegression |
 | Number／String | S/C；%s／%d／%f、有限符号及填充；数值 String 构造与三个基础方法；指数拼接预算负控 | Number 按 Python 最短十进制拼写半入舍入，String 按 Python code point；科学／十六进制格式等拒绝；本地政策无 G |
 
 List.contains／distinct 对嵌套数组使用显式的有界比较，避免 NumPy 隐式真值／广播错误。标量 int／float 按数值比较，bool 单独区分；Array 的 dtype／形状／元素比较仍是未做 Google 对照的本地策略。step 序列严格检查实际生成的 Float64 值，不向端点外扩展；例如 0、0.1、0.2 后的 0.30000000000000004 超过 end=0.3，因此省略，该舍入策略尚无 G 证据。
 
-另有 21 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky 和逐元素算术，以及两条实际栅格数组投影／归约计算图。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容。
+另有 22 项 Python／JS 固定 SDK 实际序列化后进入共享编译器的结果一致性回归，覆盖 count 序列、Dictionary、矩阵、notNull、Join（含 inner 和复合时间条件）、几何、表格回归、要素遍历、格式化及字符串构造；包括静态数组布局／归约、特征分解、Cholesky 和逐元素算术，以及栅格数组投影／归约和逐像元 linearFit 计算图。这是保留共享后端行为的检查，不表示已完成 JavaScript 全量兼容。
 
 第四批 `examples/10_GEE_python_synthetic_pca.py` 与 `tests/fixtures/ee-pca-table-v1.json` 串联有限静态表格的中心化、样本协方差、对称特征分解、投影及重建。四条二维观测的均值为 `[2,1]`，协方差为 `[[4/3,2/3],[2/3,2/3]]`，特征值为 `1±sqrt(5)/3`；闭式向量与得分按 1e-14 容差核对，重建还提供与符号选择无关的验证。S/C/N 已通过，网络入口尝试为 0；无栅格 E 或 G。
 
@@ -66,6 +68,10 @@ eigen 限非空二维实对称矩阵，Cholesky 另需正定，输出下三角 L
 栅格数组在编译器内部保持独立类型，只有 arrayFlatten／arrayGet／arrayLength 等标量输出进入既有后端；不将单元伪装成公开影像波段。数组常量的波段名为 constant，普通 scalar Image.toArray 输出 array；已有数组再次 toArray 保留原名，此命名政策尚无 G 对照。固定形状的 arrayReduce 支持 sum／mean／min／max／count／median／sampleStdDev；fieldAxis、多输入输出归约及单元素样本标准差拒绝。arrayProject 仅支持升序保留轴、删除轴长度恰为 1；slice/get 仅支持数值或所列纯算术常量 Image 坐标，动态／掩膜坐标拒绝，slice 产生空轴时拒绝。rank0 可经空坐标 arrayGet 取值，rank0 flatten／arrayLengths 仍拒绝。
 
 静态 If 分支、Dictionary 缺键默认值和 Image 显式转换均保留数组影像类型；重命名、属性设置／读取／复制仍针对逻辑单波段。未支持的影像算子遇到数组类型时明确失败，类型不能泄漏为 JSON 或被当作静态真值。ImageCollection.toArray、动态数组形状、多数组波段、广播、逐像元特征分解及直接数组影像导出仍待实现。
+
+第六批 `examples/12_GEE_python_synthetic_linear_trend.py` 从每景实际 system:time_start 求相对日数，绑定为本地网格常量、显式转为 Float32，与 signal 组成两列。linearFit 保留同日不同 ID 的每次观测，任一列 NoData 时只删除该像元的那一行；以两遍中心化 OLS 求 scale／offset，低样本或零方差输出均为 NoData。系数不继承任一原始观测日期，预测显式标注 target_time_millis 和样本版本。该接口只支持 binary NoData 模型，不宣称分数权重或完整 dtype 提升；parallelScale 非默认值明确拒绝。
+
+`tests/fixtures/ee-raster-linear-trend-v1.json` 的四景包含两个同日观测。闭式系数分别为 `(55/19,31/19)`、`(27/14,17/7)`，第 2 日预测为 `141/19`、`44/7`；独立 numpy.linalg.lstsq 验证了参考、行数及秩。直接数值控制还覆盖重复观测对拟合权重的实际影响、常数信号、低样本、零方差和范围外的完整行删除。测试求值器在提供 grid 时真实应用源查询范围、逐景多边形和常量波段掩膜；对多边形外但原始数组有限的样本也必须掩膜。S/C/N 已通过、网络入口尝试为 0，N 为采样点求值，不能当作原生栅格 E、分数边界权重或 Google G。
 
 版本化样本 `tests/fixtures/ee-table-workflow-v1.json` 和可运行示例 `examples/08_GEE_python_synthetic_regression.py` 串联有效值筛选、表格 OLS、矩阵预测和格式化。手算系数为 0.5／2.5、残差 RMS 为 sqrt(0.5)、第 3 日预测为 8。它是静态合成表格工作流，不是实际影像、栅格 E 或 Google 对照。
 

@@ -107,8 +107,27 @@ def callback(graph, parameters):
     return out
 
 
-def evaluate_graph(result, arrays):
-    """Rasters have [time,band,pixel] axes until time is reduced."""
+def evaluate_graph(result, arrays, grid=None, source_geometries=None):
+    """Independent sample-vector reference; grid gives mask sample centers.
+
+    Rasters have [time,band,pixel] axes until time is reduced. With grid, source
+    extents and optional per-item geometries mask the supplied sample values.
+    Point masks do not establish native/fractional-boundary raster acceptance.
+    """
+    def positions_for(data):
+        positions = np.asarray(grid, dtype=float)
+        if positions.shape != (data.shape[-1], 2) or not np.isfinite(positions).all():
+            raise AssertionError("Spatial reference needs one finite grid center per sample")
+        return positions
+
+    def polygon_mask(geometry, positions):
+        from shapely.geometry import Point, shape
+
+        polygon = shape(geometry)
+        return np.array([polygon.covers(Point(*position)) for position in positions])
+
+    if source_geometries is not None and grid is None:
+        raise AssertionError("Per-item source geometries require sample grid centers")
     values = {}
     for key, node in result["process_graph"].items():
         p, a = node["process_id"], node["arguments"]
@@ -118,6 +137,15 @@ def evaluate_graph(result, arrays):
             # the STAC link order. Compiler chooses first/last accordingly.
             ids = sorted(a["_gee_item_ids"])
             data = np.stack([np.stack([arrays[i][b] for b in a["bands"]]) for i in ids])
+            if grid is not None:
+                positions = positions_for(data)
+                extent = a["spatial_extent"]
+                inside = ((positions[:,0] >= extent["west"]) & (positions[:,0] <= extent["east"])
+                          & (positions[:,1] >= extent["south"]) & (positions[:,1] <= extent["north"]))
+                data = np.where(inside, data, np.nan)
+                if source_geometries is not None:
+                    masks = np.stack([polygon_mask(source_geometries[i], positions) for i in ids])
+                    data = np.where(masks[:,None,:], data, np.nan)
             v = (data, a["bands"], True)
         elif p == "filter_bands":
             data,names,timed = cube(a["data"])
@@ -144,6 +172,19 @@ def evaluate_graph(result, arrays):
         elif p == "mask":
             data,names,timed=cube(a['data']); mask,_,_=cube(a['mask'])
             v=(np.where(mask,np.nan,data),names,timed)
+        elif p == "local_ee_constant_on_grid":
+            data,names,timed = cube(a["data"])
+            # A constant's validity is independent of template NoData; the
+            # separate polygon process supplies its physical footprint.
+            v = (np.full(data.shape, a["value"], dtype=np.float64), names, timed)
+        elif p in {"local_ee_to_float", "local_ee_to_double"}:
+            data,names,timed = cube(a["data"])
+            dtype = np.float32 if p == "local_ee_to_float" else np.float64
+            v = (data.astype(dtype).astype(np.float64), names, timed)
+        elif p == "mask_polygon":
+            data,names,timed = cube(a["data"])
+            inside = polygon_mask(a["mask"], positions_for(data))
+            v = (np.where(inside, data, np.nan), names, timed)
         else: raise AssertionError(p)
         values[key] = v
         if node.get("result"): result_value = v

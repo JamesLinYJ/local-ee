@@ -53,6 +53,7 @@ const prior = ee.ImageCollection(ee.Join.saveBest('match', 'delta').apply(c, c,
     leftField:'system:time_start', rightField:'system:time_start'}),
     ee.Filter.greaterThan({leftField:'system:time_start', rightField:'system:time_start'}))));
 const values = {
+  rasterLinearFit: c.select(['red','nir']).reduce(ee.Reducer.linearFit()),
   rasterProjection: ee.Image(ee.Array([[1,2],[3,4]])).matrixMultiply(
     c.first().select(['red','nir']).toArray().toArray(1))
     .arrayProject([0]).arrayFlatten([['p1','p2']]),
@@ -114,6 +115,7 @@ def parity_values():
             leftField="system:time_start", rightField="system:time_start"),
             ee.Filter.greaterThan(leftField="system:time_start", rightField="system:time_start"))))
     py = {
+        "rasterLinearFit": c.select(["red","nir"]).reduce(ee.Reducer.linearFit()),
         "rasterProjection": ee.Image(ee.Array([[1,2],[3,4]])).matrixMultiply(
             c.first().select(["red","nir"]).toArray().toArray(1))
             .arrayProject([0]).arrayFlatten([["p1","p2"]]),
@@ -152,7 +154,7 @@ def parity_values():
                                  "bestDelta", "tableCoefficients", "featureSum", "formatted",
                                  "stringConversion", "innerBands", "compoundDelta",
                                  "arrayLayout", "arrayEigen", "arrayCholesky", "arrayArithmetic",
-                                 "rasterProjection", "rasterReduction"])
+                                 "rasterProjection", "rasterReduction", "rasterLinearFit"])
 def test_python_and_javascript_reach_the_same_local_result(parity_values, case):
     javascript, python, metadata, items = parity_values
     left = compile_expression(javascript[case], metadata, items)

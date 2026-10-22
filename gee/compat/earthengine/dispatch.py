@@ -34,6 +34,11 @@ def invoke(translator, name, arguments):
         return invoke_table_reducer(translator, name, a)
     if name == "Collection.reduceColumns":
         return invoke_reduce_columns(translator, name, a)
+    if (name == "ImageCollection.reduce" and isinstance(a.get("reducer"), TableReducer)
+            and a["reducer"].name == "linearFit"):
+        from .raster_linear_fit import invoke_raster_linear_fit
+
+        return invoke_raster_linear_fit(translator, name, a)
     if isinstance(a.get("reducer"), TableReducer) and name in {
         "Image.reduce", "Image.reduceRegion", "ImageCollection.reduce",
     }:

@@ -1,0 +1,33 @@
+{
+  "schema": "local-ee-synthetic-raster-linear-trend/v1",
+  "collection_id": "sentinel-2-l2a",
+  "base_millis": 1704067200000,
+  "day_millis": 86400000,
+  "target_day": 2,
+  "extent": [0, 0, 5, 1],
+  "pixel_centers": [
+    [0.5, 0.5],
+    [1.5, 0.5],
+    [2.5, 0.5],
+    [3.5, 0.5],
+    [4.5, 0.5],
+    [5.5, 0.5]
+  ],
+  "rows": [
+    {"id": "scene-day-0", "day": 0, "signal": [1, 2, null, null, 5, 7]},
+    {"id": "scene-day-1-a", "day": 1, "signal": [4, null, null, null, 5, 7]},
+    {"id": "scene-day-1-b", "day": 1, "signal": [6, 5, null, 9, 5, 7]},
+    {"id": "scene-day-3", "day": 3, "signal": [10, 8, null, null, 5, 7]}
+  ],
+  "reference_method": "Closed-form hand reference: pixel 0 has scale=55/19, offset=31/19, prediction=141/19; pixel 1 has scale=27/14, offset=17/7, prediction=44/7; pixel 4 has (scale, offset, prediction)=(0,5,5). Pixels 2 and 3 have no fit because they have zero and one complete rows; pixel 5 is outside the source extent and has no rows. Independently verify every pixel by retaining finite signal rows for centers covered by the source rectangle and solving design=[day,1] with numpy.linalg.lstsq(rcond=None); rank<2 or fewer than two rows yields null coefficients, otherwise predict from the returned coefficients. This is an independent sample-point/SVD reference, not native raster, fractional-boundary, or Google-engine evidence.",
+  "independent_reference": {
+    "band_order": ["day", "signal"],
+    "source_item_ids": ["scene-day-0", "scene-day-1-a", "scene-day-1-b", "scene-day-3"],
+    "valid_row_counts": [4, 3, 0, 1, 4, 0],
+    "scale": [2.8947368421052633, 1.9285714285714286, null, null, 0, null],
+    "offset": [1.631578947368421, 2.4285714285714284, null, null, 5, null],
+    "target_millis": 1704240000000,
+    "target_day": 2,
+    "prediction": [7.421052631578947, 6.285714285714286, null, null, 5, null]
+  }
+}

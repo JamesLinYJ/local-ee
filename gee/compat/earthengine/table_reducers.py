@@ -1,4 +1,4 @@
-"""Bounded static table regression reducers for inline FeatureCollections."""
+"""Regression specifications and bounded inline table evaluation."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -17,7 +17,10 @@ MAX_TABLE_WORK = 50_000
 
 @dataclass(frozen=True)
 class TableReducer:
-    """A reducer whose rows and outputs are static metadata values."""
+    """Regression specification shared by table and supported raster paths.
+
+    The historical name remains compatible with existing internal callers.
+    """
 
     name: str
     num_x: int
@@ -33,7 +36,7 @@ def handles_table_reducer(name):
 
 
 def invoke_table_reducer(translator, name, arguments):
-    """Construct only pinned, explicitly supported table regression reducers."""
+    """Construct pinned regression specifications without claiming execution."""
     a = arguments
     if name == "Reducer.linearFit":
         translator.allowed(a, set())

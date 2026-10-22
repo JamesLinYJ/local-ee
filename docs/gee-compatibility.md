@@ -26,6 +26,8 @@ Python 优先的全量类型／方法／参数绑定记录另见 [Python 清单]
 
 第五批增加固定形状单数组波段的 Image.toArray、布局／长度、单输出归约及矩阵乘法，同形算术与静态数组常量可衔接。类型化数组只作为计算中间值，flatten/get 后进入既有像素后端；静态 PCA 基应用到本地波段的投影与重建有独立合成图 N，整体掩膜与来源均保留。总 64 单元、8 轴、每轴 64 及既有图／工作预算适用；动态形状、多数组波段、广播、掩膜坐标和数组直接导出仍拒绝。详见 [第五批报告](../reports/gee-python-wave5.json)，实际栅格引擎与 Google 对照未运行。
 
+第六批将 linearFit 扩展到有限 ImageCollection：每像元删除 x/y 不完整行，两遍中心化 OLS 输出 scale／offset，同日多景和显式重复观测分别计入。版本化时间趋势示例与独立 SVD 校核覆盖拟合、空间掩膜、退化和目标日期预测。限 1..8 帧、两个同名同序标量波段、binary NoData 和 parallelScale=1；保留 Float32 callback 与图／工作预算，完整多变量回归、权重及类型提升仍待实现。证据见 [第六批报告](../reports/gee-python-wave6.json)，无实际栅格 E/G。
+
 第三批增加 `Join.inner`、唯一 maxDifference 的 And 组合，以及匹配 Feature 映射回 ImageCollection 的链路；最近前后观测插值有版本化合成来源／掩膜／目标时间参考，见 [第三批报告](../reports/gee-python-wave3.json)。S/C 与合成图 N 通过仍不构成原生引擎 E 或 Google G。
 
 | 用法 | 当前支持范围 | 证据 |
@@ -103,7 +105,7 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 
 - 全球 GEE 数据目录、私有 assets、任意 `require('users/...')` 模块和 Google Drive/Cloud Storage 上传。
 - 独立纯常量栅格与纯常量集合缺少明确的本地网格，仍拒绝；绑定到本地影像的 addBands 常量与日期 band 已支持。常量投影查询、任意异构类型、逐波段投影与跨网格语义仍需独立实现和验证。
-- 分类器、栅格回归、动态形状／多数组波段和其余 Image.array* 运算、超出上述有限元数据范围的 join、邻域卷积、ui.Chart/ui.Panel 等完整 GEE 应用组件。已补固定形状单数组波段的布局／矩阵投影／归约，但静态 Array.matrixSolve 的验证仍不能代替逐像元时序回归。
+- 分类器、多变量／多响应栅格回归、动态形状／多数组波段和其余 Image.array* 运算、超出上述有限元数据范围的 join、邻域卷积、ui.Chart/ui.Panel 等完整 GEE 应用组件。已补固定形状数组布局／矩阵投影／归约及有限逐像元 linearFit，不能据此宣称完整栅格回归支持。
 - 分数掩膜、球面/测地线几何、非 UTC 时区、分数月/年、任意 Joda 格式 token。
 - 任意 CRS transform、导出分片、bestEffort 和自定义 tileScale；不支持的参数明确失败。
 - 整数像元类型转换、Image 位运算和原始 GEE 的边界像元加权。GeoTrellis 整型 NoData 哨兵会占用合法数值，不能简单替换 cast 名称；完整类型提升仍待实现。当前 N 验收以浮点数值、网格和二值 NoData 为准。
@@ -121,7 +123,7 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 | --- | --- |
 | 最绿像素合成 | 历史抽查时缺失；本轮已实现有限同构集合 `qualityMosaic` 并完成 6 个实际输出的独立像素对照；平分规则仍未与 Google 比较 |
 | s2cloudless 云影 | 有限本地影像 `Join.saveFirst` 已补；仍缺定向距离变换、`projection/reproject`、`focalMin/focalMax`；云概率数据未入库 |
-| 谐波时序与矩阵回归 | 已补有限逐景日期 map、日期常量 band、受限日期、静态 Array.matrixSolve 及固定形状单数组波段的布局／矩阵投影／归约；仍缺栅格 `linearRegression/linearFit`、动态数组和逐像元求解，以及相位/振幅的 `atan2/hypot` |
+| 谐波时序与矩阵回归 | 已补有限逐景日期 map、日期常量 band、受限日期、静态 Array.matrixSolve、固定形状数组布局／矩阵投影／归约和有限逐像元 linearFit；仍缺栅格多变量 `linearRegression`、动态数组和逐像元矩阵求解，以及相位/振幅的 `atan2/hypot` |
 | HISTARFM 插值 | 已补受限 Date.getRelative、saveAll 匹配影像列表、maxDifference 与方向比较的 And 组合；最近前后观测像素插值有合成图 N，独立常量栅格、int16、完整项目及真实引擎验收仍缺失 |
 | 随机森林与验证 | 样本提取、分类器训练/预测、混淆矩阵与批量区域统计 |
 | LandTrendr | GEE 用户模块解析、真实时序分段算法、数组处理、连通像元与 Image QA 位运算仍缺失；已补有限网格的 `unmask`，不能据此运行完整 LandTrendr |

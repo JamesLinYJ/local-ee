@@ -27240,7 +27240,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Only implemented reducer families and local collection/data semantics are available."
+          "Only implemented reducer families and local collection/data semantics are available. Two-input linearFit supports 1..8 scalar-image frames with identical ordered band names, complete-row NoData deletion, centered two-pass OLS and scale/offset scalar output. Only parallelScale=1; shared work/graph limits and existing Float32 callback limits apply; no actual raster-engine or Google acceptance for this path."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -36265,7 +36265,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Unweighted inline table reduceColumns only, finite metadata rows, full-rank two-column design; null/insufficient/degenerate cases covered. No raster engine or Google acceptance."
+          "Inline table reduceColumns and bounded two-input ImageCollection.reduce only. Raster path uses 1..8 ordered frames, x/y complete rows and centered OLS; fewer than 2 rows or zero x variance masks both scale/offset. Raster mask model is binary NoData, no fractional weighting or unweighted() adapter; parallelScale=1 only. Table null/degenerate cases remain covered. Independent sample-point numerical controls do not establish actual raster-engine or Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,

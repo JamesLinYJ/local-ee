@@ -84,6 +84,7 @@ flowchart LR
 | `ir.py`, `static_values.py`, `date_values.py` | 纯值类型和像素 IR、标量静态调用，以及 UTC 日期值辅助函数 |
 | `array_core.py`, `array_values.py`, `array_layout.py`, `array_arithmetic.py`, `array_reductions.py`, `array_matrix_extra.py` | 有限静态数组类型、形状／资源校验及分组数值内核 |
 | `raster_array_core.py`, `raster_array_values.py`, `raster_array_layout.py`, `raster_array_coordinates.py`, `raster_array_reductions.py`, `raster_array_dispatch.py` | 单数组波段固定形状 IR、整体掩膜、常量坐标与分组操作；降为既有标量像素图，公开输出前必须转换为标量波段 |
+| `table_reducers.py`, `raster_linear_fit.py` | 共用回归规格；静态表格最小二乘与有限帧逐像元 linearFit 分开求值，保留各自缺测、类型、规模和数值验证边界 |
 | `graph.py`, `pixel_graph.py`, `temporal_graph.py`, `mask_graph.py` | 规范进程图组装、像素表达式编译、保留观测身份的时间归约与原生掩膜处理 |
 | `compile.py`, `capabilities.py` | 稳定的编译入口、已声明处理器清单与当前限制 |
 
