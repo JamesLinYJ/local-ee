@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('node:fs');
-const {spawnSync}=require('node:child_process');
+const {send:sendRequest}=require('./bridge.cjs');
 const util=require('node:util');
 const path=require('node:path');
 const NativeMap=global.Map;
@@ -13,12 +13,9 @@ ee.data.getAlgorithms=callback=>callback?callback(signatures):signatures;
 // The browser distribution has no Node OAuth dependencies. All supported I/O is routed locally.
 ee.initialize('http://api:8080/gee/v1/unsupported','http://api:8080/gee/v1/unsupported');
 function send(payload){
-  const result=spawnSync(process.execPath,[path.join(__dirname,'transport.cjs')],{input:JSON.stringify(payload),encoding:'utf8',maxBuffer:1048576,timeout:110000});
-  if(result.error)throw result.error;
-  let message;try{message=JSON.parse(result.stdout);}catch(e){throw Error('Local GEE bridge failed: '+String(result.stderr||'').slice(0,500));}
-  if(!message.ok)throw Error(message.error);
-  for(const warning of message.value.warnings||[])console.warn('[兼容提示]',warning);
-  return message.value;
+  const value=sendRequest(payload);
+  for(const warning of value.warnings||[])console.warn('[兼容提示]',warning);
+  return value;
 }
 const encode=object=>ee.Serializer.encode(object);
 ee.data.computeValue=(object,callback)=>{
@@ -71,6 +68,6 @@ global.Map=LocalMap;
 for(const name of ['authenticate','authenticateViaOauth','authenticateViaPrivateKey','setAuthToken'])if(ee.data[name])ee.data[name]=()=>{throw Error('Google authentication is disabled in the local runtime');};
 const source=process.argv[2]||'/job/script.js';
 const text=fs.readFileSync(source,'utf8');
-// Execute actual JavaScript in the short-lived OS container. This is not a VM sandbox in the API process.
+// Execute JavaScript inside the supervised native OS sandbox process.
 const Module=require('node:module');const script=new Module(source,module);script.filename=source;script.paths=[];
 try{script._compile(text,source);}catch(error){console.error(error.stack||error.message);process.exitCode=1;}

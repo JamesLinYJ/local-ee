@@ -1,5 +1,5 @@
 'use strict';
-// One local-only HTTP bridge. Sync SDK getInfo uses a bounded child, never the API process.
+// Local-only HTTP transport used by the script's bounded bridge thread.
 const api = new URL(process.env.OPENEO_URL || 'http://api:8080/openeo/1.2');
 if (!['api','localhost','127.0.0.1'].includes(api.hostname) || !['http:','https:'].includes(api.protocol)) throw Error('Invalid local API destination');
 const token = process.env.OPENEO_TOKEN;

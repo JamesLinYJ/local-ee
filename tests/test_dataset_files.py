@@ -25,6 +25,8 @@ def test_physical_storage_accepts_regular_child_and_rejects_symlinks(tmp_path):
     {'filename':'file.tif','size':files.MAX_FILE_SIZE+1,'sha256':'a'*64},
     {'filename':'file.tif','size':10,'sha256':'invalid'},
     {'filename':'file.tif','size':10,'sha256':'a'*64,'path':'/data/assets'},
+    {'filename':'\ud800.tif','size':10,'sha256':'a'*64},
+    {'filename':'\udfff.csv','size':10,'sha256':'a'*64},
 ])
 def test_upload_validation_precedes_any_database_or_file_access(data):
     with pytest.raises(OpenEOApiException):files.create('synthetic-admin','synthetic-dataset',data)

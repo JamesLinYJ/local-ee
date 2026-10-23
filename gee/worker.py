@@ -116,7 +116,10 @@ def tick(client):
             continue
         elapsed=(datetime.now(timezone.utc)-row["started"]).total_seconds() if row["started"] else 0
         if row["status"]=="canceled" or elapsed>LIMITS[row["kind"]]:
-            container.stop(timeout=3);container.reload()
+            # Keep the durable scheduler alive while native disk detach completes.
+            # Retain controls and capacity; the next tick retries before new admission.
+            if container.stop(timeout=3) is False: return
+            container.reload()
             if elapsed>LIMITS[row["kind"]] and row["status"]!="canceled":
                 db.query("UPDATE jobs SET status='error',error='执行超时',finished=now(),updated=now() WHERE id=%s AND status='running'",(jid,))
             # Store final log even for a canceled job, without replacing its status.

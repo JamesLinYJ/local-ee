@@ -33,13 +33,15 @@ def config():
 
 def environment():
     c=config()
+    from gee.native.toolchains import selected
+    runtimes=selected(ROOT)
     env={k:v for k,v in os.environ.items() if k in {'PATH','LANG','LC_CTYPE'}}
     env.update(GEE_RUNTIME='native',GEE_PROJECT_ROOT=str(ROOT),DATA_ROOT=str(ROOT/'data'),
                UPLOAD_ROOT=str(ROOT/'data/uploads'),GEE_PORT=str(c['port']),
                PUBLIC_ORIGIN=f"http://localhost:{c['port']}",
                DATABASE_URL=f"postgresql://gee:{quote(c['database_password'],safe='')}@/gee?host={quote(str(RUN/'pg'),safe='')}&port=55432",
                PYTHONPATH=str(ROOT),PYTHONUNBUFFERED='1',PYTHONDONTWRITEBYTECODE='1',
-               JAVA_HOME=c['java_home'],GEE_NODE=c['node'],OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',
+               JAVA_HOME=runtimes['java_home'],GEE_NODE=runtimes['node'],OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',
                OTEL_SDK_DISABLED='true',OPENEO_OTEL_ENABLED='false',PROJ_NETWORK='OFF')
     env['TZ']='UTC'
     return env
@@ -52,10 +54,9 @@ def initialize():
     for name in ['assets','catalog','jobs','raw','uploads']:(ROOT/'data'/name).mkdir(exist_ok=True,parents=True)
     path=NATIVE/'config.json'
     if not path.exists():
-        java=subprocess.check_output(['/usr/libexec/java_home','-v','21'],text=True).strip()
-        node=shutil.which('node')
-        if not node:raise RuntimeError('Node.js is required')
-        path.write_text(json.dumps({'database_password':secrets.token_urlsafe(32),'port':8787,'java_home':java,'node':node},indent=2))
+        from gee.native.toolchains import selected
+        runtimes=selected(ROOT)
+        path.write_text(json.dumps({'database_password':secrets.token_urlsafe(32),'port':8787,**runtimes},indent=2))
         path.chmod(0o600)
     if not (NATIVE/'postgres/PG_VERSION').exists():
         c=config();pw=RUN/'init-password'
@@ -176,13 +177,18 @@ def stop():
     # Stop submission and scheduling first, then terminate only verified task supervisors.
     for name in ['api','worker']:stop_service(name)
     if (NATIVE/'config.json').exists():
-        os.environ.update(environment())
+        # Teardown needs only control paths, even if a runtime integrity check fails.
+        os.environ['GEE_PROJECT_ROOT']=str(ROOT)
         from gee.native.runtime import NativeClient,NotFound
         client=NativeClient()
         for path in client.control.glob('*.state.json'):
             try:task=client.get('gee-'+path.name.removesuffix('.state.json'))
             except NotFound:continue
-            if task.status in {'running','starting'}:task.stop()
+            if task.status in {'running','starting'}:
+                deadline=time.monotonic()+210
+                while task.stop(timeout=1) is False:
+                    if time.monotonic()>deadline:
+                        raise RuntimeError('Native task cleanup remains pending; controls and capacity retained')
     if (NATIVE/'postgres/PG_VERSION').exists():
         subprocess.run([str(PG/'pg_ctl'),'-D',str(NATIVE/'postgres'),'-w','-m','fast','stop'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     print('Native services stopped. Data retained; no VM or container involved.')

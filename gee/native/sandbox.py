@@ -9,10 +9,10 @@ def quoted(path):
     return json.dumps(str(Path(path).resolve()))
 
 
-def profile(*, reads=(), writes=(), api_port=None, spark=False):
+def profile(*, reads=(), writes=(), api_port=None, spark=False, fork=True, package_roots=()):
     if sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').is_file():
         raise RuntimeError('macOS sandbox-exec is required; unsandboxed execution is disabled')
-    rules = ['(version 1)', '(deny default)', '(allow process-exec process-fork)',
+    rules = ['(version 1)', '(deny default)', '(allow process-exec)',
              '(allow signal (target self) (target children))', '(allow sysctl-read)',
              '(allow mach-lookup)', '(allow ipc-posix-shm)',
              '(allow file-read-metadata)',
@@ -23,6 +23,12 @@ def profile(*, reads=(), writes=(), api_port=None, spark=False):
              ' (literal "/private/etc/ssl/openssl.cnf")',
              ' (literal "/dev/null") (literal "/dev/random") (literal "/dev/urandom") (subpath "/dev/fd"))',
              '(allow file-write* (literal "/dev/null") (subpath "/dev/fd"))']
+    if fork:
+        rules.append('(allow process-fork)')
+    for path in package_roots:
+        # Python's import finder lists sys.path directories. This literal grant
+        # permits listing only; children still need their own explicit grants.
+        rules.append(f'(allow file-read-data (literal {quoted(path)}))')
     for path in reads:
         resolved = Path(path).resolve()
         scope = 'literal' if resolved.is_file() else 'subpath'

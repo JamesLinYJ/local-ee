@@ -26,6 +26,8 @@ def main(manifest):
              'create_time': psutil.Process().create_time(), 'exit_code': None, 'reason': None}
     save(state_path, state)
     child = None
+    lease = config.get('scratch_lease')
+    gate_read = gate_write = None
     stopped = False
     def terminate(*_):
         nonlocal stopped
@@ -50,11 +52,26 @@ def main(manifest):
         if hard!=resource.RLIM_INFINITY:bounded=min(bounded,hard)
         resource.setrlimit(resource.RLIMIT_NPROC,(bounded,bounded))
     try:
-        child = subprocess.Popen(config['command'], cwd=config['cwd'], env=config['env'],
+        command=config['command']
+        extra={}
+        if lease:
+            from . import scratch
+            scratch.prepare(lease)
+            if stopped: raise InterruptedError('Task stopped during scratch provisioning')
+            gate_read,gate_write=os.pipe()
+            command=[sys.executable,'-m','gee.native.gate',str(gate_read),*command]
+            extra['pass_fds']=(gate_read,)
+        child = subprocess.Popen(command, cwd=config['cwd'], env=config['env'],
                                  stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
-                                 stderr=subprocess.STDOUT, start_new_session=True, preexec_fn=limits)
+                                 stderr=subprocess.STDOUT, start_new_session=True, preexec_fn=limits,**extra)
         state.update(status='running', child_pid=child.pid,child_create_time=psutil.Process(child.pid).create_time())
         save(state_path, state)
+        if lease:
+            scratch.started(lease,child.pid)
+            if stopped: raise InterruptedError('Task stopped before script launch')
+            os.close(gate_read);gate_read=None
+            os.write(gate_write,b'1')
+            os.close(gate_write);gate_write=None
         watcher = psutil.Process(child.pid)
         selector = selectors.DefaultSelector()
         os.set_blocking(child.stdout.fileno(), False)
@@ -112,8 +129,21 @@ def main(manifest):
             try: os.killpg(child.pid, signal.SIGKILL)
             except ProcessLookupError: pass
         logs.extend(str(error).encode()[-2000:])
-        state.update(status='exited', exit_code=1, reason='supervisor_error')
+        state.update(status='exited', exit_code=1, reason='stopped' if stopped else 'supervisor_error')
     finally:
+        for fd in (gate_read,gate_write):
+            if fd is not None:os.close(fd)
+        if child and child.poll() is None:
+            try:os.killpg(child.pid,signal.SIGKILL)
+            except ProcessLookupError:pass
+            child.wait(timeout=5)
+        if lease:
+            try:
+                from .scratch import release
+                release(lease)
+            except BaseException:
+                state.update(status='exited',exit_code=1,reason='scratch_cleanup_failed')
+                logs.extend(b'\nScratch cleanup failed; capacity lease retained.\n')
         persist_logs()
         # Secrets are needed only during launch. Never retain a completed task's token.
         config['env'].pop('OPENEO_TOKEN', None)

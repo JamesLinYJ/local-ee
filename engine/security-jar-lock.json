@@ -8,12 +8,28 @@
     "sha256": "e1522945218456f3649a39bc4afd70ce4bd466221519dba7d378f2141a4642ca"
   },
   {
+    "file": "commons-lang3-3.21.0.jar",
+    "sha256": "a2af247ec4db6eb8947e18e23e0433e4871a7c5d0a40e1f92e46ede54ae1defe"
+  },
+  {
+    "file": "jackson-core-2.21.7.jar",
+    "sha256": "8c5623b98f32d5f7e1287ff61ed50e08ab7b11381e991fff89327faabba42261"
+  },
+  {
+    "file": "jackson-databind-2.21.7.jar",
+    "sha256": "1290c2795e93e8a6861a6c4d9ff0d844d32f5ea178362cb2721edf5561e828b1"
+  },
+  {
     "file": "jersey-client-3.0.17.jar",
     "sha256": "7a6917097f98c0418f92700a9bb0e8c836ca26a3e9bd97ce8afbdcd9cc1d7c39"
   },
   {
     "file": "jersey-common-3.0.17.jar",
     "sha256": "be9a782277b3beec0f0810467728c37d4d055acb6d41f6ca6dc12fc0f0829eb5"
+  },
+  {
+    "file": "jline-3.30.17.jar",
+    "sha256": "32ca18a3b5c742bc8a7b42af61ad9b3320dab525361b793ea9e3cb361e292c1d"
   },
   {
     "file": "log4j-1.2-api-2.25.5.jar",
@@ -40,67 +56,99 @@
     "sha256": "31c287041eab41f2459e93659d49162eff015a0eb858877e1c5e9dcce1a10c26"
   },
   {
-    "file": "netty-buffer-4.1.137.Final.jar",
-    "sha256": "f474b14c7734f15e0540394cb6f39d67777b7581a42919e4ac89d253d4efd929"
+    "file": "netty-buffer-4.2.19.Final.jar",
+    "sha256": "863f09b46cfe7d83872c9499086b9681cd9878c30a319d9f1f3a681bbfb0b12f"
   },
   {
-    "file": "netty-codec-4.1.137.Final.jar",
-    "sha256": "9987b6a660b0a6b1f0d791485dae33180b3d1c63687c006fe6d3fd025e9e3798"
+    "file": "netty-codec-4.2.19.Final.jar",
+    "sha256": "9da978357522895ed6141e14c81f776173206f6cdd72e92b637c60e6e624735b"
   },
   {
-    "file": "netty-codec-dns-4.1.137.Final.jar",
-    "sha256": "2d9a33ce41bd9f6f607df95039e42518a1fca16f83c9bbfe72beb57df6e2489f"
+    "file": "netty-codec-base-4.2.19.Final.jar",
+    "sha256": "5702c8097cc81e939dd12e5b39ac2e81f83737c320f6f4d88553577842f9ceb6"
   },
   {
-    "file": "netty-codec-http-4.1.137.Final.jar",
-    "sha256": "0535bb5a736472bef5c948d15eb273c4ab9f796656fc7c5d6b982ad92bddbd49"
+    "file": "netty-codec-compression-4.2.19.Final.jar",
+    "sha256": "8935c51c7217780ae56d178c938b50ea5729b1e088cf3c2568674e331665554c"
   },
   {
-    "file": "netty-codec-http2-4.1.137.Final.jar",
-    "sha256": "576ddcfb51b78e86f145c9a52b60e500b1a1d5a257cafec8aa5416ffba044b49"
+    "file": "netty-codec-dns-4.2.19.Final.jar",
+    "sha256": "d8177c55f0864807f6ab02d0af7c72a6b88dd6bfd1a39f3a17e5954e0942fcad"
   },
   {
-    "file": "netty-codec-socks-4.1.137.Final.jar",
-    "sha256": "4a6190e08988c058bfeef2b5965e71946439c771abf721c68f4039b4e7b023e8"
+    "file": "netty-codec-http-4.2.19.Final.jar",
+    "sha256": "7c28809a4f527746fbce2369f5ac5d5fcef45cfe9da21aa3dd9d3f6bdf00cbe0"
   },
   {
-    "file": "netty-common-4.1.137.Final.jar",
-    "sha256": "d31926b01adcc07af86f5e27b81b6d6c115df17d366e835d1fc3f5a1924e7e52"
+    "file": "netty-codec-http2-4.2.19.Final.jar",
+    "sha256": "f45756b12a75b907e98cd0158dc947308ca463cd3d27b9035d11a025a4fdbc4d"
   },
   {
-    "file": "netty-handler-4.1.137.Final.jar",
-    "sha256": "d0e4c6ee4779f59f6ab2fb5d388e4f57147c82270164b37945764bb9bda96a44"
+    "file": "netty-codec-socks-4.2.19.Final.jar",
+    "sha256": "b837044e8edbd977bafe4e643c13958a45cf0caefd1338b7e6660e716a769624"
   },
   {
-    "file": "netty-handler-proxy-4.1.137.Final.jar",
-    "sha256": "843de10c4cef34cbc1a5344090f1b57db532fbebf141559862da675f6b656df4"
+    "file": "netty-common-4.2.19.Final.jar",
+    "sha256": "22fa74761f6e35c8c88972f35cf65664566b922dd73d3424528e97c34278fa79"
   },
   {
-    "file": "netty-resolver-4.1.137.Final.jar",
-    "sha256": "b4cf2aeedd9fc7c8c439bbfe574f63cfe5b83392e88bbc07ca0e8424b7cff955"
+    "file": "netty-handler-4.2.19.Final.jar",
+    "sha256": "8b469cf23ddf21ba84291f4dff470d2277a28deac95e7084b0ff2ce853e58276"
   },
   {
-    "file": "netty-resolver-dns-4.1.137.Final.jar",
-    "sha256": "898d63ca62ed68ff46543c5344f969424b417f1e8d082fe2bb0181ba10144194"
+    "file": "netty-handler-proxy-4.2.19.Final.jar",
+    "sha256": "6a46fb5716c8b2a227e3d5e4533ab67abaccc6cb3a4f431ff0ed0859ae8a6993"
   },
   {
-    "file": "netty-transport-4.1.137.Final.jar",
-    "sha256": "6251adc2a2921572382732a2db188d4f4f2251fd6ebb49c5d44bbf33d6bfb1a7"
+    "file": "netty-resolver-4.2.19.Final.jar",
+    "sha256": "3ded47536faeb3c4c544a84871d82f461511589afb2a892a180ca425f281363e"
   },
   {
-    "file": "netty-transport-classes-epoll-4.1.137.Final.jar",
-    "sha256": "55049554b799dc8e53bf234fffa36e001f7b5b65c32994b9bd59fc6356f1c52f"
+    "file": "netty-resolver-dns-4.2.19.Final.jar",
+    "sha256": "417aaf5cf25cd07865ea91d2e08916b6974995c54aa83730264fc0e06dd4ea90"
   },
   {
-    "file": "netty-transport-classes-kqueue-4.1.137.Final.jar",
-    "sha256": "88d0ac216f9c7be690a9d0157778570d6f4c61f885863da1fccec7fcaee35557"
+    "file": "netty-transport-4.2.19.Final.jar",
+    "sha256": "d82d4e200456b8c5d8a1647a3724603f80616e5b35b9ada6e7a20d048f175075"
   },
   {
-    "file": "netty-transport-native-unix-common-4.1.137.Final.jar",
-    "sha256": "8056e7637f9948f953314894cf995ab664711b66c73c4cd5b593ae84f0b1048c"
+    "file": "netty-transport-classes-epoll-4.2.19.Final.jar",
+    "sha256": "4d96ba8dd98ace998f6ae7bfe53ae9e581bd92ad2f7ebe5bd994d1a24306db7e"
+  },
+  {
+    "file": "netty-transport-classes-kqueue-4.2.19.Final.jar",
+    "sha256": "e1decb5bf69a45118dd8b7fa7ac815462275c5055f75959b7a8d5383196b9ae9"
+  },
+  {
+    "file": "netty-transport-native-kqueue-4.2.19.Final-osx-aarch_64.jar",
+    "sha256": "b4f35ac20ed23100af364e5ce895a62c8940a755ecc8d2f15562dbecfa8588f2"
+  },
+  {
+    "file": "netty-transport-native-unix-common-4.2.19.Final.jar",
+    "sha256": "341e91b8e69e6b7d92c353c845ffd91f34e921b7186254c176a64c7089b3e721"
   },
   {
     "file": "sqlite-jdbc-3.53.4.0.jar",
     "sha256": "bcb1f51e36f940867e83342f9efbf5968ac44a6bef4d397bb4af7b17b45cd2fb"
+  },
+  {
+    "file": "vertx-auth-common-4.5.35.jar",
+    "sha256": "5103b6ce5121aa783707278b4ec08a19a0405d87b91dced1d9f6054d7ffb5dc1"
+  },
+  {
+    "file": "vertx-core-4.5.35.jar",
+    "sha256": "1a274ba3739dc72506d5e801a8337ab734e07fbfd48ece7e77a518fbf40cea9a"
+  },
+  {
+    "file": "vertx-uri-template-4.5.35.jar",
+    "sha256": "4813ea6faa74899e5f317ad223608fef905c2b83cee9eca76393e9e2853f3b4d"
+  },
+  {
+    "file": "vertx-web-client-4.5.35.jar",
+    "sha256": "57ef54f7f385d5e43b7b8cb2847c42ebcf259f2a6972a37aa3dc80ff4f2799ec"
+  },
+  {
+    "file": "vertx-web-common-4.5.35.jar",
+    "sha256": "e6938a7c555ae87ccde10af71cfb264483ea7f952e7d7724e4196bef21cec64d"
   }
 ]

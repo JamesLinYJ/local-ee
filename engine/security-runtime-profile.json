@@ -1,0 +1,15 @@
+{
+  "format": "local-ee-security-runtime-v1",
+  "spark": "4.2.0",
+  "upstream_assemblies": {
+    "hadoop-client-runtime-3.5.0.jar": "b7db3e60c5df1cd37c2995b3e0142e57487260706834e5325bbe0a5e683eedf1",
+    "parquet-jackson-1.17.0.jar": "7a4fe149acf7b2381e5c4d0677c075e11e4289ff944fb99be70c9f7d337027fe",
+    "spark-core_2.13-4.2.0.jar": "8e0a03b66338a4a38c9089d9f798ab6a6c6583aefe93f910311704a5ec90ffc4",
+    "hive-storage-api-2.8.1.jar": "2bb77d246a9724a371301049239c6e53039efe4136b0ed34ee5a9c7b3cd861d8"
+  },
+  "removed_features": [
+    "Hive query engine and Thrift server",
+    "Hadoop HTTP/YARN shell"
+  ],
+  "unexposed_legacy_component": "CatBoost retained for upstream method-signature linkage; its Spark text-loader is unsupported and rejected by the product process allowlist."
+}

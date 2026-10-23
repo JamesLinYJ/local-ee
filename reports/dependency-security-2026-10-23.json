@@ -1,0 +1,113 @@
+{
+  "format": "local-ee-dependency-security-v1",
+  "generated_at": "2026-10-23T05:18:17.005581+00:00",
+  "deployment": "native macOS arm64; services were already stopped and remain stopped",
+  "before": {
+    "spark": {
+      "component_records": 413,
+      "vulnerability_instances": 82,
+      "report_sha256": "eab9187db8979c106c5b040b9c48c4d9b166af3eac0d9a1b890c358f982165b1"
+    },
+    "geotrellis": {
+      "component_records": 137,
+      "vulnerability_instances": 0,
+      "report_sha256": "28a2a93797a90c2b61ef64689b2ef83dce54fce686e664dd3cd981c8b4aa75ce"
+    }
+  },
+  "after": {
+    "spark": {
+      "component_records": 377,
+      "vulnerability_instances": 0,
+      "report_sha256": "8dbd7feb0a71ef83ba6622b9b90fc72c387ea9d549325eeff3fdab15d5424b15"
+    },
+    "geotrellis": {
+      "component_records": 137,
+      "vulnerability_instances": 0,
+      "report_sha256": "ad39142fc2eb78d82e49d5b13c8a9b0539bd5ee8e1eb21cb1d67e1dc0a0583b2"
+    },
+    "python_app": {
+      "packages": 100,
+      "vulnerability_instances": 0,
+      "report_sha256": "ae258cbd965738049208d21cf16e5de69840d7480504f12adc946d3f3aa1e3f4"
+    },
+    "python_engine": {
+      "packages": 106,
+      "vulnerability_instances": 0,
+      "report_sha256": "ae06717591e179f04f1502c185e45833d910954c83e9064b96c87b51de5200c0"
+    },
+    "npm": {
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0,
+        "total": 0
+      },
+      "dependencies": {
+        "prod": 107,
+        "dev": 85,
+        "optional": 47,
+        "peer": 0,
+        "peerOptional": 0,
+        "total": 191
+      }
+    }
+  },
+  "scanner": {
+    "jar_tool": "Trivy 0.76.0 rootfs, telemetry/version check disabled; no CVE ignores",
+    "vulnerability_db": {
+      "Version": 2,
+      "NextUpdate": "2026-10-24T01:18:09.482141078Z",
+      "UpdatedAt": "2026-10-23T01:18:09.482141619Z",
+      "DownloadedAt": "2026-10-23T03:12:14.218734Z"
+    },
+    "python_tool": "pip-audit 2.10.1; complete installed-version inventory",
+    "local_source_packages": [
+      "openeo-driver",
+      "openeo-geopyspark",
+      "geopyspark-openeo"
+    ]
+  },
+  "runtime": {
+    "spark": "4.2.0",
+    "scala": "2.13.18",
+    "java": "21.0.13.0.2",
+    "node": "24.22.1",
+    "shaded_jetty": "12.1.14",
+    "netty": "4.2.19.Final",
+    "direct_jackson": "2.21.7",
+    "hadoop_jackson": "2.18.12",
+    "configuration2": "2.15.1",
+    "vertx": "4.5.35",
+    "jline": "3.30.17"
+  },
+  "validation": {
+    "python": {
+      "passed": 3252,
+      "skipped": 10
+    },
+    "frontend_tests": 11,
+    "jvm_dependency_checks": 24,
+    "geotrellis_numeric_cases": 23,
+    "mask_mismatches": 0,
+    "max_abs_error": 0.0,
+    "exports": [
+      "GeoTIFF",
+      "NetCDF numeric/mask comparison",
+      "CSV closed feature table"
+    ],
+    "sql_roundtrips": [
+      "Parquet",
+      "ORC"
+    ],
+    "rf_authenticated_native_component_test": "passed; separate from full Spark RF/service deployment"
+  },
+  "limitations": [
+    "Known advisories in recognized components only; not a full Mach-O, OS or vendor source audit",
+    "No Google proprietary-service numerical comparison",
+    "CatBoost retained for reflection linkage; its unexposed text-loader has two known Spark4.2 ABI differences and is not supported",
+    "Private credentials/accounts/data/results were excluded",
+    "Historical container recipes/images were not built or scanned"
+  ]
+}

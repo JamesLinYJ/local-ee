@@ -1,0 +1,128 @@
+[
+  {
+    "file": "commons-configuration2-2.15.1.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-configuration2/2.15.1/commons-configuration2-2.15.1.jar",
+    "size": 689129,
+    "sha256": "61ba5eaab8a17087042fe3d6811573bb85ccbdd6bd9d21ad464e6e20559dd1e8"
+  },
+  {
+    "file": "hive-storage-api-2.8.1-sources.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/apache/hive/hive-storage-api/2.8.1/hive-storage-api-2.8.1-sources.jar",
+    "size": 220119,
+    "sha256": "80819299e92e81af6e1ec652e83e921ef466dac2f5f368efd71ff1967e0190b0"
+  },
+  {
+    "file": "jackson-annotations-2.18.6.jar",
+    "url": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.18.6/jackson-annotations-2.18.6.jar",
+    "size": 78412,
+    "sha256": "face5c37bee1f0768f5f198d077fc29d163becca95de9e0f13962c84d1047662"
+  },
+  {
+    "file": "jackson-annotations-2.21.jar",
+    "url": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.21/jackson-annotations-2.21.jar",
+    "size": 82104,
+    "sha256": "53ca085f4a150f703f49e1aabd935bd03b43e1ea3d55d135438292af22cef56b"
+  },
+  {
+    "file": "jackson-core-2.18.12.jar",
+    "url": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.18.12/jackson-core-2.18.12.jar",
+    "size": 588750,
+    "sha256": "367afb4be3efa8a1636200b5faefb67d7d0a1b730f64ec55a971229cb673bc23"
+  },
+  {
+    "file": "jackson-databind-2.18.12.jar",
+    "url": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.18.12/jackson-databind-2.18.12.jar",
+    "size": 1670082,
+    "sha256": "02b62d64819bc1dbad7f1195c805f950ab3dceef1a479d0e9c55d99b7a04c255"
+  },
+  {
+    "file": "jarjar-assembly-1.18.1.jar",
+    "url": "https://repo.maven.apache.org/maven2/com/eed3si9n/jarjar/jarjar-assembly/1.18.1/jarjar-assembly-1.18.1.jar",
+    "size": 328248,
+    "sha256": "0315ca7f439f23b9e099170407c89fd4e06c1a1785669c4125bf501cc5d87fb0"
+  },
+  {
+    "file": "jetty-client-12.1.14.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-client/12.1.14/jetty-client-12.1.14.jar",
+    "size": 373378,
+    "sha256": "70db0a8101390818022466da64110aa25e06d78892cc4dce9353d8647c92c2ec"
+  },
+  {
+    "file": "jetty-compression-common-12.1.14.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/compression/jetty-compression-common/12.1.14/jetty-compression-common-12.1.14.jar",
+    "size": 12640,
+    "sha256": "121a28a3aad2a036c9f97073ddc37f11cb3e9f3da13425f2c08c380ead93a6db"
+  },
+  {
+    "file": "jetty-compression-gzip-12.1.14.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/compression/jetty-compression-gzip/12.1.14/jetty-compression-gzip-12.1.14.jar",
+    "size": 20421,
+    "sha256": "d0994b3a821d2946c1d1c881be4b3997e95a05d7381328d79b7c1b7b042e9186"
+  },
+  {
+    "file": "jetty-compression-server-12.1.14.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/compression/jetty-compression-server/12.1.14/jetty-compression-server-12.1.14.jar",
+    "size": 27137,
+    "sha256": "91c6078fe3aa46b8777cca8da923bae42623cceaa3415f9a80f7d7b6a713233f"
+  },
+  {
+    "file": "jetty-ee10-plus-12.1.14.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/ee10/jetty-ee10-plus/12.1.14/jetty-ee10-plus-12.1.14.jar",
+    "size": 22814,
+    "sha256": "209c084db0771e4608cd15929d21a587f6eb55e409c015d5ae203ec7ab90e32e"
+  },
+  {
+    "file": "jetty-ee10-proxy-12.1.14.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/ee10/jetty-ee10-proxy/12.1.14/jetty-ee10-proxy-12.1.14.jar",
+    "size": 75435,
+    "sha256": "3e6ed8f616f96876b6305ab4101437fc0c1c3005b9ae6b0470554e358e00af75"
+  },
+  {
+    "file": "jetty-ee10-servlet-12.1.14.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/ee10/jetty-ee10-servlet/12.1.14/jetty-ee10-servlet-12.1.14.jar",
+    "size": 454635,
+    "sha256": "cfea6fa831b8bf119ab97a73271fb61194a678c9ffca0661aaecefde53368eda"
+  },
+  {
+    "file": "jetty-ee10-servlets-12.1.14.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/ee10/jetty-ee10-servlets/12.1.14/jetty-ee10-servlets-12.1.14.jar",
+    "size": 51070,
+    "sha256": "8ab17e2054c27704d6c894ac1bd72f9fadf4feed78f89e86176624f60d615a96"
+  },
+  {
+    "file": "jetty-http-12.1.14.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-http/12.1.14/jetty-http-12.1.14.jar",
+    "size": 481742,
+    "sha256": "a898f3dad99c2505409047d849cac7f652eced5853f9dad711395a26cd681e13"
+  },
+  {
+    "file": "jetty-io-12.1.14.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/12.1.14/jetty-io-12.1.14.jar",
+    "size": 387008,
+    "sha256": "9a41452f362f5bd96e017f16d6b66d19d2d60a5981eafd3729367c1d535eb5e9"
+  },
+  {
+    "file": "jetty-security-12.1.14.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-security/12.1.14/jetty-security-12.1.14.jar",
+    "size": 169853,
+    "sha256": "62d4a246b978adee64d081025546466a05ee7b57b1dd6293d93953a80ba4cbe7"
+  },
+  {
+    "file": "jetty-server-12.1.14.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-server/12.1.14/jetty-server-12.1.14.jar",
+    "size": 705621,
+    "sha256": "62a2c691ecb3b60178e7b1a64d498261d31bcef76dd19147b89dcb2c6f784f30"
+  },
+  {
+    "file": "jetty-session-12.1.14.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/12.1.14/jetty-session-12.1.14.jar",
+    "size": 118615,
+    "sha256": "5b091e6132ba30a56ce872e07cdc0de263163e46f88d5dea99310d3a6d00899a"
+  },
+  {
+    "file": "jetty-util-12.1.14.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-util/12.1.14/jetty-util-12.1.14.jar",
+    "size": 731332,
+    "sha256": "deb2a47bb9659c69076da1020d058c0ededba61dcd1aebccf83fce4719164adc"
+  }
+]

@@ -141,7 +141,12 @@ class Jobs(BatchJobs):
         return BatchJobMetadata(**{k:row[k] for k in ("id","status","created","process","title","updated","started","finished")})._replace(id=str(row["id"]))
     def get_job_info(self, job_id, user_id): return self.metadata(db.job(job_id, user_id))
     def get_user_jobs(self, user_id, limit=None, request_parameters=None):
-        return JobListing([self.metadata(r) for r in db.query("SELECT * FROM jobs WHERE user_id=%s AND kind='batch' ORDER BY created DESC LIMIT %s", (user_id, min(limit or 100,1000)))], next_parameters=None)
+        from .openeo_access import script_parent
+        parent = script_parent()
+        predicate = " AND context->>'source_job_id'=%s" if parent else ''
+        params = (user_id, parent) if parent else (user_id,)
+        rows = db.query("SELECT * FROM jobs WHERE user_id=%s AND kind='batch'" + predicate + " ORDER BY created DESC LIMIT %s", (*params, min(limit or 100,1000)))
+        return JobListing([self.metadata(r) for r in rows], next_parameters=None)
     def start_job(self, job_id, user):
         row = db.job(job_id, user.user_id)
         if row["status"] not in {"created", "queued", "running"}:
@@ -195,6 +200,10 @@ class Processes(Processing):
         raise OpenEOApiException("请创建批处理任务",code="FeatureUnsupported",status_code=501)
 
 class Backend(OpenEoBackendImplementation):
+    def user_access_validation(self, user, request):
+        from .openeo_access import authorize
+        return authorize(user, request)
+
     def __init__(self):
         config=OpenEoBackendConfig(id="private-gee",capabilities_title="私有遥感工作台",
             capabilities_description="仅使用本地数据的 GeoTrellis 批处理服务",

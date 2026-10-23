@@ -27,6 +27,7 @@ def setup(log_dir):
     log4j = Path(__file__).parent/'log4j2.xml'
     for key,value in {
         'spark.sql.session.timeZone':'UTC','spark.kryoserializer.buffer.max':'512m',
+        'spark.sql.catalogImplementation':'in-memory',
         'spark.kryo.registrator':'geotrellis.spark.store.kryo.KryoRegistrator',
         'spark.kryo.classesToRegister':'ar.com.hjg.pngj.ImageInfo,ar.com.hjg.pngj.ImageLineInt,geotrellis.raster.RasterRegion$GridBoundsRasterRegion',
         'spark.driver.memory':'1g','spark.executor.memory':'1g',

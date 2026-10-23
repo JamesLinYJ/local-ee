@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
 NATIVE=ROOT/'.native'
 
 
@@ -20,7 +21,8 @@ def main():
     if platform.system()!='Darwin' or platform.machine()!='arm64':
         raise SystemExit('This build profile requires native Apple Silicon macOS')
     NATIVE.mkdir(exist_ok=True,mode=0o700)
-    java=Path(subprocess.check_output(['/usr/libexec/java_home','-v','21'],text=True).strip())
+    from gee.native.toolchains import selected
+    java=Path(selected(ROOT)['java_home'])
     env={**os.environ,'JAVA_HOME':str(java),'PATH':str(java/'bin')+':/opt/homebrew/bin:'+os.environ['PATH']}
     python=NATIVE/'engine/bin/python'
     if not python.exists():run(['uv','venv','--python',ROOT/'.venv/bin/python',NATIVE/'engine'])
@@ -40,7 +42,7 @@ def main():
         if old not in text:raise RuntimeError('Upstream metadata changed: '+old)
         text=text.replace(old,new)
     setup.write_text(text)
-    run([*pip,'--no-build-isolation','--no-binary','rasterio',ROOT/'vendor/geopyspark',ROOT/'vendor/openeo-python-driver',source,'pyspark==4.0.4','urllib3==2.8.0'],env=env)
+    run([*pip,'--no-build-isolation','--no-binary','rasterio',ROOT/'vendor/geopyspark',ROOT/'vendor/openeo-python-driver',source,'pyspark==4.2.0','urllib3==2.8.0'],env=env)
     version=subprocess.check_output(['/opt/homebrew/bin/gdal-config','--version'],text=True).strip()
     run([*pip,'--no-build-isolation','GDAL=='+version],env=env)
     bridge=NATIVE/'sources/gdal-warp-bindings'
@@ -75,11 +77,14 @@ def main():
                'GEE_SECURITY_JARS':str(ROOT/'engine/security-jars'),'GEE_SECURITY_JAR_LOCK':str(ROOT/'engine/security-jar-lock.json'),
                'GEE_JAR_REPORT':str(NATIVE/'jar-hardening.json')}
     run([python,ROOT/'engine/harden_jars.py'],env=hardening)
+    run([python,'-m','engine.rebuild_shaded','--fatroot',jars,'--spark',spark,
+         '--buildroot',ROOT/'engine/security-build-jars','--directroot',ROOT/'engine/security-jars',
+         '--java',java/'bin/java','--report',NATIVE/'shaded-hardening.json'],env={**env,'PYTHONPATH':str(ROOT)})
     run([*pip,'setuptools==84.2.1'],env=env)
     with (NATIVE/'engine-requirements.lock').open('w') as out:
         run(['uv','pip','freeze','--python',python],stdout=out)
     record={'platform':platform.platform(),'architecture':platform.machine(),'java_home':str(java),
-            'spark':'4.0.4','gdal':version,'metadata_adaptations':replacements,
+            'spark':'4.2.0','gdal':version,'metadata_adaptations':replacements,
             'jni_adaptation':'Darwin arm64 resource dispatch; GDAL const metadata pointers; C++17 libc++',
             'jars':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in jars.glob('*.jar') if not p.name.startswith('local-ee-')}}
     (NATIVE/'engine-lock.json').write_text(json.dumps(record,indent=2)+'\n')

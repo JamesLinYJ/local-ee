@@ -78,7 +78,7 @@ def install(tmp_path):
         upstream_hashes[filename] = _digest(path)
     engine_lock = {
         "java_home": "/locked/java/home",
-        "spark": "4.0.4",
+        "spark": "4.2.0",
         "jars": upstream_hashes,
     }
     _write_json(root / ".native/engine-lock.json", engine_lock)
@@ -116,7 +116,7 @@ def install(tmp_path):
         smile_lock[filename] = record
         smile_records[filename] = {**record, "path": str(tmp_path / "builder-deps" / filename)}
 
-    slf4j_path = spark_jars_dir / "slf4j-api-2.0.16.jar"
+    slf4j_path = spark_jars_dir / "slf4j-api-2.0.17.jar"
     _write_jar(slf4j_path, classes=tuple(SLF4J_API_CLASSES))
     dependency_lock = {
         "format": "local-ee-smile-rf-dependency-lock-v1",
@@ -124,8 +124,8 @@ def install(tmp_path):
         "source": {"repository": "https://github.com/haifengl/smile", "tag": "v1.5.3"},
         "smile_jars": smile_lock,
         "reused_slf4j_api": {
-            "coordinate": "org.slf4j:slf4j-api:2.0.16",
-            "spark_version": "4.0.4",
+            "coordinate": "org.slf4j:slf4j-api:2.0.17",
+            "spark_version": "4.2.0",
             "filename": slf4j_path.name,
             "sha256": _digest(slf4j_path),
         },
@@ -165,8 +165,8 @@ def install(tmp_path):
             "filename": slf4j_path.name,
             "sha256": _digest(slf4j_path),
             "path": str(slf4j_path),
-            "version": "2.0.16",
-            "source": "spark 4.0.4",
+            "version": "2.0.17",
+            "source": "spark 4.2.0",
         },
         "services": {SERVICE_NAME: SERVICE_ENTRY},
     }

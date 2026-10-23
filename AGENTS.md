@@ -65,6 +65,7 @@ Post-classification operations use `classified_feature_ops.py`, `gee/runtime_tab
 - All schema changes use additive, recoverable migrations; do not delete or rewrite existing user research artifacts. Back up before production migrations and preserve secret permissions0600.
 - Do not log tokens/passwords or print `.env`/login credentials. Existing deployment secrets stay outside build contexts and images.
 - Do not remove vulnerable class metadata or suppress findings to manufacture clean scans. Record real fixes, mitigations, residual risk and coverage limits.
+- Native security baseline uses `engine/native-toolchains.json` and the project-owned Node/JDK installation. Verify startup/build integrity without making teardown depend on the toolchain. Spark 4.2 direct dependencies and its genuinely shaded components have separate locks; use `engine/rebuild_shaded.py` after ordinary hardening. Preserve bytecode/resources/native-library ownership and exact RF Spark/SLF4J provenance. A zero advisory count for recognized packages does not audit all Mach-O/system/vendor code.
 
 ## Scientific compatibility
 
@@ -84,6 +85,7 @@ Post-classification operations use `classified_feature_ops.py`, `gee/runtime_tab
 - The public source repository is `JamesLinYJ/local-ee`. The user prefers direct pushes; do not create pull requests unless requested. Protected `main` still requires successful GitHub Actions `python` and `frontend` checks on the exact commit, an up-to-date base and linear history, including for administrators. When checks have not run, push that commit to a temporary validation branch, wait for CI, then fast-forward `main` to the identical commit and remove the temporary branch. Never force-push or delete `main`, bypass checks, or temporarily disable protection to publish changes.
 - Inspect code and direct callers first. Keep bounded changes and ownership clear; parallel workers must not edit overlapping files and must report evidence/limits.
 - User preference: all delegated sub-agents use Luna with reasoning effort `max`. Keep file ownership disjoint and pass the repository/task context explicitly when starting a fresh agent.
+- Latest security-specific preference: scanning, investigation and security review subagents use `gpt-6.1-sol` with reasoning effort `max`; this overrides the general model preference for security work.
 - Use existing package managers/locks. Keep builds in temporary output directories, then safely deploy static assets. No public hosting or publishing for this local platform without user authorization.
 - Run syntax/build checks, focused negative/semantic tests, and legitimate end-to-end controls appropriate to the changed module. Test real UI routes when the behavior is user-visible.
 - For EE, include date boundaries, distinct multi-scene reductions, negative ND, mask direction, select/rename/addBands and missing bands; independent numerical references are required for supported scientific claims.

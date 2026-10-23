@@ -27,7 +27,8 @@ def digest(path):
 def artifacts(root=ROOT):
     root = Path(root)
     sources = [('jars', json.loads((root / 'engine/jars-lock.json').read_text())),
-               ('security-jars', json.loads((root / 'engine/security-downloads.json').read_text()))]
+               ('security-jars', json.loads((root / 'engine/security-downloads.json').read_text())),
+               ('security-build-jars', json.loads((root / 'engine/security-build-downloads.json').read_text()))]
     security = {x['file']: x['sha256'] for x in
                 json.loads((root / 'engine/security-jar-lock.json').read_text())}
     restored = {x['file']: x['sha256'] for x in sources[1][1]}

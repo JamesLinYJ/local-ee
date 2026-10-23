@@ -1,0 +1,28 @@
+{
+  "format": "local-ee-native-toolchains-v1",
+  "platform": "darwin",
+  "architecture": "arm64",
+  "artifacts": [
+    {
+      "file": "node-v24.22.1-darwin-arm64.tar.gz",
+      "url": "https://nodejs.org/dist/v24.22.1/node-v24.22.1-darwin-arm64.tar.gz",
+      "size": 53062778,
+      "sha256": "89c682593d76cd44233fa53b1563264e7de9cbb189cad169135c5b4fadfbc0a7",
+      "kind": "node",
+      "directory": "node-v24.22.1-darwin-arm64",
+      "executable": "bin/node",
+      "version": "v24.22.1"
+    },
+    {
+      "kind": "java",
+      "file": "openjdk21-21.0.13.0.2-arm64.bottle.tar.gz",
+      "url": "https://ghcr.io/v2/homebrew/core/openjdk/21/blobs/sha256:509e3eeea158dba8b737c13ac646cbf17499de9ebac40e04bedcaccd43a76f45",
+      "size": 200740333,
+      "sha256": "509e3eeea158dba8b737c13ac646cbf17499de9ebac40e04bedcaccd43a76f45",
+      "directory": "openjdk@21/21.0.13.0.2/libexec/openjdk.jdk/Contents/Home",
+      "executable": "bin/java",
+      "version": "21.0.13.0.2",
+      "license": "GPL-2.0-only WITH Classpath-exception-2.0"
+    }
+  ]
+}

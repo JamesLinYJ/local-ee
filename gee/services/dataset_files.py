@@ -68,6 +68,8 @@ def create(actor,cid,data):
     fields(data,{'filename','size','sha256'})
     name=data.get('filename');size=data.get('size');digest=data.get('sha256')
     if not isinstance(name,str) or not 1<=len(name)<=180 or name in {'.','..'} or any(c in name for c in '/\\') or any(ord(c)<32 for c in name):fail('文件名必须是普通文件名')
+    try:name.encode('utf-8')
+    except UnicodeEncodeError:fail('文件名必须是有效的 Unicode 文本')
     if Path(name).suffix.lower() not in EXTENSIONS:fail('支持 GeoTIFF、NetCDF、CSV、GeoJSON 和 JSON 文件；不接收压缩包或可执行文件')
     if type(size) is not int or not 0<size<=MAX_FILE_SIZE:fail('单文件大小须在 1 字节至 512 MiB 之间')
     if not isinstance(digest,str) or not re.fullmatch('[0-9a-f]{64}',digest):fail('必须提供文件 SHA-256')
@@ -86,10 +88,16 @@ def create(actor,cid,data):
         if c.execute('SELECT COALESCE(sum(size),0) AS n FROM dataset_files').fetchone()['n']+size>TOTAL_RESERVATION:fail('上传暂存总配额为 8 GiB',429,'UploadQuotaExceeded')
         if shutil.disk_usage(root).free<size+1024**3:fail('上传存储剩余空间不足',507,'UploadStorageFull')
         fid=str(uuid4());folder=root/fid;folder.mkdir(mode=0o700)
-        with (folder/'content.part').open('xb'):pass
-        row=c.execute('''INSERT INTO dataset_files(id,collection_id,user_id,filename,size,sha256)
-            VALUES(%s,%s,%s,%s,%s,%s) RETURNING *''',(fid,cid,actor,name,size,digest)).fetchone()
-        audit(c,actor,'file.create','dataset_file',fid,{'collection_id':cid,'filename':name,'size':size,'sha256':digest})
+        try:
+            with (folder/'content.part').open('xb'):pass
+            row=c.execute('''INSERT INTO dataset_files(id,collection_id,user_id,filename,size,sha256)
+                VALUES(%s,%s,%s,%s,%s,%s) RETURNING *''',(fid,cid,actor,name,size,digest)).fetchone()
+            audit(c,actor,'file.create','dataset_file',fid,{'collection_id':cid,'filename':name,'size':size,'sha256':digest})
+        except BaseException:
+            # Only this request's exclusive folder, before commit is attempted.
+            (folder/'content.part').unlink(missing_ok=True)
+            folder.rmdir()
+            raise
     return public(row)
 
 

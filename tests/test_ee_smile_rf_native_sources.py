@@ -29,10 +29,10 @@ def test_smile_dependency_lock_pins_four_primary_maven_artifacts_and_shared_slf4
         )
         assert len(artifact["sha256"]) == 64
     assert lock["reused_slf4j_api"] == {
-        "coordinate": "org.slf4j:slf4j-api:2.0.16",
-        "spark_version": "4.0.4",
-        "filename": "slf4j-api-2.0.16.jar",
-        "sha256": "a12578dde1ba00bd9b816d388a0b879928d00bab3c83c240f7013bf4196c579a",
+        "coordinate": "org.slf4j:slf4j-api:2.0.17",
+        "spark_version": "4.2.0",
+        "filename": "slf4j-api-2.0.17.jar",
+        "sha256": "7b751d952061954d5abfed7181c1f645d336091b679891591d63329c622eb832",
     }
 
 

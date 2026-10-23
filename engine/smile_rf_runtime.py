@@ -284,12 +284,12 @@ def _verify_optional_install(
     reused_slf4j = dependency_lock.get("reused_slf4j_api")
     if (
         not isinstance(reused_slf4j, dict)
-        or reused_slf4j.get("coordinate") != "org.slf4j:slf4j-api:2.0.16"
+        or reused_slf4j.get("coordinate") != "org.slf4j:slf4j-api:2.0.17"
         or reused_slf4j.get("spark_version") != engine_lock.get("spark")
     ):
         raise RuntimeError("Smile RF lock does not match the active Spark SLF4J provenance")
     slf_name = reused_slf4j.get("filename")
-    if not isinstance(slf_name, str) or slf_name != "slf4j-api-2.0.16.jar":
+    if not isinstance(slf_name, str) or slf_name != "slf4j-api-2.0.17.jar":
         raise RuntimeError("Smile RF lock names an unsupported shared SLF4J API")
     slf_candidates = list(spark_jars_dir.glob("slf4j-api-*.jar"))
     if len(slf_candidates) != 1 or slf_candidates[0].name != slf_name:

@@ -66,17 +66,13 @@ net.connect = deny; net.createConnection = deny; net.Socket.prototype.connect = 
 const dns = require('node:dns'); dns.lookup = deny; dns.resolve = deny;
 global.fetch = deny;
 const payloads = [];
-require('node:child_process').spawnSync = (program, args, options) => {
-  if (program !== process.execPath || path.basename(args[0]) !== 'transport.cjs') {
-    throw Error('Unexpected child process');
-  }
-  const payload = JSON.parse(options.input);
+require.cache[require.resolve('./bridge.cjs')] = {exports: {send(payload) {
   payloads.push(payload);
   const value = payload.action === 'export_table'
     ? {job_id: '00000000-0000-0000-0000-000000000002'}
     : {value: {state: 'READY'}};
-  return {status: 0, stdout: JSON.stringify({ok: true, value}), stderr: ''};
-};
+  return value;
+}}};
 process.on('exit', () => fs.writeFileSync(process.env.TABLE_CAPTURE,
   JSON.stringify({payloads, network_attempts: attempts})));
 """
@@ -112,6 +108,7 @@ def test_existing_js_runner_exports_classified_features(call, tmp_path, monkeypa
         for name in ("earthengine.cjs", "algorithms.json"):
             shutil.copyfile(ROOT / "vendor/earthengine-js" / name, runtime / "vendor" / name)
         shutil.copyfile(ROOT / "runtimes/eejs/runner.cjs", runtime / "runner.cjs")
+        shutil.copyfile(ROOT / "runtimes/eejs/bridge.cjs", runtime / "bridge.cjs")
         (runtime / "capture.cjs").write_text(CAPTURE_TRANSPORT)
         (runtime / "script.js").write_text(JS_CLASSIFICATION.replace("EXPORT_CALL", call))
         capture = runtime / "requests.json"

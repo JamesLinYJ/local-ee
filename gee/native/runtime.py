@@ -51,12 +51,13 @@ class NativeTask:
         return path.read_bytes()[-200000:] if path.exists() else b''
 
     def stop(self, timeout=3):
+        """Request termination; False means bounded filesystem cleanup is still pending."""
         self.reload()
         if self.status not in {'running','starting'}:
-            return
+            return True
         pid = self.state.get('pid')
         if not pid:
-            raise RuntimeError('Native supervisor did not publish its identity')
+            return False
         p = psutil.Process(pid)
         if abs(p.create_time()-self.state['create_time']) > 0.01:
             raise RuntimeError('Process identity changed; refusing to signal')
@@ -65,14 +66,19 @@ class NativeTask:
         while time.monotonic() < deadline:
             self.reload()
             if self.status == 'exited':
-                return
+                return True
             time.sleep(0.1)
-        raise RuntimeError('Native task failed to stop')
+        return False
 
     def remove(self):
         self.reload()
         if self.status in {'running','starting'}:
             raise RuntimeError('Cannot release a running native task')
+        if self.config.get('scratch_lease'):
+            from .scratch import release
+            release(self.config['scratch_lease'],recovering=True)
+            if Path(self.config['scratch_lease']).exists():
+                raise RuntimeError('Scratch cleanup is pending; task controls retained')
         self.base.with_suffix('.json').unlink(missing_ok=True)
 
 
@@ -81,6 +87,8 @@ class NativeClient:
         self.root = Path(os.environ['GEE_PROJECT_ROOT']).resolve()
         self.control = self.root/'.native/run/tasks'
         self.control.mkdir(parents=True,exist_ok=True,mode=0o700)
+        from .scratch import recover
+        recover(self.root)
 
     def get(self, name):
         return NativeTask(self,name.removeprefix('gee-'))
@@ -130,16 +138,26 @@ class NativeClient:
                        GEE_SCRIPT_PATH=str(folder/'script.py'))
             command = [node,str(root/'.native/eejs/runner.cjs'),str(folder/'script.js')] if javascript else [python,str(root/'gee/script_runner.py')]
         sandbox = self.control/(jid+'.sb')
-        sandbox.write_text(profile(reads=reads,writes=writes,api_port=port,spark=batch))
+        sandbox.write_text(profile(reads=reads,writes=writes,api_port=port,spark=batch,
+                                   fork=row['kind'] != 'script',package_roots=[root]))
         sandbox.chmod(0o600)
         config = {'command':['/usr/bin/sandbox-exec','-f',str(sandbox),*command],
                   'cwd':str(scratch),'env':env,'timeout':1800 if batch else (180 if row['kind']=='ingest' else 120),
                   'memory_bytes':(4096 if batch else (2048 if row['kind']=='ingest' else 512))*1024**2,
                   'state':str(self.control/(jid+'.state.json')),'log':str(self.control/(jid+'.log'))}
         manifest = self.control/(jid+'.json')
-        manifest.write_text(json.dumps(config));manifest.chmod(0o600)
+        if row['kind']=='script':
+            from .scratch import reserve
+            config['scratch_lease']=str(reserve(root,jid,scratch))
         manager_env = {'PATH':'/usr/bin:/bin','PYTHONPATH':str(root),'PYTHONDONTWRITEBYTECODE':'1'}
-        with (self.control/(jid+'.supervisor.log')).open('ab') as log:
-            subprocess.Popen([str(root/'.venv/bin/python'),'-m','gee.native.task',str(manifest)],
-                             env=manager_env,cwd=root,start_new_session=True,stdin=subprocess.DEVNULL,stdout=log,stderr=log)
+        try:
+            manifest.write_text(json.dumps(config));manifest.chmod(0o600)
+            with (self.control/(jid+'.supervisor.log')).open('ab') as log:
+                subprocess.Popen([str(root/'.venv/bin/python'),'-m','gee.native.task',str(manifest)],
+                                 env=manager_env,cwd=root,start_new_session=True,stdin=subprocess.DEVNULL,stdout=log,stderr=log)
+        except BaseException:
+            if config.get('scratch_lease'):
+                from .scratch import release
+                release(config['scratch_lease'])
+            raise
         return NativeTask(self,jid)

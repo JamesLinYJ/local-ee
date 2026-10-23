@@ -58,6 +58,26 @@ catch(e){{if(e.code!=='EPERM' && e.code!=='EACCES')throw e;console.log('DENIED')
     assert result.returncode==0 and 'DENIED' in result.stdout,result.stderr
 
 
+def test_python_package_directory_listing_does_not_grant_child_file_reads(tmp_path):
+    deployment=tmp_path/'deployment';package=deployment/'audited_package';package.mkdir(parents=True)
+    (package/'__init__.py').write_text('value=7')
+    secret=deployment/'private-config';secret.write_text('synthetic credential')
+    own=tmp_path/'own';own.mkdir()
+    rules=profile(reads=[*runtime_reads(ROOT,sys.executable),package],writes=[own],
+                  package_roots=[deployment],fork=False)
+    code=f'''import sys,pathlib
+sys.path.insert(0,{str(deployment)!r})
+import audited_package
+assert audited_package.value==7
+try:pathlib.Path({str(secret)!r}).read_bytes();raise RuntimeError('CHILD FILE EXPOSED')
+except PermissionError:print('IMPORT_ALLOWED_SECRET_DENIED')
+'''
+    result=subprocess.run(['/usr/bin/sandbox-exec','-p',rules,sys.executable,'-c',code],
+                          cwd=own,capture_output=True,text=True,timeout=15,
+                          env={'PATH':'/usr/bin:/bin','HOME':str(own),'TMPDIR':str(own),'PYTHONDONTWRITEBYTECODE':'1'})
+    assert result.returncode==0 and 'IMPORT_ALLOWED_SECRET_DENIED' in result.stdout,result.stderr
+
+
 def test_only_declared_api_port_is_allowed(tmp_path):
     from http.server import BaseHTTPRequestHandler,HTTPServer
     import threading
