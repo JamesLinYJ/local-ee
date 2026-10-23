@@ -4,6 +4,13 @@ import geeDocs from "./gee-docs";
 const entries: ReferenceEntry[] = [
   ...geeDocs,
   {
+    id: "gee-python-rf-explanation",
+    category: "GEE Python",
+    title: "随机森林解释与特征重要性",
+    text: "已训练 Smile RF 的 explain 返回实际 importance、numberOfTrees、outOfBagErrorEstimate。重要性为树的 Gini 减少量之和，未归一化。支持 get/keys/contains/values 和匹配的 Dictionary/Number/List 转换，显式 values 键最多64项，保留顺序与重复。结果通过 JSON/getInfo 任务读取；不支持树文本、动态数学、嵌套容器或 CSV/栅格导出。原始 Smile 袋外错误在没有袋外投票时也可能为0，不能当作独立验证精度；尚无 Google 同数据对照。",
+    code: "explanation = model.explain()\nimportance = ee.Dictionary(explanation.get('importance'))\nprint(importance.getInfo())\nprint(importance.values(['nir', 'red', 'nir']).getInfo())\nprint(explanation.get('numberOfTrees').getInfo())",
+  },
+  {
     id: "gee-python-training-schema",
     category: "GEE Python",
     title: "训练字段与集合元数据",
@@ -56,7 +63,7 @@ const entries: ReferenceEntry[] = [
     id: "gee-python-smile-rf",
     category: "GEE Python",
     title: "ee.Classifier.smileRandomForest()",
-    text: "Python ee.* 通过固定官方客户端构建本地计算图。随机森林支持内联训练表与 Image.sample/sampleRegions 的已声明操作结果。inputProperties 可显式给出；有 band_order 元数据时，省略或 None 会采用其完整顺序，训练只在受控 JVM 中进行。最多 1–8 个数值字段、2–1000 行、2–64 个从 0 连续编号的类别、256 棵树；共同工作预算可能进一步限制行数。CLASSIFICATION 支持影像与表分类、训练重代入和验证矩阵；不支持 RF explain 及其他模式。必须安装固定 RF 运行包，尚未完成本机部署及 Google 同数据验收。",
+    text: "Python ee.* 通过固定官方客户端构建本地计算图。随机森林支持内联训练表与 Image.sample/sampleRegions 的已声明操作结果。inputProperties 可显式给出；有 band_order 元数据时，省略或 None 会采用其完整顺序，训练只在受控 JVM 中进行。最多 1–8 个数值字段、2–1000 行、2–64 个从 0 连续编号的类别、256 棵树；共同工作预算可能进一步限制行数。CLASSIFICATION 支持影像与表分类、训练重代入和验证矩阵；explain 支持实际重要性、树数量和原始袋外错误率；其他模式仍不支持。必须安装固定 RF 运行包，尚未完成本机部署及 Google 同数据验收。",
     code: "import ee\n# image、training 为已有本地影像和训练表\nmodel = ee.Classifier.smileRandomForest(\n    numberOfTrees=100, variablesPerSplit=1, minLeafPopulation=1,\n    bagFraction=0.5, maxNodes=None, seed=42,\n).train(features=training, classProperty='label',\n        inputProperties=['red', 'nir'])\nclassified = image.classify(model, 'landcover')\nprint(classified.bandNames())",
   },
   {

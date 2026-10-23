@@ -7,6 +7,7 @@ from .rf_validation_spec import (
 )
 from .runtime_table_spec import PROCESS as TABLE_OP
 from .runtime_table_graph import CLASSIFIERS, runtime_table_columns, runtime_table_known_empty
+from .rf_explanation_processes import RF_EXPLAIN, explanation_process_spec, validate_explanation_process
 
 
 CLASSIFY_ROWS = "local_ee_smile_rf_classify_rows"
@@ -18,9 +19,9 @@ CLASSIFIED_PRODUCERS = CLASSIFIERS | {TABLE_OP}
 MATRIX_PRODUCERS = frozenset({RF_CONFUSION, ERROR_MATRIX})
 SAMPLE_PRODUCERS = frozenset({"local_ee_sample_regions", "local_ee_sample_table_op"})
 TRAINERS = frozenset({"local_ee_train_smile_rf_rows", "local_ee_train_smile_rf_samples"})
-VALIDATION_PROCESSES = CLASSIFIED_PRODUCERS | MATRIX_PRODUCERS | {CONFUSION_VALUE}
-JSON_PRODUCERS = CLASSIFIED_PRODUCERS | {CONFUSION_VALUE}
-MODEL_CONSUMERS = CLASSIFIERS | {RF_CONFUSION, "local_ee_smile_rf"}
+VALIDATION_PROCESSES = CLASSIFIED_PRODUCERS | MATRIX_PRODUCERS | {CONFUSION_VALUE, RF_EXPLAIN}
+JSON_PRODUCERS = CLASSIFIED_PRODUCERS | {CONFUSION_VALUE, RF_EXPLAIN}
+MODEL_CONSUMERS = CLASSIFIERS | {RF_CONFUSION, RF_EXPLAIN, "local_ee_smile_rf"}
 
 
 def _source(value, nodes, producers):
@@ -32,6 +33,9 @@ def _source(value, nodes, producers):
 
 
 def validate_validation_process(name, arguments, depth, node_context):
+    if name == RF_EXPLAIN:
+        validate_explanation_process(arguments, depth, node_context)
+        return
     fields = {
         CLASSIFY_ROWS: {"rows", "spec", "model"},
         CLASSIFY_SAMPLES: {"data", "spec", "model"},
@@ -141,9 +145,15 @@ def validate_validation_dependencies(nodes):
                     if not (direct and parameter == "data" and name == "save_result"
                             and str(args.get("format", "")).lower() == "json"):
                         raise ValueError("Runtime matrix values only support direct JSON output")
+                elif producer == RF_EXPLAIN:
+                    if not (direct and parameter == "data" and name == "save_result"
+                            and str(args.get("format", "")).lower() == "json"):
+                        raise ValueError("RF explanation values only support direct JSON output")
 
 
 def validation_process_spec(name):
+    if name == RF_EXPLAIN:
+        return explanation_process_spec()
     schema = {"type": "object", "subtype": "vector-cube"}
     params = []
     if name != RF_CONFUSION:

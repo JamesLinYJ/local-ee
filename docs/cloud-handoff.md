@@ -352,3 +352,12 @@ cosine 先保留点积符号，再用精确有理数交叉乘积排名，不先�
 完整便携回归2293 passed／3 skipped，另排除4项延期原生测试；前端11／TS／临时构建通过。原50探针仍45通过／5拒绝，唯RF构造器直接JSON结果的拒绝原因改变并审阅；完整PythonAPI目录字节相同。新增3项Python/JS图一致性为S/C。四个opt-in真实JVM tile组件包括RF1000行×8特征×100树控制；没有SparkContext、完整batch/sandbox/browser或Google证据。最终Unicode扫描器改按码点限制，129／256码点的schema及class_property实际train→predict通过，257拒绝；变更后79项定向复核通过，未重复宽套件，原full-run证据保留。
 
 Smile1.5.3四JAR与复用SLF4J固定于`deploy/smile-rf-lock.json`，`scripts/build_smile_rf_adapter.py`只用显式本地依赖、构建到专属work scratch并出独立SPI/manifest；不下载、不安装到.native。原runner在SparkContext前验证可选包，缺包保留旧行为；部分包／摘要／重复SLF4J／未知classpath项失败。新增sandbox只读精确文件为`.native/engine-lock.json`、`deploy/smile-rf-lock.json`、`scripts/build_smile_rf_adapter.py`，未开放整个目录或外网。云端缺少锁定JDK/JAR时RF kernel保持opt-in skip，不记作通过。继续从最新main；RF explain／随机列／表分类／动态矩阵、模型保存和完整运行部署仍待做。
+
+
+## 第三十二批接续：真实随机森林解释
+
+新增`Classifier.explain`的封闭三字段字典与有界get/keys/contains/values投影，官方Python／JS图一致。实际Smile importance/tree count/rawOOB进入独立runtime_explanation JSON任务，原矩阵数值边界、父脚本／用户权限和物理文件发布仍保留。图与运行时保持RF150000／3MB预充；不含解释对象的表达式跳过新增扫描，含对象时所有参数容器迭代检查并计费，循环和共享DAG安全。静态If／内联Collection.iterate可选同一个直接最终结果，不允许进入后端运行时回调。
+
+冻结源码2788 passed／3 skipped（排除4项延期原生测试），六可信组件与前端11／类型／临时构建通过；两项后续静态控制流精确图测试通过，生产代码未再改。实际三树独立Gini参考 `[0,1.5]`／树数3／OOB0及JSON读回通过；它不是任意森林或Google／真实数据能力证明。首次全回归2772通过／7失败／3跳过暴露普通列表与表格重复扫描回归，根因修复后原样本和预算通过。见 `reports/gee-python-wave32.json`、`docs/gee-python/rf-explanation.md`、示例37。入口279／991（28.15%）只统计名称；完整兼容目标继续。
+
+保留较大内联训练与投影链的50000编译工作上限，可能先于1000行上限触发。OOB沿用Smile1.5.3无票时也可能返回0的策略；无树文本／模型保存／通用动态数学／CSV或栅格输出。未部署，无完整Spark／沙箱任务／HTTP浏览器／Google同数据验收。继续从最新main，优先完成真实工作流依赖而非单纯增加名称；不运行容器或恢复虚拟机，用户数据和现有账号保持原状。

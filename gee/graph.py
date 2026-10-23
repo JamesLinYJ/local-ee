@@ -35,6 +35,10 @@ def validate(graph):
             raise ValueError("单个流程最多 500 个节点")
         if sum(n.get("result") is True for n in g.values() if isinstance(n, dict)) != 1:
             raise ValueError("每个流程必须有一个 result 节点")
+        if depth == 0:
+            from .rf_explanation_processes import preflight_explanation_graph
+
+            preflight_explanation_graph(g)
         deps = {}
         for key, node in g.items():
             if not isinstance(node, dict) or set(node) - {"process_id", "arguments", "result", "description", "namespace"} or node.get("process_id") not in SUPPORTED or node.get("namespace"):

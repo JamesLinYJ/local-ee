@@ -9,6 +9,7 @@ import pytest
 from gee.ee_python_client import configure_local_ee
 from gee.ee_translate import UnsupportedEEError, compile_expression
 from gee.graph import validate
+from gee.rf_explanation_spec import decode_explanation_spec
 from gee.smile_rf_spec import decode_rf_rows, decode_rf_spec
 from scripts.ee_python_api.offline import OfflineGuard
 
@@ -305,10 +306,28 @@ def test_unsupported_rf_modes_and_result_consumers_remain_rejected(ee, local):
         ee.Image("target-a").classify(rf(ee)),
         classifier,
         classifier.confusionMatrix(),
-        classifier.explain(),
     ):
         with pytest.raises(UnsupportedEEError):
             compile_expression(encode(ee, value), local[0], local[1])
+
+    with pytest.raises(UnsupportedEEError, match="trained Smile RandomForest"):
+        compile_expression(encode(ee, rf(ee).explain()), local[0], local[1])
+
+    result = compile_expression(encode(ee, classifier.explain()), local[0], local[1])
+    assert result["kind"] == "runtime_explanation"
+    assert result["bands"] == []
+    assert decode_explanation_spec(result["explanation_spec"]) == {
+        "version": 1, "schema": ["nir", "red"], "trees": 7,
+        "view": "explanation",
+    }
+    trainers = process_nodes(result, "local_ee_train_smile_rf_rows")
+    explanations = process_nodes(result, "local_ee_smile_rf_explain")
+    assert len(trainers) == len(explanations) == 1
+    assert explanations[0][1]["arguments"]["model"] == {
+        "from_node": trainers[0][0],
+    }
+    assert explanations[0][1]["arguments"]["spec"] == result["explanation_spec"]
+    validate(result["process_graph"])
 
 
 @pytest.mark.parametrize("features", [

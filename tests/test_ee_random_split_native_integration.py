@@ -258,6 +258,9 @@ def test_actual_image_sample_random_filter_and_smile_rf_python_jvm_bridge(monkey
         assert [float(value["audit_draw"]) for value in csv_rows] == [
             value["properties"]["audit_draw"] for value in final_rows
         ]
+        from ee_rf_explanation_native import verify_native_explanation
+
+        actual_explanation = verify_native_explanation(tmp_path)
 
         evidence = {
             "scope": "actual GeoTrellis Image.sample tile kernel -> Python SampledFeatureTable and random/filter split -> real Smile JVM factory, predictions, and confusion counts; authenticated loopback Py4J only; no SparkContext, RDD adapter, service, sandbox, or Google comparison",
@@ -279,6 +282,7 @@ def test_actual_image_sample_random_filter_and_smile_rf_python_jvm_bridge(monkey
             ],
             "validation_matrix": actual_validation_matrix,
             "training_matrix": actual_training_matrix,
+            "actual_rf_explanation": actual_explanation,
             "post_classification": {
                 "training_schema": list(post_model.schema),
                 "compiled_operations": [json.loads(text) for text in post_operations],

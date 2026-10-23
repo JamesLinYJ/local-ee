@@ -25,6 +25,31 @@ _METADATA_ARGUMENTS = {
 def invoke(translator, name, arguments):
     """Dispatch in the same precedence order as the legacy translator."""
     a = arguments
+    from .rf_explanation import (
+        UNHANDLED,
+        contains_runtime_explanation,
+        has_runtime_explanation_argument,
+        invoke_runtime_explanation,
+        mark_runtime_explanation_seen,
+        runtime_explanation_seen,
+    )
+
+    direct_runtime = has_runtime_explanation_argument(a)
+    if direct_runtime:
+        mark_runtime_explanation_seen(translator)
+    if name == "Classifier.explain" or direct_runtime:
+        result = invoke_runtime_explanation(
+            translator, name, a, known_present=direct_runtime,
+        )
+        if result is not UNHANDLED:
+            return result
+    elif (runtime_explanation_seen(translator)
+          and contains_runtime_explanation(a, translator)):
+        result = invoke_runtime_explanation(
+            translator, name, a, known_present=True,
+        )
+        if result is not UNHANDLED:
+            return result
     from .raster_array_bands import handles_array_bands, invoke_array_bands
 
     if name == "Image.remap":

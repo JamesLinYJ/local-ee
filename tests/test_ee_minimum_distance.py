@@ -395,7 +395,7 @@ def test_classifier_schema_training_classification_and_confusion_reject_unknown_
 
 def test_other_classifier_methods_are_not_silently_supported(ee):
     model = train(ee)
-    with pytest.raises(UnsupportedEEError, match="Unsupported Earth Engine algorithm"):
+    with pytest.raises(UnsupportedEEError, match="trained Smile RandomForest"):
         output(ee, model.explain())
 
 

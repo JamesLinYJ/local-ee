@@ -80,10 +80,17 @@ SMILE_RF_LIMIT = (
     "CLASSIFICATION only; schema and setOutputMode supported. Image.classify uses a trusted opaque JVM model from an RF trainer, "
     "preserves actual Float32/Float64, masks/grid/time/metadata, singleton Int32 v; valid infinity rejects. "
     "Prediction uses checked1e9 pixels*keys*sum(actual tree depths). Dedicated locked optional SPI/dependency package, no runtime downloads or user Java deserialization. "
-    "RF FeatureCollection.classify and resubstitution/validation matrices have a separate bounded runtime table contract; explain and other modes remain unsupported. "
+    "RF FeatureCollection.classify and resubstitution/validation matrices have a separate bounded runtime table contract; explain supports only the closed actual Smile diagnostic dictionary and JSON projections. Other modes remain unsupported. "
     "No Google Smile version, seed, sampling, dtype or numerical equivalence and no full Spark/sandbox/service/browser/deployment acceptance."
 )
 KNOWN_PARTIAL_LIMITS["Classifier.smileRandomForest"] = [SMILE_RF_LIMIT]
+KNOWN_PARTIAL_LIMITS["Classifier.explain"] = [
+    "Trained Smile1.5.3 RF only; actual importance (sum of tree Gini decreases), numberOfTrees and raw outOfBagErrorEstimate. "
+    "No normalized importance, tree text or other classifiers. Raw OOB may be0 when no held-out votes exist; not independent validation accuracy or Google equivalence. "
+    "Bounded typed dictionary get/keys/contains/values and compatible casts, <=64 selected keys preserving order/duplicates; only direct owned JSON result. "
+    "No generic nesting, dynamic algebra, CSV/raster sink or compiler fitting. Exact trainer schema/tree count, direct producer and existing RF150000/3MB/output budgets revalidated. "
+    "Official Python/JS graph parity, actual trusted JVM and an independent fixed-stump oracle are component evidence, not full Spark/service/browser/deployment/Google acceptance."
+]
 for operation in ("Classifier.train", "Classifier.schema", "Classifier.setOutputMode"):
     KNOWN_PARTIAL_LIMITS[operation].append(SMILE_RF_LIMIT)
 KNOWN_PARTIAL_LIMITS["Image.classify"] = [

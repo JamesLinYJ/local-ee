@@ -216,6 +216,12 @@ def local_ee_smile_rf(args, env):
     return handler(args, env)
 
 
+def local_ee_smile_rf_explain(args, env):
+    from .ee_rf_explanation import local_ee_smile_rf_explain as handler
+
+    return handler(args, env)
+
+
 _HANDLERS = {
     "local_ee_drop_single_time": local_ee_drop_single_time,
     "local_ee_reduce_bands": local_ee_reduce_bands,
@@ -233,6 +239,7 @@ _HANDLERS = {
     "local_ee_error_matrix": local_ee_error_matrix,
     "local_ee_confusion_value": local_ee_confusion_value,
     "local_ee_smile_rf": local_ee_smile_rf,
+    "local_ee_smile_rf_explain": local_ee_smile_rf_explain,
 }
 
 

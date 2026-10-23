@@ -49,6 +49,10 @@ def compile_expression(expression, catalog, items, options=None):
             return public_result(compile_runtime_value(value, translator))
         if isinstance(value, (RuntimeRFTrainingConfusion, RuntimeFeatureErrorMatrix)):
             fail("Runtime ConfusionMatrix output requires array(), order(), accuracy(), kappa() or a supported class metric")
+        from .rf_explanation import RuntimeRFExplanation, compile_runtime_explanation
+
+        if isinstance(value, RuntimeRFExplanation):
+            return public_result(compile_runtime_explanation(value, translator))
         from .confusion_values import StaticConfusionMatrix
 
         if isinstance(value, StaticConfusionMatrix):

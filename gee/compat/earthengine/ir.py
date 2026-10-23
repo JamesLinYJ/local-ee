@@ -148,7 +148,7 @@ def integer(value: Any, label: str, minimum: int | None = None) -> int:
     return int(value)
 
 
-def static_truth(value: Any) -> bool:
+def static_truth(value: Any, translator=None) -> bool:
     from .array_values import StaticArray
     from .join_ops import Join
     from .table_reducers import TableReducer
@@ -163,10 +163,21 @@ def static_truth(value: Any) -> bool:
         RuntimeFeatureErrorMatrix,
         RuntimeRFTrainingConfusion,
     )
+    from .rf_explanation import (
+        RuntimeRFExplanation,
+        contains_runtime_explanation,
+    )
 
     # EE If treats empty arrays/dictionaries/strings, zero, NaN and null as
     # false. Do not accidentally use truthiness of internal IR dataclasses.
-    if isinstance(value, (Image, Collection, ImageSequence, Pixel, Region, Function, Filter, Reducer, StaticArray, Join, InnerJoin, TableReducer, RasterArrayImage, StaticConfusionMatrix, StaticMinimumDistance, RasterArrayBands, SampledFeatures, DynamicMinimumDistance, SmileRandomForest, TrainedSmileRandomForest, RFClassifiedFeatureTable, RuntimeRFTrainingConfusion, RuntimeFeatureErrorMatrix, RuntimeConfusionValue)):
+    may_contain_runtime_explanation = (
+        translator is None
+        or getattr(translator, "_runtime_rf_explanation_seen", False)
+    )
+    if (may_contain_runtime_explanation
+            and contains_runtime_explanation(value, translator)):
+        fail("Algorithms.If currently requires a static scalar/list/dictionary condition")
+    if isinstance(value, (Image, Collection, ImageSequence, Pixel, Region, Function, Filter, Reducer, StaticArray, Join, InnerJoin, TableReducer, RasterArrayImage, StaticConfusionMatrix, StaticMinimumDistance, RasterArrayBands, SampledFeatures, DynamicMinimumDistance, SmileRandomForest, TrainedSmileRandomForest, RFClassifiedFeatureTable, RuntimeRFTrainingConfusion, RuntimeFeatureErrorMatrix, RuntimeConfusionValue, RuntimeRFExplanation)):
         fail("Algorithms.If currently requires a static scalar/list/dictionary condition")
     if isinstance(value, (int, float)) and not math.isfinite(value):
         return False

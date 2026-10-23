@@ -102,15 +102,21 @@ const entries: ReferenceEntry[] = [
     code: "var training = training.set('band_order', ['nir','red']);\nvar model = ee.Classifier.smileRandomForest(50).train({\n  features:training, classProperty:'label'\n});\nprint(model.schema());",
   },
   {
+    id: "gee-rf-explanation",
+    title: "explain 与特征重要性",
+    text: "仅支持已训练 Smile RF：importance 为实际树 Gini 减少量之和，numberOfTrees 为实际树数，outOfBagErrorEstimate 为固定库原始值。支持有界字典 get/keys/contains/values，保留显式键顺序和重复；JSON 结果走已有任务权限。无袋外投票时错误率也可能为0，不代表完美模型；树文本、其他分类器、动态数学、嵌套容器和 CSV/栅格导出尚不支持。没有 Google 数值一致性验收。",
+    code: "var explanation = model.explain();\nvar importance = ee.Dictionary(explanation.get('importance'));\nprint(importance);\nprint(importance.values(['nir','red','nir']));\nprint(explanation.get('numberOfTrees'));",
+  },
+  {
     id: "gee-smile-rf",
     title: "随机森林训练与影像分类",
-    text: "smileRandomForest 使用固定的本地 Smile 1.5.3。支持内联 FeatureCollection 或 sampleRegions 后 filter/无排序 limit 的训练表；训练字段为1–8个数值属性；省略 inputProperties 时采用集合 band_order 的完整顺序，训练标签为从 0 连续编号的 2–64 类。六个构造参数均参与实际训练，最多 256 棵树、1000 行，仍受工作预算限制。CLASSIFICATION 模式支持影像与表分类，以及训练重代入矩阵和验证指标；explain 和其他模式尚不支持；随机列使用已说明的本地算法。执行需要固定的本地 RF 运行包；源码/组件验证与本机部署验收分开记录，尚无 Google 同数据对照。",
+    text: "smileRandomForest 使用固定的本地 Smile 1.5.3。支持内联 FeatureCollection 或 sampleRegions 后 filter/无排序 limit 的训练表；训练字段为1–8个数值属性；省略 inputProperties 时采用集合 band_order 的完整顺序，训练标签为从 0 连续编号的 2–64 类。六个构造参数均参与实际训练，最多 256 棵树、1000 行，仍受工作预算限制。CLASSIFICATION 模式支持影像与表分类，以及训练重代入矩阵和验证指标；explain 支持封闭的实际诊断字典，其他模式尚不支持；随机列使用已说明的本地算法。执行需要固定的本地 RF 运行包；源码/组件验证与本机部署验收分开记录，尚无 Google 同数据对照。",
     code: "// image、training 为已有影像和带 label 属性的训练表\nvar model = ee.Classifier.smileRandomForest({\n  numberOfTrees:100, variablesPerSplit:1, minLeafPopulation:1,\n  bagFraction:0.5, maxNodes:null, seed:42\n}).train({features:training, classProperty:'label',\n  inputProperties:['red','nir']});\nvar classified = image.classify(model, 'landcover');\nMap.addLayer(classified, {min:0,max:1,palette:['386a4d','d9b76e']}, '分类');",
   },
   {
     id: "gee-rf-validation",
     title: "分类验证与精度指标",
-    text: "FeatureCollection.classify 保留原始字段、几何、ID 和顺序，并添加分类字段。输入为内联表或 sampleRegions/filter/limit 结果，缺少输入字段、输出重名和非有限数值会失败。errorMatrix 的行为实际类、列为预测类；显式 order 保留类别顺序。支持 array、order、accuracy、kappa、consumersAccuracy、producersAccuracy 和 fscore。训练 confusionMatrix 使用真实训练行重代入，不是独立验证集；各指标的形状与零分母规则遵循本地文档。getInfo 通过本地 JSON 任务返回结果，表导出仍为 CSV。分类后的 filter/limit、随机拆分和动态指标的通用算术尚未支持。",
+    text: "FeatureCollection.classify 保留原始字段、几何、ID 和顺序，并添加分类字段。输入为内联表或 sampleRegions/filter/limit 结果，缺少输入字段、输出重名和非有限数值会失败。errorMatrix 的行为实际类、列为预测类；显式 order 保留类别顺序。支持 array、order、accuracy、kappa、consumersAccuracy、producersAccuracy 和 fscore。训练 confusionMatrix 使用真实训练行重代入，不是独立验证集；各指标的形状与零分母规则遵循本地文档。getInfo 通过本地 JSON 任务返回结果，表导出仍为 CSV。分类后支持 filter、无排序 limit 和本地 randomColumn；动态指标的通用算术尚未支持。",
     code: "// model、validation 为已有模型和独立验证表\nvar predictions = validation.classify(model, 'prediction');\nvar matrix = predictions.errorMatrix('label', 'prediction', [0,1]);\nprint('验证矩阵', matrix.array());\nprint('总体精度', matrix.accuracy());\nprint('训练重代入', model.confusionMatrix().array());\nExport.table.toDrive({collection:predictions, fileFormat:'CSV'});",
   },
   {

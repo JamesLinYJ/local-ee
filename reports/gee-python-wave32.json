@@ -1,0 +1,185 @@
+{
+  "schema": "local-ee-python-wave32/v1",
+  "date": "2026-10-23",
+  "base_commit": "822fe9de41393e7aa389d2deff1b988612a6b62d",
+  "title": "Actual trained Smile RF explanation and owned typed JSON projections",
+  "entry_inventory": {
+    "declared_handler_names": 279,
+    "pinned_signatures": 991,
+    "name_entry_percentage": 28.15,
+    "new_names": [
+      "Classifier.explain"
+    ],
+    "interpretation": "API name-entry count only; not complete argument/runtime/numerical or arbitrary project migration compatibility"
+  },
+  "changes": [
+    "Actual JVM forest importance, tree count and raw Smile1.5.3 OOB error; no fabricated compiler/pending statistics",
+    "Closed version1 projection spec and separate runtime_explanation type, bounded dictionary reads and compatible casts, direct JSON only",
+    "Exact direct trainer/schema/tree count, aggregate graph RF150000/3MB preflight, UTF8 before encoding, typed runtime model/metadata validation",
+    "Trusted exact result context, physical owned JSON writer, worker publication and readback; strict structure preflight, duplicate/nonfinite rejection, parent-script/user permission checks; old matrix result remains numeric-only",
+    "Translator-local opaque-presence hint avoids new scans in ordinary expressions; once present, all invocation containers are checked with charged cycle/shared-DAG safe traversal; If uses same translator accounting",
+    "Python/JS local help, syntax contract, example37 and generated API inventory updated; compiler semantic module and pure wire helper separated"
+  ],
+  "validation": {
+    "full_regression": {
+      "passed": 2788,
+      "skipped": 3,
+      "failed": 0,
+      "duration_seconds": 47.66,
+      "evidence": "audit/gee-python-wave32/final-verified/python.xml",
+      "frozen_source_files": 33,
+      "source_hashes_unchanged": true,
+      "native_runtime_tests_excluded": 4,
+      "skips": [
+        {
+          "test": "tests.test_ee_grid_adapter.test_native_grid_and_unmask_spi_semantics",
+          "reason": "set LOCAL_EE_RUN_NATIVE_GRID_TEST=1 for the opt-in local[1] JVM/Spark probe"
+        },
+        {
+          "test": "tests.test_ee_integer.test_native_adapter_builds_and_executes_real_spi_tile_conversion",
+          "reason": "set LOCAL_EE_RUN_NATIVE_INTEGER_TEST=1 for the lightweight JVM/Spark probe"
+        },
+        {
+          "test": "tests.test_ee_reduce_adapter.test_native_single_time_and_band_reducer_semantics",
+          "reason": "set LOCAL_EE_RUN_NATIVE_REDUCER_TEST=1 for the opt-in local[1] JVM/Spark probe"
+        }
+      ],
+      "warnings": "3 existing Rasterio PendingDeprecationWarnings",
+      "real_components": [
+        "minimumDistance tile",
+        "Image.sample tile",
+        "authenticated Python/Py4J actual Smile sample/random/post-classification/explanation/IO",
+        "remap tile",
+        "sampleRegions tile",
+        "Smile RF training and prediction tile"
+      ]
+    },
+    "focused": {
+      "service_permissions_writer_worker_readback": 17,
+      "final_compiler_and_existing_regressions": 269,
+      "engine_graph_spec_workflow": 52,
+      "after_full_static_control_flow": {
+        "passed": 2,
+        "scope": "New tests and documentation only; frozen33 implementation/test files unchanged. Static If/Collection.iterate select exact same direct explanation graph."
+      }
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "Python_JS_graph_parity": "passed for nine explanation outputs",
+      "network_attempts": 0,
+      "original_probes": {
+        "serialized": 50,
+        "compiled": 45,
+        "rejected": 5,
+        "interpretation": "Selected probes, not overall compatibility or migration success percentage"
+      },
+      "full_python_inventory_sha256": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12"
+    },
+    "actual_trusted_component": {
+      "fixture_sha256": "ae1ef4f06b94eb1ab51bd4c29e1eafc2f5b7d3f1c0ad0020df6cd09766e7cd69",
+      "source": "actual trusted model trained from official SDK compiled rows/spec",
+      "schema": [
+        "constant",
+        "signal"
+      ],
+      "observed": {
+        "explanation": {
+          "importance": {
+            "constant": 0.0,
+            "signal": 1.5
+          },
+          "numberOfTrees": 3,
+          "outOfBagErrorEstimate": 0.0
+        },
+        "importance": {
+          "constant": 0.0,
+          "signal": 1.5
+        },
+        "signal": 1.5,
+        "values": [
+          0.0,
+          1.5
+        ],
+        "ordered_values": [
+          1.5,
+          0.0,
+          1.5
+        ],
+        "tree_count": 3,
+        "oob": 0.0,
+        "keys": [
+          "constant",
+          "signal"
+        ],
+        "contains_signal": true
+      },
+      "independent_reference": "Exact Fraction balanced-root Gini1/2, constant cannot split, signal pure children in each of3 stumps; held-out rows always correctly separated",
+      "native_and_owned_json_readback": "passed",
+      "scope": "Independent fixed-stump numeric proof only; not arbitrary RF/Google tree parity or real-data skill",
+      "base_adapter_sha256": "82a570491aae965949c3f93e603ecc57940be4899253766f2a279993b69e90b1",
+      "base_manifest_sha256": "d4f0209b17f2a8b1f8acb5d3d2d219ad5ee80dd46c17d15307216167f2aa9652",
+      "rf_adapter_sha256": "74fae5f46290bd0acabecf32698c45f3090b8d906bf90c66eb3b5ff8e11fc165",
+      "gateway_terminated": true,
+      "matching_pair_preserved": true
+    },
+    "review": {
+      "scope": "Parent direct review and independent Luna/max source-only review",
+      "final": "No remaining model/projection/wire-budget/JSON-sink defect identified; static-control-flow contract clarified and two exact-graph SDK tests passed",
+      "corrections": [
+        "Aggregate pre-decode graph work/wire including measurement passes",
+        "Preserve existing flat NUL-name policy and preflight canonical UTF8 allocation",
+        "Conservative bounded serialization/parse scan reservations",
+        "Avoid ordinary workflow rescans; cycle/shared-DAG safe opaque traversal; charge If condition scans",
+        "Scan all wrappers once opaque values can exist, including nested Filter/Array/Geometry/Feature"
+      ]
+    },
+    "genuine_failures": [
+      {
+        "evidence": "audit/gee-python-wave32/compiler-stale-assertions.json",
+        "result": "143 passed/2 failed",
+        "cause": "Old explain rejection assertions; positive RF and explicit non-RF negative contracts updated"
+      },
+      {
+        "evidence": "audit/gee-python-wave32/full-regression-failure.json",
+        "result": "2772 passed/7 failed/3 skipped",
+        "cause": "New generic recursive scans reduced ordinary collection/list capacity, intercepted expected budget errors and hit cyclic trusted metadata",
+        "resolution": "Opaque-presence fast path and charged iterative traversal; original fixtures, resource caps and expected errors preserved; frozen full regression reran green"
+      }
+    ]
+  },
+  "science_policy": {
+    "importance": "Raw sum of actual tree Gini decreases, not normalized percentages",
+    "oob": "Raw pinned Smile1.5.3 library policy: error may be0 when no OOB votes exist; not independent validation accuracy",
+    "independent_oracle": "8-row balanced two-class fixture, constant7 and separable signal,3 stumps; exact root Gini1/2 and pure children imply importance[0,3/2], tree count3 and held-out error0",
+    "unverified": [
+      "Arbitrary RF/Google trees and RNG parity",
+      "Google same-data numerical equivalence",
+      "Real-data model skill",
+      "Full Spark/RDD, sandbox batch, service/browser, native deployment acceptance"
+    ]
+  },
+  "limits": [
+    "Trained Smile RF only; no tree text, model persistence, other classifiers/modes",
+    "No generic runtime algebra, opaque nesting, Feature properties or CSV/raster export; backend callbacks reject",
+    "Finite compile-time control flow may select the same direct final explanation; no runtime callback or opaque container escape",
+    "Existing50000 compiler model revalidation and projection overhead can reject a larger otherwise valid trainer; row/feature/key maxima are not a guaranteed combination"
+  ],
+  "cleanup": {
+    "schema": "local-ee-owned-cleanup/v1",
+    "directories": 9,
+    "files": 4,
+    "bytes_removed": 34717973,
+    "lsof_unused_verified": true,
+    "final_matching_pair_preserved": true,
+    "historical_files_unchanged": 34,
+    "runtime_dependencies_and_user_data_preserved": true
+  },
+  "deployed": false,
+  "overall_goal_complete": false
+}

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "schema": ["constant", "signal"],
+  "class_property": "label",
+  "parameters": {"number_of_trees": 3, "variables_per_split": 2,
+    "min_leaf_population": 1, "bag_fraction": 0.5, "max_nodes": 2, "seed": 32},
+  "rows": [
+    {"constant": 7, "signal": 0, "label": 0},
+    {"constant": 7, "signal": 1, "label": 0},
+    {"constant": 7, "signal": 2, "label": 0},
+    {"constant": 7, "signal": 3, "label": 0},
+    {"constant": 7, "signal": 10, "label": 1},
+    {"constant": 7, "signal": 11, "label": 1},
+    {"constant": 7, "signal": 12, "label": 1},
+    {"constant": 7, "signal": 13, "label": 1}
+  ],
+  "independent_reference": {"importance": {"constant": 0.0, "signal": 1.5},
+    "numberOfTrees": 3, "outOfBagErrorEstimate": 0.0}
+}

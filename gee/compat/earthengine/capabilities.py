@@ -24,7 +24,7 @@ SUPPORTED_FUNCTIONS = frozenset({
     "ConfusionMatrix.accuracy", "ConfusionMatrix.kappa", "Collection.errorMatrix",
     "ConfusionMatrix.consumersAccuracy", "ConfusionMatrix.producersAccuracy", "ConfusionMatrix.fscore",
     "Classifier.minimumDistance", "Classifier.smileRandomForest", "Classifier.train", "Classifier.schema",
-    "Classifier.setOutputMode", "Classifier.confusionMatrix", "FeatureCollection.classify", "Image.classify",
+    "Classifier.setOutputMode", "Classifier.confusionMatrix", "Classifier.explain", "FeatureCollection.classify", "Image.classify",
     *("List." + n for n in ("zip", "unzip", "flatten", "repeat", "reverse", "set", "swap", "reduce")),
     *("Image." + n for n in ("toArray", "arrayFlatten", "arrayProject", "arraySlice",
         "arrayGet", "arrayLength", "arrayLengths", "arrayTranspose", "arrayReduce", "arrayReshape", "arrayCat", "arrayRepeat", "matrixMultiply", "matrixSolve",
@@ -68,8 +68,13 @@ def get_capabilities():
              "Optional pinned RF runtime package required; no runtime downloads. RandomColumn uses the local SHA-256 row-key algorithm for inline Features, lazy sampled tables and trusted RF classified tables; it is deterministic locally and is not Google's random oracle. "
              "RF classified tables support filter, unsorted limit and randomColumn then errorMatrix/getInfo/CSV; immutable base schema, sequential headers, real IDs/geometry/metadata and dry-run lineage are preserved. "
              "Combined sampled/post-classified operations cap at16 with cumulative50000 table work; map/sort/retraining remain unsupported. "
-             "Explain/model persistence, other modes, generic runtime Array/Number algebra and arbitrary dynamic containers reject; "
+             "Classifier.explain exposes actual importance, numberOfTrees and raw Smile outOfBagErrorEstimate with bounded typed dictionary reads and direct owned JSON; "
+             "tree text/model persistence, other modes, generic runtime Array/Number algebra and arbitrary dynamic containers reject; "
              "no Google version/RNG/bagging/dtype equivalence or full Spark/deployment acceptance."),
+            ("Classifier.explain requires an actual trained Smile RF model. Importance is the sum of actual tree Gini decreases, not normalized percentages. "
+             "The three-key dictionary supports get/keys/contains/values, typed Dictionary/Number/List casts and at most64 selected keys; order and duplicates are preserved. "
+             "Raw Smile1.5.3 OOB error can be0 when no OOB votes exist; it is not held-out accuracy. JSON-only projections remain lazy; keys/contains may resolve statically. "
+             "Untrained/other classifiers, tree text, math, generic nesting, CSV/raster sinks reject. Existing RF150000/3MB and output limits remain; no Google numerical parity."),
             ("Image.remap selects one scalar bound band (first by default), returns only remapped, and retains properties/time/grid/footprint. "
              "Equal-length finite scalar from/to lists0..256; integer magnitude<=2^53; duplicate numeric keys including signed zero reject. "
              "Exact actual Float32/Float64 lookup, selected NoData remains masked, unmatched values mask or use finite default including0; valid infinity rejects. "

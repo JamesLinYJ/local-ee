@@ -22,6 +22,7 @@ class Translator(CatalogOperations, FilteringOperations):
         self.steps = 0
         self._root_env = None
         self._root_value_cache = {}
+        self._runtime_rf_explanation_seen = False
         # Reused only inside this compilation. Sample-table schema facts may
         # be checked at several consumers of the same immutable IR node.
         self._sampled_schema_cache = {}
@@ -80,7 +81,7 @@ class Translator(CatalogOperations, FilteringOperations):
                 raw = value.get("arguments", {})
                 self.allowed(raw, {"condition", "trueCase", "falseCase"})
                 condition = self.evaluate(raw.get("condition"), env, depth + 1)
-                selected = "trueCase" if static_truth(condition) else "falseCase"
+                selected = "trueCase" if static_truth(condition, self) else "falseCase"
                 return self.evaluate(raw.get(selected), env, depth + 1)
             arguments = {
                 key: self.evaluate(argument, env, depth + 1)

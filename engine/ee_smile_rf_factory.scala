@@ -108,4 +108,26 @@ object LocalEeSmileRfFactory {
     val order = (0 until model.classCount).mkString("[", ",", "]")
     s"{\"matrix\":$matrix,\"order\":$order,\"version\":1}"
   }
+
+  /** Return only bounded raw values from the actual pinned Smile forest. */
+  def explain(model: LocalEeSmileRfModel): String = {
+    require(model != null && model.forest != null && model.schema != null &&
+      model.schema.nonEmpty && model.schema.length <= 8 && model.actualTreeCount >= 1,
+      "Random forest explanation requires a trusted trained model")
+    val trees = model.forest.getTrees
+    require(trees != null && trees.length == model.actualTreeCount &&
+      model.forest.size() == model.actualTreeCount,
+      "Random forest explanation tree count differs from the trained model")
+    val importance = model.forest.importance()
+    require(importance != null && importance.length == model.schema.length &&
+      importance.forall(value => value.isFinite && value >= 0.0),
+      "Random forest explanation importance differs from the model schema")
+    val error = model.forest.error()
+    require(error.isFinite && error >= 0.0 && error <= 1.0,
+      "Random forest OOB error estimate is outside [0,1]")
+    val importanceJson = importance.iterator.map(value => java.lang.Double.toString(value)).mkString("[", ",", "]")
+    val errorJson = java.lang.Double.toString(error)
+    s"{\"importance\":$importanceJson,\"number_of_trees\":${model.forest.size()}," +
+      s"\"out_of_bag_error\":$errorJson,\"version\":1}"
+  }
 }

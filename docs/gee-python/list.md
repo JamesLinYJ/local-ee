@@ -1,5 +1,7 @@
 # GEE Python 兼容清单
 
+第三十二批新增有限 `Classifier.explain()`：真实 Smile 模型的重要性、实际树数和原始袋外错误率，以及有界字典读取／独立JSON任务。冻结源码完整回归 **2788 passed／3 skipped**（另排除4项延期原生测试），六个可信组件及前端11／类型／临时构建通过；另补2项静态控制流精确图测试。三棵可手算树实际返回重要性 `[0,1.5]`、树数3、OOB0，物理JSON读回和任务权限验证通过。入口 **279／991（28.15%）** 仅统计名称，参数／计算语义仍受限；原50定向探针45编译不表示90%任意迁移成功率。原始Smile无袋外投票时也可能返回0，不宣称Google一致性或真实模型能力。复审修复了普通大列表／表格被新检查提前超限的问题，保留原测试样本和预算。未部署，无完整Spark／批任务／浏览器／Google验收。见 [解释语法](rf-explanation.md)、[示例37](../../examples/37_GEE_python_rf_explanation.py)、[报告](../../reports/gee-python-wave32.json)。
+
 第三十一批接通RF分类后filter／无排序limit／randomColumn，继续支持errorMatrix／getInfo／CSV；前后操作合计16步，累计50000表预算与RF150000分开，64项弱身份校验缓存避免重复扫描。冻结兼容源码完整回归 **2690 passed／3 skipped**（另排除4项延期原生测试），六个可信JVM／栅格组件、前端11／类型／临时构建通过。真实显式单预测字段模型的32行预测→16行留出→16行随机列→8行限量，独立ID／像元中心几何／哈希／矩阵频数及物理JSON／CSV读回通过；合成样例不代表预测能力。入口仍 **278／991（28.05%）**，仅名称统计。本批未部署，无完整Spark／批任务／浏览器／Google验收；其他模式、map／排序／再次训练、邻域、高级时序及完整API继续。见 [分类后语法](classified-tables.md)、[示例36](../../examples/36_GEE_python_classified_tables.py)、[报告](../../reports/gee-python-wave31.json)。
 
 第三十批历史记录：支持MD／RF训练省略或null的 `inputProperties`：仅按真实集合声明 `band_order` 选择完整有序字段，显式列表优先，不猜首行字段或擅自去掉类别。内联集合元数据在筛选／限量／随机列／map到Feature中保留，扫描和复制在分配前独立计费。冻结源码完整回归 **2640 passed／3 skipped**（另排除4项延期原生测试），六个可信JVM／栅格组件与前端11／类型／构建通过；编译器的自动规格实际进入Smile模型。入口仍 **278／991（28.05%）**，本批只扩展已有API参数行为；原50探针45编译／5拒绝不变。见 [训练字段语法](training-schema.md)、[示例35](../../examples/35_GEE_python_training_schema.py)、[报告](../../reports/gee-python-wave30.json)。未部署，无完整Spark／批任务／浏览器／Google验收；v1取样仍需显式字段，其他模式及完整API目标继续。
@@ -16,7 +18,7 @@
 第二十五批 [报告](../../reports/gee-python-wave25.json)：新增标签 Image.remap、受限 Filter.expression、取样表 filter／无排序 limit 及累计资源计费。示例 30 的标签掩膜、17 个几何候选位置、15 行有效样本、14 行 notNull、11 行条件通过和 8 行限量训练，以及三度量预测，有独立原始网格参考。便携 Python **2068 passed／3 skipped**（另排除 4 项原生测试），前端 **11 passed**／构建通过，SDK 图一致性 **77**，真实 tile 内核通过。入口 **275／991（27.75%）** 只表示名称，不是完整参数或计算兼容率。完整 Spark／部署／浏览器／真实数据／Google 验收未运行；[该批尚未实现随机森林](random-forest-roadmap.md)。
 
 第二十四批 [报告](../../reports/gee-python-wave24.json) 与 [取样语法文档](sampling.md)：接通有限 sampleRegions、实际样本运行时训练、栅格分类与样本 getInfo／CSV 任务合同。便携 Python **1882 passed／3 skipped**（另排除 4 项原生测试）、前端 **11 passed**／构建通过，Python／JS 官方客户端一致性 **72** 项；取样与分类的可信独立 JVM tile 内核均通过。API 名称入口 **273／991（27.55%）**，参数和数值语义仍需逐项验证；此数值不代表完整兼容率。完整 Spark cube、部署／浏览器、真实数据和 Google 对照未运行。
-状态：2026-10-23，第三十批已验证，整体兼容目标尚未完成。
+状态：2026-10-23，第三十二批已验证，整体兼容目标尚未完成。
 
 第二十三批 [验证报告](../../reports/gee-python-wave23.json)：新增有限 `Image.classify` 的 schema 选择、精确模型编译、Python 桥与真实 GeoTrellis tile 内核，训练仍使用内联要素。macOS ARM64 Python **1751 passed／3 skipped**（启用可信独立 JVM 内核测试，另排除 4 项原生运行测试），前端 **11 passed**、TypeScript／构建通过；较[第二十二批](../../reports/gee-python-wave22.json)增加 66 项通过。独立 tile 内核是组件运行证据，完整 Spark cube、沙箱任务、HTTP／浏览器、部署和 Google 对照均未在本批验收。
 

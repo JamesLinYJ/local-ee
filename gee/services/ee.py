@@ -272,7 +272,7 @@ def dispatch(backend,account,payload):
         if compiled['kind']=='sample_table':
             result=make_job(backend,account,compiled,'GEE · 影像取样','CSV',ee_sample_results.result_context(compiled),True)
             return {**result,'pending':True}
-        if compiled['kind'] in {'runtime_table','runtime_value'}:
+        if compiled['kind'] in {'runtime_table','runtime_value','runtime_explanation'}:
             result=make_job(backend,account,compiled,'GEE · 分类评估','JSON',ee_runtime_results.result_context(compiled),True)
             return {**result,'pending':True}
         result=make_job(backend,account,compiled,'GEE · 区域统计','CSV',{'result_kind':'region'},True)

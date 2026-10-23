@@ -16,7 +16,9 @@
 
 ## 当前基线
 
-- 最新第三十一批：RF分类后filter／无排序limit／randomColumn→验证矩阵／getInfo／CSV，保留不可变分类规格和顺序列谱系；取样与分类后操作合计16步、表50000与RF150000分别计费。64项弱身份校验缓存预充开销、突变拒绝、淘汰全量校验。冻结源码2690 passed／3 skipped（另排除4项延期原生测试），六个可信组件和前端11／类型／构建通过；显式排除类别字段的真实JVM模型产生32→16→16→8行与[[3,0],[0,5]]合成计数，实际JSON／CSV读回通过。入口278／991（28.05%）仍只表示名称。未部署，无完整Spark／服务／浏览器／Google对照；完整API和生产目标保持进行中。见 reports/gee-python-wave31.json、docs/gee-python/classified-tables.md。
+- 最新第三十二批：实际Smile RF explain三字段及有界字典投影／JSON任务，真实JVM与独立三树Gini参考和物理JSON读回通过。冻结源码2788 passed／3 skipped（排除4项延期原生测试），六组件与前端11／类型／构建通过；另有2项静态控制流精确图测试。普通大列表／表格的7项扫描回归已根因修复，原预算和样本保留。入口279／991（28.15%）仅名称；原50探针45编译不代表任意项目迁移率。模型解释仍有参数、资源和原始OOB政策边界，无Google对照或完整Spark／服务／浏览器／部署验收。见 reports/gee-python-wave32.json、docs/gee-python/rf-explanation.md。
+
+- 第三十一批历史记录：RF分类后filter／无排序limit／randomColumn→验证矩阵／getInfo／CSV，保留不可变分类规格和顺序列谱系；取样与分类后操作合计16步、表50000与RF150000分别计费。64项弱身份校验缓存预充开销、突变拒绝、淘汰全量校验。冻结源码2690 passed／3 skipped（另排除4项延期原生测试），六个可信组件和前端11／类型／构建通过；显式排除类别字段的真实JVM模型产生32→16→16→8行与[[3,0],[0,5]]合成计数，实际JSON／CSV读回通过。入口278／991（28.05%）仍只表示名称。未部署，无完整Spark／服务／浏览器／Google对照；完整API和生产目标保持进行中。见 reports/gee-python-wave31.json、docs/gee-python/classified-tables.md。
 
 - 第三十批历史记录：MD／RF的inputProperties省略或null时只读取实际声明band_order，显式列表优先，保留完整字段顺序；新增内联集合级Element元数据及行操作传递。扫描／复制分开预充，get返回独立嵌套值，保留50000预算。冻结源码2640 passed／3 skipped（另排除4项延期原生测试），六个可信JVM／栅格组件及前端11／类型／构建通过；从官方客户端省略参数编译出的规格实际进入32行取样／16＋16划分／Smile训练与预测。入口仍278／991（28.05%），本批扩展已有方法参数，不扩大完整兼容率。未部署，无完整Spark／服务／浏览器／Google验收；sampleRegions v1默认字段、动态取样元数据修改、邻域、其他模式及完整API仍待做。见 reports/gee-python-wave30.json、docs/gee-python/training-schema.md。
 
