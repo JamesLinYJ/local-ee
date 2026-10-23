@@ -12,6 +12,7 @@ from .composed_reducers import (
 from .ir import fail
 from .table_reducers import MAX_TABLE_ROWS
 from .composed_reducer_values import reduce_records
+from .array_values import StaticArray
 
 
 _MAX_PROPERTIES = 10_000
@@ -66,6 +67,11 @@ def _scan_json(translator, value, active, wire, depth=0):
     if depth > 96:
         fail("reduceColumns selected inputs exceed the depth 96 limit")
     kind = type(value)
+    if kind is StaticArray:
+        from .finite_reducer_scan import _scan_value
+
+        _scan_value(translator, value, active, wire, depth)
+        return
     if value is None:
         _charge(translator, 1)
         _wire_add(wire, 4)

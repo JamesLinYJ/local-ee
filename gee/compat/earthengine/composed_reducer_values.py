@@ -140,11 +140,14 @@ def _evaluate(translator, records, spec):
     if spec.kind == "leaf":
         from .table_reducers import TableReducer
         from .finite_reducer_leaves import FiniteReducerLeaf, reduce_finite_leaf
+        from .statistical_reducer_leaves import is_statistical_leaf, reduce_statistical_leaf
 
         if type(spec.leaf) is TableReducer:
             return _regression(translator, records, spec.leaf)
         if type(spec.leaf) is FiniteReducerLeaf:
             return reduce_finite_leaf(translator, spec.leaf, records)
+        if is_statistical_leaf(spec.leaf):
+            return reduce_statistical_leaf(translator, spec.leaf, records)
         return _scalar(translator, records, spec.leaf)
     if spec.kind == "setOutputs":
         values = _evaluate(translator, records, spec.child)

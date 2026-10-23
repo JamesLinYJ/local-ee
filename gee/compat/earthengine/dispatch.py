@@ -62,6 +62,10 @@ def invoke(translator, name, arguments):
 
     if handles_finite_reducer(name):
         return invoke_finite_reducer(translator, name, a)
+    from .statistical_reducer_leaves import STATISTICAL_REDUCER_NAMES, invoke_statistical_reducer
+
+    if name in STATISTICAL_REDUCER_NAMES:
+        return invoke_statistical_reducer(translator, name, a)
     from .composed_reducers import handles_composed_reducer, invoke_composed_reducer, is_reducer_spec
 
     if handles_composed_reducer(name):

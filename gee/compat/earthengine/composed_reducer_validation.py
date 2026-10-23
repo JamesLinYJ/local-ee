@@ -16,6 +16,7 @@ from .composed_reducer_expansion import for_each_output_names, for_each_output_w
 from .ir import fail
 from .table_reducers import TableReducer
 from .finite_reducer_leaves import FiniteReducerLeaf, validate_finite_leaf
+from .statistical_reducer_leaves import is_statistical_leaf, validate_statistical_leaf
 
 
 def validate_tree(spec, translator=None):
@@ -79,6 +80,8 @@ def validate_tree(spec, translator=None):
                         fail("Composed Reducer scalar leaf has invalid arity or outputs")
                 elif type(node.leaf) is FiniteReducerLeaf:
                     validate_finite_leaf(translator, node.leaf, node.input_count, node.outputs)
+                elif is_statistical_leaf(node.leaf):
+                    validate_statistical_leaf(translator, node.leaf, node.input_count, node.outputs)
                 elif type(node.leaf) is TableReducer:
                     leaf = node.leaf
                     if (type(leaf.name) is not str or type(leaf.num_x) is not int

@@ -3,6 +3,13 @@ import type { ReferenceEntry } from "../types";
 import geeDocs from "./gee-docs";
 const entries: ReferenceEntry[] = [
   {
+    id: "gee-python-trends-distributions",
+    category: "GEE Python",
+    title: "相关性、趋势与分布统计",
+    text: "有限列表与内联表支持 Pearson（含双侧 p 值）、Spearman、Kendall tau-b 和 Sen 趋势；支持 typed ee.Array 向量协方差、固定一维／二维直方图及 toList／toCollection。协方差按 n−1 归一化，centeredCovariance 要求调用者先中心化。可组合、显式命名并导出 CSV；部分默认字段名尚未与 Google 核实。最多1000行，成对算法可能更早达到工作预算；不支持这些新归约器的栅格路径或权重。",
+    code: "pairs = ee.List([[1,2], [2,1], [3,4], [4,3]])\nr = ee.Reducer.pearsonsCorrelation().setOutputs(['r', 'p'])\ntrend = ee.Reducer.sensSlope().setOutputs(['slope', 'intercept'])\nprint(pairs.reduce(r.combine(trend, sharedInputs=True)).getInfo())\nprint(ee.List([1,2,3,4]).reduce(ee.Reducer.fixedHistogram(0,6,3)).getInfo())",
+  },
+  {
     id: "gee-python-reducer-statistics",
     category: "GEE Python",
     title: "多列归约与方差",

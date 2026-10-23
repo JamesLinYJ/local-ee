@@ -8522,7 +8522,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar, regression and finite statistical leaves; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -30139,7 +30139,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar, regression and finite statistical leaves; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -35761,12 +35761,14 @@
       "description": "Creates a reducer that reduces some number of 1-D arrays of the same length N to a covariance matrix of shape NxN. WARNING: this reducer requires that the data has been mean centered.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite List/inline table kernels within closed composed reducer trees. Complete-case correlations and Sen median pair slopes; typed rank1 vectors for covariance with explicit n-1 denominator; fixed exact binary64 histogram bins; owned collected tuples/features with optional trailing null inputs. Original shared50000 work/1000rows/32inputs/10000arraycells/1MB output; quadratic pairwise algorithms can reject substantially below1000rows. No raster/Array.reduce/dynamic-table/weighted contexts. Some default output keys, Sen intercept and null/empty policies are local interpretations without Google oracle evidence; no complete parameter or numerical parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -35891,7 +35893,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar, regression and finite statistical leaves; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -36046,12 +36048,14 @@
       "description": "Creates a reducer that reduces some number of 1-D arrays of the same length N to a covariance matrix of shape NxN. This reducer uses the one-pass covariance formula from Sandia National Laboratories Technical Report SAND2008-6212, which can lose accuracy if the values span a large range.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite List/inline table kernels within closed composed reducer trees. Complete-case correlations and Sen median pair slopes; typed rank1 vectors for covariance with explicit n-1 denominator; fixed exact binary64 histogram bins; owned collected tuples/features with optional trailing null inputs. Original shared50000 work/1000rows/32inputs/10000arraycells/1MB output; quadratic pairwise algorithms can reject substantially below1000rows. No raster/Array.reduce/dynamic-table/weighted contexts. Some default output keys, Sen intercept and null/empty policies are local interpretations without Google oracle evidence; no complete parameter or numerical parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -36192,12 +36196,14 @@
       "description": "Creates a reducer that will compute a 2D histogram of the inputs using a fixed number of fixed-width bins. Values outside of the [min, max) range on either axis are ignored. The output is a 2D array of counts, and 2 1-D arrays of bucket lower edges for the xAxis and the yAxis. This reducer is suitable for use per-pixel, however it is always unweighted. The maximum count for any bucket is 2^31 - 1.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite List/inline table kernels within closed composed reducer trees. Complete-case correlations and Sen median pair slopes; typed rank1 vectors for covariance with explicit n-1 denominator; fixed exact binary64 histogram bins; owned collected tuples/features with optional trailing null inputs. Original shared50000 work/1000rows/32inputs/10000arraycells/1MB output; quadratic pairwise algorithms can reject substantially below1000rows. No raster/Array.reduce/dynamic-table/weighted contexts. Some default output keys, Sen intercept and null/empty policies are local interpretations without Google oracle evidence; no complete parameter or numerical parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -36240,12 +36246,14 @@
       "description": "Creates a reducer that will compute a histogram of the inputs using a fixed number of fixed width bins. Values outside of the [min, max) range are ignored. The output is a Nx2 array of bucket lower edges and counts (or cumulative counts) and is suitable for use per-pixel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite List/inline table kernels within closed composed reducer trees. Complete-case correlations and Sen median pair slopes; typed rank1 vectors for covariance with explicit n-1 denominator; fixed exact binary64 histogram bins; owned collected tuples/features with optional trailing null inputs. Original shared50000 work/1000rows/32inputs/10000arraycells/1MB output; quadratic pairwise algorithms can reject substantially below1000rows. No raster/Array.reduce/dynamic-table/weighted contexts. Some default output keys, Sen intercept and null/empty policies are local interpretations without Google oracle evidence; no complete parameter or numerical parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -36279,7 +36287,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar, regression and finite statistical leaves; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -36448,7 +36456,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar, regression and finite statistical leaves; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -36495,7 +36503,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar, regression and finite statistical leaves; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -36669,12 +36677,14 @@
       "description": "Creates a reducer that computes the Kendall's Tau-b rank correlation. A positive tau value indicates an increasing trend; negative value indicates a decreasing trend. See https://commons.apache.org/proper/commons-math/javadocs/api-3.6.1/org/apache/commons/math3/stat/correlation/KendallsCorrelation.html for details.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite List/inline table kernels within closed composed reducer trees. Complete-case correlations and Sen median pair slopes; typed rank1 vectors for covariance with explicit n-1 denominator; fixed exact binary64 histogram bins; owned collected tuples/features with optional trailing null inputs. Original shared50000 work/1000rows/32inputs/10000arraycells/1MB output; quadratic pairwise algorithms can reject substantially below1000rows. No raster/Array.reduce/dynamic-table/weighted contexts. Some default output keys, Sen intercept and null/empty policies are local interpretations without Google oracle evidence; no complete parameter or numerical parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37077,12 +37087,14 @@
       "description": "Creates a two-input reducer that computes Pearson's product-moment correlation coefficient and the 2-sided p-value test for correlation = 0.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite List/inline table kernels within closed composed reducer trees. Complete-case correlations and Sen median pair slopes; typed rank1 vectors for covariance with explicit n-1 denominator; fixed exact binary64 histogram bins; owned collected tuples/features with optional trailing null inputs. Original shared50000 work/1000rows/32inputs/10000arraycells/1MB output; quadratic pairwise algorithms can reject substantially below1000rows. No raster/Array.reduce/dynamic-table/weighted contexts. Some default output keys, Sen intercept and null/empty policies are local interpretations without Google oracle evidence; no complete parameter or numerical parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37203,7 +37215,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar, regression and finite statistical leaves; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -37367,12 +37379,14 @@
       "description": "Creates a two-input reducer that computes the Sen's slope estimator. The inputs are expected to be x data followed by y data. It returns two double values; the estimated slope and the offset.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite List/inline table kernels within closed composed reducer trees. Complete-case correlations and Sen median pair slopes; typed rank1 vectors for covariance with explicit n-1 denominator; fixed exact binary64 histogram bins; owned collected tuples/features with optional trailing null inputs. Original shared50000 work/1000rows/32inputs/10000arraycells/1MB output; quadratic pairwise algorithms can reject substantially below1000rows. No raster/Array.reduce/dynamic-table/weighted contexts. Some default output keys, Sen intercept and null/empty policies are local interpretations without Google oracle evidence; no complete parameter or numerical parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37407,7 +37421,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar, regression and finite statistical leaves; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -37454,12 +37468,14 @@
       "description": "Creates a two-input reducer that computes the Spearman's rank-moment correlation. See https://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/stat/correlation/SpearmansCorrelation.html for details.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite List/inline table kernels within closed composed reducer trees. Complete-case correlations and Sen median pair slopes; typed rank1 vectors for covariance with explicit n-1 denominator; fixed exact binary64 histogram bins; owned collected tuples/features with optional trailing null inputs. Original shared50000 work/1000rows/32inputs/10000arraycells/1MB output; quadratic pairwise algorithms can reject substantially below1000rows. No raster/Array.reduce/dynamic-table/weighted contexts. Some default output keys, Sen intercept and null/empty policies are local interpretations without Google oracle evidence; no complete parameter or numerical parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37574,12 +37590,14 @@
       "description": "Returns a reducer that collects its inputs into a FeatureCollection.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite List/inline table kernels within closed composed reducer trees. Complete-case correlations and Sen median pair slopes; typed rank1 vectors for covariance with explicit n-1 denominator; fixed exact binary64 histogram bins; owned collected tuples/features with optional trailing null inputs. Original shared50000 work/1000rows/32inputs/10000arraycells/1MB output; quadratic pairwise algorithms can reject substantially below1000rows. No raster/Array.reduce/dynamic-table/weighted contexts. Some default output keys, Sen intercept and null/empty policies are local interpretations without Google oracle evidence; no complete parameter or numerical parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37614,12 +37632,14 @@
       "description": "Creates a reducer that collects its inputs into a list, optionally grouped into tuples.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite List/inline table kernels within closed composed reducer trees. Complete-case correlations and Sen median pair slopes; typed rank1 vectors for covariance with explicit n-1 denominator; fixed exact binary64 histogram bins; owned collected tuples/features with optional trailing null inputs. Original shared50000 work/1000rows/32inputs/10000arraycells/1MB output; quadratic pairwise algorithms can reject substantially below1000rows. No raster/Array.reduce/dynamic-table/weighted contexts. Some default output keys, Sen intercept and null/empty policies are local interpretations without Google oracle evidence; no complete parameter or numerical parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -41398,7 +41418,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 539,
+    "declared_handler_name_count": 549,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41756,7 +41776,7 @@
         "appears_in_rejected_compile_context": 7,
         "appears_in_selected_sdk_serialization": 7,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 35,
+        "declared_handler_count": 45,
         "signature_count": 64
       },
       "S1": {
@@ -41879,7 +41899,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 539,
+    "pinned_signatures_with_same_name_declared_handler": 549,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

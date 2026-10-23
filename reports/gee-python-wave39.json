@@ -1,0 +1,351 @@
+{
+  "schema": "local-ee-python-wave39/v1",
+  "date": "2026-10-23",
+  "base_commit": "6807c09ae38c66db16c877a5f7d9bd6f4d5bc7df",
+  "title": "Finite correlations, trends, vector covariance, fixed distributions and collected tables",
+  "entry_inventory": {
+    "before": 539,
+    "after": 549,
+    "new_entry_count": 10,
+    "pinned_signatures": 991,
+    "name_entry_percentage": 55.4,
+    "new_names": [
+      "Reducer.centeredCovariance",
+      "Reducer.covariance",
+      "Reducer.fixed2DHistogram",
+      "Reducer.fixedHistogram",
+      "Reducer.kendallsCorrelation",
+      "Reducer.pearsonsCorrelation",
+      "Reducer.sensSlope",
+      "Reducer.spearmansCorrelation",
+      "Reducer.toCollection",
+      "Reducer.toList"
+    ],
+    "interpretation": "Name entries only, not complete parameters, semantics, project migration or Google equivalence"
+  },
+  "implementation": {
+    "owners": "Four disjoint Luna/max family agents; parent numerical review, typed integration, regression and publication",
+    "new_modules_lines": {
+      "collecting_reducer_results.py": 124,
+      "collecting_reducer_values.py": 184,
+      "collecting_reducers.py": 152,
+      "correlation_reducers.py": 228,
+      "correlation_statistics.py": 191,
+      "covariance_reducers.py": 319,
+      "histogram_reducer_spec.py": 179,
+      "histogram_reducer_values.py": 100,
+      "histogram_reducers.py": 16,
+      "statistical_reducer_leaves.py": 78,
+      "trend_statistics.py": 98
+    },
+    "module_size_review": "The319-line covariance module contains one coherent fixed-vector family and its two related kernels; all other new implementation modules are below250 lines. Collecting scans/results/descriptors were split before freeze.",
+    "limits": "Unchanged shared50000 work,1000rows,32inputs,10000Array cells,1MB public output; existing reducer tree depth16/logical nodes64/outputs256"
+  },
+  "validation": {
+    "python": {
+      "tests": 3994,
+      "passed": 3983,
+      "skipped": 11,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 57.863
+    },
+    "evidence_directory": "audit/gee-python-wave39/final-verified",
+    "warnings": "3 existing Rasterio PendingDeprecationWarnings",
+    "skip_delta": "One added platform-dependent longdouble test skips because macOS longdouble is not wider than Float64; existing10skips remain",
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "node": "24.22.1",
+      "deployed": false
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "Python_JS_identical_workflow_outputs": 15,
+      "guarded_network_attempts": 0
+    },
+    "numerical_references": [
+      "Exact rational centered covariance and polynomial n=6 Pearson p-value",
+      "Decimal large-offset Pearson and n=3/4 analytic plus n=10/100 tail controls",
+      "Independent tied ranks/concordance, median slopes, fixed-bin edges and covariance eigenpair identities"
+    ],
+    "csv": {
+      "tables": 2,
+      "rows": [
+        1,
+        6
+      ],
+      "path": "Official SDK -> actual dispatch/worker preparation/completion -> physical CSV writer -> trusted result reader",
+      "scope": "Portable synthetic integration; queue/store/native launcher are test doubles"
+    },
+    "scale": {
+      "pearson_50": {
+        "status": "computed",
+        "value": {
+          "correlation": 1.0,
+          "p-value": 0.0
+        },
+        "rows": 50,
+        "steps": 3612,
+        "seconds": 0.01510366701404564
+      },
+      "spearman_50": {
+        "status": "computed",
+        "value": 1.0,
+        "rows": 50,
+        "steps": 2347,
+        "seconds": 0.00015929198707453907
+      },
+      "kendall_50": {
+        "status": "computed",
+        "value": 1.0,
+        "rows": 50,
+        "steps": 5903,
+        "seconds": 0.0001385000068694353
+      },
+      "sen_50": {
+        "status": "computed",
+        "value": {
+          "slope": 2.0,
+          "offset": 1.0
+        },
+        "rows": 50,
+        "steps": 22712,
+        "seconds": 0.000869415991473943
+      },
+      "covariance_50": {
+        "status": "computed",
+        "value": [
+          [
+            212.5,
+            425.0
+          ],
+          [
+            425.0,
+            850.0
+          ]
+        ],
+        "rows": 50,
+        "steps": 2038,
+        "seconds": 0.0072684579936321825
+      },
+      "histogram_50": {
+        "status": "computed",
+        "value": [
+          [
+            0.0,
+            5.0
+          ],
+          [
+            5.0,
+            5.0
+          ],
+          [
+            10.0,
+            5.0
+          ],
+          [
+            15.0,
+            5.0
+          ],
+          [
+            20.0,
+            5.0
+          ],
+          [
+            25.0,
+            5.0
+          ],
+          [
+            30.0,
+            5.0
+          ],
+          [
+            35.0,
+            5.0
+          ],
+          [
+            40.0,
+            5.0
+          ],
+          [
+            45.0,
+            5.0
+          ]
+        ],
+        "rows": 50,
+        "steps": 750,
+        "seconds": 0.00039008300518617034
+      },
+      "toList_50": {
+        "status": "computed",
+        "value": {
+          "length": 50
+        },
+        "rows": 50,
+        "steps": 972,
+        "seconds": 0.00015595799777656794
+      },
+      "toCollection_50": {
+        "status": "computed",
+        "value": {
+          "features": 50
+        },
+        "rows": 50,
+        "steps": 3326,
+        "seconds": 0.0003491670067887753
+      },
+      "pearson_1000": {
+        "status": "computed",
+        "value": {
+          "correlation": 1.0,
+          "p-value": 0.0
+        },
+        "rows": 1000,
+        "steps": 37812,
+        "seconds": 0.0019016250153072178
+      },
+      "spearman_1000": {
+        "status": "rejected",
+        "error": "Correlation reducer exceeds the shared 50000-step work budget",
+        "rows": 1000,
+        "steps": 15181,
+        "seconds": 0.0013553750177379698
+      },
+      "kendall_1000": {
+        "status": "rejected",
+        "error": "Correlation reducer exceeds the shared 50000-step work budget",
+        "rows": 1000,
+        "steps": 9145,
+        "seconds": 0.00039637499139644206
+      },
+      "sen_1000": {
+        "status": "rejected",
+        "error": "Correlation reducer exceeds the shared 50000-step work budget",
+        "rows": 1000,
+        "steps": 16154,
+        "seconds": 0.0014005839766468853
+      },
+      "covariance_1000": {
+        "status": "computed",
+        "value": [
+          [
+            83416.66666666667,
+            166833.33333333334
+          ],
+          [
+            166833.33333333334,
+            333666.6666666667
+          ]
+        ],
+        "rows": 1000,
+        "steps": 38138,
+        "seconds": 0.018098041997291148
+      },
+      "histogram_1000": {
+        "status": "computed",
+        "value": [
+          [
+            0.0,
+            100.0
+          ],
+          [
+            100.0,
+            100.0
+          ],
+          [
+            200.0,
+            100.0
+          ],
+          [
+            300.0,
+            100.0
+          ],
+          [
+            400.0,
+            100.0
+          ],
+          [
+            500.0,
+            100.0
+          ],
+          [
+            600.0,
+            100.0
+          ],
+          [
+            700.0,
+            100.0
+          ],
+          [
+            800.0,
+            100.0
+          ],
+          [
+            900.0,
+            100.0
+          ]
+        ],
+        "rows": 1000,
+        "steps": 10250,
+        "seconds": 0.003483541979221627
+      },
+      "toList_1000": {
+        "status": "computed",
+        "value": {
+          "length": 1000
+        },
+        "rows": 1000,
+        "steps": 20920,
+        "seconds": 0.001877540984423831
+      },
+      "toCollection_1000": {
+        "status": "rejected",
+        "error": "Reducer.toCollection feature field exceeds the shared 50000-step compilation work budget",
+        "rows": 1000,
+        "steps": 49999,
+        "seconds": 0.002369458001339808
+      },
+      "network_attempts": 0
+    },
+    "frozen_source_files": 27,
+    "source_hashes_unchanged_during_final_regression": true,
+    "review_fixes": [
+      "Sen scaled sorting separates negatives, zero and positives to preserve subnormal medians",
+      "Pearson centers local offsets and avoids cancellation in p-value tails near zero",
+      "Collecting reducers split into cohesive modules; default JSON punctuation, repeated names and owned copy work preflighted; typed Array width/exact integer checks retained",
+      "Integer-valued histogram step floats canonicalize without accepting booleans or fractional values",
+      "Covariance selected properties preserve validated typed arrays and reject plain List vectors; reducer IR cannot enter raster/Array.reduce contexts even on empty sources"
+    ],
+    "fidelity_notes": [
+      "No Google same-data oracle; default correlation/trend/fixed-histogram/toCollection output keys are explicit local inferences where primary docs omit getOutputs values",
+      "Workflows explicitly rename multi-output results; toList list key and covariance array key have primary example evidence",
+      "Covariance uses n-1; centeredCovariance does not recenter. Sen offset is median point intercept. Null/undefined policies are documented locally",
+      "Exact rational bins use binary64 bounds; unrepresentable lower-edge grids reject. Covariance rejects non-finite intermediates/results and may underflow to zero"
+    ],
+    "publication_whitespace_cleanup": "Staged diff check found trailing blank lines in3new files; removed only EOF whitespace after full regression, verified identical Python AST and saved before/after hashes. No numerical/behavioral changes."
+  },
+  "dependency_delta": "None; dependency locks, native toolchains and installed engine unchanged",
+  "remaining_limits": [
+    "New reducers are finite static List/inline table implementations; no new raster, sampled/classified runtime table, weights or Array.reduce support",
+    "1000 is an outer row cap, not guaranteed throughput: full-SDK1000-row Spearman, Kendall, Sen and toCollection examples exceed unchanged work limits; all eight measured50-row paths pass",
+    "Adaptive histograms, percentile, higher moments, remaining reducer families and full parameter coverage still open",
+    "No new business service deployment, full Spark, browser, private-data, isolation-platform or Google same-data acceptance"
+  ],
+  "runtime": "No business service startup/deployment, VM/container or JVM rebuild; credentials, accounts, data and results untouched",
+  "cleanup": {
+    "owned_scratch": "work/gee-python-wave39/web-dist",
+    "logical_file_bytes": 1693760,
+    "preserved": "Runtime dependencies, user data/results, other tasks and audit evidence; not a physical free-space claim"
+  },
+  "goal_status": "Python-first full API/computational semantics and broader production goal remain incomplete and active",
+  "references": [
+    "docs/gee-python/correlation-reducers.md",
+    "docs/gee-python/covariance-reducers.md",
+    "docs/gee-python/fixed-histograms.md",
+    "docs/gee-python/collecting-reducers.md",
+    "examples/44_GEE_python_trends_and_distributions.py"
+  ],
+  "publication_policy": "Require exact-commit python/frontend CI on a temporary validation branch, up-to-date protected base, then fast-forward main and delete only own temporary branch"
+}

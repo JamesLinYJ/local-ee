@@ -2,6 +2,23 @@
 
 TABLE_FAMILY_LIMITS = {}
 
+for _suffix in (
+    'pearsonsCorrelation', 'spearmansCorrelation', 'kendallsCorrelation', 'sensSlope',
+    'covariance', 'centeredCovariance', 'fixedHistogram', 'fixed2DHistogram',
+    'toList', 'toCollection',
+):
+    TABLE_FAMILY_LIMITS['Reducer.' + _suffix] = [
+        'Actual finite List/inline table kernels within closed composed reducer trees. '
+        'Complete-case correlations and Sen median pair slopes; typed rank1 vectors '
+        'for covariance with explicit n-1 denominator; fixed exact binary64 histogram '
+        'bins; owned collected tuples/features with optional trailing null inputs. '
+        'Original shared50000 work/1000rows/32inputs/10000arraycells/1MB output; '
+        'quadratic pairwise algorithms can reject substantially below1000rows. '
+        'No raster/Array.reduce/dynamic-table/weighted contexts. Some default output '
+        'keys, Sen intercept and null/empty policies are local interpretations without '
+        'Google oracle evidence; no complete parameter or numerical parity claim.'
+    ]
+
 for _name in (
     'DateRange.contains', 'DateRange.end', 'DateRange.intersection',
     'DateRange.intersects', 'DateRange.isEmpty', 'DateRange.isUnbounded',
@@ -44,7 +61,7 @@ for _name in ('Reducer.combine', 'Reducer.group', 'Reducer.setOutputs', 'Reducer
               'List.reduce', 'Collection.reduceColumns'):
     TABLE_FAMILY_LIMITS[_name] = [
         'Actual closed immutable reducer trees consumed by static List.reduce and inline '
-        'FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; '
+        'FeatureCollection.reduceColumns. Scalar, regression and finite statistical leaves; '
         'shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. '
         'No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. '
         'Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; '

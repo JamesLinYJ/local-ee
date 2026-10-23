@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from .ir import Reducer, fail, integer
 from .table_reducers import MAX_TABLE_INPUTS, TableReducer
 from .finite_reducer_leaves import FiniteReducerLeaf
+from .statistical_reducer_leaves import StatisticalReducerLeaf
 
 
 MAX_REDUCER_NODES = 64
@@ -45,7 +46,7 @@ class ReducerSpec:
     kind: str
     input_count: int
     outputs: tuple[str, ...]
-    leaf: ScalarReducerLeaf | TableReducer | FiniteReducerLeaf | None = None
+    leaf: ScalarReducerLeaf | TableReducer | FiniteReducerLeaf | StatisticalReducerLeaf | None = None
     child: "ReducerSpec | None" = None
     left: "ReducerSpec | None" = None
     right: "ReducerSpec | None" = None

@@ -1,6 +1,8 @@
 # GEE Python／JavaScript 兼容范围
 
-第三十八批新增 **20个有限归约入口（含2个已弃用别名）**：总体／样本方差、minMax、乘积、计数／频数表、逻辑／位归约及 repeat／forEach。完整回归 **3843 passed／10 skipped**，前端11／类型／临时构建通过；Python／JS二十三项结果一致，两行分组CSV实际写出与结果读回通过。名称 **539／991（54.39%）** 仅为入口统计，不代表完整语义兼容。countEvery 保持零输入列，重复值频数表避免重复输出计费，1000行重复值通过原50000预算；1000个不同值的完整表格路径仍超限。依赖及运行环境未变，Google／真实数据／生产验收仍未完成。见 [语法清单](gee-python/list.md)、[示例43](../examples/43_GEE_python_reducer_statistics.py) 和 [报告](../reports/gee-python-wave38.json)。
+第三十九批新增 **10个有限统计归约入口**：Pearson／Spearman／Kendall相关性、Sen趋势、向量协方差、固定一维／二维直方图及列表／要素收集。完整回归 **3983 passed／11 skipped**，前端11／类型／临时构建通过；Python／JS十五项组合输出一致，统计摘要1行与收集表6行CSV实际写出并读回。名称 **549／991（55.40%）** 仅为入口统计，不代表完整语义兼容。保留原50000工作预算；1000行Pearson、二维向量协方差、固定直方图和toList通过，部分排序／成对算法及toCollection在该规模超限。已修复大偏移中心化、零／次正规数中位排序与p值尾部精度问题。部分默认结果名、协方差归一化及Sen截距采用明确的本地政策，Google同数据验证仍缺；依赖与运行环境未变，本批未部署。见 [语法清单](gee-python/list.md)、[示例44](../examples/44_GEE_python_trends_and_distributions.py) 和 [报告](../reports/gee-python-wave39.json)。
+
+第三十八批历史记录：新增 **20个有限归约入口（含2个已弃用别名）**：总体／样本方差、minMax、乘积、计数／频数表、逻辑／位归约及 repeat／forEach。完整回归 **3843 passed／10 skipped**，前端11／类型／临时构建通过；Python／JS二十三项结果一致，两行分组CSV实际写出与结果读回通过。名称 **539／991（54.39%）** 仅为入口统计，不代表完整语义兼容。countEvery 保持零输入列，重复值频数表避免重复输出计费，1000行重复值通过原50000预算；1000个不同值的完整表格路径仍超限。依赖及运行环境未变，Google／真实数据／生产验收仍未完成。见 [语法清单](gee-python/list.md)、[示例43](../examples/43_GEE_python_reducer_statistics.py) 和 [报告](../reports/gee-python-wave38.json)。
 
 第三十七批新增 **28个有限计算入口**：DateRange9、属性统计14、组合归约4、集合flatten1，并扩展构造／map及List.reduce／reduceColumns。完整回归 **3722 passed／10 skipped**，前端11／类型／临时构建通过；Python／JS十四项结果一致，两行分组CSV通过合成dispatch／worker／实际写出与结果读回。名称 **519／991（52.37%）** 仅为入口统计，不代表完整语义兼容。1000行统计在原50000预算内通过；新增模块按描述／校验／计算／输出拆分，依赖及运行环境未变。未部署，Google／真实数据／生产验收仍未完成。见 [语法清单](gee-python/list.md)、[示例42](../examples/42_GEE_python_grouped_tables.py) 和 [报告](../reports/gee-python-wave37.json)。
 

@@ -2,6 +2,12 @@ import type { ReferenceEntry } from "../types";
 // Pinned client syntax and explicit local semantics; served entirely from this app.
 const entries: ReferenceEntry[] = [
   {
+    id: "gee-trends-distributions",
+    title: "相关性、趋势与分布统计",
+    text: "静态 List 和内联表可计算 Pearson／Spearman／Kendall、Sen 趋势、向量协方差、固定分箱直方图，以及收集列表／要素。支持组合和显式结果命名，例44有 Python／JS 同输出与实际 CSV 验证。新归约器尚不用于栅格、动态取样表或带权计算；部分默认结果名与数值边界仍待 Google 对照。",
+    code: "var pairs=ee.List([[1,2],[2,1],[3,4],[4,3]]);\nvar r=ee.Reducer.pearsonsCorrelation().setOutputs(['r','p']);\nvar trend=ee.Reducer.sensSlope().setOutputs(['slope','intercept']);\nprint(pairs.reduce(r.combine({reducer2:trend,sharedInputs:true})));",
+  },
+  {
     id: "gee-reducer-statistics",
     title: "多列归约与方差",
     text: "静态 List 和内联 FeatureCollection 新增总体／样本方差、minMax、product、去重计数、频数表及逻辑／位运算归约。repeat 将各输入块的结果放入列表；forEach 为各输入块命名，可继续组合、分组和导出。countEvery 读取零个属性列并计行数。栅格、动态取样表及带权归约不在此范围；最多1000行并保留共享预算，未验证 Google 数值等价性。",

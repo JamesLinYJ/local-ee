@@ -8,6 +8,11 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 # nor that Google-service numerical equivalence has been established.
 SUPPORTED_FUNCTIONS = frozenset({
     *("Reducer." + n for n in (
+        "pearsonsCorrelation", "spearmansCorrelation", "kendallsCorrelation", "sensSlope",
+        "covariance", "centeredCovariance", "fixedHistogram", "fixed2DHistogram",
+        "toList", "toCollection",
+    )),
+    *("Reducer." + n for n in (
         "minMax", "product", "stdDev", "variance", "sampleVariance",
         "countEvery", "countDistinct", "countDistinctNonNull", "firstNonNull",
         "lastNonNull", "countRuns", "frequencyHistogram", "allNonZero",
@@ -129,6 +134,11 @@ def get_capabilities():
         "level": "C",
         "numerical_equivalence_to_google_verified": False,
         "restrictions": [
+            ("Finite table/List statistical reducers support correlations, Sen slope, typed-vector covariance, "
+             "fixed 1D/2D histograms and collecting lists/features. No raster/dynamic table/weight support. "
+             "Null, covariance denominator, Sen intercept and histogram grid policies are explicit; "
+             "some default output keys and Google numerical equivalence remain unverified. "
+             "Original 50000 work, 1000 rows, 32 inputs, 10000 Array cells and 1MB output limits apply."),
             ("Additional finite Reducer leaves compute minMax/product/population stdDev/variance/sampleVariance, "
              "counts/distinct/runs/non-null endpoints/frequency tables/logical and bitwise reductions. "
              "repeat and forEach operate on independent input blocks. Only static List/inline table consumers; "
