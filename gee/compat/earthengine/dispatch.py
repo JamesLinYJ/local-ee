@@ -45,6 +45,10 @@ def invoke(translator, name, arguments):
         from .image_distance import invoke_image_distance
 
         return invoke_image_distance(translator, a)
+    from .image_fast_distance import FAST_DISTANCE_FUNCTIONS, invoke_image_fast_distance
+
+    if name in FAST_DISTANCE_FUNCTIONS:
+        return invoke_image_fast_distance(translator, a)
     from .image_convolve import CONVOLVE_FUNCTIONS, invoke_image_convolve
 
     if name in CONVOLVE_FUNCTIONS:

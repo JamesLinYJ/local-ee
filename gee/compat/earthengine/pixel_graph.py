@@ -33,7 +33,7 @@ class PixelCompiler:
         # than silently narrowing an explicitly requested Float64 raster.
         key = id(p)
         if key not in self.double_precision:
-            if p.op in {"classify", "trained_classify", "smile_rf_classify"}: result = False
+            if p.op in {"classify", "trained_classify", "smile_rf_classify", "fast_distance"}: result = False
             elif p.op in {"to_double", "unmask", "unmask_constant", "on_grid", "remap", "focal", "convolve", "neighborhood", "terrain", "distance"}: result = True
             elif p.op in {"to_float", "is_nodata"}: result = False
             else:
@@ -196,6 +196,10 @@ class PixelCompiler:
             from .distance_graph import compile_distance_pixel
 
             return compile_distance_pixel(self, p)
+        if p.op == "fast_distance":
+            from .fast_distance_graph import compile_fast_distance_pixel
+
+            return compile_fast_distance_pixel(self, p)
         if p.op == "remap":
             from .remap_graph import compile_remap_pixel
 

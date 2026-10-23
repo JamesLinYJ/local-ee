@@ -40,6 +40,10 @@ SOURCES += [ROOT / "engine/ee_neighborhood_spec.scala", ROOT / "engine/ee_neighb
             ROOT / "engine/ee_neighborhood_numeric.scala", ROOT / "engine/ee_neighborhood_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_distance_spec.scala", ROOT / "engine/ee_distance_budget.scala",
             ROOT / "engine/ee_distance_numeric.scala", ROOT / "engine/ee_distance_adapter.scala"]
+SOURCES += [ROOT / "engine/ee_fast_distance_spec.scala", ROOT / "engine/ee_fast_distance_budget.scala",
+            ROOT / "engine/ee_fast_distance_halo.scala", ROOT / "engine/ee_fast_distance_adapter.scala",
+            ROOT / "engine/ee_fast_distance_transform.scala",
+            ROOT / "engine/ee_fast_distance_transform_envelope.scala"]
 SERVICE_NAME = "org.openeo.geotrelliscommon.CubeProcessProvider"
 SERVICE_ENTRY = ("local.ee.integer.LocalEeIntegerCubeProcessProvider\n"
                  "local.ee.grid.LocalEeGridCubeProcessProvider\n"
@@ -55,6 +59,7 @@ SERVICE_ENTRY += "local.ee.reduce.LocalEeFocalCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeConvolveCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeTerrainCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeDistanceCubeProcessProvider\n"
+SERVICE_ENTRY += "local.ee.reduce.LocalEeFastDistanceCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeNeighborhoodCubeProcessProvider\n"
 
 

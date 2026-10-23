@@ -1,0 +1,250 @@
+{
+  "schema": "local-ee-python-wave48/v1",
+  "date": "2026-10-24",
+  "base_commit": "776d673782ea44bf6dea3fe5b2c6e3ffadffc546",
+  "title": "Exact bounded fastDistanceTransform with multi-hop Boolean halos",
+  "entry_inventory": {
+    "before": 599,
+    "after": 600,
+    "new_entry_count": 1,
+    "pinned_signatures": 991,
+    "name_entry_percentage": 60.54,
+    "interpretation": "Name entries only, including limited signatures and aliases. Not complete GEE semantic parity or a project migration success rate."
+  },
+  "implementation": {
+    "syntax": "Image.fastDistanceTransform: missing/null optionals use neighborhood256, pixels, squared_euclidean. Integral numeric neighborhood1..4096, squared_euclidean/manhattan/chebyshev; malformed arguments and unsupported units reject.",
+    "local_policy": "Finite unmasked nonzero values are targets. Every observed center, including a masked center, receives a finite per-band Int32 distance capped at N*N for squared Euclidean or N otherwise. No-target output equals this cap. These cutoff, masked-target, multiband and dtype policies are not verified Google equivalence.",
+    "precision": "Source precision is retained through eligible first/last selection, clipping and masking before target detection. Output integers<=2^24 allow direct sqrt/threshold use in existing Float32 callbacks. Explicit Float32 source rounding and prior arithmetic keep their existing behavior.",
+    "halo": "Bounded cropped Boolean target fragments use checked global coordinates and exact observed center/time membership. Multi-hop reads preserve sparse SpatialKey/SpaceTimeKey sets. Group validation precedes window allocation; duplicate markers and malformed/oversized groups reject.",
+    "numeric": "Exact separable squared Euclidean transform uses integer parabola crossovers; Manhattan and Chebyshev use directional scans. All are linear in window cells, with Long intermediates and public saturation before Int conversion.",
+    "graph": "Proven finite common source grid, full source bounds before export ROI/resampling, single-band v adapter metadata and six driver pushdown blockers. Names/properties/time and existing50000-step/500-node/1MB boundaries preserved.",
+    "budgets": {
+      "wire_ascii_bytes": 1024,
+      "compiler_steps": 50000,
+      "graph_nodes": 500,
+      "public_json_bytes": 1000000,
+      "source_keys": 100000,
+      "working_cells_per_tile": 10000000,
+      "working_cells_total": 100000000,
+      "work_per_tile": 100000000,
+      "work_total": 1000000000,
+      "transform_work_per_window_cell": 64,
+      "scope": "Logical cell allocations include source/conversion/targets/output, window, fragment copies, Long output plus envelope/column scratch. Own-kernel work includes scans/copies/assembly/crop/candidate probes. Upstream evaluation, IO, Spark retries and stable-source enforcement are separate. Specification acceptance does not mean every layout fits."
+    },
+    "stable_source_assumption": "The repeated bounded census and later lazy evaluation must produce the same unique keys from an immutable snapshot. Nondeterministic duplicate source emissions can exceed aggregate shuffle estimates before duplicate-center rejection; this is an unverified distributed-resource boundary, not a tested production guarantee."
+  },
+  "validation": {
+    "python": {
+      "tests": 4875,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 20,
+      "passed": 4855,
+      "seconds": 44.011
+    },
+    "warnings": {
+      "count": 52,
+      "rasterio_pending_deprecation": 51,
+      "google_api_core_future_python_lifecycle": 1,
+      "scope": "Upstream warnings retained; Python3.11 lifecycle warning refers to2027-10-24. Dependencies/interpreter unchanged; this is not a new vulnerability scan."
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "Python_JS_identical_compiled_workflows": 12,
+      "guarded_network_attempts": 0,
+      "scope": "Synthetic catalog graphs, Map/Export request capture; no real script runner, HTTP service, physical raster export or Google compute.",
+      "python_optional_serialization": "Actual legacy and cloud encoding both omit missing and explicit-None optionals."
+    },
+    "original_probes": {
+      "SDK_serialized": 50,
+      "compiled": 47,
+      "directed_rejections": 3,
+      "scope": "Original fixed probes, not a random API sample"
+    },
+    "native": {
+      "scope": "Actual GeoTrellis DoubleArrayTile inputs through targetsFromTile, multi-hop emitFragments and assemble, plus pure Long transform; no SparkContext, service, or user code",
+      "kernel_cases": 13,
+      "kernel_pixels": 65831,
+      "long_line_last_squared_distance": 4294967296,
+      "source_cases": 16,
+      "observed_keys_across_cases": 85,
+      "source_pixels_compared_by_complete_tile_digests": 1772714,
+      "possible_grid_slots": 1773098,
+      "missing_slots_not_fabricated": 384,
+      "default_metric_plans": 3,
+      "two_hop_temporal_cases": 3,
+      "reference": "independent Python brute-force nearest-target integer-coordinate oracle with big-endian SHA-256 tile digests",
+      "negative_controls": {
+        "budget_rejects": 4,
+        "duplicate_center_rejects": 1,
+        "fragment_rejects": 5,
+        "oversized_fragment_rejects": 2,
+        "tile_rejects": 4,
+        "wire_rejects": 9
+      },
+      "default256_budget": {
+        "tile": [
+          256,
+          256
+        ],
+        "neighborhood": 256,
+        "three_by_three_keys": 9,
+        "window": [
+          768,
+          768
+        ],
+        "per_tile_working_cells": 2033920,
+        "aggregate_decoded_cells": 18305280,
+        "total_work": 362741850,
+        "maximum_accepted_keys": 24,
+        "accepted_work": 967311600,
+        "next_key_count_rejects": 25,
+        "interpretation": "Conservative admission boundaries, not measured RSS or throughput."
+      },
+      "full_adapter_sources": 46,
+      "adapter_jar_sha256": "01fc2e7f2400924e5c1b1587c488e7b409d9dcb0b3958dc1e93f4d87da49de7c",
+      "build_seconds": 3.8929474169999594,
+      "probe_seconds": 0.668972916999337,
+      "scope_limit": "Shared halo/numeric path executed on actual GeoTrellis tiles; distributed adapter compiled but no SparkContext/RDD action or scheduler acceptance.",
+      "evidence": "audit/gee-python-wave48/native/fast-distance-kernel-20261023T182002Z-cd5f4196d3/kernel-result.json"
+    },
+    "frozen_code_sha256": {
+      "engine/ee_fast_distance.py": "2ce28dadad378ba473021c22eb6a6e677330614e026d97a58f2fbd2a66d7e3ea",
+      "engine/ee_fast_distance_adapter.scala": "5887829efeaa4faced3acc4b068d6d090822ae206f50b3b3e4197c12aa892e27",
+      "engine/ee_fast_distance_budget.scala": "5a4400a0098e90e644d2b6d6b6a32937772096eb90249045e7d516f0e18925fb",
+      "engine/ee_fast_distance_halo.scala": "a063f59810e81e3b29afc2aec6e45b219766638e7e26523c4c2ce0ee173af4fc",
+      "engine/ee_fast_distance_spec.scala": "d58e5e923998f04471d6f0cedf2b9de0f3b9099d1840f58d7b41721b9a5d2372",
+      "engine/ee_fast_distance_transform.scala": "012a6e3f638351e691bf1ffda1bc983fe8a26763fdd1f8563c7edb3b2ff314fb",
+      "engine/ee_fast_distance_transform_envelope.scala": "021c7fe1272060cf70dd479c3329e5aff990d6eebbb4ae62014e6e9f3fa7aaa5",
+      "engine/ee_process_adapters.py": "4dc937988ba17792517c76d5781430769541f705cc08e970eeabcd9b410b1212",
+      "examples/53_GEE_python_fast_distance.py": "ed78765bcc67fecf55ddb6e4058f5ebf96c43839c42848b982b3935874c7ebc4",
+      "gee/compat/earthengine/capabilities.py": "2229a4b7ce029300ee3b3f9e7a595b0b13f948c3988ed6fd0d9febc5f17918b9",
+      "gee/compat/earthengine/dispatch.py": "cc24bc484456824229c8b92d87a76cb5dfa41ce266621e75f8c1d960d498f6ad",
+      "gee/compat/earthengine/fast_distance_graph.py": "be33280a8cd9fe5f8dcd91e0e9b8d8c26f595058e6065f2db9ff7683630db7aa",
+      "gee/compat/earthengine/graph.py": "ed84625f9c8e255875d1c53d7f1ca19e42481be67a3741e3135632c64871e248",
+      "gee/compat/earthengine/image_fast_distance.py": "fd5ce94603f871214ca407ddc9a5727ebb1fb378f0245a836c437107abb00213",
+      "gee/compat/earthengine/pixel_graph.py": "d525355ca13542e58b2a295cd2285619ca2e46fdd8e067cb3417515e0d464af9",
+      "gee/fast_distance_spec.py": "9b6b0f4117d8d9a5a9290a5d6eda34e0e407073db5afdb4bad5375c5bb80eb6a",
+      "gee/local_processes.py": "f2d790c83aecbb8f339917625d3a6118aac18b7bb421eb292ecc6e4363799e86",
+      "gee/sampling_graph.py": "03eebca6aa54ecb24c452e6b6de91c20c83a1070d87a59e2318c8629e62123f5",
+      "gee/smile_rf_processes.py": "d35e806304cb3b526e2fd31a34e005c4434bb6328cec1c1133bf048be402a810",
+      "scripts/build_integer_adapter.py": "55a3860dc4b8b9caaef800f0bf852284974db4c732049f1f05d865de3049cf8a",
+      "scripts/ee_inventory/pixel_numeric_families.py": "1dba9822da65cb7be446b0e8b5d81fea4b65a2949c1dd29a07b3c2c4b9c17406",
+      "tests/ee_fast_distance_kernel_helpers.py": "4873525c1b87fd0ea15d0e1b451cf521ede6bfe47c8b8cd33d51f49f86eab094",
+      "tests/fixtures/ee-fast-distance-kernel-controls.scala": "7c6b77af02f7c23c07cf3f920fd877fa18dae9062181a00a28671ca6711097a4",
+      "tests/fixtures/ee-fast-distance-kernel-probe.scala": "475ea1f07460aef814cb10d92d2468a3292d95ed6e5a30a8fb1b5ee545d2036d",
+      "tests/test_ee_fast_distance_compiler.py": "09bd3231a0624411fab55ba6238d7d7b3041d610fb3977c43cb43a6df0686adf",
+      "tests/test_ee_fast_distance_kernel.py": "150f975f17b3593559bbd3b20bf4d7c62b90b0d5a61e8c0ed05276c3b525bf6b",
+      "tests/test_ee_fast_distance_limits.py": "5a21c16e2c1b59f3e185bda1ff0cd41226eeb883a01b9eb3fc2c53f9b2b01cef",
+      "tests/test_ee_fast_distance_process.py": "b78f4c590ef96557b95bb691cf829e4211afe09f452e91e516b40e3967330b6b",
+      "tests/test_ee_fast_distance_workflow.py": "9dc48e3d4bbfdec4a482f8f8bfadff4001920fccbeda2aff514f536a3b7033bc",
+      "tests/test_ee_neighborhood_metadata.py": "c392b61d5eba6bbd943943b0763c0052edf161d879a8cd0d0a2ba100d5778315"
+    },
+    "native_final_hash_readback": {
+      "evidence": "audit/gee-python-wave48/native/fast-distance-kernel-20261023T182002Z-cd5f4196d3",
+      "source_hashes_checked": 54,
+      "adapter_sources": 46,
+      "drift": []
+    },
+    "evidence_directory": "audit/gee-python-wave48/final-verified",
+    "post_validation_trailing_blank_line_removal": {
+      "tests/ee_fast_distance_kernel_helpers.py": {
+        "before": "4873525c1b87fd0ea15d0e1b451cf521ede6bfe47c8b8cd33d51f49f86eab094",
+        "after": "0615b0489da5996e24773e6766ec771a92dfcbff029708ff299eb4f5d6b3d2be",
+        "change": "Removed only the final blank line; every preceding byte is identical"
+      }
+    },
+    "final_code_sha256": {
+      "engine/ee_fast_distance.py": "2ce28dadad378ba473021c22eb6a6e677330614e026d97a58f2fbd2a66d7e3ea",
+      "engine/ee_fast_distance_adapter.scala": "5887829efeaa4faced3acc4b068d6d090822ae206f50b3b3e4197c12aa892e27",
+      "engine/ee_fast_distance_budget.scala": "5a4400a0098e90e644d2b6d6b6a32937772096eb90249045e7d516f0e18925fb",
+      "engine/ee_fast_distance_halo.scala": "a063f59810e81e3b29afc2aec6e45b219766638e7e26523c4c2ce0ee173af4fc",
+      "engine/ee_fast_distance_spec.scala": "d58e5e923998f04471d6f0cedf2b9de0f3b9099d1840f58d7b41721b9a5d2372",
+      "engine/ee_fast_distance_transform.scala": "012a6e3f638351e691bf1ffda1bc983fe8a26763fdd1f8563c7edb3b2ff314fb",
+      "engine/ee_fast_distance_transform_envelope.scala": "021c7fe1272060cf70dd479c3329e5aff990d6eebbb4ae62014e6e9f3fa7aaa5",
+      "engine/ee_process_adapters.py": "4dc937988ba17792517c76d5781430769541f705cc08e970eeabcd9b410b1212",
+      "examples/53_GEE_python_fast_distance.py": "ed78765bcc67fecf55ddb6e4058f5ebf96c43839c42848b982b3935874c7ebc4",
+      "gee/compat/earthengine/capabilities.py": "2229a4b7ce029300ee3b3f9e7a595b0b13f948c3988ed6fd0d9febc5f17918b9",
+      "gee/compat/earthengine/dispatch.py": "cc24bc484456824229c8b92d87a76cb5dfa41ce266621e75f8c1d960d498f6ad",
+      "gee/compat/earthengine/fast_distance_graph.py": "be33280a8cd9fe5f8dcd91e0e9b8d8c26f595058e6065f2db9ff7683630db7aa",
+      "gee/compat/earthengine/graph.py": "ed84625f9c8e255875d1c53d7f1ca19e42481be67a3741e3135632c64871e248",
+      "gee/compat/earthengine/image_fast_distance.py": "fd5ce94603f871214ca407ddc9a5727ebb1fb378f0245a836c437107abb00213",
+      "gee/compat/earthengine/pixel_graph.py": "d525355ca13542e58b2a295cd2285619ca2e46fdd8e067cb3417515e0d464af9",
+      "gee/fast_distance_spec.py": "9b6b0f4117d8d9a5a9290a5d6eda34e0e407073db5afdb4bad5375c5bb80eb6a",
+      "gee/local_processes.py": "f2d790c83aecbb8f339917625d3a6118aac18b7bb421eb292ecc6e4363799e86",
+      "gee/sampling_graph.py": "03eebca6aa54ecb24c452e6b6de91c20c83a1070d87a59e2318c8629e62123f5",
+      "gee/smile_rf_processes.py": "d35e806304cb3b526e2fd31a34e005c4434bb6328cec1c1133bf048be402a810",
+      "scripts/build_integer_adapter.py": "55a3860dc4b8b9caaef800f0bf852284974db4c732049f1f05d865de3049cf8a",
+      "scripts/ee_inventory/pixel_numeric_families.py": "1dba9822da65cb7be446b0e8b5d81fea4b65a2949c1dd29a07b3c2c4b9c17406",
+      "tests/ee_fast_distance_kernel_helpers.py": "0615b0489da5996e24773e6766ec771a92dfcbff029708ff299eb4f5d6b3d2be",
+      "tests/fixtures/ee-fast-distance-kernel-controls.scala": "7c6b77af02f7c23c07cf3f920fd877fa18dae9062181a00a28671ca6711097a4",
+      "tests/fixtures/ee-fast-distance-kernel-probe.scala": "475ea1f07460aef814cb10d92d2468a3292d95ed6e5a30a8fb1b5ee545d2036d",
+      "tests/test_ee_fast_distance_compiler.py": "09bd3231a0624411fab55ba6238d7d7b3041d610fb3977c43cb43a6df0686adf",
+      "tests/test_ee_fast_distance_kernel.py": "150f975f17b3593559bbd3b20bf4d7c62b90b0d5a61e8c0ed05276c3b525bf6b",
+      "tests/test_ee_fast_distance_limits.py": "5a21c16e2c1b59f3e185bda1ff0cd41226eeb883a01b9eb3fc2c53f9b2b01cef",
+      "tests/test_ee_fast_distance_process.py": "b78f4c590ef96557b95bb691cf829e4211afe09f452e91e516b40e3967330b6b",
+      "tests/test_ee_fast_distance_workflow.py": "9dc48e3d4bbfdec4a482f8f8bfadff4001920fccbeda2aff514f536a3b7033bc",
+      "tests/test_ee_neighborhood_metadata.py": "c392b61d5eba6bbd943943b0763c0052edf161d879a8cd0d0a2ba100d5778315"
+    },
+    "native_final_source_hash_drift": [
+      "tests/ee_fast_distance_kernel_helpers.py"
+    ]
+  },
+  "cleanup": {
+    "owned_scratch": [
+      {
+        "path": "work/gee-python-wave48-early-build",
+        "files": 2,
+        "logical_bytes": 581279,
+        "open_handles": 0,
+        "mounted_images": 0,
+        "removed": true
+      },
+      {
+        "path": "work/gee-python-wave48-pytest",
+        "files": 487,
+        "logical_bytes": 13640817,
+        "open_handles": 0,
+        "mounted_images": 0,
+        "removed": true
+      },
+      {
+        "path": "work/gee-python-wave48-web-build",
+        "files": 16,
+        "logical_bytes": 1697179,
+        "open_handles": 0,
+        "mounted_images": 0,
+        "removed": true
+      }
+    ],
+    "native_probe_scratch_removed": true,
+    "retained": "Compact synthetic fixtures, test logs, source hashes and adapter manifests; no JAR or temporary build output retained."
+  },
+  "preservation": {
+    "dependencies_changed": false,
+    "installed_runtime_modified": false,
+    "user_data_modified": false,
+    "containers_or_VMs_created": false,
+    "goal_complete": false
+  },
+  "not_verified": [
+    "Google cutoff/no-target, masked-target, multiband and dtype same-data equivalence",
+    "Full Spark RDD/shuffle/scheduler and changing-source aggregate-resource enforcement",
+    "Deployed service, native sandbox/browser/map/export workflow",
+    "Private real-data and large-scene throughput beyond existing budgets"
+  ],
+  "documentation": [
+    "docs/gee-python/fast-distance.md"
+  ],
+  "example": "examples/53_GEE_python_fast_distance.py",
+  "references": [
+    "https://developers.google.com/earth-engine/apidocs/ee-image-fastdistancetransform",
+    "https://developers.google.com/earth-engine/guides/best_practices#use_fastdistancetransform_for_neighborhood_operations"
+  ]
+}

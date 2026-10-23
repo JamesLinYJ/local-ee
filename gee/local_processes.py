@@ -13,7 +13,7 @@ LOCAL_PROCESSES = frozenset({
     "local_ee_table", "local_ee_minimum_distance",
     "local_ee_sample_regions", "local_ee_train_minimum_distance",
     "local_ee_remap", "local_ee_sample_table_op", "local_ee_pixel_math", "local_ee_focal", "local_ee_convolve",
-    "local_ee_neighborhood", "local_ee_terrain", "local_ee_distance",
+    "local_ee_neighborhood", "local_ee_terrain", "local_ee_distance", "local_ee_fast_distance_transform",
 }) | RF_PROCESSES | VALIDATION_PROCESSES
 CUBE = {"type": "object", "subtype": "raster-cube"}
 from .reduction_contract import EE_BAND_REDUCERS
@@ -42,7 +42,7 @@ def validate_local_process(name, arguments, depth, *, node_context=None):
         required.add("model")
     if name in {"local_ee_sample_regions", "local_ee_train_minimum_distance",
                 "local_ee_remap", "local_ee_sample_table_op", "local_ee_focal", "local_ee_convolve",
-                "local_ee_neighborhood", "local_ee_terrain", "local_ee_distance"}:
+                "local_ee_neighborhood", "local_ee_terrain", "local_ee_distance", "local_ee_fast_distance_transform"}:
         required.add("spec")
     allowed = required | ({"same_footprint"} if name == "local_ee_unmask" else set())
     if depth != 0 or not required <= set(arguments) <= allowed:
@@ -84,6 +84,10 @@ def validate_local_process(name, arguments, depth, *, node_context=None):
         from .neighborhood_spec import decode_neighborhood_spec
 
         decode_neighborhood_spec(arguments["spec"])
+    if name == "local_ee_fast_distance_transform":
+        from .fast_distance_spec import decode_fast_distance_spec
+
+        decode_fast_distance_spec(arguments["spec"])
     if name == "local_ee_distance":
         from .distance_spec import decode_distance_spec
 
@@ -116,6 +120,10 @@ def validate_local_process(name, arguments, depth, *, node_context=None):
 
 
 def process_spec(name):
+    if name == "local_ee_fast_distance_transform":
+        from .fast_distance_spec import fast_distance_process_spec
+
+        return fast_distance_process_spec()
     if name == "local_ee_distance":
         from .distance_spec import distance_process_spec
 

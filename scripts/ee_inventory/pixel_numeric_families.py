@@ -181,6 +181,23 @@ PIXEL_NUMERIC_LIMITS["Image.distance"] = [
     "source bounds and common-grid proof before output ROI/resampling. Compiler50000/"
     "graph500/JSON1MB caps remain; native halo must be smaller than the tile dimensions, "
     "decoded cells<=1e7/tile and1e8/aggregate, work<=1e8/tile and1e9/aggregate. "
-    "fastDistanceTransform is separate and unimplemented. Trusted tile tests are not "
+    "fastDistanceTransform has a separate capped local contract. Trusted tile tests are not "
     "full Spark, deployment, private-data or Google same-data acceptance."
+]
+
+PIXEL_NUMERIC_LIMITS["Image.fastDistanceTransform"] = [
+    "Finite bound raster inputs, each scalar band searched independently on its proven "
+    "source grid. Missing/null parameters use neighborhood256, pixels and squared_euclidean; "
+    "also supports manhattan/chebyshev, integral neighborhoods1..4096. Finite unmasked "
+    "nonzero values are targets; every observed center receives Int32 distance capped at "
+    "N*N for squared Euclidean or N otherwise, including no-target cases. These explicit "
+    "local cutoff/mask-target/multiband/dtype policies lack Google same-data verification. "
+    "Exact integer output<=2^24 supports ordinary Float32 sqrt/comparisons. Custom cropped "
+    "Boolean fragments span multiple tile hops while preserving sparse keys and time; "
+    "integer-envelope Euclidean and directional L1/Linf transforms use linear cell work. "
+    "Full source extent precedes output ROI/resampling. Compiler50000/graph500/JSON1MB "
+    "remain; native source<=100k keys, working cells<=1e7/tile and1e8/aggregate, "
+    "work<=1e8/tile and1e9/aggregate include fragments and scratch. Specification acceptance "
+    "does not guarantee a layout fits those budgets. Full Spark/service/deployment and "
+    "private-data acceptance are separate."
 ]

@@ -20323,7 +20323,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Nearest valid finite nonzero pixel per input band; original euclidean/manhattan/chebyshev Kernel provenance required, with pixel radius0..16, normalize=false and magnitude1. Missing/null, fixed, transformed and metre kernels reject. Radius eligibility uses exact binary64 radius; Euclidean compares squared integer offsets before final square root. Center targets yield0, absent targets yield NaN, and skipMasked controls center validity only. Physical output Float64; ordinary callback arithmetic requires explicit toFloat. Preserve observed keys/time, full source bounds and common-grid proof before output ROI/resampling. Compiler50000/graph500/JSON1MB caps remain; native halo must be smaller than the tile dimensions, decoded cells<=1e7/tile and1e8/aggregate, work<=1e8/tile and1e9/aggregate. fastDistanceTransform is separate and unimplemented. Trusted tile tests are not full Spark, deployment, private-data or Google same-data acceptance."
+          "Nearest valid finite nonzero pixel per input band; original euclidean/manhattan/chebyshev Kernel provenance required, with pixel radius0..16, normalize=false and magnitude1. Missing/null, fixed, transformed and metre kernels reject. Radius eligibility uses exact binary64 radius; Euclidean compares squared integer offsets before final square root. Center targets yield0, absent targets yield NaN, and skipMasked controls center validity only. Physical output Float64; ordinary callback arithmetic requires explicit toFloat. Preserve observed keys/time, full source bounds and common-grid proof before output ROI/resampling. Compiler50000/graph500/JSON1MB caps remain; native halo must be smaller than the tile dimensions, decoded cells<=1e7/tile and1e8/aggregate, work<=1e8/tile and1e9/aggregate. fastDistanceTransform has a separate capped local contract. Trusted tile tests are not full Spark, deployment, private-data or Google same-data acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -20674,12 +20674,14 @@
       "description": "Returns the distance, as determined by the specified distance metric, to the nearest non-zero valued pixel in the input. The output contains values for all pixels within the given neighborhood size, regardless of the input's mask. Note: the default distance metric returns squared distance.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite bound raster inputs, each scalar band searched independently on its proven source grid. Missing/null parameters use neighborhood256, pixels and squared_euclidean; also supports manhattan/chebyshev, integral neighborhoods1..4096. Finite unmasked nonzero values are targets; every observed center receives Int32 distance capped at N*N for squared Euclidean or N otherwise, including no-target cases. These explicit local cutoff/mask-target/multiband/dtype policies lack Google same-data verification. Exact integer output<=2^24 supports ordinary Float32 sqrt/comparisons. Custom cropped Boolean fragments span multiple tile hops while preserving sparse keys and time; integer-envelope Euclidean and directional L1/Linf transforms use linear cell work. Full source extent precedes output ROI/resampling. Compiler50000/graph500/JSON1MB remain; native source<=100k keys, working cells<=1e7/tile and1e8/aggregate, work<=1e8/tile and1e9/aggregate include fragments and scratch. Specification acceptance does not guarantee a layout fits those budgets. Full Spark/service/deployment and private-data acceptance are separate."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -41502,7 +41504,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 599,
+    "declared_handler_name_count": 600,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41720,7 +41722,7 @@
         "appears_in_rejected_compile_context": 31,
         "appears_in_selected_sdk_serialization": 35,
         "appears_in_successful_compile_context": 8,
-        "declared_handler_count": 107,
+        "declared_handler_count": 108,
         "signature_count": 232
       },
       "ImageCollection": {
@@ -41983,7 +41985,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 599,
+    "pinned_signatures_with_same_name_declared_handler": 600,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

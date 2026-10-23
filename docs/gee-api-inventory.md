@@ -8,7 +8,9 @@ Python 类型、方法、继承方法、参数默认值和命名绑定另见 [Py
 
 第三十四批历史名称入口 **416／991（41.98%）**，新增39个名称（含12个官方单列别名），其中16种Image科学函数经过实际瓦片计算验证。完整参数、网格／精度和Google行为仍有边界；参见[影像数学合同](gee-python/pixel-math.md)与[报告](../reports/gee-python-wave34.json)。
 
-第四十七批同名入口为 **599／991（60.44%）**，本批增加有限 `Image.distance`：三种距离度量共享实际瓦片计算，并明确半径、单位、掩膜和资源边界。数字仍仅统计名称；独立数值与完整运行的证据分开记录，见[距离语法](gee-python/distance.md)和[批次报告](../reports/gee-python-wave47.json)。
+第四十八批同名入口 **600／991（60.54%）**，新增有界 `Image.fastDistanceTransform`。默认256邻域及多跳真实瓦片验证与本地截断政策分别记录；入口数量不等于完整语义兼容率，见[快速距离语法](gee-python/fast-distance.md)和[批次报告](../reports/gee-python-wave48.json)。
+
+第四十七批历史同名入口为 **599／991（60.44%）**，本批增加有限 `Image.distance`：三种距离度量共享实际瓦片计算，并明确半径、单位、掩膜和资源边界。数字仍仅统计名称；独立数值与完整运行的证据分开记录，见[距离语法](gee-python/distance.md)和[批次报告](../reports/gee-python-wave47.json)。
 
 ## 清单范围
 

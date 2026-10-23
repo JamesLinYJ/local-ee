@@ -10,7 +10,7 @@ SUPPORTED_FUNCTIONS = frozenset({
     "Terrain", "Terrain.products", "Terrain.slope", "Terrain.aspect", "Terrain.hillshade",
     "Image.neighborhoodToBands",
     "Image.convolve",
-    "Image.distance",
+    "Image.distance", "Image.fastDistanceTransform",
     *("Kernel." + n for n in ("gaussian", "laplacian4", "laplacian8", "sobel", "prewitt", "roberts", "rotate", "add")),
     *("Kernel." + n for n in ("euclidean", "manhattan", "chebyshev", "compass", "kirsch", "inverse")),
     "Reducer.unweighted",
@@ -182,6 +182,16 @@ def get_capabilities():
              "Missing/null kernels, fixed/transformed/normalized/scaled kernels, meter units and constants reject. "
              "Radius, grid, graph and existing compiler/native-work limits remain. Local behavior has no "
              "Google same-data parity or full Spark/deployment acceptance."),
+            ("Image.fastDistanceTransform accepts pixel neighborhoods1..4096 and squared_euclidean, "
+             "manhattan or chebyshev metrics. Finite nonzero unmasked inputs are targets; each scalar band "
+             "keeps its name, properties, source keys and time. The local Int32 output is valid at masked centers "
+             "and uses a finite cap (N² squared Euclidean, N for the other metrics), including when no target "
+             "exists; outputs are <=2²⁴ and safe for exact integer inputs to pinned Float32 callbacks. "
+             "Source values are widened before eligible selection/masking; existing arithmetic/cast precision "
+             "boundaries remain. Full source bounds and common-grid proofs precede output ROI. Defaults are "
+             "neighborhood256, pixels and squared_euclidean; other units reject. Capped/no-target, masked-target "
+             "and multiband behavior are explicit local policies without Google same-data verification or full "
+             "Spark/deployment acceptance."),
             ("Pixel-unit focalMin/Max/Mean/Median/Mode and aliases retain bounded Float64 halos per "
              "iteration. reduceNeighborhood additionally supports actual positive weighted sum/mean/"
              "population variance/stdDev, support count/min/max, unit-weight product/sample dispersion/"
