@@ -29,6 +29,10 @@ def invoke(translator, name, arguments):
         from .kernel_values import invoke_kernel
 
         return invoke_kernel(translator, name, a)
+    from .image_convolve import CONVOLVE_FUNCTIONS, invoke_image_convolve
+
+    if name in CONVOLVE_FUNCTIONS:
+        return invoke_image_convolve(translator, a)
     from .image_focal import FOCAL_FUNCTIONS, invoke_image_focal
 
     if name in FOCAL_FUNCTIONS:

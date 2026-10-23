@@ -19850,12 +19850,14 @@
       "description": "Convolves each band of an image with the given kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Real one-band native Float64 weighted spatial operation per logical band; exact binary64 products/sum with one nearest-even Float64 rounding, explicit final overflow rejection. Local complete-support policy: masked center or missing nonzero neighbor gives NoData; zero taps require no neighbor and all-zero kernel gives0 only on valid centers. Matrix uses center+offset without flipping. Preserve actual grid, observed keys/time; full finite input bounds precede export ROI/reprojection. Pixel offsets<=32, at most1089 coefficients; nonzero radius smaller than tile dimensions; source-free constants reject. Compiler50000/graph500 and native cell/key caps unchanged; per-tile1e8/total1e9 modeled work, including exact accumulator costs.3x3/256-square accepts, dense7x7 rejects. Standalone GeoTrellis and independent Fraction proof are separate from unrun full Spark, deployed browser/export, real data, performance and Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28118,12 +28120,14 @@
       "description": "Adds two kernels (pointwise) after aligning their centers.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual immutable finite pixel-unit coefficients, at most33x33/1089 cells and offsets<=32. Gaussian uses radius-inclusive ceil(radius) extent, finite-grid positive normalization or unnormalized continuous2D density; signed normalized kernels reject. Clockwise integer quarter-turn rotation preserves focus; add aligns focuses with finite Float64 addition. Shared50000 work; opaque values require an audited consumer. Meters reject; fractional radius, Roberts focus and numerical policies lack Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28227,7 +28231,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; negative source weights with normalization reject. Fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -28321,7 +28325,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; negative source weights with normalization reject. Fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -28375,7 +28379,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; negative source weights with normalization reject. Fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -28495,7 +28499,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; negative source weights with normalization reject. Fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -28551,12 +28555,14 @@
       "description": "Generates a Gaussian kernel from a sampled continuous Gaussian.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual immutable finite pixel-unit coefficients, at most33x33/1089 cells and offsets<=32. Gaussian uses radius-inclusive ceil(radius) extent, finite-grid positive normalization or unnormalized continuous2D density; signed normalized kernels reject. Clockwise integer quarter-turn rotation preserves focus; add aligns focuses with finite Float64 addition. Shared50000 work; opaque values require an audited consumer. Meters reject; fractional radius, Roberts focus and numerical policies lack Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28662,12 +28668,14 @@
       "description": "Generates a 3x3 Laplacian-4 edge-detection kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual immutable finite pixel-unit coefficients, at most33x33/1089 cells and offsets<=32. Gaussian uses radius-inclusive ceil(radius) extent, finite-grid positive normalization or unnormalized continuous2D density; signed normalized kernels reject. Clockwise integer quarter-turn rotation preserves focus; add aligns focuses with finite Float64 addition. Shared50000 work; opaque values require an audited consumer. Meters reject; fractional radius, Roberts focus and numerical policies lack Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28702,12 +28710,14 @@
       "description": "Generates a 3x3 Laplacian-8 edge-detection kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual immutable finite pixel-unit coefficients, at most33x33/1089 cells and offsets<=32. Gaussian uses radius-inclusive ceil(radius) extent, finite-grid positive normalization or unnormalized continuous2D density; signed normalized kernels reject. Clockwise integer quarter-turn rotation preserves focus; add aligns focuses with finite Float64 addition. Shared50000 work; opaque values require an audited consumer. Meters reject; fractional radius, Roberts focus and numerical policies lack Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28811,7 +28821,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; negative source weights with normalization reject. Fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -28865,7 +28875,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; negative source weights with normalization reject. Fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -28902,12 +28912,14 @@
       "description": "Generates a 3x3 Prewitt edge-detection kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual immutable finite pixel-unit coefficients, at most33x33/1089 cells and offsets<=32. Gaussian uses radius-inclusive ceil(radius) extent, finite-grid positive normalization or unnormalized continuous2D density; signed normalized kernels reject. Clockwise integer quarter-turn rotation preserves focus; add aligns focuses with finite Float64 addition. Shared50000 work; opaque values require an audited consumer. Meters reject; fractional radius, Roberts focus and numerical policies lack Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28964,7 +28976,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; negative source weights with normalization reject. Fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -29001,12 +29013,14 @@
       "description": "Generates a 2x2 Roberts edge-detection kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual immutable finite pixel-unit coefficients, at most33x33/1089 cells and offsets<=32. Gaussian uses radius-inclusive ceil(radius) extent, finite-grid positive normalization or unnormalized continuous2D density; signed normalized kernels reject. Clockwise integer quarter-turn rotation preserves focus; add aligns focuses with finite Float64 addition. Shared50000 work; opaque values require an audited consumer. Meters reject; fractional radius, Roberts focus and numerical policies lack Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29037,12 +29051,14 @@
       "description": "Creates a Kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual immutable finite pixel-unit coefficients, at most33x33/1089 cells and offsets<=32. Gaussian uses radius-inclusive ceil(radius) extent, finite-grid positive normalization or unnormalized continuous2D density; signed normalized kernels reject. Clockwise integer quarter-turn rotation preserves focus; add aligns focuses with finite Float64 addition. Shared50000 work; opaque values require an audited consumer. Meters reject; fractional radius, Roberts focus and numerical policies lack Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29077,12 +29093,14 @@
       "description": "Generates a 3x3 Sobel edge-detection kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual immutable finite pixel-unit coefficients, at most33x33/1089 cells and offsets<=32. Gaussian uses radius-inclusive ceil(radius) extent, finite-grid positive normalization or unnormalized continuous2D density; signed normalized kernels reject. Clockwise integer quarter-turn rotation preserves focus; add aligns focuses with finite Float64 addition. Shared50000 work; opaque values require an audited consumer. Meters reject; fractional radius, Roberts focus and numerical policies lack Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29134,7 +29152,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; negative source weights with normalization reject. Fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -41456,7 +41474,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 576,
+    "declared_handler_name_count": 585,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41674,7 +41692,7 @@
         "appears_in_rejected_compile_context": 31,
         "appears_in_selected_sdk_serialization": 35,
         "appears_in_successful_compile_context": 8,
-        "declared_handler_count": 104,
+        "declared_handler_count": 105,
         "signature_count": 232
       },
       "ImageCollection": {
@@ -41702,7 +41720,7 @@
         "appears_in_rejected_compile_context": 1,
         "appears_in_selected_sdk_serialization": 1,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 8,
+        "declared_handler_count": 16,
         "signature_count": 22
       },
       "Landsat": {
@@ -41937,7 +41955,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 576,
+    "pinned_signatures_with_same_name_declared_handler": 585,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

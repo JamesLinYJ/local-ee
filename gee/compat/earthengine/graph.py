@@ -15,7 +15,7 @@ class Graph(PixelCompiler, BandLabels):
         self.cache = {}
         self.sources = {}
         self.required_bands = {}
-        self.focal_sources = set()
+        self.full_extent_sources = set()
         self.expressions = {}
         self.double_precision = {}
         # Training inputs compiled on an independent grid are represented in
@@ -82,7 +82,7 @@ class Graph(PixelCompiler, BandLabels):
     def source(self, source):
         if source not in self.sources:
             if not source.ids: fail("Collection filter has no locally available images")
-            extent = None if source in self.focal_sources else self.t.options.get("region")
+            extent = None if source in self.full_extent_sources else self.t.options.get("region")
             if extent:
                 from shapely.geometry import shape
                 w, s, e, n = shape(extent).bounds
@@ -97,18 +97,20 @@ class Graph(PixelCompiler, BandLabels):
 
     def image(self, image):
         seen = set()
-        def collect(value, focal=False):
+        def collect(value, full_extent=False):
             if isinstance(value, Pixel):
-                key = (id(value), focal)
+                key = (id(value), full_extent)
                 if key in seen: return
                 seen.add(key)
                 if value.op == "band":
                     self.required_bands.setdefault(value.args[0], set()).add(value.args[1])
-                    if focal: self.focal_sources.add(value.args[0])
+                    if full_extent:
+                        self.full_extent_sources.add(value.args[0])
                 else:
-                    for operand in value.args: collect(operand, focal or value.op == "focal")
+                    for operand in value.args:
+                        collect(operand, full_extent or value.op in {"focal", "convolve"})
             elif isinstance(value, tuple):
-                for operand in value: collect(operand, focal)
+                for operand in value: collect(operand, full_extent)
         for _, pixel in image.bands: collect(pixel)
         out = None; time_state = None
         for name, pixel in image.bands:

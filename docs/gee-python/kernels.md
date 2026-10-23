@@ -13,9 +13,11 @@ and [focal operations](https://developers.google.com/earth-engine/apidocs/ee-ima
 `width=-1` / `height=-1` infer the corresponding dimensions from the weights;
 omitted `x` / `y` and `-1` focus sentinels select `width // 2` and `height // 2`.
 Explicit dimensions must match. Focus coordinates are zero-based offsets from
-the left and top. `normalize` defaults to false. When enabled, weights divide by
-their signed sum; a zero sum fails. Negative weights are retained when
-normalization is disabled, and a normalized result must remain finite.
+the left and top. `normalize` defaults to false. When enabled, nonnegative weights divide by
+their exact sum; a zero sum fails. Negative source weights with normalization
+are rejected because Google's method pages and convolution guide describe different
+normalization policies. Negative weights are retained when normalization is disabled.
+Normalization and magnitude scaling must produce finite results; see [weighted kernels](weighted-kernels.md).
 
 The shape constructors default to `units="pixels"`, `normalize=True`, and
 `magnitude=1`. Rectangle requires both `xRadius` and `yRadius`; the others

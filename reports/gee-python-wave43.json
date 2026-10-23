@@ -1,0 +1,186 @@
+{
+  "schema": "local-ee-python-wave43/v1",
+  "date": "2026-10-23",
+  "base_commit": "d2f7f9e4f431b0e38cddb880c59372aad15a9442",
+  "title": "Bounded Float64 convolution, weighted kernels and conservative dry-run band recovery",
+  "entry_inventory": {
+    "before": 576,
+    "after": 585,
+    "new_entry_count": 9,
+    "new_alias_count": 0,
+    "new_names": [
+      "Image.convolve",
+      "Kernel.gaussian",
+      "Kernel.laplacian4",
+      "Kernel.laplacian8",
+      "Kernel.sobel",
+      "Kernel.prewitt",
+      "Kernel.roberts",
+      "Kernel.rotate",
+      "Kernel.add"
+    ],
+    "pinned_signatures": 991,
+    "name_entry_percentage": 59.03,
+    "interpretation": "Names only; bounded parameter/context semantics, not complete GEE compatibility"
+  },
+  "implementation": {
+    "numeric": "Precomputed stripped binary64 coefficient significands/exponents; exact common-unit products and accumulation; one nearest-even Float64 rounding, explicit final overflow rejection",
+    "mask": "Strict complete support of nonzero coefficients; masked center remains NoData; zero taps require no neighbor; all-zero kernel returns zero only on valid centers",
+    "grid": "Matrix offsets sample center+offset without flipping; full finite source bounds precede output ROI/resampling; explicit upstream clipping retained; observed keys/time preserved",
+    "limits": [
+      "Pixel units,33x33/1089 cells,offsets within32; nonzero radius smaller than tile dimensions",
+      "Compiler50000/graph500/JSON1MB unchanged; canonical spec32768 ASCII bytes",
+      "Native100000 keys,100M decoded cells,10M cells per tile,1e9 total/1e8 per-tile modeled work unchanged",
+      "Unit-weight3x3/256-square estimates58065924 and accepts; dense7x7 estimates238947364 and rejects"
+    ],
+    "rejected": [
+      "Meter units",
+      "Signed normalization",
+      "Source-free constant images",
+      "Array-valued images",
+      "Unproven common raster grid",
+      "Final Float64 overflow"
+    ],
+    "local_policies": [
+      "Gaussian radius-inclusive ceil(radius) extent differs from published radius3 example; no footprint parity claim",
+      "Unnormalized Gaussian uses sampled continuous2D density; positive finite-grid normalization and magnitude are explicit",
+      "Roberts focus follows existing fixed default1,1; strict missing-neighbor masks have no Google same-data oracle"
+    ]
+  },
+  "validation": {
+    "python": {
+      "tests": 4448,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 14,
+      "passed": 4434,
+      "seconds": 48.665
+    },
+    "warnings": "3 existing Rasterio PendingDeprecationWarnings",
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "Python_JS_identical_compiled_workflows": 15,
+      "guarded_network_attempts": 0
+    },
+    "actual_process_evaluator": "Pinned openEO registry/evaluator tests for both focal and convolve: multiband load, explicit single-band filter, native bridge, output reprojection/ROI; preserved input constraints. Metadata only, no fabricated pixels.",
+    "legacy_probes": {
+      "total": 50,
+      "serialized": 50,
+      "compiled": 47,
+      "rejected": 3,
+      "interpretation": "Selected compile probes only, not migration success rate"
+    },
+    "native": {
+      "scope": "Trusted standalone GeoTrellis Float64 convolution kernel, manual halo assembly, and collection BufferTilesRDD; no SparkContext, service, or user code",
+      "case_count": 11,
+      "pixels_per_manual_and_actual_collection_path": 272,
+      "temporal_keys": 2,
+      "budget_controls": 9,
+      "reference": "Independent Fraction.from_float whole-raster reference and raw-bit comparisons, including deterministic random multiweight input",
+      "full_adapter_source_count": 25,
+      "jar_sha256": "6bf00bcac207fb40442b9d6185611a508cc2b11cf248db4d73c85847d2bf486b",
+      "architecture": "arm64",
+      "scala_version": "2.13.18",
+      "evidence": "audit/gee-python-wave43/native/convolve-kernel-20261023T103327Z-4b586af22a/convolve-result.json",
+      "work_estimates": {
+        "unit3x3_256_square": 58065924,
+        "unit7x7_256_square": 238947364,
+        "unit7x7_result": "rejected"
+      }
+    },
+    "evidence_directory": "audit/gee-python-wave43/final-verified",
+    "frozen_final_code_sha256": {
+      "engine/ee_convolve.py": "ee6439cd274f820df0f1cea9266599ee7b9dc93d732e7d493a22ad275e00b8fe",
+      "engine/ee_convolve_adapter.scala": "a6637f1a5a995fd944fae292b9ab9bca0a0388c21ee533860696811b8d85f51c",
+      "engine/ee_convolve_numeric.scala": "2d7ff102ff03846f15abbee1e33c7f9524d28c17ef597d51a0cbefd265f7289a",
+      "engine/ee_convolve_spec.scala": "02dcf67c515355ce986fef09d234190079219ed1dd6079c9738bf13059fc1e6c",
+      "engine/ee_focal.py": "02a41b91df92b55cc0bcb74bd6802913f62c778c1c93d61d98413b2e1780e62a",
+      "engine/ee_neighborhood_metadata.py": "7e44af8ee20b5843fdf830edee48542e6ea51b12ae2459dfca69c219b8223ad5",
+      "engine/ee_process_adapters.py": "0947edecd3df87a57a204be3d2361fc411c3d9681bd6b5346dca6308bf02017e",
+      "examples/48_GEE_python_convolution.py": "884f3a2d58b698b1236e36ab7725b7b538f15baa3676fcfdd909c53bb4189206",
+      "gee/compat/earthengine/capabilities.py": "bdddd6274e607ced3948f5e9b39d3a6d0455596279a0649aa2ad03cea1724285",
+      "gee/compat/earthengine/convolve_graph.py": "56afd0876d1f74232582fc11e0924b1f542ff2bea4726524fae4ee0da87d0569",
+      "gee/compat/earthengine/dispatch.py": "daa22ed4a39f49184eb3a12394456f0f3a7e180d5ce6944a77fccaf6a06fdf18",
+      "gee/compat/earthengine/graph.py": "9dc9df5fedb66a294ac8a1239e0390ac9b92efd4dc05a302cb67f9937b953ee6",
+      "gee/compat/earthengine/image_convolve.py": "2d41f3fdfc8ade5b76a3a09372be1c764c344e4801bc7be2ccc968237a620aef",
+      "gee/compat/earthengine/kernel_transform.py": "1809fc5daea9c753b8f6f43579c6f363ebe34880df8ce18e21dd0f1aeca7e965",
+      "gee/compat/earthengine/kernel_values.py": "b541e8b2a9836ab66055ef09ae1cbcb69f52b4895825f21060da221e53b7fcbf",
+      "gee/compat/earthengine/kernel_weighted.py": "f67827178a2e5a7abd7046690502f4bcefa5c8d9a004c8dbb9f598f36e546570",
+      "gee/compat/earthengine/pixel_graph.py": "d85e61d469af9e42a4204a701fca4f81b65ec8aadd9ad0558fb85e3e5f115a54",
+      "gee/convolve_spec.py": "024308b474eb0a763140f3d24c14c743658372c168f9613e3b224e257a20d51f",
+      "gee/local_processes.py": "d472729359d49f7ee895c51389f4aff3d2f42b00322e093b8252aa077f6463b1",
+      "gee/sampling_graph.py": "070a9230524bdf3255bd5135704dda85a8a8b7e8cc8a5ee56f2939dbf5a46de7",
+      "gee/smile_rf_processes.py": "28176ff075405677bbc08eda2e8c29df88f7bb70332c522d62abc395d0e0ac9d",
+      "scripts/build_integer_adapter.py": "9b05f2d14fd798699b6dace41ff0d2020b684f8f8824d18f6b24dcffbbfce0b4",
+      "scripts/ee_inventory/pixel_numeric_families.py": "502e26bae7f37a49604c2cb4805a38cbe3adfe5976675fad282a4eb17e1ed391",
+      "tests/ee_convolve_kernel_helpers.py": "975bd76292a5d965138e8cc3ed4ec20eba72cde7b3f7db5c64de168a14e9792f",
+      "tests/fixtures/ee-convolve-kernel-probe.scala": "28887721fb51da8ace97a23ee66ba8116121991e365570363f5cf4bf81eb68f8",
+      "tests/test_ee_convolve_compiler.py": "8c9bb77043d1751b04b856ac1ac4bb401d3294af081eaa7d7567ff6f43bb7a56",
+      "tests/test_ee_convolve_engine.py": "093c1dc03cf5848532560faf0cc5291187fab5ad4418029ab7c66f49b23f1034",
+      "tests/test_ee_convolve_kernel.py": "95e86d28910f5b3a4d6eb6c6da2c2033ad7ad22369687cae5b0d0856546d581a",
+      "tests/test_ee_convolve_process.py": "c240221726c66faa22e032fd78e8603a75097f19959208dada5824f6a6c06cfc",
+      "tests/test_ee_convolve_workflow.py": "5757df3bb1c841f3b213ac3b1c40dbcf611a08c56ec6e3ab94303fe6adb4fb88",
+      "tests/test_ee_focal_process.py": "c7d9e6ca6c95149f478bb2f220c499b4abbf24a59fbf212162180f277e8c39ec",
+      "tests/test_ee_kernels.py": "bb98ea6bdfb039adede07ad63375f09f1fe5b0d8ddd972f71c07fa0aec223d95",
+      "tests/test_ee_neighborhood_metadata.py": "7a20e556ef5306379b1e0339ac3ad0d80e27a0c98d12894ee850432cc81ce65c",
+      "tests/test_ee_weighted_kernels.py": "1995c68eabc152aaa51ac0f2f15bfbdf50d9c5180a72f88535ca50099be73802"
+    }
+  },
+  "failure_fixes": [
+    {
+      "issue": "Pinned DryRunDataCube.filter_bands retains multiband metadata and rejects legitimate single-band neighborhood input",
+      "fix": "Shared bounded trace recovery only through known preserving nodes, latest explicit filter validation and actual registry/evaluator regression for focal/convolve"
+    },
+    {
+      "issue": "Initial Gaussian radius convention collapsed radius1 to an identity mask",
+      "fix": "Explicit radius-inclusive local policy and independent3x3/7x7 coefficient checks; documentation disagreement recorded"
+    },
+    {
+      "issue": "Signed kernel normalization was ambiguous and prior fixed kernel divided by signed sum",
+      "fix": "Reject negative source weights with normalize=true; exact positive finite sum and single Float64 conversion"
+    },
+    {
+      "issue": "Fixed worst-case exact accumulator costs omitted shifted-product allocation work",
+      "fix": "Precomputed coefficient binary parts, exact kernel-specific common units, dynamic bounds, charge both shift/add and final rounding without raising caps"
+    },
+    {
+      "issue": "Initial standalone Scala probe had an ArrayMultibandTile type-inference compile error",
+      "fix": "Explicit Tile element type; failure logs retained and final full adapter/probe compile passed"
+    }
+  ],
+  "preservation": {
+    "dependencies_changed": false,
+    "installed_runtime_modified": false,
+    "user_data_modified": false,
+    "containers_or_VMs_created": false,
+    "goal_complete": false
+  },
+  "cleanup": {
+    "temporary_frontend": {
+      "owned_path": "/Users/james/Documents/Codex/2026-10-21/wo/work/gee-python-wave43-web-build",
+      "files": 16,
+      "logical_bytes": 1697179,
+      "removed": true
+    },
+    "native_owned_jar_classes": "Removed by bounded probe finally block; manifests/logs retained"
+  },
+  "not_verified": [
+    "Full Spark RDD/cube job for new convolution operations",
+    "Deployed sandbox/browser/map/physical raster export for this family",
+    "Private real data",
+    "Google same-data numerical equivalence",
+    "Performance/capacity for large real scenes"
+  ],
+  "documentation": [
+    "docs/gee-python/convolve.md",
+    "docs/gee-python/convolve-native.md",
+    "docs/gee-python/weighted-kernels.md"
+  ],
+  "example": "examples/48_GEE_python_convolution.py"
+}

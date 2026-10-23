@@ -1,4 +1,4 @@
-"""Bounded static Earth Engine Kernel constructors and immutable values."""
+"""Bounded static Earth Engine Kernel constructors, transforms, and values."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -17,6 +17,9 @@ MAX_EXACT_INTEGER = 2**53
 KERNEL_FUNCTIONS = {
     "Kernel.fixed", "Kernel.circle", "Kernel.square", "Kernel.rectangle",
     "Kernel.plus", "Kernel.cross", "Kernel.diamond", "Kernel.octagon",
+    "Kernel.gaussian", "Kernel.laplacian4", "Kernel.laplacian8",
+    "Kernel.sobel", "Kernel.prewitt", "Kernel.roberts",
+    "Kernel.rotate", "Kernel.add",
 }
 
 
@@ -67,36 +70,46 @@ def _boolean(value, label: str) -> bool:
     return value
 
 
-def _finite_sum(values: list[float]) -> float:
-    try:
-        result = math.fsum(values)
-    except OverflowError:
-        try:
-            result = float(sum((Fraction.from_float(v) for v in values), Fraction()))
-        except OverflowError:
-            fail("Kernel weight sum exceeds the finite Float64 domain")
-    if not math.isfinite(result):
-        fail("Kernel weight sum exceeds the finite Float64 domain")
-    return result
-
-
 def _finish(translator, values, x: int, y: int, normalize: bool,
             magnitude: float = 1.0) -> KernelSpec:
-    """Precharge normalization and owned tuple materialization."""
+    """Precharge and safely normalize/scale before making owned rows."""
     height, width = len(values), len(values[0])
     cells = height * width
     _charge(translator, 2 + 5 * cells)
     flat = [value for row in values for value in row]
-    divisor = _finite_sum(flat) if normalize else 1.0
-    if normalize and divisor == 0.0:
+    if any(type(value) is not float or not math.isfinite(value) for value in flat):
+        fail("Kernel weights must be finite Float64 values before normalization")
+    exact = [Fraction.from_float(value) for value in flat]
+    if normalize and any(value < 0.0 for value in flat):
+        fail(
+            "Kernel normalization with negative coefficients is unsupported locally: "
+            "official method pages say sum to 1, while the convolution guide says sum to 0"
+        )
+    divisor = sum(exact, Fraction()) if normalize else Fraction(1)
+    if normalize and divisor == 0:
         fail("Kernel cannot normalize weights whose sum is zero")
+    if type(magnitude) is not float or not math.isfinite(magnitude):
+        fail("Kernel magnitude must be a finite Float64 value")
+    scale = Fraction.from_float(magnitude)
     rows = []
+    index = 0
     for row in values:
-        output = tuple((value / divisor) * magnitude if normalize
-                       else value * magnitude for value in row)
-        if not all(math.isfinite(value) for value in output):
-            fail("Kernel weights must remain finite after normalization and magnitude")
-        rows.append(output)
+        output = []
+        for _ in row:
+            source = flat[index]
+            if source == 0.0 or magnitude == 0.0:
+                sign = math.copysign(1.0, source) * math.copysign(1.0, magnitude)
+                value = math.copysign(0.0, sign)
+            else:
+                try:
+                    value = float(exact[index] * scale / divisor)
+                except OverflowError:
+                    fail("Kernel weights must remain finite after normalization and magnitude")
+            if not math.isfinite(value):
+                fail("Kernel weights must remain finite after normalization and magnitude")
+            output.append(value)
+            index += 1
+        rows.append(tuple(output))
     return KernelSpec(tuple(rows), x, y)
 
 
@@ -172,12 +185,20 @@ def validate_kernel(translator, kernel) -> KernelSpec:
 
 
 def invoke_kernel(translator, name: str, arguments: dict) -> KernelSpec:
-    """Construct one bounded finite pixel Kernel from the pinned EE API."""
+    """Construct or transform one bounded finite pixel Kernel."""
     if name not in KERNEL_FUNCTIONS:
         fail(f"Unsupported Earth Engine Kernel constructor: {name}")
     _charge(translator, 1)
     if name == "Kernel.fixed":
         return _fixed(translator, arguments)
+    from .kernel_weighted import WEIGHTED_KERNEL_FUNCTIONS, invoke_weighted_kernel
+
+    if name in WEIGHTED_KERNEL_FUNCTIONS:
+        return invoke_weighted_kernel(translator, name, arguments)
+    from .kernel_transform import KERNEL_TRANSFORM_FUNCTIONS, invoke_kernel_transform
+
+    if name in KERNEL_TRANSFORM_FUNCTIONS:
+        return invoke_kernel_transform(translator, name, arguments)
     from .kernel_shapes import invoke_kernel_shape
 
     return invoke_kernel_shape(translator, name, arguments)

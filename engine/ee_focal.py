@@ -25,17 +25,14 @@ def local_ee_focal(args, env):
     from openeo_driver.dry_run import DryRunDataCube, ProcessType
     from .ee_process_adapters import _apply_native, _checked_args, _driver_cube
     from gee.focal_spec import decode_focal_spec
+    from .ee_neighborhood_metadata import single_band_metadata
 
     args = _checked_args(args, "local_ee_focal", {"data", "spec"})
     cube = _driver_cube(args, "local_ee_focal")
     decode_focal_spec(args["spec"])
-    if (not cube.metadata.has_band_dimension()
-            or len(cube.metadata.band_names) != 1
-            or type(cube.metadata.band_names[0]) is not str
-            or not cube.metadata.band_names[0]):
-        raise ValueError("local_ee_focal requires exactly one named source band")
-    dimension = cube.metadata.band_dimension.name
-    metadata = cube.metadata.reduce_dimension(dimension).add_dimension(dimension, "v", type="bands")
+    source_metadata = single_band_metadata(cube, "local_ee_focal")
+    dimension = source_metadata.band_dimension.name
+    metadata = source_metadata.reduce_dimension(dimension).add_dimension(dimension, "v", type="bands")
     if isinstance(cube, DryRunDataCube):
         register_focal_pushdown_boundary()
         # Record the operation, not merely its metadata; downstream constraints

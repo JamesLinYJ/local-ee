@@ -67,9 +67,34 @@ for _operation in ("fixed", "circle", "square", "rectangle", "plus", "cross", "d
     PIXEL_NUMERIC_LIMITS["Kernel." + _operation] = [
         "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, "
         "offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. "
-        "Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. "
+        "Finite normalization/magnitude; negative source weights with normalization reject. "
+        "Fractional boundaries and octagon policy lack Google parity. "
         "Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
     ]
+
+for _operation in ("gaussian", "laplacian4", "laplacian8", "sobel", "prewitt", "roberts", "rotate", "add"):
+    PIXEL_NUMERIC_LIMITS["Kernel." + _operation] = [
+        "Actual immutable finite pixel-unit coefficients, at most33x33/1089 cells and offsets<=32. "
+        "Gaussian uses radius-inclusive ceil(radius) extent, finite-grid positive normalization "
+        "or unnormalized continuous2D density; signed normalized kernels reject. "
+        "Clockwise integer quarter-turn rotation preserves focus; add aligns focuses with finite "
+        "Float64 addition. Shared50000 work; opaque values require an audited consumer. "
+        "Meters reject; fractional radius, Roberts focus and numerical policies lack Google parity."
+    ]
+
+PIXEL_NUMERIC_LIMITS["Image.convolve"] = [
+    "Real one-band native Float64 weighted spatial operation per logical band; exact binary64 "
+    "products/sum with one nearest-even Float64 rounding, explicit final overflow rejection. "
+    "Local complete-support policy: masked center or missing nonzero neighbor gives NoData; "
+    "zero taps require no neighbor and all-zero kernel gives0 only on valid centers. "
+    "Matrix uses center+offset without flipping. Preserve actual grid, observed keys/time; "
+    "full finite input bounds precede export ROI/reprojection. Pixel offsets<=32, at most1089 "
+    "coefficients; nonzero radius smaller than tile dimensions; source-free constants reject. "
+    "Compiler50000/graph500 and native cell/key caps unchanged; per-tile1e8/total1e9 modeled "
+    "work, including exact accumulator costs.3x3/256-square accepts, dense7x7 rejects. "
+    "Standalone GeoTrellis and independent Fraction proof are separate from unrun full Spark, "
+    "deployed browser/export, real data, performance and Google parity."
+]
 
 for _operation in ("focalMin", "focalMax", "focalMean", "focalMedian", "focalMode",
                    "focal_min", "focal_max", "focal_mean", "focal_median", "focal_mode",

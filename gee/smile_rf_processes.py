@@ -17,7 +17,7 @@ RF_RASTER_PRODUCERS = frozenset({
     "apply", "apply_dimension", "rename_labels", "merge_cubes", "mask_polygon",
     "add_dimension", "drop_dimension", "local_ee_to_double", "local_ee_to_float",
     "local_ee_constant_on_grid", "local_ee_unmask", "local_ee_drop_single_time",
-    "local_ee_reduce_bands", "local_ee_minimum_distance", "local_ee_remap", "local_ee_focal", RF_CLASSIFY,
+    "local_ee_reduce_bands", "local_ee_minimum_distance", "local_ee_remap", "local_ee_focal", "local_ee_convolve", RF_CLASSIFY,
 })
 
 

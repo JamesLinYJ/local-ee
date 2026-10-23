@@ -87,7 +87,8 @@ def test_pinned_algorithm_signatures_and_official_sdk_invocations_match(ee):
     assert definitions["Kernel.fixed"]["arguments"][3]["defaultValue"] == -1.0
     assert definitions["Kernel.fixed"]["arguments"][4]["defaultValue"] == -1.0
     assert definitions["Kernel.fixed"]["arguments"][5]["defaultValue"] is False
-    for name in KERNEL_FUNCTIONS - {"Kernel.fixed"}:
+    for name in {"Kernel.circle", "Kernel.square", "Kernel.rectangle", "Kernel.plus",
+                 "Kernel.cross", "Kernel.diamond", "Kernel.octagon"}:
         defaults = {arg["argumentName"]: arg.get("defaultValue")
                     for arg in definitions[name]["arguments"] if arg.get("optional")}
         assert defaults == {"units": "pixels", "normalize": True, "magnitude": 1.0}

@@ -45,13 +45,17 @@ def validate_sampling_dependencies(nodes):
     JSON string specifications stay data; this function never traverses their
     property dictionaries as process nodes or graph dependencies.
     """
-    from .smile_rf_processes import validate_rf_dependencies
+    from .smile_rf_processes import RF_RASTER_PRODUCERS, validate_rf_dependencies
     from .rf_validation_processes import validate_validation_dependencies
 
     validate_rf_dependencies(nodes)
     validate_validation_dependencies(nodes)
     for key, node in nodes.items():
         name, arguments = node["process_id"], node.get("arguments", {})
+        if name == "local_ee_convolve":
+            source = nodes[arguments["data"]["from_node"]]
+            if source["process_id"] not in RF_RASTER_PRODUCERS | {"local_ee_pixel_math"}:
+                raise ValueError("Convolution data must come from an audited raster cube producer")
         if name == OP_PROCESS:
             origin, operations = sample_chain(nodes, key)
             sampled_columns(decode_sampling_spec(origin['arguments']['spec']), operations)
@@ -68,7 +72,7 @@ def validate_sampling_dependencies(nodes):
                 source = nodes[model["from_node"]]
                 if source["process_id"] != TRAIN_PROCESS:
                     raise ValueError("Dynamic classifier models must come from local_ee_train_minimum_distance")
-        if name in {SAMPLE_PROCESS, 'local_ee_remap', 'local_ee_pixel_math', 'local_ee_focal'}:
+        if name in {SAMPLE_PROCESS, 'local_ee_remap', 'local_ee_pixel_math', 'local_ee_focal', 'local_ee_convolve'}:
             source = nodes[arguments["data"]["from_node"]]
             if source["process_id"] in {SAMPLE_PROCESS, TRAIN_PROCESS, OP_PROCESS, "local_ee_table", "save_result"}:
                 raise ValueError("Sampling data must be a raster cube, not a feature table or model")

@@ -100,5 +100,7 @@ def test_focal_inventory_names_match_implemented_families():
     from gee.compat.earthengine.capabilities import SUPPORTED_FUNCTIONS
     from gee.compat.earthengine.image_focal import FOCAL_FUNCTIONS
     from gee.compat.earthengine.kernel_values import KERNEL_FUNCTIONS
-    assert len(FOCAL_FUNCTIONS | KERNEL_FUNCTIONS) == 19
+    assert len(FOCAL_FUNCTIONS) == 11
+    assert {"Kernel.fixed", "Kernel.circle", "Kernel.square", "Kernel.rectangle",
+            "Kernel.plus", "Kernel.cross", "Kernel.diamond", "Kernel.octagon"} <= KERNEL_FUNCTIONS
     assert FOCAL_FUNCTIONS | KERNEL_FUNCTIONS <= SUPPORTED_FUNCTIONS

@@ -7,6 +7,8 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 # Handler inventory, not a claim that every overload or parameter is supported,
 # nor that Google-service numerical equivalence has been established.
 SUPPORTED_FUNCTIONS = frozenset({
+    "Image.convolve",
+    *("Kernel." + n for n in ("gaussian", "laplacian4", "laplacian8", "sobel", "prewitt", "roberts", "rotate", "add")),
     *("Kernel." + n for n in ("fixed", "circle", "square", "rectangle", "plus", "cross", "diamond", "octagon")),
     "Image.reduceNeighborhood",
     *("Image." + n for n in ("focalMean", "focalMin", "focalMax", "focalMedian", "focalMode",
@@ -142,6 +144,13 @@ def get_capabilities():
         "level": "C",
         "numerical_equivalence_to_google_verified": False,
         "restrictions": [
+            ("Image.convolve applies finite pixel kernels with exact binary64 product accumulation "
+             "and one Float64 rounding. Valid centers require all nonzero-weight neighbors; no edge "
+             "renormalization. Zero kernels yield zero on valid centers. Gaussian and five edge kernels, "
+             "quarter-turn rotation and focus-aligned addition preserve bounded33x33 coefficients. "
+             "Meter kernels and signed normalization reject; fractional Gaussian footprint and mask "
+             "policies are local, without Google parity. Native halo/work limits and full input extent "
+             "boundaries remain; full Spark/deployment acceptance is separate."),
             ("Pixel-unit Kernel constructors are finite33x33 masks; focalMin/Max/Mean/Median/Mode "
              "and aliases plus reduceNeighborhood with five scalar reducers use a Float64 native halo "
              "per iteration. Named radii<=16, fixed offsets<=32, iterations1..8, positive support only; "
