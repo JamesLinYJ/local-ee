@@ -15,6 +15,15 @@ _MAX_AXIS = 8
 _MAX_CELLS = 64
 
 
+def _output_count(op, rows, cols, rhs):
+    inner = min(rows, cols)
+    if op == "qr":
+        return inner * (rows + cols)
+    if op == "svd":
+        return inner * (rows + inner + cols)
+    return cols * rhs if op == "solve" else rows * cols * (3 if op == "lu" else 1)
+
+
 def _unique_object(pairs):
     result = {}
     for key, value in pairs:
@@ -35,7 +44,7 @@ def _decode_spec(text):
             or set(spec) != {"v", "op", "rows", "cols", "rhs_cols", "operands"}
             or type(spec["v"]) is not int or spec["v"] != 1
             or type(spec["op"]) is not str
-            or spec["op"] not in {"solve", "inverse", "pinverse", "cholesky", "lu"}
+            or spec["op"] not in {"solve", "inverse", "pinverse", "cholesky", "lu", "qr", "svd"}
             or type(spec["rows"]) is not int
             or type(spec["cols"]) is not int
             or type(spec["rhs_cols"]) is not int):
@@ -48,12 +57,11 @@ def _decode_spec(text):
         if not 1 <= rhs_cols <= _MAX_AXIS:
             raise AssertionError("Matrix graph oracle solve needs1..8 RHS columns")
         input_cells = rows * cols + rows * rhs_cols
-        output_cells = cols * rhs_cols
     else:
         if rhs_cols != 0 or op in {"inverse", "cholesky", "lu"} and rows != cols:
             raise AssertionError("Matrix graph oracle received invalid matrix dimensions")
         input_cells = rows * cols
-        output_cells = cols * rows * (3 if op == "lu" else 1)
+    output_cells = _output_count(op, rows, cols, rhs_cols)
     if input_cells > _MAX_CELLS or output_cells > _MAX_CELLS:
         raise AssertionError("Matrix graph oracle exceeds the64-cell limit")
     operands = spec["operands"]
@@ -165,6 +173,11 @@ def _constant_predictor_column(matrix, full_column_rank):
 
 def _matrix_result(operation, matrix, right_hand_side=None):
     """Evaluate one finite matrix using the declared local SVD policy."""
+    if operation in {"qr", "svd"}:
+        from ee_matrix_orthogonal_reference import orthogonal_matrix_result
+
+        factors = orthogonal_matrix_result(operation, matrix)
+        return None if factors is None else np.concatenate([factor.reshape(-1) for factor in factors])
     if operation in {"cholesky", "lu"}:
         from ee_matrix_factor_reference import factor_matrix_result
 
@@ -256,10 +269,7 @@ def matrix_values_handler(arguments: dict, values: dict):
             sample_count, pixel_count, rows, rhs_cols,
         )
     valid = np.all(np.isfinite(np.stack(operand_values, axis=-1)), axis=-1)
-    output_rows, output_cols = (
-        (cols, rhs_cols) if spec["op"] == "solve"
-        else (cols * (3 if spec["op"] == "lu" else 1), rows)
-    )
+    output_rows, output_cols = 1, _output_count(spec["op"], rows, cols, rhs_cols)
     output = np.full(
         (sample_count, pixel_count, output_rows, output_cols),
         np.nan, dtype=np.float64,

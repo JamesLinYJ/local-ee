@@ -10,8 +10,31 @@ import struct
 MAX_BYTES = 8192
 MAX_CELLS = 64
 MAX_AXIS = 8
-OPERATIONS = frozenset({"solve", "inverse", "pinverse", "cholesky", "lu"})
+FACTOR_OPERATIONS = frozenset({"cholesky", "lu", "qr", "svd"})
+OPERATIONS = FACTOR_OPERATIONS | frozenset({"solve", "inverse", "pinverse"})
 PROCESS_ID = "local_ee_matrix_values"
+
+
+def matrix_factor_layout(op, rows, cols):
+    """Validate factor dimensions and return their immutable compact layout."""
+    if type(op) is not str or op not in FACTOR_OPERATIONS:
+        raise ValueError("Unsupported matrix factor operation")
+    if any(type(size) is not int or not 1 <= size <= MAX_AXIS for size in (rows, cols)):
+        raise ValueError("Matrix factor axes must be integers in1..8")
+    if op in {"cholesky", "lu"} and rows != cols:
+        raise ValueError(f"Matrix {op} requires a square matrix")
+    if op == "cholesky":
+        layout = (("L", (rows, cols)),)
+    elif op == "lu":
+        layout = tuple((name, (rows, cols)) for name in ("L", "U", "P"))
+    else:
+        inner = min(rows, cols)
+        layout = (("Q", (rows, inner)), ("R", (inner, cols))) if op == "qr" else (
+            ("U", (rows, inner)), ("S", (inner, inner)), ("V", (cols, inner)),
+        )
+    if rows * cols > MAX_CELLS or sum(a * b for _name, (a, b) in layout) > MAX_CELLS:
+        raise ValueError("Matrix input and combined factor outputs must fit the shared64-cell limit")
+    return layout
 
 
 def _check(spec):
@@ -29,7 +52,8 @@ def _check(spec):
     if op in {"inverse", "cholesky", "lu"} and rows != cols:
         raise ValueError(f"Matrix {op} requires a square matrix")
     count = rows * cols + (rows * rhs if op == "solve" else 0)
-    outputs = cols * (rhs if op == "solve" else rows) * (3 if op == "lu" else 1)
+    outputs = (sum(a * b for _name, (a, b) in matrix_factor_layout(op, rows, cols))
+               if op in FACTOR_OPERATIONS else cols * (rhs if op == "solve" else rows))
     if count > MAX_CELLS or outputs > MAX_CELLS:
         raise ValueError("Matrix input and output must each fit the shared64-cell limit")
     operands = spec["operands"]
@@ -58,17 +82,16 @@ def _check(spec):
 
 def matrix_output_shape(spec):
     value = _check(spec)
-    if value["op"] == "lu":
-        raise ValueError("Matrix LU has multiple factor shapes; use its output layout")
+    if value["op"] in {"lu", "qr", "svd"}:
+        raise ValueError("Matrix operation has multiple factor shapes; use its output layout")
     return value["cols"], value["rhs_cols"] if value["op"] == "solve" else value["rows"]
 
 
 def matrix_output_layout(spec):
     """Logical factor names and shapes in the scalar wire's exact band order."""
     value = _check(spec)
-    if value["op"] in {"cholesky", "lu"}:
-        names = ("L", "U", "P") if value["op"] == "lu" else ("L",)
-        return tuple((name, (value["rows"], value["cols"])) for name in names)
+    if value["op"] in FACTOR_OPERATIONS:
+        return matrix_factor_layout(value["op"], value["rows"], value["cols"])
     return (("v", matrix_output_shape(value)),)
 
 
@@ -124,6 +147,8 @@ def matrix_values_process_spec():
             "Cholesky requires exact symmetry and positive computed pivots; LU uses first-maximum "
             "partial pivoting with P*A=L*U and zero-pivot NoData. LU packs L,U,P in row-major order "
             "within the same combined64-output-cell cap. "
+            "Compact QR packs Q(m,p),R(p,n); compact SVD packs U(m,p),S(p,p),V(n,p), "
+            "where p=min(m,n). Both admit rectangular and rank-deficient matrices. "
             "Source Infinity rejects. Ordered input bands and actual grid/time/key/cell/work "
             "limits are revalidated. Float64 outputs matrix0.. are not Google rank/dtype parity."
         ),

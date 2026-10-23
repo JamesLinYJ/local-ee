@@ -31,6 +31,14 @@ final class LocalEeMatrixValuesCubeProcesses extends Serializable {
       Some(LocalEeMatrixFactorizationBudget.admitSource(
         input.source, keyCount, spec, input.cols, input.rows))
     } else {
+      None
+    }
+    val orthogonalBudget = if (spec.op == "qr" || spec.op == "svd") {
+      Some(LocalEeMatrixOrthogonalBudget.admitSource(
+        input.source, keyCount, spec, input.cols, input.rows))
+    } else if (spec.op == "lu") {
+      None
+    } else {
       LocalEeMatrixValuesBudget.check(tilePixels, keyCount, spec)
       None
     }
@@ -49,6 +57,8 @@ final class LocalEeMatrixValuesCubeProcesses extends Serializable {
       LocalEeMatrixValuesNumeric.validateTileShape(tile, spec, cols, rows)
       factorBudget.foreach(envelope =>
         LocalEeMatrixFactorizationBudget.requireWithinEnvelope(tile, spec, cols, rows, envelope))
+      orthogonalBudget.foreach(envelope =>
+        LocalEeMatrixOrthogonalBudget.requireWithinEnvelope(tile, spec, cols, rows, envelope))
       key -> LocalEeMatrixValuesNumeric.applyTile(tile, spec)
     }
     val outputNames = (0 until spec.outputCells).map(index => s"matrix$index")
@@ -69,6 +79,8 @@ private[reduce] object LocalEeMatrixValuesBudget {
   val MaxTileKeys = 100000L
 
   def workPerPixel(spec: LocalEeMatrixValuesSpec.Value): Long = {
+    require(spec.op != "qr" && spec.op != "svd",
+      "QR/SVD must use input-sensitive orthogonal budget admission")
     val rows = spec.rows.toLong
     val cols = spec.cols.toLong
     if (spec.op == "cholesky") {

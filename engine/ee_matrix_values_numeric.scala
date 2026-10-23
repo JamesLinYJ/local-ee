@@ -70,7 +70,9 @@ private[reduce] object LocalEeMatrixValuesNumeric {
   }
 
   private def evaluate(values: Array[Double], spec: LocalEeMatrixValuesSpec.Value): Array[Double] = {
-    if (spec.op == "cholesky" || spec.op == "lu") {
+    if (spec.op == "qr" || spec.op == "svd") {
+      LocalEeMatrixOrthogonal.evaluate(values, spec)
+    } else if (spec.op == "cholesky" || spec.op == "lu") {
       LocalEeMatrixFactorization.evaluate(values, spec)
     } else {
       evaluateSvd(values, spec)

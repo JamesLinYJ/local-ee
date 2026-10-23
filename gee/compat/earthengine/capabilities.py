@@ -8,6 +8,7 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 # nor that Google-service numerical equivalence has been established.
 SUPPORTED_FUNCTIONS = frozenset({
     "Image.matrixCholeskyDecomposition", "Image.matrixLUDecomposition", "Image.matrixTranspose",
+    "Image.matrixQRDecomposition", "Image.matrixSingularValueDecomposition",
     "Terrain", "Terrain.products", "Terrain.slope", "Terrain.aspect", "Terrain.hillshade",
     "Image.neighborhoodToBands",
     "Image.convolve",
@@ -159,6 +160,13 @@ def get_capabilities():
         "level": "C",
         "numerical_equivalence_to_google_verified": False,
         "restrictions": [
+            ("Image QR/SVD accept one explicitly typed fixed rank-2 array with axes1..8. "
+             "Compact local QR returns Q(m,p),R(p,n); SVD returns U(m,p),S(p,p),V(n,p), p=min(m,n). "
+             "Combined factors fit64 cells and share one native producer; select before ordinary algebra. "
+             "Rectangular, zero and rank-deficient inputs are admitted; missing/nonfinite factor outputs mask "
+             "the entire group and valid source Infinity rejects. Original metadata/casts/grid/time and all "
+             "work limits remain. Factor signs, repeated-singular subspaces and compact shapes have no Google "
+             "comparison; final Float32 casts may overflow. Component checks are not full Spark acceptance."),
             ("Image matrix Cholesky/LU require one explicitly typed fixed square array. Cholesky returns L; "
              "LU returns L/U/P with P*A=L*U and first-maximum partial pivots. Select factors before array algebra. "
              "All factors share a single bounded producer, whole-input mask and original metadata. Cholesky uses "

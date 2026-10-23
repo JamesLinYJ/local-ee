@@ -14,8 +14,16 @@ export const pythonTypedRasterDocs: ReferenceEntry[] = [
     category: "GEE Python",
     language: "python",
     title: "逐像元 Cholesky 与 LU 分解",
-    text: "有界 rank-2 方阵支持 matrixCholeskyDecomposition 和 matrixLUDecomposition，参数名为 image。Cholesky 返回命名数组因子 L；LU 返回 L、U、P，并满足 P×A=L×U。先 select 因子，再 arrayFlatten 或参与矩阵运算；每组因子共享一个本地矩阵生产者。每轴1–8；LU返回三个方阵，合计最多64单元，因此 LU 最大为4×4。Cholesky 要求严格对称和严格正主元；LU 使用首个最大值部分主元，精确零主元或无法表示的非有限因子使整组结果为 NoData。缺测传播到整矩阵，有效源 Infinity 拒绝。Float32 输入先舍入到 Float32，Float32 输出转换本身仍可能溢出为 Infinity。示例消费 U 的逆和 Cholesky 求解；完整 U^-1×L^-1×P 组合超过现有50000步工作预算并明确拒绝。Fraction/50位 Decimal 参考及本地消元规则不表示 Google 数值或完整 Spark 一致性。",
+    text: "有界 rank-2 方阵支持 matrixCholeskyDecomposition 和 matrixLUDecomposition，参数名为 image。Cholesky 返回命名数组因子 L；LU 返回 L、U、P，并满足 P×A=L×U。先 select 因子，再 arrayFlatten 或参与矩阵运算；每组因子共享一个本地矩阵生产者。每轴1–8；LU返回三个方阵，合计最多64单元，因此 LU 最大为4×4。Cholesky 要求严格对称和严格正主元；LU 使用首个最大值部分主元，精确零主元或无法表示的非有限因子使整组结果为 NoData。缺测传播到整矩阵，有效源 Infinity 拒绝。Float32 输入先舍入到 Float32，Float32 输出转换本身仍可能溢出为 Infinity。示例消费 U 的逆和 Cholesky 求解；SDK 引用共享后，2×2 完整因子逆组合可编译，大型组合仍受现有50000步工作预算约束。Fraction/50位 Decimal 参考及本地消元规则不表示 Google 数值或完整 Spark 一致性。",
     code: "matrix = image.select(['m00','m01','m10','m11']).toDouble()\\\n    .toArray().arrayReshape(ee.Image.constant(ee.Array([2,2])), 2)\nchol = matrix.matrixCholeskyDecomposition()\nL = chol.select('L')\nlu = matrix.matrixLUDecomposition()\nP = lu.select('P')\nL_lu = lu.select('L')\nU = lu.select('U')\nleft = P.matrixMultiply(matrix)\nright = L_lu.matrixMultiply(U)",
+  },
+  {
+    id: "gee-python-matrix-orthogonal",
+    category: "GEE Python",
+    language: "python",
+    title: "逐像元紧凑 QR 与 SVD",
+    text: "矩形显式 Float32/Double 矩阵支持 Image.matrixQRDecomposition 和 Image.matrixSingularValueDecomposition。令 p=min(m,n)，本地返回紧凑 Q(m,p)/R(p,n) 及 U(m,p)/S(p,p)/V(n,p)，因子按行优先串接；此尺寸约定为本地政策，官方矩形因子形状未明确。秩亏、零矩阵和重奇异值可输入；用重建、正交性及非负降序奇异值验证，不比较不同库的符号或重奇异值基。有限输入不保证因子均能以有限 Float64 表示，极端动态范围仍可能被拒绝。独立 NumPy 参考以精确二进制秩规范真实零值；若它丢失正奇异方向，则报告无参考。每轴1–8、输入及合计输出各至多64单元，仍受50000步和500节点限制。3×2／2×3 的 p=2 SVD全重建可编译，但保留两个奇异值是完整重建，不是降秩近似；3×3 的 U/S/V 因子可编译，从三个奇异值中选两个的真实秩二组合因静态数组工作预算被拒绝。Float32舍入后转Double的矩形SVD重建也逐像元验证；每个通过的组合图只有一个矩阵值生产者。QR正规残差组合仍会触及工作预算。",
+    code: "A = image.select(['a00','a01','a10','a11','a20','a21'])\\\n    .toDouble().toArray()\\\n    .arrayReshape(ee.Image.constant(ee.Array([3,2])), 2)\nqr = A.matrixQRDecomposition()\nQ, R = qr.select('Q'), qr.select('R')\nsvd = A.matrixSingularValueDecomposition()\nU, S, V = svd.select('U'), svd.select('S'), svd.select('V')\nreconstructed = U.matrixMultiply(S).matrixMultiply(V.matrixTranspose())",
   },
   {
     id: "gee-python-double-array-solve",
@@ -61,8 +69,14 @@ export const javascriptTypedRasterDocs: ReferenceEntry[] = [
   {
     id: "gee-js-matrix-factors",
     title: "逐像元 Cholesky 与 LU 分解",
-    text: "有界 rank-2 方阵支持 matrixCholeskyDecomposition 和 matrixLUDecomposition，参数名为 image。Cholesky 返回命名数组因子 L；LU 返回 L、U、P，并满足 P×A=L×U。先 select 因子，再 arrayFlatten 或参与矩阵运算；每组因子共享一个本地矩阵生产者。每轴1–8；LU返回三个方阵，合计最多64单元，因此 LU 最大为4×4。Cholesky 要求严格对称和严格正主元；LU 使用首个最大值部分主元，精确零主元或无法表示的非有限因子使整组结果为 NoData。缺测传播到整矩阵，有效源 Infinity 拒绝。Float32 输入先舍入到 Float32，Float32 输出转换本身仍可能溢出为 Infinity。示例消费 U 的逆和 Cholesky 求解；完整 U^-1×L^-1×P 组合超过现有50000步工作预算并明确拒绝。Fraction/50位 Decimal 参考及本地消元规则不表示 Google 数值或完整 Spark 一致性。",
+    text: "有界 rank-2 方阵支持 matrixCholeskyDecomposition 和 matrixLUDecomposition，参数名为 image。Cholesky 返回命名数组因子 L；LU 返回 L、U、P，并满足 P×A=L×U。先 select 因子，再 arrayFlatten 或参与矩阵运算；每组因子共享一个本地矩阵生产者。每轴1–8；LU返回三个方阵，合计最多64单元，因此 LU 最大为4×4。Cholesky 要求严格对称和严格正主元；LU 使用首个最大值部分主元，精确零主元或无法表示的非有限因子使整组结果为 NoData。缺测传播到整矩阵，有效源 Infinity 拒绝。Float32 输入先舍入到 Float32，Float32 输出转换本身仍可能溢出为 Infinity。示例消费 U 的逆和 Cholesky 求解；SDK 引用共享后，2×2 完整因子逆组合可编译，大型组合仍受现有50000步工作预算约束。Fraction/50位 Decimal 参考及本地消元规则不表示 Google 数值或完整 Spark 一致性。",
     code: "var matrix = image.select(['m00','m01','m10','m11']).toDouble()\n  .toArray().arrayReshape(ee.Image.constant(ee.Array([2,2])), 2);\nvar chol = matrix.matrixCholeskyDecomposition();\nvar L = chol.select('L');\nvar lu = matrix.matrixLUDecomposition();\nvar P = lu.select('P');\nvar L_lu = lu.select('L');\nvar U = lu.select('U');\nvar left = P.matrixMultiply(matrix);\nvar right = L_lu.matrixMultiply(U);",
+  },
+  {
+    id: "gee-js-matrix-orthogonal",
+    title: "逐像元紧凑 QR 与 SVD",
+    text: "矩形显式 Float32/Double 矩阵支持 Image.matrixQRDecomposition 和 Image.matrixSingularValueDecomposition。令 p=min(m,n)，本地返回紧凑 Q(m,p)/R(p,n) 及 U(m,p)/S(p,p)/V(n,p)，因子按行优先串接；官方文档未明确矩形因子形状，此约定只描述本地实现。秩亏、零矩阵和重奇异值允许输入；以重建、正交性及非负降序奇异值验证，不要求不同数值库返回相同符号或基。有限输入不保证因子均能以有限 Float64 表示，极端动态范围仍可能被拒绝。独立 NumPy 参考以精确二进制秩规范真实零值；若它丢失正奇异方向，则报告无参考。每轴1–8，输入及合计输出各至多64单元；50000步和500节点限制保持。3×2／2×3 的 p=2 SVD全重建可编译，但保留两个奇异值是完整重建，不是降秩近似；3×3 的 U/S/V 因子可编译，从三个奇异值中选两个的真实秩二组合因静态数组工作预算被拒绝。Float32舍入后转Double的矩形SVD重建也逐像元验证；每个通过的组合图只有一个矩阵值生产者。QR正规残差组合仍会触及工作预算。",
+    code: "var A = image.select(['a00','a01','a10','a11','a20','a21'])\n  .toDouble().toArray()\n  .arrayReshape(ee.Image.constant(ee.Array([3,2])), 2);\nvar qr = A.matrixQRDecomposition();\nvar Q = qr.select('Q');\nvar R = qr.select('R');\nvar svd = A.matrixSingularValueDecomposition();\nvar U = svd.select('U');\nvar S = svd.select('S');\nvar V = svd.select('V');\nvar reconstructed = U.matrixMultiply(S).matrixMultiply(V.matrixTranspose());",
   },
   {
     id: "gee-js-double-array-solve",

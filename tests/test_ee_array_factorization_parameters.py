@@ -103,8 +103,11 @@ def test_raw_lists_scalars_strings_and_rasters_are_not_promoted_to_static_arrays
 
 
 @pytest.mark.parametrize("method", METHODS)
-def test_rank_nonsquare_empty_boolean_and_nonfinite_inputs_reject(ee, method):
-    for values in ([1, 2], [[1, 2, 3], [4, 5, 6]]):
+def test_rank_empty_boolean_and_nonfinite_inputs_reject_and_lu_stays_square(ee, method):
+    invalid = [[1, 2]]
+    if method == "matrixLUDecomposition":
+        invalid.append([[1, 2, 3], [4, 5, 6]])
+    for values in invalid:
         with pytest.raises(UnsupportedEEError):
             output(ee, getattr(ee.Array(values), method)())
 

@@ -16,13 +16,22 @@ private[reduce] object LocalEeMatrixValuesSpec {
     val inputBands: Int = operands.collect { case Band(index) => index }.distinct.size
     val outputRows: Int = cols
     val outputCols: Int = if (op == "solve") rhsCols else rows
-    val outputCells: Int = Math.multiplyExact(outputRows, outputCols) *
-      (if (op == "lu") 3 else 1)
+    val outputCells: Int = op match {
+      case "qr" => Math.addExact(
+        Math.multiplyExact(rows, math.min(rows, cols)),
+        Math.multiplyExact(math.min(rows, cols), cols))
+      case "svd" =>
+        val p = math.min(rows, cols)
+        Math.addExact(Math.multiplyExact(rows, p),
+          Math.addExact(Math.multiplyExact(p, p), Math.multiplyExact(cols, p)))
+      case "lu" => Math.multiplyExact(Math.multiplyExact(rows, cols), 3)
+      case _ => Math.multiplyExact(outputRows, outputCols)
+    }
   }
 
   private val MaxBytes = 8192
   private val Fields = Set("cols", "op", "operands", "rhs_cols", "rows", "v")
-  private val Operations = Set("solve", "inverse", "pinverse", "cholesky", "lu")
+  private val Operations = Set("solve", "inverse", "pinverse", "cholesky", "lu", "qr", "svd")
   private val HexDigits = "0123456789abcdef"
 
   def parse(text: String): Value = {
@@ -90,10 +99,18 @@ private[reduce] object LocalEeMatrixValuesSpec {
         Math.multiplyExact(selectedRows, selectedCols),
         if (selectedOperation == "solve") Math.multiplyExact(selectedRows, selectedRhsCols) else 0)
       require(inputCells <= 64, "matrix values input cell count exceeds 64")
-      val outputCols = if (selectedOperation == "solve") selectedRhsCols else selectedRows
-      val outputRows = if (selectedOperation == "solve") selectedCols else selectedRows
-      val outputCells = Math.multiplyExact(Math.multiplyExact(outputRows, outputCols),
-        if (selectedOperation == "lu") 3 else 1)
+      val p = math.min(selectedRows, selectedCols)
+      val outputCells = selectedOperation match {
+        case "qr" => Math.addExact(Math.multiplyExact(selectedRows, p),
+          Math.multiplyExact(p, selectedCols))
+        case "svd" => Math.addExact(Math.multiplyExact(selectedRows, p),
+          Math.addExact(Math.multiplyExact(p, p), Math.multiplyExact(selectedCols, p)))
+        case "lu" => Math.multiplyExact(Math.multiplyExact(selectedRows, selectedCols), 3)
+        case _ =>
+          val outputCols = if (selectedOperation == "solve") selectedRhsCols else selectedRows
+          val outputRows = if (selectedOperation == "solve") selectedCols else selectedRows
+          Math.multiplyExact(outputRows, outputCols)
+      }
       require(outputCells <= 64, "matrix values output cell count exceeds 64")
 
       val selectedOperands = operands.get

@@ -154,7 +154,7 @@ for operation in ("Array.eigen", "Array.matrixCholeskyDecomposition", "Array.mat
     ]
 for operation in ("Array.matrixQRDecomposition", "Array.matrixLUDecomposition", "Array.matrixSingularValueDecomposition"):
     KNOWN_PARTIAL_LIMITS[operation] = [
-        "Finite nonempty square static matrices only, required array parameter; real readonly factor Arrays in dictionaries: QR{Q,R}, LU{L,U,P} with P*A=L*U, SVD{U,S,V} with A=U*S*V-transpose. Combined output cells<=10000 and cubic work are checked before allocation/factorization, shared50000 steps. QR/SVD signs and repeated-value bases use NumPy/LAPACK policy; singular QR/SVD may reconstruct without a unique basis. LU first-maximum partial pivots preserve previous L columns; computed zero pivots and nonfinite elimination reject. Rectangular factor shapes and Google/EJML numerical behavior unverified; not raster factorization support."
+        "Finite nonempty rank2 static matrices, required array parameter; real readonly factors. Compact QR uses Q(m,p)/R(p,n); compact SVD uses U(m,p)/S(p,p)/V(n,p) with A=U*S*V-transpose, p=min(m,n). LU remains square with L/U/P and P*A=L*U. Combined output cells<=10000 and dense m*n*p work are checked before allocation/factorization, shared50000 steps; previous square charges remain unchanged. QR/SVD compact shapes, signs and repeated-value bases are local NumPy/LAPACK choices without Google/EJML parity. LU first-maximum partial pivots preserve previous L columns; computed zero pivots and nonfinite elimination reject. Static support alone does not establish raster-engine execution."
     ]
 for operation in ("Image.toArray", "Image.arrayFlatten", "Image.arrayProject", "Image.arraySlice", "Image.arrayGet", "Image.arrayLength", "Image.arrayLengths", "Image.arrayTranspose", "Image.arrayReduce", "Image.matrixMultiply"):
     KNOWN_PARTIAL_LIMITS[operation] = [
@@ -165,6 +165,18 @@ KNOWN_PARTIAL_LIMITS["Image.matrixSolve"] = [
 ]
 for operation in ("Image.matrixInverse", "Image.matrixPseudoInverse"):
     KNOWN_PARTIAL_LIMITS[operation] = list(KNOWN_PARTIAL_LIMITS["Image.matrixSolve"])
+for operation in ("Image.matrixQRDecomposition", "Image.matrixSingularValueDecomposition"):
+    KNOWN_PARTIAL_LIMITS[operation] = [
+        "One fixed rank2 raster array with uniform explicit Float32/Double cells; image parameter. "
+        "Compact local factor layout p=min(m,n): QR Q(m,p)/R(p,n), SVD U(m,p)/S(p,p)/V(n,p), "
+        "combined outputs64 and input64 cells, axes1..8. Rectangular/zero/rank-deficient matrices admitted. "
+        "Named factors share one native producer, original metadata, casts and whole-input mask; select a "
+        "factor before array algebra/export. Missing/nonfinite Float64 factors mask the whole group; valid "
+        "Infinity rejects, terminal Float32 casts may overflow. All grid/time/key/work/compiler limits remain. "
+        "Local compact shapes/signs/repeated-value bases are not Google parity; trusted components are not "
+        "full Spark, physical export or deployment acceptance."
+    ]
+
 for operation in ("Image.matrixCholeskyDecomposition", "Image.matrixLUDecomposition"):
     KNOWN_PARTIAL_LIMITS[operation] = [
         "One fixed square array with uniform explicit toFloat/toDouble cells; parameter image. Cholesky returns L with L*L-transpose=A, exact symmetry and strictly positive computed pivots required; LU returns logical array bands L/U/P with P*A=L*U, first-maximum absolute partial pivots and unit L. Select a factor before ordinary array algebra/export; all factors share one actual native producer, original metadata and whole-input mask. Original-scale exact binary64 residual products with bounded-precision square root/division preserve extreme diagonal ranges without global A normalization. Nonpositive/zero pivots, missing input or nonfinite Float64 result mask every factor; valid source Infinity rejects. Axis1..8/input64 and combined output64 unchanged (LU at most4x4); shared compiler50000/process500/key/cell/work limits remain. Finite valid source-free constants may fold without inventing a grid; unrepresentable constants reject. Explicit final Float32 conversion can still overflow. Local pivot/rounding/domain policies, not Google equivalence. Standalone numerical components do not establish full Spark, browser, export or deployment acceptance."

@@ -3021,7 +3021,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite nonempty square static matrices only, required array parameter; real readonly factor Arrays in dictionaries: QR{Q,R}, LU{L,U,P} with P*A=L*U, SVD{U,S,V} with A=U*S*V-transpose. Combined output cells<=10000 and cubic work are checked before allocation/factorization, shared50000 steps. QR/SVD signs and repeated-value bases use NumPy/LAPACK policy; singular QR/SVD may reconstruct without a unique basis. LU first-maximum partial pivots preserve previous L columns; computed zero pivots and nonfinite elimination reject. Rectangular factor shapes and Google/EJML numerical behavior unverified; not raster factorization support."
+          "Finite nonempty rank2 static matrices, required array parameter; real readonly factors. Compact QR uses Q(m,p)/R(p,n); compact SVD uses U(m,p)/S(p,p)/V(n,p) with A=U*S*V-transpose, p=min(m,n). LU remains square with L/U/P and P*A=L*U. Combined output cells<=10000 and dense m*n*p work are checked before allocation/factorization, shared50000 steps; previous square charges remain unchanged. QR/SVD compact shapes, signs and repeated-value bases are local NumPy/LAPACK choices without Google/EJML parity. LU first-maximum partial pivots preserve previous L columns; computed zero pivots and nonfinite elimination reject. Static support alone does not establish raster-engine execution."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -3125,7 +3125,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite nonempty square static matrices only, required array parameter; real readonly factor Arrays in dictionaries: QR{Q,R}, LU{L,U,P} with P*A=L*U, SVD{U,S,V} with A=U*S*V-transpose. Combined output cells<=10000 and cubic work are checked before allocation/factorization, shared50000 steps. QR/SVD signs and repeated-value bases use NumPy/LAPACK policy; singular QR/SVD may reconstruct without a unique basis. LU first-maximum partial pivots preserve previous L columns; computed zero pivots and nonfinite elimination reject. Rectangular factor shapes and Google/EJML numerical behavior unverified; not raster factorization support."
+          "Finite nonempty rank2 static matrices, required array parameter; real readonly factors. Compact QR uses Q(m,p)/R(p,n); compact SVD uses U(m,p)/S(p,p)/V(n,p) with A=U*S*V-transpose, p=min(m,n). LU remains square with L/U/P and P*A=L*U. Combined output cells<=10000 and dense m*n*p work are checked before allocation/factorization, shared50000 steps; previous square charges remain unchanged. QR/SVD compact shapes, signs and repeated-value bases are local NumPy/LAPACK choices without Google/EJML parity. LU first-maximum partial pivots preserve previous L columns; computed zero pivots and nonfinite elimination reject. Static support alone does not establish raster-engine execution."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -3158,7 +3158,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite nonempty square static matrices only, required array parameter; real readonly factor Arrays in dictionaries: QR{Q,R}, LU{L,U,P} with P*A=L*U, SVD{U,S,V} with A=U*S*V-transpose. Combined output cells<=10000 and cubic work are checked before allocation/factorization, shared50000 steps. QR/SVD signs and repeated-value bases use NumPy/LAPACK policy; singular QR/SVD may reconstruct without a unique basis. LU first-maximum partial pivots preserve previous L columns; computed zero pivots and nonfinite elimination reject. Rectangular factor shapes and Google/EJML numerical behavior unverified; not raster factorization support."
+          "Finite nonempty rank2 static matrices, required array parameter; real readonly factors. Compact QR uses Q(m,p)/R(p,n); compact SVD uses U(m,p)/S(p,p)/V(n,p) with A=U*S*V-transpose, p=min(m,n). LU remains square with L/U/P and P*A=L*U. Combined output cells<=10000 and dense m*n*p work are checked before allocation/factorization, shared50000 steps; previous square charges remain unchanged. QR/SVD compact shapes, signs and repeated-value bases are local NumPy/LAPACK choices without Google/EJML parity. LU first-maximum partial pivots preserve previous L columns; computed zero pivots and nonfinite elimination reject. Static support alone does not establish raster-engine execution."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -23172,12 +23172,14 @@
       "description": "Calculates the QR-decomposition of a matrix into two matrices Q and R such that input = QR, where Q is orthogonal, and R is upper triangular. Returns an image with bands named 'Q' and 'R'.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "One fixed rank2 raster array with uniform explicit Float32/Double cells; image parameter. Compact local factor layout p=min(m,n): QR Q(m,p)/R(p,n), SVD U(m,p)/S(p,p)/V(n,p), combined outputs64 and input64 cells, axes1..8. Rectangular/zero/rank-deficient matrices admitted. Named factors share one native producer, original metadata, casts and whole-input mask; select a factor before array algebra/export. Missing/nonfinite Float64 factors mask the whole group; valid Infinity rejects, terminal Float32 casts may overflow. All grid/time/key/work/compiler limits remain. Local compact shapes/signs/repeated-value bases are not Google parity; trusted components are not full Spark, physical export or deployment acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -23203,12 +23205,14 @@
       "description": "Calculates the Singular Value Decomposition of the input matrix into U×S×V', such that U and V are orthogonal and S is diagonal. Returns an image with bands named 'U', 'S' and 'V'.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "One fixed rank2 raster array with uniform explicit Float32/Double cells; image parameter. Compact local factor layout p=min(m,n): QR Q(m,p)/R(p,n), SVD U(m,p)/S(p,p)/V(n,p), combined outputs64 and input64 cells, axes1..8. Rectangular/zero/rank-deficient matrices admitted. Named factors share one native producer, original metadata, casts and whole-input mask; select a factor before array algebra/export. Missing/nonfinite Float64 factors mask the whole group; valid Infinity rejects, terminal Float32 casts may overflow. All grid/time/key/work/compiler limits remain. Local compact shapes/signs/repeated-value bases are not Google parity; trusted components are not full Spark, physical export or deployment acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -41650,7 +41654,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 640,
+    "declared_handler_name_count": 642,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41868,7 +41872,7 @@
         "appears_in_rejected_compile_context": 31,
         "appears_in_selected_sdk_serialization": 35,
         "appears_in_successful_compile_context": 8,
-        "declared_handler_count": 148,
+        "declared_handler_count": 150,
         "signature_count": 232
       },
       "ImageCollection": {
@@ -42131,7 +42135,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 640,
+    "pinned_signatures_with_same_name_declared_handler": 642,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

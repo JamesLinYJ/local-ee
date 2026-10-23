@@ -1,8 +1,9 @@
-"""Bounded square static matrix QR, LU, and singular-value decompositions.
+"""Bounded static matrix QR, LU, and singular-value decompositions.
 
-QR and SVD use NumPy/LAPACK. Their signs and bases in repeated singular-value
-spaces are local solver results and are not guaranteed to match Earth Engine's
-EJML implementation. LU uses first-maximum partial pivoting as a local policy.
+QR and SVD use reduced NumPy/LAPACK factors for rectangular or square inputs.
+Their signs and bases in repeated singular-value spaces are local solver
+results and are not guaranteed to match Earth Engine's EJML implementation.
+LU remains square and uses first-maximum partial pivoting as a local policy.
 """
 from __future__ import annotations
 
@@ -31,18 +32,25 @@ def _square(matrix, name):
     return matrix.shape[0]
 
 
-def _preflight(translator, name, n):
-    outputs, factor = {
-        "Array.matrixQRDecomposition": (2, 4),
-        "Array.matrixLUDecomposition": (3, 2),
-        "Array.matrixSingularValueDecomposition": (3, 8),
+def _preflight(translator, name, rows, cols):
+    factor = {
+        "Array.matrixQRDecomposition": 4,
+        "Array.matrixLUDecomposition": 2,
+        "Array.matrixSingularValueDecomposition": 8,
     }[name]
-    output_cells = outputs * n * n
+    rank = min(rows, cols)
+    if name == "Array.matrixQRDecomposition":
+        output_cells = rows * rank + rank * cols
+    elif name == "Array.matrixLUDecomposition":
+        output_cells = 3 * rows * cols
+    else:
+        output_cells = rows * rank + rank * rank + cols * rank
     if output_cells > MAX_ARRAY_CELLS:
         fail(f"{name} combined result exceeds 10000 cells")
-    # Charge a conservative dense-factorization bound plus materialization
-    # before making Float64 copies or invoking NumPy's numerical kernels.
-    charge_array(translator, factor * n * n * n + 6 * n * n)
+    # Keep the old square work exactly: factor*n^3 + 6*n^2. For rectangular
+    # inputs, p=min(m,n) bounds the reduced factorization and mn pays for the
+    # input copy/materialization before NumPy creates any work arrays.
+    charge_array(translator, factor * rows * cols * rank + 6 * rows * cols)
 
 
 def _float_matrix(matrix):
@@ -93,8 +101,10 @@ def invoke_decomposition(translator, name, arguments):
         fail(f"Unsupported static Array decomposition: {name}")
     translator.allowed(arguments, {"array"})
     matrix = require_matrix(_required(arguments, name))
-    n = _square(matrix, name)
-    _preflight(translator, name, n)
+    rows, cols = matrix.shape
+    if name == "Array.matrixLUDecomposition":
+        _square(matrix, name)
+    _preflight(translator, name, rows, cols)
 
     source = _float_matrix(matrix)
     if name == "Array.matrixLUDecomposition":
@@ -108,10 +118,10 @@ def invoke_decomposition(translator, name, arguments):
     try:
         with np.errstate(over="ignore", invalid="ignore", divide="ignore"):
             if name == "Array.matrixQRDecomposition":
-                q, r = np.linalg.qr(source, mode="complete")
+                q, r = np.linalg.qr(source, mode="reduced")
                 return {"Q": wrap_array(_finite(q, name)),
                         "R": wrap_array(_finite(r, name))}
-            u, singular_values, vh = np.linalg.svd(source, full_matrices=True)
+            u, singular_values, vh = np.linalg.svd(source, full_matrices=False)
     except np.linalg.LinAlgError:
         fail(f"{name} failed to converge")
 

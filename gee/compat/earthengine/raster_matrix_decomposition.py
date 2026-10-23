@@ -1,4 +1,4 @@
-"""Fixed-shape raster Cholesky and LU factorization lowering."""
+"""Bounded raster matrix factorization lowering with shared producers."""
 from __future__ import annotations
 
 from .array_core import charge_array
@@ -15,6 +15,8 @@ from .raster_array_values import _array
 RASTER_MATRIX_DECOMPOSITION_FUNCTIONS = frozenset({
     "Image.matrixCholeskyDecomposition",
     "Image.matrixLUDecomposition",
+    "Image.matrixQRDecomposition",
+    "Image.matrixSingularValueDecomposition",
 })
 
 
@@ -36,34 +38,46 @@ def _constant_cells(values, dtype):
     return tuple(Pixel(dtype, (const(value),)) for value in values)
 
 
+def _factor_layout(op, rows, cols):
+    from gee.matrix_values_spec import matrix_factor_layout
+
+    try:
+        return matrix_factor_layout(op, rows, cols)
+    except (TypeError, ValueError, OverflowError, RecursionError) as error:
+        fail(f"Raster matrix factor layout is invalid: {error}")
+
+
 def _arrays(translator, array, op, dtype, producer=None, folded=None):
-    n = array.shape[0]
-    factor_names = ("L", "U", "P") if op == "lu" else ("L",)
+    layout = _factor_layout(op, *array.shape)
+    output_count = sum(shape[0] * shape[1] for _name, shape in layout)
     factors = []
     offset = 0
     image = array.image if op == "cholesky" else _metadata_image(array)
-    for factor_index, name in enumerate(factor_names):
+    for factor_index, (name, shape) in enumerate(layout):
+        count = shape[0] * shape[1]
         if folded is not None:
             cells = _constant_cells(folded[factor_index], dtype)
         else:
-            count = n * n
             cells = tuple(
                 Pixel(dtype, (Pixel("matrix_element", (producer, index)),))
                 for index in range(offset, offset + count)
             )
         factors.append(wrap_array_image(
-            image, (n, n), cells, array.mask, name,
+            image, shape, cells, array.mask, name,
         ))
-        offset += n * n
+        offset += count
+    if offset != output_count:
+        fail("Raster matrix factor layout does not match its output cells")
     if op == "cholesky":
         return factors[0]
     return wrap_array_bands(translator, image, factors)
 
 
-def _build_dynamic(translator, name, op, array, dtype, values):
+def _build_dynamic(translator, name, op, array, dtype, values, output_count):
     from .raster_matrix_native import _constant_descriptor
     from gee.matrix_values_spec import prepare_matrix_values_spec
 
+    charge_array(translator, 2 * len(array.cells) + 4 * output_count + 8)
     dynamic = []
     operands = []
     for pixel, value in zip(array.cells, values):
@@ -73,10 +87,11 @@ def _build_dynamic(translator, name, op, array, dtype, values):
             dynamic.append(pixel)
             operands.append({"band": len(dynamic) - 1})
     try:
-        spec = prepare_matrix_values_spec(op, array.shape[0], array.shape[1], 0, operands)
+        spec = prepare_matrix_values_spec(
+            op, array.shape[0], array.shape[1], 0, operands,
+        )
     except (TypeError, ValueError, OverflowError, RecursionError) as error:
         fail(f"{name} native matrix specification is invalid: {error}")
-    output_count = len(array.cells) * (3 if op == "lu" else 1)
     charge_array(
         translator,
         2 * len(spec) + 4 * len(array.cells) + 3 * output_count + 16,
@@ -94,12 +109,18 @@ def invoke_raster_matrix_decomposition(translator, name, arguments):
     if len(array.shape) != 2:
         fail(f"{name} requires a rank-2 RasterArrayImage")
     rows, cols = array.shape
-    if rows != cols:
+    op = {
+        "Image.matrixCholeskyDecomposition": "cholesky",
+        "Image.matrixLUDecomposition": "lu",
+        "Image.matrixQRDecomposition": "qr",
+        "Image.matrixSingularValueDecomposition": "svd",
+    }[name]
+    if op in {"cholesky", "lu"} and rows != cols:
         fail(f"{name} requires a square matrix")
-    if not 1 <= rows <= 8:
+    if not 1 <= rows <= 8 or not 1 <= cols <= 8:
         fail(f"{name} supports matrix axes in1..8")
-    op = "cholesky" if name.endswith("CholeskyDecomposition") else "lu"
-    output_count = rows * cols * (3 if op == "lu" else 1)
+    layout = _factor_layout(op, rows, cols)
+    output_count = sum(shape[0] * shape[1] for _factor, shape in layout)
     if output_count > MAX_RASTER_ARRAY_CELLS:
         fail(f"{name} combined factor outputs exceed the shared64-cell limit")
 
@@ -111,8 +132,21 @@ def invoke_raster_matrix_decomposition(translator, name, arguments):
     if all(value is not None for value in values):
         if array.mask.op != "constant" or array.mask.args != (True,):
             fail(f"{name} cannot fold a masked source-free constant matrix")
-        from .raster_matrix_factor_constants import fold_constant_factors
+        if op in {"qr", "svd"}:
+            from .raster_matrix_orthogonal_constants import (
+                fold_constant_orthogonal_factors,
+            )
 
-        folded = fold_constant_factors(translator, name, op, rows, cols, values, dtype)
+            folded = fold_constant_orthogonal_factors(
+                translator, name, op, rows, cols, values, dtype,
+            )
+        else:
+            from .raster_matrix_factor_constants import fold_constant_factors
+
+            folded = fold_constant_factors(
+                translator, name, op, rows, cols, values, dtype,
+            )
         return _arrays(translator, array, op, dtype, folded=folded)
-    return _build_dynamic(translator, name, op, array, dtype, values)
+    return _build_dynamic(
+        translator, name, op, array, dtype, values, output_count,
+    )

@@ -102,9 +102,9 @@ def test_native_contract_keeps_the_frozen_wire_budget_and_key_path():
     probe_source = (ROOT / "tests/fixtures/ee-matrix-factor-kernel-probe.scala").read_text(
         encoding="utf-8")
 
-    assert 'Set("solve", "inverse", "pinverse", "cholesky", "lu")' in spec
+    assert 'Set("solve", "inverse", "pinverse", "cholesky", "lu", "qr", "svd")' in spec
     assert 'Set("inverse", "cholesky", "lu")(selectedOperation)' in spec
-    assert 'if (selectedOperation == "lu") 3 else 1' in spec
+    assert 'case "lu" => Math.multiplyExact(Math.multiplyExact(selectedRows, selectedCols), 3)' in spec
     assert "inputCells <= 64" in spec and "outputCells <= 64" in spec
     assert "private val Fields = Set(\"cols\", \"op\", \"operands\", \"rhs_cols\", \"rows\", \"v\")" in spec
     assert "LocalEeReduceSupport.copyAsDouble(input, spec.inputBands, cols, rows)" in numeric

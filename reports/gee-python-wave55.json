@@ -1,0 +1,399 @@
+{
+  "schema": "local-ee-compatibility-wave/v1",
+  "date": "2026-10-24",
+  "base_commit": "48d54295e9a1c6346cbd591182bb534048087a69",
+  "title": "Compact per-pixel QR/SVD, rectangular static factors and owned root factor reuse",
+  "entry_inventory": {
+    "pinned_signatures": 991,
+    "declared_same_name_handlers": 642,
+    "names_only_percentage": 64.78,
+    "new_api_names": [
+      "Image.matrixQRDecomposition",
+      "Image.matrixSingularValueDecomposition"
+    ],
+    "new_algorithms": 2,
+    "expanded_existing_names": [
+      "Array.matrixQRDecomposition",
+      "Array.matrixSingularValueDecomposition"
+    ],
+    "interpretation": "Name inventory only; not complete parameter, numerical or project migration compatibility"
+  },
+  "implementation": {
+    "wire": {
+      "process": "local_ee_matrix_values",
+      "version": 1,
+      "exact_fields": [
+        "v",
+        "op",
+        "rows",
+        "cols",
+        "rhs_cols",
+        "operands"
+      ],
+      "new_ops": [
+        "qr",
+        "svd"
+      ],
+      "rhs_cols": 0,
+      "axes": "1..8",
+      "input_cells": 64,
+      "combined_output_cells": 64,
+      "layout": "p=min(m,n); Q(m,p),R(p,n) or U(m,p),S(p,p),V(n,p), each row-major; S is diagonal",
+      "local_shape_policy": "Official docs specify identities/names but not rectangular full versus compact sizes; no Google shape claim",
+      "boundary": "SVD8x4 and4x8 each64 outputs; QR7x5 has60 outputs",
+      "legacy": "solve/inverse/pinverse/cholesky/LU canonical layouts unchanged"
+    },
+    "native_numeric": {
+      "QR": "Hypot column norms, Householder reflections and exact-decimal dot/update products with explicit finite binary64 outputs. Enforced input-sensitive precision/scale envelope; no universal completeness proof.",
+      "SVD": "Raw pinned Commons Math3.6.1 primary factors must pass exact dyadic integer rank, all active Gram elementary spectral coefficients, finite/sorted/nonnegative singulars, orthogonality and normwise backward-error checks. Invalid primary factors use at most32 MC80 half-even one-sided Jacobi sweeps; same validators remain mandatory. Wide inputs transpose and swap factors.",
+      "rank": "Full row/column pivot Bareiss rank on a common dyadic integer scale, with32768-bit intermediate bound; exact rank identifies null directions, not a floating near-zero threshold.",
+      "Jacobi": "80-digit working coefficients; products <=160 digits, addition alignment <=162; independent absolute scale ceiling65536 applies only to refinement. Exact rank/Gram/output spectrum stay on original separately priced input/output bounds. Scale ceiling is enforced resource policy, not proof every representable decomposition completes.",
+      "validation": "Native safety gates use1e-10 orthogonality/normwise/spectral relative tolerances. Extreme tiny singular references separately require positive values and relative accuracy; normwise reconstruction does not prove elementwise relative accuracy or universal tiny-sigma fidelity.",
+      "masks": "Any NaN or failed/nonfinite factor masks the whole group; source Infinity rejects even next to missing peers. Existing terminal Float32 cast can overflow to Infinity; source-free fold rejects nonfinite final cast."
+    },
+    "folding": "Static Array QR/SVD now supports compact rectangular shapes after unchanged precharge policy (square charges unchanged); NumPy/LAPACK retained. Source-free Image fold separately precharges exact dyadic Bareiss rank and canonicalizes true null tail to zero, rejecting missing positive singulars. No invented grid or native acceptance from folding.",
+    "factor_snapshot": "Only designated root-scope Cholesky/LU/QR/SVD SDK ValueRefs cache, up to500 entries. Prove immutable Pixel/Source/tuple descendants; detach plain JSON metadata at storage and every restore, precharge all work. Mapped/typed/joined/unknown/mutable/cyclic values skip caching. Reset each root evaluation; no numerical pixels or actual catalog/grid facts cached.",
+    "admission": {
+      "method": "Fold scalar source exponent/significand envelope and key count, precharge separate exact rank/Gram/output products, MC80 iterations, conversion and conservative copies; recheck each output tile before factor allocation. Wide work uses max(m,n). Commons square workspace allowance is deliberately conservative; actual library uses compact factors. RDD path reviewed statically, not executed.",
+      "qr2_work_per_pixel": 26560,
+      "svd2_work_per_pixel": 174556,
+      "svd3x2_work_per_pixel": 230504,
+      "svd2_max_pixels": 572,
+      "svd2_max_square_side": 23,
+      "svd3x2_max_pixels": 433,
+      "svd3x2_max_square_side": 20,
+      "svd3x3_mixed_one_pixel_work": 10021258,
+      "svd2_huge_plus_min_subnormal_work": 3959988,
+      "qr8x4_extreme_one_pixel_work": 2610352576,
+      "qr8x4_extreme": "rejected by1e8 admission; direct kernel only checked separately",
+      "scope": "Sample-specific work calibration, not throughput. Default256-square tiles fail these ordinary SVD estimates; production layout adaptation remains unimplemented/unverified."
+    },
+    "unchanged_limits": {
+      "compiler_work": 50000,
+      "process_nodes": 500,
+      "graph_JSON_bytes": 1000000,
+      "fixed_array_cells": 64,
+      "fixed_array_rank": 8,
+      "native_tile_work": 100000000,
+      "native_total_work": 1000000000,
+      "native_keys": 100000,
+      "decoded_cells_per_tile": 10000000,
+      "decoded_cells_total": 100000000
+    },
+    "modularity": "Separate wire/layout, compiler/folding, immutable root reuse, exact rank, QR, SVD validation, Jacobi, admission and workflow/reference modules. No new numerical dependency or runtime deployment."
+  },
+  "verification": {
+    "full_pytest": {
+      "passed": 5500,
+      "skipped": 26,
+      "warnings": 53,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 46.45,
+      "source_files_hashed": 42,
+      "scope": "Required loopback/process/macOS sandbox permissions; original application boundaries intact. Runtime sources unchanged. Two test files later had EOF blank lines removed with identical ASTs and focused tests passing; pre-format hashes retained in local full-suite evidence."
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "TypeScript": "passed",
+      "temporary_build": "passed",
+      "source_sha256": "7845a017d82a1d6d2a0652105160e07eee8507b60b168b2670fe94dc193ebdad",
+      "deployed": false
+    },
+    "orthogonal_native": {
+      "cases": 25,
+      "admitted_tiles": 24,
+      "direct_kernel_only_over_budget": 1,
+      "input_pixels": 25,
+      "finite_QR_cases": 9,
+      "finite_SVD_cases": 13,
+      "output_cells": 481,
+      "invalid_specs": 6,
+      "opt_in_pytest_passed": 4,
+      "focused_portable_passed": 116,
+      "focused_portable_skipped": 1,
+      "summary": "MATRIX_ORTHOGONAL_KERNEL_OK cases=25 admitted=24 direct_kernel_only=1 qr=9 svd=13 output_cells=481 invalid_specs=6 finite_factor_checks=true normwise_reconstruction=true infinite_input_reject=true qr2_work=26560 svd2_work=174556 svd3x2_work=230504 max_svd2_pixels=572 max_svd2_square_side=23 max_svd3x2_pixels=433 max_svd3x2_square_side=20 svd3x3_mixed_work=10021258 svd2_subnormal_work=3959988 qr8x4_extreme_rejected=true qr8x4_extreme_work=2610352576 output64_both_orientations=true",
+      "scope": "Actual GeoTrellis tiles through LocalEeMatrixValuesNumeric.applyTile; no SparkContext, service, SPI loading, sandbox task, VM, container, or user data"
+    },
+    "same_JAR_regressions": {
+      "matrix-values": "MATRIX_VALUES_KERNEL_OK cases=19 output_cells=150 invalid_specs=16 rank_policy=commons-math-3.6.1 required_nonzero=3 tile_checks=4 all_nan_output_cells=4 solve2_work=2520 solve2_max_pixels=39682 solve_128x128=pass solve_256x256=reject inverse2_work=400 inverse2_max_pixels=250000 inverse_128x128=pass inverse_256x256=pass small_work=872 small_max_pixels=114678 small_key_capacity=100000 input_cells64_work=37472 input_cells64_key_capacity=26686",
+      "matrix-factor": "MATRIX_FACTOR_KERNEL_OK cases=18 output_cells=285 invalid_specs=7 required_nonzero=5 tile_checks=4 envelope_checks=6 whole_factor_mask=true cholesky8_work=282624 lu2_integer_128_work=19136512 lu2_fractional_256_work=76546048 lu2_extreme_1_work=9441872 lu2_negative_1_work=7872 lu2_zero_widened_1_work=50560 lu_envelope_merge=pass factor_tile_and_key_limits=pass",
+      "integer": "INTEGER_VALUES_KERNEL_OK cases=26 pixels=214 invalid_specs=36 invalid_tiles=10 masked_constant_rejects=5 operations=14 qa_steps=10 qa_pixels=13 cell_conversion_checks=5",
+      "float64": "FLOAT64_VALUES_KERNEL_OK cases=25 pixels=173 invalid_specs=19 invalid_tiles=2 operations=22 max_observed_ulps=1 composite_stages=6 composite_pixels=44",
+      "selection": "SELECTION_KERNEL_OK cases=5 pixels=40 invalid_specs=16 invalid_tiles=6 operations=select,where_select"
+    },
+    "workflows": {
+      "compiled_outputs": 32,
+      "factor_signs_and_repeated_space_bases": "not compared across numerical libraries",
+      "fixture": "local-ee-synthetic-matrix-orthogonal/v1",
+      "float32_then_double_rounding": "16777217 becomes 16777216 before factorization",
+      "masked_matrix_pixels": [
+        5
+      ],
+      "maximum_qr_reconstruction_error": 4.440892098500626e-15,
+      "maximum_svd_reconstruction_error": 1.0669243266647754e-13,
+      "pixels": 12,
+      "rank_deficient_pixels": [
+        1,
+        2,
+        4,
+        10
+      ],
+      "rectangular_svd_reconstruction_cells_checked": 330,
+      "repeated_singular_value_pixel": 3,
+      "scope": "independent synthetic graph evaluator and numerical invariants; no Google/Spark execution",
+      "svd_full_and_rank2_reconstruction_outputs": [
+        "svd_tall_reconstruction",
+        "svd_tall_rank2",
+        "svd_wide_reconstruction",
+        "svd_wide_rank2",
+        "svd_float32_then_double_reconstruction"
+      ],
+      "three_value_svd_factor_and_reconstruction_cells_checked": 396,
+      "three_value_svd_factors": "finite orthogonal U/V and ordered nonnegative S; 3x3 reconstruction checked",
+      "valid_matrix_pixels": 11,
+      "zero_matrix_pixel": 2,
+      "python_JS_matching_graphs": 32,
+      "python_network_attempts": 0,
+      "javascript_network_attempts": 0,
+      "rank2_policy": "Retaining2 of2 singular values in rectangular fixtures is full reconstruction, not rank truncation. True rank1 projections also tested; 3x3 rank2of3 compiled composition still rejects.",
+      "source": "Final full-suite graph/numeric JSONs, independent NumPy/Fraction oracle; not Spark execution"
+    },
+    "full_LU_inverse": {
+      "LU_producers": 1,
+      "finite_values": 16,
+      "inverse_producers": 2,
+      "max_absolute_error": 1.7763568394002505e-15,
+      "nodes": 228,
+      "scope": "Actual SDK factor composition and independent Fraction inverse; no Spark or Google"
+    },
+    "composition_work": {
+      "qr_tall_reconstruction": {
+        "status": "passed",
+        "steps": 22829,
+        "nodes": 194,
+        "matrix_producers": 1
+      },
+      "svd_tall_reconstruction": {
+        "status": "passed",
+        "steps": 44205,
+        "nodes": 264,
+        "matrix_producers": 1
+      },
+      "svd_wide_reconstruction": {
+        "status": "passed",
+        "steps": 38685,
+        "nodes": 246,
+        "matrix_producers": 1
+      },
+      "svd_float32_then_double_reconstruction": {
+        "status": "passed",
+        "steps": 41229,
+        "nodes": 252,
+        "matrix_producers": 1
+      },
+      "qr_tall_normal_residual": {
+        "status": "rejected",
+        "charged_steps": 49655,
+        "reason": "Integer Image graph exceeds the shared 50000-step work budget"
+      }
+    },
+    "remaining_composition_rejections": [
+      "QR normal-residual graph exceeds50000 shared work",
+      "3x3 full SVD reconstruction and true rank2of3 truncation exceed static-array work budget;3x3 U/S/V factors compile"
+    ],
+    "original_probes": {
+      "serialized": 50,
+      "compiled": 47,
+      "rejected": 3,
+      "guarded_network_attempts": 0,
+      "scope": "Targeted whole expressions, not a full API rate"
+    },
+    "review": "Independent read-only numerical review found no remaining blocker in frozen sources; no build/test execution by reviewer. Exact source hashes recorded. Library basis choices, completeness, CPU-time hard bounds and Spark acceptance remain limited.",
+    "preserved_failures": [
+      "Initial wire/output-limit and rank fixtures corrected, original logs retained.",
+      "Initial full suite:2 obsolete square-only/exact-op-set assertions failed; updated expected policy, then final full suite passed.",
+      "Rejected grid-lineage-cache prototype regressed real SDK composition budgets; removed, original collector preserved. Its removed bytes were not measured.",
+      "First Scala build lacked qualified Envelope companion constructors; narrow qualification repair.",
+      "First probe fixture called a nonexistent envelope method; fixed fixture to existing helper.",
+      "Actual ordinary QR failed168-digit guard; exact-decimal reflector mirror reached211. Widened enforced QR cap with matching limb pricing; ordinary/dense7x5/subnormal/extreme controls passed.",
+      "Actual ordinary SVD failed exact singular-product guard168 digits versus about213; output-sensitive guard aligned with separately charged product cost.",
+      "Actual tiny-active rank2 SVD ghost-column squares exceeded source scale guard5056; full32-sweep diagnostic at20000 passed. Final Jacobi-only scale cap65536 preserves MC80 and unchanged final validators.",
+      "Final build wrapper errored after artifact completion because zsh status is readonly. Manifest sources/JAR hashes and all actual probes verified completed artifact; wrapper failure log retained."
+    ],
+    "warnings": "52 existing Python3.11/Rasterio notices plus one expected terminal Float32 cast overflow; none suppressed.",
+    "test_only_formatting_after_full_suite": {
+      "changes": [
+        {
+          "path": "tests/test_ee_matrix_orthogonal_workflow.py",
+          "before_sha256": "557a063cd5aeb43e97a7fdf0683a31957fe44f19a3990d341d15808a305ba4d3",
+          "after_sha256": "4f035aa3ac24449b753ddd2099d7d2b0aa9667bab6c68daa943cc701a59a3390",
+          "AST_unchanged": true
+        },
+        {
+          "path": "tests/test_ee_static_orthogonal_rectangular.py",
+          "before_sha256": "3879b7d806201b3f785e9363621a54df3f2729119c5e319cdd6578ae31fb09a0",
+          "after_sha256": "ff59d84175880fd175fbfdb57992ec8ed3e6161797a74f983f78f5869782b88b",
+          "AST_unchanged": true
+        }
+      ],
+      "focused_log": "audit/gee-python-wave55/final-test-formatting.log",
+      "scope": "Whitespace-only, exact parsed AST comparison; no runtime code change",
+      "focused_passed": 14
+    }
+  },
+  "native_build": {
+    "source_files": 61,
+    "jar_sha256": "c65939253631528e278accefb6f34dcde54a38f709bfcf36a54bed6ceb069e7b",
+    "manifest_sha256": "0b6ffaae1ce0a6a0123bdfcb211e344647d49d0312567b143b93198cf5a637a9",
+    "toolchain": {
+      "architecture": "arm64",
+      "java_home": "/Users/james/Documents/Codex/2026-10-21/wo/outputs/private-gee/.native/toolchains/openjdk@21/21.0.13.0.2/libexec/openjdk.jdk/Contents/Home",
+      "scala_version": "2.13.18",
+      "spark_version": "4.2.0",
+      "math_dependencies": {
+        "commons-math3-3.6.1.jar": "1e56d7b058d28b65abd256b8458e3885b674c1d588fa43cd7d1cbb9c7ef2b308"
+      }
+    },
+    "installed": false,
+    "dependencies_upgraded": false
+  },
+  "evidence": {
+    "source_sha256": {
+      "engine/ee_matrix_orthogonal.scala": "ea7b12206df90570c839544d7d0b218d0a386db93af5a377aaa01831cd9094b0",
+      "engine/ee_matrix_orthogonal_budget.scala": "b7a860b65092e79d791e3020d4fe0c804e027671eb747cdd5830b1c4c91b90b6",
+      "engine/ee_matrix_orthogonal_rank.scala": "7493826704badd296962499e628a55334ed4e94a87a8477c5492dde2eb31b2e5",
+      "engine/ee_matrix_svd_jacobi.scala": "f7cd3aaabba9449e479b1fe762098441125fd8675ec9d77a04a13ba4a5d742a3",
+      "engine/ee_matrix_svd_native.scala": "4b5023dcf1364b5bbac90bac5000f9334df9f2733ad54d38d5212323b9ae951b",
+      "engine/ee_matrix_values_adapter.scala": "fd8138f27aa94efe3f0d166951eefe925b29a8828beabcd41934f1b5620113b5",
+      "engine/ee_matrix_values_numeric.scala": "ce47cfa4fc06da056df53818e23f519852b5c2b4a7a7fcbe255b52fe18a166c5",
+      "engine/ee_matrix_values_spec.scala": "f330efbb3088b66b7929a908c8bcccd7d25bef8ed6ff64e6298cfa0466eba5f1",
+      "examples/59_GEE_python_matrix_factors.py": "480d5585a56486e02c2c626c6e48697d5dcfcde62cd1a95c3283d0805160c348",
+      "examples/60_GEE_python_matrix_orthogonal.py": "5eaa4f589bdd388615e316fa0fed2e5c267ba45219f9894c0e39055799e6e32e",
+      "gee/compat/earthengine/array_decompositions.py": "8e2aecc70f254b5c6989000bbedc05ccc9e18f07eb4f7310c16e15ff911fa637",
+      "gee/compat/earthengine/capabilities.py": "ad653327a5f7a8d5e8a75734caa3a9a4cfc67989bd967712fd3c30d5708edaaf",
+      "gee/compat/earthengine/decoder.py": "b7c624c21b8370390cf013d944535b0a905e6e7ab0b3b8a6c1ff531f11b4f535",
+      "gee/compat/earthengine/raster_factor_snapshot.py": "6d9f0b637cff6b545fc739cf70fda294a38fc8dfb60dfaa1a05f60e502ff0857",
+      "gee/compat/earthengine/raster_matrix_decomposition.py": "bec0fe8a6e648a6a3134f4da438dbeb16edebccc62f609b99e78516241f10b27",
+      "gee/compat/earthengine/raster_matrix_orthogonal_constants.py": "96c9cccd62a9cf659c38d0af5b679763067f03788b869cb392314c033fad1feb",
+      "gee/compat/earthengine/raster_matrix_orthogonal_rank.py": "a5744c6e356568c2e6a7268d88a082f39a8fbf4a0714c88e40a10c7dd47091eb",
+      "gee/matrix_values_spec.py": "c9db02f342f1b26b3f464b68fd21e423a9db87f42a53240a0cd8704090bf37f9",
+      "scripts/build_integer_adapter.py": "42e33ea02814c3254739f4f69c88f71b630bb70be9fd475335c6cbbf82525a46",
+      "scripts/ee_inventory/catalogue.py": "a4545bb31d28be5baa4f55ad391d4ca76d76871382f6ec0a641c3e8179fc36f6",
+      "scripts/probe_matrix_orthogonal_native.py": "301209b60ee219211b3fa7f013f7151103ce1dd5b53674de6da79c2f9401479e",
+      "tests/ee_matrix_graph_reference.py": "7939b26489d06bb0a655855f0eeffc2f4d78cd459ca7ed9d08d4b850e184b4b6",
+      "tests/ee_matrix_orthogonal_kernel_helpers.py": "2b3152707074f0374df7b975cea0912d7adad250edbd0ddb87de42e8f62ed1a6",
+      "tests/ee_matrix_orthogonal_reference.py": "e105b9a29b2a438d2a7c688b7bb4ef35c77d44fbc51500be9f2ab39da64a6a2b",
+      "tests/ee_matrix_orthogonal_workflow_helpers.py": "8ad8fd115f66b8b95705359d0b7ef3a412a74409e2032b87354efbfe924f2809",
+      "tests/fixtures/ee-matrix-orthogonal-kernel-probe.scala": "2a12e20937d82cbb29cc623ac177f664d5aba21b641c0f130327958b11cc492c",
+      "tests/test_ee_array_factorization_parameters.py": "4ef1c63705ef37e98ec69aa37042f26a2b8bb836fac8cc665df0bb873935d597",
+      "tests/test_ee_matrix_factor_native.py": "d3e081d84921d6c308db76106c1b772a5406bbdc82ae71c2b846c0e8c228271d",
+      "tests/test_ee_matrix_factor_workflow.py": "f3c65e2953d5fbea71b85c59a9fa197b77264a485f8681e3c8e60318e33c7d73",
+      "tests/test_ee_matrix_orthogonal_compiler.py": "fbb90773176f9b22411c99daa56228a0837970063b87b5081a76b8508dab178a",
+      "tests/test_ee_matrix_orthogonal_constants.py": "7cd6ba1e59a9f7352102ac8e5bc8bc23f624bf05389f65f38c8ef3c72748aaf9",
+      "tests/test_ee_matrix_orthogonal_native.py": "353dee9608f2929c8332ef3cd48eeebdf08c213c5cf19f8a155aebb51bf60705",
+      "tests/test_ee_matrix_orthogonal_rank.py": "6785b81e5f73b7df63a5a0acf791c0dab486c9bfbe0ca0c4f6ea332ce254a5ee",
+      "tests/test_ee_matrix_orthogonal_reference.py": "fdaf6c9081c91a52c8faf5515d932f0bf4d49f2ddcecc53e433ef3e5f8030a53",
+      "tests/test_ee_matrix_orthogonal_spec.py": "c024ee4d9b2b0887583b014aa7c2354cb7e5f6a1974bbe190bd72d5ee9d67475",
+      "tests/test_ee_matrix_orthogonal_workflow.py": "4f035aa3ac24449b753ddd2099d7d2b0aa9667bab6c68daa943cc701a59a3390",
+      "tests/test_ee_matrix_orthogonal_workflow_numeric.py": "84fd8ec57da087809326f2a63cbce5349a15191027987393f8091699ab78388d",
+      "tests/test_ee_matrix_unmixing_workflow.py": "cab32665a3179dee40535fb92edff8f2a72a272fbb711391bf72fbc3a0811190",
+      "tests/test_ee_matrix_values_bridge.py": "babe07b7c8c5487b2223b2b8294d0c36516dee6aeba912bfcf76a34cffd0a090",
+      "tests/test_ee_raster_factor_snapshot.py": "58fedf8af8759876540407adc28a4c312bf24d80151f929737fd5bc313a4e1e1",
+      "tests/test_ee_static_orthogonal_rectangular.py": "ff59d84175880fd175fbfdb57992ec8ed3e6161797a74f983f78f5869782b88b",
+      "web/src/docs/typed-raster-docs.ts": "7845a017d82a1d6d2a0652105160e07eee8507b60b168b2670fe94dc193ebdad"
+    },
+    "native_source_sha256": {
+      "engine/ee_integer_adapter.scala": "f3e5dae5a26c8dd1656a38e27f78a000ac4992c0bcc8c61c13b307b7c1121720",
+      "engine/ee_cell_conversion.scala": "3b758d6b6b1a4b159be9e3db7832f7f4566000f75f66006355db0c61f373a50c",
+      "engine/ee_grid_adapter.scala": "049052f97d6ea0c9511db94155cf49b9c8af7d63b0f6d9313b3e7bf759ada704",
+      "engine/ee_mask_adapter.scala": "f29fe4dfa0d184ed3391bed9d410a36cd43858ec3a83d994cdc2a56361ac5159",
+      "engine/ee_reduce_support.scala": "c2f42ff08f51087614193f35dd71c07ee74c211c977e452c7569f1312ac7e4c6",
+      "engine/ee_reduce_numeric.scala": "be6d14f04d134eaded80e8b4aefcb27cd0de834970c3fffb79c30ad4f5575091",
+      "engine/ee_reduce_statistics.scala": "00d83a874be3862110e8c3c03e1414d8ccb7ef80ae6e529aebce7382e9c4ff2e",
+      "engine/ee_reduce_adapter.scala": "30842f5586a4b6b8481cb77cfe81b957c7fcabc467e2451ac9c90622ef0d9f1f",
+      "engine/ee_classify_numeric.scala": "b971b4d2fa4f0536027fb1316a878de43d889d49b2d630f276f4fbce6e06433d",
+      "engine/ee_classify_model.scala": "f4da8842ab596d4ce5fead8a2734fd9f938c6498cd6f70f6dc346e4fe75d8bcf",
+      "engine/ee_classify_adapter.scala": "1e616f29120867c6396bee2056a57c77129f94ee071adb0d80459e887e04e311",
+      "engine/ee_sample_kernel.scala": "7995395d7ed390362a269b56968334c3614e7059327751c5be473f96e17ee000",
+      "engine/ee_sample_adapter.scala": "7dd460ef1164401a5dd1e974392b55388641a6cac052b4bdc30181af8acd024f",
+      "engine/ee_remap_numeric.scala": "ea6a8d98543b9f22e31e459252c995130d16d32225647876c10faefb37546176",
+      "engine/ee_remap_adapter.scala": "51892c2358b4d11d5b6f8d87944a618b367e93bb4f38b4bd6bf5d65b7b56ea3b",
+      "engine/ee_image_sample_options.scala": "b5e01a21a9ca2141919d30188b8504e39d78e90325ef89342767116181f1a900",
+      "engine/ee_image_sample_kernel.scala": "d0cff74dfd115f35f8b5a55373e21d60b3b140b04c87a4ac5d5987394a60b937",
+      "engine/ee_image_sample_adapter.scala": "952fdaa816a05e5a256eda0c90ce4a51b14f4f0bcab8c52805e4a5f42ae987cd",
+      "engine/ee_pixel_math_numeric.scala": "263f2ad632c61da913f4e60c66a1b0ec38a89d190f5fe50c09c534376095126f",
+      "engine/ee_pixel_math_adapter.scala": "3dd6a9a1fb38b6bccc209b55c29b106605b26e45625d297610614ee04b45ab3d",
+      "engine/ee_integer_values_spec.scala": "c252b481666289a466ca75a17fdc86c1e4b9665a4fe5ccb8679558fb2d55089d",
+      "engine/ee_integer_values_numeric.scala": "6f1fd67d0fa0ad0f34a1e9fbdaca5e7bf85e64780f3a93cf4addc9bc0b16d7c4",
+      "engine/ee_integer_values_adapter.scala": "d297e0eb0f153aa842f125570fbc47cbe7c7834e33fa249a0f590ac7e02a334a",
+      "engine/ee_float64_values.scala": "760d267f587d85910754d5ddd10869dd4f64e7ab8c4f044d64f02b98f7d73b1b",
+      "engine/ee_matrix_values_spec.scala": "f330efbb3088b66b7929a908c8bcccd7d25bef8ed6ff64e6298cfa0466eba5f1",
+      "engine/ee_matrix_values_numeric.scala": "ce47cfa4fc06da056df53818e23f519852b5c2b4a7a7fcbe255b52fe18a166c5",
+      "engine/ee_matrix_orthogonal.scala": "ea7b12206df90570c839544d7d0b218d0a386db93af5a377aaa01831cd9094b0",
+      "engine/ee_matrix_svd_native.scala": "4b5023dcf1364b5bbac90bac5000f9334df9f2733ad54d38d5212323b9ae951b",
+      "engine/ee_matrix_svd_jacobi.scala": "f7cd3aaabba9449e479b1fe762098441125fd8675ec9d77a04a13ba4a5d742a3",
+      "engine/ee_matrix_orthogonal_rank.scala": "7493826704badd296962499e628a55334ed4e94a87a8477c5492dde2eb31b2e5",
+      "engine/ee_matrix_orthogonal_budget.scala": "b7a860b65092e79d791e3020d4fe0c804e027671eb747cdd5830b1c4c91b90b6",
+      "engine/ee_matrix_factorization.scala": "076cadff6ccf80dd6bbb8958f52709f5400ec4a49a9e2610c44258ef46f58da3",
+      "engine/ee_matrix_factorization_budget.scala": "30e26b7fbd1e87a740aad34ac99686d918f5402a013a2eb77518ea5c9cf749d5",
+      "engine/ee_matrix_values_adapter.scala": "fd8138f27aa94efe3f0d166951eefe925b29a8828beabcd41934f1b5620113b5",
+      "engine/ee_focal_spec.scala": "429af014a835d079752b8a5c3840fa999b0792312d748a7d0ccfb53c27cb9a1d",
+      "engine/ee_focal_numeric.scala": "51f191d244253de20230fd088d050af4207c75c2bf3d85c5ed5040d67698c905",
+      "engine/ee_focal_adapter.scala": "adeb1eaf89aafe7c540719d4bc88c453255ec11656b98a74e9e66c0a8371c1d6",
+      "engine/ee_convolve_spec.scala": "02dcf67c515355ce986fef09d234190079219ed1dd6079c9738bf13059fc1e6c",
+      "engine/ee_convolve_numeric.scala": "2d7ff102ff03846f15abbee1e33c7f9524d28c17ef597d51a0cbefd265f7289a",
+      "engine/ee_convolve_adapter.scala": "a6637f1a5a995fd944fae292b9ab9bca0a0388c21ee533860696811b8d85f51c",
+      "engine/ee_terrain_spec.scala": "b43dfac791bed9808dd7968d8c8336ad5c71ea672d982cc162197b3f44a9f77d",
+      "engine/ee_terrain_budget.scala": "566bb1aa309593210d127a1367aadac4e739a3a7ba40f9a2a2bbd4ba4edddfe8",
+      "engine/ee_terrain_metric.scala": "e004983c84b1bc1df9ac7776b295dab94c8391481f53f0f0f19c97bb3c5ac03a",
+      "engine/ee_terrain_numeric.scala": "16e0ac5c8bdb64bb5e1ff80387fb465887cde385fd876f709d329cf2e2521977",
+      "engine/ee_terrain_adapter.scala": "a1413a66df0c535e1bde42288a0547d1e3643619c9c34d83810bfd6790675432",
+      "engine/ee_neighborhood_spec.scala": "d8d620f8149ff497bacb9baea0f4ad19c2e677a19f1d9e58972c90f9b02dcad0",
+      "engine/ee_neighborhood_budget.scala": "7900d5c7c262edd88dccce6ace5e70c0886b328be0934d5c0702b25d85f9320d",
+      "engine/ee_neighborhood_exact.scala": "7e7f15383ae5fffb8c8d50ba58f27d8c0375638cf4de6af27ec2f717f8a05cec",
+      "engine/ee_neighborhood_statistics.scala": "7b2a6703f7416b4621a8d86fe7b592e622c7856975730141e5f5be26472c3255",
+      "engine/ee_neighborhood_numeric.scala": "5348e85cc12e11a2b710902bb6066631ecc09ce225241acec290a543dce223f5",
+      "engine/ee_neighborhood_adapter.scala": "d61788b7e5a26d574388523f12cd0ddabaeb112b1b2c409c9a837456cd94df24",
+      "engine/ee_distance_spec.scala": "3401ad64c862bce34daad1ad1712ab09732a8f64b5f84221a2a7790dfa758004",
+      "engine/ee_distance_budget.scala": "9327fdee9af8e9982c9422dada94b17f33acc2b97d3f6b85e0e2a785647da79a",
+      "engine/ee_distance_numeric.scala": "4c6863a06ff8cbc45ef6776969aa8d5dcd128daccc71849d1a3a3fc599bc5250",
+      "engine/ee_distance_adapter.scala": "bdd42d034b9fe80a2eb4e9f68df5c6f445a64fb55d8a4d649127685758d11c56",
+      "engine/ee_fast_distance_spec.scala": "d58e5e923998f04471d6f0cedf2b9de0f3b9099d1840f58d7b41721b9a5d2372",
+      "engine/ee_fast_distance_budget.scala": "5a4400a0098e90e644d2b6d6b6a32937772096eb90249045e7d516f0e18925fb",
+      "engine/ee_fast_distance_halo.scala": "a063f59810e81e3b29afc2aec6e45b219766638e7e26523c4c2ce0ee173af4fc",
+      "engine/ee_fast_distance_adapter.scala": "5887829efeaa4faced3acc4b068d6d090822ae206f50b3b3e4197c12aa892e27",
+      "engine/ee_fast_distance_transform.scala": "012a6e3f638351e691bf1ffda1bc983fe8a26763fdd1f8563c7edb3b2ff314fb",
+      "engine/ee_fast_distance_transform_envelope.scala": "021c7fe1272060cf70dd479c3329e5aff990d6eebbb4ae62014e6e9f3fa7aaa5"
+    },
+    "local_audit": "audit/gee-python-wave55",
+    "scope": "Finite public report and reproducible public fixtures; raw audit logs/graphs are local ignored evidence."
+  },
+  "cleanup": {
+    "scope": "Only completed Wave55 owned frontend/native scratch. No symlinks or open file handles. Final manifest, logs, diagnostics and failures retained; runtime/dependencies/accounts/data preserved.",
+    "removed": [
+      {
+        "path": "/Users/james/Documents/Codex/2026-10-21/wo/work/gee-python-wave55/frontend",
+        "files": 16,
+        "file_bytes": 1711329
+      },
+      {
+        "path": "/Users/james/Documents/Codex/2026-10-21/wo/work/gee-python-wave55/native",
+        "files": 2,
+        "file_bytes": 772206
+      }
+    ],
+    "total_file_bytes": 2483535,
+    "prior_lineage_prototype_removed_bytes": "not measured; no estimate claimed"
+  },
+  "not_established": [
+    "Complete GEE decompositions, arbitrary shapes or multiple array bands",
+    "Google same-data/shape/basis/rounding/dtype equivalence",
+    "Universal tiny-singular-value accuracy or completion for every finite representable input",
+    "Large-tile throughput, strict JVM/BigInteger CPU bounds or default256-square production SVD layout",
+    "Full Spark RDD admission, SPI batch job, deployed API/browser/map or physical export acceptance",
+    "Runtime installation: checked adapter must be rebuilt and deployed during a later controlled rollout",
+    "Deferred private real-data and complete Linux/macOS runtime acceptance"
+  ],
+  "goal_status": "active"
+}

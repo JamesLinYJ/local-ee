@@ -163,15 +163,13 @@ def test_fixture_observations_and_noisy_solution_follow_exact_fraction_reference
         "independent_reference"]["noisy_sample_abundances"]
 
 
-def test_lu_rejects_exact_zero_pivot_and_decompositions_require_square_matrices():
+def test_lu_rejects_exact_zero_pivot_and_requires_a_square_matrix():
     ee = make_ee()
     with pytest.raises(UnsupportedEEError, match="zero pivot"):
         output(ee, ee.Array([[1, 2], [2, 4]]).matrixLUDecomposition())
     nonsquare = ee.Array([[1, 2, 3], [4, 5, 6]])
-    for method in ("matrixQRDecomposition", "matrixLUDecomposition",
-                   "matrixSingularValueDecomposition"):
-        with pytest.raises(UnsupportedEEError, match="square matrix"):
-            output(ee, getattr(nonsquare, method)())
+    with pytest.raises(UnsupportedEEError, match="square matrix"):
+        output(ee, nonsquare.matrixLUDecomposition())
 
 
 def test_unknown_decomposition_arguments_and_shared_work_budget_are_rejected():

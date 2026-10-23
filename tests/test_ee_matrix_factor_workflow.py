@@ -12,7 +12,6 @@ from ee_matrix_factor_workflow_helpers import (
     javascript_expressions, local_fixture, numeric_result, python_results,
 )
 from gee.ee_translate import compile_expression
-from gee.compat.earthengine.ir import UnsupportedEEError
 
 
 def _evidence(name, value):
@@ -154,8 +153,8 @@ def test_factor_values_reconstruct_and_flow_through_bounded_inverse_and_solve_ch
     assert np.isfinite(actual["cholesky_L"][:, 5]).all()
     assert np.isnan(actual["cholesky_solve_from_factors"][:, 5]).all()
 
-    # A bounded consumer inverts the selected U factor. The full U^-1 L^-1 P
-    # composition is covered below as an explicit graph-work-budget rejection.
+    # Both the selected U inverse and the complete factor inverse are actual
+    # compositions; the latter has an independent Fraction check below.
     upper = actual["lu_factors"][4:8, 1].reshape(2, 2)
     np.testing.assert_allclose(actual["lu_upper_inverse"][:, 1],
                                np.linalg.inv(upper).reshape(-1),
@@ -174,15 +173,41 @@ def test_factor_values_reconstruct_and_flow_through_bounded_inverse_and_solve_ch
     })
 
 
-def test_full_lu_inverse_composition_is_rejected_by_existing_work_budget():
+def test_full_lu_inverse_composition_shares_factors_and_matches_exact_inverse():
+    from fractions import Fraction
+    from scripts.ee_python_api.offline import OfflineGuard
+
     local = local_fixture()
     example = example_module()
-    with pytest.raises(UnsupportedEEError, match="50000-step work budget"):
+    with OfflineGuard() as guard:
         ee = make_ee()
         expression = example.full_lu_inverse_expression(
             ee, ee.ImageCollection("sentinel-2-l2a").first(),
         ).arrayFlatten([["R0", "R1"], ["C0", "C1"]])
-        compile_expression(
+        result = compile_expression(
             ee.serializer.encode(expression, for_cloud_api=False),
             local["catalog"], local["items"],
         )
+    assert guard.evidence()["attempt_count"] == 0
+    assert len(result["process_graph"]) <= 500
+    specs = _factor_specs(result)
+    assert sum(spec["op"] == "lu" for spec in specs) == 1
+    assert sum(spec["op"] == "inverse" for spec in specs) == 2
+    actual, bands, timed = numeric_result(result, local)
+    assert bands == ["R0_C0", "R0_C1", "R1_C0", "R1_C1"] and timed is False
+    source = local["arrays"][ITEM_ID]
+    max_error = 0.0
+    for pixel in (0, 1, 2, 7):
+        a, b, c, d = (Fraction.from_float(float(source[name][pixel]))
+                      for name in ("m00", "m01", "m10", "m11"))
+        determinant = a * d - b * c
+        expected = np.array([float(d / determinant), float(-b / determinant),
+                             float(-c / determinant), float(a / determinant)])
+        np.testing.assert_allclose(actual[:, pixel], expected, rtol=0, atol=3e-12)
+        max_error = max(max_error, float(np.max(np.abs(actual[:, pixel] - expected))))
+    assert np.isnan(actual[:, 3]).all() and np.isnan(actual[:, 4]).all()
+    _evidence("full-lu-inverse-wave55.json", {
+        "nodes": len(result["process_graph"]), "LU_producers": 1,
+        "inverse_producers": 2, "finite_values": 16, "max_absolute_error": max_error,
+        "scope": "Actual SDK factor composition and independent Fraction inverse; no Spark or Google",
+    })

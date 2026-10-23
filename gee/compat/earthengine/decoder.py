@@ -59,17 +59,32 @@ class Translator(CatalogOperations, FilteringOperations):
             if key not in self.scope:
                 fail("Unknown serialized value reference")
             if env is self._root_env and key in self._root_value_cache:
-                return self._root_value_cache[key]
+                from .raster_factor_snapshot import restore_factor
+
+                return restore_factor(self, self._root_value_cache[key])
             result = self.evaluate(self.scope[key], env, depth + 1)
             # The official serializer uses ValueRef for a shared, immutable
             # server-side object. Cache only the RF table/model IR that can be
-            # reused across train(features=...) and FeatureCollection.classify;
-            # other values keep their prior per-reference evaluation rules.
+            # reused across train(features=...) and FeatureCollection.classify.
+            # Root-scope factor results additionally share frozen scalar IR,
+            # with detached owned metadata on storage and every cache hit.
             from .ir import SampledFeatures, TrainedSmileRandomForest
 
             if (env is self._root_env
                     and isinstance(result, (SampledFeatures, TrainedSmileRandomForest))):
                 self._root_value_cache[key] = result
+            elif env is self._root_env and len(self._root_value_cache) < 500:
+                from .raster_factor_snapshot import FACTOR_METHODS, snapshot_factor
+
+                scoped = self.scope[key]
+                if (type(scoped) is dict and type(scoped.get("functionName")) is str
+                        and scoped["functionName"] in FACTOR_METHODS):
+                    snapshot = snapshot_factor(self, result)
+                    if snapshot is not None:
+                        from .array_core import charge_array
+
+                        charge_array(self, 2)
+                        self._root_value_cache[key] = snapshot
             return result
         if value_type == "ArgumentRef":
             if value["value"] not in env:

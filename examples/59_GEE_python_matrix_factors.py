@@ -125,7 +125,7 @@ def build_workflow(ee, image):
 
 
 def full_lu_inverse_expression(ee, image):
-    """Return the conventional U^-1 L^-1 P composition for budget testing."""
+    """Compose the inverse as U^-1 L^-1 P using the actual shared factors."""
     source = ee.Image(image).select(SOURCE_BANDS)
     matrix = _matrix(ee, source)
     factors = matrix.matrixLUDecomposition()

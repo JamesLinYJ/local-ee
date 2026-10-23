@@ -19,6 +19,7 @@ upper = lu.select("U")
 permutation = lu.select("P")
 left = permutation.matrixMultiply(matrix)
 right = lower.matrixMultiply(upper)
+inverse = upper.matrixInverse().matrixMultiply(lower.matrixInverse()).matrixMultiply(permutation)
 ```
 
 分解结果是逻辑命名数组波段容器：Cholesky 提供 `L`，LU 提供 `L`、`U`、`P`，每个
@@ -27,9 +28,10 @@ right = lower.matrixMultiply(upper)
 生产者；选择单个因子不会重复计算整组结果。展平后的输出保持行优先顺序、原影像属性、
 来源和整体矩阵掩膜。
 
-合成示例在分解后直接求 `U` 的逆，并用 Cholesky `L` 做两步矩阵求解。常见的完整
-LU 逆矩阵组合 `U⁻¹ × L⁻¹ × P` 会超过当前 50000 步共享编译工作预算，因此专门验证为
-明确拒绝；没有放宽预算，也不把该组合描述为可运行的完整工作流。
+合成示例在分解后求 `U` 的逆，并用 Cholesky `L` 做两步矩阵求解。完整的 2×2
+LU 逆矩阵组合 `U⁻¹ × L⁻¹ × P` 也可在原有 50000 步预算内编译：根作用域的同一
+SDK 因子引用复用不可变数值表达式，元数据在存储和读取时分别复制，各次实际网格校验保留。
+该组合使用实际因子继续计算，并以独立 Fraction 逆矩阵验证；更大的组合仍可能超限。
 
 每轴为 1–8，输入最多 64 个单元；Cholesky 输出最多 64 个单元。LU 同时返回三个
 `n×n` 因子，因此 `3n²≤64`，最大方阵为 `4×4`。既有 8192 字节规格、50000 编译工作
