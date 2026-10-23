@@ -1,0 +1,199 @@
+{
+  "schema": "local-ee-python-wave38/v1",
+  "date": "2026-10-23",
+  "base_commit": "2e92e3dc8fd81204b6234f5b6760c3079b2fe3a3",
+  "title": "Finite numerical and discrete reducers with repeated independent input blocks",
+  "entry_inventory": {
+    "before": 519,
+    "after": 539,
+    "new_entry_count": 20,
+    "deprecated_alias_entries": [
+      "Reducer.and",
+      "Reducer.or"
+    ],
+    "pinned_signatures": 991,
+    "name_entry_percentage": 54.39,
+    "new_names": [
+      "Reducer.allNonZero",
+      "Reducer.and",
+      "Reducer.anyNonZero",
+      "Reducer.bitwiseAnd",
+      "Reducer.bitwiseOr",
+      "Reducer.countDistinct",
+      "Reducer.countDistinctNonNull",
+      "Reducer.countEvery",
+      "Reducer.countRuns",
+      "Reducer.firstNonNull",
+      "Reducer.forEach",
+      "Reducer.frequencyHistogram",
+      "Reducer.lastNonNull",
+      "Reducer.minMax",
+      "Reducer.or",
+      "Reducer.product",
+      "Reducer.repeat",
+      "Reducer.sampleVariance",
+      "Reducer.stdDev",
+      "Reducer.variance"
+    ],
+    "extended_existing_names": [
+      "List.reduce",
+      "Collection.reduceColumns",
+      "Reducer.combine",
+      "Reducer.group",
+      "Reducer.setOutputs",
+      "Reducer.getOutputs",
+      "AggregateFeatureCollection.histogram"
+    ],
+    "interpretation": "Name entries only; not complete parameters, semantics, project migration or Google equivalence"
+  },
+  "implementation": {
+    "owners": "Three disjoint Luna/max family agents; parent review, integration and publication",
+    "new_modules_lines": {
+      "composed_reducer_expansion.py": 109,
+      "finite_reducer_discrete.py": 170,
+      "finite_reducer_leaves.py": 71,
+      "finite_reducer_numeric.py": 133,
+      "finite_reducer_scan.py": 121
+    },
+    "limits": "Unchanged shared50000 work,1000rows,1MB public output; reducer depth16/logical expanded nodes64/inputs0..32/outputs256; repeat and forEach1..32copies"
+  },
+  "validation": {
+    "python": {
+      "tests": 3853,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 10,
+      "passed": 3843,
+      "seconds": 39.508
+    },
+    "python_evidence": "audit/gee-python-wave38/final-verified-v2/python.xml",
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "node": "24.22.1",
+      "evidence_directory": "audit/gee-python-wave38/final-verified",
+      "deployed": false
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "Python_JS_identical_workflow_outputs": 23,
+      "guarded_network_attempts": 0
+    },
+    "csv": {
+      "rows": 2,
+      "expected": [
+        {
+          "zone": "north",
+          "min": 1,
+          "max": 3,
+          "variance": 1,
+          "count": 2
+        },
+        {
+          "zone": "south",
+          "min": 5,
+          "max": 5,
+          "variance": 0,
+          "count": 1
+        }
+      ],
+      "path": "Official SDK -> real dispatch/worker preparation and completion -> actual CSV writer -> trusted physical result reader",
+      "scope": "Portable synthetic integration; task store and native launcher are test doubles"
+    },
+    "scale": {
+      "countEvery": {
+        "value": {
+          "count": 1000
+        },
+        "status": "computed",
+        "steps": 15106
+      },
+      "variance": {
+        "value": {
+          "variance": 83333.24999999997
+        },
+        "status": "computed",
+        "steps": 39520
+      },
+      "frequencyHistogram_repeated": {
+        "value": {
+          "histogram": {
+            "1": 1000
+          }
+        },
+        "status": "computed",
+        "steps": 33153
+      },
+      "aggregate_histogram_repeated": {
+        "value": {
+          "1": 1000
+        },
+        "status": "computed",
+        "steps": 29037
+      },
+      "frequencyHistogram_unique": {
+        "status": "rejected",
+        "error": "aggregate_histogram unique key growth exceeds the shared 50000-step compilation work budget",
+        "steps": 49993
+      },
+      "aggregate_histogram_unique": {
+        "status": "rejected",
+        "error": "aggregate_histogram output exceeds the shared 50000-step compilation work budget",
+        "steps": 49997
+      },
+      "network_attempts": 0,
+      "rows": 1000,
+      "work_limit": 50000
+    },
+    "frozen_source_files": 25,
+    "source_hashes_unchanged_during_final_regression": true,
+    "warnings": "3 existing Rasterio PendingDeprecationWarnings",
+    "review_fixes": [
+      "countEvery is modeled as zero-input source-row counting through List/table/combine/group/repeat/forEach rather than consuming a fictitious selected column",
+      "Repeated and named copies count logical nodes and precharge row/name/output work; malformed unused fields and duplicate result names reject",
+      "Histogram counts distinct output keys once but still charges repeated hashing/comparisons/updates and exact public JSON growth",
+      "Product normalizes binary exponents; requested standard deviation does not require an overflowing variance intermediate",
+      "Finite leaves remain opaque and reject raster/Array/runtime contexts even on empty sources"
+    ],
+    "validation_corrections": [
+      "Initial workflow harness used the wrong Python ApiFunction.call instance method; changed the example/tests to the official ee.call helper; four initial fixture failures resolved",
+      "First broad run exposed two historical assertions that variance/stdDev were unsupported; updated to test actual population results, an unimplemented skew rejection and unchanged raster rejection; no scientific check removed"
+    ],
+    "fidelity_notes": [
+      "countEvery zero-input inference is based on the official reduceToVectors labels-only default, without a Google arity probe",
+      "forEach multi-output underscore separator is an explicit local convention; reference specifies prefixing without separator",
+      "Empty/null/countRuns gap/type/collision policies remain documented local rules, not Google oracle results"
+    ]
+  },
+  "dependency_delta": "None; package locks, native toolchains and installed engine unchanged",
+  "remaining_limits": [
+    "Finite List and inline FeatureCollection tables only; no new raster/Array/sampled/classified runtime reducer consumers, weight selectors or new unweighted adapter",
+    "The1000-row cap is an upper bound;1000distinct integer rows exceed the unchanged50000 budget on the full SDK table path, while direct kernels fit and repeated-row SDK histogram passes",
+    "Percentile/adaptive histograms/covariance/rank correlation/remaining reducer families and complete argument coverage remain open",
+    "No new full Spark,business services,browser,private real-data,isolation-platform or Google same-data acceptance"
+  ],
+  "runtime": "No business service startup/deployment,VM/container or JVM rebuild; accounts,credentials,data and results untouched",
+  "goal_status": "Python-first full API/computational semantics and the broader production goal remain incomplete and active",
+  "references": [
+    "docs/gee-python/list.md",
+    "docs/gee-python/numeric-reducer-leaves.md",
+    "docs/gee-python/discrete-reducer-leaves.md",
+    "docs/gee-python/reducer-expansion.md",
+    "examples/43_GEE_python_reducer_statistics.py"
+  ],
+  "cleanup": {
+    "removed": [
+      {
+        "owned_scratch": "work/gee-python-wave38/web-dist",
+        "logical_file_bytes": 1692145
+      },
+      {
+        "owned_scratch": "/private/tmp/private-gee-wave38-uv-cache",
+        "agent_report": "Removed after focused tests; no retained dependency downloads"
+      }
+    ],
+    "preserved": "Runtime dependencies,existing user data/results and original audit evidence; no physical-free-space claim"
+  },
+  "publication_policy": "Push exact commit to a temporary validation branch; require python/frontend and current protected base; fast-forward main then delete only owned validation branch"
+}

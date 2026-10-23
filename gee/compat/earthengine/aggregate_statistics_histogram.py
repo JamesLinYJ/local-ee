@@ -6,7 +6,6 @@ import math
 from .aggregate_statistics_values import (
     MAX_EXACT_INTEGER,
     MAX_PUBLIC_BYTES,
-    _public_scalar_size,
     _scalar,
     _json_string_size,
     charge,
@@ -33,42 +32,80 @@ def _histogram_key(value):
 
 
 def aggregate_histogram(translator, values):
-    # Reserve each scan before scalar validation, string hashing, or spelling.
+    # Reserve the row walk before scalar validation, spelling, or hashing.
     charge(translator, 8 * len(values), "aggregate_histogram scan")
-    scalar_values = []
+
+    # `counts` is the public result and keeps source insertion order. `entries`
+    # retains typed identities so stringified-key collisions can be rejected
+    # without treating every repeated value as a new serialized output key.
+    counts = {}
+    entries = {}
+    output_size = 2  # `{}`
     for value in values:
         if value is None:
             continue
         value = _scalar(value, "aggregate_histogram")
-        if type(value) is str:
-            charge(translator, len(value), "aggregate_histogram string hash")
-        elif type(value) in (int, float):
-            charge(translator, 32, "aggregate_histogram numeric spelling")
-        scalar_values.append(value)
-
-    estimate = 2 + 10 * len(scalar_values)
-    for value in scalar_values:
-        if type(value) is str:
-            estimate += _json_string_size(value) + 8
-        elif type(value) is int:
-            estimate += _public_scalar_size(value) + 8
+        if type(value) is int:
+            # Reserve a safe decimal-width bound before str() in _histogram_key.
+            digits = max(1, math.ceil(value.bit_length() * math.log10(2)))
+            charge(
+                translator, digits + (1 if value < 0 else 0),
+                "aggregate_histogram numeric spelling",
+            )
         elif type(value) is float:
-            # repr(binary64) is at most 24 ASCII characters; integer-like
-            # values in the exact range have at most 16 decimal digits.
-            estimate += 34
-        else:
-            estimate += 13
-    if estimate > MAX_PUBLIC_BYTES:
-        fail("aggregate_histogram output exceeds the 1 MB public JSON limit")
-    charge(translator, estimate, "aggregate_histogram output")
+            # repr(binary64) is at most 24 ASCII characters.
+            charge(translator, 24, "aggregate_histogram numeric spelling")
+        elif type(value) is bool:
+            # Boolean keys are the fixed strings "true" and "false".
+            charge(translator, 6, "aggregate_histogram boolean spelling")
 
-    counts = {}
-    identities = {}
-    for value in scalar_values:
         key, identity = _histogram_key(value)
-        previous = identities.get(key)
-        if previous is not None and previous != identity:
+
+        # Reserve every key hash and lookup, including repeated keys, before
+        # dictionary access. String hashing scans the string; numeric spelling
+        # above separately reserves conversion before the key is created.
+        charge(translator, len(key) + 1, "aggregate_histogram key hash and lookup")
+        entry = entries.get(key)
+        if entry is None:
+            # This key will appear in the public result exactly once. Measure
+            # and reserve that serialized growth before either dictionary grows.
+            charge(translator, len(key) + 1, "aggregate_histogram output key scan")
+            key_size = _json_string_size(key)
+            # Match json.dumps defaults used at the public boundary: `: ` and
+            # `, ` each occupy two bytes (commas occur only between entries).
+            addition = key_size + 2 + 1 + (2 if counts else 0)
+            if output_size + addition > MAX_PUBLIC_BYTES:
+                fail("aggregate_histogram output exceeds the 1 MB public JSON limit")
+            charge(translator, addition, "aggregate_histogram output")
+            charge(translator, len(key) + 5, "aggregate_histogram unique key growth")
+            output_size += addition
+            entries[key] = [identity, 1, 1]
+            counts[key] = 1
+            continue
+
+        if type(value) is str and entry[0][0] == "string":
+            # Distinct string objects with equal content may require a full
+            # character comparison after the typed-key lookup.
+            charge(translator, len(value), "aggregate_histogram string identity comparison")
+        if entry[0] != identity:
             fail("aggregate_histogram values collide after conversion to string keys")
-        identities[key] = identity
-        counts[key] = counts.get(key, 0) + 1
+
+        # Repeated inputs pay for the result-map update but not for another
+        # serialized key. Account for count-width growth before mutating either
+        # stored value so the 1 MB cap remains incremental and exact.
+        charge(translator, 1, "aggregate_histogram count update")
+        new_count = entry[1] + 1
+        # Counts grow by exactly one; detect width changes without allocating
+        # another decimal string for every occurrence.
+        added_digits = int(new_count == 10 ** entry[2])
+        new_width = entry[2] + added_digits
+        if output_size + added_digits > MAX_PUBLIC_BYTES:
+            fail("aggregate_histogram output exceeds the 1 MB public JSON limit")
+        if added_digits:
+            charge(translator, added_digits, "aggregate_histogram output")
+            output_size += added_digits
+        charge(translator, len(key) + 1, "aggregate_histogram result lookup/update")
+        entry[1] = new_count
+        entry[2] = new_width
+        counts[key] = new_count
     return counts

@@ -12,6 +12,7 @@ from .composed_reducers import (
     validate_reducer_spec,
 )
 from .composed_reducer_output import _owned_value
+from .composed_reducer_expansion import evaluate_for_each, evaluate_repeat
 from .ir import Reducer, fail
 
 
@@ -40,9 +41,15 @@ def _number(value, label):
 def _records(translator, values, input_count):
     if type(values) is not list or len(values) > MAX_LIST_ROWS:
         fail("List.reduce requires at most 1000 inline values")
-    if not 1 <= input_count <= MAX_REDUCER_INPUTS:
-        fail("List.reduce supports reducers with 1 to 32 inputs")
+    if not 0 <= input_count <= MAX_REDUCER_INPUTS:
+        fail("List.reduce supports reducers with 0 to 32 inputs")
     _charge(translator, len(values) + 1)
+    if input_count == 0:
+        from .finite_reducer_scan import scan_inputs
+
+        scan_inputs(translator, values)
+        _charge(translator, len(values))
+        return [[] for _ in values]
     if input_count == 1:
         # A one-input List reducer consumes each List value directly, including
         # lists and dictionaries for count/first/last.
@@ -132,9 +139,12 @@ def _group_identity(translator, value):
 def _evaluate(translator, records, spec):
     if spec.kind == "leaf":
         from .table_reducers import TableReducer
+        from .finite_reducer_leaves import FiniteReducerLeaf, reduce_finite_leaf
 
         if type(spec.leaf) is TableReducer:
             return _regression(translator, records, spec.leaf)
+        if type(spec.leaf) is FiniteReducerLeaf:
+            return reduce_finite_leaf(translator, spec.leaf, records)
         return _scalar(translator, records, spec.leaf)
     if spec.kind == "setOutputs":
         values = _evaluate(translator, records, spec.child)
@@ -146,6 +156,10 @@ def _evaluate(translator, records, spec):
             for (old_name, value), name in zip(values, spec.output_selection)
             if name not in (None, "")
         ]
+    if spec.kind == "repeat":
+        return evaluate_repeat(translator, records, spec, _evaluate)
+    if spec.kind == "forEach":
+        return evaluate_for_each(translator, records, spec, _evaluate)
     if spec.kind == "combine":
         left_rows = records
         right_rows = records
@@ -218,6 +232,8 @@ def _check_nested_groups(translator, spec):
         _check_nested_groups(translator, spec.left)
         _check_nested_groups(translator, spec.right)
     elif spec.kind == "setOutputs":
+        _check_nested_groups(translator, spec.child)
+    elif spec.kind in {"repeat", "forEach"}:
         _check_nested_groups(translator, spec.child)
 
 

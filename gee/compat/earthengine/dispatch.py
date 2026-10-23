@@ -58,6 +58,10 @@ def invoke(translator, name, arguments):
         from .aggregate_statistics import invoke_aggregate_statistics
 
         return invoke_aggregate_statistics(translator, name, a)
+    from .finite_reducer_leaves import handles_finite_reducer, invoke_finite_reducer
+
+    if handles_finite_reducer(name):
+        return invoke_finite_reducer(translator, name, a)
     from .composed_reducers import handles_composed_reducer, invoke_composed_reducer, is_reducer_spec
 
     if handles_composed_reducer(name):

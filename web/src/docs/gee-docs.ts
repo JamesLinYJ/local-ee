@@ -2,6 +2,12 @@ import type { ReferenceEntry } from "../types";
 // Pinned client syntax and explicit local semantics; served entirely from this app.
 const entries: ReferenceEntry[] = [
   {
+    id: "gee-reducer-statistics",
+    title: "多列归约与方差",
+    text: "静态 List 和内联 FeatureCollection 新增总体／样本方差、minMax、product、去重计数、频数表及逻辑／位运算归约。repeat 将各输入块的结果放入列表；forEach 为各输入块命名，可继续组合、分组和导出。countEvery 读取零个属性列并计行数。栅格、动态取样表及带权归约不在此范围；最多1000行并保留共享预算，未验证 Google 数值等价性。",
+    code: "var rows=ee.FeatureCollection([ee.Feature(null,{x:1,y:10}),ee.Feature(null,{x:3,y:30})]);\nprint(rows.reduceColumns(ee.Reducer.variance().repeat(2),['x','y']));\nprint(rows.reduceColumns(ee.Reducer.minMax().forEach(['x','y']),['x','y']));",
+  },
+  {
     id: "gee-grouped-tables",
     title: "集合展开、属性统计与分组",
     text: "有限内联集合可 map 返回子集合后 flatten，再进行属性 aggregate_* 和组合／分组 reduceColumns。combine 支持共享或分开的输入；setOutputs 重命名输出，getOutputs 查询输出名。最多1000行，资源限制仍生效；不支持组合归约的栅格路径或动态取样表。DateRange 增加区间访问、交并、包含和空集判断；空值、分组顺序等本地规则尚无 Google 对照。",

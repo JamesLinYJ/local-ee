@@ -195,7 +195,8 @@ def test_unknown_list_reduce_parameters_are_rejected_after_sdk_serialization(ee)
 
 
 def test_list_reduce_rejects_reducers_outside_the_supported_subset(ee):
-    expression = ee.List([1, 2]).reduce(ee.Reducer.variance())
+    assert output(ee, ee.List([1, 2]).reduce(ee.Reducer.variance())) == 0.25
+    expression = ee.List([1, 2]).reduce(ee.Reducer.skew())
     with pytest.raises(UnsupportedEEError):
         output(ee, expression)
 

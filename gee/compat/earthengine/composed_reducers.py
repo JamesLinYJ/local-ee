@@ -21,6 +21,11 @@ from .composed_reducer_spec import (
     reducer_outputs,
     validate_reducer_spec,
 )
+from .composed_reducer_expansion import (
+    expansion_count,
+    for_each_output_names,
+    for_each_output_work,
+)
 from .ir import fail, integer
 
 
@@ -100,6 +105,47 @@ def invoke_composed_reducer(translator, name, arguments):
         spec = ReducerSpec(
             "setOutputs", child.input_count, tuple(names),
             child=child, output_selection=selection,
+        )
+    elif name == "Reducer.repeat":
+        translator.allowed(a, {"reducer", "count"})
+        child = _spec(translator, a.get("reducer"))
+        copies = expansion_count(
+            a.get("count"), "Reducer.repeat count", MAX_REDUCER_INPUTS,
+        )
+        if child.input_count > MAX_REDUCER_INPUTS // copies:
+            fail("Reducer.repeat exceeds the 32-input composed reducer limit")
+        spec = ReducerSpec(
+            "repeat", child.input_count * copies, child.outputs,
+            child=child, repeat_count=copies,
+        )
+    elif name == "Reducer.forEach":
+        translator.allowed(a, {"reducer", "outputNames"})
+        child = _spec(translator, a.get("reducer"))
+        raw_names = a.get("outputNames")
+        if type(raw_names) is not list:
+            fail("Reducer.forEach outputNames must be a list of strings")
+        if not raw_names:
+            fail("Reducer.forEach requires at least one output name; zero-copy Reducers are unsupported")
+        if len(raw_names) > MAX_REDUCER_INPUTS:
+            fail("Reducer.forEach exceeds the 32-input composed reducer limit")
+        if child.input_count > MAX_REDUCER_INPUTS // len(raw_names):
+            fail("Reducer.forEach exceeds the 32-input composed reducer limit")
+        _charge(translator, 1 + len(raw_names))
+        names = tuple(
+            _name(translator, item, "Reducer.forEach output name")
+            for item in raw_names
+        )
+        output_count = len(names) * len(child.outputs)
+        if output_count > MAX_REDUCER_OUTPUTS:
+            fail("Reducer.forEach supports at most 256 outputs")
+        _, output_work = for_each_output_work(
+            names, child.outputs, MAX_REDUCER_NAME_CHARS,
+        )
+        _charge(translator, output_work)
+        outputs = for_each_output_names(names, child.outputs)
+        spec = ReducerSpec(
+            "forEach", child.input_count * len(names), outputs,
+            child=child, for_each_names=names,
         )
     else:
         translator.allowed(a, {"reducer"})

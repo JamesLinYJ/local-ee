@@ -40,13 +40,29 @@ for _suffix in (
     ]
 
 for _name in ('Reducer.combine', 'Reducer.group', 'Reducer.setOutputs', 'Reducer.getOutputs',
+              'Reducer.repeat', 'Reducer.forEach',
               'List.reduce', 'Collection.reduceColumns'):
     TABLE_FAMILY_LIMITS[_name] = [
         'Actual closed immutable reducer trees consumed by static List.reduce and inline '
         'FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; '
-        'shared/concatenated inputs, grouping and output renaming/removal. '
+        'shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. '
         'No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. '
         'Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; '
         'owned JSON and typed arrays, explicit collision/null/group-order policies. '
         'No Google grouping/statistical parity.'
+    ]
+
+for _suffix in (
+    'minMax', 'product', 'stdDev', 'variance', 'sampleVariance', 'countEvery',
+    'countDistinct', 'countDistinctNonNull', 'firstNonNull', 'lastNonNull',
+    'countRuns', 'frequencyHistogram', 'allNonZero', 'anyNonZero', 'and', 'or',
+    'bitwiseAnd', 'bitwiseOr',
+):
+    TABLE_FAMILY_LIMITS['Reducer.' + _suffix] = [
+        'Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; '
+        'closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. '
+        'At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, '
+        'population/sample dispersion distinguished, bounded discrete identities and owned '
+        'first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, '
+        'Array, sampled/classified runtime table, fractional weights or Google parity claim.'
     ]

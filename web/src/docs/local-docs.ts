@@ -3,6 +3,13 @@ import type { ReferenceEntry } from "../types";
 import geeDocs from "./gee-docs";
 const entries: ReferenceEntry[] = [
   {
+    id: "gee-python-reducer-statistics",
+    category: "GEE Python",
+    title: "多列归约与方差",
+    text: "有限列表和内联表支持 minMax、product、总体 stdDev／variance、sampleVariance，以及去重计数、频数表、连续段计数和逻辑／位运算归约。repeat 按独立输入列返回结果列表；forEach 按列命名。countEvery 不取属性列，直接计行数。可继续 combine／group 后导出 CSV；不适用于栅格或动态取样表。最多1000行，仍受共享工作预算约束；空值及输出命名边界见文档，未完成 Google 同数据对照。",
+    code: "rows = ee.FeatureCollection([\n    ee.Feature(None, {'x': 1, 'y': 10}), ee.Feature(None, {'x': 3, 'y': 30})])\nprint(rows.reduceColumns(ee.Reducer.variance().repeat(2), ['x', 'y']).getInfo())\nprint(rows.reduceColumns(ee.Reducer.minMax().forEach(['x', 'y']), ['x', 'y']).getInfo())",
+  },
+  {
     id: "gee-python-grouped-tables",
     category: "GEE Python",
     title: "集合展开与分组统计",

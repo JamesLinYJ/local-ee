@@ -7,6 +7,12 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 # Handler inventory, not a claim that every overload or parameter is supported,
 # nor that Google-service numerical equivalence has been established.
 SUPPORTED_FUNCTIONS = frozenset({
+    *("Reducer." + n for n in (
+        "minMax", "product", "stdDev", "variance", "sampleVariance",
+        "countEvery", "countDistinct", "countDistinctNonNull", "firstNonNull",
+        "lastNonNull", "countRuns", "frequencyHistogram", "allNonZero",
+        "anyNonZero", "and", "or", "bitwiseAnd", "bitwiseOr", "repeat", "forEach",
+    )),
     "Collection.flatten",
     *("DateRange." + n for n in (
         "contains", "end", "intersection", "intersects", "isEmpty",
@@ -123,6 +129,10 @@ def get_capabilities():
         "level": "C",
         "numerical_equivalence_to_google_verified": False,
         "restrictions": [
+            ("Additional finite Reducer leaves compute minMax/product/population stdDev/variance/sampleVariance, "
+             "counts/distinct/runs/non-null endpoints/frequency tables/logical and bitwise reductions. "
+             "repeat and forEach operate on independent input blocks. Only static List/inline table consumers; "
+             "unchanged tree/row/work/output caps, explicit null/type/naming policies and no Google numerical parity."),
             ("Nested finite FeatureCollections support constructor/map then flatten with owned rows, "
              "source order/actual IDs and outer metadata; child metadata is discarded under the local policy. "
              "Depth96/nodes10000/rows1000 and shared50000 work/1MB output remain. Mixed/Image/dynamic children reject."),

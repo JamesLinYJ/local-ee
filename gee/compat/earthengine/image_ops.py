@@ -261,7 +261,7 @@ def invoke_image(translator, name, arguments):
         if operation == "unweighted":
             fail("Reducer.unweighted requires a verified rasterization policy and is not yet supported")
         if operation not in {"mean", "median", "min", "max", "sum", "count", "first", "last", "sampleStdDev"}:
-            fail(f"Unsupported reducer: {name}; stdDev cannot be mapped to sample standard deviation")
+            fail(f"Unsupported reducer: {name}")
         if a:
             fail(f"Unsupported parameters for {name}")
         return Reducer("sd" if operation == "sampleStdDev" else operation)

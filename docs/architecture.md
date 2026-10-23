@@ -72,6 +72,8 @@ flowchart LR
 
 有限表格整理由 `nested_collection*`、`aggregate_statistics*`、`composed_reducer*` 和 `date_ranges` 分工实现。嵌套集合只有显式 flatten 后才成为普通表；组合归约器采用不可变描述、独立结构校验、数值计算和输出复制模块，只进入静态 List／内联 reduceColumns。属性统计读取实际已有元数据，日期无界区间保持内部类型，不构造虚假端点。所有路径保留原50000工作、1000行及1MB输出限制；例42把 map→flatten→分组→CSV 串联，Google 同数据和生产运行证据另行记录。
 
+`finite_reducer_leaves` 把新增统计归约保持为封闭描述，`finite_reducer_numeric` 与离散值模块分别负责实际计算；`composed_reducer_expansion*` 扩展独立输入列的 repeat／forEach。countEvery 保持零输入列语义；所有组合仍只进入有限列表和内联表，不改变栅格内核。例43覆盖重复列、分组统计与实际 CSV 结果读回。
+
 影像取样另走 `local_ee_sample_regions → local_ee_train_minimum_distance → local_ee_minimum_distance` 的类型化计算图。采样／训练规格通过规范 JSON 字符串传递，避免要素属性成为流程指令；采样表和模型引用限定生产者。固定训练影像由独立子图保留来源和网格，不受目标导出范围污染；训练输入与输出像元分别计费。dry-run 只携带 schema／traces，真实样本表复用上游 SaveResult 和既有任务物理输出／CSV／权限边界。此链路不放宽沙箱，不改变纯内联表格的封闭执行分支；支持和证据边界见 [取样文档](gee-python/sampling.md)。
 
 `Image.sample` 使用同一公开采样进程的严格 v2 规格，桥接独立内部 `local_ee_image_sample` SPI；v1 行为保留。有限元数据网格生成有界键并与真实瓦片左连接，缺失瓦片按 dropNulls 决定丢弃或保留 null，按全局像元行列和本地固定哈希抽样。多边形采用中心覆盖，返回结果仅在有界溢出检查后排序；保留源键／形状／重复与解码预算。band_order 来自已验证规格，像元数值仅来自实际内核／CSV。后续训练继续显式 schema，详见 [Image.sample](gee-python/image-sampling.md)。独立内核验证不能代替完整 Spark／任务／浏览器／Google 对照。

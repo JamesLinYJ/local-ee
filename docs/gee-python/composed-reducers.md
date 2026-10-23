@@ -20,7 +20,13 @@ duplicates reject where the result must become a dictionary.
 
 Supported leaves are unweighted scalar `sum`, `mean`, `min`, `max`, `count`,
 `first`, `last`, `median`, and sample standard deviation, plus the existing
-`linearFit` and `linearRegression` leaves. `group()` uses the selected-input
+`linearFit` and `linearRegression` leaves. Additional [numeric](numeric-reducer-leaves.md)
+and [discrete](discrete-reducer-leaves.md) leaves now cover variance, extrema,
+product, distinct/run counts, histograms and logical/bitwise statistics.
+[repeat and forEach](reducer-expansion.md) apply independent input blocks.
+`countEvery` consumes zero selected columns and counts source rows, including
+empty records; it combines with a one-input reducer using separate inputs.
+`group()` uses the selected-input
 index in `groupField`, removes that field before applying its child reducer,
 and returns a `groups` list of dictionaries. `groupName` names the key in each
 group record. Nested grouping follows the same rule at each level.
@@ -37,12 +43,16 @@ The composition signatures and naming rules follow the official
 and [Reducer.getOutputs](https://developers.google.com/earth-engine/apidocs/ee-reducer-getoutputs)
 references.
 
+The extra [numeric](numeric-reducer-leaves.md), [discrete](discrete-reducer-leaves.md)
+and [expansion](reducer-expansion.md) pages specify additional leaf policies.
+The examples and tests exercise actual local calculations, without a Google oracle.
+
 ## Bounded local behavior
 
 - The only table source is a literal inline `FeatureCollection` with at most
   1,000 features. `List.reduce` accepts at most 1,000 list rows.
 - The descriptor is closed and immutable after construction. It allows at most
-  64 node occurrences, depth 16, 32 input columns, 256 output names, and
+  64 node occurrences, depth 16, 0–32 input columns, 256 output names, and
   10,000 characters per reducer or selector name. It rejects cycles, malformed
   mutated descriptors, and unsupported consumers.
 - The whole operation uses the existing 50,000-step compiler work budget.
@@ -69,7 +79,7 @@ references.
 
 Grouped reductions use the documented selector-index convention and return a
 `groups` list; see Google's [grouped reductions guide](https://developers.google.com/earth-engine/guides/reducers_grouping).
-Weighted calculations, `repeat()`, arbitrary reducers, non-inline or dynamic
+Weighted calculations, arbitrary reducers, non-inline or dynamic
 collections, nested selectors, and raster reducer consumers remain outside this
 slice. Reducer specifications are separate from raster reducer kernels so a
 table descriptor cannot be interpreted as an image algorithm.

@@ -8522,7 +8522,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -30139,7 +30139,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -35573,12 +35573,14 @@
       "description": "Returns a Reducer that returns 1 if all of its inputs are non-zero, 0 otherwise. Where applicable, the output name is \"all\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -35598,12 +35600,14 @@
       "description": "Returns a Reducer that returns 1 if all of its inputs are non-zero, 0 otherwise. Where applicable, the output name is \"all\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -35623,12 +35627,14 @@
       "description": "Returns a Reducer that returns 1 if any of its inputs are non-zero, 0 otherwise. Where applicable, the output name is \"any\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -35701,12 +35707,14 @@
       "description": "Returns a Reducer that computes the bitwise-and summation of its inputs. Where applicable, the output name is \"bitwiseAnd\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -35726,12 +35734,14 @@
       "description": "Returns a Reducer that computes the bitwise-or summation of its inputs. Where applicable, the output name is \"bitwiseOr\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -35881,7 +35891,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -35928,12 +35938,14 @@
       "description": "Returns a Reducer that computes the number of distinct inputs. Where applicable, the output name is \"count\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -35953,12 +35965,14 @@
       "description": "Returns a Reducer that computes the number of distinct inputs, ignoring nulls. Where applicable, the output name is \"count\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -35978,12 +35992,14 @@
       "description": "Returns a Reducer that computes the number of inputs. Where applicable, the output name is \"count\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -36003,12 +36019,14 @@
       "description": "Returns a Reducer that computes the number of runs of distinct, non-null inputs. Where applicable, the output name is \"count\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -36116,12 +36134,14 @@
       "description": "Returns a Reducer that returns the first of its non-null inputs. Where applicable, the output name is \"first\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -36254,12 +36274,14 @@
       "description": "Creates a Reducer by combining a copy of the given reducer for each output name in the given list. If the reducer has a single output, the output names are used as-is; otherwise they are prefixed to the original output names.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -36344,12 +36366,14 @@
       "description": "Returns a Reducer that returns a (weighted) frequency table of its inputs. Where applicable, the output name is \"histogram\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -36424,7 +36448,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -36471,7 +36495,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -36720,12 +36744,14 @@
       "description": "Returns a Reducer that returns the last of its non-null inputs. Where applicable, the output name is \"last\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -36950,12 +36976,14 @@
       "description": "Returns a Reducer that computes the minimum and maximum of its inputs. Where applicable, the outputs are named: \"min\", \"max\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37022,12 +37050,14 @@
       "description": "Returns a Reducer that returns 1 if any of its inputs are non-zero, 0 otherwise. Where applicable, the output name is \"any\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37131,12 +37161,14 @@
       "description": "Returns a Reducer that computes the product of its inputs. Where applicable, the output name is \"product\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37166,12 +37198,14 @@
       "description": "Creates a Reducer by combining the specified number of copies of the given reducer. Output names are the same as the given reducer, but each is a list of the corresponding output from each of the reducers.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37306,12 +37340,14 @@
       "description": "Returns a Reducer that computes the sample variance of its inputs. Where applicable, the output name is \"variance\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37371,7 +37407,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping, repetition, named copies and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -37473,12 +37509,14 @@
       "description": "Returns a Reducer that computes the standard deviation of its inputs. Where applicable, the output name is \"stdDev\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37631,12 +37669,14 @@
       "description": "Returns a Reducer that computes the variance of its inputs. Where applicable, the output name is \"variance\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite static List.reduce or inline FeatureCollection.reduceColumns only; closed immutable leaf, also usable inside combine/group/repeat/forEach/setOutputs. At most1000rows; shared50000 work and1MB output. Numeric finite exact inputs, population/sample dispersion distinguished, bounded discrete identities and owned first/last values. Documented empty/null/bitwise/frequency-key policies; no raster, Array, sampled/classified runtime table, fractional weights or Google parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -41358,7 +41398,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 519,
+    "declared_handler_name_count": 539,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41716,7 +41756,7 @@
         "appears_in_rejected_compile_context": 7,
         "appears_in_selected_sdk_serialization": 7,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 15,
+        "declared_handler_count": 35,
         "signature_count": 64
       },
       "S1": {
@@ -41839,7 +41879,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 519,
+    "pinned_signatures_with_same_name_declared_handler": 539,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

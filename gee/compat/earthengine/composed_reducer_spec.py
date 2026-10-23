@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 from .ir import Reducer, fail, integer
 from .table_reducers import MAX_TABLE_INPUTS, TableReducer
+from .finite_reducer_leaves import FiniteReducerLeaf
 
 
 MAX_REDUCER_NODES = 64
@@ -26,6 +27,7 @@ _SCALAR_OUTPUTS = {
 }
 _COMPOSED_FUNCTIONS = frozenset({
     "Reducer.combine", "Reducer.group", "Reducer.setOutputs", "Reducer.getOutputs",
+    "Reducer.repeat", "Reducer.forEach",
 })
 
 
@@ -43,7 +45,7 @@ class ReducerSpec:
     kind: str
     input_count: int
     outputs: tuple[str, ...]
-    leaf: ScalarReducerLeaf | TableReducer | None = None
+    leaf: ScalarReducerLeaf | TableReducer | FiniteReducerLeaf | None = None
     child: "ReducerSpec | None" = None
     left: "ReducerSpec | None" = None
     right: "ReducerSpec | None" = None
@@ -52,6 +54,8 @@ class ReducerSpec:
     group_field: int = 0
     group_name: str = "group"
     output_selection: tuple[str | None, ...] | None = None
+    repeat_count: int | None = None
+    for_each_names: tuple[str, ...] | None = None
 
 
 def handles_composed_reducer(name):
