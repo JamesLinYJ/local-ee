@@ -2,11 +2,19 @@ import type { ReferenceEntry } from "../types";
 
 export const pythonTypedRasterDocs: ReferenceEntry[] = [
   {
+    id: "gee-python-pixel-matrices",
+    category: "GEE Python",
+    language: "python",
+    title: "逐像元矩阵求逆、伪逆与动态求解",
+    text: "固定二维 RasterArrayImage 支持 matrixInverse、matrixPseudoInverse 和动态 matrixSolve；矩阵元素可来自实际波段。每轴1–8，输入／输出各不超过64单元，规格最多8192字节；旧图、数组与工作预算仍适用，满足形状上限不保证最大组合可运行。任一元素缺测会掩膜整矩阵，输入有效Infinity拒绝，数值奇异逆矩阵为NoData。局部缩放SVD阈值和结果不代表Google数值一致性。原生物理值为Float64；全Float32输入由编译器显式转回Float32，嵌套Float32舍入会保留。",
+    code: "source = image.select(['m00','m01','m10','m11','b0','b1'])\nA = source.select(['m00','m01','m10','m11']).toDouble().toArray()\\\n    .arrayReshape(ee.Image.constant(ee.Array([2,2])), 2)\nB = source.select(['b0','b1']).toDouble().toArray()\\\n    .arrayReshape(ee.Image.constant(ee.Array([2,1])), 2)\ninverse = A.matrixInverse()\npseudo = A.matrixPseudoInverse()\nsolution = A.matrixSolve(B)\nprediction = pseudo.matrixMultiply(B)",
+  },
+  {
     id: "gee-python-double-array-solve",
     category: "GEE Python",
     language: "python",
     title: "Double 数组与固定矩阵求解",
-    text: "单个固定数组可逐元素 toDouble()。matrixSolve 当前接受满列秩的字面量设计矩阵，任一输入为 Double 时保留 Double；动态设计仍拒绝。数组需先 flatten/get 成标量波段才能导出，64元素、500节点和工作预算保持。",
+    text: "静态 Array.matrixSolve 仍处理固定静态数组；影像上的 Image.matrixSolve 另支持有界动态 RasterArrayImage，并可与 matrixInverse、matrixPseudoInverse 串联。任一输入为 Double 时保留 Double；全 Float32 输入按类型联合规则转回 Float32。数组需先 flatten/get 成标量波段才能导出，原有64元素、500节点和工作预算保持。",
     code: "design = ee.Image.constant(ee.Array(\n    [[1,0], [1,1], [1,2]])).toDouble()\nrhs = image.select(['red','nir','blue'])\\\n    .toArray().toArray(1).toDouble()\nfit = design.matrixSolve(rhs)\ncoefficients = fit.arrayFlatten(\n    [['intercept','slope'], ['value']])",
   },
   {
@@ -37,9 +45,15 @@ export const pythonTypedRasterDocs: ReferenceEntry[] = [
 
 export const javascriptTypedRasterDocs: ReferenceEntry[] = [
   {
+    id: "gee-js-pixel-matrices",
+    title: "逐像元矩阵求逆、伪逆与动态求解",
+    text: "固定二维 RasterArrayImage 支持 matrixInverse、matrixPseudoInverse 和动态 matrixSolve；元素可来自实际影像波段。每轴1–8，输入／输出各不超过64单元，规格最多8192字节；已有图节点、数组和工作预算仍限制实际组合。任一元素缺测掩膜整矩阵，输入有效Infinity拒绝，数值奇异逆为NoData。局部缩放SVD阈值不承诺Google数值一致性。原生物理结果是Float64，但全Float32输入会显式转换回Float32；嵌套Float32舍入不会被Double恢复。",
+    code: "var source = image.select(['m00','m01','m10','m11','b0','b1']);\nvar A = source.select(['m00','m01','m10','m11']).toDouble()\n  .toArray().arrayReshape(ee.Image.constant(ee.Array([2,2])), 2);\nvar B = source.select(['b0','b1']).toDouble()\n  .toArray().arrayReshape(ee.Image.constant(ee.Array([2,1])), 2);\nvar inverse = A.matrixInverse();\nvar pseudo = A.matrixPseudoInverse();\nvar solution = A.matrixSolve(B);\nvar prediction = pseudo.matrixMultiply(B);",
+  },
+  {
     id: "gee-js-double-array-solve",
     title: "Double 数组与固定矩阵求解",
-    text: "单个固定数组可逐元素 toDouble()。matrixSolve 目前仅接受满列秩的字面量设计，任一输入 Double 则保留 Double；动态设计及超预算图明确拒绝。数组先 flatten/get 成标量再导出。",
+    text: "静态 Array.matrixSolve 处理固定数组；影像上的 Image.matrixSolve 另支持有界动态 RasterArrayImage，并可与 Image.matrixInverse、matrixPseudoInverse 串联。Float64 输入保留 Double，全 Float32 输入按类型联合规则转回 Float32；超出数组、图节点或工作预算的表达式明确拒绝。矩阵先用 arrayFlatten 等方法转换为普通影像波段再导出。",
     code: "var design = ee.Image.constant(ee.Array(\n  [[1,0], [1,1], [1,2]])).toDouble();\nvar rhs = image.select(['red','nir','blue'])\n  .toArray().toArray(1).toDouble();\nvar fit = design.matrixSolve(rhs);\nvar coefficients = fit.arrayFlatten(\n  [['intercept','slope'], ['value']]);",
   },
   {

@@ -1,0 +1,318 @@
+{
+  "schema": "local-ee-compatibility-wave/v1",
+  "date": "2026-10-24",
+  "base_commit": "fdba997120b650d4ee1250648b85e05ed85256ac",
+  "title": "Shared per-pixel matrix solve, inverse and Moore-Penrose pseudoinverse",
+  "entry_inventory": {
+    "pinned_signatures": 991,
+    "declared_same_name_handlers": 637,
+    "names_only_percentage": 64.28,
+    "new_api_names": [
+      "Image.matrixInverse",
+      "Image.matrixPseudoInverse"
+    ],
+    "expanded_existing_APIs": [
+      "Image.matrixSolve"
+    ],
+    "interpretation": "Name inventory only; not full API, parameter, numerical or project migration compatibility"
+  },
+  "implementation": {
+    "compiler": "One bounded immutable shared matrix producer, row-major component selectors and explicit per-array Float32/Double input/output casts. Dynamic, wide and rank-deficient actual-raster solve, square inverse and rectangular pseudoinverse. Existing stable literal full-column-rank NumPy rcond=None route retained.",
+    "wire": {
+      "process": "local_ee_matrix_values",
+      "version": 1,
+      "exact_fields": [
+        "v",
+        "op",
+        "rows",
+        "cols",
+        "rhs_cols",
+        "operands"
+      ],
+      "max_ASCII_bytes": 8192,
+      "max_axis": 8,
+      "combined_A_B_input_cells": 64,
+      "output_cells": 64,
+      "input_bands": "contiguous band0..bandN in declared order",
+      "output_bands": "row-major matrix0..matrixN",
+      "constants": "Finite lowercase binary64 hex; raw integer admission remains +/-2^53"
+    },
+    "numeric": "Scaled fixed Commons Math3.6.1 SVD with library getRank cutoff, compensated pseudoinverse assembly and (V/sigma)*U ordering. Exact binary64 BigDecimal products against original RHS avoid small-signal loss from B normalization. Exact nonzero constant-column RHS centering and combined anchor restoration only at full column rank. Zero-rank solve/pseudoinverse return zeros.",
+    "mask": "Any input NoData, numerical-singular inverse or nonfinite Float64 kernel output masks the entire matrix; valid source Infinity rejects, including masked peers. Actual keys/time metadata retained; no invented empty/global grid.",
+    "grid_and_bridge": "Fresh common-grid/single-item asset proof and matching time dimensions before merges. Shared bounded dry-run trace admission retains origins without treating stale upstream band labels as actual input order. Actual Python cube and native provider enforce ordered bands; every native tile must match metadata dimensions before its admitted budget is used.",
+    "source_free": "Finite inverse/pseudoinverse can fold with normalized local rank policy and actual cast stages, without inventing a raster grid. Source-free masked/singular/nonfinite inverse or final Float32 overflow rejects; source-free rank-deficient solve still rejects.",
+    "limits": {
+      "compiler_work": 50000,
+      "process_nodes": 500,
+      "graph_JSON_bytes": 1000000,
+      "immutable_IR_depth": 96,
+      "native_tile_work_estimate": 100000000,
+      "native_total_work_estimate": 1000000000,
+      "native_tile_keys": 100000,
+      "decoded_cells_per_tile": 10000000,
+      "decoded_cells_total": 100000000
+    },
+    "tile_budget_admission_only": {
+      "solve_2x2_single_rhs": {
+        "work_per_pixel": 2520,
+        "max_pixels_per_tile": 39682,
+        "128x128": "pass",
+        "256x256": "reject"
+      },
+      "inverse_2x2": {
+        "work_per_pixel": 400,
+        "max_pixels_per_tile": 250000,
+        "128x128": "pass",
+        "256x256": "pass"
+      },
+      "note": "These are actual budget function checks, not a large-tile numerical throughput or Spark test"
+    },
+    "modularity": "Separate Python wire, raster IR/folding, graph lowering and engine bridge; separate Scala spec, numeric kernel and adapter. Shared dry-run trace validation extracted without weakening integer bridge."
+  },
+  "verification": {
+    "full_pytest": {
+      "passed": 5342,
+      "skipped": 24,
+      "warnings": 52,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 44.78,
+      "scope": "Required command permissions used for unchanged existing loopback, process and macOS sandbox tests; no application boundary weakened"
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "TypeScript": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "matrix_native": {
+      "cases": 19,
+      "input_pixels": 24,
+      "output_cells": 150,
+      "invalid_wire_controls": 16,
+      "Fraction_oracle_cases": 2,
+      "explicit_nonzero_assertions": 3,
+      "tile_controls": 4,
+      "rank_cutoff": "nextDown, equality and nextUp of 2*EPS; equality dropped",
+      "high_baseline": "Absolute tolerance1e-10 with relative0 at intercept2^40; the next binary64 value fails tolerance",
+      "overflow": "Whole Float64 output matrix NoData; all-NaN shape retained",
+      "temporary_error_instrumentation": {
+        "finite_comparisons": 140,
+        "max_absolute_error": 6.661338147750939e-16,
+        "max_relative_error": 1.1657341758564156e-15,
+        "scope": "Aggregate counters on a temporary trusted probe copy; numeric values unchanged and counters not part of production kernel"
+      },
+      "scope": "Actual GeoTrellis tiles through LocalEeMatrixValuesNumeric.applyTile; no SparkContext, service, SPI loading, sandbox task, VM, container, or user data"
+    },
+    "same_JAR_regressions": {
+      "integer": "INTEGER_VALUES_KERNEL_OK cases=26 pixels=214 invalid_specs=36 invalid_tiles=10 masked_constant_rejects=5 operations=14 qa_steps=10 qa_pixels=13 cell_conversion_checks=5",
+      "float64": "FLOAT64_VALUES_KERNEL_OK cases=25 pixels=173 invalid_specs=19 invalid_tiles=2 operations=22 max_observed_ulps=1 composite_stages=6 composite_pixels=44",
+      "selection": "SELECTION_KERNEL_OK cases=5 pixels=40 invalid_specs=16 invalid_tiles=6 operations=select,where_select"
+    },
+    "synthetic_workflow": {
+      "Python_JS_equal_output_graphs": 11,
+      "Python_JS_guarded_network_attempts": 0,
+      "valid_output_values": 140,
+      "max_absolute_error": 4.440892098500626e-16,
+      "outputs": {
+        "float32_inverse": {
+          "masked_values": 8,
+          "max_absolute_error": 0.0,
+          "valid_values": 12
+        },
+        "float32_matrix": {
+          "masked_values": 4,
+          "max_absolute_error": 0.0,
+          "valid_values": 16
+        },
+        "float32_then_float64_inverse": {
+          "masked_values": 8,
+          "max_absolute_error": 5.551115123125783e-17,
+          "valid_values": 12
+        },
+        "float32_then_float64_matrix": {
+          "masked_values": 4,
+          "max_absolute_error": 0.0,
+          "valid_values": 16
+        },
+        "float64_matrix": {
+          "masked_values": 4,
+          "max_absolute_error": 0.0,
+          "valid_values": 16
+        },
+        "inverse_reconstruction": {
+          "masked_values": 8,
+          "max_absolute_error": 5.551115123125783e-17,
+          "valid_values": 12
+        },
+        "matrix_inverse": {
+          "masked_values": 8,
+          "max_absolute_error": 5.551115123125783e-17,
+          "valid_values": 12
+        },
+        "matrix_pseudoinverse": {
+          "masked_values": 4,
+          "max_absolute_error": 2.7755575615628914e-17,
+          "valid_values": 16
+        },
+        "matrix_solve": {
+          "masked_values": 4,
+          "max_absolute_error": 4.440892098500626e-16,
+          "valid_values": 6
+        },
+        "pseudoinverse_prediction": {
+          "masked_values": 4,
+          "max_absolute_error": 2.220446049250313e-16,
+          "valid_values": 6
+        },
+        "pseudoinverse_projection": {
+          "masked_values": 4,
+          "max_absolute_error": 1.1102230246251565e-16,
+          "valid_values": 16
+        }
+      },
+      "scope": "Declared versioned synthetic source, independent NumPy/Fraction graph interpreter; no Spark/service/browser/physical export"
+    },
+    "original_50_probes": {
+      "SDK_serialized": 50,
+      "compiled": 47,
+      "rejected": 3,
+      "guarded_network_attempts": 0,
+      "scope": "Original directed suite, not representative percentage coverage"
+    },
+    "initial_full_regression": {
+      "passed": 5338,
+      "failed": 3,
+      "skipped": 24,
+      "cause": "Three historical tests still required rank-deficient solve rejection. Replaced with actual native-producer and independent Fraction minimum-norm checks; preserved source-free, precision, parameter and work rejection controls. Initial XML/log/source manifest retained."
+    },
+    "new_float32_boundary": "Actual compiled 1x1 inverse using the smallest positive Float32 source: finite native Double result becomes Infinity only at the explicit terminal Float32 cast; outside-footprint pixel stays NaN. Expected cast warning is asserted.",
+    "final_whitespace_only": "Removed blank EOF lines in three Python files after full tests; exact Python AST unchanged, full-test and final byte hashes retained separately; focused bridge/workflow/precision regression rerun."
+  },
+  "native_build": {
+    "source_files": 54,
+    "JAR_sha256": "3aa2d78fd1eb4605d661d5b0d432b64fbc9ba206b260df4aba719410948bd779",
+    "build_script_sha256": "1551fa1ad75f502d6c180b7166e0e9d738faf0ce92aa37ded8dc25bd137ebdaa",
+    "sources_sha256": {
+      "engine/ee_integer_adapter.scala": "f3e5dae5a26c8dd1656a38e27f78a000ac4992c0bcc8c61c13b307b7c1121720",
+      "engine/ee_cell_conversion.scala": "3b758d6b6b1a4b159be9e3db7832f7f4566000f75f66006355db0c61f373a50c",
+      "engine/ee_grid_adapter.scala": "049052f97d6ea0c9511db94155cf49b9c8af7d63b0f6d9313b3e7bf759ada704",
+      "engine/ee_mask_adapter.scala": "f29fe4dfa0d184ed3391bed9d410a36cd43858ec3a83d994cdc2a56361ac5159",
+      "engine/ee_reduce_support.scala": "c2f42ff08f51087614193f35dd71c07ee74c211c977e452c7569f1312ac7e4c6",
+      "engine/ee_reduce_numeric.scala": "be6d14f04d134eaded80e8b4aefcb27cd0de834970c3fffb79c30ad4f5575091",
+      "engine/ee_reduce_statistics.scala": "00d83a874be3862110e8c3c03e1414d8ccb7ef80ae6e529aebce7382e9c4ff2e",
+      "engine/ee_reduce_adapter.scala": "30842f5586a4b6b8481cb77cfe81b957c7fcabc467e2451ac9c90622ef0d9f1f",
+      "engine/ee_classify_numeric.scala": "b971b4d2fa4f0536027fb1316a878de43d889d49b2d630f276f4fbce6e06433d",
+      "engine/ee_classify_model.scala": "f4da8842ab596d4ce5fead8a2734fd9f938c6498cd6f70f6dc346e4fe75d8bcf",
+      "engine/ee_classify_adapter.scala": "1e616f29120867c6396bee2056a57c77129f94ee071adb0d80459e887e04e311",
+      "engine/ee_sample_kernel.scala": "7995395d7ed390362a269b56968334c3614e7059327751c5be473f96e17ee000",
+      "engine/ee_sample_adapter.scala": "7dd460ef1164401a5dd1e974392b55388641a6cac052b4bdc30181af8acd024f",
+      "engine/ee_remap_numeric.scala": "ea6a8d98543b9f22e31e459252c995130d16d32225647876c10faefb37546176",
+      "engine/ee_remap_adapter.scala": "51892c2358b4d11d5b6f8d87944a618b367e93bb4f38b4bd6bf5d65b7b56ea3b",
+      "engine/ee_image_sample_options.scala": "b5e01a21a9ca2141919d30188b8504e39d78e90325ef89342767116181f1a900",
+      "engine/ee_image_sample_kernel.scala": "d0cff74dfd115f35f8b5a55373e21d60b3b140b04c87a4ac5d5987394a60b937",
+      "engine/ee_image_sample_adapter.scala": "952fdaa816a05e5a256eda0c90ce4a51b14f4f0bcab8c52805e4a5f42ae987cd",
+      "engine/ee_pixel_math_numeric.scala": "263f2ad632c61da913f4e60c66a1b0ec38a89d190f5fe50c09c534376095126f",
+      "engine/ee_pixel_math_adapter.scala": "3dd6a9a1fb38b6bccc209b55c29b106605b26e45625d297610614ee04b45ab3d",
+      "engine/ee_integer_values_spec.scala": "c252b481666289a466ca75a17fdc86c1e4b9665a4fe5ccb8679558fb2d55089d",
+      "engine/ee_integer_values_numeric.scala": "6f1fd67d0fa0ad0f34a1e9fbdaca5e7bf85e64780f3a93cf4addc9bc0b16d7c4",
+      "engine/ee_integer_values_adapter.scala": "d297e0eb0f153aa842f125570fbc47cbe7c7834e33fa249a0f590ac7e02a334a",
+      "engine/ee_float64_values.scala": "760d267f587d85910754d5ddd10869dd4f64e7ab8c4f044d64f02b98f7d73b1b",
+      "engine/ee_matrix_values_spec.scala": "ff7116bff8a7b88b13390e9ec5eb5e262a781c1805ec16ce9fe5cfc0950cd27a",
+      "engine/ee_matrix_values_numeric.scala": "60f59fe8831912230f438b44a184049a629e7d0b763a06e1fcf0c5a1909e0bea",
+      "engine/ee_matrix_values_adapter.scala": "7903056215c15eb9798a253f6083824ee6e728af0b46d9bc9be604594d0d9e78",
+      "engine/ee_focal_spec.scala": "429af014a835d079752b8a5c3840fa999b0792312d748a7d0ccfb53c27cb9a1d",
+      "engine/ee_focal_numeric.scala": "51f191d244253de20230fd088d050af4207c75c2bf3d85c5ed5040d67698c905",
+      "engine/ee_focal_adapter.scala": "adeb1eaf89aafe7c540719d4bc88c453255ec11656b98a74e9e66c0a8371c1d6",
+      "engine/ee_convolve_spec.scala": "02dcf67c515355ce986fef09d234190079219ed1dd6079c9738bf13059fc1e6c",
+      "engine/ee_convolve_numeric.scala": "2d7ff102ff03846f15abbee1e33c7f9524d28c17ef597d51a0cbefd265f7289a",
+      "engine/ee_convolve_adapter.scala": "a6637f1a5a995fd944fae292b9ab9bca0a0388c21ee533860696811b8d85f51c",
+      "engine/ee_terrain_spec.scala": "b43dfac791bed9808dd7968d8c8336ad5c71ea672d982cc162197b3f44a9f77d",
+      "engine/ee_terrain_budget.scala": "566bb1aa309593210d127a1367aadac4e739a3a7ba40f9a2a2bbd4ba4edddfe8",
+      "engine/ee_terrain_metric.scala": "e004983c84b1bc1df9ac7776b295dab94c8391481f53f0f0f19c97bb3c5ac03a",
+      "engine/ee_terrain_numeric.scala": "16e0ac5c8bdb64bb5e1ff80387fb465887cde385fd876f709d329cf2e2521977",
+      "engine/ee_terrain_adapter.scala": "a1413a66df0c535e1bde42288a0547d1e3643619c9c34d83810bfd6790675432",
+      "engine/ee_neighborhood_spec.scala": "d8d620f8149ff497bacb9baea0f4ad19c2e677a19f1d9e58972c90f9b02dcad0",
+      "engine/ee_neighborhood_budget.scala": "7900d5c7c262edd88dccce6ace5e70c0886b328be0934d5c0702b25d85f9320d",
+      "engine/ee_neighborhood_exact.scala": "7e7f15383ae5fffb8c8d50ba58f27d8c0375638cf4de6af27ec2f717f8a05cec",
+      "engine/ee_neighborhood_statistics.scala": "7b2a6703f7416b4621a8d86fe7b592e622c7856975730141e5f5be26472c3255",
+      "engine/ee_neighborhood_numeric.scala": "5348e85cc12e11a2b710902bb6066631ecc09ce225241acec290a543dce223f5",
+      "engine/ee_neighborhood_adapter.scala": "d61788b7e5a26d574388523f12cd0ddabaeb112b1b2c409c9a837456cd94df24",
+      "engine/ee_distance_spec.scala": "3401ad64c862bce34daad1ad1712ab09732a8f64b5f84221a2a7790dfa758004",
+      "engine/ee_distance_budget.scala": "9327fdee9af8e9982c9422dada94b17f33acc2b97d3f6b85e0e2a785647da79a",
+      "engine/ee_distance_numeric.scala": "4c6863a06ff8cbc45ef6776969aa8d5dcd128daccc71849d1a3a3fc599bc5250",
+      "engine/ee_distance_adapter.scala": "bdd42d034b9fe80a2eb4e9f68df5c6f445a64fb55d8a4d649127685758d11c56",
+      "engine/ee_fast_distance_spec.scala": "d58e5e923998f04471d6f0cedf2b9de0f3b9099d1840f58d7b41721b9a5d2372",
+      "engine/ee_fast_distance_budget.scala": "5a4400a0098e90e644d2b6d6b6a32937772096eb90249045e7d516f0e18925fb",
+      "engine/ee_fast_distance_halo.scala": "a063f59810e81e3b29afc2aec6e45b219766638e7e26523c4c2ce0ee173af4fc",
+      "engine/ee_fast_distance_adapter.scala": "5887829efeaa4faced3acc4b068d6d090822ae206f50b3b3e4197c12aa892e27",
+      "engine/ee_fast_distance_transform.scala": "012a6e3f638351e691bf1ffda1bc983fe8a26763fdd1f8563c7edb3b2ff314fb",
+      "engine/ee_fast_distance_transform_envelope.scala": "021c7fe1272060cf70dd479c3329e5aff990d6eebbb4ae62014e6e9f3fa7aaa5"
+    },
+    "existing_fixed_dependencies": "Java21.0.13 / Scala2.13.18 / Spark4.2.0 / Commons Math3.6.1; no lock or dependency change",
+    "installed_or_deployed": false
+  },
+  "evidence": {
+    "source_sha256": {
+      "engine/ee_cube_admission.py": "fac6d075ae82cae3c8b25f37a14f32283f9b7703133e87370413f96418a1617e",
+      "engine/ee_integer_values.py": "ed0a6e41402ff2e1af9a1c0c8f6777f4dc8e62bd61154c4064ae7dd0f949e9ec",
+      "engine/ee_matrix_values.py": "d3724d642d89246723f61327d6b6ec62318266887333cefbe7fe909d7456b3b5",
+      "engine/ee_matrix_values_adapter.scala": "7903056215c15eb9798a253f6083824ee6e728af0b46d9bc9be604594d0d9e78",
+      "engine/ee_matrix_values_numeric.scala": "60f59fe8831912230f438b44a184049a629e7d0b763a06e1fcf0c5a1909e0bea",
+      "engine/ee_matrix_values_spec.scala": "ff7116bff8a7b88b13390e9ec5eb5e262a781c1805ec16ce9fe5cfc0950cd27a",
+      "engine/ee_process_adapters.py": "c7ca18ee3869cee6b4f6df40cd6b9da3efa4a9f69d932c01622b91736b882678",
+      "examples/58_GEE_python_pixel_matrices.py": "9592ee5b6f483e50b05f88eb2f268e66fd94d5da49b9c20ffa794952a00dde68",
+      "gee/compat/earthengine/capabilities.py": "55c787e36f26f2ab28ee6bf8ae6efda2d104b36cd486b2f72645d691de93669c",
+      "gee/compat/earthengine/matrix_values_graph.py": "c8c1e3ab7e84e516d58f63411723183b6f8c6853ad9fbeca4e7da6d9559a92c4",
+      "gee/compat/earthengine/pixel_graph.py": "6f65f2978f26e03661a7f8703d72f631c9e92e5661782b8df245684f11a80776",
+      "gee/compat/earthengine/raster_array_dispatch.py": "1c19762ff6a3a0d8c002e87108de2c7feeb4db55fdbb3a5187a0e83405a83d4f",
+      "gee/compat/earthengine/raster_matrix_native.py": "4f32a870ec50d3668bb05211d61ca387ac1d361659d7872ab5eb025b9bc9347a",
+      "gee/compat/earthengine/raster_matrix_solve.py": "715256a55dc4c8d756f4a308cbfe3dfa08738ef87bb1a2eed83d0c6fc28d0109",
+      "gee/local_processes.py": "9b939770540187b9dab96d9fa8a4c131ab858496d548e97bbec80ca28b17998a",
+      "gee/matrix_values_spec.py": "37f9b7019bfd40311486cf083c3b50c7b55d8f9031c5593041903687ee1596dd",
+      "gee/sampling_graph.py": "1cefcca2cd6bc0aaa5f1ec3c60f67c4e5fa1830b0b6b7d0d804cc1924bf6c387",
+      "gee/smile_rf_processes.py": "29868585dc863c7c37cb74c894a8e17f0de90c1a4662e66f1e5ae564e7d2fb95",
+      "scripts/build_integer_adapter.py": "1551fa1ad75f502d6c180b7166e0e9d738faf0ce92aa37ded8dc25bd137ebdaa",
+      "scripts/ee_inventory/catalogue.py": "407f334b01a53ae0f009d86f0451eb3bc992e1b76c2bdd5d37585b0f6c115c77",
+      "scripts/probe_matrix_values_native.py": "9692dda0993394c5b7ee331a5f7a07aa59b9fa568dbe9f2a0465891936d94606",
+      "tests/ee_float64_graph_reference.py": "ffbcddba24aca2411777f8e86aa96c60594fa48880980dd847ba0d3b1ef4b9fc",
+      "tests/ee_matrix_graph_reference.py": "6155384aaa13525898f90c875f74804cc83ce0a8e5ae3cde52d45f4b6f8bad28",
+      "tests/ee_matrix_values_kernel_helpers.py": "9af3df1f6fdad1a9f20755358f9136749e357f670a3e786ee4d4fd2324e8fbf2",
+      "tests/fixtures/ee-matrix-values-kernel-probe.scala": "5e6393d8420ea96362d89b8eca9ab3399130ec545a29b6efc5d5f97ad504eb8b",
+      "tests/test_ee_double_array_solve.py": "122fa7c86f9ab63535f0fd498a9ed5fc087d390234a85eeed531c1e79ce570ab",
+      "tests/test_ee_double_matrix_centering.py": "9acd1415fd364d1b337032ce993dce31c2a1382998443f30651a08a172070ae1",
+      "tests/test_ee_matrix_values_bridge.py": "513797838e795086516b483355ae1b54d28237f65a46c5db8711aed8a2a17156",
+      "tests/test_ee_matrix_values_compiler.py": "c119a8846849d981614f234f6ea10c7af3536224dbb1dfbc4028f0ad35859f52",
+      "tests/test_ee_matrix_values_native.py": "b8450c6003f65e8af8cb243ba75cb6e148d5153417b252ec9b53644e13e5aaf7",
+      "tests/test_ee_matrix_values_precision.py": "0a152847a01b5fb7b351d441cfc777d4972ddf2b2cfb0fcdfbd73483e2c00721",
+      "tests/test_ee_matrix_values_reference.py": "bba46582d4b46b64f3f6d0bec5756098d733337e4eef6d989674ade5a7c291c4",
+      "tests/test_ee_matrix_values_spec.py": "514ba8d1b2bd91a6ae82301b3b9a2dc0c09662d2ca958e57d5481780e35e59ca",
+      "tests/test_ee_matrix_values_workflow.py": "dfaff80596edb3565e348db9be481b485ac8e28ad5b5034edb82a6861ae862e4",
+      "tests/test_ee_raster_least_squares_workflow.py": "a519ba046d48569c56a794945ba86288d454161d6b6ecded357908369f267bd1",
+      "tests/test_ee_raster_matrix_solve_parameters.py": "48baa26ba37456150807e100c316b5964fac9c335516e08209286bca8d2df725",
+      "web/src/docs/typed-raster-docs.ts": "7c0b0d8ef0d8ef5b66b926b3f763fbd1e1198811da3fa0e056e45502472ee872"
+    },
+    "local_audit": "audit/gee-python-wave53/final-verified",
+    "scope": "Public report includes finite counts, boundaries and hashes; raw local logs/graphs remain ignored"
+  },
+  "cleanup": {
+    "owners": "All Wave53 agents finished; native probes, frontend build and final full-test handles terminal",
+    "removed_owned_paths": [
+      "work/gee-python-wave53/frontend",
+      "work/gee-python-wave53/native"
+    ],
+    "removed_bytes": 2388846,
+    "native_jar_installed": false,
+    "preserved": "Formal audit, installed runtime/dependencies, accounts and user research data"
+  },
+  "not_established": [
+    "Complete GEE API/overloads, multi-array matrix bands, variable shapes or arbitrary raster decompositions",
+    "Google same-data rank/dtype/rounding/pseudoinverse equivalence; existing literal solve and new SVD route retain separately documented numerical policies",
+    "Whole-matrix NoData after final Float32 overflow: existing casts can emit Infinity although the native Float64 result is finite; source-free fold instead rejects nonfinite final output",
+    "Strict instruction or latency cap inside Commons Math SVD; fixed dimensions and charged BigDecimal estimates are not a formal CPU bound, so existing executor wall-time termination remains required",
+    "Full Spark merge/cube, sandbox batch, deployed API/browser/map or physical export acceptance for new matrix process",
+    "Runtime installation/migration: new graph paths require the rebuilt checked adapter during a later controlled rollout",
+    "Deferred private real-data and Linux/macOS complete acceptance"
+  ],
+  "goal_status": "active"
+}

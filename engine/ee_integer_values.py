@@ -36,63 +36,10 @@ def _validate_actual_band_metadata(metadata, expected):
 
 
 def _validate_dry_run_trace_structure(cube):
-    """Bound and cycle-check traces without inferring dry-run input bands.
+    from .ee_cube_admission import validate_cube_trace
 
-    The pinned driver leaves selected and renamed band metadata stale and
-    represents merged cubes with separate traces. Dry-run therefore proves
-    only the output schema and retains the dependency graph; ordered input
-    labels are checked when an actual cube reaches this bridge. Each invocation
-    is limited to 500 roots and 500 distinct trace nodes, including sources.
-    """
-    from openeo_driver.dry_run import DataSource, DataTrace
-
-    traces = cube._traces
-    if type(traces) not in (list, tuple):
-        raise ValueError(f"{_PROCESS_ID} requires a valid dry-run trace list")
-    if len(traces) > _MAX_TRACE_ROOTS:
-        raise ValueError(
-            f"{_PROCESS_ID} dry-run trace exceeds {_MAX_TRACE_ROOTS} source branches"
-        )
-
-    counted = set()
-    completed = set()
-    for root in traces:
-        if root is None:
-            raise ValueError(f"{_PROCESS_ID} dry-run trace does not reach a data source")
-        trace = root
-        path = set()
-        while True:
-            if isinstance(trace, DataSource):
-                identity = id(trace)
-                if identity not in counted:
-                    counted.add(identity)
-                    if len(counted) > _MAX_TRACE_NODES:
-                        raise ValueError(
-                            f"{_PROCESS_ID} dry-run trace exceeds {_MAX_TRACE_NODES} nodes"
-                        )
-                completed.add(identity)
-                completed.update(path)
-                break
-            if not isinstance(trace, DataTrace):
-                if trace is None:
-                    raise ValueError(
-                        f"{_PROCESS_ID} dry-run trace does not reach a data source"
-                    )
-                raise ValueError(f"{_PROCESS_ID} dry-run trace contains an unknown node")
-            identity = id(trace)
-            if identity in path:
-                raise ValueError(f"{_PROCESS_ID} dry-run trace contains a cycle")
-            if identity in completed:
-                completed.update(path)
-                break
-            path.add(identity)
-            if identity not in counted:
-                counted.add(identity)
-                if len(counted) > _MAX_TRACE_NODES:
-                    raise ValueError(
-                        f"{_PROCESS_ID} dry-run trace exceeds {_MAX_TRACE_NODES} nodes"
-                    )
-            trace = trace.parent
+    validate_cube_trace(cube, _PROCESS_ID, max_nodes=_MAX_TRACE_NODES,
+                        max_roots=_MAX_TRACE_ROOTS)
 
 
 def _output_metadata(metadata):

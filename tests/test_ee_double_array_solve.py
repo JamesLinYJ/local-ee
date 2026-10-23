@@ -1,5 +1,6 @@
 """Focused synthetic graph checks for explicit Double raster-array solves."""
 from fractions import Fraction
+import json
 from pathlib import Path
 
 import numpy as np
@@ -227,10 +228,38 @@ def test_double_rank_cutoff_and_full_rank_boundaries_are_computed_from_float64(e
     np.testing.assert_allclose(actual[:, :3], [[3.0] * 3, [2.0] * 3],
                                rtol=0, atol=3e-7)
 
-    with pytest.raises(UnsupportedEEError, match="full column rank"):
+    local["arrays"][local["item_id"]]["y0"] = np.asarray(
+        [2, 4, 6, 8, 10, 12], dtype=np.float64,
+    )
+    local["arrays"][local["item_id"]]["y1"] = np.asarray(
+        [3, 1, -1, 5, 7, 9], dtype=np.float64,
+    )
+    deficient = _design(ee, [[1, 1], [2, 2]]).matrixSolve(
+        _response(ee, 2),
+    ).arrayFlatten([["first", "second"], ["rhs"]])
+    result, actual, names = _compile_raster(ee, deficient, local)
+    assert names == ["first_rhs", "second_rhs"]
+    native = [node for node in result["process_graph"].values()
+              if node["process_id"] == "local_ee_matrix_values"]
+    assert len(native) == 1
+    spec = json.loads(native[0]["arguments"]["spec"])
+    assert (spec["op"], spec["rows"], spec["cols"], spec["rhs_cols"]) == (
+        "solve", 2, 2, 1,
+    )
+    expected = np.full((2, 6), np.nan)
+    for column in range(5):
+        b0 = Fraction.from_float(float(local["arrays"][local["item_id"]]["y0"][column]))
+        b1 = Fraction.from_float(float(local["arrays"][local["item_id"]]["y1"][column]))
+        minimum_norm = float((b0 + 2 * b1) / 10)
+        expected[:, column] = [minimum_norm, minimum_norm]
+    np.testing.assert_allclose(actual, expected, rtol=0, atol=2e-7, equal_nan=True)
+
+    with pytest.raises(UnsupportedEEError, match="real raster source"):
         _compile_value(
             ee,
-            _design(ee, [[1, 1], [2, 2]]).matrixSolve(_response(ee, 2)),
+            _design(ee, [[1, 1], [2, 2]]).matrixSolve(
+                ee.Image.constant(ee.Array([[2], [4]])).toDouble(),
+            ),
             local,
         )
 

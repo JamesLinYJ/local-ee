@@ -151,10 +151,12 @@ def evaluate_float64_graph(result: dict, arrays: dict, *, grid=None,
                            source_geometries=None):
     """Evaluate through the existing sample-vector interpreter plus this oracle."""
     from test_ee_translate import evaluate_graph
+    from ee_matrix_graph_reference import matrix_values_handler
 
     return evaluate_graph(
         result, arrays, grid=grid, source_geometries=source_geometries,
-        process_handlers={"local_ee_integer_values": float64_values_handler},
+        process_handlers={"local_ee_integer_values": float64_values_handler,
+                          "local_ee_matrix_values": matrix_values_handler},
     )
 
 

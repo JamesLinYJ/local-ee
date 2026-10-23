@@ -4,7 +4,7 @@ from __future__ import annotations
 import numpy as np
 
 from .array_core import charge_array
-from .ir import Pixel, const, fail
+from .ir import Pixel, UnsupportedEEError, const, fail
 from .raster_array_core import (
     MAX_RASTER_ARRAY_CELLS,
     combined_mask,
@@ -13,6 +13,12 @@ from .raster_array_core import (
 )
 from .raster_array_precision import require_cast_cells
 from .raster_array_values import _array, _result_image
+from .raster_matrix_native import (
+    RASTER_MATRIX_NATIVE_FUNCTIONS,
+    fold_constant_matrix,
+    matrix_literal_values,
+    native_matrix_result,
+)
 from .raster_matrix_literals import literal_cells, scan_literal_cells
 
 
@@ -202,9 +208,11 @@ def _float32_solution_cells(pseudo_inverse, right, m, n, k):
 
 
 def invoke_raster_matrix(translator, name, arguments):
-    """Lower bounded raster ``Image.matrixSolve`` calls to pixel expressions."""
-    if name not in RASTER_MATRIX_FUNCTIONS:
+    """Lower bounded per-pixel solve, inverse and pseudoinverse operations."""
+    if name not in (RASTER_MATRIX_FUNCTIONS | RASTER_MATRIX_NATIVE_FUNCTIONS):
         fail(f"Unsupported raster matrix operation: {name}")
+    if name in RASTER_MATRIX_NATIVE_FUNCTIONS:
+        return _invoke_matrix_inverse(translator, name, arguments)
     translator.allowed(arguments, {"image1", "image2"})
     left = _array(_required(arguments, name, "image1"), "Image.matrixSolve image1")
     right = _array(_required(arguments, name, "image2"), "Image.matrixSolve image2")
@@ -213,15 +221,28 @@ def invoke_raster_matrix(translator, name, arguments):
 
     m, n = left.shape
     right_rows, k = right.shape
-    if not 1 <= m <= 8 or not 1 <= n <= 4 or m < n:
-        fail("Image.matrixSolve supports 1<=m<=8, 1<=n<=4, and m>=n")
-    if right_rows != m or not 1 <= k <= 4:
-        fail("Image.matrixSolve image2 must have shape (m,k), with 1<=k<=4")
+    if not 1 <= m <= 8 or not 1 <= n <= 8:
+        fail("Image.matrixSolve supports1<=m,n<=8")
+    if right_rows != m or not 1 <= k <= 8:
+        fail("Image.matrixSolve image2 must have shape(m,k), with1<=k<=8")
     if len(left.cells) + len(right.cells) > MAX_RASTER_ARRAY_CELLS:
         fail("Image.matrixSolve input arrays exceed the shared 64-cell limit")
     check_shape((n, k))
 
-    literal_nodes = scan_literal_cells(left.cells, name)
+    # Keep the established NumPy/design-expression route for its original
+    # shapes. Larger coefficient or response axes use the bounded shared
+    # per-pixel producer, which can be anchored by either actual input.
+    if n > 4 or k > 4:
+        return native_matrix_result(translator, name, "solve", left, right)
+
+    try:
+        literal_nodes = scan_literal_cells(left.cells, name)
+    except UnsupportedEEError as error:
+        # Dynamic design pixels alone select the native path. Preserve every
+        # other literal scanner failure, especially cycles and work limits.
+        if str(error) != f"{name} coefficients must be literal constants with optional casts":
+            raise
+        return native_matrix_result(translator, name, "solve", left, right)
     promote_double = _top_cast_is_double(left) or _top_cast_is_double(right)
     _preflight(translator, name, m, n, k, literal_nodes, promote_double)
 
@@ -239,7 +260,9 @@ def invoke_raster_matrix(translator, name, arguments):
         except np.linalg.LinAlgError:
             fail("Image.matrixSolve Float64 least-squares solve failed to converge")
         if rank < n:
-            fail("Image.matrixSolve Float64 design matrix must have full column rank")
+            return _rank_deficient_fallback(
+                translator, name, left, right, design_values,
+            )
         pseudo_inverse = _double_pseudoinverse(pseudo_inverse, (n, m), name)
         if constant_predictor is None:
             cells = _double_solution_cells(pseudo_inverse, right, m, n, k)
@@ -259,11 +282,52 @@ def invoke_raster_matrix(translator, name, arguments):
         except np.linalg.LinAlgError:
             fail("Image.matrixSolve Float32 least-squares solve failed to converge")
         if rank < n:
-            fail("Image.matrixSolve Float32 design matrix must have full column rank")
+            return _rank_deficient_fallback(
+                translator, name, left, right, design_values,
+            )
         pseudo_inverse = _float32_pseudoinverse(pseudo_inverse, (n, m), name)
         cells = _float32_solution_cells(pseudo_inverse, right, m, n, k)
 
     mask = combined_mask(left.mask, right.mask)
     return wrap_array_image(
         _result_image(left, right), (n, k), cells, mask, left.name,
+    )
+
+
+def _rank_deficient_fallback(translator, name, left, right, left_literals):
+    """Use the general minimum-norm path only when a real raster bounds it."""
+    right_literals = matrix_literal_values(translator, right.cells, name)
+    return native_matrix_result(
+        translator, name, "solve", left, right,
+        literal_values=(*left_literals, *right_literals),
+    )
+
+
+def _invoke_matrix_inverse(translator, name, arguments):
+    translator.allowed(arguments, {"value"})
+    if "value" not in arguments:
+        fail(f"{name} requires the value argument")
+    array = _array(arguments["value"], f"{name} value")
+    if len(array.shape) != 2:
+        fail(f"{name} requires a rank-2 RasterArrayImage")
+    rows, cols = array.shape
+    op = "inverse" if name == "Image.matrixInverse" else "pinverse"
+    if not 1 <= rows <= 8 or not 1 <= cols <= 8:
+        fail(f"{name} supports matrix axes in1..8")
+    if op == "inverse" and rows != cols:
+        fail("Image.matrixInverse requires a square matrix")
+    check_shape((cols, rows))
+    dtype = require_cast_cells(array, name, "matrix")
+    values = matrix_literal_values(translator, array.cells, name)
+    if all(value is not None for value in values):
+        if array.mask.op != "constant" or array.mask.args != (True,):
+            fail(f"{name} cannot fold a masked source-free constant matrix")
+        cells, output_shape = fold_constant_matrix(
+            translator, name, op, rows, cols, values, dtype,
+        )
+        return wrap_array_image(
+            array.image, output_shape, cells, array.mask, array.name,
+        )
+    return native_matrix_result(
+        translator, name, op, array, literal_values=values,
     )

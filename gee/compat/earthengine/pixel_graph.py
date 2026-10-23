@@ -179,6 +179,10 @@ class PixelCompiler:
             self._double_structural_depth = depth
 
     def _expression(self, p):
+        if p.op == "matrix_element":
+            from .matrix_values_graph import compile_matrix_element
+
+            return compile_matrix_element(self, p)
         if p.op == "where":
             from .pixel_selection_graph import select_float64, where_float32
 

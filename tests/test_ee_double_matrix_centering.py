@@ -1,5 +1,7 @@
 """Constant-column stabilization tests for explicit Double matrixSolve."""
 
+from fractions import Fraction
+
 import numpy as np
 import pytest
 
@@ -182,12 +184,40 @@ def test_finite_extreme_constant_predictor_uses_a_finite_anchor_scale():
     assert _evaluate_pixel(result.cells[0]) == pytest.approx(1.5, abs=1e-14)
 
 
-def test_centered_rank_failure_and_added_work_are_rejected_before_numpy(
-        monkeypatch):
-    deficient = _literal_array((3, 2), [2, 1, 2, 1, 2, 1], name="lhs")
-    right = _literal_array((3, 1), [3, 3, 3], name="rhs")
-    with pytest.raises(UnsupportedEEError, match="full column rank"):
-        _direct_solve(deficient, right)
+def test_rank_deficiency_uses_native_source_and_added_work_is_precharged(
+        ee, local, monkeypatch):
+    local["arrays"][local["item_id"]]["y0"] = np.asarray(
+        [1, 2, 3, 4, 5, 6], dtype=np.float64,
+    )
+    local["arrays"][local["item_id"]]["y1"] = np.asarray(
+        [2, 3, 4, 5, 6, 7], dtype=np.float64,
+    )
+    local["arrays"][local["item_id"]]["y2"] = np.asarray(
+        [5, 4, 3, np.nan, 1, 0], dtype=np.float64,
+    )
+    design = _design(ee, [[2, 1], [2, 1], [2, 1]])
+    fit = design.matrixSolve(_response(ee, 3)).arrayFlatten([
+        ["first", "second"], ["rhs"],
+    ])
+    result, actual, names = _compile_raster(ee, fit, local)
+    assert names == ["first_rhs", "second_rhs"]
+    native = [node for node in result["process_graph"].values()
+              if node["process_id"] == "local_ee_matrix_values"]
+    assert len(native) == 1
+
+    expected = np.full((2, 6), np.nan)
+    for column in (0, 1, 2, 4):
+        total = sum((Fraction.from_float(float(local["arrays"][local["item_id"]][name][column]))
+                     for name in ("y0", "y1", "y2")), Fraction())
+        expected[:, column] = [float(2 * total / 15), float(total / 15)]
+    np.testing.assert_allclose(actual, expected, rtol=0, atol=2e-7, equal_nan=True)
+    assert np.isnan(actual[:, 3]).all()
+    assert np.isnan(actual[:, 5]).all()
+
+    source_free = _literal_array((3, 2), [2, 1, 2, 1, 2, 1], name="lhs")
+    constant_rhs = _literal_array((3, 1), [3, 3, 3], name="rhs")
+    with pytest.raises(UnsupportedEEError, match="real raster source"):
+        _direct_solve(source_free, constant_rhs)
 
     constant = _literal_array((2, 1), [1, 1], name="lhs")
     pair = _literal_array((2, 1), [2, 4], name="rhs")

@@ -88,7 +88,7 @@ def test_only_typed_raster_arrays_with_explicit_top_level_casts_are_accepted(ee,
         compile_raw(raw_list, local)
 
 
-def test_double_design_promotes_rhs_but_dynamic_design_still_rejects(ee, local):
+def test_double_design_promotes_rhs_and_dynamic_design_uses_native_solver(ee, local):
     output = ee.Image.constant(ee.Array([[1, 0], [1, 1], [1, 2]])).toDouble().matrixSolve(
         response_column(ee),
     ).arrayFlatten([["intercept", "slope"], ["rhs"]])
@@ -98,14 +98,21 @@ def test_double_design_promotes_rhs_but_dynamic_design_still_rejects(ee, local):
                for node in result["process_graph"].values())
 
     dynamic_design = response_column(ee)
-    with pytest.raises(UnsupportedEEError, match="literal constants"):
-        compile_value(ee, dynamic_design.matrixSolve(response_column(ee)), local)
+    result = compile_value(
+        ee,
+        dynamic_design.matrixSolve(response_column(ee)).arrayFlatten(
+            [["coefficient"], ["rhs"]],
+        ),
+        local,
+    )
+    assert any(node["process_id"] == "local_ee_matrix_values"
+               for node in result["process_graph"].values())
 
 
 @pytest.mark.parametrize("design,response", [
     ([[1, 0, 0], [0, 1, 0]], [[1], [2]]),  # m < n
     ([[1], [1], [1], [1], [1], [1], [1], [1], [1]], [[1]] * 9),  # m > 8
-    ([[1, 0, 0, 0, 0]] * 5, [[1]] * 5),  # n > 4
+    ([[1] * 9], [[1]]),  # n > 8
     ([[1, 0], [1, 1], [1, 2]], [[1], [2]]),  # incompatible row counts
     ([1, 2, 3], [[1], [2], [3]]),  # left rank 1
     ([[1], [2], [3]], [1, 2, 3]),  # right rank 1
@@ -117,18 +124,58 @@ def test_invalid_solver_shapes_are_rejected_at_the_static_boundary(ee, local, de
         compile_value(ee, left.matrixSolve(right), local)
 
 
-def test_more_than_four_rhs_columns_are_rejected(ee, local):
+def test_five_rhs_columns_use_the_bounded_native_solver(ee, local):
     source = (first_image(ee).select(["y0", "y1", "y2"])
               .toFloat().toArray().toArray(axis=1))
     right = source.matrixMultiply(ee.Image.constant(ee.Array([[1, 2, 3, 4, 5]]))).toFloat()
-    with pytest.raises(UnsupportedEEError, match="1<=k<=4"):
-        compile_value(ee, constant_array_image(ee, [[1], [1], [1]]).matrixSolve(right), local)
+    labels = [["coefficient"], ["one", "two", "three", "four", "five"]]
+    result = compile_value(
+        ee,
+        constant_array_image(ee, [[1], [1], [1]]).matrixSolve(right)
+        .arrayFlatten(labels),
+        local,
+    )
+    native = [node for node in result["process_graph"].values()
+              if node["process_id"] == "local_ee_matrix_values"]
+    assert len(native) == 1
 
 
-def test_rank_deficiency_and_float32_overflow_are_rejected(ee, local):
+def test_wide_design_axes_use_the_bounded_native_solver(ee, local):
+    design = constant_array_image(ee, [
+        [1, 0, 0, 0, 1],
+        [0, 1, 0, 0, 1],
+        [0, 0, 1, 0, 1],
+    ])
+    result = compile_value(
+        ee,
+        design.matrixSolve(response_column(ee)).arrayFlatten(
+            [[f"coefficient_{index}" for index in range(5)], ["rhs"]],
+        ),
+        local,
+    )
+    native = [node for node in result["process_graph"].values()
+              if node["process_id"] == "local_ee_matrix_values"]
+    assert len(native) == 1
+
+
+def test_literal_rank_deficiency_uses_native_solver_and_float32_overflow_is_rejected(ee, local):
     rank_deficient = constant_array_image(ee, [[1, 1], [2, 2], [3, 3]])
-    with pytest.raises(UnsupportedEEError, match="full column rank"):
-        compile_value(ee, rank_deficient.matrixSolve(response_column(ee)), local)
+    result = compile_value(
+        ee,
+        rank_deficient.matrixSolve(response_column(ee)).arrayFlatten(
+            [["first", "second"], ["rhs"]],
+        ),
+        local,
+    )
+    assert any(node["process_id"] == "local_ee_matrix_values"
+               for node in result["process_graph"].values())
+
+    with pytest.raises(UnsupportedEEError, match="real raster source"):
+        compile_value(
+            ee,
+            rank_deficient.matrixSolve(constant_array_image(ee, [[1], [2], [3]])),
+            local,
+        )
 
     too_large_for_float32 = constant_array_image(ee, [[1e39]])
     with pytest.raises(UnsupportedEEError, match="Float32"):

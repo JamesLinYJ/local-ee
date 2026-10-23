@@ -13,6 +13,7 @@ from gee.ee_python_client import configure_local_ee
 from gee.ee_translate import UnsupportedEEError, compile_expression
 from gee.graph import validate
 from scripts.ee_python_api.offline import OfflineGuard
+from ee_float64_graph_reference import evaluate_float64_graph
 from test_ee_translate import evaluate_graph
 
 
@@ -191,7 +192,7 @@ def test_sdk_raster_unmixing_compiles_evaluates_and_preserves_common_masks():
     assert np.isnan(actual_abundance[:, 5]).all()  # Scene geometry masks the outside pixel.
 
 
-def test_raster_solver_requires_explicit_float_inputs_full_rank_and_known_parameters():
+def test_raster_solver_requires_explicit_float_inputs_and_uses_native_rank_deficient_minimum_norm():
     data = fixture()
     ee = make_ee()
     source = ee.ImageCollection(data["collection_id"]).first()
@@ -219,8 +220,46 @@ def test_raster_solver_requires_explicit_float_inputs_full_rank_and_known_parame
         compile_value(flattened(typed_design.matrixSolve(untyped_observations)))
 
     deficient = ee.Image(ee.Array([[1, 2], [2, 4], [3, 6]])).toFloat()
-    with pytest.raises(UnsupportedEEError, match="full column rank"):
-        compile_value(flattened(deficient.matrixSolve(observations)))
+    deficient_output = flattened(deficient.matrixSolve(observations))
+    deficient_result = compile_value(deficient_output)
+    validate(deficient_result["process_graph"])
+    native = [node for node in deficient_result["process_graph"].values()
+              if node["process_id"] == "local_ee_matrix_values"]
+    assert len(native) == 1
+    assert deficient_result["bands"] == data["endmember_bands"]
+
+    arrays = {data["item_id"]: {
+        band: np.asarray([
+            np.nan if value is None else value
+            for value in data["pixel_values"][band]
+        ], dtype=np.float64)
+        for band in data["bands"]
+    }}
+    geometries = {data["item_id"]: data["scene_geometry"]}
+    actual, names, timed = evaluate_float64_graph(
+        deficient_result, arrays, grid=data["pixel_centers"],
+        source_geometries=geometries,
+    )
+    assert names == data["endmember_bands"] and timed is False
+    expected = np.full((2, len(data["pixel_centers"])), np.nan)
+    scene = shape(data["scene_geometry"])
+    for pixel, center in enumerate(data["pixel_centers"]):
+        if not scene.covers(Point(*center)):
+            continue
+        raw = [data["pixel_values"][band][pixel] for band in data["bands"]]
+        if any(value is None for value in raw):
+            continue
+        # The solved input array has an explicit Float32 cast before native
+        # widening. The closed-form pseudoinverse is A+ = [[1,2,3],[2,4,6]]/70.
+        observed = [Fraction.from_float(float(np.float32(value))) for value in raw]
+        first = (observed[0] + 2 * observed[1] + 3 * observed[2]) / 70
+        expected[:, pixel] = [float(first), float(2 * first)]
+    np.testing.assert_allclose(actual, expected, atol=2e-6, rtol=2e-6, equal_nan=True)
+
+    with pytest.raises(UnsupportedEEError, match="real raster source"):
+        compile_value(flattened(deficient.matrixSolve(
+            ee.Image(ee.Array([[1], [2], [3]])).toFloat(),
+        )))
 
     valid_expression = sdk_encode(ee, flattened(typed_design.matrixSolve(observations)))
     with pytest.raises(UnsupportedEEError, match="Unsupported algorithm arguments"):

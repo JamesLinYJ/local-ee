@@ -134,7 +134,8 @@ RF 要素分类与矩阵计算保留独立运行时 IR 和生产者合同。真�
 | `array_argmax.py` | 有限静态数组与固定 Float32／Double 栅格数组的首个行主序最大值坐标；保留输入声明精度，栅格坐标为有界 Float32 整数，整体掩膜保留，扫描及构图前预充预算 |
 | `raster_array_sort.py`, `pixel_selection_graph.py`, `selection_grid.py` | 值／键分别显式声明 Float32／Double，稳定排序整片移动；Double 载荷由两个封闭的原生三元算子选择，普通选择和 where 各有独立缺测政策；来源／网格新验证，同条目资产冲突拒绝，不用普通掩膜的缺键回退；组件证据与完整 Spark 验收分开 |
 | `raster_array_core.py`, `raster_array_values.py`, `raster_array_layout.py`, `raster_array_coordinates.py`, `raster_array_reductions.py`, `raster_array_dispatch.py` | 单数组波段固定形状 IR、整体掩膜、常量坐标与分组操作；降为既有标量像素图，公开输出前必须转换为标量波段 |
-| `raster_matrix_solve.py` | 静态满列秩设计的有限栅格最小二乘；双方显式 Float32／Double（任一Double则提升）、预充工作预算、常量 cast 链按对象缓存，输出真实像素乘加及整体掩膜，不宣称通用动态矩阵或 Google 数值等价 |
+| `raster_matrix_solve.py` | 保留静态满列秩设计的有限栅格最小二乘，双方显式 Float32／Double（任一Double则提升）；常量 cast 链按对象缓存，大基线中心化有幅度保护，宽／欠定／秩亏与动态设计转入共享原生矩阵路径 |
+| `raster_matrix_native.py`, `matrix_values_graph.py` | 固定逐像元 solve／inverse／pseudoinverse 的 IR、有限常量折叠及单一共享生产者；每个结果单元只选择该生产者的行优先输出，显式转换保留输入／输出舍入，新验证网格和时间轴 |
 | `raster_collection_arrays.py`, `raster_array_reshape.py` | 有限标量集合按波段堆叠定长数组，各波段独立合并所有帧掩膜；常量有效长度向量重解释行主序形状，保留像素、类型和来源，拒绝变长数组及动态／掩膜形状 |
 | `raster_array_concatenation.py` | 单数组按现有轴实际拼接／整块重复，固定行主序单元保持类型，拼接合并整体掩膜；重复次数必须由有效常量标量 Image 证明，动态／掩膜／空间限定次数拒绝，保留形状、工作及图预算 |
 | `raster_array_accumulation.py` | 固定轴上的真实 Float32／Double 前缀 sum／min／max，包含当前位置并保持原行主序及完整数组掩膜；省略 reducer 默认 sum，输出前计费，拒绝未实现 reducer／修饰符 |
@@ -150,6 +151,8 @@ RF 要素分类与矩阵计算保留独立运行时 IR 和生产者合同。真�
 模块通常以约 200 行为可维护性参考，不是硬性上限。按职责拆分，保持类型、验证和错误路径清晰；不得为满足行数而压缩代码或机械拆文件。编译器模块之间使用规范 `gee.compat.earthengine` 导入，不从 `gee.ee_translate` facade 回导形成循环；兼容期仍在根目录的辅助依赖要保持无环，并在合适的重构中迁入规范子包。拆分或新增 handler 不等于算法语义已经实现；每项公开能力仍需对应的参数、类型、边界及数值证据。
 
 静态类型与筛选由 `number_casts.py`、`array_casts.py`、`static_special_math.py`、`static_container_selection.py` 分别负责，并经既有静态／数组分派接入。类型宽度、形状、独立所有权、全Filter预检、特殊函数尾部和工作预算分别验证；不把静态求值路径当作Image栅格算子。第三十五批的具体参数与范围见 [Python清单](gee-python/list.md)。
+
+逐像元矩阵使用独立 `local_ee_matrix_values` SPI，六字段规范 JSON 只允许固定 solve／inverse／pinverse。Python／Scala 独立验证每轴1–8、A+B输入和输出各不超过64单元、连续实际输入波段及行优先结果；一个生产者只分解一次，所有结果单元共享该节点。上游 dry-run 保留来源和输出结构，不能用其陈旧波段标签证明实际输入；真实立方体和原生适配器再次校验顺序、键、网格、时间和资源。缩放后的固定 Commons Math SVD 采用明确本地秩阈值；求解对原始 RHS 做精确 BigDecimal 累积，避免极小有效信号被大值归一化抹去，只对满列秩且确有常数预测列的系统精确中心化。原生输出 Float64 后显式恢复声明的 Float32／Double 类型。输入缺测、奇异逆及结果溢出整矩阵缺测；不把源无穷值当普通缺测。形状工作估算不是上游 SVD 的严格迭代上限，已有任务墙钟超时仍必需。有限常量可在无虚构网格的情况下折叠；常量无法表达的缺测结果拒绝。见[矩阵语法与边界](gee-python/pixel-matrices.md)，可信独立瓦片验证与完整 Spark／Google 对照分开。
 
 ### 3.2 公共协议
 

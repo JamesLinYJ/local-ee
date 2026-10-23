@@ -30,6 +30,8 @@ SOURCES += [ROOT / "engine/ee_image_sample_options.scala",
 SOURCES += [ROOT / "engine/ee_pixel_math_numeric.scala", ROOT / "engine/ee_pixel_math_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_integer_values_spec.scala", ROOT / "engine/ee_integer_values_numeric.scala",
             ROOT / "engine/ee_integer_values_adapter.scala", ROOT / "engine/ee_float64_values.scala"]
+SOURCES += [ROOT / "engine/ee_matrix_values_spec.scala", ROOT / "engine/ee_matrix_values_numeric.scala",
+            ROOT / "engine/ee_matrix_values_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_focal_spec.scala", ROOT / "engine/ee_focal_numeric.scala",
             ROOT / "engine/ee_focal_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_convolve_spec.scala", ROOT / "engine/ee_convolve_numeric.scala",
@@ -57,6 +59,7 @@ SERVICE_ENTRY += "local.ee.remap.LocalEeRemapCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.image.sample.LocalEeImageSampleCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.math.LocalEePixelMathCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeIntegerValuesCubeProcessProvider\n"
+SERVICE_ENTRY += "local.ee.reduce.LocalEeMatrixValuesCubeProcessProvider\n"
 
 SERVICE_ENTRY += "local.ee.reduce.LocalEeFocalCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeConvolveCubeProcessProvider\n"
