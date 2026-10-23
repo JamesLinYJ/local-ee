@@ -150,6 +150,7 @@ def integer(value: Any, label: str, minimum: int | None = None) -> int:
 
 def static_truth(value: Any, translator=None) -> bool:
     from .kernel_values import KernelSpec
+    from .neighborhood_reducer_plan import NeighborhoodUnweighted
     from .date_ranges import is_date_range
     from .nested_collections import NestedFeatureCollection
     from .composed_reducers import is_reducer_spec
@@ -174,7 +175,7 @@ def static_truth(value: Any, translator=None) -> bool:
 
     # EE If treats empty arrays/dictionaries/strings, zero, NaN and null as
     # false. Do not accidentally use truthiness of internal IR dataclasses.
-    if is_date_range(value) or isinstance(value, (NestedFeatureCollection, KernelSpec)) or is_reducer_spec(value):
+    if is_date_range(value) or isinstance(value, (NestedFeatureCollection, KernelSpec, NeighborhoodUnweighted)) or is_reducer_spec(value):
         fail("Algorithms.If currently requires a static scalar/list/dictionary condition")
     may_contain_runtime_explanation = (
         translator is None

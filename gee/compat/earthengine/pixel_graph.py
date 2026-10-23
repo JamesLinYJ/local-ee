@@ -34,7 +34,7 @@ class PixelCompiler:
         key = id(p)
         if key not in self.double_precision:
             if p.op in {"classify", "trained_classify", "smile_rf_classify"}: result = False
-            elif p.op in {"to_double", "unmask", "unmask_constant", "on_grid", "remap", "focal", "convolve"}: result = True
+            elif p.op in {"to_double", "unmask", "unmask_constant", "on_grid", "remap", "focal", "convolve", "neighborhood"}: result = True
             elif p.op in {"to_float", "is_nodata"}: result = False
             else:
                 operands = p.args[0] if p.op == "reduce_bands" else p.args[:1] if p.op in {"clip", "preserve_mask"} else p.args
@@ -67,6 +67,10 @@ class PixelCompiler:
             from .convolve_graph import compile_convolve_pixel
 
             return compile_convolve_pixel(self, p)
+        if p.op == "neighborhood":
+            from .neighborhood_graph import compile_neighborhood_pixel
+
+            return compile_neighborhood_pixel(self, p)
         if p.op == "remap":
             from .remap_graph import compile_remap_pixel
 

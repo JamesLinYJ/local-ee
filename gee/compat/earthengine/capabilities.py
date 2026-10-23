@@ -9,6 +9,8 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 SUPPORTED_FUNCTIONS = frozenset({
     "Image.convolve",
     *("Kernel." + n for n in ("gaussian", "laplacian4", "laplacian8", "sobel", "prewitt", "roberts", "rotate", "add")),
+    *("Kernel." + n for n in ("euclidean", "manhattan", "chebyshev", "compass", "kirsch", "inverse")),
+    "Reducer.unweighted",
     *("Kernel." + n for n in ("fixed", "circle", "square", "rectangle", "plus", "cross", "diamond", "octagon")),
     "Image.reduceNeighborhood",
     *("Image." + n for n in ("focalMean", "focalMin", "focalMax", "focalMedian", "focalMode",
@@ -146,22 +148,27 @@ def get_capabilities():
         "restrictions": [
             ("Image.convolve applies finite pixel kernels with exact binary64 product accumulation "
              "and one Float64 rounding. Valid centers require all nonzero-weight neighbors; no edge "
-             "renormalization. Zero kernels yield zero on valid centers. Gaussian and five edge kernels, "
-             "quarter-turn rotation and focus-aligned addition preserve bounded33x33 coefficients. "
+             "renormalization. Zero kernels yield zero on valid centers. Gaussian, distance and seven edge kernels, "
+             "quarter-turn rotation, reciprocal and focus-aligned addition preserve bounded33x33 coefficients. "
              "Meter kernels and signed normalization reject; fractional Gaussian footprint and mask "
              "policies are local, without Google parity. Native halo/work limits and full input extent "
              "boundaries remain; full Spark/deployment acceptance is separate."),
-            ("Pixel-unit Kernel constructors are finite33x33 masks; focalMin/Max/Mean/Median/Mode "
-             "and aliases plus reduceNeighborhood with five scalar reducers use a Float64 native halo "
-             "per iteration. Named radii<=16, fixed offsets<=32, iterations1..8, positive support only; "
-             "nonuniform weights require inputWeight=mask. Meter kernels and optimized/composed reducers reject. "
-             "Export region and resampling remain after focal; source reads use full finite item bounds. "
-             "Mask/tie/fractional-shape policies are local. Full Spark/deployment/Google parity unverified."),
+            ("Pixel-unit focalMin/Max/Mean/Median/Mode and aliases retain bounded Float64 halos per "
+             "iteration. reduceNeighborhood additionally supports actual positive weighted sum/mean/"
+             "population variance/stdDev, support count/min/max, unit-weight product/sample dispersion/"
+             "median/mode, minMax and shared-input combine/setOutputs. inputWeight mask/kernel/min "
+             "uses binary source validity only; no fractional mask claim. Reducer.unweighted is an "
+             "opaque neighborhood-only plan, not a generic regional/table/array modifier. Named radii<=16, "
+             "fixed offsets<=32; focal iterations1..8; original compiler/node and native work caps. "
+             "Meter kernels and optimization strategies reject. Output region/resampling stays after the "
+             "neighborhood; missing tiles are not synthesized. Local empty/tie/fractional-shape policies "
+             "and full Spark/deployment/Google parity remain separately unverified."),
             ("Finite List/inline table distribution reducers add percentile/intervalMean/mode, "
              "population skew/excess kurtosis and circular statistics in radians. "
              "Type7 interpolation, inclusive percentile-value interval, smallest tied mode and "
              "undefined-direction policies are local, not Google-verified. Histogram approximation, "
-             "weights, Array/raster/dynamic table consumers reject; maxRaw limits actual valid rows. "
+             "weights, Array/dynamic table consumers reject; raster support is limited to default "
+             "neighborhood mode described above. maxRaw limits actual valid static rows. "
              "Original1000 rows/50000 work/1MB output caps remain."),
             ("Finite table/List statistical reducers support correlations, Sen slope, typed-vector covariance, "
              "fixed 1D/2D histograms and collecting lists/features. No raster/dynamic table/weight support. "

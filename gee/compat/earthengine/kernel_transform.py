@@ -1,4 +1,4 @@
-"""Bounded focus-aligned addition and quarter-turn Kernel transforms."""
+"""Bounded focus-aligned Kernel addition, inversion, and rotation."""
 from __future__ import annotations
 
 import math
@@ -17,7 +17,35 @@ from .kernel_values import (
 )
 
 
-KERNEL_TRANSFORM_FUNCTIONS = frozenset({"Kernel.rotate", "Kernel.add"})
+KERNEL_TRANSFORM_FUNCTIONS = frozenset({
+    "Kernel.rotate", "Kernel.add", "Kernel.inverse",
+})
+
+
+def _inverse(translator, arguments):
+    translator.allowed(arguments, {"kernel"})
+    if "kernel" not in arguments:
+        fail("Kernel.inverse requires kernel")
+    kernel = validate_kernel(translator, arguments["kernel"])
+    cells = kernel.width * kernel.height
+    _charge(translator, 2 + 3 * cells, "Kernel.inverse reciprocal matrix")
+
+    rows = []
+    for row in kernel.weights:
+        inverse_row = []
+        for weight in row:
+            if weight == 0.0:
+                inverse_row.append(weight)
+                continue
+            try:
+                reciprocal = 1.0 / weight
+            except OverflowError:
+                fail("Kernel.inverse reciprocal exceeds the finite Float64 domain")
+            if not math.isfinite(reciprocal):
+                fail("Kernel.inverse reciprocal exceeds the finite Float64 domain")
+            inverse_row.append(reciprocal)
+        rows.append(tuple(inverse_row))
+    return KernelSpec(tuple(rows), kernel.x, kernel.y)
 
 
 def _rotate(translator, arguments):
@@ -94,6 +122,8 @@ def _add(translator, arguments):
 
 
 def invoke_kernel_transform(translator, name, arguments):
+    if name == "Kernel.inverse":
+        return _inverse(translator, arguments)
     if name == "Kernel.rotate":
         return _rotate(translator, arguments)
     if name == "Kernel.add":

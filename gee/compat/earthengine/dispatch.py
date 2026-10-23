@@ -25,6 +25,10 @@ _METADATA_ARGUMENTS = {
 def invoke(translator, name, arguments):
     """Dispatch in the same precedence order as the legacy translator."""
     a = arguments
+    if name == "Reducer.unweighted":
+        from .neighborhood_reducer_plan import invoke_neighborhood_unweighted
+
+        return invoke_neighborhood_unweighted(translator, a)
     if name.startswith("Kernel."):
         from .kernel_values import invoke_kernel
 

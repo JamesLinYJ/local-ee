@@ -259,7 +259,9 @@ def invoke_image(translator, name, arguments):
     if name.startswith("Reducer."):
         operation = name.split(".", 1)[1]
         if operation == "unweighted":
-            fail("Reducer.unweighted requires a verified rasterization policy and is not yet supported")
+            from .neighborhood_reducer_plan import invoke_neighborhood_unweighted
+
+            return invoke_neighborhood_unweighted(translator, a)
         if operation not in {"mean", "median", "min", "max", "sum", "count", "first", "last", "sampleStdDev"}:
             fail(f"Unsupported reducer: {name}")
         if a:

@@ -34,12 +34,13 @@ def compile_expression(expression, catalog, items, options=None):
         from .date_ranges import UnboundedDateRange
         from .nested_collections import NestedFeatureCollection
         from .composed_reducers import is_reducer_spec
+        from .neighborhood_reducer_plan import NeighborhoodUnweighted
 
         if isinstance(value, UnboundedDateRange):
             fail("Unbounded DateRange output requires a finite intersection or boolean accessor")
         if isinstance(value, NestedFeatureCollection):
             fail("Nested FeatureCollection output requires flatten()")
-        if is_reducer_spec(value):
+        if is_reducer_spec(value) or isinstance(value, NeighborhoodUnweighted):
             fail("A Reducer is not a computable output value; use getOutputs or a supported reduction")
         from .raster_array_core import RasterArrayImage
 

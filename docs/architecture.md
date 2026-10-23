@@ -164,6 +164,8 @@ RF 要素分类与矩阵计算保留独立运行时 IR 和生产者合同。真�
 
 ### 4.1 官方客户端与执行
 
+加权邻域归约通过 `image_neighborhood.py` 与 `neighborhood_reducer_plan.py` 将单输入归约树展开为明确的逐波段输出；共享输入组合、输出改名和权重解释各自验证。`Reducer.unweighted` 使用仅此消费者可接受的不可变类型，避免把邻域权重政策带入区域或数组归约。规范二进制权重协议在 Python 和 Scala 两端独立检查；引擎拆分参数、预算、瓦片遍历、精确统计和舍入模块，保留原出站、图与工作上限。实际权重和缺测支持参与精确矩计算，标准差直接对有理方差做整数平方根舍入。较大核或瓦片可明确超限；声明语法支持不代表任意规模都可运行。见[邻域统计](gee-python/neighborhood-statistics.md)和[原生合同](gee-python/neighborhood-native.md)。
+
 固定并保留 Apache-2.0 官方 `@google/earthengine` 客户端、许可证和校验值。使用其独立浏览器构建产物与公开算法签名离线构造对象和序列化图，不引入 Google OAuth、服务账号或公网计算。算法签名表只表示客户端可构造的调用，不代表本地实现了相同数量的算法。
 
 JavaScript 使用固定官方客户端，在单独 Node + Seatbelt 进程执行；Python 用户可选用固定官方 `earthengine-api`，在单独 Python + Seatbelt 进程执行。两种客户端都只在本地构造对象和序列化表达式，调用 `/gee/v1/dispatch`，共享同一检查、编译、任务、数据目录和 GeoTrellis 后端。Python 客户端初始化绕过 Google 凭据发现、OAuth 和公网算法发现；`ee.Authenticate()` 与未适配的 Google 服务端点不可用于本地脚本。

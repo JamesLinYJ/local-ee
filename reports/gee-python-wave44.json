@@ -1,0 +1,197 @@
+{
+  "schema": "local-ee-python-wave44/v1",
+  "date": "2026-10-23",
+  "base_commit": "4c114a713b847a53039cf77ccaab157cfa80eb34",
+  "title": "Exact weighted neighborhood statistics, opaque unweighted plans and remaining pixel kernels",
+  "entry_inventory": {
+    "before": 585,
+    "after": 592,
+    "new_entry_count": 7,
+    "new_alias_count": 0,
+    "new_names": [
+      "Kernel.euclidean",
+      "Kernel.manhattan",
+      "Kernel.chebyshev",
+      "Kernel.compass",
+      "Kernel.kirsch",
+      "Kernel.inverse",
+      "Reducer.unweighted"
+    ],
+    "pinned_signatures": 991,
+    "name_entry_percentage": 59.74,
+    "interpretation": "Names only; bounded parameter/context semantics, not complete GEE compatibility"
+  },
+  "implementation": {
+    "expanded_existing_entry": "Image.reduceNeighborhood: 12 actual scalar statistics, minMax and shared-input combine/setOutputs",
+    "weights": "Positive kernel/mask/min weights over binary source validity; weighted sum retains coefficient scale, mean/population dispersion normalize actual valid weights; count/min/max ignore positive magnitude. Sample dispersion/product/median/default mode require uniform effective weights converted to unit support per operation.",
+    "unweighted": "Opaque validated single-input plan accepted only in neighborhood. No implicit regional/list/array/reducer-composition/public-JSON/truthiness use.",
+    "numeric": "Exact dyadic products and moments Q*W-S^2, rational nearest-even Float64 rounding. Standard deviation uses bounded integer sqrt and exact midpoint comparison, no floating seed or ULP walk.",
+    "grid": "Full source bounds and common-grid proof before merging bands; Float64 before temporal selection; explicit clip retained, output ROI/resampling downstream; observed keys/time preserved.",
+    "local_policies": [
+      "Binary mask validity only; fractional source masks unsupported",
+      "Missing/masked neighbors omitted; skipMasked=false fills only existing center tiles",
+      "Zero valid support returns NoData including count; sample n<2 returns NoData; smallest tied mode; input signed zeros canonicalized to +0",
+      "Distance kernel fractional extent uses ceil(radius) full square; no Google footprint parity",
+      "Signed normalization and meter kernels reject"
+    ],
+    "limits": [
+      "Compiler50000/graph500/JSON1MB unchanged",
+      "Canonical spec32768 ASCII bytes;33x33/1089 cells;offsets within32;positive radius smaller than tile dimensions",
+      "Native100000 keys/100M decoded cells/10M per tile/1e8 per-tile work/1e9 total work unchanged"
+    ],
+    "rejected": [
+      "Negative or empty neighborhood support",
+      "Nonuniform weights for sample dispersion/product/median/mode unless mask/unweighted",
+      "Multi-input reducer descriptors, repeat/group, unsupported leaves even when dropped",
+      "Optimization strategies and nondefault mode histogram parameters",
+      "Unbound constant images, array-valued images, unproven grids, final Float64 overflow"
+    ]
+  },
+  "validation": {
+    "python": {
+      "tests": 4571,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 15,
+      "passed": 4556,
+      "seconds": 43.325
+    },
+    "warnings": "3 existing Rasterio PendingDeprecationWarnings",
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "Python_JS_identical_compiled_workflows": 18,
+      "guarded_network_attempts": 0
+    },
+    "actual_process_evaluator": "Pinned openEO registry/evaluator metadata tests cover focal/convolve/neighborhood single-band selection, input extent and output reprojection/ROI. No fabricated pixels.",
+    "legacy_probes": {
+      "total": 50,
+      "serialized": 50,
+      "compiled": 47,
+      "rejected": 3,
+      "interpretation": "Selected compile probes, not migration success rate"
+    },
+    "native": {
+      "scope": "Trusted standalone GeoTrellis Float64 neighborhood kernel, manual halo assembly, and collection BufferTilesRDD; no SparkContext, service, or user code",
+      "case_count": 19,
+      "pixels_per_manual_and_actual_collection_path": 456,
+      "temporal_keys": 4,
+      "budget_controls": 13,
+      "reference": "Independent Fraction/Decimal whole-grid reference with raw-bit comparisons",
+      "full_adapter_source_count": 31,
+      "jar_sha256": "c119720f4302e15ca13f3bade45e66f26bdc6bc982aafa3cdcba96dd7da97ef0",
+      "architecture": "arm64",
+      "scala_version": "2.13.18",
+      "spark_version": "4.2.0",
+      "evidence": "audit/gee-python-wave44/native/neighborhood-kernel-20261023T110004Z-824acd0282/neighborhood-result.json",
+      "work_estimates": {
+        "unit3x3_mean_256_square": 64291844,
+        "unit7x7_mean_256_square": 260901924,
+        "unit7x7_mean_result": "rejected",
+        "unit3x3_variance_256_square": 243270660,
+        "unit3x3_variance_256_result": "rejected",
+        "unit3x3_variance_128_square": 60817924,
+        "unit3x3_variance_128_result": "accepted",
+        "unit3x3_stdDev_256_square": 300155908,
+        "unit3x3_sampleStdDev_256_square": 300221444,
+        "both_stdDev_256_result": "rejected"
+      },
+      "historical_failed_probe_runs_retained": true
+    },
+    "evidence_directory": "audit/gee-python-wave44/final-verified",
+    "frozen_final_code_sha256": {
+      "engine/ee_neighborhood.py": "550df87b9636da68880e4c1880f3f7491de49be4abf2165932c56d1487855591",
+      "engine/ee_neighborhood_adapter.scala": "d61788b7e5a26d574388523f12cd0ddabaeb112b1b2c409c9a837456cd94df24",
+      "engine/ee_neighborhood_budget.scala": "7900d5c7c262edd88dccce6ace5e70c0886b328be0934d5c0702b25d85f9320d",
+      "engine/ee_neighborhood_exact.scala": "7e7f15383ae5fffb8c8d50ba58f27d8c0375638cf4de6af27ec2f717f8a05cec",
+      "engine/ee_neighborhood_numeric.scala": "5348e85cc12e11a2b710902bb6066631ecc09ce225241acec290a543dce223f5",
+      "engine/ee_neighborhood_spec.scala": "d8d620f8149ff497bacb9baea0f4ad19c2e677a19f1d9e58972c90f9b02dcad0",
+      "engine/ee_neighborhood_statistics.scala": "7b2a6703f7416b4621a8d86fe7b592e622c7856975730141e5f5be26472c3255",
+      "engine/ee_process_adapters.py": "89bbe8c7806c7cc90254ee7fc67aded5c6ee0877f577a3544f58829f3afe4623",
+      "examples/49_GEE_python_local_texture.py": "dc76faeef6bb0e06ccaf0b8c9a2908e009808d61330c7504f7c6e65fef1f30ba",
+      "gee/compat/earthengine/capabilities.py": "8b4cc00ee8c2fd728df09d3d418c2080ce3657775cfb645a6201d2fa32fea778",
+      "gee/compat/earthengine/compile.py": "8b7dbf30604491d3c6031f03d637d25243659f3ad16578bf25739233a760a364",
+      "gee/compat/earthengine/dispatch.py": "e23177b8a9971c05cb9461bbd67c3badb03da0b01438f99e16098102cfbe9ba1",
+      "gee/compat/earthengine/graph.py": "54007356abb54ad5f33f55aff75a6aa7d342363b9097feb59f6b916fc01a25fb",
+      "gee/compat/earthengine/image_focal.py": "aac5ce9e282660497ef2534211d7765c48441a2197784a09fc1992674c8c5a8b",
+      "gee/compat/earthengine/image_neighborhood.py": "2a18488a8a5f2f375f0a9c4c9abeae1ee808517788142d128cbcc5ef307a3852",
+      "gee/compat/earthengine/image_ops.py": "950e39714533d97fb1d72be53c2d1cb627f7214fe3dbb4254725043a39d0a4cb",
+      "gee/compat/earthengine/ir.py": "2d1a74170b3acc6c83098fb5092bbcb51df30a3a5cd1b00c9ded632f347632a0",
+      "gee/compat/earthengine/kernel_distance.py": "51a0992c322a18ff31600cd5aea3dc7580376706babf098c33063def94f7b158",
+      "gee/compat/earthengine/kernel_transform.py": "49376557c1fc64cbd36c706f70186281bea320018f6ad58d9387b6587a8a81a4",
+      "gee/compat/earthengine/kernel_values.py": "d95ed1fff5b0056bf629fff47609f1ae9dab1728c18244800b044add8e79361c",
+      "gee/compat/earthengine/kernel_weighted.py": "94ed7f742263e4dccbd816c7bcdf6978ca87fc6fce8f0a5913f234c69c14337a",
+      "gee/compat/earthengine/neighborhood_graph.py": "af95e7539dda5eda04fe455b0da966c856d7560f04b1395b0db53f16732f7dae",
+      "gee/compat/earthengine/neighborhood_reducer_plan.py": "b0a828c18feaa31a599fc71a1868fe76c4db9298377a80c21a0c277ac18b66ba",
+      "gee/compat/earthengine/pixel_graph.py": "315926acac161862499247f41bb5f53f77c24ff53b608df646e194f1dd1b44f9",
+      "gee/local_processes.py": "794b53bd0ffc9eb99b6881fb4b7e04e051a7616371ce565c7c7d2f948a6485cb",
+      "gee/neighborhood_spec.py": "dc1fad507ecc2ac1c9fb877a22072a0434f374fec01451318038b234e4326fa5",
+      "gee/sampling_graph.py": "0b077d43567a6914d9cc9588ccaa4e9d0bc48fadc55d57bf27f735aafee7cda7",
+      "gee/smile_rf_processes.py": "216984624dd293ed8becc3c54ecbc0af0969863915fa7567482ff1d4b47331fa",
+      "scripts/build_integer_adapter.py": "17746098804da327acd17b93db1f8421c9ef7faccdafb36292f79968121648fe",
+      "scripts/ee_inventory/pixel_numeric_families.py": "8f048081690ba631961877c42a772eac5f8e11ba6d5d726254a0a80b37f9d196",
+      "tests/ee_neighborhood_kernel_helpers.py": "6161ba598c7a8b51e9862a61b165ef944cc00a15de687a569d4ad460100fb865",
+      "tests/fixtures/ee-neighborhood-kernel-probe.scala": "83bd52dbe6cb3d4d4feba8d66f50e77d6f28aa65ba53cc1771bc398e3076801e",
+      "tests/test_ee_distance_kernels.py": "8f90d61186493b77c6d0aa7cc5970786d3034c600bdd35ca81b83b38d43164b0",
+      "tests/test_ee_focal_compiler.py": "392b42cbc0222c919a513adf3957e7b3cfb62a64164274191bc347f679c7d084",
+      "tests/test_ee_neighborhood_compiler.py": "54a7dedd16b83600f60f690e64efd8765d5ea949d2e857e6a5a2fbaa820cb3a0",
+      "tests/test_ee_neighborhood_engine.py": "8f1074a8548c30d7ae3ced711e5333f16bdedf9e1520f9d02fba9840b13c1dcb",
+      "tests/test_ee_neighborhood_kernel.py": "d3e19da74468878292530b3ada9a93f863881a06adcbfe60621c03cac1437a22",
+      "tests/test_ee_neighborhood_metadata.py": "b072cce3c4ed606a1c936b592a7cc82bb6c839e8be678c69a3613e0b00a84eb8",
+      "tests/test_ee_neighborhood_process.py": "91d03cb1b8d5689c5d599641dba12111c500e20347975ecb050aa2079b1420a1",
+      "tests/test_ee_neighborhood_workflow.py": "304599ac85c610ade1c7e825b2b5a1473e7cc1d9a14a3b305deab8a7cd06aa08"
+    }
+  },
+  "failure_fixes": [
+    {
+      "issue": "Normalizing a median sibling could erase weighted sum coefficients",
+      "fix": "Prepare and precharge coefficients per distinct operation; uniform0.5 sum+median regression preserves sum0.5 and median1"
+    },
+    {
+      "issue": "Generic unweighted reducer could leak unsupported semantics into other consumers",
+      "fix": "Opaque neighborhood-only plan and explicit region/list/array/combine/public-value/If rejection tests"
+    },
+    {
+      "issue": "Population stdDev was omitted by case-sensitive suffix matching in work estimate",
+      "fix": "Explicit population/sample stdDev accounting; charge W/S/Q shifts/adds, denominator and rational setup; direct estimate controls under unchanged caps"
+    },
+    {
+      "issue": "Repeated coefficient/output-name scans could exceed declared work before charging",
+      "fix": "Deduplicate operations and precharge scans, copies, names and hashing"
+    }
+  ],
+  "preservation": {
+    "dependencies_changed": false,
+    "installed_runtime_modified": false,
+    "user_data_modified": false,
+    "containers_or_VMs_created": false,
+    "goal_complete": false
+  },
+  "cleanup": {
+    "temporary_frontend": {
+      "owned_path": "/Users/james/Documents/Codex/2026-10-21/wo/work/gee-python-wave44-web-build",
+      "files": 16,
+      "logical_bytes": 1697179,
+      "removed": true
+    },
+    "native_owned_jar_classes": "Removed by bounded probe finally blocks; manifest and logs retained"
+  },
+  "not_verified": [
+    "Full Spark RDD/cube job for new neighborhood operations",
+    "Deployed sandbox/browser/map/physical raster export for this family",
+    "Private real data",
+    "Google same-data numerical equivalence",
+    "Performance/capacity for large real scenes"
+  ],
+  "documentation": [
+    "docs/gee-python/neighborhood-statistics.md",
+    "docs/gee-python/neighborhood-native.md",
+    "docs/gee-python/distance-kernels.md"
+  ],
+  "example": "examples/49_GEE_python_local_texture.py"
+}

@@ -41,6 +41,16 @@ _EDGE_WEIGHTS = {
         (1.0, 0.0),
         (0.0, -1.0),
     ),
+    "Kernel.compass": (
+        (1.0, 1.0, -1.0),
+        (1.0, -2.0, -1.0),
+        (1.0, 1.0, -1.0),
+    ),
+    "Kernel.kirsch": (
+        (5.0, -3.0, -3.0),
+        (5.0, 0.0, -3.0),
+        (5.0, -3.0, -3.0),
+    ),
 }
 WEIGHTED_KERNEL_FUNCTIONS = frozenset({"Kernel.gaussian", *_EDGE_WEIGHTS})
 _LOG_FLOAT64_MAX = math.log(sys.float_info.max)

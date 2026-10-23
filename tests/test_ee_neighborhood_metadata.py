@@ -7,11 +7,13 @@ from engine import ee_process_adapters as adapters
 from engine.ee_neighborhood_metadata import single_band_metadata
 from gee.convolve_spec import prepare_convolve_spec
 from gee.focal_spec import prepare_focal_spec
+from gee.neighborhood_spec import prepare_neighborhood_spec
 
 
 @pytest.mark.parametrize("process,spec", [
     ("local_ee_focal", prepare_focal_spec("mean", [(0, 0), (1, 0)])),
     ("local_ee_convolve", prepare_convolve_spec([(0, 0, 1.0), (1, 0, -1.0)])),
+    ("local_ee_neighborhood", prepare_neighborhood_spec("mean", [(0, 0, 0.5), (1, 0, 1.0)])),
 ])
 def test_real_process_registry_evaluates_multiband_selection_and_blocks_output_pushdown(monkeypatch, process, spec):
     from openeo_driver import ProcessGraphDeserializer  # Register pinned standard processes.
@@ -64,6 +66,7 @@ def test_real_process_registry_evaluates_multiband_selection_and_blocks_output_p
 @pytest.mark.parametrize("process,spec", [
     ("local_ee_focal", prepare_focal_spec("mean", [(0, 0), (1, 0)])),
     ("local_ee_convolve", prepare_convolve_spec([(0, 0, 1.0), (1, 0, -1.0)])),
+    ("local_ee_neighborhood", prepare_neighborhood_spec("mean", [(0, 0, 0.5), (1, 0, 1.0)])),
 ])
 def test_single_selected_band_from_multiband_source_preserves_owned_trace(process, spec):
     cube, source, tracer = _dry_cube(bands=("red", "nir"), temporal=True)

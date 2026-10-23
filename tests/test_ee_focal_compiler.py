@@ -222,8 +222,6 @@ def test_reduce_neighborhood_mask_weights_allow_nonuniform_positive_kernel(ee):
 @pytest.mark.parametrize(
     ("kernel_weights", "input_weight", "pattern"),
     [
-        ([[1, 2], [1, 1]], "kernel", "Nonuniform kernel weights"),
-        ([[1, 2], [1, 1]], "min", "Nonuniform kernel weights"),
         ([[-1, 1], [1, 1]], "mask", "nonnegative"),
         ([[0, 0], [0, 0]], "mask", "nonnegative|support|weight"),
     ],
@@ -247,14 +245,14 @@ def test_reduce_neighborhood_rejects_optimization_composition_and_mode_maxraw(ee
         compile_sdk(ee, image.reduceNeighborhood(
             reducer=ee.Reducer.mean(), kernel=kernel, optimization="window",
         ))
-    with pytest.raises(UnsupportedEEError, match="single-input, single-output"):
+    with pytest.raises(UnsupportedEEError, match="sharedInputs|exactly one input"):
         compile_sdk(ee, image.reduceNeighborhood(
             reducer=ee.Reducer.mean().combine(
-                reducer2=ee.Reducer.max(), sharedInputs=True,
+                reducer2=ee.Reducer.max(), sharedInputs=False,
             ),
             kernel=kernel,
         ))
-    with pytest.raises(UnsupportedEEError, match="maxRaw"):
+    with pytest.raises(UnsupportedEEError, match="default Reducer.mode|maxRaw"):
         compile_sdk(ee, image.reduceNeighborhood(
             reducer=ee.Reducer.mode(maxRaw=64), kernel=kernel,
         ))

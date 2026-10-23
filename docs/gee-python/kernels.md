@@ -1,5 +1,11 @@
 # Static pixel Kernels
 
+This page describes the base shape constructors. See [weighted kernels](weighted-kernels.md)
+for Gaussian, edge, rotation and addition, and [distance kernels](distance-kernels.md)
+for Euclidean/Manhattan/Chebyshev, Compass/Kirsch and inverse. Each consumer
+has its own weight rules: [focal](focal.md), [convolve](convolve.md), and
+[neighborhood statistics](neighborhood-statistics.md).
+
 The local compiler constructs immutable finite `KernelSpec` values for the
 pinned `Kernel.fixed`, `circle`, `square`, `rectangle`, `plus`, `cross`,
 `diamond`, and `octagon` algorithms. Their signatures and defaults come from

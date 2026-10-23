@@ -97,15 +97,46 @@ PIXEL_NUMERIC_LIMITS["Image.convolve"] = [
 ]
 
 for _operation in ("focalMin", "focalMax", "focalMean", "focalMedian", "focalMode",
-                   "focal_min", "focal_max", "focal_mean", "focal_median", "focal_mode",
-                   "reduceNeighborhood"):
+                   "focal_min", "focal_max", "focal_mean", "focal_median", "focal_mode"):
     PIXEL_NUMERIC_LIMITS["Image." + _operation] = [
         "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. "
         "Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. "
         "Missing keys are not synthesized; skipMasked=false fills only existing tiles. "
         "Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. "
-        "Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. "
-        "Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. "
+        "Positive support only; meters reject; compiler50000/graph500 caps unchanged. "
         "Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. "
         "Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
     ]
+
+for _operation in ("euclidean", "manhattan", "chebyshev", "compass", "kirsch", "inverse"):
+    PIXEL_NUMERIC_LIMITS["Kernel." + _operation] = [
+        "Actual immutable finite pixel-unit distance/edge/reciprocal kernels, at most33x33/1089 "
+        "cells and offsets<=32. Distance kernels retain full square ceil(radius) extent; "
+        "positive normalization uses exact accumulation; signed normalization rejects. "
+        "Inverse preserves zero coefficients/focus and rejects reciprocal overflow. "
+        "Opaque kernels require an audited consumer; shared50000 work unchanged. "
+        "Meters reject; fractional radius and reciprocal numerical policy lack Google parity."
+    ]
+
+PIXEL_NUMERIC_LIMITS["Reducer.unweighted"] = [
+    "Opaque validated single-input numeric reducer plan accepted only by Image.reduceNeighborhood. "
+    "Uses unit weights over nonzero kernel support and binary source validity. Shared-input "
+    "combine/setOutputs must precede unweighted; no repeat/group/nested unweighted. "
+    "Other reduction contexts, public JSON and truthiness reject; shared50000 work unchanged."
+]
+
+PIXEL_NUMERIC_LIMITS["Image.reduceNeighborhood"] = [
+    "Native Float64 positive-weight sum/mean/population variance/stdDev; count/min/max use "
+    "positive support; product/sampleVariance/sampleStdDev/median/default mode require uniform "
+    "effective weights, mask or unweighted. Uniform weights normalize only for those operations, "
+    "never sum. Binary source validity; kernel/mask/min weights are explicit. Single-input "
+    "shared combine/setOutputs supports multiple named outputs per band; full descriptor "
+    "validation includes dropped outputs. Zero support returns NoData and sample count<2 "
+    "returns NoData. skipMasked=false fills only existing tiles; observed keys/time preserved. "
+    "Exact dyadic sums and rational moments with final nearest-even Float64 rounding; final "
+    "overflow fails. Source bounds precede output ROI/resampling; proven common grid required. "
+    "Pixel offsets<=32,1089 taps; nonzero radius smaller than tile dimensions. Negative/empty "
+    "kernels, meter units, optimization and histogram mode parameters reject. Compiler50000/"
+    "graph500/JSON1MB and native key/cell/work caps unchanged. Standalone numerical checks "
+    "do not establish full Spark/deployed workflow/private data or Google same-data parity."
+]

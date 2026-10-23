@@ -19,6 +19,8 @@ KERNEL_FUNCTIONS = {
     "Kernel.plus", "Kernel.cross", "Kernel.diamond", "Kernel.octagon",
     "Kernel.gaussian", "Kernel.laplacian4", "Kernel.laplacian8",
     "Kernel.sobel", "Kernel.prewitt", "Kernel.roberts",
+    "Kernel.euclidean", "Kernel.manhattan", "Kernel.chebyshev",
+    "Kernel.compass", "Kernel.kirsch", "Kernel.inverse",
     "Kernel.rotate", "Kernel.add",
 }
 
@@ -195,6 +197,10 @@ def invoke_kernel(translator, name: str, arguments: dict) -> KernelSpec:
 
     if name in WEIGHTED_KERNEL_FUNCTIONS:
         return invoke_weighted_kernel(translator, name, arguments)
+    from .kernel_distance import DISTANCE_KERNEL_FUNCTIONS, invoke_distance_kernel
+
+    if name in DISTANCE_KERNEL_FUNCTIONS:
+        return invoke_distance_kernel(translator, name, arguments)
     from .kernel_transform import KERNEL_TRANSFORM_FUNCTIONS, invoke_kernel_transform
 
     if name in KERNEL_TRANSFORM_FUNCTIONS:

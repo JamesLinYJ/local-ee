@@ -32,6 +32,9 @@ SOURCES += [ROOT / "engine/ee_focal_spec.scala", ROOT / "engine/ee_focal_numeric
             ROOT / "engine/ee_focal_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_convolve_spec.scala", ROOT / "engine/ee_convolve_numeric.scala",
             ROOT / "engine/ee_convolve_adapter.scala"]
+SOURCES += [ROOT / "engine/ee_neighborhood_spec.scala", ROOT / "engine/ee_neighborhood_budget.scala",
+            ROOT / "engine/ee_neighborhood_exact.scala", ROOT / "engine/ee_neighborhood_statistics.scala",
+            ROOT / "engine/ee_neighborhood_numeric.scala", ROOT / "engine/ee_neighborhood_adapter.scala"]
 SERVICE_NAME = "org.openeo.geotrelliscommon.CubeProcessProvider"
 SERVICE_ENTRY = ("local.ee.integer.LocalEeIntegerCubeProcessProvider\n"
                  "local.ee.grid.LocalEeGridCubeProcessProvider\n"
@@ -45,6 +48,7 @@ SERVICE_ENTRY += "local.ee.math.LocalEePixelMathCubeProcessProvider\n"
 
 SERVICE_ENTRY += "local.ee.reduce.LocalEeFocalCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeConvolveCubeProcessProvider\n"
+SERVICE_ENTRY += "local.ee.reduce.LocalEeNeighborhoodCubeProcessProvider\n"
 
 
 def sha256(path: Path) -> str:

@@ -228,6 +228,12 @@ def local_ee_convolve(args, env):
     return handler(args, env)
 
 
+def local_ee_neighborhood(args, env):
+    from .ee_neighborhood import local_ee_neighborhood as handler
+
+    return handler(args, env)
+
+
 def local_ee_pixel_math(args, env):
     from .ee_pixel_math import local_ee_pixel_math as handler
 
@@ -241,6 +247,7 @@ def local_ee_smile_rf_explain(args, env):
 
 
 _HANDLERS = {
+    "local_ee_neighborhood": local_ee_neighborhood,
     "local_ee_convolve": local_ee_convolve,
     "local_ee_focal": local_ee_focal,
     "local_ee_pixel_math": local_ee_pixel_math,
@@ -270,9 +277,11 @@ def register_local_ee_processes() -> None:
 
     from .ee_focal import register_focal_pushdown_boundary
     from .ee_convolve import register_convolve_pushdown_boundary
+    from .ee_neighborhood import register_neighborhood_pushdown_boundary
 
     register_focal_pushdown_boundary()
     register_convolve_pushdown_boundary()
+    register_neighborhood_pushdown_boundary()
     for registry in (process_registry_100, process_registry_2xx):
         for process_id, handler in _HANDLERS.items():
             if registry.contains(process_id):

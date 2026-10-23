@@ -20913,7 +20913,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -20981,7 +20981,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -21049,7 +21049,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -21117,7 +21117,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -21185,7 +21185,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -21253,7 +21253,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -21321,7 +21321,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -21389,7 +21389,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -21457,7 +21457,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -21525,7 +21525,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -24231,7 +24231,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+          "Native Float64 positive-weight sum/mean/population variance/stdDev; count/min/max use positive support; product/sampleVariance/sampleStdDev/median/default mode require uniform effective weights, mask or unweighted. Uniform weights normalize only for those operations, never sum. Binary source validity; kernel/mask/min weights are explicit. Single-input shared combine/setOutputs supports multiple named outputs per band; full descriptor validation includes dropped outputs. Zero support returns NoData and sample count<2 returns NoData. skipMasked=false fills only existing tiles; observed keys/time preserved. Exact dyadic sums and rational moments with final nearest-even Float64 rounding; final overflow fails. Source bounds precede output ROI/resampling; proven common grid required. Pixel offsets<=32,1089 taps; nonzero radius smaller than tile dimensions. Negative/empty kernels, meter units, optimization and histogram mode parameters reject. Compiler50000/graph500/JSON1MB and native key/cell/work caps unchanged. Standalone numerical checks do not establish full Spark/deployed workflow/private data or Google same-data parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -28174,12 +28174,14 @@
       "description": "Generates a distance kernel based on Chebyshev distance (greatest distance along any dimension).",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual immutable finite pixel-unit distance/edge/reciprocal kernels, at most33x33/1089 cells and offsets<=32. Distance kernels retain full square ceil(radius) extent; positive normalization uses exact accumulation; signed normalization rejects. Inverse preserves zero coefficients/focus and rejects reciprocal overflow. Opaque kernels require an audited consumer; shared50000 work unchanged. Meters reject; fractional radius and reciprocal numerical policy lack Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28268,12 +28270,14 @@
       "description": "Generates a 3x3 Prewitt's Compass edge-detection kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual immutable finite pixel-unit distance/edge/reciprocal kernels, at most33x33/1089 cells and offsets<=32. Distance kernels retain full square ceil(radius) extent; positive normalization uses exact accumulation; signed normalization rejects. Inverse preserves zero coefficients/focus and rejects reciprocal overflow. Opaque kernels require an audited consumer; shared50000 work unchanged. Meters reject; fractional radius and reciprocal numerical policy lack Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28428,12 +28432,14 @@
       "description": "Generates a distance kernel based on Euclidean (straight-line) distance.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual immutable finite pixel-unit distance/edge/reciprocal kernels, at most33x33/1089 cells and offsets<=32. Distance kernels retain full square ceil(radius) extent; positive normalization uses exact accumulation; signed normalization rejects. Inverse preserves zero coefficients/focus and rejects reciprocal overflow. Opaque kernels require an audited consumer; shared50000 work unchanged. Meters reject; fractional radius and reciprocal numerical policy lack Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28588,12 +28594,14 @@
       "description": "Returns a kernel which has each of its weights multiplicatively inverted. Weights with a value of zero are not inverted and remain zero.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual immutable finite pixel-unit distance/edge/reciprocal kernels, at most33x33/1089 cells and offsets<=32. Distance kernels retain full square ceil(radius) extent; positive normalization uses exact accumulation; signed normalization rejects. Inverse preserves zero coefficients/focus and rejects reciprocal overflow. Opaque kernels require an audited consumer; shared50000 work unchanged. Meters reject; fractional radius and reciprocal numerical policy lack Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28628,12 +28636,14 @@
       "description": "Generates a 3x3 Kirsch's Compass edge-detection kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual immutable finite pixel-unit distance/edge/reciprocal kernels, at most33x33/1089 cells and offsets<=32. Distance kernels retain full square ceil(radius) extent; positive normalization uses exact accumulation; signed normalization rejects. Inverse preserves zero coefficients/focus and rejects reciprocal overflow. Opaque kernels require an audited consumer; shared50000 work unchanged. Meters reject; fractional radius and reciprocal numerical policy lack Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28764,12 +28774,14 @@
       "description": "Generates a distance kernel based on rectilinear (city-block) distance.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual immutable finite pixel-unit distance/edge/reciprocal kernels, at most33x33/1089 cells and offsets<=32. Distance kernels retain full square ceil(radius) extent; positive normalization uses exact accumulation; signed normalization rejects. Inverse preserves zero coefficients/focus and rejects reciprocal overflow. Opaque kernels require an audited consumer; shared50000 work unchanged. Meters reject; fractional radius and reciprocal numerical policy lack Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37720,12 +37732,14 @@
       "description": "Returns a Reducer with the same inputs and outputs as the given Reducer, but with no weighted inputs.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Opaque validated single-input numeric reducer plan accepted only by Image.reduceNeighborhood. Uses unit weights over nonzero kernel support and binary source validity. Shared-input combine/setOutputs must precede unweighted; no repeat/group/nested unweighted. Other reduction contexts, public JSON and truthiness reject; shared50000 work unchanged."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -41474,7 +41488,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 585,
+    "declared_handler_name_count": 592,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41720,7 +41734,7 @@
         "appears_in_rejected_compile_context": 1,
         "appears_in_selected_sdk_serialization": 1,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 16,
+        "declared_handler_count": 22,
         "signature_count": 22
       },
       "Landsat": {
@@ -41832,7 +41846,7 @@
         "appears_in_rejected_compile_context": 7,
         "appears_in_selected_sdk_serialization": 7,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 53,
+        "declared_handler_count": 54,
         "signature_count": 64
       },
       "S1": {
@@ -41955,7 +41969,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 585,
+    "pinned_signatures_with_same_name_declared_handler": 592,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"
