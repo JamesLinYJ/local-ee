@@ -1,0 +1,191 @@
+{
+  "schema": "local-ee-python-wave49/v1",
+  "date": "2026-10-24",
+  "base_commit": "8c56505eaa2984acc3d3227f2335d21cbbe57add",
+  "title": "Integer raster casts, QA bitwise operations and exact Float64 predicates",
+  "entry_inventory": {
+    "before": 600,
+    "after": 635,
+    "new_entry_count": 35,
+    "cast_names": 22,
+    "bitwise_names": 13,
+    "logical_new_operations": 14,
+    "alias_names_beyond_one_per_logical_operation": 21,
+    "expanded_existing_comparisons": 6,
+    "pinned_signatures": 991,
+    "name_entry_percentage": 64.08,
+    "interpretation": "Exact-name declarations only, including aliases and limited signatures; not full GEE compatibility or migration success rate."
+  },
+  "implementation": {
+    "casts": "Seven signed/unsigned8/16/32 and signed64 targets; finite clamp/toward-zero policy, int64 results limited to +/-2^53. All cast/bit results physically Float64 NaN NoData, not a claim of Google integer dtype propagation.",
+    "bits": "AND/OR/XOR/NOT, signed shifts0..63 and bitCount64 over finite integral actual inputs/results within +/-2^53. Left shift never wraps; invalid fixed operands reject before pixel traversal even on masked images.",
+    "comparisons": "Six existing predicates preserve actual finite Float64, subnormals, high bits and signed-zero numeric equality. Float32 graphs remain unchanged. Only proven comparison0/1 outputs can safely enter Float32 callbacks; general Double/integer arithmetic still needs explicit toFloat.",
+    "constant_precision": "Folded casts/bit results retain a Double marker. Existing addBands grid binding supports exact comparisons of source-bound constants. Raster-masked source-free typed constants reject explicitly rather than round silently; standalone/global constants remain unsupported.",
+    "mask_fix": "GeoTrellis conversion could turn valid Int.MinValue with a different user-defined NoData sentinel into NaN. Public local_ee_to_double/to_float now read the original source getDouble mask via ee_cell_conversion; shared copyAsDouble also reads the original source type. Other direct upstream conversion paths are outside this fix and are not globally certified.",
+    "pairing": "Existing one-band broadcast and natural-order pairing, names/properties/footprint preserved. Distinct actual raster operands need common-grid proof before merge; no export-grid inference.",
+    "wire": "Canonical compact sorted v1 JSON, exact fields, finite binary64-hex constants, one/two contiguous band indices, <=1024ASCII bytes, duplicate/unknown/noncanonical data rejected independently in Python and Scala.",
+    "bridge": "Actual cubes require ordered band0[,band1]. Pinned upstream dry-run loses labels through rename/merge; bridge validates canonical spec and bounded acyclic source traces, preserves all dependencies and carries only fixed output v schema. Actual band validation is deferred, not fabricated. Per-call shared-ancestry memo and <=500 roots/distinct nodes.",
+    "limits": {
+      "compiler_work": 50000,
+      "graph_nodes": 500,
+      "public_json_bytes": 1000000,
+      "wire_ascii_bytes": 1024,
+      "source_keys": 100000,
+      "decoded_input_cells_per_tile": 10000000,
+      "decoded_input_cells_total": 100000000,
+      "work_per_tile": 100000000,
+      "work_total": 1000000000,
+      "scope": "Native work includes source copies, operand reads/checks, output and bounded operation costs. Admission is not measured throughput/RSS. Snapshot stability across census/lazy evaluation and full distributed resource behavior remain unverified."
+    }
+  },
+  "validation": {
+    "python": {
+      "tests": 5011,
+      "passed": 4990,
+      "skipped": 21,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 43.704
+    },
+    "warnings": {
+      "count": 52,
+      "existing_rasterio_pending_deprecation": 51,
+      "google_api_core_python311_future_lifecycle": 1,
+      "scope": "No dependency or interpreter changes; not a new advisory/security scan."
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "deployment_acceptance": false
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "Python_JS_identical_compiled_outputs": 16,
+      "Python_cast_names_checked": 22,
+      "Python_bit_names_checked": 13,
+      "guarded_network_attempts": 0,
+      "map_export": "Offline request capture only, no HTTP service or physical raster export; synthetic metadata, not user data."
+    },
+    "original_probes": {
+      "SDK_serialized": 50,
+      "compiled": 47,
+      "directed_rejections": 3,
+      "scope": "Original fixed50 expressions, not random API coverage."
+    },
+    "native": {
+      "scope": "Actual GeoTrellis tiles through LocalEeIntegerValuesNumeric.applyTile; no SparkContext, service, sandbox task, VM, container, or user data",
+      "case_count": 26,
+      "pixel_count": 214,
+      "invalid_spec_count": 36,
+      "invalid_tile_count": 10,
+      "masked_constant_case_count": 5,
+      "qa_composite_steps": 10,
+      "qa_composite_pixels": 13,
+      "fixture_sha256": "92d5854b947405975b39fccedfac5b98bbad7851f61e1000aaa0e3e58267aec0",
+      "probe_source_sha256": "65ec528c8001f9455c1a2e865127b0269313612163fab4401925b79f4c9a1ddc",
+      "cell_conversion_controls": 5
+    },
+    "bridge_controls": {
+      "focused_tests": 12,
+      "scope": "Real upstream process evaluator covers one/two-source metadata, chained constants and preserved dependencies. Mocked actual-cube SPI forwarding and wrong-count/order rejection; no full Spark execution."
+    },
+    "native_shared_copy_regression": {
+      "tests_passed": 12,
+      "families": [
+        "focal",
+        "convolve",
+        "neighborhood",
+        "terrain",
+        "distance"
+      ],
+      "scope": "Existing trusted standalone numerical fixtures after shared-copy change; complete50-source adapter build."
+    },
+    "manifest_integrity": "Portable rejection controls for omitted/extra source entries and tampered shared/conversion digests; native probe validates exact all-source manifest, JAR, builder and provider registration.",
+    "adapter": {
+      "source_count": 50,
+      "jar_sha256": "cbdf6a0b3fba4f03caa4330aa95f37d630e92e8980390ac9bd3c4356304bd213",
+      "build_warnings": "Existing image-sample outer-reference warning and9 Scala deprecations, two warning groups."
+    },
+    "final_whitespace_normalization": {
+      "scope": "Only redundant trailing blank lines removed from four test files after full regression; preceding bytes identical. Final commit CI tests final bytes.",
+      "files": [
+        {
+          "path": "tests/test_ee_image_integer.py",
+          "removed_final_blank_bytes": 1,
+          "executed_sha256": "12d2bd8c65419b06d629820dfc78b663a1c2c4e81a01f0dc7e3416f8aa52ec01",
+          "final_sha256": "08e7d54b512d0314b9198133429d63a6b46cf6c6a7859fdd7c9f6abbf1e7e4bb"
+        },
+        {
+          "path": "tests/test_ee_integer_graph.py",
+          "removed_final_blank_bytes": 1,
+          "executed_sha256": "31890e53f2860c75954012ea09432d8747409574d09595fca6cf2bcd78f0a8a7",
+          "final_sha256": "385463979823bfc9c13b9c909f7dd3b438df67f9654e42eb7c125fddc0a70f5e"
+        },
+        {
+          "path": "tests/test_ee_integer_values_kernel.py",
+          "removed_final_blank_bytes": 1,
+          "executed_sha256": "39ae71aff1252a4ecb62c879ff9399fb423d83a4c0ac1c7c4d91c6eac5f3ad7c",
+          "final_sha256": "d5002195e9347811b98eb3b6b5363ec57c3bcbab0c251b0780e983358f24b521"
+        },
+        {
+          "path": "tests/test_ee_integer_workflow.py",
+          "removed_final_blank_bytes": 1,
+          "executed_sha256": "c6993f610413be6f06d2f8ffb37c52c41212fce215b1c5cdf9bf5759f77cb025",
+          "final_sha256": "47ae388edefc26f0e0caec3a3678bf868967b224599282e725b3c096b24a9df2"
+        }
+      ]
+    }
+  },
+  "evidence": {
+    "directory": "audit/gee-python-wave49/final-verified/",
+    "native_regression": "audit/gee-python-wave49/native-regression/",
+    "execution_source_hashes": {
+      "engine/ee_cell_conversion.scala": "3b758d6b6b1a4b159be9e3db7832f7f4566000f75f66006355db0c61f373a50c",
+      "engine/ee_integer_adapter.scala": "f3e5dae5a26c8dd1656a38e27f78a000ac4992c0bcc8c61c13b307b7c1121720",
+      "engine/ee_integer_values.py": "f3761d6427dbb39561d4568a5741d31d96d9553cb3fbc98145376f65e5c37122",
+      "engine/ee_integer_values_adapter.scala": "ded1a11a2d93d68c8a4ef5e9394ac274639bdcacb454f2668c918e1225168966",
+      "engine/ee_integer_values_numeric.scala": "5ffa889126525c3185ba2a55125e923093fff20a230ce325cc42d99617b017b0",
+      "engine/ee_integer_values_spec.scala": "1576452ab0905656791812019f4e080eba95033a0c64eac4875c983ca86ad017",
+      "engine/ee_process_adapters.py": "16ef66ba15f16f94e834dee91de6666e9866db6265e9aac1fd2c659bc1f46414",
+      "engine/ee_reduce_support.scala": "c2f42ff08f51087614193f35dd71c07ee74c211c977e452c7569f1312ac7e4c6",
+      "examples/54_GEE_python_integer_images.py": "9b4fa6d8e65ecc808d6558242af74c00d7a7a5a91615bf10f64e4fd831de7cbd",
+      "gee/compat/earthengine/capabilities.py": "86e5c2f69928667fd952adac40cb1e495b9b7888afcfcd02949b1c4b5605b25c",
+      "gee/compat/earthengine/dispatch.py": "602de991df42ebd3d66590ce5d2c1e09c89967e9a3c84ddc16fff134c5dfded1",
+      "gee/compat/earthengine/image_integer.py": "102893dfdb7e8f01652aeeffa03242dc88534a36c3d9afa640be3e662151a570",
+      "gee/compat/earthengine/integer_values_graph.py": "f5274c50e59f23dc8524f663f94594a98350130c29bd3fb7bf6549a0fa93f16e",
+      "gee/compat/earthengine/pixel_graph.py": "ca15e824021b1990d8cbc8ba9fcc10217a97993dfd733f98a431ba11761377ac",
+      "gee/integer_values_contract.py": "37262c80acd4224fe57a9f3aa81eedc989744f3024bb4f45b4cd1673bf977229",
+      "gee/integer_values_spec.py": "1fa1a31bda70b862f11dfd5013fd64ed69d5af355145b22ae84e8d9cd7924530",
+      "gee/local_processes.py": "77c8687fbe6fc7dd8fec2becba9394683332ea5e3967ca48a6f5f63df98d9d3b",
+      "gee/sampling_graph.py": "7556707402df605aee9f87868f0ed9f4336116475fb9619027485da6fd8a33ad",
+      "gee/smile_rf_processes.py": "013da356c8e0d1c2d67bed576d968f2a3687e1ede506e0a8016d75df513da0c2",
+      "scripts/build_integer_adapter.py": "822d697d7e6e1fe570f384b6299a5e3eb78abeff8943157a2740c8007fce1e38",
+      "scripts/ee_inventory/catalogue.py": "b38253f7907eb03973d25504928fb803b302192f9fb5d8fba7d60b02f7ea0336",
+      "scripts/ee_inventory/integer_images.py": "ae5e86beecb41ed1d55ea5f9bdc4fee08098a6b0adf484ee51314d5a8eff0702",
+      "scripts/probe_integer_values_native.py": "80916f588cf0f00a595249443cf2ceca2877c71cc795b7d11403e4e5abdb3fbe",
+      "tests/ee_integer_values_kernel_helpers.py": "2a7a39911ab52d2495d83c00499563276c4f151fed8cfc47cbb031317cc09937",
+      "tests/fixtures/ee-integer-values-kernel-probe.scala": "65ec528c8001f9455c1a2e865127b0269313612163fab4401925b79f4c9a1ddc",
+      "tests/test_ee_distance_workflow.py": "a0131c7f70b637cf49621e639fc98d7fbe8724513e77d7289ad2003a09f34a83",
+      "tests/test_ee_image_integer.py": "12d2bd8c65419b06d629820dfc78b663a1c2c4e81a01f0dc7e3416f8aa52ec01",
+      "tests/test_ee_integer_graph.py": "31890e53f2860c75954012ea09432d8747409574d09595fca6cf2bcd78f0a8a7",
+      "tests/test_ee_integer_values_bridge.py": "24c17c7705d938fe109749bb765b22fd5c637fc78311670d8601f77f38768ddb",
+      "tests/test_ee_integer_values_kernel.py": "39ae71aff1252a4ecb62c879ff9399fb423d83a4c0ac1c7c4d91c6eac5f3ad7c",
+      "tests/test_ee_integer_values_spec.py": "d34ba263acb604a8a582a310fb63f34116d3154ac9027bf5da4861e179ff9e86",
+      "tests/test_ee_integer_workflow.py": "c6993f610413be6f06d2f8ffb37c52c41212fce215b1c5cdf9bf5759f77cb025"
+    }
+  },
+  "cleanup": {
+    "status": "completed: removed owned adapter/JAR and temporary web build after retaining digests/reports",
+    "runtime_dependencies_preserved": true,
+    "user_data_unchanged": true,
+    "removed_bytes": 2330979
+  },
+  "not_established": [
+    "Google same-data comparison, dtype/rounding/overflow parity",
+    "Full Spark/service/HTTP/browser or production deployment acceptance",
+    "Private real-data acceptance or Linux/macOS isolation acceptance deferred by phase",
+    "All GEE syntax, algorithms, dynamic arrays, projections, services and Code Editor UI"
+  ],
+  "goal_status": "active"
+}

@@ -1,6 +1,8 @@
 # GEE Python 兼容清单
 
-第四十八批新增有限 `Image.fastDistanceTransform`：默认256像元邻域、三种度量及直接 sqrt／阈值组合。整数包络与方向扫描按窗口像元线性计算，多跳目标片段保留已有空间／时间键。13项纯变换与16项真实GeoTrellis源瓦片场景通过，85个观察键／1,772,714输出像元的完整瓦片摘要匹配独立Python参考；三种默认3×3瓦片场景和跨两块瓦片的时间隔离均通过。完整回归 **4855 passed／20 skipped**，前端11／类型／临时构建通过。名称 **600／991（60.54%）** 仍仅为入口统计。无目标截断、掩膜目标、多波段和dtype为明确本地政策，尚无Google对照；256方瓦片默认邻域最多接纳24个键，不代表吞吐。52条上游提示单列，依赖／安装环境／用户数据未改；临时产物已清理，未部署，无完整Spark验收。见 [快速距离语法](fast-distance.md)、[示例53](../../examples/53_GEE_python_fast_distance.py) 和 [报告](../../reports/gee-python-wave48.json)。
+第四十九批新增 **35个整数影像名称入口（含21个同义别名）**：7种整数范围转换和7种QA位操作，并扩展已有6种Float64比较。实际GeoTrellis的26场景／214像元、10步合成QA链／13像元、36项非法wire／10项非法像元／5项全掩膜参数及5项转换控制通过；修复有效Int.MinValue转Double时丢失及常量折叠精度标记丢失。公共复制路径涉及的5族原生回归12项通过。完整回归 **4990 passed／21 skipped**，前端11／类型／临时构建通过，Python／JS16项组合输出一致。名称 **635／991（64.08%）** 仅统计入口，不是完整兼容率。整数结果物理Double、int64限±2^53、向零截断与移位政策均明确；上游dry-run仅保留已知输出结构和来源，实际输入校验延后到真实立方体。通用Float64算术／Google／完整Spark与部署仍未验收；52条上游提示保留，依赖、安装环境和数据未改。整体目标保持进行中。见 [整数／QA语法](integer-images.md)、[示例54](../../examples/54_GEE_python_integer_images.py) 和 [报告](../../reports/gee-python-wave49.json)。
+
+第四十八批历史记录：新增有限 `Image.fastDistanceTransform`：默认256像元邻域、三种度量及直接 sqrt／阈值组合。整数包络与方向扫描按窗口像元线性计算，多跳目标片段保留已有空间／时间键。13项纯变换与16项真实GeoTrellis源瓦片场景通过，85个观察键／1,772,714输出像元的完整瓦片摘要匹配独立Python参考；三种默认3×3瓦片场景和跨两块瓦片的时间隔离均通过。完整回归 **4855 passed／20 skipped**，前端11／类型／临时构建通过。名称 **600／991（60.54%）** 仍仅为入口统计。无目标截断、掩膜目标、多波段和dtype为明确本地政策，尚无Google对照；256方瓦片默认邻域最多接纳24个键，不代表吞吐。52条上游提示单列，依赖／安装环境／用户数据未改；临时产物已清理，未部署，无完整Spark验收。见 [快速距离语法](fast-distance.md)、[示例53](../../examples/53_GEE_python_fast_distance.py) 和 [报告](../../reports/gee-python-wave48.json)。
 
 第四十七批历史记录：新增有界 `Image.distance`：原始欧氏／曼哈顿／棋盘距离核，0–16像元半径，逐波段非零目标、掩膜及时间键隔离。修复选景／裁切／掩膜时过早 Float32 转换导致微小非零目标丢失，以及合法第500节点被提前拒绝。Python／JS九组编译图一致；实际 GeoTrellis 的14场景在两条路径各比较660个输出像元，与独立参考一致（欧氏0 ULP）。完整回归 **4765 passed／19 skipped**，前端11／类型／临时构建通过；51条既有 Rasterio 弃用提示保留。名称 **599／991（60.44%）** 仅统计入口。米单位、变换后距离核、fastDistanceTransform、通用 Float64 算术与完整Spark／部署／Google对照仍未完成；原有预算保持，256方瓦片半径16时最多接纳欧氏18／曼哈顿27／棋盘13个键，并非吞吐承诺。未修改依赖、安装运行环境或用户数据。见 [距离语法](distance.md)、[示例52](../../examples/52_GEE_python_distance.py) 和 [报告](../../reports/gee-python-wave47.json)。
 
@@ -50,7 +52,7 @@
 第二十五批 [报告](../../reports/gee-python-wave25.json)：新增标签 Image.remap、受限 Filter.expression、取样表 filter／无排序 limit 及累计资源计费。示例 30 的标签掩膜、17 个几何候选位置、15 行有效样本、14 行 notNull、11 行条件通过和 8 行限量训练，以及三度量预测，有独立原始网格参考。便携 Python **2068 passed／3 skipped**（另排除 4 项原生测试），前端 **11 passed**／构建通过，SDK 图一致性 **77**，真实 tile 内核通过。入口 **275／991（27.75%）** 只表示名称，不是完整参数或计算兼容率。完整 Spark／部署／浏览器／真实数据／Google 验收未运行；[该批尚未实现随机森林](random-forest-roadmap.md)。
 
 第二十四批 [报告](../../reports/gee-python-wave24.json) 与 [取样语法文档](sampling.md)：接通有限 sampleRegions、实际样本运行时训练、栅格分类与样本 getInfo／CSV 任务合同。便携 Python **1882 passed／3 skipped**（另排除 4 项原生测试）、前端 **11 passed**／构建通过，Python／JS 官方客户端一致性 **72** 项；取样与分类的可信独立 JVM tile 内核均通过。API 名称入口 **273／991（27.55%）**，参数和数值语义仍需逐项验证；此数值不代表完整兼容率。完整 Spark cube、部署／浏览器、真实数据和 Google 对照未运行。
-状态：2026-10-23，第四十一批已验证，整体兼容目标尚未完成。
+状态：2026-10-24，第四十九批已验证，整体兼容目标尚未完成。
 
 第二十三批 [验证报告](../../reports/gee-python-wave23.json)：新增有限 `Image.classify` 的 schema 选择、精确模型编译、Python 桥与真实 GeoTrellis tile 内核，训练仍使用内联要素。macOS ARM64 Python **1751 passed／3 skipped**（启用可信独立 JVM 内核测试，另排除 4 项原生运行测试），前端 **11 passed**、TypeScript／构建通过；较[第二十二批](../../reports/gee-python-wave22.json)增加 66 项通过。独立 tile 内核是组件运行证据，完整 Spark cube、沙箱任务、HTTP／浏览器、部署和 Google 对照均未在本批验收。
 

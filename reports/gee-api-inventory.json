@@ -18873,12 +18873,14 @@
       "description": "Calculates the number of one-bits in the 64-bit two's complement binary representation of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -18940,12 +18942,14 @@
       "description": "Calculates the bitwise AND of the input values for each matched pair of bands in image1 and image2. If either image1 or image2 has only 1 band, then it is used against all the bands in the other image. If the images have the same number of bands, but not the same names, they're used pairwise in the natural order. The output bands are named for the longer of the two inputs, or if they're equal in length, in image1's order. The type of the output pixels is the union of the input types.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -18971,12 +18975,14 @@
       "description": "Calculates the bitwise NOT of the input, in the smallest signed integer type that can hold the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -19007,12 +19013,14 @@
       "description": "Calculates the bitwise OR of the input values for each matched pair of bands in image1 and image2. If either image1 or image2 has only 1 band, then it is used against all the bands in the other image. If the images have the same number of bands, but not the same names, they're used pairwise in the natural order. The output bands are named for the longer of the two inputs, or if they're equal in length, in image1's order. The type of the output pixels is the union of the input types.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -19043,12 +19051,14 @@
       "description": "Calculates the bitwise XOR of the input values for each matched pair of bands in image1 and image2. If either image1 or image2 has only 1 band, then it is used against all the bands in the other image. If the images have the same number of bands, but not the same names, they're used pairwise in the natural order. The output bands are named for the longer of the two inputs, or if they're equal in length, in image1's order. The type of the output pixels is the union of the input types.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -19079,12 +19089,14 @@
       "description": "Calculates the bitwise AND of the input values for each matched pair of bands in image1 and image2. If either image1 or image2 has only 1 band, then it is used against all the bands in the other image. If the images have the same number of bands, but not the same names, they're used pairwise in the natural order. The output bands are named for the longer of the two inputs, or if they're equal in length, in image1's order. The type of the output pixels is the union of the input types.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -19110,12 +19122,14 @@
       "description": "Calculates the bitwise NOT of the input, in the smallest signed integer type that can hold the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -19146,12 +19160,14 @@
       "description": "Calculates the bitwise OR of the input values for each matched pair of bands in image1 and image2. If either image1 or image2 has only 1 band, then it is used against all the bands in the other image. If the images have the same number of bands, but not the same names, they're used pairwise in the natural order. The output bands are named for the longer of the two inputs, or if they're equal in length, in image1's order. The type of the output pixels is the union of the input types.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -19182,12 +19198,14 @@
       "description": "Calculates the bitwise XOR of the input values for each matched pair of bands in image1 and image2. If either image1 or image2 has only 1 band, then it is used against all the bands in the other image. If the images have the same number of bands, but not the same names, they're used pairwise in the natural order. The output bands are named for the longer of the two inputs, or if they're equal in length, in image1's order. The type of the output pixels is the union of the input types.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -19249,12 +19267,14 @@
       "description": "Casts the input value to an unsigned 8-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -20463,8 +20483,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. General Float64 arithmetic and Google same-data parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -21770,8 +21792,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. General Float64 arithmetic and Google same-data parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -21806,8 +21830,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. General Float64 arithmetic and Google same-data parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22083,12 +22109,14 @@
       "description": "Casts the input value to a signed 32-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22114,12 +22142,14 @@
       "description": "Casts the input value to a signed 16-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22145,12 +22175,14 @@
       "description": "Casts the input value to a signed 32-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22176,12 +22208,14 @@
       "description": "Casts the input value to a signed 64-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22207,12 +22241,14 @@
       "description": "Casts the input value to a signed 8-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22322,12 +22358,14 @@
       "description": "Calculates the left shift of v1 by v2 bits for each matched pair of bands in image1 and image2. If either image1 or image2 has only 1 band, then it is used against all the bands in the other image. If the images have the same number of bands, but not the same names, they're used pairwise in the natural order. The output bands are named for the longer of the two inputs, or if they're equal in length, in image1's order. The type of the output pixels is the union of the input types.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22358,12 +22396,14 @@
       "description": "Calculates the left shift of v1 by v2 bits for each matched pair of bands in image1 and image2. If either image1 or image2 has only 1 band, then it is used against all the bands in the other image. If the images have the same number of bands, but not the same names, they're used pairwise in the natural order. The output bands are named for the longer of the two inputs, or if they're equal in length, in image1's order. The type of the output pixels is the union of the input types.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22660,12 +22700,14 @@
       "description": "Casts the input value to a signed 64-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22700,8 +22742,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. General Float64 arithmetic and Google same-data parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22736,8 +22780,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. General Float64 arithmetic and Google same-data parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -23630,8 +23676,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. General Float64 arithmetic and Google same-data parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -25064,12 +25112,14 @@
       "description": "Calculates the signed right shift of v1 by v2 bits for each matched pair of bands in image1 and image2. If either image1 or image2 has only 1 band, then it is used against all the bands in the other image. If the images have the same number of bands, but not the same names, they're used pairwise in the natural order. The output bands are named for the longer of the two inputs, or if they're equal in length, in image1's order. The type of the output pixels is the union of the input types.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -25100,12 +25150,14 @@
       "description": "Calculates the signed right shift of v1 by v2 bits for each matched pair of bands in image1 and image2. If either image1 or image2 has only 1 band, then it is used against all the bands in the other image. If the images have the same number of bands, but not the same names, they're used pairwise in the natural order. The output bands are named for the longer of the two inputs, or if they're equal in length, in image1's order. The type of the output pixels is the union of the input types.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -25561,12 +25613,14 @@
       "description": "Casts the input value to a signed 16-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26244,12 +26298,14 @@
       "description": "Casts the input value to an unsigned 8-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26341,12 +26397,14 @@
       "description": "Casts the input value to a signed 32-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26372,12 +26430,14 @@
       "description": "Casts the input value to a signed 16-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26403,12 +26463,14 @@
       "description": "Casts the input value to a signed 32-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26434,12 +26496,14 @@
       "description": "Casts the input value to a signed 64-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26465,12 +26529,14 @@
       "description": "Casts the input value to a signed 8-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26496,12 +26562,14 @@
       "description": "Casts the input value to a signed 64-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26527,12 +26595,14 @@
       "description": "Casts the input value to a signed 16-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26558,12 +26628,14 @@
       "description": "Casts the input value to an unsigned 16-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26589,12 +26661,14 @@
       "description": "Casts the input value to an unsigned 32-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26620,12 +26694,14 @@
       "description": "Casts the input value to an unsigned 8-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26738,12 +26814,14 @@
       "description": "Casts the input value to an unsigned 16-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26769,12 +26847,14 @@
       "description": "Casts the input value to an unsigned 32-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26800,12 +26880,14 @@
       "description": "Casts the input value to an unsigned 8-bit integer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -41283,9 +41365,9 @@
           "same_name_handler_declared": true
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.bitwiseAnd",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
           "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
@@ -41345,9 +41427,9 @@
           "same_name_handler_declared": true
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.int16",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
           "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
@@ -41408,9 +41490,9 @@
           "same_name_handler_declared": true
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.bitwiseAnd",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
           "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
@@ -41504,7 +41586,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 600,
+    "declared_handler_name_count": 635,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41722,7 +41804,7 @@
         "appears_in_rejected_compile_context": 31,
         "appears_in_selected_sdk_serialization": 35,
         "appears_in_successful_compile_context": 8,
-        "declared_handler_count": 108,
+        "declared_handler_count": 143,
         "signature_count": 232
       },
       "ImageCollection": {
@@ -41985,7 +42067,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 600,
+    "pinned_signatures_with_same_name_declared_handler": 635,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

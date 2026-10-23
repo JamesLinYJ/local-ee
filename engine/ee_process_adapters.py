@@ -258,6 +258,12 @@ def local_ee_pixel_math(args, env):
     return handler(args, env)
 
 
+def local_ee_integer_values(args, env):
+    from .ee_integer_values import local_ee_integer_values as handler
+
+    return handler(args, env)
+
+
 def local_ee_smile_rf_explain(args, env):
     from .ee_rf_explanation import local_ee_smile_rf_explain as handler
 
@@ -272,6 +278,7 @@ _HANDLERS = {
     "local_ee_convolve": local_ee_convolve,
     "local_ee_focal": local_ee_focal,
     "local_ee_pixel_math": local_ee_pixel_math,
+    "local_ee_integer_values": local_ee_integer_values,
     "local_ee_drop_single_time": local_ee_drop_single_time,
     "local_ee_reduce_bands": local_ee_reduce_bands,
     "local_ee_minimum_distance": local_ee_minimum_distance,

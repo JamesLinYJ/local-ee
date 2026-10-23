@@ -127,7 +127,9 @@ private[reduce] object LocalEeReduceSupport {
     val output = new Array[Tile](bands)
     var band = 0
     while (band < bands) {
-      val source = tile.band(band).convert(DoubleConstantNoDataCellType)
+      // Read with the original cell type's mask. An intermediate convert can
+      // mistake a valid Int.MinValue for NoData with a user-defined sentinel.
+      val source = tile.band(band)
       val values = new Array[Double](cols * rows)
       var row = 0
       while (row < rows) {

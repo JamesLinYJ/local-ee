@@ -127,6 +127,10 @@ def invoke(translator, name, arguments):
 
     if name in IMAGE_PIXEL_MATH_FUNCTIONS:
         return invoke_image_pixel_math(translator, name, a)
+    from .image_integer import IMAGE_INTEGER_FUNCTIONS, invoke_image_integer
+
+    if name in IMAGE_INTEGER_FUNCTIONS:
+        return invoke_image_integer(translator, name, a)
     if name == "Image.remap":
         from .image_remap import invoke_image_remap
 

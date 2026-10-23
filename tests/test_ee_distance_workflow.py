@@ -252,14 +252,18 @@ def test_distance_compiler_rejects_noncanonical_kernels_and_float64_comparison()
             lambda: image.distance(ee.Kernel.euclidean(radius=2, magnitude=2)),
             lambda: image.distance(ee.Kernel.euclidean(radius=2, units="meters")),
             lambda: image.distance(ee.Kernel.euclidean(radius=2), skipMasked=1),
-            lambda: image.distance(ee.Kernel.euclidean(radius=2)).lte(1),
         ]
         for make_expression in invalid:
             with pytest.raises(UnsupportedEEError):
                 expression = make_expression()
                 compile_expression(_encode(ee, expression), [metadata], items)
 
-        valid = image.distance(ee.Kernel.euclidean(radius=2)).toFloat().lte(1)
-        result = compile_expression(_encode(ee, valid), [metadata], items)
+        exact = image.distance(ee.Kernel.euclidean(radius=2)).lte(1)
+        exact_result = compile_expression(_encode(ee, exact), [metadata], items)
+        explicit_float = image.distance(ee.Kernel.euclidean(radius=2)).toFloat().lte(1)
+        float_result = compile_expression(_encode(ee, explicit_float), [metadata], items)
     assert guard.evidence()["attempt_count"] == 0
-    assert _nodes(result, "local_ee_distance")
+    assert _nodes(exact_result, "local_ee_distance")
+    assert _nodes(exact_result, "local_ee_integer_values")
+    assert not _nodes(float_result, "local_ee_integer_values")
+    assert _nodes(float_result, "local_ee_distance")

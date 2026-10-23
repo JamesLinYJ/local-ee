@@ -33,7 +33,9 @@ class PixelCompiler:
         # than silently narrowing an explicitly requested Float64 raster.
         key = id(p)
         if key not in self.double_precision:
-            if p.op in {"classify", "trained_classify", "smile_rf_classify", "fast_distance"}: result = False
+            if p.op == "integer_values": result = not p.boolean
+            elif p.boolean and p.op in {"eq", "neq", "lt", "lte", "gt", "gte"}: result = False
+            elif p.op in {"classify", "trained_classify", "smile_rf_classify", "fast_distance"}: result = False
             elif p.op in {"to_double", "unmask", "unmask_constant", "on_grid", "remap", "focal", "convolve", "neighborhood", "terrain", "distance"}: result = True
             elif p.op in {"to_float", "is_nodata"}: result = False
             else:
@@ -160,6 +162,15 @@ class PixelCompiler:
             self._double_structural_depth = depth
 
     def _expression(self, p):
+        if p.op == "integer_values":
+            from .integer_values_graph import compile_integer_values_pixel
+
+            return compile_integer_values_pixel(self, p)
+        if p.op in {"eq", "neq", "lt", "lte", "gt", "gte"} and any(
+                self.has_double_precision(value) for value in p.args):
+            from .integer_values_graph import compile_integer_values_pixel
+
+            return compile_integer_values_pixel(self, p)
         if p.op.startswith("math_"):
             from .pixel_math_graph import compile_pixel_math
 

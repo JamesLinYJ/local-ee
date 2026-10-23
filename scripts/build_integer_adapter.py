@@ -18,7 +18,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "engine/ee_integer_adapter.scala"
-SOURCES = [SOURCE, ROOT / "engine/ee_grid_adapter.scala", ROOT / "engine/ee_mask_adapter.scala",
+SOURCES = [SOURCE, ROOT / "engine/ee_cell_conversion.scala", ROOT / "engine/ee_grid_adapter.scala", ROOT / "engine/ee_mask_adapter.scala",
            ROOT / "engine/ee_reduce_support.scala", ROOT / "engine/ee_reduce_numeric.scala",
            ROOT / "engine/ee_reduce_statistics.scala",
            ROOT / "engine/ee_reduce_adapter.scala", ROOT / "engine/ee_classify_numeric.scala",
@@ -28,6 +28,8 @@ SOURCES += [ROOT / "engine/ee_remap_numeric.scala", ROOT / "engine/ee_remap_adap
 SOURCES += [ROOT / "engine/ee_image_sample_options.scala",
             ROOT / "engine/ee_image_sample_kernel.scala", ROOT / "engine/ee_image_sample_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_pixel_math_numeric.scala", ROOT / "engine/ee_pixel_math_adapter.scala"]
+SOURCES += [ROOT / "engine/ee_integer_values_spec.scala", ROOT / "engine/ee_integer_values_numeric.scala",
+            ROOT / "engine/ee_integer_values_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_focal_spec.scala", ROOT / "engine/ee_focal_numeric.scala",
             ROOT / "engine/ee_focal_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_convolve_spec.scala", ROOT / "engine/ee_convolve_numeric.scala",
@@ -54,6 +56,7 @@ SERVICE_ENTRY = ("local.ee.integer.LocalEeIntegerCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.remap.LocalEeRemapCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.image.sample.LocalEeImageSampleCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.math.LocalEePixelMathCubeProcessProvider\n"
+SERVICE_ENTRY += "local.ee.reduce.LocalEeIntegerValuesCubeProcessProvider\n"
 
 SERVICE_ENTRY += "local.ee.reduce.LocalEeFocalCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeConvolveCubeProcessProvider\n"

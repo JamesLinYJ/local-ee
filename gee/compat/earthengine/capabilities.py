@@ -65,6 +65,15 @@ SUPPORTED_FUNCTIONS = frozenset({
     "List.filter", "Dictionary.select", "Dictionary.remove",
     *SUPPORTED_DATE_FUNCTIONS,
     *SUPPORTED_INTEGER_FUNCTIONS,
+    *("Image." + n for n in (
+        "byte", "toByte", "uint8", "toUint8", "int8", "toInt8",
+        "short", "toShort", "int16", "toInt16", "int", "toInt",
+        "int32", "toInt32", "uint16", "toUint16", "uint32", "toUint32",
+        "long", "toLong", "int64", "toInt64", "bitwiseAnd", "bitwise_and",
+        "bitwiseOr", "bitwise_or", "bitwiseXor", "bitwise_xor", "bitwiseNot",
+        "bitwise_not", "bitCount", "leftShift", "left_shift", "rightShift",
+        "right_shift",
+    )),
     "ImageCollection.load", "Image.load", "Image.constant", "Image", "ImageCollection",
     "Collection.filter", "Collection.map", "Collection.limit", "Collection.sort", "Collection.size", "Collection.first", "Collection.randomColumn",
     "ImageCollection.mosaic", "ImageCollection.qualityMosaic", "Image.select", "Image.rename", "Image.bandNames", "Image.toFloat", "Image.toDouble",
@@ -327,7 +336,15 @@ def get_capabilities():
             "metadata-dependent collection maps expand a finite local item sequence; pure pixel maps retain the compact path",
             "UTC date fields supported with documented local policies for average year/month durations and ISO weeks; no Google numerical comparison",
             "qualityMosaic requires identical bands; equal quality uses the last local item, not yet Google-compared",
-            "Number bitwise operations accept constrained integer domains; Image bitwise and integer casts remain unsupported",
+            ("Image integer casts and bit operations use a bounded native Float64/NaN SPI, finite source grids, "
+             "SDK single-band broadcast and image1 band order. Casts truncate toward zero and clamp 8/16/32-bit "
+             "ranges; int64 and bit values stay within exact +/-2^53, shifts use0..63, and bitCount is signed64 "
+             "two's complement. Results remain Float64, including bounded casts and bitCount; use toFloat() "
+             "explicitly before generic pixel arithmetic. Integer width/dtype parity with Google is unverified; "
+             "shared50000 work,500 graph nodes,1MB wire, decoded-cell and native-work limits apply."),
+            ("Exact eq/neq/lt/lte/gt/gte comparisons use the native path when any operand is Float64, preserving "
+             "finite Float64 values and mask intersection; Float32 comparisons keep their existing callback path. "
+             "Generic Float64 arithmetic still rejects unless explicitly converted with toFloat()."),
             "toDouble/toFloat convert physical cells; bounded Float64 mean/median/min/max/sum/count/first/last/sample-SD reductions preserve precision; generic Float64 pixel callbacks still reject",
             "binary updateMask only; planar EPSG:4326 input geometries",
             "Python named GeoJSON CRS is decoded; explicit spherical edges, non-EPSG:4326 geometry, left-inside interiors and reprojection tolerances reject; omitted edge flags retain the existing local planar policy",

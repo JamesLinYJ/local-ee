@@ -23,7 +23,7 @@ final class LocalEeIntegerCubeProcesses {
     val targetType = DoubleConstantNoDataCellType
     val source = cube.asInstanceOf[ContextRDD[Any, MultibandTile, TileLayerMetadata[Any]]]
     val converted: RDD[(Any, MultibandTile)] = source.mapValues(
-      (tile: MultibandTile) => tile.convert(targetType)
+      (tile: MultibandTile) => LocalEeCellConversion.toDouble(tile)
     )
     val metadata = source.metadata.copy(cellType = targetType)
     new OpenEORasterCube[Any](converted, metadata, cube.openEOMetadata)
@@ -40,7 +40,7 @@ final class LocalEeIntegerCubeProcesses {
     val targetType = FloatConstantNoDataCellType
     val source = cube.asInstanceOf[ContextRDD[Any, MultibandTile, TileLayerMetadata[Any]]]
     val converted: RDD[(Any, MultibandTile)] = source.mapValues(
-      (tile: MultibandTile) => tile.convert(targetType)
+      (tile: MultibandTile) => LocalEeCellConversion.toFloat(tile)
     )
     val metadata = source.metadata.copy(cellType = targetType)
     new OpenEORasterCube[Any](converted, metadata, cube.openEOMetadata)
