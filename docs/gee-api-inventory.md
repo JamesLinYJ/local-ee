@@ -4,6 +4,8 @@
 
 Python 类型、方法、继承方法、参数默认值和命名绑定另见 [Python API 报告](../reports/gee-python-api-inventory.json) 与 [Python 优先清单](gee-python/list.md)。2026-10-22 新增的有限 metadata Join 和静态 Array／矩阵支持，不表示 Image.array*、栅格回归或整个公开工作流已经完成。旧审计计数继续作为历史上下文保留。
 
+第三十一批的分类后表操作参数／运行时证据见 [Python当前清单](gee-python/list.md) 和 [分类后表合同](gee-python/classified-tables.md)；生成报告同步记录实际范围，入口仍278／991，只统计声明名称。
+
 ## 清单范围
 
 JSON 为每一个 `vendor/earthengine-js/algorithms.json` 条目保留官方算法名、返回类型、描述及原始有序参数记录，包括可选标志和默认值。名称、签名和参数完整性由测试与 pinned 文件逐项比较。每个条目也包含：

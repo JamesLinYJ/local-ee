@@ -29,28 +29,28 @@ def _filter_work(filt):
             continue
         work += 1
         if work > MAX_TRANSLATOR_WORK or depth > MAX_FILTER_WIRE_DEPTH:
-            fail("Sampled FeatureCollection filter exceeds its bounded structure")
+            fail("FeatureCollection filter exceeds its bounded structure")
         if isinstance(value, Filter):
             if id(value) in active:
-                fail("Sampled FeatureCollection filter cannot contain cycles")
+                fail("FeatureCollection filter cannot contain cycles")
             active.add(id(value))
             pending.append((value, depth, True))
             work += len(value.name) + 1
             pending.append((value.args, depth + 1, False))
         elif type(value) is dict:
             if id(value) in active:
-                fail("Sampled FeatureCollection filter cannot contain cycles")
+                fail("FeatureCollection filter cannot contain cycles")
             active.add(id(value))
             pending.append((value, depth, True))
             work += len(value)
             for key, child in value.items():
                 if not isinstance(key, str):
-                    fail("Sampled FeatureCollection filter arguments need string keys")
+                    fail("FeatureCollection filter arguments need string keys")
                 work += len(key)
                 pending.append((child, depth + 1, False))
         elif type(value) in (list, tuple):
             if id(value) in active:
-                fail("Sampled FeatureCollection filter cannot contain cycles")
+                fail("FeatureCollection filter cannot contain cycles")
             active.add(id(value))
             pending.append((value, depth, True))
             work += len(value)
@@ -60,7 +60,7 @@ def _filter_work(filt):
         elif value is None or type(value) in (bool, int, float):
             pass
         else:
-            fail("Sampled FeatureCollection filters support scalar values only")
+            fail("FeatureCollection filters support scalar values only")
     return work
 
 

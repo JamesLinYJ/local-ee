@@ -224,7 +224,7 @@ def actual_table(data, work, *, allow_runtime):
     if type(data) is SampledFeatureTable:
         columns = sampled_table_state(data, work)
     elif allow_runtime and type(data) is RuntimeFeatureTable:
-        columns = tuple(data.columns)
+        columns = classified_runtime_columns(data, work)
     else:
         raise ValueError("RF matrix operations require an audited sampled or classified table")
 
@@ -252,6 +252,38 @@ def attach_lineage(result, tracer, *sources):
     result.traces = traces
     result.data_tracer = owner
     return result
+
+
+def classified_runtime_columns(table, work):
+    """Revalidate classified schema and inherit its completed table-op work."""
+    from .ee_runtime_table_ops import (
+        MAX_RUNTIME_TABLE_WORK, has_classification_origin,
+        validate_runtime_table_origin,
+    )
+
+    if not has_classification_origin(table):
+        return tuple(table.columns)
+    prior = getattr(table, "runtime_operation_work", None)
+    if type(prior) is not int or not 0 <= prior <= MAX_RUNTIME_TABLE_WORK:
+        raise ValueError("Runtime classified table has invalid cumulative operation work")
+    if work.steps < prior:
+        work.charge(prior - work.steps)
+    return validate_runtime_table_origin(table, work)
+
+
+def classified_table_origin(
+    table, specification, *, prior_sample_operation_count=0,
+    prior_sample_operation_work=0, operations=(), operation_work=None,
+):
+    """Record exact classifier provenance and the inherited table-op budget."""
+    from .ee_json_result import attach_classification_origin
+
+    return attach_classification_origin(
+        table, specification,
+        prior_sample_operation_count=prior_sample_operation_count,
+        prior_sample_operation_work=prior_sample_operation_work,
+        operations=operations, operation_work=operation_work,
+    )
 
 
 def predict(model, query_text):

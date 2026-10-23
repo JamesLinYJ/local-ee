@@ -14,6 +14,7 @@ from .ee_rf_validation_runtime import (
     attach_lineage,
     checked,
     checked_model,
+    classified_table_origin,
     decoded_classify_spec,
     dry_run_tracer,
     pending_matrix,
@@ -46,7 +47,9 @@ def local_ee_smile_rf_classify_rows(args, env):
     if type(model) is PendingSmileRfModel or tracer is not None:
         if type(model) is PendingSmileRfModel and model.data_tracer is not tracer:
             raise ValueError("Pending Smile RF model does not belong to this dry run")
-        return pending_table(classify_spec["columns"], tracer, model)
+        return classified_table_origin(
+            pending_table(classify_spec["columns"], tracer, model), args["spec"],
+        )
 
     if type(model) is not TrainedSmileRfModel:
         raise ValueError("RF feature classification requires an exact trusted trained model")
@@ -73,7 +76,8 @@ def local_ee_smile_rf_classify_rows(args, env):
     copy_work = SampledFeatureTable._measure_copy_work(data)
     budget.charge(copy_work + len(features) * len(classify_spec["columns"]))
     result = RuntimeFeatureTable(data, list(classify_spec["columns"]))
-    return attach_lineage(result, None, model)
+    result = attach_lineage(result, None, model)
+    return classified_table_origin(result, args["spec"])
 
 
 def local_ee_smile_rf_classify_samples(args, env):
@@ -102,6 +106,7 @@ def local_ee_smile_rf_classify_samples(args, env):
     for name in model.schema:
         if name not in columns:
             raise ValueError(f"RF audited table schema is missing classifier property: {name}")
+    prior_sample_operation_count = len(table.sample_operations)
 
     tracer = dry_run_tracer(env)
     if type(table) is PendingSampledTable or type(model) is PendingSmileRfModel or tracer is not None:
@@ -110,7 +115,11 @@ def local_ee_smile_rf_classify_samples(args, env):
             raise ValueError("Pending Smile RF model does not belong to this dry run")
         if type(table) is PendingSampledTable and table.data_tracer is not tracer:
             raise ValueError("Pending RF samples do not belong to this dry run")
-        return pending_table(classify_spec["columns"], tracer, *sources)
+        return classified_table_origin(
+            pending_table(classify_spec["columns"], tracer, *sources), args["spec"],
+            prior_sample_operation_count=prior_sample_operation_count,
+            prior_sample_operation_work=prior,
+        )
 
     if type(model) is not TrainedSmileRfModel:
         raise ValueError("RF sample classification requires an exact trusted trained model")
@@ -142,7 +151,12 @@ def local_ee_smile_rf_classify_samples(args, env):
     copy_work = SampledFeatureTable._measure_copy_work(data)
     budget.charge(copy_work + len(features) * len(classify_spec["columns"]))
     result = RuntimeFeatureTable(data, list(classify_spec["columns"]))
-    return attach_lineage(result, None, table, model)
+    result = attach_lineage(result, None, table, model)
+    return classified_table_origin(
+        result, args["spec"],
+        prior_sample_operation_count=prior_sample_operation_count,
+        prior_sample_operation_work=prior,
+    )
 
 
 def local_ee_smile_rf_confusion(args, env):
@@ -181,7 +195,12 @@ def local_ee_error_matrix(args, env):
     matrix_spec = decode_matrix_spec(spec_text)
     table = args["data"]
     if type(table) in (PendingSampledTable, PendingRuntimeTable):
-        columns = sampled_table_state(table, budget) if type(table) is PendingSampledTable else tuple(table.columns)
+        if type(table) is PendingSampledTable:
+            columns = sampled_table_state(table, budget)
+        else:
+            from .ee_rf_validation_runtime import classified_runtime_columns
+
+            columns = classified_runtime_columns(table, budget)
         pending = True
         data = None
     elif type(table) in (SampledFeatureTable, RuntimeFeatureTable):

@@ -65,7 +65,9 @@ def get_capabilities():
              "Model refs must identify an RF trainer, no user Java bytes/URLs/paths. Opaque matrices feed only supported accessors and cannot be returned directly or nested in dynamic containers. "
              "Actual Float32/Float64 input, selected NoData masks, valid infinity rejects, Int32 v, grid/time retained. "
              "Prediction bound1e9 pixels*keys*sum(actual tree depths), and1e9 row*actual-depth-sum prediction work for feature tables. "
-             "Optional pinned RF runtime package required; no runtime downloads. RandomColumn uses the local SHA-256 row-key algorithm for inline Features and lazy sampled tables; it is deterministic locally and is not Google's random oracle. "
+             "Optional pinned RF runtime package required; no runtime downloads. RandomColumn uses the local SHA-256 row-key algorithm for inline Features, lazy sampled tables and trusted RF classified tables; it is deterministic locally and is not Google's random oracle. "
+             "RF classified tables support filter, unsorted limit and randomColumn then errorMatrix/getInfo/CSV; immutable base schema, sequential headers, real IDs/geometry/metadata and dry-run lineage are preserved. "
+             "Combined sampled/post-classified operations cap at16 with cumulative50000 table work; map/sort/retraining remain unsupported. "
              "Explain/model persistence, other modes, generic runtime Array/Number algebra and arbitrary dynamic containers reject; "
              "no Google version/RNG/bagging/dtype equivalence or full Spark/deployment acceptance."),
             ("Image.remap selects one scalar bound band (first by default), returns only remapped, and retains properties/time/grid/footprint. "

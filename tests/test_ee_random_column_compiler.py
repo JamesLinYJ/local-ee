@@ -262,14 +262,19 @@ def test_random_column_rejects_missing_row_keys_reserved_names_and_image_collect
         features=rows, classProperty="label", inputProperties=["value"],
     )
     classified = rows.classify(trained, outputName="predicted")
-    with pytest.raises(UnsupportedEEError, match="Unsupported Earth Engine algorithm"):
+    for value, operation in (
+        (classified.randomColumn("after", rowKeys=["value"]), "random_column"),
+        (classified.filter(ee.Filter.gte("value", 0)), "filter"),
+    ):
+        result = compile_expression(encode(ee, value), local[0], local[1])
+        validate(result["process_graph"])
+        assert result["kind"] == "runtime_table"
+        final = next(node for node in result["process_graph"].values() if node.get("result"))
+        assert final["process_id"] == "local_ee_runtime_table_op"
+        assert decode_sample_operation(final["arguments"]["spec"])["operation"] == operation
+    with pytest.raises(UnsupportedEEError, match="rowKeys must exist"):
         compile_expression(
-            encode(ee, classified.randomColumn("after", rowKeys=["value"])),
-            local[0], local[1],
-        )
-    with pytest.raises(UnsupportedEEError, match="Expected a collection and filter"):
-        compile_expression(
-            encode(ee, classified.filter(ee.Filter.gte("value", 0))),
+            encode(ee, classified.randomColumn("after", rowKeys=["missing"])),
             local[0], local[1],
         )
 

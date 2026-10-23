@@ -122,7 +122,7 @@ const entries: ReferenceEntry[] = [
   {
     id: "gee-random-column",
     title: "随机列与训练／验证拆分",
-    text: "FeatureCollection.randomColumn 支持 uniform 和 normal、种子及有序 rowKeys。默认使用已有 system:index；内联要素没有 ID 时须提供明确行键，不按行号伪造标识。相同行键与种子返回相同值，重排和筛选不会重抽；空值或复杂行键会报错。新列可被筛选、导出及训练使用，覆盖普通字段会保留列位置。使用本地固定算法，不保证与 Google 的随机值一致。表操作累计最多16步，资源预算可能限制有效行数。分类后的变换仍未支持。",
+    text: "FeatureCollection.randomColumn 支持 uniform 和 normal、种子及有序 rowKeys。默认使用已有 system:index；内联要素没有 ID 时须提供明确行键，不按行号伪造标识。相同行键与种子返回相同值，重排和筛选不会重抽；空值或复杂行键会报错。新列可被筛选、导出及训练使用，覆盖普通字段会保留列位置。使用本地固定算法，不保证与 Google 的随机值一致。表操作累计最多16步，资源预算可能限制有效行数。分类后可继续 filter、无排序 limit、randomColumn，再计算矩阵、getInfo 或导出 CSV；前后操作共同计入16步和工作预算。map、排序和再次训练仍未支持。",
     code: "// samples 为已有取样表\nvar split = samples.randomColumn('split', 42);\nvar training = split.filter(ee.Filter.lt('split', 0.7));\nvar validation = split.filter(ee.Filter.gte('split', 0.7));\nvar model = ee.Classifier.smileRandomForest(50).train(training, 'label', ['red', 'nir']);\nvar predictions = validation.classify(model, 'prediction');\nprint(predictions.errorMatrix('label', 'prediction', [0, 1]).array());",
   },
   {

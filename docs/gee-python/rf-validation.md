@@ -28,7 +28,7 @@ result = run_local(ee, workflow, fixture, "sampled")
 
 已知为空的内联集合 `FeatureCollection([])` 可以调用 `classify` 并编译；结果保留 0 行，不伪造预测，同时声明 `system:index`、预测属性和 `.geo` 列。对该空结果调用 `errorMatrix` 时必须显式提供 `order`，以确定空矩阵的类别轴；省略顺序会在编译阶段失败。显式顺序只定义矩阵形状和标签，不会填充计数。空矩阵上的准确率、kappa、消费者／生产者准确率或 F-score 若遇到零分母，会在运行时失败，不返回 null、NaN 或伪造的零值。测试中的 `None` 仅表示独立有理数参考将该指标标记为未定义，不表示运行时返回 JSON null。
 
-当前仅支持把分类要素表直接读取、导出，或直接传入 `errorMatrix`。分类后继续执行 `filter` 等要素表操作不在支持范围内；运行时表、矩阵和指标值也不能参与一般算术或装入通用动态结果容器。训练混淆矩阵是重代入矩阵，不是袋外准确率。`randomColumn`、其他分类器和模式、持久化／explain、完整 Spark 作业行为、浏览器交互、Google 服务对照和部署验收均不属于本批范围。Python／JavaScript SDK 的语义序列化一致，只能说明客户端请求含义一致，不能证明随机森林已经拟合。
+第三十一批已接通分类后的 `filter`、无排序 `limit` 和 `randomColumn`，可继续读取、导出或传入 `errorMatrix`，详见 [分类后表操作](classified-tables.md)。运行时表、矩阵和指标值也不能参与一般算术或装入通用动态结果容器。训练混淆矩阵是重代入矩阵，不是袋外准确率。其他分类器和模式、持久化／explain、完整 Spark 作业行为、浏览器交互、Google 服务对照和部署验收均不属于本批范围。Python／JavaScript SDK 的语义序列化一致，只能说明客户端请求含义一致，不能证明随机森林已经拟合。
 
 运行以下聚焦检查：
 

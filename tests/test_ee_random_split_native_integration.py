@@ -32,7 +32,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def test_actual_image_sample_random_filter_and_smile_rf_python_jvm_bridge(monkeypatch):
+def test_actual_image_sample_random_filter_and_smile_rf_python_jvm_bridge(monkeypatch, tmp_path):
     java, scala_tools, runtime_jars, py4j_site, py4j_jar = native_artifacts()
     SCRATCH.mkdir(parents=True, exist_ok=True)
     AUDIT.mkdir(parents=True, exist_ok=True)
@@ -44,6 +44,9 @@ def test_actual_image_sample_random_filter_and_smile_rf_python_jvm_bridge(monkey
         bag_fraction=1.0, max_nodes=4, seed=41,
     )
     rf_spec = compiled_training_spec(fixture, parameters)
+    from ee_classified_operations_workflow import compiled_program
+
+    _, post_classify_spec, post_rf_spec, post_operations = compiled_program(fixture, parameters)
     base_jar, base_manifest_path, base_manifest, rf_jar, rf_manifest = build_adapters()
     classes, classpath_paths, compile_stderr = compile_probe(
         java, scala_tools, runtime_jars, base_jar, rf_jar,
@@ -83,7 +86,7 @@ def test_actual_image_sample_random_filter_and_smile_rf_python_jvm_bridge(monkey
 
         sample_spec = prepare_image_sample_spec(
             fixture["region"], fixture["band_order"], factor=1.0,
-            seed=fixture["options"]["seed"], drop_nulls=True,
+            seed=fixture["options"]["seed"], drop_nulls=True, geometries=True,
         )
         origin = decode_sampling_spec(sample_spec)
         table = SampledFeatureTable(
@@ -96,6 +99,10 @@ def test_actual_image_sample_random_filter_and_smile_rf_python_jvm_bridge(monkey
         original = table.data
         assert original["properties"] == {"band_order": fixture["band_order"]}
         assert table.columns == ["system:index", "landcover", "reflectance", ".geo"]
+        assert [feature["geometry"] for feature in original["features"]] == [
+            {"type": "Point", "coordinates": [row["x"], row["y"]]}
+            for row in raw_sample_reference(fixture)
+        ]
 
         seed = 29
         random_spec = prepare_random_column_spec(
@@ -177,6 +184,81 @@ def test_actual_image_sample_random_filter_and_smile_rf_python_jvm_bridge(monkey
         assert actual_training_matrix == expected_training_matrix
         assert sum(map(sum, actual_training_matrix)) == len(train_features)
 
+        # The new chain consumes the exact specs compiled from the official
+        # SDK example and actual rows predicted by a genuine second model.
+        # Its explicit predictor list excludes the label, unlike the metadata
+        # default exercised above. Synthetic counts still do not prove skill.
+        from engine.ee_process_adapters import local_ee_runtime_table_op
+
+        post_model = local_ee_train_smile_rf_samples(
+            {"data": training, "spec": post_rf_spec}, env=None,
+        )
+        assert tuple(post_model.schema) == ("reflectance",)
+        classified_all = local_ee_smile_rf_classify_samples({
+            "data": randomized, "spec": post_classify_spec, "model": post_model,
+        }, env=None)
+        before_operations = classified_all.data
+        held_out = local_ee_runtime_table_op(
+            {"data": classified_all, "spec": post_operations[0]}, env=None,
+        )
+        assert [row["id"] for row in held_out.data["features"]] == [
+            row["id"] for row in validation_features
+        ]
+        annotated = local_ee_runtime_table_op(
+            {"data": held_out, "spec": post_operations[1]}, env=None,
+        )
+        limited = local_ee_runtime_table_op(
+            {"data": annotated, "spec": post_operations[2]}, env=None,
+        )
+        assert limited.columns == [
+            "system:index", "landcover", "reflectance", "split", "prediction", "audit_draw", ".geo",
+        ]
+        expected_post_rows = before_operations["features"]
+        expected_post_rows = [row for row in expected_post_rows
+                              if random_column_reference(row["id"], 29) >= 0.5][:8]
+        final_rows = limited.data["features"]
+        assert len(final_rows) == len(expected_post_rows) == 8
+        for actual, original in zip(final_rows, expected_post_rows):
+            assert actual["id"] == original["id"]
+            assert actual["geometry"] == original["geometry"]
+            assert actual["properties"] == {
+                **original["properties"],
+                "audit_draw": random_column_reference(original["id"], 31),
+            }
+        assert limited.data["properties"] == {"band_order": fixture["band_order"]}
+        assert classified_all.data == before_operations
+        post_matrix = local_ee_error_matrix({
+            "data": limited, "spec": prepare_matrix_spec("landcover", "prediction", [0, 1]),
+        }, env=None)
+        post_counts = matrix_array(post_matrix, local_ee_confusion_value, prepare_metric_spec)
+        assert post_counts == matrix_counts(final_rows, "landcover", "prediction")
+        assert sum(map(sum, post_counts)) == 8
+        from uuid import uuid4
+        import csv
+        from gee.services.ee_runtime_results import read_result, result_context
+
+        job_id = str(uuid4())
+        output = tmp_path / "jobs" / job_id / "out"
+        output.mkdir(parents=True)
+        assets = limited.write_assets(output / "out")
+        row = {"id": job_id, "assets": assets, "context": {
+            "protocol": "earthengine", **result_context({
+                "kind": "runtime_table", "bands": limited.columns,
+            }),
+        }}
+        assert read_result(tmp_path, row) == limited.data
+        limited.format = "CSV"
+        csv_assets = limited.write_assets(output / "out")
+        assert set(csv_assets) == {"openEO.csv"}
+        with (output / "openEO.csv").open(newline="") as stream:
+            csv_rows = list(csv.DictReader(stream))
+        assert len(csv_rows) == 8
+        assert list(csv_rows[0]) == limited.columns
+        assert [value["system:index"] for value in csv_rows] == [value["id"] for value in final_rows]
+        assert [float(value["audit_draw"]) for value in csv_rows] == [
+            value["properties"]["audit_draw"] for value in final_rows
+        ]
+
         evidence = {
             "scope": "actual GeoTrellis Image.sample tile kernel -> Python SampledFeatureTable and random/filter split -> real Smile JVM factory, predictions, and confusion counts; authenticated loopback Py4J only; no SparkContext, RDD adapter, service, sandbox, or Google comparison",
             "fixture_sha256": hashlib.sha256(FIXTURE.read_bytes()).hexdigest(),
@@ -197,6 +279,16 @@ def test_actual_image_sample_random_filter_and_smile_rf_python_jvm_bridge(monkey
             ],
             "validation_matrix": actual_validation_matrix,
             "training_matrix": actual_training_matrix,
+            "post_classification": {
+                "training_schema": list(post_model.schema),
+                "compiled_operations": [json.loads(text) for text in post_operations],
+                "actual_rows": [classified_all.row_count, held_out.row_count, annotated.row_count, limited.row_count],
+                "columns": limited.columns,
+                "matrix": post_counts,
+                "independent_ids_random_geometry_metadata": "passed",
+                "source_unchanged": classified_all.data == before_operations,
+                "physical_json_readback_csv_headers_ids_random": "passed",
+            },
             "compile_stderr": compile_stderr,
         }
         (AUDIT / "random-split-native-integration.json").write_text(

@@ -17,6 +17,7 @@ from .feature_values import (
 from .feature_filters import matches_feature_filter
 from .collection_metadata import copy_collection_metadata, collection_with_metadata
 from .ir import Filter, Function, Image, ImageSequence, SampledFeatures, fail, integer
+from .runtime_feature_ir import RFClassifiedFeatureTable
 
 
 _COLLECTION_METHODS = frozenset({
@@ -30,6 +31,10 @@ _MAX_FEATURES = 1000
 def handles_feature(name, arguments):
     """Claim only operations whose receiver uses the inline Feature encoding."""
     a = arguments
+    if (name.startswith("Collection.")
+            and any(isinstance(a.get(key), RFClassifiedFeatureTable)
+                    for key in ("collection", "collection1", "collection2"))):
+        return True
     if (name in _COLLECTION_METHODS | {"Collection.errorMatrix", "FeatureCollection.classify"}
             and any(isinstance(a.get(key), SampledFeatures)
                     for key in ("collection", "collection1", "collection2", "features"))):
@@ -279,6 +284,11 @@ def _invoke_collection(translator, name, a):
 
 def invoke_feature(translator, name, arguments):
     """Evaluate a bounded operation on inline synthetic Feature data."""
+    if any(isinstance(arguments.get(key), RFClassifiedFeatureTable)
+           for key in ("collection", "collection1", "collection2")):
+        from .classified_feature_ops import invoke_classified_feature_operation
+
+        return invoke_classified_feature_operation(translator, name, arguments)
     if isinstance(arguments.get("collection"), SampledFeatures):
         from .sampled_feature_ops import invoke_sampled_feature_operation
 

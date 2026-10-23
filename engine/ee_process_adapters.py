@@ -167,6 +167,12 @@ def local_ee_sample_table_op(args, env):
     return handler(args, env)
 
 
+def local_ee_runtime_table_op(args, env):
+    from .ee_runtime_table_ops import local_ee_runtime_table_op as handler
+
+    return handler(args, env)
+
+
 def local_ee_train_smile_rf_rows(args, env):
     from .ee_smile_rf_training import local_ee_train_smile_rf_rows as handler
 
@@ -218,6 +224,7 @@ _HANDLERS = {
     "local_ee_train_minimum_distance": local_ee_train_minimum_distance,
     "local_ee_remap": local_ee_remap,
     "local_ee_sample_table_op": local_ee_sample_table_op,
+    "local_ee_runtime_table_op": local_ee_runtime_table_op,
     "local_ee_train_smile_rf_rows": local_ee_train_smile_rf_rows,
     "local_ee_train_smile_rf_samples": local_ee_train_smile_rf_samples,
     "local_ee_smile_rf_classify_rows": local_ee_smile_rf_classify_rows,

@@ -16,7 +16,9 @@
 
 ## 当前基线
 
-- 最新第三十批：MD／RF的inputProperties省略或null时只读取实际声明band_order，显式列表优先，保留完整字段顺序；新增内联集合级Element元数据及行操作传递。扫描／复制分开预充，get返回独立嵌套值，保留50000预算。冻结源码2640 passed／3 skipped（另排除4项延期原生测试），六个可信JVM／栅格组件及前端11／类型／构建通过；从官方客户端省略参数编译出的规格实际进入32行取样／16＋16划分／Smile训练与预测。入口仍278／991（28.05%），本批扩展已有方法参数，不扩大完整兼容率。未部署，无完整Spark／服务／浏览器／Google验收；sampleRegions v1默认字段、动态取样元数据修改、邻域、其他模式及完整API仍待做。见 reports/gee-python-wave30.json、docs/gee-python/training-schema.md。
+- 最新第三十一批：RF分类后filter／无排序limit／randomColumn→验证矩阵／getInfo／CSV，保留不可变分类规格和顺序列谱系；取样与分类后操作合计16步、表50000与RF150000分别计费。64项弱身份校验缓存预充开销、突变拒绝、淘汰全量校验。冻结源码2690 passed／3 skipped（另排除4项延期原生测试），六个可信组件和前端11／类型／构建通过；显式排除类别字段的真实JVM模型产生32→16→16→8行与[[3,0],[0,5]]合成计数，实际JSON／CSV读回通过。入口278／991（28.05%）仍只表示名称。未部署，无完整Spark／服务／浏览器／Google对照；完整API和生产目标保持进行中。见 reports/gee-python-wave31.json、docs/gee-python/classified-tables.md。
+
+- 第三十批历史记录：MD／RF的inputProperties省略或null时只读取实际声明band_order，显式列表优先，保留完整字段顺序；新增内联集合级Element元数据及行操作传递。扫描／复制分开预充，get返回独立嵌套值，保留50000预算。冻结源码2640 passed／3 skipped（另排除4项延期原生测试），六个可信JVM／栅格组件及前端11／类型／构建通过；从官方客户端省略参数编译出的规格实际进入32行取样／16＋16划分／Smile训练与预测。入口仍278／991（28.05%），本批扩展已有方法参数，不扩大完整兼容率。未部署，无完整Spark／服务／浏览器／Google验收；sampleRegions v1默认字段、动态取样元数据修改、邻域、其他模式及完整API仍待做。见 reports/gee-python-wave30.json、docs/gee-python/training-schema.md。
 
 - 第二十九批历史记录：有限randomColumn、采样列谱系、新增／覆盖字段的CSV与getInfo、RF训练／预测／验证指标组合；修复真实Image.sample元数据拒绝和可信直接样本表回归。schema缓存只复用不可变身份并预付新副本开销，保留50000编译预算。冻结源码2600 passed／3 skipped（另排除4项延期原生测试），六个可信JVM／栅格组件及前端11／类型／构建通过。实际32行样本按本地随机值划分16／16并进入真实Smile模型，验证／训练矩阵频数通过；无完整Spark／服务／浏览器／部署／Google对照。入口278／991（28.05%）仅为名字；邻域、自动schema、其他分类模式和完整API目标仍进行中。见 reports/gee-python-wave29.json 与 docs/gee-python/random-split.md。
 

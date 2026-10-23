@@ -1,0 +1,233 @@
+{
+  "schema": "local-ee-python-wave31/v1",
+  "date": "2026-10-23",
+  "base_commit": "3486478d553dab6838dd08d5a627bfe12a18e6bf",
+  "title": "Post-classification filter, unsorted limit and randomColumn through actual validation and owned outputs",
+  "entry_inventory": {
+    "declared_handler_names": 278,
+    "pinned_signatures": 991,
+    "name_entry_percentage": 28.05,
+    "new_names": [],
+    "interpretation": "Existing API runtime semantics extended; not complete argument, numerical, arbitrary-script or Google compatibility"
+  },
+  "changes": [
+    "RF classified immutable IR appends ordered operations without changing base classification schema/source/model or fitting in compiler",
+    "Closed local_ee_runtime_table_op accepts exact trusted actual/pending classified tables; current-header rowKeys, combined sampled/post16 and cumulative50000 work, actual/pending matrix inheritance into separateRF150000",
+    "Preserve IDs, real center geometry, root metadata, ordered headers, input ownership and tracer identity; pending produces no rows",
+    "Bounded64 weak identity attestations and single validated operation advancement avoid quadratic schema rescans; charged lookup/bookkeeping/copies; mutations reject and eviction revalidates",
+    "Example36 explicitly excludes class label from predictor schema and exercises classify-first held-out selection; Python/JS docs and full inventory metadata updated"
+  ],
+  "validation": {
+    "full_regression": {
+      "passed": 2690,
+      "skipped": 3,
+      "failed": 0,
+      "duration_seconds": 46.102,
+      "compatibility_source_hashes_unchanged": true,
+      "frozen_source_files": 28,
+      "warnings": "3 existing rasterio PendingDeprecationWarnings",
+      "native_runtime_tests_excluded": 4,
+      "evidence": "audit/gee-python-wave31/final-verified/python.xml",
+      "real_components": [
+        "minimumDistance tile",
+        "Image.sample tile",
+        "actual authenticated Python/Py4J/Smile sample/random/classification/post-operation/matrix/IO",
+        "remap tile",
+        "sampleRegions tile",
+        "Smile RF training and prediction tile"
+      ],
+      "skips": [
+        {
+          "test": "tests.test_ee_grid_adapter.test_native_grid_and_unmask_spi_semantics",
+          "reason": "set LOCAL_EE_RUN_NATIVE_GRID_TEST=1 for the opt-in local[1] JVM/Spark probe"
+        },
+        {
+          "test": "tests.test_ee_integer.test_native_adapter_builds_and_executes_real_spi_tile_conversion",
+          "reason": "set LOCAL_EE_RUN_NATIVE_INTEGER_TEST=1 for the lightweight JVM/Spark probe"
+        },
+        {
+          "test": "tests.test_ee_reduce_adapter.test_native_single_time_and_band_reducer_semantics",
+          "reason": "set LOCAL_EE_RUN_NATIVE_REDUCER_TEST=1 for the opt-in local[1] JVM/Spark probe"
+        }
+      ]
+    },
+    "focused_final": {
+      "passed": 87,
+      "inventory_metadata_after_full": {
+        "tests_passed": 5,
+        "scope": "Limits catalogue text and generated inventory only; compatibility implementation and28 frozen sources unchanged"
+      }
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "Python_JS_semantic_graph_parity": "passed for seven example outputs",
+      "network_attempts": 0,
+      "original_probes": {
+        "serialized": 50,
+        "compiled": 45,
+        "rejected": 5,
+        "interpretation": "Selected expressions, not arbitrary project migration rate"
+      },
+      "full_python_inventory_sha256": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12"
+    },
+    "actual_trusted_component": {
+      "scope": "GeoTrellis tile sample -> authenticated Py4J actual Smile models -> Python trusted table operations -> exact counts and physical owned JSON/CSV. No SparkContext/RDD/batch/service/browser/sandbox/G proof",
+      "post_classification": {
+        "training_schema": [
+          "reflectance"
+        ],
+        "compiled_operations": [
+          {
+            "operation": "filter",
+            "predicate": {
+              "arguments": {
+                "filter": {
+                  "arguments": {
+                    "leftField": "split",
+                    "rightValue": 0.5
+                  },
+                  "name": "lessThan"
+                }
+              },
+              "name": "not"
+            },
+            "version": 1
+          },
+          {
+            "algorithm": "sha256-rowkeys-v1",
+            "column_name": "audit_draw",
+            "distribution": "uniform",
+            "operation": "random_column",
+            "row_keys": [
+              "system:index"
+            ],
+            "seed": 31,
+            "version": 1
+          },
+          {
+            "count": 8,
+            "operation": "limit",
+            "version": 1
+          }
+        ],
+        "actual_rows": [
+          32,
+          16,
+          16,
+          8
+        ],
+        "columns": [
+          "system:index",
+          "landcover",
+          "reflectance",
+          "split",
+          "prediction",
+          "audit_draw",
+          ".geo"
+        ],
+        "matrix": [
+          [
+            3,
+            0
+          ],
+          [
+            0,
+            5
+          ]
+        ],
+        "independent_ids_random_geometry_metadata": "passed",
+        "source_unchanged": true,
+        "physical_json_readback_csv_headers_ids_random": "passed"
+      },
+      "base_adapter_sha256": "2cc1715a5336e9f9538f4ecef0e77235095e7e2a21d57ba5d3c5f6eb17dc3df9",
+      "base_manifest_sha256": "f16e5c1911addcd5ef527dbb9e365b65eb972e7044c876cbfbf57334fea41874",
+      "rf_adapter_sha256": "4ba572b3078848ffff134dbb3ce80e6baa2930a2012bf33555f417a5b5ec9887",
+      "gateway_terminated": true,
+      "matching_pair_preserved": true,
+      "independent_reference": "Raw pixel grid/centers, separately framed SHA256 row keys, selected IDs, real geometry, exact property dictionaries and counted matrices; not independent RF tree algorithm or real-data skill/Google parity"
+    },
+    "review": {
+      "scope": "Parent direct review plus independent Luna/max source-only review",
+      "final": "No confirmed remaining defect in declared bounded scope; reviewer did not execute tests",
+      "corrections": [
+        "Precharge origin parsing/payload traversal before allocation",
+        "Actual header costs instead of fixed256 phantom work; bounded immutable-lineage cache removes quadratic rescanning",
+        "Inherit runtime table work into actual and pending RF matrices",
+        "Charge cache bookkeeping and separate header copies before allocations"
+      ]
+    },
+    "genuine_failures": [
+      {
+        "evidence": "audit/gee-python-wave31/focused-regression-failure.json",
+        "result": "52 passed/1 failed",
+        "cause": "12 overwrite/4 limit chain repeatedly rescanned immutable prior operations",
+        "resolution": "Weak exact-identity attestation plus single-step advancement; original fixture/caps retained"
+      },
+      {
+        "evidence": "audit/gee-python-wave31/cache-extraction-failure.json",
+        "cause": "Stale _table_columns reference after cohesive extraction",
+        "resolution": "Explicit cache accessor boundary; focused suite reran"
+      },
+      {
+        "evidence": "audit/gee-python-wave31/final-reviewed/python.xml",
+        "result": "2689 passed/1 failed/3 skipped",
+        "cause": "Old Wave29 assertions required newly implemented postclassification operations to reject",
+        "resolution": "Positive closedgraph/kind/spec checks with classified missing-rowkey negative retained; final2690 passed"
+      }
+    ],
+    "historical_evidence": {
+      "watched_files": 19,
+      "all_sha256_unchanged": true
+    },
+    "source_sha256": {
+      "engine/ee_json_result.py": "ff487d4eafea5e078b3a9db564f24a9dd2bb65af547a0289b232988de4f8e294",
+      "engine/ee_process_adapters.py": "79ae99e000aa88766a2ce35c4dd5d9103617e94f952b1a98eee0c81107067d5d",
+      "engine/ee_rf_validation.py": "4b640b8d68fba4c79cfb67590dffc4144d0e7b7f922ec61c20cfd429ea95c56e",
+      "engine/ee_rf_validation_runtime.py": "d02e3e83e2e026ef4c14df3332c571f859cd600371b014cf6fd4c3bf54283135",
+      "engine/ee_runtime_table_lineage.py": "cb1f9a4ea131fa18e8052ee781dfe7f5e4d2df097a4fadca8045641e078dfec9",
+      "engine/ee_runtime_table_ops.py": "40d69fe4da9f9f6e8a7ad33a0ba11dfed380800f3b331cec85ae2ba0b853df14",
+      "examples/36_GEE_python_classified_tables.py": "fcbd387c148f4924a3ccce675651f88b6c97c3f1e2611e29dabad5721ff9bd0d",
+      "gee/compat/earthengine/capabilities.py": "80e17d0ccafe70de9bff826f9528bfcc8a2352e5e81c575abbb90941bb6dea1e",
+      "gee/compat/earthengine/classified_feature_ops.py": "85f3082641dc7f513bc0f9b0a98b8973650238a68bc00588d335e32dbfce4988",
+      "gee/compat/earthengine/feature_error_matrix.py": "f0180cdcddcbe0ebb083b6e7756949aba4b54054ba5bbdcfe602179e8e4f370c",
+      "gee/compat/earthengine/feature_ops.py": "a2b5161e508ad5e54c6a22c6952bab206dea324759f44e9d5d2738751a2b03ad",
+      "gee/compat/earthengine/runtime_feature_ir.py": "9c148e5cf2994f0c08224db219a7ee82b72e9a8c89e8c7cd43d8ae18ff7bb7cc",
+      "gee/compat/earthengine/runtime_validation_graph.py": "d135cac5b6b5c9224443fbf1ad2c0e343102d30d8121a75c885f14ffaa5d6b45",
+      "gee/compat/earthengine/sampled_feature_ops.py": "648159ad27ba69675468e1dad4c1f23496149042af96f456e2bde2fd413532c4",
+      "gee/rf_validation_processes.py": "3b2717b1c143adbf1765698847ec6a7ba4d40a7aa68dd61fe88f0d57f6811cb9",
+      "gee/runtime_table_graph.py": "0ce3c58a9401e78e694d1758f775bbbdad430d186563b2758200214a8ad82c0a",
+      "gee/runtime_table_spec.py": "e3bfc89737543a48e245ecb9101be44c78fb60f79eb31683f17683063434e65e",
+      "tests/ee_classified_operations_workflow.py": "ca5e8c94834e73b0b6516ad3bd3d597b66f8a9e1bbb2f230dd4742c57caed589",
+      "tests/ee_random_split_native_helpers.py": "068fc68b17810a8687adc13603006823f4fb26f12974530f63b6120eee4778fe",
+      "tests/test_ee_classified_operations_compiler.py": "7a9a344d32c6f6dae0556b0a8a8aedc7e4c61c1badb7f6cb7556f53b1692c5dc",
+      "tests/test_ee_classified_operations_engine.py": "7a9d7d76a8542fe4f04936314f38af11bf48082f262ea62b1049af93cfdf1e0c",
+      "tests/test_ee_classified_operations_graph.py": "a2c39b6c85f172407b75bd406e2574153731de5ca7ae6646e24ae70d00e7f7f9",
+      "tests/test_ee_classified_operations_lineage.py": "e9ea2227965555473a5ba2615d641c7bbdd6a6a4db99a85aa44665a0cbf04f1a",
+      "tests/test_ee_classified_operations_workflow.py": "698e74bcd14a411e1e459f6f18b7159d9a5fdb4b6e84fc707c74086802afea33",
+      "tests/test_ee_random_column_compiler.py": "2bfb16b593855d161342d5f91e89bff8a98278d97b46e3e25aff75d75226345f",
+      "tests/test_ee_random_split_native_integration.py": "adbc25e497ce6912cbc83eec2bd5b56e4980fe97102719d976337b0a93c2ca60",
+      "web/src/docs/gee-docs.ts": "eaa71d7279decd3e2d0f83fcc1753d44dcd271d07aded8ec29f385b48c4d79a5",
+      "web/src/docs/local-docs.ts": "db2fdf2573cf44b25bb872513fdf579758dcc39f74b38b38673381c8a9b7d480"
+    }
+  },
+  "limits": [
+    "Other classifiers/modes, dynamic map/sort/retraining and general runtime scalar/array containers unsupported",
+    "Existing common row/column/cell/wire/work/node caps can reject smaller combinations; local random sequence not Google RNG",
+    "Synthetic RF counts not real-data predictive skill or an independent Google/Smile tree oracle",
+    "No deployment, full Spark/RDD/batch/HTTP/browser/isolation/real-data/Google same-data acceptance in this wave; deferred platform checks remain separate"
+  ],
+  "goal_status": "active",
+  "cleanup": {
+    "removed_bytes": 34644848,
+    "scratch_directories": 9,
+    "preliminary_duplicate_jars": 4,
+    "final_matching_pair_and_failure_evidence_preserved": true,
+    "historical_hashes_unchanged": true
+  }
+}

@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from ...rf_validation_spec import (
-    decode_classify_spec,
     decode_feature_rows,
     decode_matrix_spec,
     decode_metric_spec,
@@ -19,6 +18,8 @@ from .runtime_feature_ir import (
 )
 from .sampled_feature_ops import emit_sampled_operations, validated_sampled_schema
 from .smile_rf_graph import RF_SAMPLES, compile_smile_rf_model
+from .classified_feature_ops import PROCESS as RUNTIME_TABLE_OPERATION
+from .classified_feature_ops import validated_classified_schema
 
 
 _SAMPLE_REGIONS = "local_ee_sample_regions"
@@ -56,12 +57,9 @@ def _sampled_table_ref(graph, sampled, label):
 
 
 def _classified_table_ref(graph, table):
-    try:
-        classify_spec = decode_classify_spec(table.spec)
-        if classify_spec["columns"] != list(table.columns):
-            fail("Smile RF feature table schema differs from its specification")
-    except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
-        fail(f"Smile RF feature table specification is invalid: {exc}")
+    columns, operations, _source_operations = validated_classified_schema(
+        table, graph.t, "Smile RF feature table",
+    )
     model_ref = compile_smile_rf_model(graph, table.classifier)
     if isinstance(table.source, SampledFeatures):
         if table.source is table.classifier.samples:
@@ -82,20 +80,26 @@ def _classified_table_ref(graph, table):
             )
         if table.rows is not None:
             fail("Smile RF sampled prediction cannot contain inline row data")
-        charge_array(graph.t, len(table.spec) + len(table.columns))
-        return graph.node(
+        charge_array(graph.t, len(table.spec) + len(columns))
+        data_ref = graph.node(
             _CLASSIFY_SAMPLES, data=data_ref, spec=table.spec, model=model_ref,
         )
-    if type(table.rows) is not str:
-        fail("Smile RF feature prediction rows are missing their canonical payload")
-    try:
-        decode_feature_rows(table.rows)
-    except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
-        fail(f"Smile RF feature prediction rows are invalid: {exc}")
-    charge_array(graph.t, len(table.spec) + len(table.columns))
-    return graph.node(
-        _CLASSIFY_ROWS, rows=table.rows, spec=table.spec, model=model_ref,
-    )
+    else:
+        if type(table.rows) is not str:
+            fail("Smile RF feature prediction rows are missing their canonical payload")
+        try:
+            decode_feature_rows(table.rows)
+        except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
+            fail(f"Smile RF feature prediction rows are invalid: {exc}")
+        charge_array(graph.t, len(table.spec) + len(columns))
+        data_ref = graph.node(
+            _CLASSIFY_ROWS, rows=table.rows, spec=table.spec, model=model_ref,
+        )
+    for operation in operations:
+        data_ref = graph.node(
+            RUNTIME_TABLE_OPERATION, data=data_ref, spec=operation,
+        )
+    return data_ref, columns
 
 
 def _matrix_ref(graph, matrix):
@@ -109,7 +113,7 @@ def _matrix_ref(graph, matrix):
             fail(f"Runtime errorMatrix specification is invalid: {exc}")
         table = matrix.table
         if isinstance(table, RFClassifiedFeatureTable):
-            data_ref = _classified_table_ref(graph, table)
+            data_ref, _columns = _classified_table_ref(graph, table)
         elif isinstance(table, SampledFeatures):
             data_ref = _sampled_table_ref(
                 graph, table, "FeatureCollection.errorMatrix sample table",
@@ -142,8 +146,8 @@ def compile_runtime_table(table, translator):
     if not isinstance(table, RFClassifiedFeatureTable):
         fail("Internal runtime feature table is malformed")
     graph = Graph(translator)
-    reference = _classified_table_ref(graph, table)
-    return {"kind": "runtime_table", **_base_result(graph, reference, list(table.columns))}
+    reference, columns = _classified_table_ref(graph, table)
+    return {"kind": "runtime_table", **_base_result(graph, reference, columns)}
 
 
 def compile_runtime_value(value, translator):

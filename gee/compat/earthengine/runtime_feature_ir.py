@@ -15,6 +15,7 @@ class RFClassifiedFeatureTable:
     columns: tuple[str, ...]
     row_count: int | None
     rows: str | None
+    operations: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)

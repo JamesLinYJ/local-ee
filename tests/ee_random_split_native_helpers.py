@@ -16,10 +16,10 @@ import pytest
 from scripts.build_integer_adapter import ROOT, _engine_paths, build as build_base_adapter, sha256
 
 
-SCRATCH = ROOT.parents[1] / "work/gee-python-wave30-native"
+SCRATCH = ROOT.parents[1] / "work/gee-python-wave31-native"
 AUDIT = (Path(os.environ["GEE_AUDIT_DIR"]) / "random-split-native"
          if os.environ.get("GEE_AUDIT_DIR")
-         else ROOT / "audit/gee-python-wave30" / f"standalone-{uuid4().hex}")
+         else ROOT / "audit/gee-python-wave31" / f"standalone-{uuid4().hex}")
 FIXTURE = ROOT / "tests/fixtures/ee-random-split-native-v1.json"
 SCALA_PROBE = ROOT / "tests/fixtures/ee-random-split-native-kernel.scala"
 RF_BUILD_ROOT = ROOT.parents[1] / "work/gee-python-wave27-native"

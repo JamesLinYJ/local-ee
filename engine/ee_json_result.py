@@ -79,11 +79,29 @@ class RuntimeFeatureTable(SampledFeatureTable):
 
     def __init__(self, data: dict, columns: list[str]):
         super().__init__(data=data, columns=columns)
+        self.classification_origin_spec = None
+        self.classification_origin_verified = False
+        self.runtime_operations = ()
+        self.prior_sample_operation_count = None
+        self.prior_sample_operation_work = None
+        self.runtime_operation_work = None
+        self.traces = ()
+        self.data_tracer = None
         # Validate the whole public shape before any result is published.
         _payload(self._data)
         self.format = "JSON"
 
+    def _validate_classification_origin(self):
+        from .ee_runtime_table_ops import has_classification_origin, validate_runtime_table_origin
+
+        if has_classification_origin(self):
+            from .ee_sample_table_ops import _SampleOperationContext
+
+            work = _SampleOperationContext(self.runtime_operation_work)
+            validate_runtime_table_origin(self, work)
+
     def write_assets(self, directory: str | Path):
+        self._validate_classification_origin()
         if self.is_format("CSV"):
             return super().write_assets(directory)
         if not self.is_format("JSON"):
@@ -91,6 +109,7 @@ class RuntimeFeatureTable(SampledFeatureTable):
         return _write_json(directory, _payload(self._data), "Earth Engine classified features")
 
     def create_flask_response(self):
+        self._validate_classification_origin()
         if self.is_format("CSV"):
             return super().create_flask_response()
         if not self.is_format("JSON"):
@@ -128,3 +147,44 @@ class PendingRuntimeTable(PendingRuntimeValue):
             raise ValueError("Invalid pending classified table schema")
         super().__init__(traces=traces, data_tracer=data_tracer)
         self.columns = tuple(columns)
+        self.classification_origin_spec = None
+        self.classification_origin_verified = False
+        self.runtime_operations = ()
+        self.prior_sample_operation_count = None
+        self.prior_sample_operation_work = None
+        self.runtime_operation_work = None
+
+
+def attach_classification_origin(
+    table, specification, *, prior_sample_operation_count=0,
+    prior_sample_operation_work=0, operations=(), operation_work=None,
+):
+    """Attach the immutable classification lineage used by runtime table ops."""
+    if type(table) not in (RuntimeFeatureTable, PendingRuntimeTable):
+        raise ValueError("Classification origin requires an exact runtime feature table")
+    if type(specification) is not str:
+        raise ValueError("Classification origin specification must be exact JSON text")
+    if (type(prior_sample_operation_count) is not int
+            or not 0 <= prior_sample_operation_count <= 16
+            or type(prior_sample_operation_work) is not int
+            or not 0 <= prior_sample_operation_work <= 50_000):
+        raise ValueError("Inherited sample operation count/work is outside its bounded domain")
+    if prior_sample_operation_count and prior_sample_operation_work == 0:
+        raise ValueError("Inherited sample operation count/work is inconsistent")
+    if (type(operations) is not tuple or len(operations) > 16
+            or any(type(item) is not str for item in operations)):
+        raise ValueError("Runtime feature operation chain must be an exact text tuple")
+    if prior_sample_operation_count + len(operations) > 16:
+        raise ValueError("Inherited and classified operation metadata is inconsistent")
+    if operation_work is None:
+        operation_work = prior_sample_operation_work
+    if (type(operation_work) is not int
+            or not prior_sample_operation_work <= operation_work <= 50_000):
+        raise ValueError("Runtime feature operation work is outside its cumulative budget")
+    table.classification_origin_spec = specification
+    table.classification_origin_verified = True
+    table.runtime_operations = operations
+    table.prior_sample_operation_count = prior_sample_operation_count
+    table.prior_sample_operation_work = prior_sample_operation_work
+    table.runtime_operation_work = operation_work
+    return table

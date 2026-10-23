@@ -5,6 +5,8 @@ from .rf_validation_spec import (
     decode_classify_spec, decode_feature_rows, decode_matrix_spec,
     decode_metric_spec,
 )
+from .runtime_table_spec import PROCESS as TABLE_OP
+from .runtime_table_graph import CLASSIFIERS, runtime_table_columns, runtime_table_known_empty
 
 
 CLASSIFY_ROWS = "local_ee_smile_rf_classify_rows"
@@ -12,13 +14,13 @@ CLASSIFY_SAMPLES = "local_ee_smile_rf_classify_samples"
 RF_CONFUSION = "local_ee_smile_rf_confusion"
 ERROR_MATRIX = "local_ee_error_matrix"
 CONFUSION_VALUE = "local_ee_confusion_value"
-CLASSIFIED_PRODUCERS = frozenset({CLASSIFY_ROWS, CLASSIFY_SAMPLES})
+CLASSIFIED_PRODUCERS = CLASSIFIERS | {TABLE_OP}
 MATRIX_PRODUCERS = frozenset({RF_CONFUSION, ERROR_MATRIX})
 SAMPLE_PRODUCERS = frozenset({"local_ee_sample_regions", "local_ee_sample_table_op"})
 TRAINERS = frozenset({"local_ee_train_smile_rf_rows", "local_ee_train_smile_rf_samples"})
 VALIDATION_PROCESSES = CLASSIFIED_PRODUCERS | MATRIX_PRODUCERS | {CONFUSION_VALUE}
 JSON_PRODUCERS = CLASSIFIED_PRODUCERS | {CONFUSION_VALUE}
-MODEL_CONSUMERS = CLASSIFIED_PRODUCERS | {RF_CONFUSION, "local_ee_smile_rf"}
+MODEL_CONSUMERS = CLASSIFIERS | {RF_CONFUSION, "local_ee_smile_rf"}
 
 
 def _source(value, nodes, producers):
@@ -35,13 +37,14 @@ def validate_validation_process(name, arguments, depth, node_context):
         CLASSIFY_SAMPLES: {"data", "spec", "model"},
         RF_CONFUSION: {"model"}, ERROR_MATRIX: {"data", "spec"},
         CONFUSION_VALUE: {"data", "spec"},
+        TABLE_OP: {"data", "spec"},
     }[name]
     if depth != 0 or type(arguments) is not dict or set(arguments) != fields:
         raise ValueError("Runtime validation requires exact top-level process arguments")
     nodes = node_context if type(node_context) is dict else {}
-    if name in CLASSIFIED_PRODUCERS | {RF_CONFUSION}:
+    if name in CLASSIFIERS | {RF_CONFUSION}:
         _source(arguments["model"], nodes, TRAINERS)
-    if name in CLASSIFIED_PRODUCERS:
+    if name in CLASSIFIERS:
         spec = decode_classify_spec(arguments["spec"])
         if name == CLASSIFY_ROWS:
             from .table_values import columns
@@ -56,6 +59,11 @@ def validate_validation_process(name, arguments, depth, node_context):
                 raise ValueError("RF output columns differ from the original feature table")
         else:
             _source(arguments["data"], nodes, SAMPLE_PRODUCERS)
+    elif name == TABLE_OP:
+        from .sample_table_spec import decode_sample_operation
+
+        _source(arguments["data"], nodes, CLASSIFIED_PRODUCERS)
+        decode_sample_operation(arguments["spec"])
     elif name == ERROR_MATRIX:
         _source(arguments["data"], nodes, SAMPLE_PRODUCERS | CLASSIFIED_PRODUCERS)
         decode_matrix_spec(arguments["spec"])
@@ -77,22 +85,22 @@ def _columns(nodes, reference):
 
     node = nodes[reference]
     if node["process_id"] in CLASSIFIED_PRODUCERS:
-        return decode_classify_spec(node["arguments"]["spec"])["columns"]
+        return runtime_table_columns(nodes, reference)
     origin, operations = sample_chain(nodes, reference)
     return sampled_columns(decode_sampling_spec(origin["arguments"]["spec"]), operations)
 
 
 def _known_empty(nodes, reference):
     node = nodes[reference]
-    return (node["process_id"] == CLASSIFY_ROWS
-            and not decode_feature_rows(node["arguments"]["rows"])["features"])
+    return (node["process_id"] in CLASSIFIED_PRODUCERS
+            and runtime_table_known_empty(nodes, reference))
 
 
 def validate_validation_dependencies(nodes):
     from .smile_rf_processes import _scoped_references
     from .smile_rf_spec import decode_rf_spec
 
-    for node in nodes.values():
+    for key, node in nodes.items():
         name, args = node["process_id"], node.get("arguments", {})
         if name in MATRIX_PRODUCERS and node.get("result"):
             raise ValueError("Opaque matrices require a bounded ConfusionMatrix accessor")
@@ -102,7 +110,9 @@ def validate_validation_dependencies(nodes):
             if (spec["output_name"] in original
                     or spec["columns"] != [*original[:-1], spec["output_name"], ".geo"]):
                 raise ValueError("RF output columns differ from the original sampled table")
-        if name in CLASSIFIED_PRODUCERS:
+        if name == TABLE_OP:
+            runtime_table_columns(nodes, key)
+        if name in CLASSIFIERS:
             model = nodes[args["model"]["from_node"]]
             schema = decode_rf_spec(model["arguments"]["spec"])["schema"]
             empty = name == CLASSIFY_ROWS and not decode_feature_rows(args["rows"])["features"]
@@ -123,7 +133,7 @@ def validate_validation_dependencies(nodes):
                     if not (name == CONFUSION_VALUE and parameter == "data" and direct):
                         raise ValueError("Opaque matrices can only feed their direct accessor data parameter")
                 elif producer in CLASSIFIED_PRODUCERS:
-                    if not (direct and parameter == "data" and name in {ERROR_MATRIX, "save_result"}):
+                    if not (direct and parameter == "data" and name in {TABLE_OP, ERROR_MATRIX, "save_result"}):
                         raise ValueError("Classified feature tables require a direct matrix or result consumer")
                     if name == "save_result" and str(args.get("format", "")).lower() not in {"csv", "json"}:
                         raise ValueError("Classified feature tables support CSV or JSON only")
@@ -142,7 +152,7 @@ def validation_process_spec(name):
                        "schema": {"type": "string", "maxLength": 1_000_000} if name == CLASSIFY_ROWS else schema})
         params.append({"name": "spec", "description": "Exact canonical version1 specification",
                        "schema": {"type": "string", "maxLength": 16_384}})
-    if name in CLASSIFIED_PRODUCERS | {RF_CONFUSION}:
+    if name in CLASSIFIERS | {RF_CONFUSION}:
         params.append({"name": "model", "description": "Opaque actual Smile trainer result",
                        "schema": {"type": "object", "subtype": "classifier-model"}})
     return {"id": name, "experimental": True, "categories": ["machine-learning"],

@@ -77,8 +77,8 @@ const entries: ReferenceEntry[] = [
     id: "gee-python-rf-validation",
     category: "GEE Python",
     title: "分类验证、混淆矩阵与 getInfo()",
-    text: "内联表或 sampleRegions/filter/limit 表可交给真实 RF 模型进行 classify，并保留原始字段、几何、ID 和行顺序。errorMatrix 以实际类为行、预测类为列；order 显式控制类别顺序。支持 array/order/accuracy/kappa/consumersAccuracy/producersAccuracy/fscore，未定义分母会明确报错。训练 confusionMatrix 是重代入指标；独立验证应使用未参与训练的表。getInfo 通过受任务权限保护的本地 JSON 结果返回，导出分类表使用 CSV。分类后的筛选／随机列、任意动态指标算术和嵌套动态容器仍未支持。",
-    code: "# model、validation 为已有模型和独立验证表\npredictions = validation.classify(model, 'prediction')\nmatrix = predictions.errorMatrix('label', 'prediction', [0, 1])\nprint(matrix.array().getInfo())\nprint(matrix.accuracy().getInfo())\nprint(model.confusionMatrix().array().getInfo())\ntask = ee.batch.Export.table.toDrive(\n    collection=predictions, description='validation', fileFormat='CSV')\ntask.start()",
+    text: "内联表或 sampleRegions/filter/limit 表可交给真实 RF 模型进行 classify，并保留原始字段、几何、ID 和行顺序。errorMatrix 以实际类为行、预测类为列；order 显式控制类别顺序。支持 array/order/accuracy/kappa/consumersAccuracy/producersAccuracy/fscore，未定义分母会明确报错。训练 confusionMatrix 是重代入指标；独立验证应使用未参与训练的表。getInfo 通过受任务权限保护的本地 JSON 结果返回，导出分类表使用 CSV。分类后可继续 filter、无排序 limit、randomColumn，再读取矩阵／getInfo 或导出 CSV；取样与分类后操作合计最多16步。任意动态指标算术和嵌套动态容器仍未支持。",
+    code: "# model、split 为已有模型和按同一随机列拆分的完整表\npredictions = split.classify(model, 'prediction')\nvalidation = predictions.filter(ee.Filter.gte('split', 0.7)).limit(100)\nmatrix = validation.errorMatrix('label', 'prediction', [0, 1])\nprint(matrix.array().getInfo())\nprint(matrix.accuracy().getInfo())\nprint(model.confusionMatrix().array().getInfo())\ntask = ee.batch.Export.table.toDrive(\n    collection=predictions, description='validation', fileFormat='CSV')\ntask.start()",
   },
   {
     id: "graph",

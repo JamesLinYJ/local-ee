@@ -13,6 +13,7 @@ from .feature_values import charge, is_collection, property_name, validate_featu
 from .ir import SampledFeatures, fail
 from .runtime_feature_ir import RFClassifiedFeatureTable, RuntimeFeatureErrorMatrix
 from .sampled_feature_ops import validated_sampled_schema
+from .classified_feature_ops import validated_classified_schema
 
 
 _MAX_FEATURES = 1000
@@ -158,7 +159,9 @@ def _runtime_error_matrix(translator, arguments, table):
             fail(f"Collection.errorMatrix has an invalid sample table: {exc}")
         known_empty = _sampled_table_empty(sampled, operations)
     else:
-        columns = table.columns
+        columns, post_operations, _source_operations = validated_classified_schema(
+            table, translator, "Collection.errorMatrix classified table",
+        )
         known_empty = table.row_count == 0
         if isinstance(table.source, SampledFeatures):
             try:
@@ -171,6 +174,14 @@ def _runtime_error_matrix(translator, arguments, table):
             if not set(sampled_columns) <= set(columns):
                 fail("Collection.errorMatrix classified table lost sample-table columns")
             known_empty = known_empty or _sampled_table_empty(sampled, operations)
+        for text in post_operations:
+            charge(translator, 8 + 6 * len(text))
+            try:
+                operation = decode_sample_operation(text)
+            except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
+                fail(f"Collection.errorMatrix has an invalid classified-table operation: {exc}")
+            if operation["operation"] == "limit" and operation["count"] == 0:
+                known_empty = True
 
     actual = property_name(arguments.get("actual"))
     predicted = property_name(arguments.get("predicted"))
