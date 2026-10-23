@@ -17987,7 +17987,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Required input/axis, optional reducer omitted or null defaults to sum. Single fixed RasterArrayImage with every cell explicitly top-level toFloat, rank1..8/axes and cells<=64; existing nonnegative integer axis only. Actual inclusive prefix sum/min/max in original row-major axis order, each new arithmetic stage explicitly Float32, retaining original name/image/full-array mask. Other reducers, unweighted modifiers, raw scalar/multiple array bands, invalid axes and missing/unknown arguments reject. Work precharged before output construction,50000 work and500 graph nodes retained. No skip-missing prefixes, dynamic shapes, generic Float64 or Google rounding comparison."
+          "One fixed single-array rank1..8 image with uniform explicit toFloat/toDouble cells. Existing axis, optional/null SUM default or finite SUM/MIN/MAX only; actual staged row-major prefixes with input whole-array mask/name/metadata/source and no row deletion. Invalid axis/reducer, uncast/mixed cells, unknown arguments and budget excess reject. Compiler50000/64cells/500nodes unchanged, shapes not jointly guaranteed with full graph expansion. Float32 behavior preserved; Double sample-graph proof is distinct from full native array/Spark/Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -22907,7 +22907,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Required value is one fixed Float32 square RasterArrayImage with1..4 rows. Real signed determinant products and sums explicitly round each arithmetic stage to Float32, return a scalar Image with full input mask and original name/metadata/source; singular matrices may return zero. Shared50000 work charged before expression construction,64-cell and500-process caps retained; general4x4 raster outputs can still exceed500. This bounded polynomial kernel is not a numerically stable pivoted LU or Google-equivalent algorithm. Non-Float32/non-square/unsupported size/unknown/missing inputs reject.",
+          "One fixed rank2 square array1..4 with uniform explicit toFloat/toDouble cells. Precharged permutation products/parity and staged sums preserve full input mask and metadata. Polynomial expansion can cancel or overflow; not stable LU or Google parity. Existing50000 work/64cells/500graph nodes retained and larger public graphs may reject; direct IR construction alone is not raster execution.",
           "Known literal Float32 product overflow rejects during constant folding; dynamic finite Float32 matrix products can produce infinity or other nonfinite results in local sampling. This material numerical limitation is documented separately from mask preservation; no native/Google overflow acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
@@ -22974,7 +22974,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Required value is a single fixed rank2 RasterArrayImage with explicit top-level toFloat cells. Real scaled Frobenius norm: scale=max(abs(cells)), square and sum ratios to scale, sqrt then multiply by scale; existing zero-safe division makes an all-zero matrix return zero. Explicit Float32 arithmetic stages, original scalar band name/metadata/source and full-array mask retained. Avoids direct input-square overflow/underflow, but final Float32 range/cancellation remain local limitations: dynamic output may be nonfinite and known constant conversion overflow rejects. Precharged50000 work,64 cells and500 process-node cap retained; large dynamic matrices can exceed the cap. No generic Float64/Google-equivalent norm guarantee."
+          "One fixed nonempty rank2 array with uniform explicit toFloat/toDouble cells. Real staged scaled Frobenius arithmetic normalizes by maximum absolute input, handles zero scale via local divide-by-zero0, preserves input whole-array mask and metadata. Finite source inputs only for native Double arithmetic; result overflow masks. Extreme/subnormal and nested-cast sample-graph controls verified. Precharged50000 work/64cells/500graph nodes unchanged; larger graph compositions can reject. No full Spark/Google dtype or ULP parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -23236,7 +23236,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Fixed-shape single RasterArrayImage operands, explicit per-cell toFloat on both sides. Literal static full-column-rank design A(m,n),1<=m<=8,1<=n<=4,m>=n; raster B(m,k),1<=k<=4. NumPy Float32 lstsq(A,I,rcond=None) computes a real finite pseudoinverse after precharged work; output(n,k) is actual Float32 pixel arithmetic with the conjunction of both whole-array masks. Constant cast chains preserve each Float32/Double rounding step and share cached literal values. Total input cells<=64, shared50000 steps and500 process nodes retained. Missing/unknown arguments, dynamic A, non-Float32 cells, underdetermined/rank-deficient designs and nonfinite coefficients reject. Float32 rank cutoff, finite local grids and callback rounding are local policies, not Google/EJML parity; not general dynamic per-pixel matrixSolve or Float64 array support."
+          "Single fixed rank2 arrays; literal constant full-column-rank design A(m,n),1<=m<=8,1<=n<=4,m>=n; raster B(m,k),1<=k<=4; combined input cells<=64. Each array needs uniform explicit top-level toFloat or toDouble cells; either Double promotes solve/output to Float64, while Float32-only input keeps prior path. Literal cast chains preserve all rounding stages. Precharged NumPy lstsq(A,I,rcond=None) pseudoinverse then actual scalar raster operations. Proven nonzero constant predictor columns enable guarded Double RHS centering and coefficient restoration; extreme magnitudes retain the original multiply/add path, with its possible cancellation. Input-mask conjunction and left name/metadata with RHS source fallback. Finite constants/pseudoinverse and existing +/-2^53 bound constants policy; literal scan<=500 distinct nodes with cycles/malformed data rejected before NumPy. Dynamic design, rank deficiency, unknown/missing arguments and resource excess reject. Work50000/graph500 unchanged; the full8x4-by8x4 sixteen-output public case still exceeds work even though direct IR construction fits. NumPy rank/rounding policies are not Google/EJML parity; sample-graph numerical evidence is not full Spark acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -23269,7 +23269,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Required value is a fixed rank2 single-column RasterArrayImage,1..8 rows and explicit top-level toFloat on every input cell. Produces an nxn fixed matrix with original diagonal cells and real Float32 zero off-diagonal cells under the full input mask, retaining name/metadata/source. Output<=64 cells, shared50000 work precharged and500 graph cap unchanged. Rank1/row vectors, uncast/Double cells and missing/unknown arguments reject; not unrestricted type promotion or Google equivalence."
+          "One fixed rank2 single column with1..8 rows and uniform explicit toFloat/toDouble cells. Produces nxn matrix retaining original diagonal and input whole-array mask/name/metadata/source; canonical +0 off-diagonal Double cells share a precharged source-bound abs(input0)*0 expression. Source Infinity rejects in native arithmetic, NaN masks. Output<=64 cells, compiler50000/graph500 unchanged; larger compositions may exceed limits. No full Spark or Google equivalence claim."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -23302,7 +23302,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Required value is one fixed Float32 square RasterArrayImage with1..8 rows. Actual diagonal addition explicitly rounds each stage to Float32 and returns a scalar Image under the entire input mask, including off-diagonal missing cells. Name/metadata/source retained, work precharged and500-node cap unchanged. Rectangular trace is not exposed in this local subset, non-Float32/rank/shape/unknown/missing inputs reject. Rounding/overflow/cancellation policy is local and has no Google comparison.",
+          "One fixed rank2 square array1..8 with uniform explicit toFloat/toDouble cells; staged diagonal addition and scalar output retain input whole-array mask/name/metadata/source. No implicit dtype inference. Existing50000 work/64cells/500nodes retained, maximum dimensions not a guarantee all graph combinations fit. Local staged binary32/binary64 behavior has sample-graph proofs, not full Spark/Google parity.",
           "Known literal Float32 overflow rejects during constant folding; finite dynamic Float32 inputs can produce infinity in local sampled evaluation. Explicit staging does not establish identical constant/dynamic error handling, actual-engine or Google overflow semantics."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
@@ -26386,7 +26386,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Uses the local adapter to cast scalar raster cells to Float64. Bounded native temporal reducers support mean, median, min, max, sum, count, first, last, and sampleStdDev; closed native Double core arithmetic is supported; arbitrary callbacks and array-valued Image.toDouble remain unsupported. Cast toFloat for Float32-only consumers when that precision is acceptable; Google parity is unverified."
+          "Real scalar or single fixed-shape raster-array per-cell Float64 casts; array rank<=8/cells<=64, preserving row-major layout, name, input whole-array mask and metadata. Nested toFloat boundaries actually round. Bounded native temporal statistics and closed Double core arithmetic are supported separately; other callbacks/array bundles remain restricted. Source-free global raster output and Google dtype equivalence are not established."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26419,7 +26419,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Uses the local adapter to cast scalar raster cells to Float32. A fixed-shape single array band casts every scalar cell and retains its whole-array mask, shape, name and metadata; no placeholder cast or bundle coercion. Float32 callback arithmetic is the supported path, not a claim of Google numerical parity."
+          "Real scalar or single fixed-shape raster-array per-cell Float32 casts, preserving layout/name/mask/metadata; subsequent toDouble cannot restore lost precision. Existing callbacks retain staged Float32 behavior. Conversion overflow can create Infinity, which a subsequent closed Double native arithmetic input rejects. No Google dtype/numerical equivalence claim."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -27755,7 +27755,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Only implemented reducer families and local collection/data semantics are available. linearFit supports1..8 ordered two-band frames, complete rows and centered OLS. linearRegression supports numX=1 through-origin or numX=2 with proven numeric literal-one first predictor, numY=1..4,1..8 homogeneous frames. All inputs/responses share complete-case masks; n<=numX/rank-degenerate masks coefficients and RMS. Typed coefficient/residual array bands must be selected then scalarized; only parallelScale=1 and shared work/500-node caps. Float32 callback limits remain for other consumers; a separately verified three-observation Float64 through-origin coefficient graph uses the closed native scalar path, while its residual branch exceeds compilation limits. Deferred singleton labels preserve all numeric callbacks. Max dimensions/frames are not jointly guaranteed: four-frame two-response full coefficients and predictions fit; full RMS and all-field combinations exceed cap, individual response paths are verified. No raster E/Google acceptance."
+          "Only implemented reducer families and local collection/data semantics are available. linearFit supports1..8 ordered two-band frames, complete rows and centered OLS. linearRegression supports numX=1 through-origin or numX=2 with proven numeric literal-one first predictor, numY=1..4,1..8 homogeneous frames. All inputs/responses share complete-case masks; n<=numX/rank-degenerate masks coefficients and RMS. Typed coefficient/residual array bands must be selected then scalarized; only parallelScale=1 and shared work/500-node caps. Float32 callback limits remain for other consumers; a separately verified three-observation Float64 through-origin coefficient and RMS graph uses the closed native scalar path; bounded immutable lineage caching removes repeated scans without relaxing work or grid checks. Deferred singleton labels preserve all numeric callbacks. Max dimensions/frames are not jointly guaranteed: four-frame two-response full coefficients and predictions fit; full RMS and all-field combinations exceed cap, individual response paths are verified. No raster E/Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -37034,7 +37034,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Unweighted inline table/List rows have typed coefficients/RMS and null underdetermined outputs. Raster ImageCollection path supports numX=1 through-origin or numX=2 with proven literal-one first predictor, numY=1..4 and1..8 ordered homogeneous frames; joint complete-case rows, n>numX, and both output arrays masked on degeneracy. RMS uses residual sum squares/n; repeated observations preserve row weights. Binary NoData, parallelScale=1, shared work/graph limits. A three-observation Float64 through-origin coefficient graph has an independent Fraction sample-graph proof; its residual branch exceeds compilation limits. Other Float32 callback limits remain; generic independent predictor systems, image/reduceRegion, fractional weights and Google acceptance remain unsupported."
+          "Unweighted inline table/List rows have typed coefficients/RMS and null underdetermined outputs. Raster ImageCollection path supports numX=1 through-origin or numX=2 with proven literal-one first predictor, numY=1..4 and1..8 ordered homogeneous frames; joint complete-case rows, n>numX, and both output arrays masked on degeneracy. RMS uses residual sum squares/n; repeated observations preserve row weights. Binary NoData, parallelScale=1, shared work/graph limits. A three-observation Float64 through-origin coefficient graph has an independent Fraction sample-graph proof; its RMS branch also fits after bounded immutable lineage caching; grid validation remains uncached. Other Float32 callback limits remain; generic independent predictor systems, image/reduceRegion, fractional weights and Google acceptance remain unsupported."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,

@@ -1,0 +1,230 @@
+{
+  "schema": "local-ee-python-wave51/v1",
+  "date": "2026-10-24",
+  "base_commit": "67a28d30160a21f2d6df6e7a03b9e060bb7f59c3",
+  "title": "Explicit Double raster arrays, guarded matrix centering and bounded immutable lineage facts",
+  "entry_inventory": {
+    "before": 635,
+    "after": 635,
+    "new_entry_count": 0,
+    "pinned_signatures": 991,
+    "name_entry_percentage": 64.08,
+    "expanded_existing_APIs": [
+      "Image.toDouble",
+      "Image.matrixSolve",
+      "Image.matrixToDiag",
+      "Image.matrixTrace",
+      "Image.matrixDeterminant",
+      "Image.matrixFnorm",
+      "Image.arrayAccum"
+    ],
+    "existing_composition_verified": [
+      "Image.matrixMultiply",
+      "Image.arrayGet",
+      "Image.arrayFlatten",
+      "Image.arrayReshape",
+      "Image.copyProperties"
+    ],
+    "interpretation": "Name declarations only, not full API/signature, Google or project migration compatibility."
+  },
+  "implementation": {
+    "casts": "Single fixed-shape array per-cell toDouble retains shape/order/name/input whole-array mask and metadata. Nested toFloat actually rounds; multiple array-band bundles still require explicit selection.",
+    "matrix_solve": "Each input array needs uniform explicit toFloat/toDouble cells, with either Double input promoting the solve. Constant literal full-column-rank design only; m1..8,n1..4,k1..4,m>=n,combined cells<=64. Finite cast chains and <=500 distinct literal nodes are validated before NumPy allocation; cycles/malformed values/rank deficiency reject. lstsq(A,I,rcond=None) generates bounded finite pseudoinverse, then actual raster scalar expressions. NumPy policy is not a Google/EJML rank oracle; Float32 path unchanged.",
+    "centering": "A proven nonzero constant predictor column enables Double per-RHS first-observation centering and restoration of that predictor coefficient. A conservative magnitude guard uses scaled max(abs(response)) before enabling anchors; extreme opposite-sign values fall back to the existing P*y expression to avoid new subtraction overflow. All new scans/guards/copies/expressions are precharged. No-constant designs retain the original path. Fallback and general designs can still exhibit binary64 cancellation.",
+    "properties": "Explicit staged dtype for trace, determinant, scaled Frobenius norm, diagonal construction and prefix SUM/MIN/MAX. Double diagonal zeros share source-bound abs(input0)*0 and have canonical positive-zero bits. Rank/shape/name/metadata and input-mask semantics remain; determinant is a bounded permutation polynomial, not stable LU.",
+    "lineage_cache": "One translator owns at most4096 strong exact-identity entries with charged lookups/insertion/eviction. Only immutable expression structure and Source cid/ids lineage facts are reused; mutable Pixel args, lists/dicts/unknown descendants prevent ancestor caching. Active-cycle rejection precedes reuse. Numeric values, catalog/projection metadata and query grids are not cached by this mechanism.",
+    "limits": {
+      "compiler_work": 50000,
+      "graph_nodes": 500,
+      "array_rank": 8,
+      "array_axis": 64,
+      "array_cells": 64,
+      "public_json_bytes": 1000000,
+      "lineage_cache_entries": 4096,
+      "literal_design_nodes": 500,
+      "policy": "No cap increases. Direct maximum-dimension IR construction fits, while a full8x4-by8x4 sixteen-output public raster graph still rejects at the work limit. IR node counts are not canonical process-node/runtime acceptance."
+    },
+    "nonfinite_policy": "Native Double input +/-Infinity rejects, including Infinity created by a prior Float32 conversion. NaN inputs remain masks; finite-input operation overflow/domain errors become NaN NoData. The independent sample interpreter was corrected to this already-existing native contract; no engine behavior changed."
+  },
+  "validation": {
+    "python": {
+      "tests": 5203,
+      "passed": 5181,
+      "skipped": 22,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 43.154
+    },
+    "warnings": {
+      "count": 52,
+      "existing_rasterio_pending_deprecation": 51,
+      "google_api_core_python311_future_lifecycle": 1,
+      "scope": "No dependency/interpreter changes and no new vulnerability scan. Intentional Float32 overflow warnings are captured in the specific rejection controls."
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "tested_bytes_unchanged_after_numeric_fix": true,
+      "new_in_app_syntax": "Python and JavaScript fixed Double array solve entries; Python code snippet parsed with ast"
+    },
+    "official_clients": {
+      "scope": "Official SDK Python/JS offline compilation and independent Fraction/NumPy sample graph proof, no full Spark/raster task/map/export execution",
+      "python_js_identical_outputs": 6,
+      "source_item_ids": [
+        "reshape-scene"
+      ],
+      "fixture_pixels": 4,
+      "process_nodes": {
+        "coefficients": 106,
+        "predictions": 128,
+        "prediction_frobenius_norm": 178,
+        "selected_prediction": 112,
+        "observation_trace": 54,
+        "precision_controls": 13
+      },
+      "network_attempts": 0,
+      "projection": {
+        "proj:code": "EPSG:32649",
+        "proj:transform": [
+          10,
+          0,
+          220000,
+          0,
+          -10,
+          3420000
+        ]
+      }
+    },
+    "matrix_numerics": {
+      "four_observation_large_offset": {
+        "offset": 1099511627776,
+        "intercept_max_abs_error": 0.0,
+        "slope_max_abs_error": 1.1102230246251565e-16,
+        "process_nodes": 141,
+        "reference": "Independent exact Fraction centered OLS from supplied binary64 inputs"
+      },
+      "initial_intercept_max_abs_error": 0.000244140625,
+      "initial_slope_max_abs_error": 6.103515625e-05,
+      "workflow_max_abs_errors": {
+        "coefficients": 1.862645149230957e-09,
+        "predictions": 3.725290298461914e-09,
+        "prediction_frobenius_norm": 1.862645149230957e-09,
+        "selected_prediction": 2.7939677238464355e-09,
+        "observation_trace": 0.0,
+        "precision_controls": 0.0
+      },
+      "scope": "Independent Fraction/NumPy sample-graph references; not actual native matrix/Spark or Google execution",
+      "network_attempts": 0
+    },
+    "regression_work": {
+      "coefficients": {
+        "translator_work": 7431,
+        "process_nodes": 151,
+        "graph_dependency_depth": 38,
+        "native_double_operations": 8,
+        "max_abs_error": 0.0
+      },
+      "residual_rms": {
+        "translator_work": 21151,
+        "process_nodes": 190,
+        "graph_dependency_depth": 48,
+        "native_double_operations": 19,
+        "max_abs_error": 1.7763568394002505e-15
+      },
+      "scope": "Actual public compiler and independent Fraction/Decimal sample-graph oracle, no full Spark/native matrix task",
+      "network_attempts": 0,
+      "work_cap": 50000,
+      "node_cap": 500,
+      "baseline_residual_rejection": {
+        "translator_work_at_failure": 49961,
+        "attempted_charge": 48,
+        "attempted_total": 50009,
+        "process_nodes_at_failure": 144,
+        "source": "Controlled read-only baseline diagnosis before immutable facts cache"
+      }
+    },
+    "boundary_controls": {
+      "cache_tests": 15,
+      "explicit_precision_tests": 11,
+      "fresh_grid_test": "Warmed lineage cache cannot authorize a mutated affine grid or missing proj:transform.",
+      "literal_design": "Exact500/shared-node acceptance and501/cycle/malformed rejection before NumPy.",
+      "precision": "Mixed input-array promotion, finite extreme coefficients, nested Float32 loss, source Infinity rejection, result overflow masks, canonical signed zeros, masks/metadata/source IDs.",
+      "max_direct_IR": "m8/n4/k4 with64 input cells,2952 precharged work; largest observed mixed-RHS output496 unique Pixel nodes. This is a direct IR/factorization control, not a complete public graph or native matrix run."
+    },
+    "initial_passing_suite": {
+      "passed": 5174,
+      "skipped": 22,
+      "scope": "Before guarded centering; broad tolerance passed despite subsequently measured slope cancellation6.103515625e-05. Initial XML/log/source hashes/numerical evidence preserved; final tests assert every valid slope separately."
+    },
+    "fixture_scope_failure": {
+      "passed": 5169,
+      "failures": 9,
+      "errors": 15,
+      "skipped": 22,
+      "cause": "New centering module registered a test module as a global pytest plugin, spreading its offline autouse fixture into legitimate local-network tests. Replaced global plugin registration with local fixture imports; no application networking guard changed.",
+      "verification": "30 combined centering, JS bridge, Python client/transport and native API-port tests passed, followed by the final full suite."
+    },
+    "original_probes": {
+      "SDK_serialized": 50,
+      "compiled": 47,
+      "directed_rejections": 3,
+      "guarded_network_attempts": 0,
+      "scope": "Original fixed50 expressions, not representative API coverage or project migration rate."
+    },
+    "native": {
+      "source_count": 51,
+      "all_sources_unchanged": true,
+      "prior_jar_sha256": "2b0a357e268a7e1148b6151efd7e043bfd0ba56a8350c6a9bb7fb4e7853659a0",
+      "rebuilt_or_deployed": false
+    }
+  },
+  "evidence": {
+    "directory": "audit/gee-python-wave51/final-verified/",
+    "execution_source_hashes": {
+      "examples/56_GEE_python_double_matrix.py": "f9043b5dfc5cc1e46c43a42859a5ba67cf0bec67faabd26cd51ab2eaefbaead0",
+      "examples/javascript/10_双精度数组回归.js": "2e6e6d99b610d0688afe5cead80bae5a6922019b15182c678a2a30da44b6ad57",
+      "gee/compat/earthengine/capabilities.py": "4a7b6b342004ee800da51f1576e2894fcb8ef06aee70e01e31e9acf331dfea45",
+      "gee/compat/earthengine/pixel_facts_cache.py": "037dd54e9327af8051ba71fe1e93ca13f5e35bef36aacb61fcc6fb50926e3c2f",
+      "gee/compat/earthengine/pixel_math_graph.py": "5a8c04913255e6c6c27e7275a2dea29a5f8e8100e074e7748ce2f483029c4b06",
+      "gee/compat/earthengine/raster_array_accumulation.py": "88d84ba8b6c6381952d11456ff9dcf7c1ab29c226f4fa6e3d00b3fb723802a34",
+      "gee/compat/earthengine/raster_array_dispatch.py": "b99eac61792885f1bacb0da1d638d55f0d7a4fe9cceebdc1a34f219b9526ede8",
+      "gee/compat/earthengine/raster_array_precision.py": "d27b0939c6fab1d05d0425a864989d5664c43c212f683f1e7ce3da8e00455017",
+      "gee/compat/earthengine/raster_array_values.py": "d7b80c1db2c10a2115493147cbe4549ef2370f5e2429471e8f8006e5eb3f55a8",
+      "gee/compat/earthengine/raster_matrix_literals.py": "83827160f83769bbfcd6dc76360249886ee1ba7ac704bbcbc80f530899605e76",
+      "gee/compat/earthengine/raster_matrix_properties.py": "ac01e2a164f68bc067fb149fed987037771e94a55bba8b7dee89273416f65674",
+      "gee/compat/earthengine/raster_matrix_solve.py": "9122e4bc104fad5b025a04b90936da91845efcc03a434ab4a6ed10e568bf2715",
+      "scripts/ee_inventory/catalogue.py": "7c5a17711d43539627af9d42419ed7d10bcb9214416411ad2817f20d77a13396",
+      "tests/ee_float64_graph_reference.py": "5834392b5e38493b81fb4df2c5c15235a5d61104e060d61aaca7919029391e48",
+      "tests/test_ee_double_array_properties.py": "baeff2e60198164122851b58edba480cc5ac65d50cf15806cc649b3446046602",
+      "tests/test_ee_double_array_solve.py": "55951dd94e673fe51406bc8fc8400e75817a4656b3f6d508c6faefdb9a711a74",
+      "tests/test_ee_double_array_validation.py": "bc2f94cdd8aa56356670f8f435a5b117db8034252bf0b01c3aca6388a5711f4d",
+      "tests/test_ee_double_array_workflow.py": "1d67f08e098e10ffd78c82ac8c32a4b8da0673e674e2e6cc626e2abcfb49d5d4",
+      "tests/test_ee_double_matrix_centering.py": "4a9bd2117a12d3f8008653871eb0587aacdeacd3d32610966f70c18c4446489d",
+      "tests/test_ee_double_matrix_limits.py": "58ee82a5bf3fb3a3df96ac7504d16692d63e3e4a16f1a6a03420234bb9453daa",
+      "tests/test_ee_double_matrix_literals.py": "0fdaf81df9d638d4dfcd5d27e5fcd4abc249faa582b31dc53979bc6c4224552f",
+      "tests/test_ee_pixel_facts_cache.py": "6909ed35a337230a1fc1c48d707c86de027acb54837b14acc8985ef761dfaec5",
+      "tests/test_ee_raster_array_accumulation_parameters.py": "5a1a0fdac16a5d75a3db7345667ba178245616711a9e97fd02b14f223a851a96",
+      "tests/test_ee_raster_array_precision.py": "9071f735aa056e0ad4bb0dbb712e85801f563aa1f730f582c155ec6852b57bef",
+      "tests/test_ee_raster_linear_regression_parameters.py": "37b449304dc75af60543e9321647a7abd436406001f2886250c1bf64d8ed3c1a",
+      "tests/test_ee_raster_matrix_properties_parameters.py": "8a146477b639335d9b307fd2212efc783ace479b81e77df39a402587056537e4",
+      "tests/test_ee_raster_matrix_solve_parameters.py": "cc52d60def8531a748a36e5a4f22871408ce6fa74357b6ba452e73542504deb9",
+      "web/src/docs/typed-raster-docs.ts": "baafc6311a4118195441eddfbd3a1be4389673cc1e33c50e146508dee40d0022"
+    },
+    "scope": "Local raw audit remains outside public source; this report carries counts, limits, numeric errors and source digests. Initial and fixture-failure evidence retained separately."
+  },
+  "cleanup": {
+    "status": "completed: owned temporary frontend build, diagnosis scratch and legacy parameter log removed; concise reports retained",
+    "removed_bytes": 1702859,
+    "runtime_dependencies_preserved": true,
+    "user_data_unchanged": true
+  },
+  "not_established": [
+    "Full native/Spark matrix cube, sandbox task, service/browser or production deployment acceptance",
+    "Google same-data/dtype/rank/ULP equivalence",
+    "Dynamic or underdetermined design matrices, general array-band casts, all reducers, projections or GEE services",
+    "Uniform numerical stability for arbitrary ill-conditioned/extreme systems; fallback rounding can still cancel",
+    "Private real-data and Linux/macOS full acceptance deferred by current phase"
+  ],
+  "goal_status": "active"
+}

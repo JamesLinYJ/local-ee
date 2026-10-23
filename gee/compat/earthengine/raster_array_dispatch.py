@@ -19,7 +19,10 @@ from .raster_matrix_solve import RASTER_MATRIX_FUNCTIONS, invoke_raster_matrix
 from .raster_matrix_properties import RASTER_MATRIX_PROPERTY_FUNCTIONS, invoke_raster_matrix_property
 
 
-_SHARED_SCALAR_NAMES = {"Image.constant", "Image.add", "Image.subtract", "Image.multiply", "Image.divide", "Image.toFloat"}
+_SHARED_SCALAR_NAMES = {
+    "Image.constant", "Image.add", "Image.subtract", "Image.multiply",
+    "Image.divide", "Image.toFloat", "Image.toDouble",
+}
 _METADATA_ARGUMENTS = {
     "Element.get": {"object", "property"},
     "Image.get": {"object", "image", "property"},

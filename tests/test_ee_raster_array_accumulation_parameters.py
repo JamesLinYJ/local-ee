@@ -11,6 +11,7 @@ from gee.compat.earthengine.decoder import Translator
 from gee.compat.earthengine.ir import Image, Pixel, const
 from gee.compat.earthengine.raster_array_core import RasterArrayImage, wrap_array_image
 from gee.ee_translate import UnsupportedEEError, compile_expression
+from ee_float64_graph_reference import evaluate_float64_graph
 from scripts.ee_python_api.offline import OfflineGuard
 from test_ee_raster_array_accumulation import (
     ARRAY_BANDS,
@@ -81,7 +82,7 @@ def test_sdk_required_arguments_and_unknown_argument_rejection(ee, local, algori
         compile_raw(unknown, local)
 
 
-def test_array_accum_requires_typed_raster_array_and_top_level_float32(ee, local):
+def test_array_accum_requires_typed_raster_array_and_explicit_cast(ee, local):
     with pytest.raises(UnsupportedEEError):
         compile_value(ee, ee.Image.constant(1).arrayAccum(0), local)
     raw = {
@@ -96,8 +97,11 @@ def test_array_accum_requires_typed_raster_array_and_top_level_float32(ee, local
     with pytest.raises(UnsupportedEEError, match="explicit top-level toFloat"):
         compile_value(ee, uncast.arrayAccum(0), local)
 
-    with pytest.raises(UnsupportedEEError):
-        compile_value(ee, uncast.toDouble().arrayAccum(0), local)
+    result = compile_value(
+        ee, uncast.toDouble().arrayAccum(0).arrayFlatten([["p0", "p1", "p2"]]), local,
+    )
+    assert any(node["process_id"] == "local_ee_integer_values"
+               for node in result["process_graph"].values())
 
 
 @pytest.mark.parametrize("axis", [True, -1, 1.5, 2])
@@ -163,13 +167,21 @@ def test_matrix_fnorm_requires_rank_two_typed_array(ee, local, kind):
         compile_raw(value, local) if isinstance(value, dict) else compile_value(ee, value, local)
 
 
-def test_matrix_fnorm_requires_explicit_top_level_float32_cells(ee, local):
+def test_matrix_fnorm_requires_explicit_cast_and_evaluates_double_values(ee, local):
     uncast = first_image(ee).select(ARRAY_BANDS[:4]).toArray()
     uncast = uncast.arrayReshape(ee.Image.constant(ee.Array([2, 2])), 2)
     with pytest.raises(UnsupportedEEError, match="explicit top-level toFloat"):
         compile_value(ee, uncast.matrixFnorm(), local)
-    with pytest.raises(UnsupportedEEError):
-        compile_value(ee, uncast.toDouble().matrixFnorm(), local)
+    result = compile_value(ee, uncast.toDouble().matrixFnorm(), local)
+    actual, _names, timed = evaluate_float64_graph(
+        result, local["arrays"], grid=local["grid"],
+        source_geometries={"accum-scene": local["geometry"]},
+    )
+    raw = np.stack([local["arrays"]["accum-scene"][b] for b in ARRAY_BANDS[:4]])
+    expected = np.linalg.norm(raw, axis=0)
+    expected[-1] = np.nan  # Outside the original source geometry.
+    assert not timed
+    np.testing.assert_allclose(actual[0], expected, rtol=2e-15, atol=0, equal_nan=True)
 
 
 def test_sparse_eight_by_eight_accumulation_respects_the_real_500_node_cap(ee, local):

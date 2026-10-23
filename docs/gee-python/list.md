@@ -1,6 +1,8 @@
 # GEE Python 兼容清单
 
-第五十批扩展已有 **22种基础运算的原生 Double 路径**，使整数／QA、温度换算、NDVI及距离结果可继续计算；未增加名称入口。实际GeoTrellis的25场景／173像元、6步组合／44像元全部通过，最大观察误差1 ULP；旧整数／QA内核回归通过。固定双元素数组四则运算及三景过原点回归系数另有独立合成图数值证明，残差分支仍因编译预算拒绝，不宣称完整Double数组／矩阵兼容。完整回归 **5110 passed／22 skipped**，前端11／类型／临时构建通过，Python／JS11项组合图一致。名称 **635／991（64.08%）** 仅统计入口。常量嵌套类型转换、掩膜、网格和原资源上限保持；51源文件适配器只做可信组件构建，临时产物已清理。52条既有上游提示保留，依赖、安装环境和数据未改。未部署，无完整Spark／浏览器／Google同数据验收，整体目标保持进行中。见 [Double算术语法](float64-arithmetic.md)、[示例55](../../examples/55_GEE_python_float64_analysis.py) 和 [报告](../../reports/gee-python-wave50.json)。
+第五十一批扩展7个已有API的Double数组／矩阵能力，并串联预测、选择和属性复制。固定大基线样本的最大斜率误差从6.10e-5降至1.11e-16；幅度保护保留极值回退。有界来源缓存使三景Double回归残差在原预算内完成（21151工作量／190节点），独立RMS误差1.78e-15。完整回归5181 passed／22 skipped，前端11／类型／临时构建通过；Python／JS6项图一致。名称仍635／991（64.08%），仅入口统计。原64元素／50000工作／500节点上限保持，最大形状的完整导出仍可超限；源无穷值拒绝与运算溢出缺测分开验证。原生51源文件未改，未重复构建或部署；临时产物已清理，用户数据与依赖未改。无完整Spark／浏览器／Google同数据验收，整体目标保持进行中。见 [Double数组语法](double-raster-arrays.md)、[示例56](../../examples/56_GEE_python_double_matrix.py) 和 [报告](../../reports/gee-python-wave51.json)。
+
+第五十批历史记录：扩展已有 **22种基础运算的原生 Double 路径**，使整数／QA、温度换算、NDVI及距离结果可继续计算；未增加名称入口。实际GeoTrellis的25场景／173像元、6步组合／44像元全部通过，最大观察误差1 ULP；旧整数／QA内核回归通过。固定双元素数组四则运算及三景过原点回归系数另有独立合成图数值证明，残差分支仍因编译预算拒绝，不宣称完整Double数组／矩阵兼容。完整回归 **5110 passed／22 skipped**，前端11／类型／临时构建通过，Python／JS11项组合图一致。名称 **635／991（64.08%）** 仅统计入口。常量嵌套类型转换、掩膜、网格和原资源上限保持；51源文件适配器只做可信组件构建，临时产物已清理。52条既有上游提示保留，依赖、安装环境和数据未改。未部署，无完整Spark／浏览器／Google同数据验收，整体目标保持进行中。见 [Double算术语法](float64-arithmetic.md)、[示例55](../../examples/55_GEE_python_float64_analysis.py) 和 [报告](../../reports/gee-python-wave50.json)。
 
 第四十九批历史记录：新增 **35个整数影像名称入口（含21个同义别名）**：7种整数范围转换和7种QA位操作，并扩展已有6种Float64比较。实际GeoTrellis的26场景／214像元、10步合成QA链／13像元、36项非法wire／10项非法像元／5项全掩膜参数及5项转换控制通过；修复有效Int.MinValue转Double时丢失及常量折叠精度标记丢失。公共复制路径涉及的5族原生回归12项通过。完整回归 **4990 passed／21 skipped**，前端11／类型／临时构建通过，Python／JS16项组合输出一致。名称 **635／991（64.08%）** 仅统计入口，不是完整兼容率。整数结果物理Double、int64限±2^53、向零截断与移位政策均明确；上游dry-run仅保留已知输出结构和来源，实际输入校验延后到真实立方体。通用Float64算术／Google／完整Spark与部署仍未验收；52条上游提示保留，依赖、安装环境和数据未改。整体目标保持进行中。见 [整数／QA语法](integer-images.md)、[示例54](../../examples/54_GEE_python_integer_images.py) 和 [报告](../../reports/gee-python-wave49.json)。
 
@@ -54,7 +56,7 @@
 第二十五批 [报告](../../reports/gee-python-wave25.json)：新增标签 Image.remap、受限 Filter.expression、取样表 filter／无排序 limit 及累计资源计费。示例 30 的标签掩膜、17 个几何候选位置、15 行有效样本、14 行 notNull、11 行条件通过和 8 行限量训练，以及三度量预测，有独立原始网格参考。便携 Python **2068 passed／3 skipped**（另排除 4 项原生测试），前端 **11 passed**／构建通过，SDK 图一致性 **77**，真实 tile 内核通过。入口 **275／991（27.75%）** 只表示名称，不是完整参数或计算兼容率。完整 Spark／部署／浏览器／真实数据／Google 验收未运行；[该批尚未实现随机森林](random-forest-roadmap.md)。
 
 第二十四批 [报告](../../reports/gee-python-wave24.json) 与 [取样语法文档](sampling.md)：接通有限 sampleRegions、实际样本运行时训练、栅格分类与样本 getInfo／CSV 任务合同。便携 Python **1882 passed／3 skipped**（另排除 4 项原生测试）、前端 **11 passed**／构建通过，Python／JS 官方客户端一致性 **72** 项；取样与分类的可信独立 JVM tile 内核均通过。API 名称入口 **273／991（27.55%）**，参数和数值语义仍需逐项验证；此数值不代表完整兼容率。完整 Spark cube、部署／浏览器、真实数据和 Google 对照未运行。
-状态：2026-10-24，第五十批已验证，整体兼容目标尚未完成。
+状态：2026-10-24，第五十一批已验证，整体兼容目标尚未完成。
 
 第二十三批 [验证报告](../../reports/gee-python-wave23.json)：新增有限 `Image.classify` 的 schema 选择、精确模型编译、Python 桥与真实 GeoTrellis tile 内核，训练仍使用内联要素。macOS ARM64 Python **1751 passed／3 skipped**（启用可信独立 JVM 内核测试，另排除 4 项原生运行测试），前端 **11 passed**、TypeScript／构建通过；较[第二十二批](../../reports/gee-python-wave22.json)增加 66 项通过。独立 tile 内核是组件运行证据，完整 Spark cube、沙箱任务、HTTP／浏览器、部署和 Google 对照均未在本批验收。
 

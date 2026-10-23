@@ -1,4 +1,4 @@
-"""Prefix reductions for bounded Float32 raster-array images."""
+"""Prefix reductions for bounded explicitly cast raster-array images."""
 from __future__ import annotations
 
 import math
@@ -6,6 +6,7 @@ import math
 from .array_core import charge_array
 from .ir import Pixel, Reducer, fail
 from .raster_array_core import check_shape, wrap_array_image
+from .raster_array_precision import require_cast_cells
 from .raster_array_values import _array
 
 
@@ -20,13 +21,6 @@ def _arguments(translator, name, arguments):
     missing = {"input", "axis"} - arguments.keys()
     if missing:
         fail(f"{name} requires {', '.join(sorted(missing))}")
-
-
-def _float32_cells(array, name):
-    if any(pixel.op != "to_float" or len(pixel.args) != 1
-           or not isinstance(pixel.args[0], Pixel) or pixel.boolean
-           for pixel in array.cells):
-        fail(f"{name} requires explicit top-level toFloat() for every array cell")
 
 
 def _axis(value, rank, name):
@@ -66,9 +60,9 @@ def invoke_raster_accumulation(translator, name, arguments):
     inner = math.prod(array.shape[axis + 1:])
     operations = outer * inner * max(0, axis_length - 1)
     # Scan input types and indices, materialize one output slot per input cell,
-    # and create an arithmetic Pixel plus Float32 cast per prefix update.
+    # and create an arithmetic Pixel plus typed cast per prefix update.
     charge_array(translator, 4 * count + 2 * operations + 2 * rank + 8)
-    _float32_cells(array, name)
+    dtype = require_cast_cells(array, name)
 
     cells = [None] * count
     for outer_index in range(outer):
@@ -80,8 +74,7 @@ def invoke_raster_accumulation(translator, name, arguments):
             for position in range(1, axis_length):
                 offset = block_start + position * inner + inner_index
                 accumulated = Pixel(
-                    "to_float",
-                    (Pixel(operation, (accumulated, array.cells[offset])),),
+                    dtype, (Pixel(operation, (accumulated, array.cells[offset])),),
                 )
                 cells[offset] = accumulated
 

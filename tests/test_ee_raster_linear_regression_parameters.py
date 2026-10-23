@@ -1,5 +1,6 @@
 """Limits and input-schema rejection cases for raster linearRegression."""
 from copy import deepcopy
+from decimal import Decimal, localcontext
 from fractions import Fraction
 import json
 
@@ -108,8 +109,8 @@ def test_explicit_float64_regression_requires_common_grid_when_projection_is_mis
         compile_value(ee, coefficients, local)
 
 
-def fraction_through_origin_reference(local, item_ids):
-    """Exact rational coefficient reference for a one-predictor fit."""
+def fraction_through_origin_reference(local, item_ids, *, residual=False):
+    """Exact rational fit, with a high-precision square root for its RMS."""
     coefficients = np.full((1, len(local["grid"])), np.nan, dtype=np.float64)
     for pixel in range(len(local["grid"])):
         rows = complete_rows(local, item_ids, pixel, num_x=1, num_y=1)
@@ -119,7 +120,16 @@ def fraction_through_origin_reference(local, item_ids):
         if len(x_values) < 2 or denominator == 0:
             continue
         numerator = sum(x * y for x, y in zip(x_values, y_values))
-        coefficients[0, pixel] = float(numerator / denominator)
+        beta = numerator / denominator
+        if residual:
+            squared = sum((y - beta * x)**2 for x, y in zip(x_values, y_values))
+            mean_squared = squared / len(x_values)
+            with localcontext() as context:
+                context.prec = 80
+                value = Decimal(mean_squared.numerator) / Decimal(mean_squared.denominator)
+                coefficients[0, pixel] = float(value.sqrt())
+        else:
+            coefficients[0, pixel] = float(beta)
     return coefficients
 
 
@@ -178,10 +188,18 @@ def test_aligned_float64_through_origin_coefficients_keep_masks_and_large_offset
     assert np.isfinite(actual[0, 1])  # Two observations remain after masking b.
     assert np.isnan(actual[0, 4])      # Outside all three source geometries.
     assert np.isnan(actual[0, 5])      # Zero predictor norm is undefined.
-    # Coefficient support does not silently enlarge the existing graph budget
-    # or imply that the more expensive residual branch fits it.
-    with pytest.raises(UnsupportedEEError, match="graph exceeds compilation limits"):
-        compile_value(ee, residuals, local)
+    # Immutable lineage facts are shared without caching the source-grid
+    # validation. The original three-frame residual now fits unchanged caps.
+    residual_result = compile_value(ee, residuals, local)
+    actual_rms, names, timed = evaluate_float64_graph(
+        residual_result, local["arrays"], grid=local["grid"],
+        source_geometries=local["geometries"],
+    )
+    expected_rms = fraction_through_origin_reference(local, ids, residual=True)
+    assert names == ["y0"] and not timed
+    np.testing.assert_allclose(actual_rms, expected_rms, rtol=2e-15, atol=2e-15,
+                               equal_nan=True)
+    assert len(residual_result["process_graph"]) <= 500
 
 
 def test_unknown_wire_arguments_and_shared_work_budget_are_enforced(ee, local):

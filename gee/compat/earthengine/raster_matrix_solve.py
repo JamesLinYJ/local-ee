@@ -1,13 +1,5 @@
-"""Finite per-pixel least-squares solve for fixed-shape raster arrays.
-
-The design coefficients are evaluated after their explicit Float32 cast chain.
-NumPy's Float32 ``lstsq(..., rcond=None)`` rank cutoff and local output rounding
-are bounded policies, not evidence of EJML or GEE numerical parity.
-"""
+"""Finite per-pixel least-squares solve for fixed-shape raster arrays."""
 from __future__ import annotations
-
-import math
-import struct
 
 import numpy as np
 
@@ -19,10 +11,13 @@ from .raster_array_core import (
     check_shape,
     wrap_array_image,
 )
+from .raster_array_precision import require_cast_cells
 from .raster_array_values import _array, _result_image
+from .raster_matrix_literals import literal_cells, scan_literal_cells
 
 
 RASTER_MATRIX_FUNCTIONS = frozenset({"Image.matrixSolve"})
+_MAX_EXACT_CONSTANT = 2**53
 
 
 def _required(arguments, name, parameter):
@@ -31,124 +26,183 @@ def _required(arguments, name, parameter):
     return arguments[parameter]
 
 
-def _is_float32_cell(pixel):
-    return (isinstance(pixel, Pixel) and pixel.op == "to_float"
-            and len(pixel.args) == 1 and isinstance(pixel.args[0], Pixel)
-            and not pixel.boolean)
+def _top_cast_is_double(array):
+    first = array.cells[0]
+    return (isinstance(first, Pixel) and first.op == "to_double"
+            and not first.boolean)
 
 
-def _scan_constant_cell(pixel, seen_nodes, name):
-    """Validate a cast-only literal chain and return newly visited node count."""
-    if not _is_float32_cell(pixel):
-        fail(f"{name} cells must each have an explicit top-level toFloat()")
-    active = set()
-    node = pixel
-    new_nodes = 0
-    while isinstance(node, Pixel) and node.op in {"to_float", "to_double"}:
-        if id(node) in active:
-            fail(f"{name} coefficients cannot contain cyclic Pixel expressions")
-        if id(node) in seen_nodes:
-            seen_nodes.update(active)
-            if len(seen_nodes) > 500:
-                fail(f"{name} constant coefficients exceed the static expression budget")
-            return len(active)
-        if len(node.args) != 1 or node.boolean:
-            fail(f"{name} coefficients allow only unary numeric casts")
-        active.add(id(node))
-        new_nodes += 1
-        node = node.args[0]
-    if not isinstance(node, Pixel) or node.op != "constant" or len(node.args) != 1:
-        fail(f"{name} coefficients must be literal constants with optional casts")
-    leaf_is_new = id(node) not in seen_nodes
-    if leaf_is_new:
-        if node.boolean or type(node.args[0]) not in (int, float):
-            fail(f"{name} coefficients must be finite non-boolean numbers")
-        new_nodes += 1
-    seen_nodes.update(active)
-    seen_nodes.add(id(node))
-    if len(seen_nodes) > 500:
-        fail(f"{name} constant coefficients exceed the static expression budget")
-    return new_nodes
-
-
-def _float32(value, name):
-    if type(value) not in (int, float):
-        fail(f"{name} coefficients must be finite non-boolean numbers")
-    try:
-        number = float(value)
-    except (OverflowError, TypeError, ValueError):
-        fail(f"{name} coefficients must fit the Float64 domain")
-    if not math.isfinite(number):
-        fail(f"{name} coefficients must be finite")
-    try:
-        result = struct.unpack("!f", struct.pack("!f", number))[0]
-    except (OverflowError, struct.error):
-        fail(f"{name} coefficients overflow Float32")
-    if not math.isfinite(result):
-        fail(f"{name} coefficients overflow Float32")
-    return result
-
-
-def _literal_float32_cell(pixel, name, memo):
-    casts = []
-    seen = set()
-    node = pixel
-    cached = False
-    number = None
-    while isinstance(node, Pixel) and node.op in {"to_float", "to_double"}:
-        if id(node) in seen:
-            fail(f"{name} coefficients cannot contain cyclic Pixel expressions")
-        if len(node.args) != 1 or node.boolean:
-            fail(f"{name} coefficients allow only unary numeric casts")
-        previous = memo.get(id(node))
-        if previous is not None and previous[0] is node:
-            number = previous[1]
-            cached = True
-            break
-        seen.add(id(node))
-        casts.append(node)
-        node = node.args[0]
-    if not cached:
-        if (not isinstance(node, Pixel) or node.op != "constant" or len(node.args) != 1
-                or node.boolean):
-            fail(f"{name} coefficients must be literal constants with optional casts")
-        previous = memo.get(id(node))
-        if previous is not None and previous[0] is node:
-            number = previous[1]
-        else:
-            value = node.args[0]
-            if type(value) not in (int, float):
-                fail(f"{name} coefficients must be finite non-boolean numbers")
-            try:
-                number = float(value)
-            except (OverflowError, TypeError, ValueError):
-                fail(f"{name} coefficients must fit the Float64 domain")
-            if not math.isfinite(number):
-                fail(f"{name} coefficients must be finite")
-            memo[id(node)] = (node, number)
-    for cast_pixel in reversed(casts):
-        if cast_pixel.op == "to_float":
-            number = _float32(number, name)
-        else:
-            number = float(number)
-            if not math.isfinite(number):
-                fail(f"{name} coefficients must remain finite after toDouble()")
-        memo[id(cast_pixel)] = (cast_pixel, number)
-    return number
-
-
-def _preflight(translator, name, m, n, k, literal_nodes):
-    # Includes the least-squares kernel, Float32 copies, literal-chain scan,
-    # and bounded Pixel multiplication/addition/cast output construction.
+def _preflight(translator, name, m, n, k, literal_nodes, promote_double):
+    # Reserve the solve, bounded literal handling, and output expression before
+    # NumPy allocates a factorization or any pixel expressions are constructed.
     work = (
         8 * m * n * n + 4 * m * m * n + 3 * m * n + m * m
         + 2 * m * n * k + 2 * n * k + 32 + 2 * literal_nodes
     )
+    if promote_double:
+        # One shared typed constant per design coefficient marks every product
+        # as Double without duplicating a cast for each response column.
+        work += m * n
+        # Reserve the constant-column scan and worst-case overflow guard,
+        # centered response copy, differences, anchors, and adjustment.
+        work += m * n + 6 * m * k + 8 * k + 8
     charge_array(translator, work)
 
 
+def _solve(design, identity):
+    with np.errstate(over="ignore", invalid="ignore", divide="ignore"):
+        pseudo_inverse, _, rank, _ = np.linalg.lstsq(design, identity, rcond=None)
+    return pseudo_inverse, rank
+
+
+def _double_pseudoinverse(pseudo_inverse, shape, name):
+    values = np.asarray(pseudo_inverse, dtype=np.float64)
+    if values.shape != shape or not np.isfinite(values).all():
+        fail(f"{name} must produce a finite Float64 pseudoinverse")
+    if np.any(np.abs(values) > _MAX_EXACT_CONSTANT):
+        fail(f"{name} Float64 pseudoinverse coefficients must fit the +/-2^53 constant range")
+    return values
+
+
+def _float32_pseudoinverse(pseudo_inverse, shape, name):
+    with np.errstate(over="ignore", invalid="ignore"):
+        values = np.asarray(pseudo_inverse, dtype=np.float32)
+    if values.shape != shape or not np.isfinite(values).all():
+        fail(f"{name} must produce a finite Float32 pseudoinverse")
+    return values
+
+
+def _double_solution_cells(pseudo_inverse, right, m, n, k):
+    coefficients = tuple(
+        Pixel("to_double", (const(float(pseudo_inverse[row, source_row]),),))
+        for row in range(n)
+        for source_row in range(m)
+    )
+    cells = []
+    for row in range(n):
+        for column in range(k):
+            terms = [
+                Pixel("multiply", (
+                    coefficients[row * m + source_row],
+                    right.cells[source_row * k + column],
+                ))
+                for source_row in range(m)
+            ]
+            result = terms[0]
+            for term in terms[1:]:
+                result = Pixel("add", (result, term))
+            cells.append(result)
+    return tuple(cells)
+
+
+def _constant_predictor_column(values, m, n):
+    """Find a nonzero constant column in the cast-evaluated literal design."""
+    for column in range(n):
+        constant = values[column]
+        if constant != 0.0 and all(
+                values[row * n + column] == constant for row in range(1, m)):
+            return column, constant
+    return None
+
+
+def _double_centered_solution_cells(
+        pseudo_inverse, right, m, n, k, constant_column, constant_value,
+        right_cast):
+    """Solve against RHS differences, then restore the constant predictor."""
+    if right_cast == "to_double":
+        anchors = tuple(right.cells[column] for column in range(k))
+    else:
+        # Preserve nested Float32 rounding, then promote just each shared
+        # anchor; the subtraction inherits Double precision from that anchor.
+        anchors = tuple(
+            Pixel("to_double", (right.cells[column],)) for column in range(k)
+        )
+
+    # Scale magnitudes by 2^-1024, then compare with a value just below 0.5.
+    # If any response value is too large, the zeroed anchor below preserves
+    # the original P*y path and avoids an overflowing y-y0 subtraction.
+    magnitude_scale = const(2.0 ** -1024)
+    safe_limit = const(0.5 - 2.0 ** -53)
+    guarded_anchors = []
+    for column in range(k):
+        magnitudes = [
+            Pixel("absolute", (right.cells[row * k + column],))
+            for row in range(m)
+        ]
+        largest = magnitudes[0]
+        for magnitude in magnitudes[1:]:
+            largest = Pixel("max2", (largest, magnitude))
+        if right_cast != "to_double":
+            largest = Pixel("to_double", (largest,))
+        scaled = Pixel("multiply", (largest, magnitude_scale))
+        safe = Pixel("lte", (scaled, safe_limit), True)
+        enabled = Pixel("to_double", (safe,))
+        guarded_anchors.append(Pixel("multiply", (anchors[column], enabled)))
+    anchors = tuple(guarded_anchors)
+
+    centered = tuple(
+        Pixel("subtract", (
+            right.cells[row * k + column], anchors[column],
+        ))
+        for row in range(m)
+        for column in range(k)
+    )
+    coefficients = tuple(
+        Pixel("to_double", (const(float(pseudo_inverse[row, source_row]),),))
+        for row in range(n)
+        for source_row in range(m)
+    )
+
+    inverse_constant = 1.0 / constant_value
+    if np.isfinite(inverse_constant) and abs(inverse_constant) <= _MAX_EXACT_CONSTANT:
+        scale = Pixel("to_double", (const(float(inverse_constant),),))
+        adjustment = "multiply"
+    else:
+        # A small source constant may have a reciprocal outside the exact
+        # constant range. Divide by the finite source value instead.
+        scale = Pixel("to_double", (const(float(constant_value),),))
+        adjustment = "divide"
+
+    cells = []
+    for row in range(n):
+        for column in range(k):
+            terms = [
+                Pixel("multiply", (
+                    coefficients[row * m + source_row],
+                    centered[source_row * k + column],
+                ))
+                for source_row in range(m)
+            ]
+            result = terms[0]
+            for term in terms[1:]:
+                result = Pixel("add", (result, term))
+            if row == constant_column:
+                anchor_term = Pixel(adjustment, (anchors[column], scale))
+                result = Pixel("add", (result, anchor_term))
+            cells.append(result)
+    return tuple(cells)
+
+
+def _float32_solution_cells(pseudo_inverse, right, m, n, k):
+    cells = []
+    for row in range(n):
+        for column in range(k):
+            terms = [
+                Pixel("multiply", (
+                    const(float(pseudo_inverse[row, source_row])),
+                    right.cells[source_row * k + column],
+                ))
+                for source_row in range(m)
+            ]
+            result = terms[0]
+            for term in terms[1:]:
+                result = Pixel("add", (result, term))
+            cells.append(Pixel("to_float", (result,)))
+    return tuple(cells)
+
+
 def invoke_raster_matrix(translator, name, arguments):
-    """Lower an array-valued Image.matrixSolve to bounded pixel expressions."""
+    """Lower bounded raster ``Image.matrixSolve`` calls to pixel expressions."""
     if name not in RASTER_MATRIX_FUNCTIONS:
         fail(f"Unsupported raster matrix operation: {name}")
     translator.allowed(arguments, {"image1", "image2"})
@@ -167,50 +221,49 @@ def invoke_raster_matrix(translator, name, arguments):
         fail("Image.matrixSolve input arrays exceed the shared 64-cell limit")
     check_shape((n, k))
 
-    constant_nodes = set()
-    literal_nodes = 0
-    for pixel in left.cells:
-        literal_nodes += _scan_constant_cell(pixel, constant_nodes, name)
-    for pixel in right.cells:
-        if not _is_float32_cell(pixel):
-            fail("Image.matrixSolve image2 cells require explicit top-level toFloat()")
+    literal_nodes = scan_literal_cells(left.cells, name)
+    promote_double = _top_cast_is_double(left) or _top_cast_is_double(right)
+    _preflight(translator, name, m, n, k, literal_nodes, promote_double)
 
-    _preflight(translator, name, m, n, k, literal_nodes)
+    left_cast = require_cast_cells(left, name, "image1")
+    right_cast = require_cast_cells(right, name, "image2")
+    promote_double = left_cast == "to_double" or right_cast == "to_double"
+    design_values = literal_cells(left.cells, name)
 
-    try:
-        literal_cache = {}
-        design_values = [
-            _literal_float32_cell(pixel, name, literal_cache) for pixel in left.cells
-        ]
+    if promote_double:
+        design = np.asarray(design_values, dtype=np.float64).reshape((m, n))
+        constant_predictor = _constant_predictor_column(design_values, m, n)
+        identity = np.eye(m, dtype=np.float64)
+        try:
+            pseudo_inverse, rank = _solve(design, identity)
+        except np.linalg.LinAlgError:
+            fail("Image.matrixSolve Float64 least-squares solve failed to converge")
+        if rank < n:
+            fail("Image.matrixSolve Float64 design matrix must have full column rank")
+        pseudo_inverse = _double_pseudoinverse(pseudo_inverse, (n, m), name)
+        if constant_predictor is None:
+            cells = _double_solution_cells(pseudo_inverse, right, m, n, k)
+        else:
+            constant_column, constant_value = constant_predictor
+            cells = _double_centered_solution_cells(
+                pseudo_inverse, right, m, n, k, constant_column,
+                constant_value, right_cast,
+            )
+    else:
+        # Keep the established Float32 NumPy input, identity, pseudoinverse,
+        # per-pixel expression and final output cast exactly as before.
         design = np.asarray(design_values, dtype=np.float32).reshape((m, n))
         identity = np.eye(m, dtype=np.float32)
-        with np.errstate(over="ignore", invalid="ignore", divide="ignore"):
-            pseudo_inverse, _, rank, _ = np.linalg.lstsq(design, identity, rcond=None)
-    except np.linalg.LinAlgError:
-        fail("Image.matrixSolve Float32 least-squares solve failed to converge")
-    if rank < n:
-        fail("Image.matrixSolve Float32 design matrix must have full column rank")
-    with np.errstate(over="ignore", invalid="ignore"):
-        pseudo_inverse = np.asarray(pseudo_inverse, dtype=np.float32)
-    if pseudo_inverse.shape != (n, m) or not np.isfinite(pseudo_inverse).all():
-        fail("Image.matrixSolve must produce a finite Float32 pseudoinverse")
-
-    cells = []
-    for row in range(n):
-        for column in range(k):
-            terms = [
-                Pixel("multiply", (
-                    const(float(pseudo_inverse[row, source_row])),
-                    right.cells[source_row * k + column],
-                ))
-                for source_row in range(m)
-            ]
-            result = terms[0]
-            for term in terms[1:]:
-                result = Pixel("add", (result, term))
-            cells.append(Pixel("to_float", (result,)))
+        try:
+            pseudo_inverse, rank = _solve(design, identity)
+        except np.linalg.LinAlgError:
+            fail("Image.matrixSolve Float32 least-squares solve failed to converge")
+        if rank < n:
+            fail("Image.matrixSolve Float32 design matrix must have full column rank")
+        pseudo_inverse = _float32_pseudoinverse(pseudo_inverse, (n, m), name)
+        cells = _float32_solution_cells(pseudo_inverse, right, m, n, k)
 
     mask = combined_mask(left.mask, right.mask)
     return wrap_array_image(
-        _result_image(left, right), (n, k), tuple(cells), mask, left.name,
+        _result_image(left, right), (n, k), cells, mask, left.name,
     )

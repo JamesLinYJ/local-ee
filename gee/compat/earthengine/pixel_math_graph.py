@@ -11,6 +11,7 @@ from gee.pixel_math_contract import (
 )
 
 from .ir import Image, Pixel, Source, const, fail
+from .pixel_facts_cache import translator_pixel_facts_cache
 
 
 _FLOAT64_ERROR = (
@@ -35,6 +36,8 @@ class _PixelFactsWalker:
         self.work = 0
         self.memo = {}
         self.active = set()
+        self.shareability = {}
+        self.shared_cache = translator_pixel_facts_cache(translator)
 
     def charge(self, amount):
         self.work += amount
@@ -56,6 +59,26 @@ class _PixelFactsWalker:
                     merged.append(source)
         return tuple(merged)
 
+    def _mark_shareable(self, value, shareable):
+        self.shareability[id(value)] = (value, shareable)
+
+    def _is_shareable(self, value):
+        if type(value) in (type(None), bool, int, float, str, bytes):
+            return True
+        entry = self.shareability.get(id(value))
+        return entry is not None and entry[0] is value and entry[1]
+
+    def _shared_facts(self, value):
+        if self.shared_cache is None:
+            return None
+        # Reserve both lookup and local-memo work before LRU promotion. A hit
+        # pays for both; a miss conservatively pays the same bounded amount.
+        self.charge(2)
+        facts = self.shared_cache.lookup(value)
+        if facts is not None:
+            self.memo[id(value)] = (value, facts)
+        return facts
+
     def inspect(self, value):
         if isinstance(value, Source):
             key = id(value)
@@ -64,20 +87,48 @@ class _PixelFactsWalker:
                 return cached[1]
             if type(value.cid) is not str or type(value.ids) is not tuple:
                 fail("Image pixel math has an invalid source lineage")
+            source_shareable = type(value) is Source
+            if source_shareable:
+                # Prove the IDs are immutable before either lookup or insert;
+                # a malformed nested value must never reuse cached facts.
+                self.charge(1 + len(value.ids))
+                source_shareable = all(type(item_id) is str for item_id in value.ids)
+            if source_shareable:
+                shared = self._shared_facts(value)
+                if shared is not None:
+                    self._mark_shareable(value, True)
+                    return shared
             self.charge(1 + len(value.cid) + len(value.ids))
             facts = _PixelFacts(sources=((value.cid, value.ids),))
+            self._mark_shareable(value, source_shareable)
+            if source_shareable and self.shared_cache is not None:
+                self.shared_cache.store(value, facts, self.charge)
             self.memo[key] = (value, facts)
             return facts
 
         if not isinstance(value, (Pixel, tuple, list)):
+            if type(value) not in (type(None), bool, int, float, str, bytes):
+                self._mark_shareable(value, False)
             return _PixelFacts()
 
         key = id(value)
+        if key in self.active:
+            fail("Cyclic pixel expression is unsupported")
         cached = self.memo.get(key)
         if cached is not None and cached[0] is value:
             return cached[1]
-        if key in self.active:
-            fail("Cyclic pixel expression is unsupported")
+
+        pixel_cache_candidate = (
+            type(value) is Pixel
+            and type(value.args) is tuple
+            and type(value.op) is str
+            and type(value.boolean) is bool
+        )
+        if pixel_cache_candidate or type(value) is tuple:
+            shared = self._shared_facts(value)
+            if shared is not None:
+                self._mark_shareable(value, True)
+                return shared
         self.active.add(key)
 
         if isinstance(value, Pixel):
@@ -108,6 +159,19 @@ class _PixelFactsWalker:
                 multi_grid,
                 deferred_input or any(child.requires_per_item for child in children),
             )
+            shareable = (
+                type(value) is Pixel
+                and type(value.args) is tuple
+                and type(value.op) is str
+                and type(value.boolean) is bool
+            )
+            if type(value) is Pixel and type(value.args) is tuple:
+                # Children were already inspected above, so this bounded scan
+                # proves deep immutability without a second graph traversal.
+                self.charge(1 + len(value.args))
+                shareable = shareable and all(
+                    self._is_shareable(argument) for argument in value.args
+                )
         else:
             self.charge(1 + len(value))
             children = [self.inspect(child) for child in value]
@@ -120,9 +184,17 @@ class _PixelFactsWalker:
                 any(child.has_multi_grid_constant for child in children),
                 any(child.requires_per_item for child in children),
             )
+            shareable = type(value) is tuple
+            if shareable:
+                self.charge(1 + len(value))
+                shareable = all(self._is_shareable(child) for child in value)
 
         self.active.remove(key)
         self.memo[key] = (value, facts)
+        self._mark_shareable(value, shareable)
+        if (shareable and self.shared_cache is not None
+                and (type(value) is Pixel or type(value) is tuple)):
+            self.shared_cache.store(value, facts, self.charge)
         return facts
 
 

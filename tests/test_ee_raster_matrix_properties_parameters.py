@@ -132,26 +132,22 @@ def test_matrix_to_diag_rejects_noncolumn_or_more_than_eight_rows(ee, local, val
         compile_value(ee, constant_array(ee, value).matrixToDiag(), local)
 
 
-@pytest.mark.parametrize("cast", [None, "double"])
-def test_matrix_to_diag_requires_explicit_top_level_float32_cells(ee, local, cast):
-    expected = "explicit top-level toFloat" if cast is None else None
-    with pytest.raises(UnsupportedEEError, match=expected):
+def test_matrix_to_diag_requires_explicit_top_level_numeric_casts(ee, local):
+    with pytest.raises(UnsupportedEEError, match="explicit top-level toFloat"):
         compile_value(
-            ee, constant_array(ee, [[1], [2]], cast=cast).matrixToDiag(), local,
+            ee, constant_array(ee, [[1], [2]], cast=None).matrixToDiag(), local,
         )
 
 
 @pytest.mark.parametrize("operation", ["matrixTrace", "matrixDeterminant"])
-def test_scalar_properties_reject_nonsquare_and_nonfloat32_inputs(ee, local, operation):
+def test_scalar_properties_reject_nonsquare_and_uncast_inputs(ee, local, operation):
     rectangular = constant_array(ee, [[1, 2, 3], [4, 5, 6]])
     with pytest.raises(UnsupportedEEError, match="square"):
         compile_value(ee, getattr(rectangular, operation)(), local)
 
     square = [[1, 2], [3, 4]]
-    for cast in (None, "double"):
-        expected = "explicit top-level toFloat" if cast is None else None
-        with pytest.raises(UnsupportedEEError, match=expected):
-            compile_value(ee, getattr(constant_array(ee, square, cast), operation)(), local)
+    with pytest.raises(UnsupportedEEError, match="explicit top-level toFloat"):
+        compile_value(ee, getattr(constant_array(ee, square, None), operation)(), local)
 
 
 def test_matrix_determinant_caps_square_size_at_four(ee, local):

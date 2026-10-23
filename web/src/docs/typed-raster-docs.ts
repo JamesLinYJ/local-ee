@@ -2,6 +2,14 @@ import type { ReferenceEntry } from "../types";
 
 export const pythonTypedRasterDocs: ReferenceEntry[] = [
   {
+    id: "gee-python-double-array-solve",
+    category: "GEE Python",
+    language: "python",
+    title: "Double 数组与固定矩阵求解",
+    text: "单个固定数组可逐元素 toDouble()。matrixSolve 当前接受满列秩的字面量设计矩阵，任一输入为 Double 时保留 Double；动态设计仍拒绝。数组需先 flatten/get 成标量波段才能导出，64元素、500节点和工作预算保持。",
+    code: "design = ee.Image.constant(ee.Array(\n    [[1,0], [1,1], [1,2]])).toDouble()\nrhs = image.select(['red','nir','blue'])\\\n    .toArray().toArray(1).toDouble()\nfit = design.matrixSolve(rhs)\ncoefficients = fit.arrayFlatten(\n    [['intercept','slope'], ['value']])",
+  },
+  {
     id: "gee-python-image-float64-arithmetic",
     category: "GEE Python",
     language: "python",
@@ -20,6 +28,12 @@ export const pythonTypedRasterDocs: ReferenceEntry[] = [
 ];
 
 export const javascriptTypedRasterDocs: ReferenceEntry[] = [
+  {
+    id: "gee-js-double-array-solve",
+    title: "Double 数组与固定矩阵求解",
+    text: "单个固定数组可逐元素 toDouble()。matrixSolve 目前仅接受满列秩的字面量设计，任一输入 Double 则保留 Double；动态设计及超预算图明确拒绝。数组先 flatten/get 成标量再导出。",
+    code: "var design = ee.Image.constant(ee.Array(\n  [[1,0], [1,1], [1,2]])).toDouble();\nvar rhs = image.select(['red','nir','blue'])\n  .toArray().toArray(1).toDouble();\nvar fit = design.matrixSolve(rhs);\nvar coefficients = fit.arrayFlatten(\n  [['intercept','slope'], ['value']]);",
+  },
   {
     id: "gee-js-image-float64-arithmetic",
     title: "Double 影像算术",

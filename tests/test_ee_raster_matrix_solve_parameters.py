@@ -64,7 +64,7 @@ def test_sdk_signature_requires_image1_image2_and_rejects_unknown_arguments(ee, 
                      "arguments": {"left": [], "right": []}}, local)
 
 
-def test_only_typed_raster_arrays_with_explicit_top_level_float32_cells_are_accepted(ee, local):
+def test_only_typed_raster_arrays_with_explicit_top_level_casts_are_accepted(ee, local):
     right = response_column(ee)
     uncast_design = ee.Image.constant(ee.Array([[1, 0], [1, 1], [1, 2]]))
     with pytest.raises(UnsupportedEEError, match="explicit top-level toFloat"):
@@ -88,14 +88,14 @@ def test_only_typed_raster_arrays_with_explicit_top_level_float32_cells_are_acce
         compile_raw(raw_list, local)
 
 
-def test_float64_array_cast_and_dynamic_design_coefficients_reject(ee, local):
-    with pytest.raises(UnsupportedEEError):
-        compile_value(
-            ee,
-            ee.Image.constant(ee.Array([[1, 0], [1, 1], [1, 2]])).toDouble()
-              .matrixSolve(response_column(ee)),
-            local,
-        )
+def test_double_design_promotes_rhs_but_dynamic_design_still_rejects(ee, local):
+    output = ee.Image.constant(ee.Array([[1, 0], [1, 1], [1, 2]])).toDouble().matrixSolve(
+        response_column(ee),
+    ).arrayFlatten([["intercept", "slope"], ["rhs"]])
+    result = compile_value(ee, output, local)
+    assert result["bands"] == ["intercept_rhs", "slope_rhs"]
+    assert any(node["process_id"] == "local_ee_integer_values"
+               for node in result["process_graph"].values())
 
     dynamic_design = response_column(ee)
     with pytest.raises(UnsupportedEEError, match="literal constants"):
@@ -212,4 +212,3 @@ def test_real_balanced_pixel_graph_above_500_nodes_is_rejected(ee, local):
            .arrayFlatten([["coefficient"], ["response"]]))
     with pytest.raises(UnsupportedEEError, match="500 nodes"):
         compile_value(ee, fit, local)
-

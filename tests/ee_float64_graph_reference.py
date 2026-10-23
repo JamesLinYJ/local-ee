@@ -4,8 +4,10 @@ from __future__ import annotations
 import json
 import math
 import struct
+from fractions import Fraction
 
 import numpy as np
+from shapely.geometry import Point, shape
 
 
 _BINARY = {
@@ -51,7 +53,7 @@ def _operand(descriptor: dict, data: np.ndarray, band_axis: int,
     if type(band) is not int or not 0 <= band < data.shape[band_axis]:
         raise AssertionError("Float64 oracle received an invalid input band")
     values = np.take(data, band, axis=band_axis)
-    valid &= np.isfinite(values)
+    valid &= ~np.isnan(values)
     return values
 
 
@@ -113,6 +115,8 @@ def float64_values_handler(arguments: dict, values: dict) -> tuple[np.ndarray, l
         raise AssertionError("Float64 oracle received an unsupported wire object")
 
     data = np.asarray(data, dtype=np.float64)
+    if np.isinf(data).any():
+        raise ValueError("Float64 graph input cannot contain valid infinity")
     band_axis = 1 if timed else 0
     if data.ndim not in (2, 3) or band_axis >= data.ndim:
         raise AssertionError("Float64 oracle input must be a scalar raster cube")
@@ -139,3 +143,48 @@ def evaluate_float64_graph(result: dict, arrays: dict, *, grid=None,
         result, arrays, grid=grid, source_geometries=source_geometries,
         process_handlers={"local_ee_integer_values": float64_values_handler},
     )
+
+
+def double_matrix_sample_reference(arrays, grid, geometry):
+    """Exact three-row design reference for sampled pixels and source masks.
+
+    The solved design is [[1, 0], [1, 1], [1, 2]]. Fractions keep the OLS
+    reference independent of the compiler's matrix-solve implementation;
+    NumPy is used only to arrange the public raster-shaped outputs.
+    """
+    count = len(grid)
+    coefficients = np.full((2, count), np.nan, dtype=np.float64)
+    predictions = np.full((3, count), np.nan, dtype=np.float64)
+    prediction_fnorm = np.full((1, count), np.nan, dtype=np.float64)
+    selected = np.full((1, count), np.nan, dtype=np.float64)
+    observation_trace = np.full((1, count), np.nan, dtype=np.float64)
+    source_shape = shape(geometry)
+
+    for index, center in enumerate(grid):
+        if not source_shape.covers(Point(*center)):
+            continue
+        values = [arrays[band][index] for band in ("red", "nir", "blue")]
+        if not all(math.isfinite(float(value)) for value in values):
+            continue
+        exact = [Fraction.from_float(float(value)) for value in values]
+        slope = (exact[2] - exact[0]) / 2
+        intercept = sum(exact, Fraction()) / 3 - slope
+        fitted = [intercept + slope * x for x in (0, 1, 2)]
+        coefficients[:, index] = [float(intercept), float(slope)]
+        predictions[:, index] = [float(value) for value in fitted]
+        prediction_fnorm[0, index] = math.sqrt(
+            float(sum(value * value for value in fitted))
+        )
+        selected[0, index] = float(fitted[1])
+        observation_trace[0, index] = float(sum(exact, Fraction()))
+
+    blue = np.asarray(arrays["blue"], dtype=np.float64)
+    blue32 = blue.astype(np.float32).astype(np.float64)
+    return {
+        "coefficients": coefficients,
+        "predictions": predictions,
+        "prediction_frobenius_norm": prediction_fnorm,
+        "selected_prediction": selected,
+        "observation_trace": observation_trace,
+        "precision_controls": np.stack([blue, blue32, blue32]),
+    }

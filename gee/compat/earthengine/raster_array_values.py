@@ -25,6 +25,7 @@ RASTER_ARRAY_VALUE_FUNCTIONS = frozenset({
     "Image.constant",
     "Image.toArray",
     "Image.toFloat",
+    "Image.toDouble",
     "Image.matrixMultiply",
     "Image.arrayLength",
     "Image.arrayLengths",
@@ -120,6 +121,16 @@ def _to_float_array(translator, arguments) -> RasterArrayImage:
     return wrap_array_image(array.image, array.shape, cells, array.mask, array.name)
 
 
+def _to_double_array(translator, arguments) -> RasterArrayImage:
+    translator.allowed(arguments, {"value"})
+    if "value" not in arguments:
+        fail("Image.toDouble requires value")
+    array = _array(arguments["value"], "Image.toDouble value")
+    charge_array(translator, len(array.cells) + 1)
+    cells = tuple(Pixel("to_double", (pixel,)) for pixel in array.cells)
+    return wrap_array_image(array.image, array.shape, cells, array.mask, array.name)
+
+
 def _binary_arrays(translator, name, arguments) -> RasterArrayImage:
     translator.allowed(arguments, {"image1", "image2"})
     left = _array(arguments["image1"], "Image.image1")
@@ -210,6 +221,8 @@ def invoke_raster_value(translator, name, arguments):
         return _to_array(translator, arguments)
     if name == "Image.toFloat":
         return _to_float_array(translator, arguments)
+    if name == "Image.toDouble":
+        return _to_double_array(translator, arguments)
     if name == "Image.matrixMultiply":
         return _matrix_multiply(translator, arguments)
     if name == "Image.arrayLength":

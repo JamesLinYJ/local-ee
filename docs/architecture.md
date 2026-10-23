@@ -133,11 +133,11 @@ RF 要素分类与矩阵计算保留独立运行时 IR 和生产者合同。真�
 | `array_decompositions.py` | 静态方阵 QR／LU／SVD 的真实分解、有限输出与立方工作预充；通过既有 typed Array／Dictionary 接口组合，不另建前端计算层 |
 | `array_argmax.py` | 有限静态数组与固定 Float32 栅格数组的首个行主序最大值坐标；静态路径保留原数值类型比较，栅格路径生成真实比较／条件坐标并保留整体掩膜，扫描及构图前预充预算 |
 | `raster_array_core.py`, `raster_array_values.py`, `raster_array_layout.py`, `raster_array_coordinates.py`, `raster_array_reductions.py`, `raster_array_dispatch.py` | 单数组波段固定形状 IR、整体掩膜、常量坐标与分组操作；降为既有标量像素图，公开输出前必须转换为标量波段 |
-| `raster_matrix_solve.py` | 静态满列秩设计的有限栅格最小二乘；双方显式 Float32、预充工作预算、常量 cast 链按对象缓存，输出真实像素乘加及整体掩膜，不宣称通用动态矩阵或 Google 数值等价 |
+| `raster_matrix_solve.py` | 静态满列秩设计的有限栅格最小二乘；双方显式 Float32／Double（任一Double则提升）、预充工作预算、常量 cast 链按对象缓存，输出真实像素乘加及整体掩膜，不宣称通用动态矩阵或 Google 数值等价 |
 | `raster_collection_arrays.py`, `raster_array_reshape.py` | 有限标量集合按波段堆叠定长数组，各波段独立合并所有帧掩膜；常量有效长度向量重解释行主序形状，保留像素、类型和来源，拒绝变长数组及动态／掩膜形状 |
 | `raster_array_concatenation.py` | 单数组按现有轴实际拼接／整块重复，固定行主序单元保持类型，拼接合并整体掩膜；重复次数必须由有效常量标量 Image 证明，动态／掩膜／空间限定次数拒绝，保留形状、工作及图预算 |
 | `raster_array_accumulation.py` | 固定轴上的真实 Float32 前缀 sum／min／max，包含当前位置并保持原行主序及完整数组掩膜；省略 reducer 默认 sum，输出前计费，拒绝未实现 reducer／修饰符 |
-| `raster_matrix_properties.py` | 固定二维数组提取对角列、构建对角矩阵及计算标量迹／小矩阵行列式／缩放 Frobenius 范数；保留完整输入掩膜与来源，算术显式逐步 Float32 舍入，预充构造工作且保留图预算，数值稳定性不冒称 Google 等价 |
+| `raster_matrix_properties.py` | 固定二维数组提取对角列、构建对角矩阵及计算标量迹／小矩阵行列式／缩放 Frobenius 范数；保留完整输入掩膜与来源，算术显式逐步 Float32／Double 舍入，预充构造工作且保留图预算，数值稳定性不冒称 Google 等价 |
 | `raster_array_bands.py`, `raster_regression_frames.py`, `raster_linear_regression.py` | 有限多数组逻辑波段及选择／元数据；共用观测身份／输入顺序校验；过原点或单位截距回归与多响应 RMS 分开于表格路径，保留共同完整行掩膜及图预算 |
 | `list_layout.py`, `list_reductions.py` | 静态 List 配对／展开／置换与有界归约；保留类型化原子值，单输出值与多输出回归字典各按实际合同返回 |
 | `table_reducers.py`, `raster_linear_fit.py` | 共用回归规格；List 与内联表格复用数值内核，和有限帧逐像元 linearFit 分开适配，保留各自缺测、类型、规模和数值验证边界 |

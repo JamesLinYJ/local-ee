@@ -1,8 +1,9 @@
 """Bounded matrix layout and scalar properties for raster-array Images.
 
 Trace, determinant, and the scaled Frobenius norm use explicit local Float32
-staging so literals and source-backed callbacks share the same rounding path.
-This is a bounded implementation policy, not a claim of GEE numeric parity.
+or Float64 staging so literals and source-backed values share one rounding
+path. This is a bounded implementation policy, not a claim of GEE numeric
+parity.
 """
 from __future__ import annotations
 
@@ -12,6 +13,7 @@ import math
 from .array_core import charge_array
 from .ir import Pixel, const, fail
 from .raster_array_core import masked_scalar, wrap_array_image
+from .raster_array_precision import require_cast_cells
 from .raster_array_values import _array
 
 
@@ -39,15 +41,8 @@ def _matrix(translator, name, arguments):
     return array, rows, columns
 
 
-def _require_float32_cells(array, name):
-    if any(pixel.op != "to_float" or len(pixel.args) != 1
-           or not isinstance(pixel.args[0], Pixel) or pixel.boolean
-           for pixel in array.cells):
-        fail(f"{name} requires explicit top-level toFloat() for every matrix cell")
-
-
-def _float32(pixel):
-    return Pixel("to_float", (pixel,))
+def _cast(dtype, pixel):
+    return Pixel(dtype, (pixel,))
 
 
 def _diagonal(translator, name, arguments):
@@ -65,12 +60,30 @@ def _to_diagonal(translator, name, arguments):
     if rows > 8:
         fail(f"{name} supports a single-column matrix with at most 8 rows")
     output_cells = rows * rows
-    # Cover the output layout scan and both Pixels per off-diagonal Float32
-    # zero, in addition to validating the input cell casts.
-    charge_array(translator, len(array.cells) + 3 * output_cells + rows + 8)
-    _require_float32_cells(array, name)
+    # A Double zero depends on the first input cell so it keeps that cell's
+    # NoData/Infinity behavior while abs canonicalizes negative zero. Each
+    # arithmetic stage gets an explicit typed cast, and the expression is
+    # shared across all off-diagonal cells.
+    first_is_double = bool(array.cells and array.cells[0].op == "to_double")
+    zero_count = output_cells - rows
+    extra_zero_work = 3 if first_is_double and zero_count else 0
+    # Cover the output layout scan, typed zero construction/casts, and input
+    # cell validation. The additional shared Double zero stages are charged
+    # before their Pixels are constructed.
+    charge_array(
+        translator,
+        len(array.cells) + 3 * output_cells + rows + 8 + extra_zero_work,
+    )
+    dtype = require_cast_cells(array, name, "matrix")
+    double_zero = None
+    if dtype == "to_double" and zero_count:
+        magnitude = _cast(dtype, Pixel("absolute", (array.cells[0],)))
+        double_zero = _cast(dtype, Pixel("multiply", (magnitude, const(0))))
+
     cells = tuple(
-        array.cells[row] if row == column else _float32(const(0))
+        array.cells[row] if row == column else (
+            double_zero if double_zero is not None else _cast(dtype, const(0))
+        )
         for row in range(rows)
         for column in range(rows)
     )
@@ -82,11 +95,11 @@ def _trace(translator, name, arguments):
     if rows != columns or not 1 <= rows <= 8:
         fail(f"{name} supports square matrices of size 1 through 8")
     charge_array(translator, len(array.cells) + 3 * rows + 8)
-    _require_float32_cells(array, name)
+    dtype = require_cast_cells(array, name, "matrix")
     result = array.cells[0]
     for index in range(1, rows):
-        result = _float32(Pixel("add", (result, array.cells[index * columns + index])))
-    return masked_scalar(array, _float32(result), array.name)
+        result = _cast(dtype, Pixel("add", (result, array.cells[index * columns + index])))
+    return masked_scalar(array, _cast(dtype, result), array.name)
 
 
 def _inversion_parity(order):
@@ -103,25 +116,25 @@ def _determinant(translator, name, arguments):
         fail(f"{name} supports square matrices of size 1 through 4")
     terms = math.factorial(rows)
     # Cover input checks, permutation indexing/parity comparisons, all
-    # multiply/add stages and their explicit Float32 casts before creating IR.
+    # multiply/add stages and their explicit typed casts before creating IR.
     pair_checks = rows * (rows - 1) // 2
     per_term = 2 * (rows - 1) + pair_checks + rows + 2
     charge_array(translator, len(array.cells) + terms * per_term + 16)
-    _require_float32_cells(array, name)
+    dtype = require_cast_cells(array, name, "matrix")
 
     result = None
     for order in permutations(range(rows)):
         product = array.cells[order[0]]
         for row in range(1, rows):
-            product = _float32(Pixel(
+            product = _cast(dtype, Pixel(
                 "multiply", (product, array.cells[row * columns + order[row]])
             ))
         if result is None:
             result = product
             continue
         operation = "subtract" if _inversion_parity(order) else "add"
-        result = _float32(Pixel(operation, (result, product)))
-    return masked_scalar(array, _float32(result), array.name)
+        result = _cast(dtype, Pixel(operation, (result, product)))
+    return masked_scalar(array, _cast(dtype, result), array.name)
 
 
 def _frobenius_norm(translator, name, arguments):
@@ -131,26 +144,26 @@ def _frobenius_norm(translator, name, arguments):
     # Each cell contributes an absolute value, ratio, and square; the maximum,
     # sum, square root, final scaling, and explicit casts are also charged.
     charge_array(translator, 14 * len(array.cells) + 16)
-    _require_float32_cells(array, name)
+    dtype = require_cast_cells(array, name, "matrix")
 
     magnitudes = [
-        _float32(Pixel("absolute", (pixel,))) for pixel in array.cells
+        _cast(dtype, Pixel("absolute", (pixel,))) for pixel in array.cells
     ]
     scale = magnitudes[0]
     for magnitude in magnitudes[1:]:
-        scale = _float32(Pixel("max2", (scale, magnitude)))
+        scale = _cast(dtype, Pixel("max2", (scale, magnitude)))
 
     ratios = [
-        _float32(Pixel("divide", (pixel, scale))) for pixel in array.cells
+        _cast(dtype, Pixel("divide", (pixel, scale))) for pixel in array.cells
     ]
     squares = [
-        _float32(Pixel("multiply", (ratio, ratio))) for ratio in ratios
+        _cast(dtype, Pixel("multiply", (ratio, ratio))) for ratio in ratios
     ]
     total = squares[0]
     for square in squares[1:]:
-        total = _float32(Pixel("add", (total, square)))
-    root = _float32(Pixel("sqrt", (total,)))
-    result = _float32(Pixel("multiply", (scale, root)))
+        total = _cast(dtype, Pixel("add", (total, square)))
+    root = _cast(dtype, Pixel("sqrt", (total,)))
+    result = _cast(dtype, Pixel("multiply", (scale, root)))
     return masked_scalar(array, result, array.name)
 
 
