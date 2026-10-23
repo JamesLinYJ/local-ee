@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from . import collection_ops, filtering, image_ops, metadata_ops, value_ops
+from .collection_metadata import handles_collection_metadata, invoke_collection_metadata
 from .ir import ImageSequence, fail
 
 
@@ -76,6 +77,8 @@ def invoke(translator, name, arguments):
         from .feature_error_matrix import invoke_error_matrix
 
         return invoke_error_matrix(translator, name, a)
+    if handles_collection_metadata(name, a):
+        return invoke_collection_metadata(translator, name, a)
     if name == "List.reduce":
         from .list_reductions import invoke_list_reduce
 

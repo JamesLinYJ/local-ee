@@ -10,6 +10,7 @@ from ...rf_validation_spec import (
 )
 from ...table_values import columns as table_columns
 from .array_core import wrap_array
+from .collection_metadata import copy_collection_metadata, collection_with_metadata
 from .confusion_values import MAX_CONFUSION_CELLS, MAX_CONFUSION_CLASSES, make_confusion
 from .feature_values import charge, is_collection, property_name, validate_feature
 from .ir import DynamicMinimumDistance, SampledFeatures, fail
@@ -73,6 +74,7 @@ def _classify_features(translator, arguments):
     charge(translator, len(output_name))
 
     features = _features(translator, a["features"])
+    metadata = copy_collection_metadata(translator, a["features"])
     # The predictions list contains one output label per input feature.
     charge(translator, len(features))
     predictions = []
@@ -101,13 +103,10 @@ def _classify_features(translator, arguments):
     # Preflight copies/label insertion for every output feature before creating
     # the result collection. All feature and prediction validation is complete.
     charge(translator, output_work + 1)
-    return {
-        "type": "FeatureCollection",
-        "features": [
-            {**feature, "properties": {**feature["properties"], output_name: label}}
-            for feature, label in zip(features, predictions)
-        ],
-    }
+    return collection_with_metadata([
+        {**feature, "properties": {**feature["properties"], output_name: label}}
+        for feature, label in zip(features, predictions)
+    ], metadata)
 
 
 def _classify_rf_features(translator, arguments):

@@ -9,10 +9,10 @@ from .array_core import charge_array
 from .feature_values import is_collection, validate_feature
 from .ir import DynamicMinimumDistance, SampledFeatures, fail, integer
 from .minimum_distance_metrics import predict_unique, require_metric
+from .training_schema import MAX_INPUT_PROPERTIES, resolve_input_properties
 
 
 MAX_TRAINING_FEATURES = 1_000
-MAX_INPUT_PROPERTIES = 8
 MAX_CLASSES = 64
 MAX_EXACT_INTEGER = 2 ** 53
 
@@ -128,7 +128,10 @@ def _train(translator, args):
             or "." in class_property):
         fail("Classifier classProperty must be a nonempty flat property name")
     charge_array(translator, len(class_property))
-    schema = _input_properties(translator, args.get("inputProperties"))
+    schema = _input_properties(
+        translator,
+        resolve_input_properties(translator, args["features"], args.get("inputProperties")),
+    )
 
     subsampling = args.get("subsampling", 1.0)
     if isinstance(subsampling, bool) or type(subsampling) not in (int, float):

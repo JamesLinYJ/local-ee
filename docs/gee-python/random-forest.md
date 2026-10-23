@@ -6,7 +6,7 @@ API、同一个 seed 不构成相同树结构或 Google 数值结果的保证。
 
 ## Python 与 JavaScript
 
-Python 使用已配置的官方 `ee` 客户端，训练字段必须显式给出：
+Python 使用已配置的官方 `ee` 客户端。下面显式列出预测字段；第三十批也支持从已声明 `band_order` 读取省略的字段，见 [训练字段](training-schema.md)：
 
 ```python
 model = ee.Classifier.smileRandomForest(
@@ -100,14 +100,11 @@ Int32 NoData 波段，默认名称 `classification` 或显式 `outputName`，保
 返回；具体参数、空表及预算见 [要素验证语法](rf-validation.md)。模型也可进入
 受控的要素预测／训练矩阵节点，不能进入通用运算或直接输出。
 
-RF 的 `explain`、其他输出模式、随机列、`Image.sample` 和模型保存／恢复
-尚未实现。`schema()` 和
+RF 的 `explain`、其他输出模式和模型保存／恢复
+尚未实现；Image.sample 与随机列已有各自有限合同。`schema()` 和
 `setOutputMode('CLASSIFICATION')` 支持，其他模式明确拒绝。
 
-省略 `inputProperties` 并依赖 `band_order` 的重载尚未支持。固定 Python SDK
-会丢弃 GeoJSON 集合顶层 `properties`；合法的集合 `.set('band_order',...)`
-仍受现有集合元数据 IR 缺口限制。`sampleRegions` 规格不等于 `Image.sample`
-声明，后端不会猜测输入字段。
+第三十批支持省略或null的 `inputProperties`，仅从内联集合或Image.sample v2实际声明的 `band_order` 读取完整顺序；显式列表优先，不猜字段或自动删除类别。固定Python SDK会丢弃GeoJSON集合根properties，应使用实际 `.set('band_order',...)` 调用。sampleRegions v1仍需显式字段；完整限制见 [训练字段与集合元数据](training-schema.md)。
 
 官方 SDK S／编译 C、可信独立 JVM／GeoTrellis tile 组件和原始合成参考分别记录。
 它们不能代替完整 Spark／批处理沙箱／HTTP／浏览器、私有真实数据、部署或 Google

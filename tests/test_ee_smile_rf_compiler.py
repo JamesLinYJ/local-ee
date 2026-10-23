@@ -368,9 +368,8 @@ def test_rf_optional_input_properties_overload_requires_preserved_collection_met
     with pytest.raises(UnsupportedEEError, match="Classifier.train requires inputProperties"):
         compile_expression(encode(ee, classifier.schema()), local[0], local[1])
 
-    # The SDK's explicit collection metadata route survives serialization as
-    # Element.set(Collection, ...), but the current compiler has no collection
-    # metadata IR. Do not infer a model schema from this unpreserved value.
+    # Explicit collection metadata survives serialization and now authorizes
+    # the documented optional-input overload without guessing row fields.
     with_collection_metadata = ee.FeatureCollection([
         ee.Feature(None, {"label": 0, "nir": 0.2}),
         ee.Feature(None, {"label": 1, "nir": 0.8}),
@@ -379,10 +378,9 @@ def test_rf_optional_input_properties_overload_requires_preserved_collection_met
         features=with_collection_metadata, classProperty="label",
     ).schema())
     assert "Element.set" in serialized_function_names(metadata_expression)
-    with pytest.raises(UnsupportedEEError):
-        compile_expression(metadata_expression, local[0], local[1])
+    assert compile_expression(metadata_expression, local[0], local[1])["value"] == ["nir"]
 
-    # A sampling spec is not a declaration of the training feature schema.
+    # Legacy sampleRegions v1 has no declared collection band_order metadata.
     sampled_classifier = rf(ee).train(
         features=sample_regions(ee), classProperty="label",
     )

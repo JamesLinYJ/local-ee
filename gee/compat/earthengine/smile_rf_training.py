@@ -16,10 +16,10 @@ from .ir import (
     TrainedSmileRandomForest,
     fail,
 )
+from .training_schema import MAX_INPUT_PROPERTIES
 
 
 MAX_TRAINING_FEATURES = 1_000
-MAX_INPUT_PROPERTIES = 8
 MAX_CLASSES = 64
 MAX_EXACT_INTEGER = 2**53
 MAX_ROWS_BYTES = 1_000_000

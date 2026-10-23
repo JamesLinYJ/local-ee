@@ -30,7 +30,7 @@
 
 ## 训练、预测与元数据
 
-Image.sample 的输出继续使用现有采样表类型和预算，随后可接已支持的样本筛选、限量、训练和结果路由。随机森林必须显式提供 inputProperties；示例通过波段名选择 [nir, red] 输入，目标影像原始顺序为 [red, nir]，验证按名称对应。
+Image.sample 的输出继续使用现有采样表类型和预算，随后可接已支持的样本筛选、限量、训练和结果路由。随机森林可显式提供 inputProperties，或由第三十批按已声明band_order取完整列表；示例显式选择 [nir, red] 输入以排除类别波段，目标影像原始顺序为 [red, nir]，验证按名称对应。
 
 样本表元数据 get('band_order') 返回选中波段的有序列表；propertyNames() 返回由采样规格声明的 collection 元数据名。它们只读规格元数据，不读取或虚构任何像元值。特征行仍由实际取样任务产生，getInfo() 不在编译阶段生成训练数据。
 
@@ -44,4 +44,4 @@ Map.addLayer、Export.table.toDrive 和 Export.image.toDrive 都从同一工作�
 
 ## 限制
 
-工作流仍受现有 1000 行、256 列、50000 行列单元、JSON／CSV 字节、表达式、采样工作和图节点预算限制。多预算叠加时，单个限制未超也可能整体拒绝。当前没有跨 tile 邻域计算、随机森林自动 schema、其他 RF 模式或 Google 随机子采样等价保证。Image.sample 的方法可见、图成功编译和样本元数据可读取，都不等于完整 Python API 或 Google 计算兼容。
+工作流仍受现有 1000 行、256 列、50000 行列单元、JSON／CSV 字节、表达式、采样工作和图节点预算限制。多预算叠加时，单个限制未超也可能整体拒绝。当前没有跨tile邻域、其他RF模式或Google随机子采样等价保证；省略输入字段仅依照已声明元数据，见 [训练字段](training-schema.md)。Image.sample 的方法可见、图成功编译和样本元数据可读取，都不等于完整 Python API 或 Google 计算兼容。

@@ -1,5 +1,7 @@
 # GEE Python／JavaScript 兼容范围
 
+第三十批补齐已有Classifier.train的元数据默认字段，以及内联集合的Element元数据和行操作传递。冻结源码 **2640通过／3跳过**（另排除4项延期原生测试），六个可信JVM／栅格组件与前端11／构建通过；自动字段规格由官方客户端编译后进入实际Smile训练／预测，另有独立MD数值和Python／JS图对照。入口仍 **278／991（28.05%）**，不是完整兼容率。sampleRegions v1默认字段、动态取样元数据修改及全量API仍有缺口；完整Spark／服务／浏览器／部署／Google未验收。见 [语法](gee-python/training-schema.md)、[报告](../reports/gee-python-wave30.json)。
+
 第二十九批新增有限 `FeatureCollection.randomColumn`，完整保留采样后新增／覆盖列的schema与结果，接通训练／验证随机划分及真实RF链路。冻结源码完整回归 **2600通过／3跳过**（另排除4项延期原生测试），六个可信JVM／栅格组件和前端11／构建通过。入口 **278／991（28.05%）** 仅为名称；原50探针45编译／5拒绝。32行真实组件样本分为16／16并进入实际Smile训练与预测，矩阵频数通过；本地随机序列不承诺Google相同，无完整Spark／批任务／浏览器／部署／Google验收。见 [语法](gee-python/random-split.md) 和 [报告](../reports/gee-python-wave29.json)。
 
 第二十八批新增实际 `Image.sample` 的有限 ROI／footprint、比例／近似数量抽样、null、中心几何及元数据，兼容既有显式 schema 分类和样本任务路径。入口 **277／991（27.95%）** 为 API 名称统计，不能当作完整兼容率；原50探针仍45编译／5拒绝。冻结源码回归2493通过／3跳过，五个可信 JVM 组件与前端11／构建通过。完整 Spark／部署／浏览器／Google 同数据未验收；本地随机算法不承诺 Google 抽中行一致。见 [语法](gee-python/image-sampling.md) 和 [报告](../reports/gee-python-wave28.json)。

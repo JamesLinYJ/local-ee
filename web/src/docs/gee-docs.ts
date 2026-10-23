@@ -96,9 +96,15 @@ const entries: ReferenceEntry[] = [
     code: "var out = image.select('B8').unitScale(0,10000).clamp(0,1);\nout = out.where(out.gt(0.8), 0.8);\nvar average = image.select(['B8','B4']).reduce(ee.Reducer.mean());",
   },
   {
+    id: "gee-training-schema",
+    title: "训练字段与集合元数据",
+    text: "train 省略 inputProperties 或传 null 时采用集合 band_order；顺序保留，不自动排除类别字段。有值的显式列表优先，空列表不触发自动选择。内联集合通过 set/setMulti 声明有限 JSON 元数据，筛选、limit、随机列和 map 到 Feature 保留；copyProperties 仅支持内联集合之间。Image.sample 声明已有波段，sampleRegions v1 仍需显式字段。动态取样元数据只读，尚无 Google 同数据对照。",
+    code: "var training = training.set('band_order', ['nir','red']);\nvar model = ee.Classifier.smileRandomForest(50).train({\n  features:training, classProperty:'label'\n});\nprint(model.schema());",
+  },
+  {
     id: "gee-smile-rf",
     title: "随机森林训练与影像分类",
-    text: "smileRandomForest 使用固定的本地 Smile 1.5.3。支持内联 FeatureCollection 或 sampleRegions 后 filter/无排序 limit 的训练表；必须列出 1–8 个数值输入字段，训练标签为从 0 连续编号的 2–64 类。六个构造参数均参与实际训练，最多 256 棵树、1000 行，仍受工作预算限制。CLASSIFICATION 模式支持影像与表分类，以及训练重代入矩阵和验证指标；explain、随机列和其他模式尚不支持。执行需要固定的本地 RF 运行包；源码/组件验证与本机部署验收分开记录，尚无 Google 同数据对照。",
+    text: "smileRandomForest 使用固定的本地 Smile 1.5.3。支持内联 FeatureCollection 或 sampleRegions 后 filter/无排序 limit 的训练表；训练字段为1–8个数值属性；省略 inputProperties 时采用集合 band_order 的完整顺序，训练标签为从 0 连续编号的 2–64 类。六个构造参数均参与实际训练，最多 256 棵树、1000 行，仍受工作预算限制。CLASSIFICATION 模式支持影像与表分类，以及训练重代入矩阵和验证指标；explain 和其他模式尚不支持；随机列使用已说明的本地算法。执行需要固定的本地 RF 运行包；源码/组件验证与本机部署验收分开记录，尚无 Google 同数据对照。",
     code: "// image、training 为已有影像和带 label 属性的训练表\nvar model = ee.Classifier.smileRandomForest({\n  numberOfTrees:100, variablesPerSplit:1, minLeafPopulation:1,\n  bagFraction:0.5, maxNodes:null, seed:42\n}).train({features:training, classProperty:'label',\n  inputProperties:['red','nir']});\nvar classified = image.classify(model, 'landcover');\nMap.addLayer(classified, {min:0,max:1,palette:['386a4d','d9b76e']}, '分类');",
   },
   {
@@ -110,7 +116,7 @@ const entries: ReferenceEntry[] = [
   {
     id: "gee-image-sample",
     title: "影像像元取样",
-    text: "Image.sample 默认遍历有限影像范围内的像元，也可显式指定 region。factor 与近似 numPixels 二选一，seed 固定本地抽样；不保证与 Google 抽中相同像元。dropNulls 默认删除任一波段缺测的行，false 保留空值；训练前用 notNull 清理。geometries=true 输出真实像元中心。返回 band_order，分类器仍需显式 inputProperties。结果最多1000行，近似抽样超过上限会报错。tileScale 仅支持1，投影与米制 scale 遵循本站网格限制。独立组件验证与完整任务运行验收分别记录。",
+    text: "Image.sample 默认遍历有限影像范围内的像元，也可显式指定 region。factor 与近似 numPixels 二选一，seed 固定本地抽样；不保证与 Google 抽中相同像元。dropNulls 默认删除任一波段缺测的行，false 保留空值；训练前用 notNull 清理。geometries=true 输出真实像元中心。返回 band_order，分类器省略 inputProperties 时采用其完整顺序；排除类别等字段时显式填写输入列表。结果最多1000行，近似抽样超过上限会报错。tileScale 仅支持1，投影与米制 scale 遵循本站网格限制。独立组件验证与完整任务运行验收分别记录。",
     code: "// image 和 roi 为已有的有限本地影像与研究区\nvar samples = image.sample({region:roi, numPixels:100, seed:42, dropNulls:false, geometries:true});\nprint('波段', samples.get('band_order'));\nExport.table.toDrive({collection:samples, fileFormat:'CSV'});",
   },
   {

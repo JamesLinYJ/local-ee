@@ -16,7 +16,9 @@
 
 ## 当前基线
 
-- 最新第二十九批：有限randomColumn、采样列谱系、新增／覆盖字段的CSV与getInfo、RF训练／预测／验证指标组合；修复真实Image.sample元数据拒绝和可信直接样本表回归。schema缓存只复用不可变身份并预付新副本开销，保留50000编译预算。冻结源码2600 passed／3 skipped（另排除4项延期原生测试），六个可信JVM／栅格组件及前端11／类型／构建通过。实际32行样本按本地随机值划分16／16并进入真实Smile模型，验证／训练矩阵频数通过；无完整Spark／服务／浏览器／部署／Google对照。入口278／991（28.05%）仅为名字；邻域、自动schema、其他分类模式和完整API目标仍进行中。见 reports/gee-python-wave29.json 与 docs/gee-python/random-split.md。
+- 最新第三十批：MD／RF的inputProperties省略或null时只读取实际声明band_order，显式列表优先，保留完整字段顺序；新增内联集合级Element元数据及行操作传递。扫描／复制分开预充，get返回独立嵌套值，保留50000预算。冻结源码2640 passed／3 skipped（另排除4项延期原生测试），六个可信JVM／栅格组件及前端11／类型／构建通过；从官方客户端省略参数编译出的规格实际进入32行取样／16＋16划分／Smile训练与预测。入口仍278／991（28.05%），本批扩展已有方法参数，不扩大完整兼容率。未部署，无完整Spark／服务／浏览器／Google验收；sampleRegions v1默认字段、动态取样元数据修改、邻域、其他模式及完整API仍待做。见 reports/gee-python-wave30.json、docs/gee-python/training-schema.md。
+
+- 第二十九批历史记录：有限randomColumn、采样列谱系、新增／覆盖字段的CSV与getInfo、RF训练／预测／验证指标组合；修复真实Image.sample元数据拒绝和可信直接样本表回归。schema缓存只复用不可变身份并预付新副本开销，保留50000编译预算。冻结源码2600 passed／3 skipped（另排除4项延期原生测试），六个可信JVM／栅格组件及前端11／类型／构建通过。实际32行样本按本地随机值划分16／16并进入真实Smile模型，验证／训练矩阵频数通过；无完整Spark／服务／浏览器／部署／Google对照。入口278／991（28.05%）仅为名字；邻域、自动schema、其他分类模式和完整API目标仍进行中。见 reports/gee-python-wave29.json 与 docs/gee-python/random-split.md。
 
 - 第二十八批历史记录：新增实际 Image.sample：有限 footprint／ROI、factor 或近似 numPixels、固定本地 seed、dropNulls、中心几何与 band_order 元数据，继续复用采样表筛选／训练／RF验证／getInfo／CSV 路由。原 sampleRegions v1 保留，v2 经同一公开进程进入独立原生 SPI；缺失瓦片可保留空值，所有源键／形状／重复／解码和输出预算仍验证。冻结源码完整回归2493 passed／3 skipped（另排除4项延期原生测试），前端11／类型检查／构建通过；五个可信独立 JVM／栅格组件通过，取样有独立网格／随机参考。入口277／991（27.95%）仅表示名称，不是完整参数／数值兼容率。未部署，无完整Spark／服务／浏览器／Google对照；邻域、随机列、自动schema及完整API仍待实现。见 reports/gee-python-wave28.json、docs/gee-python/image-sampling.md。
 

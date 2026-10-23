@@ -1,0 +1,327 @@
+{
+  "schema": "local-ee-python-wave30/v1",
+  "date": "2026-10-23",
+  "base_commit": "32799e8e4e7d95ad5d86e500fe60a2b53b80facc",
+  "title": "Classifier.train declared band_order defaults and bounded inline FeatureCollection metadata",
+  "entry_inventory": {
+    "declared_handler_names": 278,
+    "pinned_signatures": 991,
+    "name_entry_percentage": 28.05,
+    "new_names": [],
+    "interpretation": "This wave extends existing API defaults and semantics; name entries are not complete parameter, runtime, numerical or Google compatibility"
+  },
+  "changes": [
+    "Shared training_schema resolver for both MD/RF: omitted/null reads only actual root band_order or validated Image.sample v2 origin metadata; explicit non-null overrides and empty lists reject",
+    "Exact declared order/class-column inclusion, no first-row inference or automatic class-property removal; backend specs remain explicitly ordered without engine/Java/dependency changes",
+    "Inline FC Element.get/set/setMulti/propertyNames and FC-to-FC copyProperties; row-preserving filter/limit/randomColumn/map-to-Feature and static MD classification preserve owned root properties, including empty collections",
+    "Metadata traversal and copies independently precharged; finite JSON/depth/property/byte caps, cycles/non-JSON rejection and nested get isolation; no new user-code execution/network path",
+    "Example35 and frontend Python/JS syntax docs, independent raw MD means/distances, SDK semantic graph parity, literal CSV actual writer and opaque-property controls",
+    "Actual native helper obtains automatic RF spec from official SDK, asserts equality with explicit list before authenticated JVM startup, uses it on actual sampled rows and preserves matching artifacts"
+  ],
+  "validation": {
+    "full_portable_suite": {
+      "passed": 2640,
+      "skipped": 3,
+      "failures": 0,
+      "duration_seconds": 46.65,
+      "native_runtime_tests_excluded": 4,
+      "warnings": "3 existing rasterio PendingDeprecationWarnings",
+      "source_digest_unchanged_during_suite": true,
+      "implementation_unchanged_after_suite": true,
+      "evidence": "audit/gee-python-wave30/final-reviewed/python.xml",
+      "command": "GEE_AUDIT_DIR=audit/gee-python-wave30/final-reviewed; LOCAL_EE_RUN_RANDOM_SPLIT_NATIVE_TEST=1 plus all five LOCAL_EE_RUN_*_KERNEL_TEST=1; .venv/bin/python -m pytest -q --ignore=tests/test_native_runtime.py --junitxml=<evidence> --basetemp=<owned scratch>",
+      "real_components": [
+        "tests.test_ee_classify_kernel.test_actual_native_tile_kernel_matches_independent_reference",
+        "tests.test_ee_image_sample_kernel.test_actual_image_sample_kernel_matches_independent_hash_and_grid_reference",
+        "tests.test_ee_random_split_native_integration.test_actual_image_sample_random_filter_and_smile_rf_python_jvm_bridge",
+        "tests.test_ee_remap_kernel.test_actual_geotrellis_remap_kernel_matches_independent_binary64_oracle",
+        "tests.test_ee_sample_kernel.test_actual_native_tile_kernel_matches_shapely_oracle",
+        "tests.test_ee_smile_rf_kernel.test_actual_smile_training_and_geotrellis_tile_kernel"
+      ],
+      "skipped_tests": [
+        {
+          "test": "tests.test_ee_grid_adapter.test_native_grid_and_unmask_spi_semantics",
+          "reason": "set LOCAL_EE_RUN_NATIVE_GRID_TEST=1 for the opt-in local[1] JVM/Spark probe"
+        },
+        {
+          "test": "tests.test_ee_integer.test_native_adapter_builds_and_executes_real_spi_tile_conversion",
+          "reason": "set LOCAL_EE_RUN_NATIVE_INTEGER_TEST=1 for the lightweight JVM/Spark probe"
+        },
+        {
+          "test": "tests.test_ee_reduce_adapter.test_native_single_time_and_band_reducer_semantics",
+          "reason": "set LOCAL_EE_RUN_NATIVE_REDUCER_TEST=1 for the opt-in local[1] JVM/Spark probe"
+        }
+      ]
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "production_build": "passed",
+      "deployed": false,
+      "evidence": "audit/gee-python-wave30/frontend.json"
+    },
+    "SDK": {
+      "version": "1.7.49",
+      "signatures": 991,
+      "arguments": 2451,
+      "classes": 48,
+      "callables": 1797,
+      "full_inventory_byte_identical": true,
+      "inventory_sha256": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12",
+      "original_probes": {
+        "serialized": 50,
+        "compiled": 45,
+        "rejected": 5,
+        "network_attempts": 0
+      },
+      "Python_JS": "Inline and sampled automatic schemas and output graphs semantically match under both pinned official SDKs; not Google service equivalence or byte-identical numeric JSON spelling"
+    },
+    "independent_static_N": {
+      "fixture": "tests/fixtures/ee-training-schema-v1.json",
+      "ordered_schema": [
+        "nir",
+        "red"
+      ],
+      "raw_class_centers": [
+        [
+          3,
+          2
+        ],
+        [
+          9,
+          11
+        ]
+      ],
+      "query_predictions": [
+        0,
+        1,
+        0
+      ],
+      "reference": "Independent Fraction arithmetic on raw properties/means/squared distances, compared with actual bounded static-MD compiler results; not raster engine or Google N"
+    },
+    "actual_trusted_JVM_component": {
+      "scope": "actual GeoTrellis Image.sample tile kernel -> Python SampledFeatureTable and random/filter split -> real Smile JVM factory, predictions, and confusion counts; authenticated loopback Py4J only; no SparkContext, RDD adapter, service, sandbox, or Google comparison",
+      "fixture_sha256": "1d0972adfee90df551e0955796cab9ecb7b341985203d302dc5c418a17213668",
+      "probe_sha256": "e426eabc1f70d035c474eb7559a60923e07edf124f9be9886504103c5cee1577",
+      "base_adapter_sha256": "ea64c38fbb8686e729deb070b73d3e3e7b18e4317772add183802548dd01631b",
+      "base_manifest_sha256": "3088898dc3336a8ab888a1877a80e66323ef7486953ae914422b4d5773d06b05",
+      "rf_adapter_sha256": "4947cceeda8d3a31d4affbca21cbe48b01fa97c32eb1d3c4da8a3c84d9d22262",
+      "sample_rows": 32,
+      "band_order": [
+        "landcover",
+        "reflectance"
+      ],
+      "training_schema": [
+        "landcover",
+        "reflectance"
+      ],
+      "schema_source": "Official SDK omitted inputProperties compiled from declared band_order; exact explicit-input spec comparison passed before JVM startup",
+      "random_column_seed": 29,
+      "split_rows": {
+        "training": 16,
+        "validation": 16
+      },
+      "sample_operation_count": 2,
+      "validation_predictions": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "validation_matrix": [
+        [
+          7,
+          0
+        ],
+        [
+          0,
+          9
+        ]
+      ],
+      "training_matrix": [
+        [
+          9,
+          0
+        ],
+        [
+          0,
+          7
+        ]
+      ],
+      "compile_stderr": "",
+      "evidence": "audit/gee-python-wave30/final-reviewed/random-split-native/random-split-native-integration.json",
+      "paired_artifacts": "Matching tested base/RF JARs/manifests in same directory, including expected base-manifest checksum; genuine authenticated Py4J JavaObject",
+      "gateway": "Owned child exited in finally; startup/read timeouts, no Python preexec callbacks, new session, shutdown/terminate/wait/kill only for owned handle; lifecycle JSON retained",
+      "interpretation": "The full declared band list includes the numeric class field; synthetic matrices verify handoff/counts, not predictive skill or independent RandomForest algorithm equivalence"
+    },
+    "actual_literal_IO": "Closed two-node CSV graph writes actual fixture rows under canonical physical job/out boundary; root node-looking metadata remains data. No scheduler/HTTP/browser acceptance inferred.",
+    "review": {
+      "reviewer": "Independent Luna/max read-only agent plus parent direct caller review",
+      "result": "No confirmed remaining defect in declared scope",
+      "corrections": [
+        "Metadata traversal initially measured before charging; replaced with precharged bounded per-container/string scans, separate copy budget and near-cap no-iteration/deepcopy controls",
+        "Element.get nested values now return precharged owned copies",
+        "Native helper uses current-wave scratch; standalone audit fallback now unique in current audit; final root explicitly new"
+      ],
+      "source_only": "Reviewer did not execute tests/builds; numerical/runtime evidence is recorded separately"
+    },
+    "genuine_failures": {
+      "initial_full_suite": {
+        "passed": 2639,
+        "failed": 1,
+        "skipped": 3,
+        "evidence": "audit/gee-python-wave30/final/python.xml"
+      },
+      "cause": "Historical Image.sample test expected omitted inputProperties rejection; new schema succeeded, then direct opaque model output correctly rejected at public JSON boundary",
+      "correction": "Positive schema-order assertion now accompanies the original opaque-model JSON negative control; no capability, budget or fixture reduction",
+      "focused_IO_fixture": "Initial parent CSV test used a non-UUID job name; existing physical boundary rejected it. Corrected only fixture to canonical UUID and precreated out directory, no application changes."
+    },
+    "historical_wave29_artifacts_unchanged": true,
+    "G": "not_run"
+  },
+  "limits": {
+    "automatic_schema": "Only actual declared1..8 unique flat UTF8 names<=256codepoints,noNUL/dot/system:index/.geo. No null/malformed/empty/duplicate/too-wide declaration fallback. Exact original band_order, even a listed classProperty; use explicit inputs to exclude label/auxiliary bands.",
+    "metadata": "Inline FC root finite JSON only,1000features,10000dictionary properties,depth96,1MB escaped JSON and shared50000 compilation work before traversal/copy. Compound budgets can reject much smaller metadata; scalar/shape/output caps unchanged.",
+    "partial_routes": "sampleRegions v1 still needs explicit fields; sampled metadata mutations/mixed Element copyProperties unsupported; FC copyProperties requires FC source and destination. merge keeps existing behavior, no metadata-conflict policy; map-toImages stays ImageSequence.",
+    "runtime": "Existing model/RF/grid/row/cell/wire/work limits unchanged. Runtime training specs already explicit; no new engine algorithm or deployment."
+  },
+  "not_supported": [
+    "Full pinned API/parameters/Google semantics,automatic field guessing,full Google default-output or RNG/model parity",
+    "Dynamic sampled metadata setters,automatic v1 sampleRegions inputs,mixed copyProperties,merge metadata conflicts",
+    "Other RF output modes/explain/model persistence,arbitrary post-classification/dynamic scalar algebra,cross-tile neighborhoods/focal and advanced time-series gaps",
+    "Full Spark/RDD/batch/application sandbox/HTTP/browser/deployment/private-data and Google same-data acceptance"
+  ],
+  "preservation": {
+    "accounts_research_data_results": "untouched",
+    "native_configuration_and_dependency_locks": "untouched",
+    "VMs_containers_services": "not created/restarted/deployed",
+    "application_sandbox_and_network_policy": "unchanged; only trusted test loopback command escalation",
+    "historical_audit": "watched wave29 exact pair/JSON hashes unchanged",
+    "goal": "active; full objective incomplete"
+  },
+  "cleanup": {
+    "removed": [
+      {
+        "path": "work/gee-python-wave30-native",
+        "regular_file_bytes": 238258,
+        "symlinks_unlinked_without_following": 0,
+        "lsof_stdout": "",
+        "lsof_stderr": ""
+      },
+      {
+        "path": "work/gee-python-wave30-pytests",
+        "regular_file_bytes": 13527628,
+        "symlinks_unlinked_without_following": 96,
+        "lsof_stdout": "",
+        "lsof_stderr": ""
+      },
+      {
+        "path": "work/gee-python-wave30-reviewed-pytests",
+        "regular_file_bytes": 13528276,
+        "symlinks_unlinked_without_following": 96,
+        "lsof_stdout": "",
+        "lsof_stderr": ""
+      },
+      {
+        "path": "work/gee-python-wave30-web",
+        "regular_file_bytes": 1679513,
+        "symlinks_unlinked_without_following": 0,
+        "lsof_stdout": "",
+        "lsof_stderr": ""
+      },
+      {
+        "path": "work/gee-python-wave24-native",
+        "regular_file_bytes": 1853660,
+        "symlinks_unlinked_without_following": 0,
+        "lsof_stdout": "",
+        "lsof_stderr": ""
+      },
+      {
+        "path": "work/gee-python-wave25-native",
+        "regular_file_bytes": 2506300,
+        "symlinks_unlinked_without_following": 0,
+        "lsof_stdout": "",
+        "lsof_stderr": ""
+      },
+      {
+        "path": "work/gee-python-wave27-native",
+        "regular_file_bytes": 499343,
+        "symlinks_unlinked_without_following": 0,
+        "lsof_stdout": "",
+        "lsof_stderr": ""
+      },
+      {
+        "path": "work/gee-python-wave28-native",
+        "regular_file_bytes": 251769,
+        "symlinks_unlinked_without_following": 0,
+        "lsof_stdout": "",
+        "lsof_stderr": ""
+      }
+    ],
+    "preliminary_binaries_removed": [
+      {
+        "path": "audit/gee-python-wave30/final/local-ee-smile-rf-adapter.jar",
+        "bytes": 53832,
+        "sha256": "40765edec6a1d832e3964b57aba75b2880fa550e7876d9bea30807e76b3c6ab2"
+      },
+      {
+        "path": "audit/gee-python-wave30/final/random-split-native/random-split-base.jar",
+        "bytes": 222112,
+        "sha256": "1ba0c7c104af52f7a24624ca9d955bd4c1597025adc8e5a9ed41ebbaf09d8701"
+      },
+      {
+        "path": "audit/gee-python-wave30/final/random-split-native/random-split-rf.jar",
+        "bytes": 53832,
+        "sha256": "7bad10c76c5694e88d6a627b53cf075dcf3dee8afe599866a9daebf6af2313d9"
+      }
+    ],
+    "removed_bytes_total": 34414523,
+    "retained": "Exact final matching base/RF pair/manifests, final native numerical/IO JSON/XML, genuine failed records, source fixtures, pinned Smile dependencies, .native/.venv/accounts/data/results",
+    "check": "lsof empty stdout/stderr for each exact physical task scratch; no symlink targets followed. Final and historical wave29 artifacts rehashed unchanged after removal. Legacy builder work roots were absent after previous publication and recreated only by this wave."
+  },
+  "source_files_sha256": {
+    "AGENTS.md": "697fe3e63d116960608cf02fb8035f33510aba8ab8b00bdbd20941f2dfab1243",
+    "GOAL.md": "f883429aefe78b9c45409c5ec81f3bd2fd4608ac3a5974ecfa19736b613d5f26",
+    "docs/architecture.md": "df8bc131646a66fae551c30f87c5228cdbf2db6a3016d9cd1161b789448be755",
+    "docs/cloud-handoff.md": "439e31c2fb1e2eca69b72a00ea2e59adec2fdb73dba1127a3701387ea06f190f",
+    "docs/gee-compatibility.md": "e84e345b74f47291b3a9ddd79e0db536665eb8c2b27cfce9215b530ed61c679d",
+    "docs/gee-python/image-sampling.md": "17da5b00ee1bcf9fe0a1f925abb811b44ef5632c139894b80e64b482636d4260",
+    "docs/gee-python/list.md": "392d38d51b74cbacf4abf5e5f6a295bf1cd5786049d7a9396ac1a2d3811c9bc2",
+    "docs/gee-python/random-forest.md": "c09193feb57100fce7e8b7e10da654dce21f7e891265b0570e7cc49877775541",
+    "docs/gee-python/training-schema.md": "67f2adbb56302aa0251fa9be75cab870ef121246eb3e83c5d733de3518a2c3c5",
+    "examples/35_GEE_python_training_schema.py": "84f0027d360aae9986b7ae288c12814437741efe7b9eaf667f2f31fe4a367570",
+    "gee/compat/earthengine/capabilities.py": "1e7ca78c4ced0bde90df073e57947ac4431214571c0ae0fd62754f2fb66e71ce",
+    "gee/compat/earthengine/classifier_features.py": "5df511131dbc63a38b86aee4cb01e87201550604074df46df6fd6d14679162d9",
+    "gee/compat/earthengine/collection_metadata.py": "ecc5916cbf1aeb16fb1ec571f6cdd0d1b07f63605c7fae558fcb4010e08f3ef4",
+    "gee/compat/earthengine/dispatch.py": "9ba35244e231f158daef301711c4608af174e655e6b2a3cb2ddff60a9d6bc125",
+    "gee/compat/earthengine/feature_ops.py": "1da3d16a732b564ab278b44471afa7733f18493e2153466c7457b2613ce3dafa",
+    "gee/compat/earthengine/minimum_distance.py": "b4e1377af451df305ba2be6e73773906bc51f965489aed219ec2e4c16d2fab00",
+    "gee/compat/earthengine/smile_rf.py": "8594b520748d4329d80fa32e4fde7d27e0329d3b940d06ef934d67c9d0753938",
+    "gee/compat/earthengine/smile_rf_training.py": "b6d3e9579df46035ac275669a64f56f1d47e2cefe03b6ebc0c70a0f6c674aad1",
+    "gee/compat/earthengine/training_schema.py": "63a67b13a560411b35427981da8beb83996ba9a0eec28aa76c908768f0a141c4",
+    "reports/gee-api-inventory.json": "64d78e1eede3f1391bcf3691a8dea1fa4a4e7b2700f5d6ccdd9012d2ca533766",
+    "scripts/ee_inventory/catalogue.py": "4994e703175fea842a3ab9f3fc3f8765362adfa6b256defd739c83c7c3637ffa",
+    "tests/ee_random_split_native_helpers.py": "a4a3780edf971695424629a2f35f968061a7373816fcf4512f5147db7469c4b1",
+    "tests/fixtures/ee-training-schema-v1.json": "0f0b28e20f8775184246c8d5aa75d636066e85ef316ec9dd641db2d2c68b1164",
+    "tests/test_ee_collection_metadata.py": "f9c3876b7ba6161757f514760e932e28d1287499551c75a084ec22fe3d8f1a3b",
+    "tests/test_ee_image_sampling_compiler.py": "87fb0356bab30d7af14813cc549defecd9cb7ccd789d4cf1dcdf3a29730187fc",
+    "tests/test_ee_random_split_native_integration.py": "a6fceb368cd2c106d4cc80114c3db827ffd7924aa926fb695c6f196a39a048c4",
+    "tests/test_ee_smile_rf_compiler.py": "a0be04642915b14c69d4876da20c3fc9f775e6342d988ebe7fe6ada197598bcf",
+    "tests/test_ee_training_metadata_workflow.py": "09d41fc61b2d5d16768c6fddb10283153c940022362bac167df72d2933404c6a",
+    "tests/test_ee_training_schema.py": "f73d2cdbc478846521117fc615981ded0df9f937cbdc9f91673876cd5bc9dfbd",
+    "web/src/docs/gee-docs.ts": "7d1433e978c4abb8a4592d05316bb0339cf655a246d42885983c3f5099987601",
+    "web/src/docs/local-docs.ts": "c97f0f2d23b47d81204139810ed53933be75677afed60d895018bbf5e9b435be"
+  }
+}

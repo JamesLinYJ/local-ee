@@ -15,6 +15,7 @@ from ee_random_split_native_helpers import (
     SCALA_PROBE,
     build_adapters,
     close_gateway,
+    compiled_training_spec,
     compile_probe,
     loopback_gateway,
     matrix_array,
@@ -36,6 +37,13 @@ def test_actual_image_sample_random_filter_and_smile_rf_python_jvm_bridge(monkey
     SCRATCH.mkdir(parents=True, exist_ok=True)
     AUDIT.mkdir(parents=True, exist_ok=True)
     fixture = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    from gee.smile_rf_spec import prepare_rf_parameters
+
+    parameters = prepare_rf_parameters(
+        number_of_trees=13, variables_per_split=1, min_leaf_population=1,
+        bag_fraction=1.0, max_nodes=4, seed=41,
+    )
+    rf_spec = compiled_training_spec(fixture, parameters)
     base_jar, base_manifest_path, base_manifest, rf_jar, rf_manifest = build_adapters()
     classes, classpath_paths, compile_stderr = compile_probe(
         java, scala_tools, runtime_jars, base_jar, rf_jar,
@@ -71,7 +79,7 @@ def test_actual_image_sample_random_filter_and_smile_rf_python_jvm_bridge(monkey
         from gee.sample_table_spec import prepare_sample_filter
         from gee.sampling_spec import decode_sampling_spec, sampling_columns
         from gee.sampling_values import assemble_sample_features
-        from gee.smile_rf_spec import prepare_rf_parameters, prepare_rf_spec
+        from gee.smile_rf_spec import prepare_rf_spec
 
         sample_spec = prepare_image_sample_spec(
             fixture["region"], fixture["band_order"], factor=1.0,
@@ -128,11 +136,7 @@ def test_actual_image_sample_random_filter_and_smile_rf_python_jvm_bridge(monkey
         assert {int(feature["properties"]["landcover"]) for feature in train_features} == {0, 1}
         assert {int(feature["properties"]["landcover"]) for feature in validation_features} == {0, 1}
 
-        parameters = prepare_rf_parameters(
-            number_of_trees=13, variables_per_split=1, min_leaf_population=1,
-            bag_fraction=1.0, max_nodes=4, seed=41,
-        )
-        rf_spec = prepare_rf_spec(parameters, ["reflectance"], "landcover")
+        assert rf_spec == prepare_rf_spec(parameters, fixture["band_order"], "landcover")
         model = local_ee_train_smile_rf_samples({"data": training, "spec": rf_spec}, env=None)
         assert model.class_count == 2 and model.training_row_count == len(train_features)
         from py4j.java_gateway import JavaObject
@@ -182,6 +186,8 @@ def test_actual_image_sample_random_filter_and_smile_rf_python_jvm_bridge(monkey
             "rf_adapter_sha256": rf_manifest["jar_sha256"],
             "sample_rows": len(raw_rows),
             "band_order": table.data["properties"]["band_order"],
+            "training_schema": list(model.schema),
+            "schema_source": "Official SDK omitted inputProperties compiled from declared band_order; exact explicit-input spec comparison passed before JVM startup",
             "random_column_seed": seed,
             "split_rows": {"training": len(train_features), "validation": len(validation_features)},
             "sample_operation_count": len(training.sample_operations),

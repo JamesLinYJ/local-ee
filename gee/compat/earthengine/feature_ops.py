@@ -15,6 +15,7 @@ from .feature_values import (
     with_properties,
 )
 from .feature_filters import matches_feature_filter
+from .collection_metadata import copy_collection_metadata, collection_with_metadata
 from .ir import Filter, Function, Image, ImageSequence, SampledFeatures, fail, integer
 
 
@@ -147,7 +148,10 @@ def _invoke_collection(translator, name, a):
 
         spec = prepare_random_column(translator, a)
         features = _features(translator, a["collection"])
-        return _collection(apply_inline_random_column(translator, features, spec))
+        metadata = copy_collection_metadata(translator, a["collection"])
+        return collection_with_metadata(
+            apply_inline_random_column(translator, features, spec), metadata,
+        )
     if name == "Collection.size":
         translator.allowed(a, {"collection"})
         return len(_features(translator, a["collection"]))
@@ -174,6 +178,7 @@ def _invoke_collection(translator, name, a):
         if drop_nulls is not None and type(drop_nulls) is not bool:
             fail("Collection.map dropNulls must be a boolean")
         output = []
+        metadata = None
         for feature in features:
             charge(translator)
             mapped = translator.evaluate(
@@ -191,6 +196,10 @@ def _invoke_collection(translator, name, a):
                 validate_json_value(translator, mapped)
                 output.append(mapped)
             elif is_feature(mapped):
+                if metadata is None:
+                    # Pay for preserved root metadata before the first mapped
+                    # Feature is appended to the result collection.
+                    metadata = copy_collection_metadata(translator, a["collection"])
                 output.append(validate_feature(translator, mapped))
             else:
                 fail("FeatureCollection.map must return a Feature or Image")
@@ -198,10 +207,15 @@ def _invoke_collection(translator, name, a):
             if not all(isinstance(value, Image) for value in output):
                 fail("Collection.map cannot mix Feature and Image outputs")
             return ImageSequence(output)
-        return _collection(output)
+        if metadata is None:
+            # An empty input maps to an empty FeatureCollection; retain its
+            # collection metadata even though no callback result was produced.
+            metadata = copy_collection_metadata(translator, a["collection"])
+        return collection_with_metadata(output, metadata)
     if name == "Collection.filter":
         translator.allowed(a, {"collection", "filter"})
         features = _features(translator, a["collection"])
+        metadata = copy_collection_metadata(translator, a["collection"])
         filt = a.get("filter")
         if not isinstance(filt, Filter):
             fail("Inline FeatureCollection.filter requires a serialized ee.Filter")
@@ -210,10 +224,11 @@ def _invoke_collection(translator, name, a):
             charge(translator)
             if matches_feature_filter(translator, filt, feature) is True:
                 output.append(feature)
-        return _collection(output)
+        return collection_with_metadata(output, metadata)
     if name == "Collection.limit":
         translator.allowed(a, {"collection", "limit", "key", "ascending"})
         features = _features(translator, a["collection"])
+        metadata = copy_collection_metadata(translator, a["collection"])
         ascending = a.get("ascending", True)
         if type(ascending) is not bool:
             fail("Collection ascending must be a boolean")
@@ -224,7 +239,7 @@ def _invoke_collection(translator, name, a):
             if limit > _MAX_FEATURES:
                 fail("Collection.limit supports at most 1000 features")
             output = output[:limit]
-        return _collection(output)
+        return collection_with_metadata(output, metadata)
     if name == "Collection.merge":
         translator.allowed(a, {"collection1", "collection2"})
         first = _features(translator, a["collection1"])

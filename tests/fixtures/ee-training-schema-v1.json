@@ -1,0 +1,19 @@
+{
+  "schema": "local-ee-training-schema/v1",
+  "description": "Finite local metadata and training-order fixture; no satellite or Google service results.",
+  "band_order": ["nir", "red"],
+  "class_property": "landcover",
+  "rows": [
+    {"red": 1, "nir": 2, "landcover": 0},
+    {"red": 3, "nir": 4, "landcover": 0},
+    {"red": 10, "nir": 8, "landcover": 1},
+    {"red": 12, "nir": 10, "landcover": 1}
+  ],
+  "queries": [
+    {"red": 1, "nir": 2},
+    {"red": 11, "nir": 9},
+    {"red": 5, "nir": 5}
+  ],
+  "reference_centers_in_schema_order": [[3, 2], [9, 11]],
+  "reference_predictions": [0, 1, 0]
+}

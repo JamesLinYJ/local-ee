@@ -229,10 +229,13 @@ def test_sample_band_metadata_is_static_and_explicit_rf_schema_uses_fixed_grid(e
     assert "region" not in sample_data["arguments"]
 
 
-def test_classifier_train_does_not_infer_schema_without_explicit_input_properties(ee, local):
+def test_classifier_train_uses_declared_sample_schema_and_keeps_model_opaque(ee, local):
     sampled = ee.Image("training-scene").sample()
     model = ee.Classifier.smileRandomForest(numberOfTrees=2).train(
         features=sampled, classProperty="red",
     )
-    with pytest.raises(UnsupportedEEError, match="inputProperties"):
+    declared = compile_ee(ee, sampled.get("band_order"), local)["value"]
+    assert declared == ["red", "nir", "extra"]
+    assert compile_ee(ee, model.schema(), local)["value"] == declared
+    with pytest.raises(UnsupportedEEError, match="public JSON|server-object JSON"):
         compile_ee(ee, model, local)

@@ -1,4 +1,4 @@
-"""Independent references and locked-runtime helpers for wave29 integration."""
+"""Independent references and locked-runtime helpers for sample/RF integration."""
 from __future__ import annotations
 
 import hashlib
@@ -9,16 +9,17 @@ import subprocess
 import sys
 import threading
 import types
+from uuid import uuid4
 
 import pytest
 
 from scripts.build_integer_adapter import ROOT, _engine_paths, build as build_base_adapter, sha256
 
 
-SCRATCH = ROOT.parents[1] / "work/gee-python-wave29-native"
+SCRATCH = ROOT.parents[1] / "work/gee-python-wave30-native"
 AUDIT = (Path(os.environ["GEE_AUDIT_DIR"]) / "random-split-native"
          if os.environ.get("GEE_AUDIT_DIR")
-         else ROOT.parents[1] / "work/audit/gee-python-wave29-native")
+         else ROOT / "audit/gee-python-wave30" / f"standalone-{uuid4().hex}")
 FIXTURE = ROOT / "tests/fixtures/ee-random-split-native-v1.json"
 SCALA_PROBE = ROOT / "tests/fixtures/ee-random-split-native-kernel.scala"
 RF_BUILD_ROOT = ROOT.parents[1] / "work/gee-python-wave27-native"
@@ -71,6 +72,56 @@ def matrix_array(matrix, local_ee_confusion_value, prepare_metric_spec) -> list[
     return [[int(value) for value in row] for row in json.loads(result._payload.decode("utf-8"))]
 
 
+def compiled_training_spec(fixture, parameters):
+    """Compile omitted inputs from real declared sample metadata, before IPC."""
+    from gee.compat.earthengine.decoder import Translator
+    from gee.compat.earthengine.ir import TrainedSmileRandomForest
+    from gee.ee_python_client import configure_local_ee
+    from scripts.ee_python_api.offline import OfflineGuard
+
+    collection, scene = "sentinel-2-l2a", "wave30-native-schema"
+    grid = fixture["grid"]
+    catalog = [{"id": collection,
+                "cube:dimensions": {"bands": {"values": fixture["band_order"]}}}]
+    items = {collection: [{
+        "id": scene, "bbox": [grid[key] for key in ("xmin", "ymin", "xmax", "ymax")],
+        "geometry": fixture["region"],
+        "properties": {"system:index": scene, "system:time_start": 1735689600000},
+    }]}
+    with OfflineGuard() as guard:
+        ee = configure_local_ee(
+            "http://127.0.0.1:8787/openeo/1.2", "a" * 48,
+            signatures_path=ROOT / "vendor/earthengine-js/algorithms.json",
+        )
+        sampled = ee.Image(scene).select(fixture["band_order"]).sample(
+            region=ee.Geometry(fixture["region"], proj="EPSG:4326", geodesic=False),
+            seed=fixture["options"]["seed"], dropNulls=True,
+        )
+        training = sampled.randomColumn("split", 29).filter(ee.Filter.lt("split", 0.5))
+        classifier = ee.Classifier.smileRandomForest(*[
+            parameters[key] for key in (
+                "number_of_trees", "variables_per_split", "min_leaf_population",
+                "bag_fraction", "max_nodes", "seed",
+            )
+        ])
+        implicit = classifier.train(training, "landcover")
+        explicit = classifier.train(training, "landcover", fixture["band_order"])
+
+        def decode(value):
+            return Translator(catalog, items, {}).evaluate(
+                ee.serializer.encode(value, for_cloud_api=False),
+            )
+
+        automatic_model, explicit_model = decode(implicit), decode(explicit)
+    assert guard.evidence()["attempt_count"] == 0
+    assert isinstance(automatic_model, TrainedSmileRandomForest)
+    assert automatic_model.schema == tuple(fixture["band_order"])
+    assert automatic_model.training_spec == explicit_model.training_spec
+    assert automatic_model.samples.spec == explicit_model.samples.spec
+    assert automatic_model.samples.operations == explicit_model.samples.operations
+    return automatic_model.training_spec
+
+
 def native_artifacts():
     try:
         java, _, scala_tools, runtime_jars, _ = _engine_paths()
@@ -92,7 +143,7 @@ def build_adapters():
     base_manifest_path = base_jar.with_suffix(base_jar.suffix + ".manifest.json")
 
     # The pinned RF builder accepts only its existing wave27 scratch root. Its
-    # manifest is checked against the newly built wave29 base artifact.
+    # manifest is checked against the newly built current-wave base artifact.
     rf_jar = RF_BUILD_ROOT / "adapter/local-ee-smile-rf-adapter.jar"
     from scripts.build_smile_rf_adapter import build as build_rf_adapter
 
@@ -165,7 +216,7 @@ def loopback_gateway(monkeypatch, java, py4j_site, py4j_jar, classpath_paths):
             result["error"] = exc
 
     monkeypatch.setattr(java_gateway_module, "Popen", tracked_popen)
-    launcher = threading.Thread(target=launch, name="wave29-py4j-startup", daemon=True)
+    launcher = threading.Thread(target=launch, name="ee-component-py4j-startup", daemon=True)
     launcher.start()
     launcher.join(timeout=30)
     if launcher.is_alive():

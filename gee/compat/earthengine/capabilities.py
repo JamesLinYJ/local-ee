@@ -57,7 +57,7 @@ def get_capabilities():
             ("Classifier.smileRandomForest uses actual pinned Apache-2.0 Smile1.5.3 with all six constructor parameters, "
              "1..256 trees, mtry null or1..p, minLeaf1..1000, bagFraction(0,1], maxNodes null or2..1000 and signed32 seed. "
              "Static inline rows and actual sampleRegions tables train only in the trusted JVM; the compiler does not fit models. "
-             "Explicit1..8 numeric schema,2..1000 rows,2..64 contiguous class labels from0, training float magnitude<=Double.MAX_VALUE/2; "
+             "Resolved1..8 numeric schema from explicit inputProperties or declared band_order,2..1000 rows,2..64 contiguous class labels from0, training float magnitude<=Double.MAX_VALUE/2; "
              "RF150000 object/copy/operation work plus3MB cumulative wire scans and1e9 tree-row-feature-leaf bound can reduce effective row capacity; prior table operations still cap at50000. "
              "Serial calling-thread seed, actual Smile stratified bagging, null maxNodes uses nonbinding N, CLASSIFICATION only. "
              "Schema/setOutputMode, Image.classify, and bounded FeatureCollection.classify support inline rows or fixed sampleRegions tables; feature predictions remain lazy in the trusted runtime. "
@@ -94,7 +94,13 @@ def get_capabilities():
              "dropNulls, center geometries, source band order, and the shared table/work/output limits are explicit. "
              "Projection requires explicit scale in a supported projected EPSG meter grid; tileScale must be1. "
              "Approximate numPixels may exceed the row cap and then fails; Google RNG/row parity and spherical boundaries are unverified. "
-             "Only explicit classifier inputProperties are supported; the declared minimumDistance, Smile RF, sampled-table and RF validation consumers accept this producer"),
+             "Omitted/null classifier inputProperties resolves the exact declared band_order; explicit inputs override it. The declared minimumDistance, Smile RF, sampled-table and RF validation consumers accept this producer"),
+            ("Classifier.train supports omitted/null inputProperties only from declared collection band_order, never from first-row keys or arbitrary columns. "
+             "Exact1..8 unique flat UTF8 names, original order and full classProperty inclusion if listed; explicit inputs override metadata, empty list rejects. "
+             "Image.sample v2 metadata survives audited table ops; sampleRegions v1 still requires explicit inputProperties. "
+             "Inline FeatureCollections support bounded Element get/set/setMulti/propertyNames and FC-to-FC copyProperties over finite root JSON metadata. "
+             "Row-preserving randomColumn/filter/limit/map-to-Features retain owned properties; merge metadata semantics and sampled metadata mutation remain unsupported. "
+             "Shared50000 work/1MB JSON/depth/object caps still apply; no Google same-data/default-output equivalence claim."),
             ("Export.table.toDrive supports regional CSV and bounded static inline FeatureCollection CSV "
              "through the existing isolated batch entry point, without a JVM for pure tables. "
              "Limits include 1000 rows, 256 columns, 50000 default cells, 1 MB UTF-8 input/output "

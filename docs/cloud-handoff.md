@@ -1,6 +1,14 @@
 # 云端开发交接
 
-## 第二十九批最新起点
+## 第三十批最新起点
+
+从远端最新main继续；本批基线 `32799e8e4e7d95ad5d86e500fe60a2b53b80facc`。省略／null的训练字段只取内联集合或已验证Image.sample v2元数据band_order；显式非null列表优先，空列表拒绝。保留完整声明顺序，不猜首行字段或删除类别。引擎继续使用已确定schema的原规格，未新增Java算法／依赖。内联集合的Element元数据与筛选／limit／randomColumn／map到Feature独立复制；扫描前预付预算、get嵌套返回不别名，v1和动态取样修改限制明确。
+
+冻结源码完整回归 **2640 passed／3 skipped**（另排除4项延期原生测试），六个可信JVM／栅格组件通过，前端11／类型／临时构建通过。自动RF规格先与显式完整band_order比较，再实际进入32行样本→16／16划分→Smile训练／预测／矩阵；仅组件证明，无SparkContext／RDD／批任务／沙箱／HTTP／浏览器／部署／Google对照。旧wave29配对产物摘要已在本轮前后核对不变，当前匹配JAR／manifest和网关退出证据在新audit。独立源码复审发现的扫描预充／get别名已修复；一次全量旧断言失败记录保留，更新为正向schema和opaque模型拒绝后重跑通过。
+
+入口278／991（28.05%）仅为名称，本批未新增入口；完整Python目录字节不变，50探针45编译／5拒绝。语法／示例／报告为 `docs/gee-python/training-schema.md`、`examples/35_GEE_python_training_schema.py`、`reports/gee-python-wave30.json`。下一步继续v1集合元数据、动态变换、邻域／其他分类模式及高级时序，不以已过组件缩减完整API目标。保留账号、数据、.native和锁定依赖；不启动VM、容器或服务，不恢复历史handoff分支。
+
+## 第二十九批历史起点
 
 从远端最新main续作，不恢复历史handoff。此批基线 `f7414cfa0a91bc5e3e68df5c95d714f3bce3abf7`；有限randomColumn支持静态／采样表、typed行键、uniform／normal与新增／覆盖列。schema按完整操作链推导，训练／预测／矩阵与getInfo／CSV保留真实字段。Image.sample的根band_order严格按来源验证；无来源可信v1表保留原有合同，不能授权未追踪的变换或任意根元数据。
 

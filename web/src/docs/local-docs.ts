@@ -4,6 +4,13 @@ import geeDocs from "./gee-docs";
 const entries: ReferenceEntry[] = [
   ...geeDocs,
   {
+    id: "gee-python-training-schema",
+    category: "GEE Python",
+    title: "训练字段与集合元数据",
+    text: "Classifier.train 的 inputProperties 省略或 None 时，只从集合 band_order 取1–8个有序数值字段；不猜首行字段，也不自动去掉类别列。内联集合用 set 明确声明，Image.sample 自带元数据，sampleRegions v1 仍需显式输入。空列表、缺失或非法元数据会报错。集合 get/set/setMulti/propertyNames 和集合之间 copyProperties 支持有限静态 JSON；筛选、limit、随机列及 map 到 Feature 后继续保留。动态取样元数据暂为只读。",
+    code: "training = training.set('band_order', ['nir', 'red'])\nmodel = ee.Classifier.smileRandomForest(50).train(\n    features=training, classProperty='label')\nprint(model.schema().getInfo())  # ['nir', 'red']",
+  },
+  {
     id: "start",
     category: "开始",
     title: "脚本怎样运行",
@@ -49,21 +56,21 @@ const entries: ReferenceEntry[] = [
     id: "gee-python-smile-rf",
     category: "GEE Python",
     title: "ee.Classifier.smileRandomForest()",
-    text: "Python ee.* 通过固定官方客户端构建本地计算图。随机森林支持显式 inputProperties 的内联训练表与 sampleRegions/filter/limit 结果，训练只在受控 JVM 中进行。最多 1–8 个数值字段、2–1000 行、2–64 个从 0 连续编号的类别、256 棵树；共同工作预算可能进一步限制行数。CLASSIFICATION 支持影像与表分类、训练重代入和验证矩阵；不支持 RF explain 及其他模式。必须安装固定 RF 运行包，尚未完成本机部署及 Google 同数据验收。",
+    text: "Python ee.* 通过固定官方客户端构建本地计算图。随机森林支持内联训练表与 Image.sample/sampleRegions 的已声明操作结果。inputProperties 可显式给出；有 band_order 元数据时，省略或 None 会采用其完整顺序，训练只在受控 JVM 中进行。最多 1–8 个数值字段、2–1000 行、2–64 个从 0 连续编号的类别、256 棵树；共同工作预算可能进一步限制行数。CLASSIFICATION 支持影像与表分类、训练重代入和验证矩阵；不支持 RF explain 及其他模式。必须安装固定 RF 运行包，尚未完成本机部署及 Google 同数据验收。",
     code: "import ee\n# image、training 为已有本地影像和训练表\nmodel = ee.Classifier.smileRandomForest(\n    numberOfTrees=100, variablesPerSplit=1, minLeafPopulation=1,\n    bagFraction=0.5, maxNodes=None, seed=42,\n).train(features=training, classProperty='label',\n        inputProperties=['red', 'nir'])\nclassified = image.classify(model, 'landcover')\nprint(classified.bandNames())",
   },
   {
     id: "gee-python-image-sample",
     category: "GEE Python",
     title: "Image.sample 像元取样",
-    text: "sample 支持显式 region 或有限影像范围、factor 或近似 numPixels、seed、dropNulls 和像元中心 geometries。随机选择采用本地固定算法，未保证与 Google 抽中相同行。dropNulls=False 保留空值，训练前可用 notNull 筛除。get('band_order') 返回波段顺序，训练仍须显式 inputProperties。最多1000行；近似数量超过上限会失败。仅支持 tileScale=1 和本站已声明网格／投影范围。完整原生任务与 Google 对照仍须单独验收。",
+    text: "sample 支持显式 region 或有限影像范围、factor 或近似 numPixels、seed、dropNulls 和像元中心 geometries。随机选择采用本地固定算法，未保证与 Google 抽中相同行。dropNulls=False 保留空值，训练前可用 notNull 筛除。get('band_order') 返回波段顺序；训练省略 inputProperties 时采用该完整列表。若要排除类别等波段，请显式填写输入字段。最多1000行；近似数量超过上限会失败。仅支持 tileScale=1 和本站已声明网格／投影范围。完整原生任务与 Google 对照仍须单独验收。",
     code: "samples = image.sample(region=roi, numPixels=100, seed=42,\n                       dropNulls=False, geometries=True)\nprint(samples.get('band_order').getInfo())\nclean = samples.filter(ee.Filter.notNull(['red', 'nir']))\ntask = ee.batch.Export.table.toDrive(collection=clean, fileFormat='CSV')\ntask.start()",
   },
   {
     id: "gee-python-random-column",
     category: "GEE Python",
     title: "randomColumn 与数据拆分",
-    text: "randomColumn(columnName='random', seed=0, distribution='uniform', rowKeys=None) 支持内联表及 Image.sample/sampleRegions 取样表。normal 返回本地标准正态随机列；uniform 在[0,1)内。默认行键为已有 system:index；缺少 ID 时显式传 rowKeys。相同行键得到相同值，输出可新增或覆盖普通字段。缺失／null／复杂行键会失败。固定本地算法尚未与 Google 随机值对照；筛选后的两组按相同随机列拆分，比例是近似的。资源上限和显式训练字段要求继续生效。",
+    text: "randomColumn(columnName='random', seed=0, distribution='uniform', rowKeys=None) 支持内联表及 Image.sample/sampleRegions 取样表。normal 返回本地标准正态随机列；uniform 在[0,1)内。默认行键为已有 system:index；缺少 ID 时显式传 rowKeys。相同行键得到相同值，输出可新增或覆盖普通字段。缺失／null／复杂行键会失败。固定本地算法尚未与 Google 随机值对照；筛选后的两组按相同随机列拆分，比例是近似的。资源上限继续生效；省略训练字段时须有有效 band_order。",
     code: "split = samples.randomColumn(columnName='split', seed=42)\ntraining = split.filter(ee.Filter.lt('split', 0.7))\nvalidation = split.filter(ee.Filter.gte('split', 0.7))\nmodel = ee.Classifier.smileRandomForest(50).train(\n    features=training, classProperty='label', inputProperties=['red', 'nir'])\npredictions = validation.classify(model, 'prediction')\nprint(predictions.errorMatrix('label', 'prediction', [0, 1]).array().getInfo())",
   },
   {

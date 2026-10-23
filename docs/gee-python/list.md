@@ -1,6 +1,8 @@
 # GEE Python 兼容清单
 
-第二十九批新增有限 `FeatureCollection.randomColumn`，并接通 `sample／sampleRegions → 随机划分 → 显式 schema RF 训练 → 要素预测／验证矩阵`。新增或覆盖字段经过编译、引擎、getInfo 和 CSV 的完整 schema 传递；修复了 Image.sample 的 band_order 元数据被 RF 训练误拒绝的问题。冻结源码完整回归 **2600 passed／3 skipped**（另排除4项延期原生测试），六个可信独立 JVM／栅格组件通过；真实 Py4J 链路得到32行样本、16／16互斥完整划分及实际训练／验证频数。前端11／类型检查／构建通过，未部署。入口 **278／991（28.05%）** 仅统计名称，部分参数、数值和服务仍受限；本地SHA256随机序列不承诺Google一致。见 [随机划分语法](random-split.md)、[示例34](../../examples/34_GEE_python_random_split.py)、[报告](../../reports/gee-python-wave29.json)。完整Spark／批任务／浏览器／Google验收仍未运行。
+第三十批支持MD／RF训练省略或null的 `inputProperties`：仅按真实集合声明 `band_order` 选择完整有序字段，显式列表优先，不猜首行字段或擅自去掉类别。内联集合元数据在筛选／限量／随机列／map到Feature中保留，扫描和复制在分配前独立计费。冻结源码完整回归 **2640 passed／3 skipped**（另排除4项延期原生测试），六个可信JVM／栅格组件与前端11／类型／构建通过；编译器的自动规格实际进入Smile模型。入口仍 **278／991（28.05%）**，本批只扩展已有API参数行为；原50探针45编译／5拒绝不变。见 [训练字段语法](training-schema.md)、[示例35](../../examples/35_GEE_python_training_schema.py)、[报告](../../reports/gee-python-wave30.json)。未部署，无完整Spark／批任务／浏览器／Google验收；v1取样仍需显式字段，其他模式及完整API目标继续。
+
+第二十九批历史记录：新增有限 `FeatureCollection.randomColumn`，并接通 `sample／sampleRegions → 随机划分 → 显式 schema RF 训练 → 要素预测／验证矩阵`。新增或覆盖字段经过编译、引擎、getInfo 和 CSV 的完整 schema 传递；修复了 Image.sample 的 band_order 元数据被 RF 训练误拒绝的问题。冻结源码完整回归 **2600 passed／3 skipped**（另排除4项延期原生测试），六个可信独立 JVM／栅格组件通过；真实 Py4J 链路得到32行样本、16／16互斥完整划分及实际训练／验证频数。前端11／类型检查／构建通过，未部署。入口 **278／991（28.05%）** 仅统计名称，部分参数、数值和服务仍受限；本地SHA256随机序列不承诺Google一致。见 [随机划分语法](random-split.md)、[示例34](../../examples/34_GEE_python_random_split.py)、[报告](../../reports/gee-python-wave29.json)。完整Spark／批任务／浏览器／Google验收仍未运行。
 
 第二十八批历史记录：新增有限实际 `Image.sample`，支持全像元、factor／近似 numPixels、固定本地随机种子、缺测保留／删除、像元中心几何与 band_order。冻结源码回归 **2493 passed／3 skipped**（另排除4项延期原生测试），前端11／类型检查／构建通过；五个可信独立 JVM／栅格组件通过。取样内核与独立网格／哈希参考对比，已有 getInfo／CSV、filter／limit 和显式 schema 分类链路继续可用。入口 **277／991（27.95%）** 只统计名称，部分参数和数值语义仍受限。见 [语法](image-sampling.md)、[示例33](../../examples/33_GEE_python_image_sample.py)、[报告](../../reports/gee-python-wave28.json)。该批未验收Google抽样序列、完整Spark／部署／浏览器；随机列由第二十九批接续，邻域和自动训练schema仍待实现。
 
@@ -12,7 +14,7 @@
 第二十五批 [报告](../../reports/gee-python-wave25.json)：新增标签 Image.remap、受限 Filter.expression、取样表 filter／无排序 limit 及累计资源计费。示例 30 的标签掩膜、17 个几何候选位置、15 行有效样本、14 行 notNull、11 行条件通过和 8 行限量训练，以及三度量预测，有独立原始网格参考。便携 Python **2068 passed／3 skipped**（另排除 4 项原生测试），前端 **11 passed**／构建通过，SDK 图一致性 **77**，真实 tile 内核通过。入口 **275／991（27.75%）** 只表示名称，不是完整参数或计算兼容率。完整 Spark／部署／浏览器／真实数据／Google 验收未运行；[该批尚未实现随机森林](random-forest-roadmap.md)。
 
 第二十四批 [报告](../../reports/gee-python-wave24.json) 与 [取样语法文档](sampling.md)：接通有限 sampleRegions、实际样本运行时训练、栅格分类与样本 getInfo／CSV 任务合同。便携 Python **1882 passed／3 skipped**（另排除 4 项原生测试）、前端 **11 passed**／构建通过，Python／JS 官方客户端一致性 **72** 项；取样与分类的可信独立 JVM tile 内核均通过。API 名称入口 **273／991（27.55%）**，参数和数值语义仍需逐项验证；此数值不代表完整兼容率。完整 Spark cube、部署／浏览器、真实数据和 Google 对照未运行。
-状态：2026-10-23，第二十九批已验证，整体兼容目标尚未完成。
+状态：2026-10-23，第三十批已验证，整体兼容目标尚未完成。
 
 第二十三批 [验证报告](../../reports/gee-python-wave23.json)：新增有限 `Image.classify` 的 schema 选择、精确模型编译、Python 桥与真实 GeoTrellis tile 内核，训练仍使用内联要素。macOS ARM64 Python **1751 passed／3 skipped**（启用可信独立 JVM 内核测试，另排除 4 项原生运行测试），前端 **11 passed**、TypeScript／构建通过；较[第二十二批](../../reports/gee-python-wave22.json)增加 66 项通过。独立 tile 内核是组件运行证据，完整 Spark cube、沙箱任务、HTTP／浏览器、部署和 Google 对照均未在本批验收。
 
@@ -30,6 +32,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 
 ## 已验证及待完成
 
+- [x] 训练字段省略／null仅从已声明band_order读取；内联集合元数据及复制／行操作／CSV合同，自动与显式编译规格及实际JVM衔接分别验证。
 - [x] 有限 randomColumn 的 uniform／normal、signed64种子、显式行键、新增／覆盖列和采样后训练／验证划分；本地RNG序列与Google是否相同未验证。
 - [x] SDK 1.7.49 固定版本、离线签名、共享编译器及既有 Python/openEO 链路。
 - [x] 全 991 项算法签名及公开 Python 类型／方法／参数清单，独立进程重复生成一致。

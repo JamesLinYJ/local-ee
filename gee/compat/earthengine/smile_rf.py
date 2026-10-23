@@ -22,6 +22,7 @@ from .smile_rf_training import (
     literal_rows,
     validate_schema,
 )
+from .training_schema import resolve_input_properties
 
 
 CLASSIFIER_FUNCTIONS = frozenset({
@@ -80,7 +81,7 @@ def _train(translator, arguments):
         "classifier", "features", "classProperty", "inputProperties",
         "subsampling", "subsamplingSeed",
     })
-    for required in ("classifier", "features", "classProperty", "inputProperties"):
+    for required in ("classifier", "features", "classProperty"):
         if required not in arguments:
             fail(f"Classifier.train requires {required}")
     classifier = arguments["classifier"]
@@ -94,7 +95,12 @@ def _train(translator, arguments):
             or "." in class_property or len(class_property) > 256):
         fail("Classifier classProperty must be a nonempty flat property name")
     charge_array(translator, len(class_property))
-    schema = validate_schema(translator, arguments["inputProperties"])
+    schema = validate_schema(
+        translator,
+        resolve_input_properties(
+            translator, arguments["features"], arguments.get("inputProperties"),
+        ),
+    )
     subsampling = arguments.get("subsampling", 1.0)
     if (isinstance(subsampling, bool) or type(subsampling) not in (int, float)
             or not math.isfinite(subsampling) or subsampling != 1):
