@@ -25,6 +25,14 @@ _METADATA_ARGUMENTS = {
 def invoke(translator, name, arguments):
     """Dispatch in the same precedence order as the legacy translator."""
     a = arguments
+    if name in {"Terrain", "Terrain.products", "Terrain.slope", "Terrain.aspect", "Terrain.hillshade"}:
+        from .image_terrain import invoke_terrain
+
+        return invoke_terrain(translator, name, a)
+    if name == "Image.neighborhoodToBands":
+        from .neighborhood_bands import invoke_image_neighborhood_bands
+
+        return invoke_image_neighborhood_bands(translator, a)
     if name == "Reducer.unweighted":
         from .neighborhood_reducer_plan import invoke_neighborhood_unweighted
 

@@ -32,6 +32,9 @@ SOURCES += [ROOT / "engine/ee_focal_spec.scala", ROOT / "engine/ee_focal_numeric
             ROOT / "engine/ee_focal_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_convolve_spec.scala", ROOT / "engine/ee_convolve_numeric.scala",
             ROOT / "engine/ee_convolve_adapter.scala"]
+SOURCES += [ROOT / "engine/ee_terrain_spec.scala", ROOT / "engine/ee_terrain_budget.scala",
+            ROOT / "engine/ee_terrain_metric.scala", ROOT / "engine/ee_terrain_numeric.scala",
+            ROOT / "engine/ee_terrain_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_neighborhood_spec.scala", ROOT / "engine/ee_neighborhood_budget.scala",
             ROOT / "engine/ee_neighborhood_exact.scala", ROOT / "engine/ee_neighborhood_statistics.scala",
             ROOT / "engine/ee_neighborhood_numeric.scala", ROOT / "engine/ee_neighborhood_adapter.scala"]
@@ -48,6 +51,7 @@ SERVICE_ENTRY += "local.ee.math.LocalEePixelMathCubeProcessProvider\n"
 
 SERVICE_ENTRY += "local.ee.reduce.LocalEeFocalCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeConvolveCubeProcessProvider\n"
+SERVICE_ENTRY += "local.ee.reduce.LocalEeTerrainCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeNeighborhoodCubeProcessProvider\n"
 
 

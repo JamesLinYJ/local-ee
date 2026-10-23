@@ -140,3 +140,32 @@ PIXEL_NUMERIC_LIMITS["Image.reduceNeighborhood"] = [
     "graph500/JSON1MB and native key/cell/work caps unchanged. Standalone numerical checks "
     "do not establish full Spark/deployed workflow/private data or Google same-data parity."
 ]
+
+for _operation in ("Terrain", "Terrain.products", "Terrain.slope", "Terrain.aspect", "Terrain.hillshade"):
+    PIXEL_NUMERIC_LIMITS[_operation] = [
+        "Finite actual elevation grid in metres; one band or named elevation. Four cardinal "
+        "neighbors and center must be valid; borders/missing neighbors remain NoData. "
+        "Actual source CRS/pixel centers transform to WGS84 ECEF and local east/north chord "
+        "basis, independently of export CRS/scale. Degenerate, unresolved and polar metrics "
+        "reject. Slope/aspect in degrees, flat aspect0; periodic finite illumination angles, "
+        "Lambert hillshade rounded to0..255. Physical output remains Float64 NaN, including "
+        "hillshade; no unsigned-byte storage claim. Products retains bands/properties and "
+        "rejects name collisions; Terrain is its deprecated alias. Full input bounds, "
+        "proven common grids and Float64 before temporal selection. Compiler50000/graph500/"
+        "JSON1MB and native key/cell/work caps unchanged; one-pixel halo smaller than tile "
+        "dimensions. No implicit height scaling, hillShadow or fillMinima. Metric, rounding "
+        "and mask policies are local; the production EE DEM catalog adapter is pending, "
+        "with the existing accepted-catalog gate unchanged. Full Spark/deployment/private "
+        "data/Google parity unverified."
+    ]
+
+PIXEL_NUMERIC_LIMITS["Image.neighborhoodToBands"] = [
+    "Per input band, emit each nonzero kernel cell in row-major order with focus-relative "
+    "input_dx_dy names. Signed coefficients accepted, magnitudes ignored; each output "
+    "copies its neighbor value and validity independently, without requiring a valid "
+    "center. Reuses one-offset Float64 focal with skipMasked=false; absent keys never "
+    "synthesized. Empty support, unbound constants and meter kernels reject.33x33/1089 "
+    "cells, offsets<=32 and compiler50000/graph500/JSON1MB/native caps unchanged. "
+    "Source grid/extent precedes export resampling/ROI. Naming/empty-image policies "
+    "lack Google parity; trusted component evidence is separate from full deployed workflows."
+]

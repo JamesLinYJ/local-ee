@@ -1,0 +1,217 @@
+{
+  "schema": "local-ee-python-wave45/v1",
+  "date": "2026-10-23",
+  "base_commit": "f1e57fe6d0b746b3ab408c74b3ebf716bfd8d959",
+  "title": "Physical-grid terrain derivatives and independent neighborhood feature bands",
+  "entry_inventory": {
+    "before": 592,
+    "after": 598,
+    "new_entry_count": 6,
+    "new_alias_count": 1,
+    "new_names": [
+      "Terrain.products",
+      "Terrain.slope",
+      "Terrain.aspect",
+      "Terrain.hillshade",
+      "Terrain",
+      "Image.neighborhoodToBands"
+    ],
+    "pinned_signatures": 991,
+    "name_entry_percentage": 60.34,
+    "interpretation": "Names only; bounded parameter/context semantics, not complete GEE compatibility"
+  },
+  "implementation": {
+    "terrain": "One actual elevation band in metres, four-connected central differences; products retains all original bands/properties and appends slope/aspect/hillshade; deprecated Terrain alias shares implementation.",
+    "metric": "Actual source CRS/pixel centers to WGS84 ECEF, then local tangent-chord east/north 2x2 solve. No output-CRS/scale metric substitution or implicit height scaling. Checked Long global indices, exact half-cell index bound2^52, degenerate/polar/unresolvable metrics reject.",
+    "numerics": "Independent mantissa/exponent differences and range-stable gradient solve; tiny slope converts directly to degrees in log domain. Slope/aspect degrees, flat aspect0 and canonical [0,360). Periodic illumination and floor(clamp(Lambert)*255+0.5); physical hillshade remains Float64 NaN, including valid0/255.",
+    "neighborhood_bands": "Nonzero signed kernel support emits row-major focus-relative input_dx_dy outputs; weight magnitude ignored. Each output is actual singleton-offset Float64 focal mean with skipMasked=false, preserving independent neighbor masks.",
+    "grid_and_masks": "Full input bounds and proven common grid before merging; Float64 before temporal selection. Explicit input clip retained, output ROI/resampling downstream. Terrain requires center+four valid neighbors; missing keys never synthesized.",
+    "limits": [
+      "Compiler50000/graph500/JSON1MB unchanged",
+      "Terrain wire1024 ASCII bytes; kernel33x33/1089 cells and offsets<=32",
+      "100000 native keys/100M decoded cells/10M per tile/1e8 per-tile work/1e9 total work unchanged",
+      "Positive halo radius must be smaller than tile dimensions; output graph checked after final selection"
+    ],
+    "local_policies": [
+      "WGS84 tangent-chord metric, flat aspect0 and Lambert rounding have no Google oracle",
+      "Neighborhood names are focus-relative; zero-support kernel rejects under nonempty image contract",
+      "Terrain products existing output-name collisions reject; no unsigned-byte hillshade storage claim"
+    ],
+    "rejected": [
+      "Source-free and array-valued terrain/neighborhood inputs",
+      "Terrain multi-band input without elevation",
+      "Nonfinite/nonstatic angles, invalid wire, undefined metrics",
+      "Terrain.hillShadow and Terrain.fillMinima",
+      "Meter kernels, empty neighborhood support and work/node overflow"
+    ],
+    "catalog_boundary": "Production EE DEM catalog adapter remains pending. Existing CatalogOperations.load admits only accepted sentinel-2-l2a and its aliases. Tests inject synthetic elevation metadata under that fixture ID; native fixtures are independent synthetic tiles, not reflectance relabeled as real elevation."
+  },
+  "validation": {
+    "python": {
+      "tests": 4647,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 17,
+      "passed": 4630,
+      "seconds": 43.587
+    },
+    "warnings": "3 existing Rasterio PendingDeprecationWarnings",
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "Python_JS_identical_compiled_workflows": 18,
+      "guarded_network_attempts": 0
+    },
+    "actual_process_evaluator": "Pinned openEO registry/evaluator tests cover terrain single-band metadata, spatial/band/resample pushdown blockers and exact source forwarding; no fabricated pixels.",
+    "legacy_probes": {
+      "total": 50,
+      "serialized": 50,
+      "compiled": 47,
+      "rejected": 3,
+      "interpretation": "Selected compile probes, not migration success rate"
+    },
+    "native_terrain": {
+      "scope": "Actual GeoTrellis Float64 terrain tiles, manual one-cell halo and collection BufferTilesRDD; no SparkContext/service/user code",
+      "case_count": 14,
+      "pixel_comparisons_including_nodata_per_path": 504,
+      "reference": "pyproj WGS84 transform plus Decimal-backed ECEF tangent-chord 2x2 solve",
+      "max_angular_error_degrees": 5.553232540478348e-09,
+      "angular_tolerance_degrees": 2e-07,
+      "subnormal_tolerance": "max(32 ulps, 1e-6 relative); expected output must remain nonzero",
+      "hillshade": "Exact rounded integer comparisons, including0 and255",
+      "temporal_keys": 8,
+      "checked_global_column": 4294967294,
+      "observed_transform_calls": 1294,
+      "observed_transform_result_objects": 1294,
+      "observed_explicit_arrays": 990,
+      "work_estimate_256_square_per_tile": 21037312,
+      "work_estimate_nine_256_square_tiles": 189335808,
+      "full_adapter_source_count": 36,
+      "jar_sha256": "b1dbe9ef0440deb68038a4975ca60c38d07bc329395b054e260b90132cee036a",
+      "architecture": "arm64",
+      "scala_version": "2.13.18",
+      "spark_version": "4.2.0",
+      "evidence": "audit/gee-python-wave45/native/terrain/20261023T113746Z-9adc5f1321/kernel-result.json",
+      "wire_rejection_controls": 9,
+      "budget_rejection_controls": 7,
+      "grid_metric_rejection_controls": 5
+    },
+    "native_neighborhood_bands": {
+      "scope": "Standalone GeoTrellis Float64 focal tile-kernel invocation using six specs extracted from the pinned SDK compiler graph; no SparkContext, service, or user code",
+      "outputs": 6,
+      "pixel_comparisons_including_nodata": 384,
+      "comparison": "Exact binary64 with independent whole-grid shift reference; manual halo assembly",
+      "coverage": [
+        "all three nonzero cells from an asymmetric-focus signed 3x3 kernel across two input bands",
+        "independent whole-grid shift references for every actual Float64 tile output",
+        "masked center filled by a valid neighbor while a masked neighbor remains NoData",
+        "missing upper-right source tile treated as NoData even when backing array cells contain values",
+        "domain edges, source tile boundaries, and row-major compiler output specs"
+      ],
+      "full_adapter_source_count": 36,
+      "jar_sha256": "d3a040b881cabffd98827757378e213a5c3c8e1b7d189680c03f43b9da2d9ec6",
+      "evidence": "audit/gee-python-wave45/native/neighborhood-bands/20261023T113232Z-dbdf8f3f1c/neighborhood-bands-result.json"
+    },
+    "evidence_directory": "audit/gee-python-wave45/final-verified",
+    "frozen_final_code_sha256": {
+      "engine/ee_process_adapters.py": "4c0b3dd826bfc7f5445cff5f9d54349d440ebbcc781bbc243f1fd06c157fd346",
+      "engine/ee_terrain.py": "8f8d0cb954c880f33949591a88f4f81b6776059f56112ab9bbdf1b732d141c63",
+      "engine/ee_terrain_adapter.scala": "a1413a66df0c535e1bde42288a0547d1e3643619c9c34d83810bfd6790675432",
+      "engine/ee_terrain_budget.scala": "566bb1aa309593210d127a1367aadac4e739a3a7ba40f9a2a2bbd4ba4edddfe8",
+      "engine/ee_terrain_metric.scala": "e004983c84b1bc1df9ac7776b295dab94c8391481f53f0f0f19c97bb3c5ac03a",
+      "engine/ee_terrain_numeric.scala": "16e0ac5c8bdb64bb5e1ff80387fb465887cde385fd876f709d329cf2e2521977",
+      "engine/ee_terrain_spec.scala": "b43dfac791bed9808dd7968d8c8336ad5c71ea672d982cc162197b3f44a9f77d",
+      "examples/50_GEE_python_terrain.py": "00b8141e98ec5518204bfa622c40eca77c3d2a85c5fe2e77a697d15632b2daff",
+      "gee/compat/earthengine/capabilities.py": "e7c5f04b76fce3cb377fca68bd65e8a2d3888eddf4fee7495260f01377795ca1",
+      "gee/compat/earthengine/dispatch.py": "b7bc9fca2f3b6f61b24c5970359b05cefb03d5acee676d54e2e7128262d1275e",
+      "gee/compat/earthengine/graph.py": "aa5398ab9b5e006bfc17193bc7f8e7a476a84be7609badb552186d55a9167fca",
+      "gee/compat/earthengine/image_terrain.py": "5e09548b5cebff896ff1e45625d5718de782ee79cebdc9b9b4920d78e8804c5f",
+      "gee/compat/earthengine/neighborhood_bands.py": "01f05d78fdb331937c06502f7923545a359802b4f4353be76b0f33c4992c9660",
+      "gee/compat/earthengine/pixel_graph.py": "15018b8aebb284e020127eb295418c60944043c069b103050a235fadeb3e2c11",
+      "gee/compat/earthengine/terrain_graph.py": "59636539d4ae5112cb1861927bb589419741e326044db4969eb7a0abfb393704",
+      "gee/local_processes.py": "c2c39df0011e3c10884b88e76dc63d66231a35c444cf125b2df869b1246159f4",
+      "gee/sampling_graph.py": "20e1fc5b4831819692eb8b8b3469fabbcee6029b150b21c2cbde0e92474ad5ac",
+      "gee/smile_rf_processes.py": "f31fd08e877ec8795679b251ba82cf654641476a12a3d39c80ca62fb44c4b589",
+      "gee/terrain_spec.py": "7667495cd34cbd57d765b9ff068fcbe161d3e6872bd6ebbe9e5c6813df9720ad",
+      "scripts/build_integer_adapter.py": "e420d86a1cc4640c4c0e36c437f44858a20fdd8a62db7d66a3b988d32cfe5e3f",
+      "scripts/ee_inventory/pixel_numeric_families.py": "de25a90907d2c6c9650ff34e018c11a641d190eee5fee545737801d8a01e265a",
+      "tests/ee_terrain_kernel_helpers.py": "6944a0d4ff23218489d26f0338f833c3370228e09dac1af4126e5e85ba9eb70b",
+      "tests/fixtures/ee-neighborhood-bands-probe.scala": "758a66b3be64fcd310bfc232ba454e149d8377020ec2858e4160d25cb8154f0f",
+      "tests/fixtures/ee-terrain-kernel-probe.scala": "efab0eb4dafd56381675919654eee68db03d3f5f25aca9aa519a7c494f2675c5",
+      "tests/test_ee_neighborhood_bands.py": "ad4806a076d6907d4dac0669b20d76de81958b28419167f2a34db948c0c7ec64",
+      "tests/test_ee_neighborhood_bands_kernel.py": "4b94ebaad7509ca1b429888d5b1ef3299ef987ce3abedae6c757f9718067052d",
+      "tests/test_ee_neighborhood_engine.py": "6acf6e7096c1e54bf5e72ee3752d2abace36a9d2ba9e60fab1e82c481caa5910",
+      "tests/test_ee_neighborhood_metadata.py": "37cd99515fabe5973f5411a520c5209be165e0490d67843e7093bcf58dc05afc",
+      "tests/test_ee_terrain_compiler.py": "fdc1a8d4d964b2499891db398c8421d6a31f0623c5832aa6e53219d4badd6ee6",
+      "tests/test_ee_terrain_kernel.py": "46d70395abeb2ceb273d1260149b77e452fcecb8f9995fc681eb5fd97dda98cc",
+      "tests/test_ee_terrain_process.py": "7ac587bade38e01a85d2fb3daa0cf8b4b4339c630b7b7566bca7a93d4ebc4bfc",
+      "tests/test_ee_terrain_workflow.py": "8750c9463d0a36040a3b2de685767aec39a93fde10d8c94f6c84bbc862efbed7"
+    },
+    "final_probe_only_refinement": "After the full local suite, the polar rejection probe and audit harness were refined to require the projection error, and trailing blank lines in two tests were removed. No engine/compiler code changed. Final focused compiler+actual native suite:12 passed. Exact final snapshot is also validated by publication CI."
+  },
+  "failure_fixes": [
+    {
+      "issue": "Shared elevation scaling erased a small derivative beside a huge center or equal orthogonal pair",
+      "fix": "Independent central-difference mantissa/exponent representations; extreme/mixed-range fixtures"
+    },
+    {
+      "issue": "Premature radians underflow or wrapped negative bearing could yield0 slope or360 aspect",
+      "fix": "Direct tiny-angle degree conversion; normalized bearing clamped to [0,360); explicit nonzero tiny-slope and bearing checks"
+    },
+    {
+      "issue": "Half-cell global indices beyond2^52 were not exactly representable",
+      "fix": "Checked Long offsets and2^52 half-cell limit, including a real >IntMax index control"
+    },
+    {
+      "issue": "Early intermediate-output graph count rejected later band selection",
+      "fix": "Precharge IR scans/allocations but enforce graph500 after selection;15x15 center selection passes"
+    },
+    {
+      "issue": "Name scans and coordinate-cache work were undercharged",
+      "fix": "Precharge name/JSON scans and generated copies; explicit coordinate/kernel cost and allocation estimates under original caps"
+    },
+    {
+      "issue": "Independent reference/test harness had flat-hillshade, EPSG constructor and NaN equality mistakes",
+      "fix": "Reference flat illumination retained; correct CRS.fromEpsgCode and NaN-aware temporal comparisons; failed logs retained"
+    },
+    {
+      "issue": "Polar negative control could reject for incomplete cache before reaching projection",
+      "fix": "Use a complete3x3 cache and require the WGS84/polar exception message; final actual native probe rerun passed"
+    }
+  ],
+  "preservation": {
+    "dependencies_changed": false,
+    "installed_runtime_modified": false,
+    "user_data_modified": false,
+    "containers_or_VMs_created": false,
+    "goal_complete": false
+  },
+  "cleanup": {
+    "temporary_frontend": {
+      "owned_path": "/Users/james/Documents/Codex/2026-10-21/wo/work/gee-python-wave45-web-build",
+      "files": 16,
+      "logical_bytes": 1697179,
+      "removed": true
+    },
+    "native_owned_scratch": "All wave45 scratch directories absent; failed fixtures/logs and successful manifests retained under audit"
+  },
+  "not_verified": [
+    "Production EE DEM dataset adapter and actual catalog/elevation ingestion",
+    "Full Spark RDD/cube jobs for new terrain/neighborhood-band operations",
+    "Deployed sandbox/browser/map/physical raster export for this family",
+    "Private real data",
+    "Google same-data numerical equivalence",
+    "Real-scene performance/capacity"
+  ],
+  "documentation": [
+    "docs/gee-python/terrain.md",
+    "docs/gee-python/terrain-native.md",
+    "docs/gee-python/neighborhood-bands.md"
+  ],
+  "example": "examples/50_GEE_python_terrain.py"
+}

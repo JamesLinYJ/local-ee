@@ -7,6 +7,8 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 # Handler inventory, not a claim that every overload or parameter is supported,
 # nor that Google-service numerical equivalence has been established.
 SUPPORTED_FUNCTIONS = frozenset({
+    "Terrain", "Terrain.products", "Terrain.slope", "Terrain.aspect", "Terrain.hillshade",
+    "Image.neighborhoodToBands",
     "Image.convolve",
     *("Kernel." + n for n in ("gaussian", "laplacian4", "laplacian8", "sobel", "prewitt", "roberts", "rotate", "add")),
     *("Kernel." + n for n in ("euclidean", "manhattan", "chebyshev", "compass", "kirsch", "inverse")),
@@ -146,6 +148,21 @@ def get_capabilities():
         "level": "C",
         "numerical_equivalence_to_google_verified": False,
         "restrictions": [
+            ("Terrain products/slope/aspect/hillshade and the deprecated Terrain alias use "
+             "actual elevation in metres and four valid cardinal neighbors plus center. "
+             "The source CRS/grid defines a local WGS84 tangent-chord metric; export scale "
+             "does not redefine terrain. Flat aspect0 and periodic illumination are local "
+             "policies; hillshade0..255 remains Float64 with NaN, not byte storage. Products "
+             "retains bands/properties and rejects collisions. Invalid metrics, unbound "
+             "sources, hillShadow and fillMinima reject. DEM catalog mapping remains pending; "
+             "the current EE catalog gate is unchanged. Native budgets and Google/full "
+             "Spark/deployment evidence remain separate."),
+            ("Image.neighborhoodToBands emits one band per nonzero pixel-kernel cell, "
+             "ignores signed coefficient magnitude and uses focus-relative input_dx_dy "
+             "names in row-major order. Each neighbor has its own validity; masked center "
+             "does not invalidate all outputs. Empty support and meter kernels reject. "
+             "It shares bounded Float64 focal execution and full source-grid boundaries; "
+             "naming/empty-image policies lack Google parity."),
             ("Image.convolve applies finite pixel kernels with exact binary64 product accumulation "
              "and one Float64 rounding. Valid centers require all nonzero-weight neighbors; no edge "
              "renormalization. Zero kernels yield zero on valid centers. Gaussian, distance and seven edge kernels, "

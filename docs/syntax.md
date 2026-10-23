@@ -17,6 +17,8 @@ print(connection.describe_collection("sentinel-2-l2a"))
 
 ## GEE Python 客户端
 
+地形分析见 [Terrain 语法](gee-python/terrain.md)；把邻域像元展开为波段见 [neighborhoodToBands](gee-python/neighborhood-bands.md)。源数据需要真实网格及明确单位，缺测和导出分辨率的处理分别说明。
+
 科学函数、方向角、静态数组位运算／向量与数字解析见[影像数学语法](gee-python/pixel-math.md)，静态数据整理见[批量静态函数](gee-python/static-families.md)。精度、掩膜、参数和部署状态分别记录。
 
 运行器在本机配置官方 EE 客户端。使用 `ee.Initialize()` 建立本地适配，不需要调用 `ee.Authenticate()`、Google 账号或项目。脚本仍在独立沙箱中运行，SDK 的计算表达式由本地兼容层检查并转换。`ee.*` 支持范围与 JavaScript 兼容表共用；尚未实现的算法、参数和 Google 云端服务会明确报错。
