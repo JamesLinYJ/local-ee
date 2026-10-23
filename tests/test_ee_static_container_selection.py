@@ -133,10 +133,11 @@ def test_dictionary_missing_selectors_and_regex_ambiguity(ee):
     ) == {"B1": 1, "B2": 2, "B[1-2]": 3, "other": None}
     with pytest.raises(UnsupportedEEError, match="did not match"):
         _evaluate_with_owned_hook(ee, dictionary.select(["missing"]))
-    with pytest.raises(UnsupportedEEError, match="regex selectors are unsupported"):
-        # The literal key exists, but Earth Engine interprets this selector
-        # as a regex that could also match B1/B2; do not silently narrow it.
-        _evaluate_with_owned_hook(ee, dictionary.select(["B[1-2]"], ignoreMissing=True))
+    # The literal-looking key cannot take precedence over the regex.
+    assert _evaluate_with_owned_hook(ee, dictionary.select(["B[1-2]"])) == {"B1": 1, "B2": 2}
+    assert _evaluate_with_owned_hook(ee, dictionary.select([r"B\[1-2\]"])) == {"B[1-2]": 3}
+    assert _evaluate_with_owned_hook(ee, dictionary.remove(["B.*"])) == {"other": None}
+    assert _evaluate_with_owned_hook(ee, dictionary.select(["B"], True)) == {}
 
 
 @pytest.mark.parametrize("name,arguments", [
@@ -154,9 +155,9 @@ def test_dynamic_wrong_type_and_unknown_arguments_fail(name, arguments):
 
 
 def test_dictionary_regex_missing_and_work_budget_reject_before_unbounded_work():
-    with pytest.raises(UnsupportedEEError, match="regex selectors are unsupported"):
+    with pytest.raises(UnsupportedEEError):
         invoke_static_container_selection(Translator([], {}, None), "Dictionary.remove", {
-            "dictionary": {"a": 1}, "selectors": ["a.*"], "ignoreMissing": True,
+            "dictionary": {}, "selectors": ["(?=a)"], "ignoreMissing": True,
         })
     over_budget = Translator([], {}, None)
     over_budget.steps = 49_999

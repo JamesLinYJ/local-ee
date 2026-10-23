@@ -12,19 +12,18 @@ nested Lists, Dictionaries, and same-shape/same-dtype `ee.Array` values.
 
 `Dictionary.select(selectors, ignoreMissing=false)` and
 `Dictionary.remove(selectors, ignoreMissing=false)` accept a finite list of
-string selectors. Exact key names are implemented. A selector that is absent
-raises by default; with `ignoreMissing=true`, an absent literal selector is
-skipped. Selectors are applied as a set: duplicates do not duplicate output
+string selectors. Each selector is a bounded RE2 regular expression matched
+against the whole key. A selector matching no key raises by default; with
+`ignoreMissing=true`, it is skipped. Selectors are applied as a set: duplicates do not duplicate output
 entries, and results follow source dictionary insertion order. Null values are
 ordinary values and are retained whenever their key is retained. Both methods
 return recursively owned copies.
 
-The official API also allows regular-expression selectors. This implementation
-does not execute regular expressions. Any selector containing regex
-metacharacters fails explicitly before key lookup, even if that exact spelling
-is also a dictionary key and even with `ignoreMissing=true`; the regex could
-match additional keys. Regex support needs a bounded RE2-compatible
-implementation before it can be enabled safely.
+A literal-looking key does not override regular-expression semantics: `B[12]`
+selects B1/B2; escape brackets to select a key named B[12]. All patterns are
+compiled even on empty dictionaries or with `ignoreMissing=true`. Unsupported
+RE2 syntax fails explicitly. Patterns, program memory and matching work share
+the [bounded String regex contract](string-regex.md).
 
 Inputs and output scans use the existing finite static value and compiler-work
 limits: up to 10,000 container values, depth 96, 1 MB serialized static output,
@@ -43,5 +42,5 @@ structural-equality, or regex boundaries.
 
 Focused contract tests live in `tests/test_ee_static_container_selection.py`.
 They cover pinned signatures, offline official-client serialization, local
-finite results, ordering, nulls, owned copies, unsupported regexes, and bounded
+finite results, ordering, nulls, owned copies, regex selection/rejection, and bounded
 failure paths. They do not use credentials or user data and do not call Google.

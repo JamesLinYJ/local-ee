@@ -193,8 +193,8 @@ def test_invalid_combine_arguments_fail_explicitly(arguments):
     ("Dictionary.getGeometry", {"dictionary": {"a": {"type": "Point", "coordinates": [1, 2]}}, "key": "missing"}),
     ("Dictionary.toArray", {"dictionary": {"a": 1}, "keys": ["missing"]}),
     ("Dictionary.toArray", {"dictionary": {"a": 1}, "axis": True}),
-    ("Dictionary.select", {"dictionary": {"a": 1}, "selectors": ["a.*"]}),
-    ("Dictionary.remove", {"dictionary": {"a": 1}, "selectors": ["a.*"]}),
+    ("Dictionary.select", {"dictionary": {"a": 1}, "selectors": ["(?=a)"]}),
+    ("Dictionary.remove", {"dictionary": {"a": 1}, "selectors": [r"(a)\1"]}),
 ])
 def test_invalid_types_conflicts_and_regex_selectors_fail(name, args):
     with pytest.raises(UnsupportedEEError):

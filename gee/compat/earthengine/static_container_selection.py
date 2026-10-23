@@ -1,8 +1,7 @@
 """Bounded filtering and key selection for finite static EE containers.
 
 This adapter reuses the canonical Filter IR and equality implementation. Key
-selectors intentionally accept exact names only; regex execution is deferred
-until the project has a bounded RE2-compatible matcher.
+selectors use the shared bounded RE2 matcher, including literal-looking keys.
 """
 from __future__ import annotations
 
@@ -23,12 +22,12 @@ from .static_dictionary_values import (
 )
 from .static_equality import static_equal
 from .feature_values import is_feature, validate_feature
+from .regex_values import compile_pattern
 
 
 STATIC_CONTAINER_SELECTION_FUNCTIONS = frozenset({
     "List.filter", "Dictionary.remove", "Dictionary.select",
 })
-_REGEX_CHARS = frozenset(".^$*+?{}[]\\|()")
 _ARGUMENTS = {
     "List.filter": ({"list", "filter"}, set()),
     "Dictionary.remove": ({"dictionary", "selectors"}, {"ignoreMissing"}),
@@ -171,10 +170,6 @@ def _list_filter(translator, arguments):
     return [clone_value(item) for item in selected]
 
 
-def _regex_like(selector):
-    return any(character in _REGEX_CHARS for character in selector)
-
-
 def _dictionary_selection(translator, name, arguments):
     _arguments(translator, name, arguments)
     dictionary = arguments["dictionary"]
@@ -188,16 +183,15 @@ def _dictionary_selection(translator, name, arguments):
         fail(f"{name} ignoreMissing must be a boolean")
 
     charge(translator, len(dictionary))
+    keys = tuple(dictionary)
     matched = set()
     for selector in selectors:
-        charge(translator)
-        # Earth Engine treats selectors as regexes, so punctuation cannot be
-        # accepted as a literal key without changing what the selector means.
-        if _regex_like(selector):
-            fail(f"{name} regex selectors are unsupported; use exact key names")
-        if selector in dictionary:
-            matched.add(selector)
-        elif not ignore_missing:
+        # Compile even on empty dictionaries or ignoreMissing: malformed or
+        # unsupported patterns never become successful empty selections.
+        pattern = compile_pattern(translator, selector, keys)
+        selected_keys = [key for key in keys if pattern.fullmatch(key) is not None]
+        matched.update(selected_keys)
+        if not selected_keys and not ignore_missing:
             fail(f"{name} selector did not match a key: {selector!r}")
 
     # Iterating the source mapping keeps insertion order. Duplicate selectors

@@ -105,6 +105,8 @@ RF 要素分类与矩阵计算保留独立运行时 IR 和生产者合同。真�
 
 逐像元科学函数通过独立 `local_ee_pixel_math` SPI，使用共享的固定操作／输入数量合同。编译器保留显式 Double 请求的拒绝，将默认源／常量转换为 Float32；常量绑定真实有限网格，集合中按需复用逐景展开。二元实际输入只接受相同的已证明来源谱系，避免上游 merge 隐式最近邻重采样。JVM 使用已有固定 Commons Math，负 digamma／trigamma 用有界反射公式，独立构建记录依赖摘要，不覆盖安装环境。实际瓦片数值验证与完整 Spark／服务部署分开。语法和精度边界见[影像数学](gee-python/pixel-math.md)。
 
+正则静态运算使用固定 `google-re2==1.1.20251105`，轮包摘要由 `uv.lock` 保留；程序内存和输入／输出／扫描工作在共享预算内。替换、捕获组、Unicode和日历规则均明确标为本地子集，解释器只处理有限纯值。新增依赖的已知告警查询证据与兼容批次报告一起保存，不替代原生二进制或整机安全审计。
+
 兼容开发按算子族批量集成：Number数值、Array逐元素运算、List结构整理、Dictionary映射／转换和String／JSON各有独立模块及定向测试，最后冻结统一回归、发布。共享工作／输出预算不提高，注册清单必须对应实际计算。纯静态批次不重复构建未变化的JVM适配器，证据按S／C／静态N与栅格E／GoogleG分别记录。新增List严格整数检查保留为显式模式，不改变历史结构比较行为；各组局部政策见[静态算子合同](gee-python/static-families.md)。
 
 兼容编译器按职责拆分，避免重新积累到单一 translator 文件：
@@ -114,6 +116,8 @@ RF 要素分类与矩阵计算保留独立运行时 IR 和生产者合同。真�
 | `decoder.py`, `catalog.py`, `filtering.py` | 解码官方客户端 DAG、绑定本地目录元数据、构建筛选器并按本地元数据求值 |
 | `dispatch.py`, `value_ops.py`, `image_ops.py`, `collection_ops.py`, `metadata_ops.py` | 将已解码调用分派到静态值、影像、集合与属性操作实现 |
 | `ir.py`, `static_values.py`, `date_values.py` | 纯值类型和像素 IR、标量静态调用，以及 UTC 日期值辅助函数 |
+| `date_calendar*`, `number_expression*` | 有限 UTC 日历与纯数值表达式解析；固定格式、完整分支校验和预充预算 |
+| `array_selection`, `feature_table_*`, `string_regex`, `regex_values` | 静态数组选择、内联表整理、固定 RE2 的有界正则；保留已有所有权和输出边界 |
 | `number_math.py` | 有限静态正余弦、稳定范数与方向角，先校验／计费再运行 Float64 内核；显式记录 pinned SDK 轴约定和未做 Google 对照的数值政策 |
 | `array_core.py`, `array_values.py`, `array_layout.py`, `array_arithmetic.py`, `array_reductions.py`, `array_matrix_extra.py` | 有限静态数组类型、形状／资源校验及分组数值内核 |
 | `array_decompositions.py` | 静态方阵 QR／LU／SVD 的真实分解、有限输出与立方工作预充；通过既有 typed Array／Dictionary 接口组合，不另建前端计算层 |

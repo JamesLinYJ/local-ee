@@ -7,6 +7,10 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 # Handler inventory, not a claim that every overload or parameter is supported,
 # nor that Google-service numerical equivalence has been established.
 SUPPORTED_FUNCTIONS = frozenset({
+    "Date.parse", "Date.update", "Date.getRange", "Date.unitRatio",
+    "Array.bitsToArray", "Array.cut", "Array.mask", "Number.expression",
+    "String.match", "String.replace", "String.split",
+    "Collection.distinct", "Collection.remap", "Collection.fromColumns",
     # Literal names keep the source-only inventory independent of importing
     # scientific code or needing a configured runtime in a clean checkout.
     *("Number." + n for n in (
@@ -116,8 +120,8 @@ def get_capabilities():
              "Static digamma/trigamma and inverse erf/erfc retain bounded work, finite real domains and explicit pole rejection. "
              "These methods do not cast raster Images or provide arbitrary dynamic scalar/array algebra."),
             ("List.filter accepts finite static values with item predicates or actual Feature properties, "
-             "preflighting all Filter branches even on empty input. Dictionary.select/remove accept exact literal keys "
-             "only; regex metacharacters reject before lookup, even if an exact dictionary key has that spelling. "
+             "preflighting all Filter branches even on empty input. Dictionary.select/remove use bounded RE2 fullmatch "
+             "selectors, including literal-looking keys; unsupported RE2 syntax rejects even on empty inputs. "
              "Owned copies, source key order, null policy and shared50000 work/1MB output limits remain; no Google comparison."),
             ("Image scientific math uses an actual closed Float32 native SPI for asin/acos/atan/atan2, "
              "hyperbolic/cbrt/signum/Gamma derivatives/erf and inverses. Default untyped source/constants "

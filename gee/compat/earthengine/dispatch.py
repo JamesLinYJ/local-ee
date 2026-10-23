@@ -135,6 +135,12 @@ def invoke(translator, name, arguments):
         "Image.reduce", "Image.reduceRegion", "ImageCollection.reduce",
     }:
         fail("This regression Reducer currently supports static table reduceColumns only")
+    from .feature_table_selection import (
+        handles_feature_table_selection, invoke_feature_table_selection,
+    )
+
+    if handles_feature_table_selection(name, a):
+        return invoke_feature_table_selection(translator, name, a)
     from .feature_ops import handles_feature, invoke_feature
 
     if handles_feature(name, a):
@@ -165,8 +171,11 @@ def invoke(translator, name, arguments):
     if name == "Collection.map" and a.get("dropNulls") is not None and not isinstance(a["dropNulls"], bool):
         fail("Collection.map dropNulls must be a boolean")
     if name.startswith("Date."):
+        from .date_calendar import SUPPORTED_DATE_CALENDAR_FUNCTIONS, invoke_date_calendar
         from ...ee_dates import SUPPORTED_DATE_FUNCTIONS, invoke_date
 
+        if name in SUPPORTED_DATE_CALENDAR_FUNCTIONS:
+            return invoke_date_calendar(translator, name, a)
         if name in SUPPORTED_DATE_FUNCTIONS:
             return invoke_date(translator, name, a)
     if name.startswith("Number."):

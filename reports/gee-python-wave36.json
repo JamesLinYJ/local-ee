@@ -1,0 +1,154 @@
+{
+  "schema": "local-ee-python-wave36/v1",
+  "date": "2026-10-23",
+  "base_commit": "425ad8819c36e39a94a680729781cd7c0fdc8017",
+  "title": "Finite calendar, numeric expressions, RE2 regexes and metadata tables",
+  "entry_inventory": {
+    "before": 477,
+    "after": 491,
+    "new_entry_count": 14,
+    "pinned_signatures": 991,
+    "name_entry_percentage": 49.55,
+    "new_names": [
+      "Array.bitsToArray",
+      "Array.cut",
+      "Array.mask",
+      "Collection.distinct",
+      "Collection.fromColumns",
+      "Collection.remap",
+      "Date.getRange",
+      "Date.parse",
+      "Date.unitRatio",
+      "Date.update",
+      "Number.expression",
+      "String.match",
+      "String.replace",
+      "String.split"
+    ],
+    "extended_existing_names": [
+      "Dictionary.select",
+      "Dictionary.remove"
+    ],
+    "interpretation": "Name entries only, not full argument, semantic, migration or Google equivalence coverage"
+  },
+  "implementation": {
+    "owners": "Five disjoint Luna/max family agents; parent review, integration and publication",
+    "module_limit": "Largest new implementation module346lines; parser, evaluation, construction and selection split by responsibility",
+    "families": [
+      "Date.parse/update/getRange/unitRatio",
+      "Array.bitsToArray/cut/mask",
+      "Collection.distinct/remap/fromColumns",
+      "Number.expression",
+      "String.match/replace/split and Dictionary RE2 fullmatch"
+    ],
+    "limits": "Existing shared50000 compiler work,1000inline rows,10000array cells/rank8 and1MB public output; stricter family caps remain"
+  },
+  "validation": {
+    "python": {
+      "tests": 3654,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 10,
+      "passed": 3644,
+      "seconds": 43.556
+    },
+    "python_evidence": "audit/gee-python-wave36/final-verified-v2/python.xml",
+    "focused_integrated_passed": 260,
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "node": "24.22.1",
+      "deployed": false
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "Python_JS_identical_workflow_outputs": 13,
+      "guarded_network_attempts": 0,
+      "JS_fromColumns": "Pinned JS lacks static helper; official ee.call(Collection.fromColumns,...) used"
+    },
+    "csv": {
+      "rows": 2,
+      "label_score_scaled": [
+        [
+          1,
+          0.2,
+          20
+        ],
+        [
+          2,
+          0.6,
+          60
+        ]
+      ],
+      "path": "Official Python SDK -> dispatch -> test queue/worker -> actual CSV writer -> trusted publication/result reader",
+      "scope": "Portable synthetic integration; DB and native task launch are test doubles"
+    },
+    "frozen_source_files": 30,
+    "source_hashes_unchanged_during_final_regression": true,
+    "warnings": "3 existing Rasterio PendingDeprecationWarnings",
+    "initial_full_regression": {
+      "passed": 3642,
+      "failed": 2,
+      "skipped": 10,
+      "cause": "Historical tests expected every dictionary regex to reject; replaced with actual unsupported lookahead/backreference controls",
+      "evidence": "audit/gee-python-wave36/final-verified/python.xml"
+    },
+    "parent_review_fixes": [
+      "Parser precharges source and variable expansion/key scanning; no quadratic repeated trailing-whitespace scan",
+      "Expression integer rounding preserves2^52+1 and2^53-1",
+      "Calendar numeric widths bounded before regex parsing; direct handler budget preserved",
+      "RE2 binding duplicate terminal zero-width spans deduplicated without removing legitimate matches",
+      "Full repeated property-name/row/JSON output work reserved before copying or serialization"
+    ]
+  },
+  "dependency_delta": {
+    "added": "google-re2==1.1.20251105",
+    "all_previous_locked_package_versions_and_sources_unchanged": true,
+    "uv_lock": "Pinned official PyPI wheels with SHA256 for supported platforms",
+    "requirements_lock": "Regenerated complete export, restoring existing pinned SDK transitive entries previously omitted; only RE2 newly installed",
+    "license": "RE2 BSD three-clause, original wheel license retained",
+    "known_advisories": {
+      "osv": 0,
+      "pypi": 0,
+      "date": "2026-10-23",
+      "scope": "Exact public PyPI package/version lookup; not complete native-binary, OS or unknown-vulnerability assessment"
+    },
+    "installed_component_sha256": {
+      "google_re2-1.1.20251105.dist-info/licenses/LICENSE": "6040cda75d90b1738292a631d89934c411ef7ffd543c4d6a1b7edfc8edf29449",
+      "re2/_re2.cpython-311-darwin.so": "e6491b2155660a32fd2bc9b7af5caaa3b258b822d3f3d81c0a98d9612076426b"
+    }
+  },
+  "remaining_limits": [
+    "UTC only, bounded numeric Joda patterns; week/pivot/clamping/average-duration policies documented as local",
+    "RE2 subset; literal replacements only, no capture output or byte escape, Unicode/zero-width policy not Google-verified",
+    "Array.mask exact same shape and single varying axis only; negative bit representation is inferred beyond -1 example",
+    "Inline FeatureCollections only; propertyTypes and nested flatten unsupported, canonical distinct uses local JSON representation",
+    "Number.expression finite scalar allowlist only; no images/arrays/assignment/arbitrary code",
+    "No new full Spark, services, browser, private real-data, isolation-platform or Google same-data acceptance"
+  ],
+  "runtime": "Business services stayed stopped; no VM/container/engine/JVM rebuild or deployment; accounts, credentials, datasets and outputs untouched",
+  "goal_status": "Python-first full API/semantic compatibility and production goal remain incomplete and ongoing",
+  "references": [
+    "docs/gee-python/list.md",
+    "docs/gee-python/date-calendar.md",
+    "docs/gee-python/array-selection.md",
+    "docs/gee-python/number-expression.md",
+    "docs/gee-python/string-regex.md",
+    "docs/gee-python/feature-table-selection.md",
+    "examples/41_GEE_python_metadata_tables.py"
+  ],
+  "cleanup": {
+    "removed": [
+      {
+        "owned_scratch": "uv-cache",
+        "logical_file_bytes": 29920893
+      },
+      {
+        "owned_scratch": "web-dist",
+        "logical_file_bytes": 1688722
+      }
+    ],
+    "preserved": "Installed runtime dependencies, user data/results, historical failure records and concise audit evidence; no physical-free-space claim"
+  }
+}

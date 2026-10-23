@@ -19,6 +19,12 @@ service-side implementations are not included. This project is not affiliated
 with or endorsed by Google.
 
 Python and frontend package licenses remain those of their respective packages.
+The static regex adapter uses `google-re2` 1.1.20251105 from
+[google/re2](https://github.com/google/re2), under the RE2 BSD three-clause
+license. Its original `google_re2-*.dist-info/licenses/LICENSE` remains in the
+installed wheel; preserve that notice when redistributing the runtime. Wheel
+versions and SHA-256 hashes are fixed in `uv.lock`.
+
 The large JVM artifacts are not stored in Git. Their versions, source URLs and
 SHA-256 values are tracked in the engine manifests, and their embedded license
 and notice metadata must be preserved when restoring them.

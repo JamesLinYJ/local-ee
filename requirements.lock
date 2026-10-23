@@ -25,6 +25,8 @@ certifi==2026.10.19
     #   pyproj
     #   rasterio
     #   requests
+cffi==2.1.1 ; platform_python_implementation != 'PyPy'
+    # via cryptography
 cftime==1.6.6.1
     # via netcdf4
 charset-normalizer==3.5.2
@@ -43,10 +45,14 @@ colorama==0.4.6 ; sys_platform == 'win32'
     # via
     #   pytest
     #   tqdm
+cryptography==50.0.2
+    # via google-auth
 deprecated==1.3.1
     # via
     #   openeo
     #   openeo-driver
+earthengine-api @ git+https://github.com/google/earthengine-api.git@e189e4b89e785019ea5642ea8e80cb644749cd4a#subdirectory=python
+    # via private-gee
 ecmwf-datastores-client==0.5.3
     # via cdsapi
 flask==3.1.3
@@ -59,10 +65,48 @@ geopandas==1.2.0
     # via
     #   openeo
     #   openeo-driver
+google-api-core==2.42.0
+    # via
+    #   google-api-python-client
+    #   google-cloud-core
+    #   google-cloud-storage
+google-api-python-client==2.201.0
+    # via earthengine-api
+google-auth==2.62.0
+    # via
+    #   earthengine-api
+    #   google-api-core
+    #   google-api-python-client
+    #   google-auth-httplib2
+    #   google-cloud-core
+    #   google-cloud-storage
+google-auth-httplib2==0.4.4
+    # via
+    #   earthengine-api
+    #   google-api-python-client
+google-cloud-core==2.8.0
+    # via google-cloud-storage
+google-cloud-storage==3.17.1
+    # via earthengine-api
+google-crc32c==1.9.0
+    # via
+    #   google-cloud-storage
+    #   google-resumable-media
+google-re2==1.1.20251105
+    # via private-gee
+google-resumable-media==2.11.0
+    # via google-cloud-storage
+googleapis-common-protos==1.75.5
+    # via google-api-core
 gunicorn==26.2.0
     # via
     #   openeo-driver
     #   private-gee
+httplib2==0.32.0
+    # via
+    #   earthengine-api
+    #   google-api-python-client
+    #   google-auth-httplib2
 idna==3.20
     # via requests
 iniconfig==2.3.1
@@ -99,6 +143,8 @@ openeo==0.53.0
     # via
     #   openeo-driver
     #   private-gee
+opentelemetry-api==1.45.1
+    # via google-api-core
 oschmod==0.3.12 ; sys_platform == 'win32'
     # via openeo
 packaging==26.3
@@ -118,12 +164,25 @@ pillow==13.0.0
     # via private-gee
 pluggy==1.7.0
     # via pytest
+proto-plus==1.29.0
+    # via google-api-core
+protobuf==7.36.2
+    # via
+    #   google-api-core
+    #   googleapis-common-protos
+    #   proto-plus
 psutil==7.2.2
     # via private-gee
 psycopg==3.3.6
     # via private-gee
 psycopg-binary==3.3.6 ; implementation_name != 'pypy'
     # via psycopg
+pyasn1==0.6.4
+    # via pyasn1-modules
+pyasn1-modules==0.4.2
+    # via google-auth
+pycparser==3.11 ; implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'
+    # via cffi
 pygments==2.21.0
     # via pytest
 pyogrio==0.13.0
@@ -131,7 +190,9 @@ pyogrio==0.13.0
     #   geopandas
     #   openeo-driver
 pyparsing==3.3.3
-    # via rasterio
+    # via
+    #   httplib2
+    #   rasterio
 pyproj==3.7.2
     # via
     #   geopandas
@@ -241,7 +302,10 @@ rasterio==1.4.4
 requests==2.34.2
     # via
     #   cdsapi
+    #   earthengine-api
     #   ecmwf-datastores-client
+    #   google-api-core
+    #   google-cloud-storage
     #   multiurl
     #   openeo
     #   openeo-driver
@@ -263,11 +327,14 @@ tqdm==4.70.1
 typing-extensions==4.16.0
     # via
     #   ecmwf-datastores-client
+    #   opentelemetry-api
     #   psycopg
 tzdata==2026.5
     # via
     #   pandas
     #   psycopg
+uritemplate==4.2.0
+    # via google-api-python-client
 urllib3==2.8.0
     # via
     #   openeo
