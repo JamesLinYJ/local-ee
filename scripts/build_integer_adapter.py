@@ -31,6 +31,7 @@ SOURCES += [ROOT / "engine/ee_pixel_math_numeric.scala", ROOT / "engine/ee_pixel
 SOURCES += [ROOT / "engine/ee_integer_values_spec.scala", ROOT / "engine/ee_integer_values_numeric.scala",
             ROOT / "engine/ee_integer_values_adapter.scala", ROOT / "engine/ee_float64_values.scala"]
 SOURCES += [ROOT / "engine/ee_matrix_values_spec.scala", ROOT / "engine/ee_matrix_values_numeric.scala",
+            ROOT / "engine/ee_matrix_factorization.scala", ROOT / "engine/ee_matrix_factorization_budget.scala",
             ROOT / "engine/ee_matrix_values_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_focal_spec.scala", ROOT / "engine/ee_focal_numeric.scala",
             ROOT / "engine/ee_focal_adapter.scala"]

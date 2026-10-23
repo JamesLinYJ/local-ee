@@ -20,6 +20,7 @@ RASTER_ARRAY_LAYOUT_FUNCTIONS = frozenset({
     "Image.arrayFlatten",
     "Image.arrayProject",
     "Image.arrayTranspose",
+    "Image.matrixTranspose",
     "Image.arraySlice",
     "Image.arrayGet",
 })
@@ -119,8 +120,7 @@ def _project(translator, arguments):
     return wrap_array_image(array.image, shape, array.cells, array.mask, array.name)
 
 
-def _transpose(translator, arguments):
-    name = "Image.arrayTranspose"
+def _transpose(translator, arguments, name="Image.arrayTranspose"):
     _arguments(translator, name, arguments, {"input"}, {"axis1", "axis2"})
     array = _array(arguments["input"], name)
     axis1 = _axis(arguments.get("axis1", 0), len(array.shape), name)
@@ -232,8 +232,8 @@ def invoke_raster_layout(translator, name, arguments):
         return _flatten(translator, arguments)
     if name == "Image.arrayProject":
         return _project(translator, arguments)
-    if name == "Image.arrayTranspose":
-        return _transpose(translator, arguments)
+    if name in {"Image.arrayTranspose", "Image.matrixTranspose"}:
+        return _transpose(translator, arguments, name)
     if name == "Image.arraySlice":
         return _slice(translator, arguments)
     return _get(translator, arguments)

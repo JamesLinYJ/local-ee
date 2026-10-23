@@ -365,7 +365,7 @@ def test_array_layout_preflights_work_before_transpose_and_get_materialization(m
 def test_handler_inventory_and_unknown_arguments_are_explicit():
     assert RASTER_ARRAY_LAYOUT_FUNCTIONS == {
         "Image.arrayFlatten", "Image.arrayProject", "Image.arrayTranspose",
-        "Image.arraySlice", "Image.arrayGet",
+        "Image.arraySlice", "Image.arrayGet", "Image.matrixTranspose",
     }
     value = raster((1,), [1])
     with pytest.raises(UnsupportedEEError, match="Unsupported algorithm arguments"):

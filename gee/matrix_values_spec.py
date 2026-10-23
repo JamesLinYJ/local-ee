@@ -10,7 +10,7 @@ import struct
 MAX_BYTES = 8192
 MAX_CELLS = 64
 MAX_AXIS = 8
-OPERATIONS = frozenset({"solve", "inverse", "pinverse"})
+OPERATIONS = frozenset({"solve", "inverse", "pinverse", "cholesky", "lu"})
 PROCESS_ID = "local_ee_matrix_values"
 
 
@@ -26,10 +26,10 @@ def _check(spec):
         raise ValueError("Matrix values rows and cols must be integers in1..8")
     if type(rhs) is not int or not (1 <= rhs <= MAX_AXIS if op == "solve" else rhs == 0):
         raise ValueError("Matrix values rhs_cols must be1..8 for solve or0 otherwise")
-    if op == "inverse" and rows != cols:
-        raise ValueError("Matrix inverse requires a square matrix")
+    if op in {"inverse", "cholesky", "lu"} and rows != cols:
+        raise ValueError(f"Matrix {op} requires a square matrix")
     count = rows * cols + (rows * rhs if op == "solve" else 0)
-    outputs = cols * (rhs if op == "solve" else rows)
+    outputs = cols * (rhs if op == "solve" else rows) * (3 if op == "lu" else 1)
     if count > MAX_CELLS or outputs > MAX_CELLS:
         raise ValueError("Matrix input and output must each fit the shared64-cell limit")
     operands = spec["operands"]
@@ -58,7 +58,22 @@ def _check(spec):
 
 def matrix_output_shape(spec):
     value = _check(spec)
+    if value["op"] == "lu":
+        raise ValueError("Matrix LU has multiple factor shapes; use its output layout")
     return value["cols"], value["rhs_cols"] if value["op"] == "solve" else value["rows"]
+
+
+def matrix_output_layout(spec):
+    """Logical factor names and shapes in the scalar wire's exact band order."""
+    value = _check(spec)
+    if value["op"] in {"cholesky", "lu"}:
+        names = ("L", "U", "P") if value["op"] == "lu" else ("L",)
+        return tuple((name, (value["rows"], value["cols"])) for name in names)
+    return (("v", matrix_output_shape(value)),)
+
+
+def matrix_output_cells(spec):
+    return sum(rows * cols for _name, (rows, cols) in matrix_output_layout(spec))
 
 
 def matrix_input_bands(spec):
@@ -101,11 +116,14 @@ def matrix_values_process_spec():
     cube = {"type": "object", "subtype": "raster-cube"}
     return {
         "id": PROCESS_ID, "experimental": True,
-        "summary": "Bounded per-pixel matrix solve, inverse and pseudoinverse",
+        "summary": "Bounded per-pixel matrix solve, inverse and factorization",
         "description": (
             "Finite row-major fixed matrices, axes1..8 and input/output64 cells. "
             "Scaled SVD computes local minimum-norm solve/pseudoinverse; numerical "
             "singular inverse, any input NoData or nonfinite result masks the whole matrix. "
+            "Cholesky requires exact symmetry and positive computed pivots; LU uses first-maximum "
+            "partial pivoting with P*A=L*U and zero-pivot NoData. LU packs L,U,P in row-major order "
+            "within the same combined64-output-cell cap. "
             "Source Infinity rejects. Ordered input bands and actual grid/time/key/cell/work "
             "limits are revalidated. Float64 outputs matrix0.. are not Google rank/dtype parity."
         ),

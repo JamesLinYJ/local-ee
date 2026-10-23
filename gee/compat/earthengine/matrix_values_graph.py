@@ -63,7 +63,8 @@ def _spec_for_producer(graph, producer):
     from gee.matrix_values_spec import (
         decode_matrix_values_spec,
         matrix_input_bands,
-        matrix_output_shape,
+        matrix_output_cells,
+        matrix_output_layout,
     )
 
     if (not isinstance(producer, Pixel) or producer.op != "matrix_values"
@@ -84,17 +85,24 @@ def _spec_for_producer(graph, producer):
     try:
         decoded = decode_matrix_values_spec(spec)
         input_bands = matrix_input_bands(decoded)
-        output_shape = matrix_output_shape(decoded)
+        output_layout = matrix_output_layout(decoded)
+        output_count = matrix_output_cells(decoded)
     except (TypeError, ValueError, OverflowError, RecursionError) as error:
         fail(f"Internal matrix producer has an invalid specification: {error}")
     if input_bands != len(operands):
         fail("Matrix specification does not match its ordered dynamic operands")
-    charge_array(
-        graph.t,
-        2 * len(decoded["operands"]) + 2 * output_shape[0] * output_shape[1] + 8,
-    )
+    if (type(output_layout) is not tuple or not output_layout
+            or any(type(entry) is not tuple or len(entry) != 2
+                   or type(entry[0]) is not str
+                   or type(entry[1]) is not tuple or len(entry[1]) != 2
+                   or any(type(axis) is not int or axis <= 0 for axis in entry[1])
+                   for entry in output_layout)
+            or type(output_count) is not int or output_count <= 0
+            or sum(shape[0] * shape[1] for _name, shape in output_layout) != output_count):
+        fail("Internal matrix producer has an invalid output layout")
+    charge_array(graph.t, 2 * len(decoded["operands"]) + 2 * output_count + 8)
     _immutable_ir(graph.t, producer)
-    return operands, spec, decoded, output_shape
+    return operands, spec, decoded, output_layout
 
 
 def _validate_operand_casts(graph, operands, decoded):
@@ -161,7 +169,7 @@ def _preflight(graph, operands, spec, output_count):
     )
 
 
-def _compile_producer(graph, producer, operands, spec, decoded, output_shape):
+def _compile_producer(graph, producer, operands, spec, decoded, output_layout):
     cache = _cache(graph)
     key = id(producer)
     cached = cache.get(key)
@@ -185,7 +193,7 @@ def _compile_producer(graph, producer, operands, spec, decoded, output_shape):
         graph.t, operands, label="Native matrix operation",
         check_single_item_assets=True,
     )
-    output_count = output_shape[0] * output_shape[1]
+    output_count = sum(rows * cols for _name, (rows, cols) in output_layout)
     _preflight(graph, operands, spec, output_count)
 
     refs = []
@@ -217,13 +225,13 @@ def compile_matrix_element(graph, pixel):
     producer, index = pixel.args
     if type(index) is not int or index < 0:
         fail("Internal matrix output component index must be a nonnegative integer")
-    operands, spec, decoded, output_shape = _spec_for_producer(graph, producer)
+    operands, spec, decoded, output_layout = _spec_for_producer(graph, producer)
     _validate_operand_casts(graph, operands, decoded)
-    output_count = output_shape[0] * output_shape[1]
+    output_count = sum(rows * cols for _name, (rows, cols) in output_layout)
     if index >= output_count:
         fail("Internal matrix output component index is outside the output shape")
     result, timed = _compile_producer(
-        graph, producer, operands, spec, decoded, output_shape,
+        graph, producer, operands, spec, decoded, output_layout,
     )
     selected = graph.node(
         "filter_bands", data=result, bands=[f"matrix{index}"],

@@ -34,6 +34,7 @@ private[reduce] object LocalEeMatrixValuesNumeric {
           case LocalEeMatrixValuesSpec.Band(index) =>
             val value = sources(index).getDouble(col, row)
             values(operandIndex) = value
+            require(!value.isInfinite, "matrix values input contains an infinite Float64 cell")
             if (value.isNaN) missing = true
           case LocalEeMatrixValuesSpec.Constant(bits) =>
             values(operandIndex) = java.lang.Double.longBitsToDouble(bits)
@@ -69,6 +70,14 @@ private[reduce] object LocalEeMatrixValuesNumeric {
   }
 
   private def evaluate(values: Array[Double], spec: LocalEeMatrixValuesSpec.Value): Array[Double] = {
+    if (spec.op == "cholesky" || spec.op == "lu") {
+      LocalEeMatrixFactorization.evaluate(values, spec)
+    } else {
+      evaluateSvd(values, spec)
+    }
+  }
+
+  private def evaluateSvd(values: Array[Double], spec: LocalEeMatrixValuesSpec.Value): Array[Double] = {
     val matrixCells = Math.multiplyExact(spec.rows, spec.cols)
     val matrix = new Array[Double](matrixCells)
     var matrixScale = 0d

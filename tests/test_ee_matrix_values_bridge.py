@@ -15,6 +15,7 @@ def _spec(op="inverse", rows=2, cols=2, rhs=0):
 
 @pytest.mark.parametrize("op,rows,cols,rhs,count", [
     ("inverse", 2, 2, 0, 4), ("pinverse", 2, 3, 0, 6), ("solve", 3, 2, 2, 4),
+    ("cholesky", 8, 8, 0, 64), ("lu", 4, 4, 0, 48),
 ])
 def test_actual_bridge_forwards_exact_native_spec_and_owned_row_major_schema(
         monkeypatch, op, rows, cols, rhs, count):

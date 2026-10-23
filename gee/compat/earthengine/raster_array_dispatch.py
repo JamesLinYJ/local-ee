@@ -15,6 +15,10 @@ from .raster_array_reductions import RASTER_ARRAY_REDUCTION_FUNCTIONS, invoke_ra
 from .raster_array_reshape import RASTER_RESHAPE_FUNCTIONS, invoke_raster_reshape
 from .raster_array_sort import RASTER_ARRAY_SORT_FUNCTIONS, invoke_raster_sort
 from .raster_array_values import RASTER_ARRAY_VALUE_FUNCTIONS, invoke_raster_value
+from .raster_matrix_decomposition import (
+    RASTER_MATRIX_DECOMPOSITION_FUNCTIONS,
+    invoke_raster_matrix_decomposition,
+)
 from .raster_matrix_solve import RASTER_MATRIX_FUNCTIONS, invoke_raster_matrix
 from .raster_matrix_native import RASTER_MATRIX_NATIVE_FUNCTIONS
 from .raster_matrix_properties import RASTER_MATRIX_PROPERTY_FUNCTIONS, invoke_raster_matrix_property
@@ -38,6 +42,7 @@ _METADATA_ARGUMENTS = {
 def handles_raster_array(name, arguments):
     if name in (RASTER_ARGMAX_FUNCTIONS | RASTER_ARRAY_SORT_FUNCTIONS | RASTER_ARRAY_LAYOUT_FUNCTIONS | RASTER_ARRAY_REDUCTION_FUNCTIONS
                 | RASTER_MATRIX_FUNCTIONS | RASTER_MATRIX_NATIVE_FUNCTIONS
+                | RASTER_MATRIX_DECOMPOSITION_FUNCTIONS
                 | RASTER_MATRIX_PROPERTY_FUNCTIONS
                 | RASTER_RESHAPE_FUNCTIONS | RASTER_CONCATENATION_FUNCTIONS | RASTER_ARRAY_ACCUMULATION_FUNCTIONS
                 | (RASTER_ARRAY_VALUE_FUNCTIONS - _SHARED_SCALAR_NAMES)):
@@ -57,6 +62,8 @@ def invoke_raster_array(translator, name, arguments):
         return invoke_raster_accumulation(translator, name, arguments)
     if name in RASTER_MATRIX_PROPERTY_FUNCTIONS:
         return invoke_raster_matrix_property(translator, name, arguments)
+    if name in RASTER_MATRIX_DECOMPOSITION_FUNCTIONS:
+        return invoke_raster_matrix_decomposition(translator, name, arguments)
     if name in RASTER_CONCATENATION_FUNCTIONS:
         return invoke_raster_concatenation(translator, name, arguments)
     if name in RASTER_RESHAPE_FUNCTIONS:

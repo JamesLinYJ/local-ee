@@ -7,6 +7,7 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 # Handler inventory, not a claim that every overload or parameter is supported,
 # nor that Google-service numerical equivalence has been established.
 SUPPORTED_FUNCTIONS = frozenset({
+    "Image.matrixCholeskyDecomposition", "Image.matrixLUDecomposition", "Image.matrixTranspose",
     "Terrain", "Terrain.products", "Terrain.slope", "Terrain.aspect", "Terrain.hillshade",
     "Image.neighborhoodToBands",
     "Image.convolve",
@@ -158,6 +159,13 @@ def get_capabilities():
         "level": "C",
         "numerical_equivalence_to_google_verified": False,
         "restrictions": [
+            ("Image matrix Cholesky/LU require one explicitly typed fixed square array. Cholesky returns L; "
+             "LU returns L/U/P with P*A=L*U and first-maximum partial pivots. Select factors before array algebra. "
+             "All factors share a single bounded producer, whole-input mask and original metadata. Cholesky uses "
+             "exact symmetry and positive computed pivots; LU uses exact rational elimination and zero-pivot NoData. "
+             "Input/output64 cells remain, so LU is at most4x4. Original-scale arithmetic retains tiny diagonals; "
+             "finite source-free folds do not invent grids. Final Float32 casts can overflow. Existing graph/work/key/"
+             "cell limits still apply; local numerical policies and component checks are not full Spark or Google acceptance."),
             ("Terrain products/slope/aspect/hillshade and the deprecated Terrain alias use "
              "actual elevation in metres and four valid cardinal neighbors plus center. "
              "The source CRS/grid defines a local WGS84 tangent-chord metric; export scale "

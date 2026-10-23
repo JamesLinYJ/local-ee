@@ -8,7 +8,7 @@ import org.openeo.geotrelliscommon.{CubeProcessProvider, OpenEORasterCube, OpenE
 final class LocalEeMatrixValuesCubeProcesses extends Serializable {
   @OpenEOProcess(
     id = "local_ee_matrix_values",
-    description = "Solve or invert fixed per-pixel matrices using bounded Float64 SVD.",
+    description = "Solve, invert, or factor fixed per-pixel matrices with bounded Float64 output.",
     returns = "datacube"
   )
   def localEeMatrixValues(data: Object, arguments: java.util.Map[String, Object]): Object = {
@@ -27,7 +27,13 @@ final class LocalEeMatrixValuesCubeProcesses extends Serializable {
     val tilePixels = Math.multiplyExact(input.cols.toLong, input.rows.toLong)
     require(tilePixels > 0L, "local_ee_matrix_values tile dimensions must be positive")
     val keyCount = input.source.keys.take(100001).length.toLong
-    LocalEeMatrixValuesBudget.check(tilePixels, keyCount, spec)
+    val factorBudget = if (spec.op == "lu") {
+      Some(LocalEeMatrixFactorizationBudget.admitSource(
+        input.source, keyCount, spec, input.cols, input.rows))
+    } else {
+      LocalEeMatrixValuesBudget.check(tilePixels, keyCount, spec)
+      None
+    }
 
     // Capture immutable metadata and the parsed spec only; never capture Input, cube or RDD.
     val kind = input.kind
@@ -41,6 +47,8 @@ final class LocalEeMatrixValuesCubeProcesses extends Serializable {
       require(LocalEeReduceSupport.keyInGrid(key, kind, times, grid, minSpatial, maxSpatial),
         "local_ee_matrix_values key lies outside declared grid bounds")
       LocalEeMatrixValuesNumeric.validateTileShape(tile, spec, cols, rows)
+      factorBudget.foreach(envelope =>
+        LocalEeMatrixFactorizationBudget.requireWithinEnvelope(tile, spec, cols, rows, envelope))
       key -> LocalEeMatrixValuesNumeric.applyTile(tile, spec)
     }
     val outputNames = (0 until spec.outputCells).map(index => s"matrix$index")
@@ -63,6 +71,18 @@ private[reduce] object LocalEeMatrixValuesBudget {
   def workPerPixel(spec: LocalEeMatrixValuesSpec.Value): Long = {
     val rows = spec.rows.toLong
     val cols = spec.cols.toLong
+    if (spec.op == "cholesky") {
+      val cells = Math.multiplyExact(rows, cols)
+      val cubic = Math.multiplyExact(cells, rows)
+      val exactMatrixCopies = Math.multiplyExact(128L, cells)
+      val factorArithmetic = Math.multiplyExact(512L, cubic)
+      val divisions = Math.multiplyExact(128L, cells)
+      val roots = Math.multiplyExact(256L, rows)
+      val outputCopies = Math.multiplyExact(32L, spec.outputCells.toLong)
+      return Math.addExact(exactMatrixCopies,
+        Math.addExact(factorArithmetic,
+          Math.addExact(divisions, Math.addExact(roots, outputCopies))))
+    }
     val rhsCols = if (spec.op == "solve") spec.rhsCols.toLong else 0L
     val factorization = Math.multiplyExact(32L,
       Math.multiplyExact(Math.multiplyExact(rows, cols), math.min(rows, cols)))

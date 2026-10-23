@@ -10,6 +10,14 @@ export const pythonTypedRasterDocs: ReferenceEntry[] = [
     code: "source = image.select(['m00','m01','m10','m11','b0','b1'])\nA = source.select(['m00','m01','m10','m11']).toDouble().toArray()\\\n    .arrayReshape(ee.Image.constant(ee.Array([2,2])), 2)\nB = source.select(['b0','b1']).toDouble().toArray()\\\n    .arrayReshape(ee.Image.constant(ee.Array([2,1])), 2)\ninverse = A.matrixInverse()\npseudo = A.matrixPseudoInverse()\nsolution = A.matrixSolve(B)\nprediction = pseudo.matrixMultiply(B)",
   },
   {
+    id: "gee-python-matrix-factors",
+    category: "GEE Python",
+    language: "python",
+    title: "逐像元 Cholesky 与 LU 分解",
+    text: "有界 rank-2 方阵支持 matrixCholeskyDecomposition 和 matrixLUDecomposition，参数名为 image。Cholesky 返回命名数组因子 L；LU 返回 L、U、P，并满足 P×A=L×U。先 select 因子，再 arrayFlatten 或参与矩阵运算；每组因子共享一个本地矩阵生产者。每轴1–8；LU返回三个方阵，合计最多64单元，因此 LU 最大为4×4。Cholesky 要求严格对称和严格正主元；LU 使用首个最大值部分主元，精确零主元或无法表示的非有限因子使整组结果为 NoData。缺测传播到整矩阵，有效源 Infinity 拒绝。Float32 输入先舍入到 Float32，Float32 输出转换本身仍可能溢出为 Infinity。示例消费 U 的逆和 Cholesky 求解；完整 U^-1×L^-1×P 组合超过现有50000步工作预算并明确拒绝。Fraction/50位 Decimal 参考及本地消元规则不表示 Google 数值或完整 Spark 一致性。",
+    code: "matrix = image.select(['m00','m01','m10','m11']).toDouble()\\\n    .toArray().arrayReshape(ee.Image.constant(ee.Array([2,2])), 2)\nchol = matrix.matrixCholeskyDecomposition()\nL = chol.select('L')\nlu = matrix.matrixLUDecomposition()\nP = lu.select('P')\nL_lu = lu.select('L')\nU = lu.select('U')\nleft = P.matrixMultiply(matrix)\nright = L_lu.matrixMultiply(U)",
+  },
+  {
     id: "gee-python-double-array-solve",
     category: "GEE Python",
     language: "python",
@@ -49,6 +57,12 @@ export const javascriptTypedRasterDocs: ReferenceEntry[] = [
     title: "逐像元矩阵求逆、伪逆与动态求解",
     text: "固定二维 RasterArrayImage 支持 matrixInverse、matrixPseudoInverse 和动态 matrixSolve；元素可来自实际影像波段。每轴1–8，输入／输出各不超过64单元，规格最多8192字节；已有图节点、数组和工作预算仍限制实际组合。任一元素缺测掩膜整矩阵，输入有效Infinity拒绝，数值奇异逆为NoData。局部缩放SVD阈值不承诺Google数值一致性。原生物理结果是Float64，但全Float32输入会显式转换回Float32；嵌套Float32舍入不会被Double恢复。",
     code: "var source = image.select(['m00','m01','m10','m11','b0','b1']);\nvar A = source.select(['m00','m01','m10','m11']).toDouble()\n  .toArray().arrayReshape(ee.Image.constant(ee.Array([2,2])), 2);\nvar B = source.select(['b0','b1']).toDouble()\n  .toArray().arrayReshape(ee.Image.constant(ee.Array([2,1])), 2);\nvar inverse = A.matrixInverse();\nvar pseudo = A.matrixPseudoInverse();\nvar solution = A.matrixSolve(B);\nvar prediction = pseudo.matrixMultiply(B);",
+  },
+  {
+    id: "gee-js-matrix-factors",
+    title: "逐像元 Cholesky 与 LU 分解",
+    text: "有界 rank-2 方阵支持 matrixCholeskyDecomposition 和 matrixLUDecomposition，参数名为 image。Cholesky 返回命名数组因子 L；LU 返回 L、U、P，并满足 P×A=L×U。先 select 因子，再 arrayFlatten 或参与矩阵运算；每组因子共享一个本地矩阵生产者。每轴1–8；LU返回三个方阵，合计最多64单元，因此 LU 最大为4×4。Cholesky 要求严格对称和严格正主元；LU 使用首个最大值部分主元，精确零主元或无法表示的非有限因子使整组结果为 NoData。缺测传播到整矩阵，有效源 Infinity 拒绝。Float32 输入先舍入到 Float32，Float32 输出转换本身仍可能溢出为 Infinity。示例消费 U 的逆和 Cholesky 求解；完整 U^-1×L^-1×P 组合超过现有50000步工作预算并明确拒绝。Fraction/50位 Decimal 参考及本地消元规则不表示 Google 数值或完整 Spark 一致性。",
+    code: "var matrix = image.select(['m00','m01','m10','m11']).toDouble()\n  .toArray().arrayReshape(ee.Image.constant(ee.Array([2,2])), 2);\nvar chol = matrix.matrixCholeskyDecomposition();\nvar L = chol.select('L');\nvar lu = matrix.matrixLUDecomposition();\nvar P = lu.select('P');\nvar L_lu = lu.select('L');\nvar U = lu.select('U');\nvar left = P.matrixMultiply(matrix);\nvar right = L_lu.matrixMultiply(U);",
   },
   {
     id: "gee-js-double-array-solve",

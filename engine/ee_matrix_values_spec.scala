@@ -2,7 +2,7 @@ package local.ee.reduce
 
 import com.fasterxml.jackson.core.{JsonFactory, JsonParser, JsonToken}
 
-/** Strict v1 wire contract for fixed per-pixel matrix solve, inverse and pseudoinverse. */
+/** Strict v1 wire contract for fixed per-pixel matrix operations. */
 private[reduce] object LocalEeMatrixValuesSpec {
   sealed trait Operand extends Serializable
   final case class Band(index: Int) extends Operand
@@ -16,12 +16,13 @@ private[reduce] object LocalEeMatrixValuesSpec {
     val inputBands: Int = operands.collect { case Band(index) => index }.distinct.size
     val outputRows: Int = cols
     val outputCols: Int = if (op == "solve") rhsCols else rows
-    val outputCells: Int = Math.multiplyExact(outputRows, outputCols)
+    val outputCells: Int = Math.multiplyExact(outputRows, outputCols) *
+      (if (op == "lu") 3 else 1)
   }
 
   private val MaxBytes = 8192
   private val Fields = Set("cols", "op", "operands", "rhs_cols", "rows", "v")
-  private val Operations = Set("solve", "inverse", "pinverse")
+  private val Operations = Set("solve", "inverse", "pinverse", "cholesky", "lu")
   private val HexDigits = "0123456789abcdef"
 
   def parse(text: String): Value = {
@@ -80,8 +81,9 @@ private[reduce] object LocalEeMatrixValuesSpec {
         require(selectedRhsCols == 0,
           s"matrix values $selectedOperation rhs_cols must be zero")
       }
-      if (selectedOperation == "inverse") {
-        require(selectedRows == selectedCols, "matrix values inverse requires a square matrix")
+      if (Set("inverse", "cholesky", "lu")(selectedOperation)) {
+        require(selectedRows == selectedCols,
+          s"matrix values $selectedOperation requires a square matrix")
       }
 
       val inputCells = Math.addExact(
@@ -89,7 +91,9 @@ private[reduce] object LocalEeMatrixValuesSpec {
         if (selectedOperation == "solve") Math.multiplyExact(selectedRows, selectedRhsCols) else 0)
       require(inputCells <= 64, "matrix values input cell count exceeds 64")
       val outputCols = if (selectedOperation == "solve") selectedRhsCols else selectedRows
-      val outputCells = Math.multiplyExact(selectedCols, outputCols)
+      val outputRows = if (selectedOperation == "solve") selectedCols else selectedRows
+      val outputCells = Math.multiplyExact(Math.multiplyExact(outputRows, outputCols),
+        if (selectedOperation == "lu") 3 else 1)
       require(outputCells <= 64, "matrix values output cell count exceeds 64")
 
       val selectedOperands = operands.get

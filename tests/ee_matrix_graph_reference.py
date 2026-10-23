@@ -35,7 +35,7 @@ def _decode_spec(text):
             or set(spec) != {"v", "op", "rows", "cols", "rhs_cols", "operands"}
             or type(spec["v"]) is not int or spec["v"] != 1
             or type(spec["op"]) is not str
-            or spec["op"] not in {"solve", "inverse", "pinverse"}
+            or spec["op"] not in {"solve", "inverse", "pinverse", "cholesky", "lu"}
             or type(spec["rows"]) is not int
             or type(spec["cols"]) is not int
             or type(spec["rhs_cols"]) is not int):
@@ -50,10 +50,10 @@ def _decode_spec(text):
         input_cells = rows * cols + rows * rhs_cols
         output_cells = cols * rhs_cols
     else:
-        if rhs_cols != 0 or op == "inverse" and rows != cols:
+        if rhs_cols != 0 or op in {"inverse", "cholesky", "lu"} and rows != cols:
             raise AssertionError("Matrix graph oracle received invalid matrix dimensions")
         input_cells = rows * cols
-        output_cells = cols * rows
+        output_cells = cols * rows * (3 if op == "lu" else 1)
     if input_cells > _MAX_CELLS or output_cells > _MAX_CELLS:
         raise AssertionError("Matrix graph oracle exceeds the64-cell limit")
     operands = spec["operands"]
@@ -165,6 +165,10 @@ def _constant_predictor_column(matrix, full_column_rank):
 
 def _matrix_result(operation, matrix, right_hand_side=None):
     """Evaluate one finite matrix using the declared local SVD policy."""
+    if operation in {"cholesky", "lu"}:
+        from ee_matrix_factor_reference import factor_matrix_result
+
+        return factor_matrix_result(operation, matrix)
     rows, cols = matrix.shape
     if operation == "inverse":
         scale = float(np.max(np.abs(matrix)))
@@ -253,7 +257,8 @@ def matrix_values_handler(arguments: dict, values: dict):
         )
     valid = np.all(np.isfinite(np.stack(operand_values, axis=-1)), axis=-1)
     output_rows, output_cols = (
-        (cols, rhs_cols) if spec["op"] == "solve" else (cols, rows)
+        (cols, rhs_cols) if spec["op"] == "solve"
+        else (cols * (3 if spec["op"] == "lu" else 1), rows)
     )
     output = np.full(
         (sample_count, pixel_count, output_rows, output_cols),
@@ -267,7 +272,7 @@ def matrix_values_handler(arguments: dict, values: dict):
             right = None if rhs_values is None else rhs_values[sample, pixel]
             result = _matrix_result(spec["op"], matrix, right)
             if result is not None:
-                output[sample, pixel] = result
+                output[sample, pixel] = result.reshape(output_rows, output_cols)
 
     flattened = output.reshape(sample_count, pixel_count, output_rows * output_cols)
     if timed:

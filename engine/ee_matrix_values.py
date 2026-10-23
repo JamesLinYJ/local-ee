@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from gee.matrix_values_spec import (
-    PROCESS_ID, decode_matrix_values_spec, matrix_input_bands, matrix_output_shape,
+    PROCESS_ID, decode_matrix_values_spec, matrix_input_bands, matrix_output_cells,
 )
 
 
@@ -26,8 +26,7 @@ def local_ee_matrix_values(args, env):
         raise ValueError(f"{PROCESS_ID} requires ordered input bands: {', '.join(expected)}")
 
     dimension = cube.metadata.band_dimension.name
-    rows, cols = matrix_output_shape(spec)
-    names = [f"matrix{index}" for index in range(rows * cols)]
+    names = [f"matrix{index}" for index in range(matrix_output_cells(spec))]
     metadata = cube.metadata.reduce_dimension(dimension).add_dimension(
         dimension, names[0], type="bands",
     )
