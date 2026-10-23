@@ -7,6 +7,10 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 # Handler inventory, not a claim that every overload or parameter is supported,
 # nor that Google-service numerical equivalence has been established.
 SUPPORTED_FUNCTIONS = frozenset({
+    *("Kernel." + n for n in ("fixed", "circle", "square", "rectangle", "plus", "cross", "diamond", "octagon")),
+    "Image.reduceNeighborhood",
+    *("Image." + n for n in ("focalMean", "focalMin", "focalMax", "focalMedian", "focalMode",
+                             "focal_mean", "focal_min", "focal_max", "focal_median", "focal_mode")),
     *("Reducer." + n for n in (
         "percentile", "intervalMean", "mode", "skew", "kurtosis",
         "circularMean", "circularStddev", "circularVariance",
@@ -138,6 +142,12 @@ def get_capabilities():
         "level": "C",
         "numerical_equivalence_to_google_verified": False,
         "restrictions": [
+            ("Pixel-unit Kernel constructors are finite33x33 masks; focalMin/Max/Mean/Median/Mode "
+             "and aliases plus reduceNeighborhood with five scalar reducers use a Float64 native halo "
+             "per iteration. Named radii<=16, fixed offsets<=32, iterations1..8, positive support only; "
+             "nonuniform weights require inputWeight=mask. Meter kernels and optimized/composed reducers reject. "
+             "Export region and resampling remain after focal; source reads use full finite item bounds. "
+             "Mask/tie/fractional-shape policies are local. Full Spark/deployment/Google parity unverified."),
             ("Finite List/inline table distribution reducers add percentile/intervalMean/mode, "
              "population skew/excess kurtosis and circular statistics in radians. "
              "Type7 interpolation, inclusive percentile-value interval, smallest tied mode and "

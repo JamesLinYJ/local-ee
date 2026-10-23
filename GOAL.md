@@ -16,7 +16,9 @@
 
 ## 当前基线
 
-- 最新第四十一批新增 **8个有限分布统计入口**：百分位数、区间均值、众数、偏度／峰度及三种圆周统计。完整回归 **4207 passed／12 skipped**，前端11／类型／临时构建通过；Python／JS十二项组合输出一致，两行分组CSV实际写出并读回。名称 **557／991（56.21%）** 仅为入口统计。八种1000值列表和500行表格通过，1000行表格仅众数通过，其余按原50000工作预算拒绝。插值、并列值、总体矩和不确定方向的本地规则已说明；显式直方图近似参数、权重、这些新增归约的Array／栅格／动态表路径拒绝。依赖、安装环境和数据不变，临时构建已清理；未部署，无Google同数据或生产验收。见 reports/gee-python-wave41.json。
+- 最新第四十二批新增 **19个有限邻域入口（含5个别名）**：8种Kernel构造、5种focal滤波及reduceNeighborhood。Python／JS十二项组合图一致；独立Fraction基准与真实GeoTrellis缓冲验证33场景、两条路径各792像元，22源文件完整适配器构建通过。完整回归 **4321 passed／13 skipped**，前端11／类型／临时构建通过；最终原生零半径修复另有定向验证。名称 **576／991（58.12%）** 仅为入口统计，原50探针47编译／3拒绝。保留Float64、掩膜和时间键；导出区域与分辨率不会提前改变邻域输入。仅像素单位，非零半径须小于瓦片短边；米单位、非均匀权重和其余邻域功能仍受限。依赖、安装环境和数据不变，临时构建已清理；未部署，无完整Spark／浏览器／Google同数据验收。见 reports/gee-python-wave42.json。
+
+- 第四十一批新增 **8个有限分布统计入口**：百分位数、区间均值、众数、偏度／峰度及三种圆周统计。完整回归 **4207 passed／12 skipped**，前端11／类型／临时构建通过；Python／JS十二项组合输出一致，两行分组CSV实际写出并读回。名称 **557／991（56.21%）** 仅为入口统计。八种1000值列表和500行表格通过，1000行表格仅众数通过，其余按原50000工作预算拒绝。插值、并列值、总体矩和不确定方向的本地规则已说明；显式直方图近似参数、权重、这些新增归约的Array／栅格／动态表路径拒绝。依赖、安装环境和数据不变，临时构建已清理；未部署，无Google同数据或生产验收。见 reports/gee-python-wave41.json。
 
 - 第四十批历史记录：扩展已有数值归约的实际上下文：product、总体标准差／方差、样本方差及 minMax 接通影像波段、时间轴和数组，多输出支持共享输入 combine／setOutputs 与 fieldAxis。完整回归 **4078 passed／12 skipped**，前端11／类型／临时构建通过；Python／JS五项组合输出一致，实际 GeoTrellis 瓦片7种归约、41个像元及8项拒绝控制通过，19源文件完整适配器构建通过。修复极大共同偏移／微小差值的标准差、乘积中间溢出、选景及掩膜的 Float64 精度；跨观测需明确 STAC 网格证据。名称仍 **549／991（55.40%）**，仅统计入口，本批未增加名称。单波段方差50景生成351节点，100景触及原500节点上限。依赖、安装环境、数据与预算不变，临时构建已清理；未部署，无完整Spark／任务导出／浏览器／Google同数据验收。见 reports/gee-python-wave40.json。
 
@@ -50,7 +52,7 @@
 - 官方 Python 客户端已按同一提交固定，见 `vendor/earthengine-python/upstream-lock.json`；Python 和 JS 共享本地 EE 编译器及算法支持边界，Python/openEO `connection` 继续保留。
 - 第二十六批历史实现有限真实 Smile1.5.3 RandomForest：六参数保留，内联表／采样表只在可信 JVM 训练，opaque 模型仅用于影像分类，保留来源／网格／掩膜／Float64；独立依赖锁和 SPI 构建，未部署到 .native。便携完整回归2293 passed／3 skipped（排除4项延期原生测试），前端11 passed／TypeScript与临时构建通过；新增3项 Python／JS 官方 SDK 图一致性，四个真实 tile 内核通过。RF1000行×8特征×100树规模组件与精度／种子／线程／非法输入控制单列报告；Unicode wire 名称按码点一致处理，最终原生定向复核另记。API入口276／991（27.85%）仅统计名字，不是完整兼容率。见 reports/gee-python-wave26.json、docs/gee-python/random-forest.md。RF表分类／explain／验证矩阵／随机列／其他模式／自动band_order及完整Spark／服务／浏览器／Google验收仍未完成。
 - 前一批历史记录见 `docs/gee-compatibility.md`。第二十五批补齐有限 Image.remap、Filter.expression 和取样表 filter／无排序 limit，操作与训练共享预算，保留训练／目标来源及网格。示例 30 串联标签重映射、真实取样和筛选、训练与分类；便携 Python 2068 passed／3 skipped（另排除 4 项原生测试），前端 11 passed／构建通过，77 项 Python／JS SDK 图一致性，三个可信独立 JVM tile 内核通过。见 `reports/gee-python-wave25.json` 和取样语法文档。本批未部署，完整 Spark、隔离运行器／浏览器、真实数据和 Google 同数据验收未运行。当时随机森林未实现，依赖及算法路线单列 `docs/gee-python/random-forest-roadmap.md`；动态表的新列／排序／标量结果／验证矩阵、其余采样／分类器、完整球面／CRS／Float64 算法及高级时序仍有缺口。
-- Python API 清单见 `reports/gee-python-api-inventory.json`，保留 991 项签名、2451 项参数及公开 Python 绑定。原有 50 项 Python 定向探针当前为 45 项编译通过、5 项明确拒绝；方法、参数和探针数量均不代表完整兼容率。已补有限表格回归、FeatureCollection、数值时间度量及 inner Join、Number.format、有界 String 和固定形状栅格数组，并串联合成表格预测、最近前后观测插值及像素投影；动态数组、通用设计矩阵的栅格回归、其他采样／分类算法仍有缺口，有限精度评估不能代替完整分类器实现。完整 Linux 运行按阶段调整延期。最新局部实现及限制持续写入 `docs/gee-python/list.md`。
+- Python API 清单见 `reports/gee-python-api-inventory.json`，保留 991 项签名、2451 项参数及公开 Python 绑定。原有 50 项 Python 定向探针当前为 47 项编译通过、3 项明确拒绝；方法、参数和探针数量均不代表完整兼容率。已补有限表格回归、FeatureCollection、数值时间度量及 inner Join、Number.format、有界 String 和固定形状栅格数组，并串联合成表格预测、最近前后观测插值及像素投影；动态数组、通用设计矩阵的栅格回归、其他采样／分类算法仍有缺口，有限精度评估不能代替完整分类器实现。完整 Linux 运行按阶段调整延期。最新局部实现及限制持续写入 `docs/gee-python/list.md`。
 - 复杂工作流来源和缺口见 `audit/gee-complex-compat-v1/findings.json`。
 - 有效探针为 `audit/gee-complex-compat-v1/probe-run-v2/validation.json`：50 个表达式成功序列化，3 个阳性对照编译通过，43 个操作/语义探针被拒绝，4 个数据/波段探针被拒绝；另有 14 个规模编译检查、3 个原生 runner 检查。该定向抽查不是全 API 兼容率。
 - 历史两波段均值模拟目录探针中，30 景生成 335 节点，50 景超过现有 500 节点限制；该计数属于优化前证据。长时序执行与吞吐仍需单独验证。

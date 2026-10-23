@@ -1,0 +1,232 @@
+{
+  "schema": "local-ee-python-wave42/v1",
+  "date": "2026-10-23",
+  "base_commit": "be28ccf88343e7485020e21979e45a681f5c4962",
+  "title": "Bounded raster neighborhood and pixel kernel families",
+  "entry_inventory": {
+    "before": 557,
+    "after": 576,
+    "new_entry_count": 19,
+    "deprecated_alias_count": 5,
+    "new_names": [
+      "Image.focalMax",
+      "Image.focalMean",
+      "Image.focalMedian",
+      "Image.focalMin",
+      "Image.focalMode",
+      "Image.focal_max",
+      "Image.focal_mean",
+      "Image.focal_median",
+      "Image.focal_min",
+      "Image.focal_mode",
+      "Image.reduceNeighborhood",
+      "Kernel.circle",
+      "Kernel.cross",
+      "Kernel.diamond",
+      "Kernel.fixed",
+      "Kernel.octagon",
+      "Kernel.plus",
+      "Kernel.rectangle",
+      "Kernel.square"
+    ],
+    "pinned_signatures": 991,
+    "name_entry_percentage": 58.12,
+    "interpretation": "Names only; bounded parameter/context semantics, not complete GEE compatibility"
+  },
+  "implementation": {
+    "operations": [
+      "mean",
+      "min",
+      "max",
+      "median",
+      "mode"
+    ],
+    "kernel_shapes": [
+      "fixed",
+      "circle",
+      "square",
+      "rectangle",
+      "plus",
+      "cross",
+      "diamond",
+      "octagon"
+    ],
+    "precision": "Float64 NaN raster; exact binary64 accumulation and correctly rounded mean/even median; smallest tied mode",
+    "halo": "Fresh real GeoTrellis buffers each positive-radius iteration; radius0 direct tiles; preserve observed keys and time separation",
+    "source_context": "Read full finite input-item bounds before export-region masks. Explicit clip remains before focal. Registered local process blockers prevent downstream spatial/aggregate/band/resample constraints from changing focal input.",
+    "limits": [
+      "pixel units; named radii<=16; fixed33x33 masks and1089 offsets within32;1..8 iterations",
+      "nonzero radius strictly smaller than both tile dimensions",
+      "shared compiler50000/graph500/publicJSON1MB unchanged",
+      "native existing input/key/cell caps; total1e9/per-tile1e8 work including buffered cells/sort/iterations/exact accumulator limb costs",
+      "positive-support filters; nonuniform reduceNeighborhood weights only with inputWeight=mask"
+    ],
+    "rejected": [
+      "meters",
+      "negative weights or empty support",
+      "optimization strategies",
+      "composed/multi-input/multi-output neighborhood reducers",
+      "explicit mode maxRaw",
+      "unbound constant rasters"
+    ],
+    "local_policies": [
+      "fractional kernel rasterization and octagon boundary",
+      "focal methods preserve masked centers",
+      "equal kernel-weight reductions use binary masks; fractional source masks are not supported",
+      "smallest finite tied mode; signed-zero mode canonicalized"
+    ]
+  },
+  "validation": {
+    "python": {
+      "tests": 4334,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 13,
+      "passed": 4321,
+      "seconds": 79.871
+    },
+    "warnings": "3 existing Rasterio PendingDeprecationWarnings",
+    "prior_environment_failure": "Initial restricted command sandbox prevented existing loopback/Seatbelt/scratch tests:13 failures/3 errors. Host-permission rerun passed; product isolation was not relaxed.",
+    "post_full_suite_changes": {
+      "changed_sources": [
+        "engine/ee_focal_adapter.scala",
+        "tests/fixtures/ee-focal-kernel-probe.scala",
+        "tests/test_ee_focal_kernel.py"
+      ],
+      "reason": "Native zero-radius halo fast path and strict positive-radius equality rejection after actual GeoTrellis failure",
+      "focused_suite": "tests/test_ee_focal_kernel.py: 2 passed",
+      "native_evidence": "audit/gee-python-wave42/native/focal-kernel-20261023T100332Z-926de44623/focal-result.json",
+      "integrated_focused_suite": {
+        "passed": 114,
+        "skipped": 1,
+        "files": [
+          "tests/test_ee_focal_kernel.py",
+          "tests/test_ee_focal_engine.py",
+          "tests/test_ee_focal_process.py",
+          "tests/test_ee_focal_compiler.py",
+          "tests/test_ee_focal_workflow.py",
+          "tests/test_ee_kernels.py"
+        ]
+      },
+      "nonsemantic_cleanup": "Removed extra trailing blank line from tests/test_ee_focal_compiler.py during staged whitespace check"
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "Python_JS_identical_compiled_workflows": 12,
+      "guarded_network_attempts": 0
+    },
+    "legacy_probes": {
+      "total": 50,
+      "serialized": 50,
+      "compiled": 47,
+      "rejected": 3,
+      "interpretation": "Selected compile probes only, not migration success rate"
+    },
+    "native": {
+      "scope": "Trusted standalone GeoTrellis Float64 kernel plus positive-radius collection BufferTilesRDD overload and zero-radius same-tile path; no SparkContext, service, or user code",
+      "case_count": 33,
+      "pixels_per_manual_and_actual_collection_path": 792,
+      "temporal_keys": 4,
+      "budget_controls": 7,
+      "reference": "Independent Fraction.from_float mean/midpoint; exact raw-bit comparisons, whole-raster indexing independent of tile halos",
+      "full_adapter_source_count": 22,
+      "jar_sha256": "394f577b44ae531f98b8fd862c601301bf9abc72c4c37811a9aeb635bc44586e",
+      "architecture": "arm64",
+      "scala_version": "2.13.18",
+      "evidence": "audit/gee-python-wave42/native/focal-kernel-20261023T100332Z-926de44623/focal-result.json"
+    },
+    "evidence_directory": "audit/gee-python-wave42/final-verified-v2",
+    "frontend_evidence_directory": "audit/gee-python-wave42/final-verified",
+    "frozen_final_code_sha256": {
+      "engine/ee_focal.py": "9999c4bfa0bd28b2d22e9deaac5af4ad7e4d27732eb78cfea67721ec68e1bdb3",
+      "engine/ee_focal_adapter.scala": "adeb1eaf89aafe7c540719d4bc88c453255ec11656b98a74e9e66c0a8371c1d6",
+      "engine/ee_focal_numeric.scala": "51f191d244253de20230fd088d050af4207c75c2bf3d85c5ed5040d67698c905",
+      "engine/ee_focal_spec.scala": "429af014a835d079752b8a5c3840fa999b0792312d748a7d0ccfb53c27cb9a1d",
+      "engine/ee_process_adapters.py": "00b002b2632c5f47bafc3b12575ca081c7ba65ecbc95ceb6626d7dba325d6895",
+      "examples/47_GEE_python_neighborhood.py": "e712cefa9053535f74083de7777ba369c6583ec738fab72d9cb4a063629d3648",
+      "gee/compat/earthengine/capabilities.py": "0e75670b37c729d428dfa24de9537e988aae80d0b53b18f9ee7f0d6d8653e0cd",
+      "gee/compat/earthengine/dispatch.py": "949fbe58bc90857f3e5f37bafcb1f7b8d5a83e31c7ec9154ba6d2d40e5523bf0",
+      "gee/compat/earthengine/focal_graph.py": "346c8168c4bdce407a1feef49ddc1d06f20c5d37936009b55ff34811db82aa1e",
+      "gee/compat/earthengine/graph.py": "3a422dd9a8660b8d30b7b4491419ce40e76d83f1e4b9a9d243e2c8a80c64921f",
+      "gee/compat/earthengine/image_focal.py": "a6e457133062354c8ed05daffa63d699c9768c406504c606c6a17bbd019dcdec",
+      "gee/compat/earthengine/ir.py": "398c31767975d5d29432a01a3a5addaf60c8bccf09cb542f2e2993242ac85c98",
+      "gee/compat/earthengine/kernel_shapes.py": "2b48f892a2dc9a20b296fefa4f67d9916afc876fed50a69504c4a5a77a448dd4",
+      "gee/compat/earthengine/kernel_values.py": "882b8c4fff3ca3b5fa2e9870cf4c0e90246deaf7e6be2b3df3a71a15f4e49d24",
+      "gee/compat/earthengine/pixel_graph.py": "cbe19ae52de82c64e348d632da2ebeab3d55cd70dfa4b725e5d01484c17e1dd0",
+      "gee/focal_spec.py": "69023ca026a9f7517ce90d37b2a370b5757d7fdedff20a079b5b41658b2bc9d1",
+      "gee/local_processes.py": "de6afd33e6a13738b283c7da06741a21cd83939462c67cdd41eeafe6464aaef5",
+      "gee/sampling_graph.py": "de745a3473d6839c01a6dfe481b0eef36b33e91d97de8ba0ca48928f841d0286",
+      "gee/smile_rf_processes.py": "5e9a1c83e64a08180476da79e1f5804d3ac496bf042b89f4667ba6c623e84815",
+      "scripts/build_integer_adapter.py": "41ab250bf25988c632cad1bd5de3fe7403a6ac9c8fc3b4e70de3df74ab5e2eb1",
+      "scripts/ee_inventory/pixel_numeric_families.py": "74f5bcac5a2f94263d70ab14914d8c2f7a458740b68dfd2ef6e350132981e9b8",
+      "tests/ee_focal_kernel_helpers.py": "c7934a631dba2bb521f241b50d90da148cb182f4570d284e5055fe5565f01214",
+      "tests/fixtures/ee-focal-kernel-probe.scala": "58537804d25dc2942ae96da6aacee6e8b09e1a91154ec8d015ded717d09c12e8",
+      "tests/test_ee_focal_compiler.py": "0a443065b57f75a96acda94b43dfb835d2393f0dd02a46713240ba86fdd1fc6d",
+      "tests/test_ee_focal_engine.py": "869864744e463c035fe83f8aabbf781bf6ef5bd7a0790a2a123dde7d91efe403",
+      "tests/test_ee_focal_kernel.py": "0913fe7a4dc621b4e983656e7d3db669d2a2362089f3b92b9d830f6c7354a4ea",
+      "tests/test_ee_focal_process.py": "a3491090131d5023a648fdc4c712a75a923da495572788128a9bb4e6206ccf6e",
+      "tests/test_ee_focal_workflow.py": "7a92be17060de68896393326c5f18f8145218db42ac190549a3d6eb4eac52e10",
+      "tests/test_ee_kernels.py": "a6b4cf7accc14077c7eaeb6f3cf7d26e7c5047fc7c6b1ca80143f56b4bd9d44e",
+      "tests/test_ee_smile_rf_kernel.py": "e569fc0f67931a6cfa68240996b138f1ae8291a5bda05b3175eeb0cf17ae0598"
+    }
+  },
+  "failure_fixes": [
+    {
+      "issue": "Named focal cross/octagon diverged from Kernel constructors",
+      "fix": "Share one shape implementation"
+    },
+    {
+      "issue": "Native focal output already contains a band dimension",
+      "fix": "Rename existing v band; do not add a duplicate dimension"
+    },
+    {
+      "issue": "Source export crop and dry-run pushdown could lose required neighbors or change pixel resolution",
+      "fix": "Plan source bounds before compiling all bands and register process-specific propagation barriers"
+    },
+    {
+      "issue": "Scaled mean could discard tiny cancellation residue",
+      "fix": "Exact binary64 superaccumulator with bounded limb accounting and independent Fraction reference"
+    },
+    {
+      "issue": "Pinned GeoTrellis zero/equal-radius buffer crop failures",
+      "fix": "Direct zero-radius path; explicitly reject positive radius equal to or greater than smaller tile dimension"
+    }
+  ],
+  "preservation": {
+    "dependencies_changed": false,
+    "installed_runtime_modified": false,
+    "user_data_modified": false,
+    "containers_or_VMs_created": false,
+    "goal_complete": false
+  },
+  "cleanup": {
+    "temporary_frontend": {
+      "owned_path": "/Users/james/Documents/Codex/2026-10-21/wo/work/gee-python-wave42-web-build",
+      "files": 16,
+      "logical_bytes": 1697179,
+      "removed": true,
+      "installed_runtime_touched": false,
+      "data_touched": false
+    },
+    "native_owned_jar_classes": "removed by bounded probe finally block; manifest/logs retained"
+  },
+  "not_verified": [
+    "Full Spark RDD/cube job for new focal operations",
+    "Deployed sandbox/browser/map/physical raster export for this family",
+    "Private real data",
+    "Google same-data numerical equivalence",
+    "Performance/capacity for large real scenes"
+  ],
+  "documentation": [
+    "docs/gee-python/focal.md",
+    "docs/gee-python/focal-native.md",
+    "docs/gee-python/kernels.md"
+  ],
+  "example": "examples/47_GEE_python_neighborhood.py"
+}

@@ -68,7 +68,7 @@ def validate_sampling_dependencies(nodes):
                 source = nodes[model["from_node"]]
                 if source["process_id"] != TRAIN_PROCESS:
                     raise ValueError("Dynamic classifier models must come from local_ee_train_minimum_distance")
-        if name in {SAMPLE_PROCESS, 'local_ee_remap', 'local_ee_pixel_math'}:
+        if name in {SAMPLE_PROCESS, 'local_ee_remap', 'local_ee_pixel_math', 'local_ee_focal'}:
             source = nodes[arguments["data"]["from_node"]]
             if source["process_id"] in {SAMPLE_PROCESS, TRAIN_PROCESS, OP_PROCESS, "local_ee_table", "save_result"}:
                 raise ValueError("Sampling data must be a raster cube, not a feature table or model")

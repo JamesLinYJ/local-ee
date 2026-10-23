@@ -25,6 +25,14 @@ _METADATA_ARGUMENTS = {
 def invoke(translator, name, arguments):
     """Dispatch in the same precedence order as the legacy translator."""
     a = arguments
+    if name.startswith("Kernel."):
+        from .kernel_values import invoke_kernel
+
+        return invoke_kernel(translator, name, a)
+    from .image_focal import FOCAL_FUNCTIONS, invoke_image_focal
+
+    if name in FOCAL_FUNCTIONS:
+        return invoke_image_focal(translator, name, a)
     from .rf_explanation import (
         UNHANDLED,
         contains_runtime_explanation,

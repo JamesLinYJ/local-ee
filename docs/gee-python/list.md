@@ -1,5 +1,7 @@
 # GEE Python 兼容清单
 
+第四十二批新增 **19个有限邻域入口（含5个别名）**：8种Kernel构造、5种focal滤波及reduceNeighborhood。Python／JS十二项组合图一致；独立Fraction基准与真实GeoTrellis缓冲验证33场景、两条路径各792像元，22源文件完整适配器构建通过。完整回归 **4321 passed／13 skipped**，前端11／类型／临时构建通过；最终原生零半径修复另有定向验证。名称 **576／991（58.12%）** 仅为入口统计，原50探针47编译／3拒绝。保留Float64、掩膜和时间键；导出区域与分辨率不会提前改变邻域输入。仅像素单位，非零半径须小于瓦片短边；米单位、非均匀权重和其余邻域功能仍受限。依赖、安装环境和数据不变，临时构建已清理；未部署，无完整Spark／浏览器／Google同数据验收。见 [邻域语法](focal.md)、[原生边界](focal-native.md)、[Kernel](kernels.md)、[示例47](../../examples/47_GEE_python_neighborhood.py) 和 [报告](../../reports/gee-python-wave42.json)。
+
 第四十一批新增 **8个有限分布统计入口**：百分位数、区间均值、众数、偏度／峰度及三种圆周统计。完整回归 **4207 passed／12 skipped**，前端11／类型／临时构建通过；Python／JS十二项组合输出一致，两行分组CSV实际写出并读回。名称 **557／991（56.21%）** 仅为入口统计。八种1000值列表和500行表格通过，1000行表格仅众数通过，其余按原50000工作预算拒绝。插值、并列值、总体矩和不确定方向的本地规则已说明；显式直方图近似参数、权重、这些新增归约的Array／栅格／动态表路径拒绝。依赖、安装环境和数据不变，临时构建已清理；未部署，无Google同数据或生产验收。见 [百分位数](quantile-reducers.md)、[矩统计](moment-reducers.md)、[圆周统计](circular-reducers.md)、[示例46](../../examples/46_GEE_python_distribution_summary.py) 和 [报告](../../reports/gee-python-wave41.json)。
 
 第四十批扩展已有数值归约的实际上下文：product、总体标准差／方差、样本方差及 minMax 接通影像波段、时间轴和数组，多输出支持共享输入 combine／setOutputs 与 fieldAxis。完整回归 **4078 passed／12 skipped**，前端11／类型／临时构建通过；Python／JS五项组合输出一致，实际 GeoTrellis 瓦片7种归约、41个像元及8项拒绝控制通过，19源文件完整适配器构建通过。修复极大共同偏移／微小差值的标准差、乘积中间溢出、选景及掩膜的 Float64 精度；跨观测需明确 STAC 网格证据。名称仍 **549／991（55.40%）**，仅统计入口，本批未增加名称。单波段方差50景生成351节点，100景触及原500节点上限。依赖、安装环境、数据与预算不变，临时构建已清理；未部署，无完整Spark／任务导出／浏览器／Google同数据验收。见 [栅格统计](raster-statistics.md)、[静态数组](array-statistics.md)、[栅格数组](raster-array-statistics.md)、[示例45](../../examples/45_GEE_python_raster_statistics.py) 和 [报告](../../reports/gee-python-wave40.json)。
@@ -88,7 +90,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 - [x] Array.sort／Image.arraySort 的真实按键排序和成组切片置换；质量排序保留 NDVI／日期配对，独立分数及 Float32 参考核对并列、同日多景和完整掩膜。
 - [x] 有限 ConfusionMatrix 逐类 consumersAccuracy／producersAccuracy／fscore；精确分数中间量及训练／验证表组合，返回形状和 Fβ 轴方向是明确的本地政策，未验证 Google 等价。
 - [ ] 每一签名／参数组合的 S／C、适用的独立 N，以及负向、缺测、边界验收；E 按现有环境可用条件单独记录。
-- [ ] 动态形状、其余多数组波段运算和 Image.array*、通用设计矩阵的逐像元回归、采样／其余图像分类器及模式、矢量／空间和多重／歧义度量 Join、邻域及高级时序。
+- [ ] 动态形状、其余多数组波段运算和 Image.array*、通用设计矩阵的逐像元回归、采样／其余图像分类器及模式、矢量／空间和多重／歧义度量 Join、其余邻域／距离及高级时序。
 - [ ] 后续阶段：Linux 执行／隔离适配、macOS Seatbelt、ARM64 JNI 和本机真实数据验收；当前阶段延期。
 - [ ] Google 同数据数值比较按可取得条件另记；本机真实完整项目验收延期。
 
@@ -264,8 +266,8 @@ Image.hypot 按配对波段实际计算稳定比例范数，保留 NoData、广�
 | `map_expression` | passed | passed | difference |
 | `image_band_names` | passed | passed | ["blue","green","red","nir","SCL"] |
 | `image_to_float` | passed | passed | nir |
-| `neighborhood_reduce_kernel` | passed | rejected | Unsupported Earth Engine algorithm: Kernel.square |
-| `focal_mean` | passed | rejected | Unsupported Earth Engine algorithm: Image.focalMean |
+| `neighborhood_reduce_kernel` | passed | passed | 五波段均值；原生／Google证据另记 |
+| `focal_mean` | passed | passed | 五波段像素单位圆核；原生／Google证据另记 |
 | `join_save_first` | passed | passed | blue, green, red, nir, SCL |
 | `array_matrix_multiply` | passed | passed | [[3],[7]] |
 | `regression_reducer` | passed | rejected | ImageCollection.reduce linearRegression requires exactly 3 scalar bands per frame；原探针实际使用 5 bands，属于输入数量不匹配 |
@@ -337,7 +339,7 @@ npm --prefix web test
 .venv/bin/python scripts/build_web.py
 ```
 
-继续按真实 Python 项目依赖补全栅格数组、逐像元回归，然后采样／分类训练预测、矢量／空间 Join、邻域／高级时序；优先使用版本化合成样本验证计算语义，本阶段不推进 Linux 隔离适配或要求原生／真实数据验收。固定原50探针仍有5项定向拒绝：全局footprint的unmask、Kernel.square／邻域、focalMean、原回归探针输入数量错误，以及把未训练smileRandomForest构造器直接作为公开JSON结果。这不表示实际RF训练未实现，也不是剩余功能的完整清单。
+继续按真实 Python 项目依赖补全栅格数组、逐像元回归，然后采样／分类训练预测、矢量／空间 Join、邻域／高级时序；优先使用版本化合成样本验证计算语义，本阶段不推进 Linux 隔离适配或要求原生／真实数据验收。固定原50探针现有47项编译通过、3项定向拒绝：全局footprint的unmask、原回归探针输入数量错误，以及把未训练smileRandomForest构造器直接作为公开JSON结果。这不表示实际RF训练未实现，也不是剩余功能的完整清单。
 
 [GOAL.md](../../GOAL.md) 记录持续目标；[云端交接](../cloud-handoff.md) 保留环境和发布约束。Python 达标后再系统推进 JS，期间共享后端改动持续回归已有 JS 功能。
 

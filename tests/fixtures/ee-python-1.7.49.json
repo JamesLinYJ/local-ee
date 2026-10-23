@@ -3885,8 +3885,15 @@
     },
     {
       "compilation": {
-        "reason": "Unsupported Earth Engine algorithm: Kernel.square",
-        "status": "rejected"
+        "bands": [
+          "blue_mean",
+          "green_mean",
+          "red_mean",
+          "nir_mean",
+          "SCL_mean"
+        ],
+        "kind": "image",
+        "status": "passed"
       },
       "engine_execution": {
         "status": "not_run"
@@ -3979,8 +3986,15 @@
     },
     {
       "compilation": {
-        "reason": "Unsupported Earth Engine algorithm: Image.focalMean",
-        "status": "rejected"
+        "bands": [
+          "blue",
+          "green",
+          "red",
+          "nir",
+          "SCL"
+        ],
+        "kind": "image",
+        "status": "passed"
       },
       "engine_execution": {
         "status": "not_run"

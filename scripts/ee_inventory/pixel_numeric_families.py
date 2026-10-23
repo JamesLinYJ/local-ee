@@ -61,3 +61,26 @@ PIXEL_NUMERIC_LIMITS["Number.parse"] = [
     "zero; extreme underflow returns signed zero by local policy. Work is precharged "
     "before lexing/conversion. Shared50000 work/1MB output; Google formatting/parity unverified."
 ]
+
+
+for _operation in ("fixed", "circle", "square", "rectangle", "plus", "cross", "diamond", "octagon"):
+    PIXEL_NUMERIC_LIMITS["Kernel." + _operation] = [
+        "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, "
+        "offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. "
+        "Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. "
+        "Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+    ]
+
+for _operation in ("focalMin", "focalMax", "focalMean", "focalMedian", "focalMode",
+                   "focal_min", "focal_max", "focal_mean", "focal_median", "focal_mode",
+                   "reduceNeighborhood"):
+    PIXEL_NUMERIC_LIMITS["Image." + _operation] = [
+        "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. "
+        "Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. "
+        "Missing keys are not synthesized; skipMasked=false fills only existing tiles. "
+        "Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. "
+        "Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. "
+        "Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. "
+        "Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. "
+        "Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+    ]

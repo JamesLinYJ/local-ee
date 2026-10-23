@@ -28,6 +28,8 @@ SOURCES += [ROOT / "engine/ee_remap_numeric.scala", ROOT / "engine/ee_remap_adap
 SOURCES += [ROOT / "engine/ee_image_sample_options.scala",
             ROOT / "engine/ee_image_sample_kernel.scala", ROOT / "engine/ee_image_sample_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_pixel_math_numeric.scala", ROOT / "engine/ee_pixel_math_adapter.scala"]
+SOURCES += [ROOT / "engine/ee_focal_spec.scala", ROOT / "engine/ee_focal_numeric.scala",
+            ROOT / "engine/ee_focal_adapter.scala"]
 SERVICE_NAME = "org.openeo.geotrelliscommon.CubeProcessProvider"
 SERVICE_ENTRY = ("local.ee.integer.LocalEeIntegerCubeProcessProvider\n"
                  "local.ee.grid.LocalEeGridCubeProcessProvider\n"
@@ -38,6 +40,8 @@ SERVICE_ENTRY = ("local.ee.integer.LocalEeIntegerCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.remap.LocalEeRemapCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.image.sample.LocalEeImageSampleCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.math.LocalEePixelMathCubeProcessProvider\n"
+
+SERVICE_ENTRY += "local.ee.reduce.LocalEeFocalCubeProcessProvider\n"
 
 
 def sha256(path: Path) -> str:

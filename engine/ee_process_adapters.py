@@ -216,6 +216,12 @@ def local_ee_smile_rf(args, env):
     return handler(args, env)
 
 
+def local_ee_focal(args, env):
+    from .ee_focal import local_ee_focal as handler
+
+    return handler(args, env)
+
+
 def local_ee_pixel_math(args, env):
     from .ee_pixel_math import local_ee_pixel_math as handler
 
@@ -229,6 +235,7 @@ def local_ee_smile_rf_explain(args, env):
 
 
 _HANDLERS = {
+    "local_ee_focal": local_ee_focal,
     "local_ee_pixel_math": local_ee_pixel_math,
     "local_ee_drop_single_time": local_ee_drop_single_time,
     "local_ee_reduce_bands": local_ee_reduce_bands,
@@ -254,6 +261,9 @@ def register_local_ee_processes() -> None:
     """Install only these source-controlled handlers in both openEO registries."""
     from openeo_driver.processgraph.registry import process_registry_100, process_registry_2xx
 
+    from .ee_focal import register_focal_pushdown_boundary
+
+    register_focal_pushdown_boundary()
     for registry in (process_registry_100, process_registry_2xx):
         for process_id, handler in _HANDLERS.items():
             if registry.contains(process_id):

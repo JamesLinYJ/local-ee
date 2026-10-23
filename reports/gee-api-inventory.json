@@ -20906,12 +20906,14 @@
       "description": "Applies a morphological reducer() filter to each band of an image using a named or custom kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -20972,12 +20974,14 @@
       "description": "Applies a morphological mean filter to each band of an image using a named or custom kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -21038,12 +21042,14 @@
       "description": "Applies a morphological reducer() filter to each band of an image using a named or custom kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -21104,12 +21110,14 @@
       "description": "Applies a morphological reducer() filter to each band of an image using a named or custom kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -21170,12 +21178,14 @@
       "description": "Applies a morphological reducer() filter to each band of an image using a named or custom kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -21236,12 +21246,14 @@
       "description": "Applies a morphological reducer() filter to each band of an image using a named or custom kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -21302,12 +21314,14 @@
       "description": "Applies a morphological mean filter to each band of an image using a named or custom kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -21368,12 +21382,14 @@
       "description": "Applies a morphological reducer() filter to each band of an image using a named or custom kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -21434,12 +21450,14 @@
       "description": "Applies a morphological reducer() filter to each band of an image using a named or custom kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -21500,12 +21518,14 @@
       "description": "Applies a morphological reducer() filter to each band of an image using a named or custom kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -24204,12 +24224,14 @@
       "description": "Applies the given reducer to the neighborhood around each pixel, as determined by the given kernel. If the reducer has a single input, it will be applied separately to each band of the collection; otherwise it must have the same number of inputs as the input image has bands.  <p>The reducer output names determine the names of the output bands: <ul>   <li>Reducers with multiple inputs will use the output names directly.   <li>Reducers with a single input will prefix the output name with the   input band name (e.g., '10_mean', '20_mean'). </ul>  <p>Reducers with weighted inputs can have the input weight based on the input mask, the kernel value, or the smaller of those two.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Five unweighted scalar neighborhood reductions through bounded native Float64 halos. Pixel units,1..8 iterations,1089 offsets<=32; nonzero radius must be smaller than both tile dimensions. Missing keys are not synthesized; skipMasked=false fills only existing tiles. Smallest tied mode, local fractional shapes and focal center-mask policy; no Google parity. Positive support only; reduceNeighborhood kernel/min weights must be uniform, mask ignores weights. Optimization/composed reducers/meters reject; compiler50000/graph500 caps unchanged. Export/aggregate regions and resolution cannot push through focal; full finite input item bounds loaded. Actual standalone kernel and GeoTrellis collection buffer evidence is separate from full Spark/deployment."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28200,12 +28222,14 @@
       "description": "Generates a circle-shaped boolean kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28292,12 +28316,14 @@
       "description": "Generates a cross-shaped boolean kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28344,12 +28370,14 @@
       "description": "Generates a diamond-shaped boolean kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28462,12 +28490,14 @@
       "description": "Creates a Kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28776,12 +28806,14 @@
       "description": "Generates an octagon-shaped boolean kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28828,12 +28860,14 @@
       "description": "Generates a plus-shaped boolean kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -28925,12 +28959,14 @@
       "description": "Generates a rectangular-shaped kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29093,12 +29129,14 @@
       "description": "Generates a square-shaped boolean kernel.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite immutable pixel-unit masks at most33x33/1089 cells; fixed focus inside mask, offsets<=32; shape radii<=16. Shared50000 compilation budget. Meter units reject. Finite normalization/magnitude; fractional boundaries and octagon policy lack Google parity. Opaque kernel values must enter an audited consumer, not public JSON or truthiness."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -35788,8 +35826,8 @@
       "description": "Returns a Reducer that computes the (weighted) circular mean of its inputs, which are expected to be in radians. Output will be in the range (-π to π). Where applicable, the output name is \"circularMean\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [],
@@ -35813,8 +35851,8 @@
       "description": "Returns a Reducer that computes the (weighted) circular standard deviation of its inputs, which are expected to be in radians, using the sqrt(-2 * ln(R)) formula. Where applicable, the output name is \"circularStdDev\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [],
@@ -35838,8 +35876,8 @@
       "description": "Returns a Reducer that computes the (weighted) circular variance of its inputs, which are expected to be in radians. Where applicable, the output name is \"circularVariance\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [],
@@ -36644,8 +36682,8 @@
       "description": "Creates a Reducer to compute the mean of all inputs in the specified percentile range. For small numbers of inputs (up to maxRaw) the mean will be computed directly; for larger numbers of inputs the mean will be derived from a histogram.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [],
@@ -36704,8 +36742,8 @@
       "description": "Returns a Reducer that Computes the kurtosis of its inputs. Where applicable, the output name is \"kurtosis\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [],
@@ -37035,8 +37073,8 @@
       "description": "Create a reducer that will compute the mode of the inputs. For small numbers of inputs (up to maxRaw) the mode will be computed directly; for larger numbers of inputs the mode will be derived from a histogram.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [],
@@ -37148,8 +37186,8 @@
       "description": "Create a reducer that will compute the specified percentiles, e.g. given [0, 50, 100] will produce outputs named 'p0', 'p50', and 'p100' with the min, median, and max respectively. For small numbers of inputs (up to maxRaw) the percentiles will be computed directly; for larger numbers of inputs the percentiles will be derived from a histogram.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [],
@@ -37443,8 +37481,8 @@
       "description": "Returns a Reducer that Computes the skewness of its inputs. Where applicable, the output name is \"skew\".",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [],
@@ -41368,14 +41406,14 @@
           "same_name_handler_declared": false
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.focalMax",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.focalMin",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
           "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
@@ -41418,7 +41456,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 549,
+    "declared_handler_name_count": 576,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41636,7 +41674,7 @@
         "appears_in_rejected_compile_context": 31,
         "appears_in_selected_sdk_serialization": 35,
         "appears_in_successful_compile_context": 8,
-        "declared_handler_count": 93,
+        "declared_handler_count": 104,
         "signature_count": 232
       },
       "ImageCollection": {
@@ -41664,7 +41702,7 @@
         "appears_in_rejected_compile_context": 1,
         "appears_in_selected_sdk_serialization": 1,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 0,
+        "declared_handler_count": 8,
         "signature_count": 22
       },
       "Landsat": {
@@ -41776,7 +41814,7 @@
         "appears_in_rejected_compile_context": 7,
         "appears_in_selected_sdk_serialization": 7,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 45,
+        "declared_handler_count": 53,
         "signature_count": 64
       },
       "S1": {
@@ -41899,7 +41937,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 549,
+    "pinned_signatures_with_same_name_declared_handler": 576,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

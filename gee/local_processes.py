@@ -12,7 +12,7 @@ LOCAL_PROCESSES = frozenset({
     "local_ee_unmask", "local_ee_drop_single_time", "local_ee_reduce_bands",
     "local_ee_table", "local_ee_minimum_distance",
     "local_ee_sample_regions", "local_ee_train_minimum_distance",
-    "local_ee_remap", "local_ee_sample_table_op", "local_ee_pixel_math",
+    "local_ee_remap", "local_ee_sample_table_op", "local_ee_pixel_math", "local_ee_focal",
 }) | RF_PROCESSES | VALIDATION_PROCESSES
 CUBE = {"type": "object", "subtype": "raster-cube"}
 from .reduction_contract import EE_BAND_REDUCERS
@@ -40,7 +40,7 @@ def validate_local_process(name, arguments, depth, *, node_context=None):
     if name == "local_ee_minimum_distance":
         required.add("model")
     if name in {"local_ee_sample_regions", "local_ee_train_minimum_distance",
-                "local_ee_remap", "local_ee_sample_table_op"}:
+                "local_ee_remap", "local_ee_sample_table_op", "local_ee_focal"}:
         required.add("spec")
     allowed = required | ({"same_footprint"} if name == "local_ee_unmask" else set())
     if depth != 0 or not required <= set(arguments) <= allowed:
@@ -70,6 +70,10 @@ def validate_local_process(name, arguments, depth, *, node_context=None):
 
         decoder = decode_sampling_spec if name == "local_ee_sample_regions" else decode_training_spec
         decoder(arguments["spec"])
+    if name == "local_ee_focal":
+        from .focal_spec import decode_focal_spec
+
+        decode_focal_spec(arguments["spec"])
     if name == "local_ee_remap":
         from .remap_spec import decode_remap_spec
 
@@ -94,6 +98,10 @@ def validate_local_process(name, arguments, depth, *, node_context=None):
 
 
 def process_spec(name):
+    if name == "local_ee_focal":
+        from .focal_spec import focal_process_spec
+
+        return focal_process_spec()
     if name == "local_ee_pixel_math":
         return _pixel_math_spec()
     if name in VALIDATION_PROCESSES:

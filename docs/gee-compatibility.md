@@ -1,5 +1,7 @@
 # GEE Python／JavaScript 兼容范围
 
+第四十二批新增 **19个有限邻域入口（含5个别名）**：8种Kernel构造、5种focal滤波及reduceNeighborhood。Python／JS十二项组合图一致；独立Fraction基准与真实GeoTrellis缓冲验证33场景、两条路径各792像元，22源文件完整适配器构建通过。完整回归 **4321 passed／13 skipped**，前端11／类型／临时构建通过；最终原生零半径修复另有定向验证。名称 **576／991（58.12%）** 仅为入口统计，原50探针47编译／3拒绝。保留Float64、掩膜和时间键；导出区域与分辨率不会提前改变邻域输入。仅像素单位，非零半径须小于瓦片短边；米单位、非均匀权重和其余邻域功能仍受限。依赖、安装环境和数据不变，临时构建已清理；未部署，无完整Spark／浏览器／Google同数据验收。见 [邻域语法](gee-python/focal.md) 和 [报告](../reports/gee-python-wave42.json)。
+
 第四十一批新增 **8个有限分布统计入口**：百分位数、区间均值、众数、偏度／峰度及三种圆周统计。完整回归 **4207 passed／12 skipped**，前端11／类型／临时构建通过；Python／JS十二项组合输出一致，两行分组CSV实际写出并读回。名称 **557／991（56.21%）** 仅为入口统计。八种1000值列表和500行表格通过，1000行表格仅众数通过，其余按原50000工作预算拒绝。插值、并列值、总体矩和不确定方向的本地规则已说明；显式直方图近似参数、权重、这些新增归约的Array／栅格／动态表路径拒绝。依赖、安装环境和数据不变，临时构建已清理；未部署，无Google同数据或生产验收。见 [语法清单](gee-python/list.md)、[示例46](../examples/46_GEE_python_distribution_summary.py) 和 [报告](../reports/gee-python-wave41.json)。
 
 第四十批扩展已有数值归约的实际上下文：product、总体标准差／方差、样本方差及 minMax 接通影像波段、时间轴和数组，多输出支持共享输入 combine／setOutputs 与 fieldAxis。完整回归 **4078 passed／12 skipped**，前端11／类型／临时构建通过；Python／JS五项组合输出一致，实际 GeoTrellis 瓦片7种归约、41个像元及8项拒绝控制通过，19源文件完整适配器构建通过。修复极大共同偏移／微小差值的标准差、乘积中间溢出、选景及掩膜的 Float64 精度；跨观测需明确 STAC 网格证据。名称仍 **549／991（55.40%）**，仅统计入口，本批未增加名称。单波段方差50景生成351节点，100景触及原500节点上限。依赖、安装环境、数据与预算不变，临时构建已清理；未部署，无完整Spark／任务导出／浏览器／Google同数据验收。见 [语法清单](gee-python/list.md)、[示例45](../examples/45_GEE_python_raster_statistics.py) 和 [报告](../reports/gee-python-wave40.json)。
@@ -183,7 +185,7 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 | 工作流 | 已确认的主要阻塞 |
 | --- | --- |
 | 最绿像素合成 | 历史抽查时缺失；本轮已实现有限同构集合 `qualityMosaic` 并完成 6 个实际输出的独立像素对照；平分规则仍未与 Google 比较 |
-| s2cloudless 云影 | 有限本地影像 `Join.saveFirst` 已补；仍缺定向距离变换、`projection/reproject`、`focalMin/focalMax`；云概率数据未入库 |
+| s2cloudless 云影 | 有限本地影像 `Join.saveFirst` 已补；有限像素单位 `focalMin/focalMax` 已补；仍缺定向距离变换、`projection/reproject` 及完整米单位邻域；云概率数据未入库 |
 | 谐波时序与矩阵回归 | 已补有限日期、数组布局／矩阵投影／归约、静态设计的 Image.matrixSolve、逐像元 linearFit／受限 linearRegression，以及定长日期驱动谐波拟合和 Image.hypot 振幅；静态 Number／Array.atan2 按 SDK 轴政策计算；通用动态设计、变长数组和栅格 Image.atan2 相位仍有缺口 |
 | HISTARFM 插值 | 已补受限 Date.getRelative、saveAll 匹配影像列表、maxDifference 与方向比较的 And 组合；最近前后观测像素插值有合成图 N，独立常量栅格、int16、完整项目及真实引擎验收仍缺失 |
 | 随机森林与验证 | 样本提取、随机森林训练/预测与批量区域统计仍缺；已补有限内联标签误差矩阵、总体及有限逐类指标，不能代替完整分类验证 |
