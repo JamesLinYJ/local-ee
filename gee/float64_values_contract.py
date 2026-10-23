@@ -13,6 +13,7 @@ FLOAT64_ARITIES = {
     "power": 2, "mod": 2, "min2": 2, "max2": 2, "and": 2, "or": 2,
     "absolute": 1, "sqrt": 1, "log": 1, "log10": 1, "exp": 1,
     "round": 1, "floor": 1, "ceil": 1, "sin": 1, "cos": 1, "tan": 1, "not": 1,
+    "select": 3, "where_select": 3,
 }
 FLOAT64_BOOLEAN = frozenset({"and", "or", "not"})
 
@@ -45,6 +46,10 @@ def evaluate_float64_values(operation, values):
     if type(values) not in (list, tuple) or len(values) != FLOAT64_ARITIES[operation]:
         raise ValueError("Float64 Image operation requires its exact scalar arity")
     numbers = tuple(_finite(value) for value in values)
+    if operation == "select":
+        return numbers[1] if numbers[0] != 0.0 else numbers[2]
+    if operation == "where_select":
+        return numbers[1] if numbers[0] != 0.0 else numbers[2]
     left = numbers[0]
     right = numbers[1] if len(numbers) == 2 else None
     if operation in FLOAT64_BOOLEAN:

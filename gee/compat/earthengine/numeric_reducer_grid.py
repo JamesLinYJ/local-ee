@@ -160,7 +160,8 @@ def _projection_for_item(item, item_id, selectors, translator):
     return projections
 
 
-def require_common_grid(translator, pixels, *, label="numeric raster reduction") -> None:
+def require_common_grid(translator, pixels, *, label="numeric raster reduction",
+                        check_single_item_assets=False) -> None:
     """Require source-aligned pixels before combining distinct raster item IDs.
 
     Pixels are the exact scalar operands about to be merged. One distinct item
@@ -181,6 +182,14 @@ def require_common_grid(translator, pixels, *, label="numeric raster reduction")
         item_id for _cid, ids in sources for item_id in ids
     ))
     if len(distinct_ids) <= 1:
+        if check_single_item_assets:
+            from .selection_grid import require_single_item_grid
+
+            _charge(translator, sum(len(names) for names in selectors.values()))
+            selected = set().union(*selectors.values())
+            require_single_item_grid(
+                translator, next(iter(cids)), distinct_ids[0], selected,
+            )
         return
 
     cid = next(iter(cids))

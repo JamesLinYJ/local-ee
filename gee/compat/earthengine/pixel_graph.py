@@ -37,6 +37,7 @@ class PixelCompiler:
         key = id(p)
         if key not in self.double_precision:
             if p.op == "integer_values": result = not p.boolean
+            elif p.op == "where": result = any(self.has_double_precision(value) for value in p.args[1:])
             elif p.boolean and p.op in BOOLEAN_OPERATIONS: result = False
             elif p.op in {"classify", "trained_classify", "smile_rf_classify", "fast_distance"}: result = False
             elif p.op in {"to_double", "unmask", "unmask_constant", "on_grid", "remap", "focal", "convolve", "neighborhood", "terrain", "distance"}: result = True
@@ -58,6 +59,19 @@ class PixelCompiler:
         cached = cache.get(key)
         if cached is not None and cached[0] is pixel:
             return cached[1]
+
+        if pixel.op == "where" and not self.has_double_precision(pixel):
+            # A cast after Float32 where must stay after its value callback,
+            # while the existing structural mask rewrite still preserves it.
+            steps = getattr(self.t, "steps", None)
+            if type(steps) is not int or steps < 0 or steps + 20 > 50_000:
+                fail("Earth Engine graph exceeds compilation limits")
+            self.t.steps += 20
+            from .pixel_selection_graph import where_float32
+
+            rewrite = self._prepare_double_structural_rewrite(where_float32(*pixel.args))
+            cache[key] = (pixel, rewrite)
+            return rewrite
 
         kind = None
         if pixel.op == "clip" and len(pixel.args) == 2:
@@ -165,6 +179,12 @@ class PixelCompiler:
             self._double_structural_depth = depth
 
     def _expression(self, p):
+        if p.op == "where":
+            from .pixel_selection_graph import select_float64, where_float32
+
+            if self.has_double_precision(p):
+                return select_float64(self, Pixel("if", p.args), operation="where_select")
+            return self.expression(where_float32(*p.args))
         if p.op == "integer_values":
             from .integer_values_graph import compile_integer_values_pixel
 
@@ -266,6 +286,10 @@ class PixelCompiler:
             from .mask_graph import mask_float64
 
             return mask_float64(self, p.args[0], p.args[1])
+        if p.op == "if" and self.has_double_precision(p):
+            from .pixel_selection_graph import select_float64
+
+            return select_float64(self, p)
         if p.op != "is_nodata" and self.has_double_precision(p):
             fail("Float64 pixel arithmetic is not supported by the pinned callback backend; apply toDouble() after arithmetic or explicitly toFloat() first")
         operands = p.args[0] if p.op == "reduce_bands" else p.args

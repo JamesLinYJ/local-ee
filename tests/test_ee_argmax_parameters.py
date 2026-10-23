@@ -117,15 +117,14 @@ def test_sdk_raster_array_argmax_requires_its_pinned_image_argument(ee, local):
         compile_expression(unknown, local["catalog"], local["items"])
 
 
-def test_raster_argmax_requires_float32_single_array_not_double_or_bundle(ee, local):
+def test_raster_argmax_requires_explicit_cast_and_single_array(ee, local):
     image = first_image(ee).select(ARRAY_BANDS[:2])
     uncast = image.toArray().arrayArgmax().arrayFlatten([["index"]])
     with pytest.raises(UnsupportedEEError, match="explicit top-level toFloat"):
         compile_value(ee, uncast, local)
 
     double = image.toArray().toDouble().arrayArgmax().arrayFlatten([["index"]])
-    with pytest.raises(UnsupportedEEError):
-        compile_value(ee, double, local)
+    assert compile_value(ee, double, local)["kind"] == "image"
 
     bundle = (ee.ImageCollection("sentinel-2-l2a").select(ARRAY_BANDS[:2])
               .toArrayPerBand().arrayArgmax())

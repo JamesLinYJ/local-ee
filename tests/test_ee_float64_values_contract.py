@@ -10,12 +10,42 @@ from gee.integer_values_spec import constant_operand, decode_integer_values_spec
 
 UNARY = {"absolute", "sqrt", "log", "log10", "exp", "round", "floor", "ceil", "sin", "cos", "tan", "not"}
 BINARY = {"add", "subtract", "multiply", "divide", "power", "mod", "min2", "max2", "and", "or"}
+TERNARY = {"select", "where_select"}
 
 
-def test_closed_twenty_two_operation_arities_have_no_implicit_callbacks():
-    assert set(FLOAT64_ARITIES) == UNARY | BINARY
+def test_closed_twenty_four_operation_arities_have_no_implicit_callbacks():
+    assert set(FLOAT64_ARITIES) == UNARY | BINARY | TERNARY
     assert {op for op, arity in FLOAT64_ARITIES.items() if arity == 1} == UNARY
     assert {op for op, arity in FLOAT64_ARITIES.items() if arity == 2} == BINARY
+    assert {op for op, arity in FLOAT64_ARITIES.items() if arity == 3} == TERNARY
+
+
+def test_ternary_select_folds_nonzero_conditions_and_preserves_selected_signed_zero():
+    assert evaluate_float64_values("select", [1.0, 11.0, 22.0]) == 11.0
+    assert evaluate_float64_values("select", [-math.ulp(0.0), 11.0, 22.0]) == 11.0
+    assert evaluate_float64_values("select", [0.0, 11.0, 22.0]) == 22.0
+    assert evaluate_float64_values("select", [-0.0, 11.0, 22.0]) == 22.0
+    assert math.copysign(1, evaluate_float64_values("select", [1.0, -0.0, 22.0])) == -1
+    assert math.copysign(1, evaluate_float64_values("select", [0.0, 11.0, -0.0])) == -1
+
+
+def test_ternary_where_select_folds_nonzero_conditions_and_preserves_selected_signed_zero():
+    assert evaluate_float64_values("where_select", [1.0, 11.0, 22.0]) == 11.0
+    assert evaluate_float64_values("where_select", [-math.ulp(0.0), 11.0, 22.0]) == 11.0
+    assert evaluate_float64_values("where_select", [0.0, 11.0, 22.0]) == 22.0
+    assert evaluate_float64_values("where_select", [-0.0, 11.0, 22.0]) == 22.0
+    assert math.copysign(1, evaluate_float64_values("where_select", [1.0, -0.0, 22.0])) == -1
+    assert math.copysign(1, evaluate_float64_values("where_select", [0.0, 11.0, -0.0])) == -1
+
+
+@pytest.mark.parametrize("index", [0, 1, 2])
+@pytest.mark.parametrize("operation", sorted(TERNARY))
+def test_ternary_requires_all_constant_operands_to_be_finite_even_when_unselected(operation, index):
+    for invalid in (None, True, "1", math.inf, math.nan, 2**53 + 1):
+        values = [0.0, 11.0, 22.0]
+        values[index] = invalid
+        with pytest.raises(ValueError):
+            evaluate_float64_values(operation, values)
 
 
 @pytest.mark.parametrize("operation", sorted(UNARY | BINARY))

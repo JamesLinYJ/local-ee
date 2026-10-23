@@ -64,6 +64,8 @@ def validate_operation(operation, dtype):
             raise ValueError("Integer image cast requires an explicit supported dtype")
     elif dtype is not None:
         raise ValueError("Integer image dtype must be null except for cast")
+    if operation in {"select", "where_select"}:
+        return 3
     return 1 if operation in UNARY else 2
 
 

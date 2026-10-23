@@ -97,7 +97,7 @@ def _sdk_expression(image, other, operation):
     return function(other) if FLOAT64_ARITIES[operation] == 2 else function()
 
 
-@pytest.mark.parametrize("operation", tuple(FLOAT64_ARITIES))
+@pytest.mark.parametrize("operation", tuple(op for op in FLOAT64_ARITIES if op not in {"select", "where_select"}))
 def test_core_float64_sdk_operations_use_ordered_native_wire(ee, local, operation):
     left = ee.Image("scene-a").select("x").toDouble()
     right = ee.Image("scene-a").select("y").toDouble()

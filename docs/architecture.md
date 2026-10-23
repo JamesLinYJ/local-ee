@@ -131,12 +131,13 @@ RF 要素分类与矩阵计算保留独立运行时 IR 和生产者合同。真�
 | `number_math.py` | 有限静态正余弦、稳定范数与方向角，先校验／计费再运行 Float64 内核；显式记录 pinned SDK 轴约定和未做 Google 对照的数值政策 |
 | `array_core.py`, `array_values.py`, `array_layout.py`, `array_arithmetic.py`, `array_reductions.py`, `array_matrix_extra.py` | 有限静态数组类型、形状／资源校验及分组数值内核 |
 | `array_decompositions.py` | 静态方阵 QR／LU／SVD 的真实分解、有限输出与立方工作预充；通过既有 typed Array／Dictionary 接口组合，不另建前端计算层 |
-| `array_argmax.py` | 有限静态数组与固定 Float32 栅格数组的首个行主序最大值坐标；静态路径保留原数值类型比较，栅格路径生成真实比较／条件坐标并保留整体掩膜，扫描及构图前预充预算 |
+| `array_argmax.py` | 有限静态数组与固定 Float32／Double 栅格数组的首个行主序最大值坐标；保留输入声明精度，栅格坐标为有界 Float32 整数，整体掩膜保留，扫描及构图前预充预算 |
+| `raster_array_sort.py`, `pixel_selection_graph.py`, `selection_grid.py` | 值／键分别显式声明 Float32／Double，稳定排序整片移动；Double 载荷由两个封闭的原生三元算子选择，普通选择和 where 各有独立缺测政策；来源／网格新验证，同条目资产冲突拒绝，不用普通掩膜的缺键回退；组件证据与完整 Spark 验收分开 |
 | `raster_array_core.py`, `raster_array_values.py`, `raster_array_layout.py`, `raster_array_coordinates.py`, `raster_array_reductions.py`, `raster_array_dispatch.py` | 单数组波段固定形状 IR、整体掩膜、常量坐标与分组操作；降为既有标量像素图，公开输出前必须转换为标量波段 |
 | `raster_matrix_solve.py` | 静态满列秩设计的有限栅格最小二乘；双方显式 Float32／Double（任一Double则提升）、预充工作预算、常量 cast 链按对象缓存，输出真实像素乘加及整体掩膜，不宣称通用动态矩阵或 Google 数值等价 |
 | `raster_collection_arrays.py`, `raster_array_reshape.py` | 有限标量集合按波段堆叠定长数组，各波段独立合并所有帧掩膜；常量有效长度向量重解释行主序形状，保留像素、类型和来源，拒绝变长数组及动态／掩膜形状 |
 | `raster_array_concatenation.py` | 单数组按现有轴实际拼接／整块重复，固定行主序单元保持类型，拼接合并整体掩膜；重复次数必须由有效常量标量 Image 证明，动态／掩膜／空间限定次数拒绝，保留形状、工作及图预算 |
-| `raster_array_accumulation.py` | 固定轴上的真实 Float32 前缀 sum／min／max，包含当前位置并保持原行主序及完整数组掩膜；省略 reducer 默认 sum，输出前计费，拒绝未实现 reducer／修饰符 |
+| `raster_array_accumulation.py` | 固定轴上的真实 Float32／Double 前缀 sum／min／max，包含当前位置并保持原行主序及完整数组掩膜；省略 reducer 默认 sum，输出前计费，拒绝未实现 reducer／修饰符 |
 | `raster_matrix_properties.py` | 固定二维数组提取对角列、构建对角矩阵及计算标量迹／小矩阵行列式／缩放 Frobenius 范数；保留完整输入掩膜与来源，算术显式逐步 Float32／Double 舍入，预充构造工作且保留图预算，数值稳定性不冒称 Google 等价 |
 | `raster_array_bands.py`, `raster_regression_frames.py`, `raster_linear_regression.py` | 有限多数组逻辑波段及选择／元数据；共用观测身份／输入顺序校验；过原点或单位截距回归与多响应 RMS 分开于表格路径，保留共同完整行掩膜及图预算 |
 | `list_layout.py`, `list_reductions.py` | 静态 List 配对／展开／置换与有界归约；保留类型化原子值，单输出值与多输出回归字典各按实际合同返回 |

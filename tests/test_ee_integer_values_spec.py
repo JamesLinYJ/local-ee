@@ -29,7 +29,10 @@ def graph(text=None, **extra):
 def test_all_closed_operations_validate_public_wire(operation):
     unary = operation in {"cast", "bit_not", "bit_count", "absolute", "sqrt", "log", "log10",
                           "exp", "round", "floor", "ceil", "sin", "cos", "tan", "not"}
-    operands = [{"band": 0}] if unary else [{"band": 0}, {"band": 1}]
+    if operation in {"select", "where_select"}:
+        operands = [{"band": 0}, {"band": 1}, {"band": 2}]
+    else:
+        operands = [{"band": 0}] if unary else [{"band": 0}, {"band": 1}]
     text = wire(operation, operands, "int16" if operation == "cast" else None)
     validate(graph(text))
     assert decode_integer_values_spec(text)["op"] == operation

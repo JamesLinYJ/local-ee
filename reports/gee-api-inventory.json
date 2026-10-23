@@ -18020,7 +18020,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Required image is one fixed rank1..8 RasterArrayImage with every cell explicitly top-level toFloat, axes/cells<=64. Actual strict-greater comparisons and conditional coordinate selection retain the first row-major maximum, returning shape(rank,) under the entire input mask including nonwinning missing cells, with original name/image/source. Local coordinate values are explicit Float32 integers; Google Integer result dtype and rounding equivalence are unverified. Rank0/Double/scalar/multiple array bands and missing/unknown arguments reject. Shared50000 work precharged before Pixel/output construction;500 graph cap unchanged. No variable arrays, raster-engine or Google acceptance."
+          "Required image is one fixed rank1..8 RasterArrayImage with every cell uniformly explicit top-level toFloat/toDouble, axes/cells<=64. Actual strict-greater comparisons and conditional coordinate selection retain the first row-major maximum, returning shape(rank,) under the entire input mask including nonwinning missing cells, with original name/image/source. Local coordinate values are explicit Float32 integers; Google Integer result dtype and rounding equivalence are unverified. Rank0/uncast/mixed-topcast/scalar/multiple array bands and missing/unknown arguments reject. Shared50000 work precharged before Pixel/output construction;500 graph cap unchanged. No variable arrays, raster-engine or Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -18638,7 +18638,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "One fixed rank1..8 array with explicit top-level Float32 value and key cells; same-rank keys identify one matching non-singleton axis with other dimensions singleton. Stable strict-gt adjacent compare-exchange moves full slices together, preserves input name/metadata/source fallback and conjunction of all payload/key validity. Default/null keys sort values, ambiguous keys/Double/scalar/bundles reject. Work is precharged before quadratic DAG construction;64 cells/shared50000 work/500 graph nodes retained. Float32 key quantization can change ties; no Google tie/dtype or actual raster-engine acceptance."
+          "One fixed rank1..8 array with uniform explicit top-level toFloat/toDouble value and key cells independently, preserving each declared precision; same-rank keys identify one matching non-singleton axis with other dimensions singleton. Stable strict-gt adjacent compare-exchange moves full slices together, preserves input name/metadata/source fallback and conjunction of all payload/key validity. Default/null keys sort values, ambiguous keys/uncast/mixed-topcast/scalar/bundles reject. Work is precharged before quadratic DAG construction;64 cells/shared50000 work/500 graph nodes retained. Float32 key quantization can change ties; no Google tie/dtype or actual raster-engine acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -27250,8 +27250,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite named scalar bands and broadcast test/value bands only. Double payloads use a closed native ternary where_select operation without payload callbacks, preserving nested Float32 rounding, signed zero and selected values. Missing test/value retains input; masked input stays masked. Fresh common-grid proof for distinct observations and rejection of explicit same-item asset-grid conflicts; no implicit spatial/time broadcasting. Source-free wire constants may be any finite binary64 value; raw integer constants retain +/-2^53 exactness. Work50000/graph500 unchanged, full Spark/browser/Google acceptance not established."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {

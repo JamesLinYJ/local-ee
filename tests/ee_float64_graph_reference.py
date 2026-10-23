@@ -58,6 +58,15 @@ def _operand(descriptor: dict, data: np.ndarray, band_axis: int,
 
 
 def _apply(operation: str, operands: list[np.ndarray | float]) -> np.ndarray:
+    if operation in {"select", "where_select"}:
+        if len(operands) != 3:
+            raise AssertionError("Float64 selection requires three operands")
+        condition, accept, reject = np.broadcast_arrays(*operands)
+        chosen = np.where(condition != 0, accept, reject)
+        if operation == "where_select":
+            return np.where(np.isnan(reject), np.nan,
+                            np.where(np.isnan(condition) | np.isnan(accept), reject, chosen))
+        return np.where(np.isnan(condition), np.nan, chosen)
     if operation == "divide":
         if len(operands) != 2:
             raise AssertionError("Float64 divide requires two operands")
@@ -125,6 +134,10 @@ def float64_values_handler(arguments: dict, values: dict) -> tuple[np.ndarray, l
         _operand(descriptor, data, band_axis, valid)
         for descriptor in spec["operands"]
     ]
+    if spec["op"] in {"select", "where_select"}:
+        # Selection needs the condition and selected payload only. A missing
+        # unselected input must not intersect the output's validity mask.
+        valid = np.ones(valid.shape, dtype=bool)
     with np.errstate(all="ignore"):
         result = _apply(spec["op"], operands)
     result = np.asarray(result, dtype=np.float64)

@@ -1,6 +1,8 @@
 # GEE Python 兼容清单
 
-第五十一批扩展7个已有API的Double数组／矩阵能力，并串联预测、选择和属性复制。固定大基线样本的最大斜率误差从6.10e-5降至1.11e-16；幅度保护保留极值回退。有界来源缓存使三景Double回归残差在原预算内完成（21151工作量／190节点），独立RMS误差1.78e-15。完整回归5181 passed／22 skipped，前端11／类型／临时构建通过；Python／JS6项图一致。名称仍635／991（64.08%），仅入口统计。原64元素／50000工作／500节点上限保持，最大形状的完整导出仍可超限；源无穷值拒绝与运算溢出缺测分开验证。原生51源文件未改，未重复构建或部署；临时产物已清理，用户数据与依赖未改。无完整Spark／浏览器／Google同数据验收，整体目标保持进行中。见 [Double数组语法](double-raster-arrays.md)、[示例56](../../examples/56_GEE_python_double_matrix.py) 和 [报告](../../reports/gee-python-wave51.json)。
+第五十二批扩展3个已有API：Double数组排序、首个最大值坐标及Double载荷where。值／键精度分别保留，修复普通掩膜在缺失条件键时保留载荷的根因，改用有界原生select／where_select三元算子；同条目资产网格冲突新验证，保留原数组／工作／图上限。实际GeoTrellis的5场景／40像元逐位一致，16项非法规格和6项非法瓦片控制通过；旧22种Double运算及整数／QA原生回归通过。完整回归5260 passed／23 skipped，前端11／类型／临时构建通过；Python／JS6项输出图一致，39个有效样本值与独立参考完全一致。名称仍635／991（64.08%），仅入口统计。初次完整测试被命令沙箱权限拦截，保留失败证据后以所需权限运行原测试通过，无源码放宽。51源文件适配器仅临时构建，2.34MB自有产物已清理，运行环境／依赖／账号数据未改。未部署，无完整Spark／浏览器／物理导出／Google同数据验收，整体目标保持进行中。见 [Double排序／选择语法](double-array-selection.md)、[示例57](../../examples/57_GEE_python_double_selection.py) 和 [报告](../../reports/gee-python-wave52.json)。
+
+第五十一批历史记录：扩展7个已有API的Double数组／矩阵能力，并串联预测、选择和属性复制。固定大基线样本的最大斜率误差从6.10e-5降至1.11e-16；幅度保护保留极值回退。有界来源缓存使三景Double回归残差在原预算内完成（21151工作量／190节点），独立RMS误差1.78e-15。完整回归5181 passed／22 skipped，前端11／类型／临时构建通过；Python／JS6项图一致。名称仍635／991（64.08%），仅入口统计。原64元素／50000工作／500节点上限保持，最大形状的完整导出仍可超限；源无穷值拒绝与运算溢出缺测分开验证。原生51源文件未改，未重复构建或部署；临时产物已清理，用户数据与依赖未改。无完整Spark／浏览器／Google同数据验收，整体目标保持进行中。见 [Double数组语法](double-raster-arrays.md)、[示例56](../../examples/56_GEE_python_double_matrix.py) 和 [报告](../../reports/gee-python-wave51.json)。
 
 第五十批历史记录：扩展已有 **22种基础运算的原生 Double 路径**，使整数／QA、温度换算、NDVI及距离结果可继续计算；未增加名称入口。实际GeoTrellis的25场景／173像元、6步组合／44像元全部通过，最大观察误差1 ULP；旧整数／QA内核回归通过。固定双元素数组四则运算及三景过原点回归系数另有独立合成图数值证明，残差分支仍因编译预算拒绝，不宣称完整Double数组／矩阵兼容。完整回归 **5110 passed／22 skipped**，前端11／类型／临时构建通过，Python／JS11项组合图一致。名称 **635／991（64.08%）** 仅统计入口。常量嵌套类型转换、掩膜、网格和原资源上限保持；51源文件适配器只做可信组件构建，临时产物已清理。52条既有上游提示保留，依赖、安装环境和数据未改。未部署，无完整Spark／浏览器／Google同数据验收，整体目标保持进行中。见 [Double算术语法](float64-arithmetic.md)、[示例55](../../examples/55_GEE_python_float64_analysis.py) 和 [报告](../../reports/gee-python-wave50.json)。
 
@@ -56,7 +58,7 @@
 第二十五批 [报告](../../reports/gee-python-wave25.json)：新增标签 Image.remap、受限 Filter.expression、取样表 filter／无排序 limit 及累计资源计费。示例 30 的标签掩膜、17 个几何候选位置、15 行有效样本、14 行 notNull、11 行条件通过和 8 行限量训练，以及三度量预测，有独立原始网格参考。便携 Python **2068 passed／3 skipped**（另排除 4 项原生测试），前端 **11 passed**／构建通过，SDK 图一致性 **77**，真实 tile 内核通过。入口 **275／991（27.75%）** 只表示名称，不是完整参数或计算兼容率。完整 Spark／部署／浏览器／真实数据／Google 验收未运行；[该批尚未实现随机森林](random-forest-roadmap.md)。
 
 第二十四批 [报告](../../reports/gee-python-wave24.json) 与 [取样语法文档](sampling.md)：接通有限 sampleRegions、实际样本运行时训练、栅格分类与样本 getInfo／CSV 任务合同。便携 Python **1882 passed／3 skipped**（另排除 4 项原生测试）、前端 **11 passed**／构建通过，Python／JS 官方客户端一致性 **72** 项；取样与分类的可信独立 JVM tile 内核均通过。API 名称入口 **273／991（27.55%）**，参数和数值语义仍需逐项验证；此数值不代表完整兼容率。完整 Spark cube、部署／浏览器、真实数据和 Google 对照未运行。
-状态：2026-10-24，第五十一批已验证，整体兼容目标尚未完成。
+状态：2026-10-24，第五十二批已验证，整体兼容目标尚未完成。
 
 第二十三批 [验证报告](../../reports/gee-python-wave23.json)：新增有限 `Image.classify` 的 schema 选择、精确模型编译、Python 桥与真实 GeoTrellis tile 内核，训练仍使用内联要素。macOS ARM64 Python **1751 passed／3 skipped**（启用可信独立 JVM 内核测试，另排除 4 项原生运行测试），前端 **11 passed**、TypeScript／构建通过；较[第二十二批](../../reports/gee-python-wave22.json)增加 66 项通过。独立 tile 内核是组件运行证据，完整 Spark cube、沙箱任务、HTTP／浏览器、部署和 Google 对照均未在本批验收。
 
@@ -329,7 +331,7 @@ Image.matrixFnorm 必填 value，输入限显式 Float32 的固定 rank2 数组�
 
 Array.argmax 严格要求唯一必填 array，保留 typed Array 的数值类型，直接按行主序扫描，仅在严格更大时更新，因此并列取第一个。返回每轴整数坐标列表，rank0 为 []，已有 typed 空切片为 null；直接空构造、显式 PixelType、非有限值和整数超出既有 ±2^53 精确域仍拒绝。rank≤8、10000 单元、共享 50000 工作预算不变，扫描及结果构造前预充 `2*cells+rank+1`。
 
-Image.arrayArgmax 的固定参数名为 image，只接受每个单元显式顶层 toFloat 的单个固定 rank1..8 数组，真实构建 gt／if 求首个最大值的坐标，输出 shape(rank,)。坐标为 0..63 内的整数值 Float32，是当前回调后端的明确类型子集，未证明 Google Integer dtype 等价；不同 Double 值显式量化后可能形成并列，按量化后的值选首个。rank0 所需空向量、Double、标量及多数组波段明确拒绝。
+Image.arrayArgmax 的固定参数名为 image，接受每个单元统一显式顶层 toFloat 或 toDouble 的单个固定 rank1..8 数组，按声明精度比较并求首个最大值的坐标，输出 shape(rank,)。坐标为 0..63 内的整数值 Float32，未证明 Google Integer dtype 等价；嵌套 Float32 转换仍可能形成新并列。rank0 所需空向量、未转换／混合顶层类型、标量及多数组波段明确拒绝。
 
 全部输出保留原名称／Image 元数据／来源和完整输入掩膜，非赢家单元的缺测也使全部坐标无效，不局部删除缺测。构造前按 `cells*(2*rank+4)+rank²+2*rank+metadata_work` 预充，64 单元和 500 图节点保持；大动态图即使维度合法仍可能拒绝。
 
@@ -341,7 +343,7 @@ Image.arrayArgmax 的固定参数名为 image，只接受每个单元显式顶�
 
 Array.sort 与 Image.arraySort 接受可选 keys，省略或 null 时使用值本身。keys 与值 rank 相同，恰有一个非单例轴，其长度与值的相应轴一致，其余键维度为 1；按升序置换整个切片，不能把各列独立排序。并列键保持输入顺序是本地明确政策，无 Google 对照。静态 typed Array 保留 dtype，支持可唯一确定排序轴的空切片；单单元／rank0 identity 也是本地政策。静态矩阵默认键具有多个非单例轴时明确拒绝。
 
-栅格排序只接受 rank1..8 的固定单数组，值与键单元均显式 toFloat。严格 gt 的相邻比较交换构造实际条件表达式，所有键和所有值的有效性共同约束输出；保留输入名称、元数据、来源回退与行主序。Float32 量化可能产生新并列，缺失的非赢家输入也不会变成有效值。64 单元、50000 工作与 500 图节点限制保持，构造前收费；16 个动态单元排序的超图预算有拒绝回归。直接 Double、标量、多数组波段及含糊键形状不自动转换。
+栅格排序只接受 rank1..8 的固定单数组，值与键分别要求内部统一显式 toFloat 或 toDouble，两者精度可以不同。严格 gt 的相邻比较交换构造实际条件表达式，所有键和所有值的有效性共同约束输出；保留输入名称、元数据、来源回退与行主序。Float32 量化可能产生新并列，缺失的非赢家输入也不会变成有效值。64 单元、50000 工作与 500 图节点限制保持，构造前收费；16 个动态单元排序的超图预算有拒绝回归。Double 条件载荷通过有界原生选择保持精度；标量、多数组波段、未转换／混合顶层类型及含糊键形状不自动转换。
 
 `examples/25_GEE_python_quality_sorted_observations.py` 和 `tests/fixtures/ee-quality-sorted-observations-v1.json` 对四景合成 red／nir 计算 NDVI，将 NDVI／距起点天数成对排序，再选质量最好的两次观测求均值。时间跨度含闰年 366 天和两个同日不同 ID；第一像元的顺序为 b、c、d、a，最佳两次均值为 7/12，全部键并列的第二像元均值为 1/4。缺失键、缺失反射率及 bbox 内多边形外像元都保持整体无效。独立 Fraction 行排序与实际编译图采样按 2e-6 核对；三个输出的图规模和误差记录在报告，无真实栅格 E／Google G 结论。
 

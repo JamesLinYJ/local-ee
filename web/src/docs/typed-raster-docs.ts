@@ -10,6 +10,14 @@ export const pythonTypedRasterDocs: ReferenceEntry[] = [
     code: "design = ee.Image.constant(ee.Array(\n    [[1,0], [1,1], [1,2]])).toDouble()\nrhs = image.select(['red','nir','blue'])\\\n    .toArray().toArray(1).toDouble()\nfit = design.matrixSolve(rhs)\ncoefficients = fit.arrayFlatten(\n    [['intercept','slope'], ['value']])",
   },
   {
+    id: "gee-python-double-array-selection",
+    category: "GEE Python",
+    language: "python",
+    title: "Double 数组排序与最大值坐标",
+    text: "Image.arraySort 的本地固定数组路径要求值数组与 keys 各自具有统一显式顶层 toFloat() 或 toDouble()；两者精度可不同，并用条件选择移动完整 payload 切片。Image.arrayArgmax 同样要求统一顶层 cast，返回行优先首个最大值坐标，本地坐标值为 Float32 整数。Float32 转换会丢失相邻 Double keys 的差异。64单元、50000工作量和500图节点上限不保证最大形状组合一定可编译；见官方 Image.arraySort 与 Image.arrayArgmax 文档。",
+    code: "payload = image.select(['blue','green','red','nir'])\\\n    .toArray().arrayReshape(ee.Image.constant(ee.Array([2,2])), 2)\\\n    .toDouble()\nkeys = image.select(['b5','b4']).toArray()\\\n    .arrayReshape(ee.Image.constant(ee.Array([1,2])), 2).toDouble()\nordered = payload.arraySort(keys)\ncoordinates = score_grid.toDouble().arrayArgmax()",
+  },
+  {
     id: "gee-python-image-float64-arithmetic",
     category: "GEE Python",
     language: "python",
@@ -33,6 +41,12 @@ export const javascriptTypedRasterDocs: ReferenceEntry[] = [
     title: "Double 数组与固定矩阵求解",
     text: "单个固定数组可逐元素 toDouble()。matrixSolve 目前仅接受满列秩的字面量设计，任一输入 Double 则保留 Double；动态设计及超预算图明确拒绝。数组先 flatten/get 成标量再导出。",
     code: "var design = ee.Image.constant(ee.Array(\n  [[1,0], [1,1], [1,2]])).toDouble();\nvar rhs = image.select(['red','nir','blue'])\n  .toArray().toArray(1).toDouble();\nvar fit = design.matrixSolve(rhs);\nvar coefficients = fit.arrayFlatten(\n  [['intercept','slope'], ['value']]);",
+  },
+  {
+    id: "gee-js-double-array-selection",
+    title: "Double 数组排序与最大值坐标",
+    text: "Image.arraySort 的本地固定数组路径要求值数组与 keys 各自具有统一显式顶层 toFloat() 或 toDouble()；两者精度可不同，并用条件选择移动完整 payload 切片。Image.arrayArgmax 同样要求统一顶层 cast，返回行优先首个最大值坐标，本地坐标值为 Float32 整数。Float32 转换会丢失相邻 Double keys 的差异。64单元、50000工作量和500图节点上限不保证最大形状组合一定可编译；见官方 Image.arraySort 与 Image.arrayArgmax 文档。",
+    code: "var payload = image.select(['blue','green','red','nir'])\n  .toArray().arrayReshape(ee.Image.constant(ee.Array([2,2])), 2)\n  .toDouble();\nvar keys = image.select(['b5','b4']).toArray()\n  .arrayReshape(ee.Image.constant(ee.Array([1,2])), 2).toDouble();\nvar ordered = payload.arraySort(keys);\nvar coordinates = scoreGrid.toDouble().arrayArgmax();",
   },
   {
     id: "gee-js-image-float64-arithmetic",

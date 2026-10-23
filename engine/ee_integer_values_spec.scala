@@ -75,14 +75,20 @@ private[reduce] object LocalEeIntegerValuesSpec {
       val selectedOperation = operation.get
       require(Operations(selectedOperation), s"unsupported integer values operation: $selectedOperation")
       val selectedOperands = operands.get
-      val expectedArity = if (UnaryOperations(selectedOperation)) 1 else 2
+      val expectedArity = if (LocalEeFloat64Values.ConditionalOperations(selectedOperation)) 3
+        else if (UnaryOperations(selectedOperation)) 1 else 2
       require(selectedOperands.length == expectedArity,
         s"integer values $selectedOperation requires exactly $expectedArity operand(s)")
       val bandIndices = selectedOperands.collect { case Band(index) => index }.distinct.sorted
       require(bandIndices.nonEmpty, "integer values spec requires at least one band reference")
+      val maxBandIndex = if (LocalEeFloat64Values.ConditionalOperations(selectedOperation)) 2 else 1
+      val maxBandCount = maxBandIndex + 1
+      require(bandIndices.forall(_ <= maxBandIndex),
+        s"integer values $selectedOperation supports band indices only through $maxBandIndex")
       require(bandIndices.zipWithIndex.forall { case (index, expected) => index == expected },
         "integer values band references must be contiguous from band 0")
-      require(bandIndices.length <= 2, "integer values spec supports at most two distinct input bands")
+      require(bandIndices.length <= maxBandCount,
+        s"integer values $selectedOperation supports at most $maxBandCount distinct input bands")
       selectedOperands.zipWithIndex.foreach {
         case (Constant(bits), index) =>
           validateConstant(selectedOperation, index, java.lang.Double.longBitsToDouble(bits))
@@ -113,7 +119,7 @@ private[reduce] object LocalEeIntegerValuesSpec {
     var count = 0
     var token = parser.nextToken()
     while (token != JsonToken.END_ARRAY && token != null) {
-      require(count < 2, "integer values operands may contain at most two entries")
+      require(count < 3, "integer values operands may contain at most three entries")
       require(token == JsonToken.START_OBJECT, "each integer values operand must be an object")
       result += readOperand(parser)
       count += 1
@@ -135,7 +141,7 @@ private[reduce] object LocalEeIntegerValuesSpec {
       fields += name
       token = parser.nextToken()
       name match {
-        case "band" => band = Some(readInteger(parser, token, "integer values band index", 0, 1))
+        case "band" => band = Some(readInteger(parser, token, "integer values band index", 0, 2))
         case "constant" =>
           require(token == JsonToken.VALUE_STRING, "integer values constant must be a binary64 bit string")
           val encoded = parser.getText

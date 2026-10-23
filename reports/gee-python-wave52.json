@@ -1,0 +1,231 @@
+{
+  "schema": "local-ee-compatibility-wave/v1",
+  "date": "2026-10-24",
+  "base_commit": "60bafd1e1d4df00b8e3d25a6e80067f734fcffcb",
+  "title": "Double raster-array sort, first-maximum and native conditional selection",
+  "entry_inventory": {
+    "pinned_signatures": 991,
+    "declared_same_name_handlers": 635,
+    "names_only_percentage": 64.08,
+    "new_api_names": 0,
+    "expanded_existing_APIs": [
+      "Image.arraySort",
+      "Image.arrayArgmax",
+      "Image.where"
+    ],
+    "interpretation": "Name inventory only; not a full compatibility or migration success rate"
+  },
+  "implementation": {
+    "sort": "Independent uniform explicit toFloat/toDouble payload/key arrays; strict-gt stable full-slice permutation, nested cast stages, name/metadata/source and whole input masks",
+    "argmax": "Actual declared-precision comparisons and first row-major maximum; original full input mask; coordinates remain Float32 integers0..63",
+    "native_selection": "Two internal ternary operations select/where_select added to existing bounded v1 values SPI; not new EE API names. Only these operations admit3 ordered bands. Old operations retain exact1/2 arity and maximum2 bands. Canonical1024-byte spec limit remains.",
+    "masks": {
+      "select": "NaN condition/selected payload ->NoData; unselected NaN ignored",
+      "where_select": "Missing original stays NoData; missing test/replacement keeps original",
+      "finite_input_policy": "Every source band still rejects valid +/-Infinity including unselected branches. NaN is NoData. Signed zeros copied exactly."
+    },
+    "compiler": "Native typed path, fresh common-grid validation, explicit same-item asset CRS/basis/fractional-origin contradiction rejection and no implicit spatial/temporal broadcast. Float32 where callback staging and later structural Double cast preserved.",
+    "constants": "Finite binary64 wire constants; raw integer constants within +/-2^53. Null branches materialized as actual NoData on an existing operand grid. Existing standalone grid-constant restrictions unchanged.",
+    "root_cause": "Initial uncommitted mask/unmask composition rejected after pinned upstream source proved absent condition keys retain payload; replaced with native selection over merged observed-key union and padded NoData inputs.",
+    "limits": {
+      "raster_array_rank": 8,
+      "axis_length": 64,
+      "array_cells": 64,
+      "compiler_work": 50000,
+      "process_nodes": 500,
+      "wire_spec_bytes": 1024,
+      "native_decoded_cells_per_tile": 10000000,
+      "native_total_decoded_cells": 100000000,
+      "native_work_per_tile": 100000000,
+      "native_total_work": 1000000000
+    },
+    "largest_shapes": "Original caps retained; valid array shapes do not guarantee a complete expanded graph fits. Dynamic arrays and all GEE parameter/dtype semantics are not implied."
+  },
+  "validation": {
+    "python": {
+      "tests": 5283,
+      "passed": 5260,
+      "skipped": 23,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 43.711
+    },
+    "warnings": {
+      "count": 52,
+      "existing_rasterio_pending_deprecation": 51,
+      "google_api_core_python311_future_lifecycle": 1,
+      "scope": "No dependency/interpreter changes or new vulnerability scan"
+    },
+    "frontend": {
+      "passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed"
+    },
+    "workflow": {
+      "outputs": {
+        "sorted_double_payload": {
+          "nodes": 124,
+          "sample_slots": 16,
+          "valid_values": 8,
+          "max_abs_error": 0.0
+        },
+        "sorted_mixed_precision_payload": {
+          "nodes": 124,
+          "sample_slots": 16,
+          "valid_values": 8,
+          "max_abs_error": 0.0
+        },
+        "sorted_payload_after_float32_keys": {
+          "nodes": 128,
+          "sample_slots": 16,
+          "valid_values": 8,
+          "max_abs_error": 0.0
+        },
+        "first_max_double_coordinates": {
+          "nodes": 106,
+          "sample_slots": 8,
+          "valid_values": 6,
+          "max_abs_error": 0.0
+        },
+        "first_max_after_float32_coordinates": {
+          "nodes": 114,
+          "sample_slots": 8,
+          "valid_values": 6,
+          "max_abs_error": 0.0
+        },
+        "trimmed_middle_score_mean": {
+          "nodes": 154,
+          "sample_slots": 4,
+          "valid_values": 3,
+          "max_abs_error": 0.0
+        }
+      },
+      "python_js_equal_outputs": 6,
+      "sample_slots": 68,
+      "valid_values": 39,
+      "guarded_network_attempts": 0,
+      "scope": "Actual offline public compiler and independent NumPy sample-vector reference; not full Spark/map/export/Google execution"
+    },
+    "native_selection": {
+      "case_count": 5,
+      "pixel_count": 40,
+      "invalid_spec_count": 16,
+      "invalid_tile_count": 6,
+      "fixture_sha256": "11bbe3cc59a3b5e014523f94469a1c71fcfbd9d6250b6ae9a81d425a33389e40",
+      "probe_source_sha256": "c989376177fa016fdefd0357fc3ff603640314edcb7438c298f9bdcf03126a6c"
+    },
+    "native_selection_precision": "Actual GeoTrellis tiles through direct kernel and historical dispatcher; exact raw binary64 bits including signed zero. Standalone trusted component, no SparkContext.",
+    "native_legacy_float64": {
+      "operation_count": 22,
+      "case_count": 25,
+      "pixel_count": 173,
+      "invalid_spec_count": 19,
+      "invalid_tile_count": 2,
+      "max_observed_ulps": 1,
+      "composite_stage_count": 6,
+      "composite_pixel_count": 44
+    },
+    "native_legacy_integer": {
+      "case_count": 26,
+      "pixel_count": 214,
+      "invalid_spec_count": 36,
+      "invalid_tile_count": 10
+    },
+    "native_build": {
+      "sources": 51,
+      "changed_sources": [
+        "engine/ee_integer_values_spec.scala",
+        "engine/ee_float64_values.scala"
+      ],
+      "jar_sha256": "aba41d789e6113670dfcea5ec8f72c32c051e30070334ce69339feb34a0a9ce5",
+      "build_script_sha256": "72a9651bcd6c13f1e53c04726f05b1610a3cec3d38febc0e0dd099080064e46a",
+      "installed": false,
+      "warnings": "Existing sample-adapter outer-reference warning and9 deprecations"
+    },
+    "key_union": {
+      "upstream_commit": "d240b43160bc65272c6c02f9501dced363525dc4",
+      "pin": "upstream-lock.json:14",
+      "ordinary_mask": "DatacubeSupport.scala:224-271: left outer join retains payload when mask key absent; cannot implement generic selection by composing ordinary masks and unmask",
+      "merge": "OpenEOProcesses.scala:1384-1392 and1565-1582: observed-key outer union, absent peer bands padded with NoData",
+      "inspected_upstream_tests": "MergeCubesSpec.scala:303-327 disjoint times and869-933 sparse spatial keys; inspected only, not rerun",
+      "compiler_controls": "Closed native select/where_select after actual ordered input merge; spatial/temporal mismatch rejects; fresh explicit multi-item grid and same-item asset contradiction checks",
+      "all_empty": "Native SPI rejects empty observed input; no fabricated raster keys",
+      "scope": "Pinned source inspection and graph controls; full Spark merge execution not performed this batch"
+    },
+    "original_probes": {
+      "SDK_serialized": 50,
+      "compiled": 47,
+      "guarded_network_attempts": 0,
+      "scope": "Original50 directed probes, not representative coverage"
+    },
+    "execution_sandbox_failure": {
+      "passed": 5244,
+      "failures": 13,
+      "errors": 3,
+      "skipped": 23,
+      "cause": "Command sandbox denied loopback binding, nested Seatbelt, process inspection and temporary fixed-filesystem controls. No source changes; identical full suite passed with required execution permissions.",
+      "evidence": "execution-sandbox-pytest.xml/log and matching source-hashes retained"
+    },
+    "other_corrected_checks": "Preserved old Float32 where structural-cast regression by adding bounded tagged-where rewrite; repaired example CLI catalog to explicitly declare its isolated synthetic fixture."
+  },
+  "evidence": {
+    "source_sha256": {
+      "engine/ee_float64_values.scala": "760d267f587d85910754d5ddd10869dd4f64e7ab8c4f044d64f02b98f7d73b1b",
+      "engine/ee_integer_values.py": "45cb7e182c44d6346ff591b7bd0d9d0630f1c7bc2402afb88a00418f07e28d0f",
+      "engine/ee_integer_values_spec.scala": "c252b481666289a466ca75a17fdc86c1e4b9665a4fe5ccb8679558fb2d55089d",
+      "examples/57_GEE_python_double_selection.py": "aab657e0a6b9fd7496996575367f7c7ee4e8cf185df733ee308cd653e0423793",
+      "examples/javascript/11_双精度排序选择.js": "276cdfed4061d4813642adc5edce6f551ce4395bc110b6085ca57aa8486e501d",
+      "gee/compat/earthengine/array_argmax.py": "2b3bce13730fd273a4fe80c2e5ce14ff157141d1a315728c21d15299899348b7",
+      "gee/compat/earthengine/capabilities.py": "23e91859e4e1371f4abfe8bd83cb09f47c382c0cecd82d1f41a4689a6d2947ef",
+      "gee/compat/earthengine/image_ops.py": "7fdab45f00b4308568ded1b91f27c609ac7240dc9d588f3c3ecdef7052115feb",
+      "gee/compat/earthengine/integer_values_graph.py": "192c6ab982680900fc7f8dc06f7b9a4468b3e3adfa0dbbc6d1f53940575aaa2d",
+      "gee/compat/earthengine/numeric_reducer_grid.py": "e50752bb932e8b0d45a14a74bdeef6309ad1cf5d068a58520a9ff690bee5494e",
+      "gee/compat/earthengine/pixel_graph.py": "3c3baf6fab36138bfa60556bc7119457d48b6301c648e9b3d04abe62658702e0",
+      "gee/compat/earthengine/pixel_selection_graph.py": "b48f7c6d89d9c6c0b15c759817effb5354afff7f5a0cfaf6384ffefa354f2d92",
+      "gee/compat/earthengine/raster_array_sort.py": "ecae8dd33db5ae1440a65aac2428b4633849f8e79db728d9b2c6741b61f37123",
+      "gee/compat/earthengine/selection_grid.py": "568e61b19ce869c2159f944b919688c2db0e22bfa3f602e6c5adae979361e3d6",
+      "gee/float64_values_contract.py": "eecccd1e7901e54000b0bb8c608718c5cff305f6730b736cdc675612381ba080",
+      "gee/integer_values_contract.py": "586f744802567ec2fdf3aabf3b33d8a2ddb469764f6e8db5f9cd707669d064c8",
+      "gee/integer_values_spec.py": "bbf9f9b5abad49a350774fdab017b34b7b0eca2c669f9c98567e3d5ed11b07ed",
+      "scripts/ee_inventory/catalogue.py": "3c7d5a65a955edca137c653f30e35a1d2755b5750f4f55b2ec6a0e78303221ea",
+      "scripts/probe_selection_native.py": "8a6cfe0cc90116b080822eebb607f12249fd88c02fb8fbca067ade4eafffe207",
+      "tests/ee_float64_graph_reference.py": "6e86ff3333fb023339d73c03e5ee9c3f9d984c34437e191e4c97bfd156098690",
+      "tests/ee_selection_kernel_helpers.py": "d0ddaa35e96196aee4e8ca65250bc0db007543e0bf65d651c4faad14f63e68d8",
+      "tests/fixtures/ee-selection-kernel-probe.scala": "c989376177fa016fdefd0357fc3ff603640314edcb7438c298f9bdcf03126a6c",
+      "tests/test_ee_argmax_parameters.py": "76c2630fa48f51a00f9fafebaa30b6fefcafb31ae103c8700828ce7b08d200b9",
+      "tests/test_ee_double_array_argmax.py": "a8b429f38e7ca77436d44d3d96663e5aa01f3db040910b86dc9f27877e79a7bd",
+      "tests/test_ee_double_array_sort.py": "bd9079503eca1d73e0670a4f148dd80c02715791468e67c3b428d1a6e5037580",
+      "tests/test_ee_double_selection.py": "4cea63f160379b3ae0d31c19b4aa7e28aa586fe7e9560b4ca8c82a77d3fbd5aa",
+      "tests/test_ee_double_selection_workflow.py": "f8d47e4ed31650e34b517aeebe64798bcfd1f6d5267afb09e644664597c26620",
+      "tests/test_ee_float64_graph.py": "f7718eb1076786a05abda966942258a5aba2ac5f713f3808cfa517f3f50be8ad",
+      "tests/test_ee_float64_values_contract.py": "142dcd8b31f71564146f5c07e922c516aa711113f856e407a5fd7cf77b6e37f1",
+      "tests/test_ee_integer_values_bridge.py": "6d58d982d8b5ee8cb9f37e18411b522509c7c28a3e3b5d80c51e39d1e4d7769d",
+      "tests/test_ee_integer_values_spec.py": "d4bedbe54cc37cc8da60380b29362ab44a3a94c12da33027e35538beb8579095",
+      "tests/test_ee_raster_array_sort_parameters.py": "3bc1a044ffadb160762f7234358d6be4a5a0da16d5c1e1fd1b838daa12902ff4",
+      "tests/test_ee_selection_grid.py": "56a02a4eb0024193b05312d5ee914b1eb541e78b657dbb03c9ad6e2ea3ca341b",
+      "tests/test_ee_selection_kernel.py": "a23533cfb77d85c0c03fbce8c017384dd157ac20726d97081738729d947601be",
+      "tests/test_ee_selection_wire.py": "7e8a49564d4d52154f783b6b7cf2a1582b3cbcfdb750b2b441dea02ad9639be9",
+      "web/src/docs/typed-raster-docs.ts": "4804fdd23bbcda414f75bcd279196dcc292a33c68e894c0cef3ab11bb9f14f5b"
+    },
+    "local_audit": "audit/gee-python-wave52/final-verified",
+    "scope": "Public report carries counts, boundaries, source digests and adapter identity; raw local artifacts remain ignored"
+  },
+  "cleanup": {
+    "removed_bytes": 2339555,
+    "removed_owned_paths": [
+      "work/gee-python-wave52/frontend",
+      "work/gee-python-wave52/native"
+    ],
+    "owners": "All Wave52 agents completed; build/probe/frontend and full-pytest handles terminal",
+    "preserved": "Formal audit, native dependencies, installed runtime, accounts and user data",
+    "native_jar_installed": false
+  },
+  "not_established": [
+    "Full Spark key-union/selection cube, sandbox task, service/browser/map or physical export acceptance for new paths",
+    "Google same-data/dtype/first-tie/ULP equivalence",
+    "All dynamic arrays, all projection policies, arbitrary callbacks or complete GEE services",
+    "Production installation/migration; new compiler paths require the checked rebuilt adapter during a later controlled rollout",
+    "Private real-data and Linux/macOS full acceptance deferred by current phase"
+  ],
+  "goal_status": "active"
+}

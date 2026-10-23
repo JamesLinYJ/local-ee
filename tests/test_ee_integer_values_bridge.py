@@ -19,6 +19,18 @@ def _constant_spec():
     return prepare_integer_values_spec("bit_or", [{"band": 0}, constant_operand(1)])
 
 
+def _select_spec():
+    return prepare_integer_values_spec(
+        "select", [{"band": 0}, {"band": 1}, {"band": 2}],
+    )
+
+
+def _where_select_spec():
+    return prepare_integer_values_spec(
+        "where_select", [{"band": 0}, {"band": 1}, {"band": 2}],
+    )
+
+
 def _collection(collection_id):
     return {"id": collection_id, "cube:dimensions": {
         "x": {"type": "spatial", "axis": "x", "extent": [0, 4], "reference_system": 4326},
@@ -94,6 +106,36 @@ def test_dry_run_merge_preserves_all_sources_without_guessing_operand_order():
     }
 
 
+def test_dry_run_select_accepts_three_operand_bands_and_preserves_source_trace():
+    from openeo_driver.dry_run import DryRunDataCube
+
+    cube, source, tracer = _dry_cube(
+        bands=("red", "nir", "blue"), temporal=True,
+    )
+
+    result = local_ee_integer_values({"data": cube, "spec": _select_spec()}, None)
+
+    assert isinstance(result, DryRunDataCube)
+    assert result.metadata.band_names == ["v"]
+    assert result.metadata.has_temporal_dimension()
+    assert result._data_tracer is tracer and result._traces[0].get_source() is source
+
+
+def test_dry_run_where_select_accepts_three_operand_bands_and_preserves_source_trace():
+    from openeo_driver.dry_run import DryRunDataCube
+
+    cube, source, tracer = _dry_cube(
+        bands=("red", "nir", "blue"), temporal=True,
+    )
+
+    result = local_ee_integer_values({"data": cube, "spec": _where_select_spec()}, None)
+
+    assert isinstance(result, DryRunDataCube)
+    assert result.metadata.band_names == ["v"]
+    assert result.metadata.has_temporal_dimension()
+    assert result._data_tracer is tracer and result._traces[0].get_source() is source
+
+
 def test_dry_run_does_not_validate_stale_band_count_or_names():
     cube, _, _ = _dry_cube(bands=("red", "nir"))
     two_selected = cube.filter_bands(["nir", "red"])
@@ -149,6 +191,50 @@ def test_actual_cube_requires_exact_compiler_order_and_forwards_spec_without_mut
     assert cube.metadata.band_names == original_names
 
 
+def test_actual_cube_select_requires_and_forwards_three_ordered_bands(monkeypatch):
+    from openeo_driver.datacube import DriverDataCube
+
+    cube = DriverDataCube(metadata=_metadata(("band0", "band1", "band2"), temporal=True))
+    calls = []
+    monkeypatch.setattr(
+        adapters, "_apply_native",
+        lambda actual, process_id, arguments, metadata: (
+            calls.append((actual, process_id, arguments, metadata)) or "native-return"
+        ),
+    )
+
+    assert local_ee_integer_values({"data": cube, "spec": _select_spec()}, None) == "native-return"
+
+    actual, process_id, arguments, metadata = calls[0]
+    assert actual is cube
+    assert process_id == "local_ee_integer_values"
+    assert arguments == {"spec": _select_spec()}
+    assert metadata.band_names == ["v"]
+    assert metadata.has_temporal_dimension()
+
+
+def test_actual_cube_where_select_requires_and_forwards_three_ordered_bands(monkeypatch):
+    from openeo_driver.datacube import DriverDataCube
+
+    cube = DriverDataCube(metadata=_metadata(("band0", "band1", "band2"), temporal=True))
+    calls = []
+    monkeypatch.setattr(
+        adapters, "_apply_native",
+        lambda actual, process_id, arguments, metadata: (
+            calls.append((actual, process_id, arguments, metadata)) or "native-return"
+        ),
+    )
+
+    assert local_ee_integer_values({"data": cube, "spec": _where_select_spec()}, None) == "native-return"
+
+    actual, process_id, arguments, metadata = calls[0]
+    assert actual is cube
+    assert process_id == "local_ee_integer_values"
+    assert arguments == {"spec": _where_select_spec()}
+    assert metadata.band_names == ["v"]
+    assert metadata.has_temporal_dimension()
+
+
 @pytest.mark.parametrize("bands", [("band1", "band0"), ("band0",), ("band1",)])
 def test_actual_cube_rejects_wrong_input_band_order_or_count(bands):
     from openeo_driver.datacube import DriverDataCube
@@ -156,6 +242,32 @@ def test_actual_cube_rejects_wrong_input_band_order_or_count(bands):
     cube = DriverDataCube(metadata=_metadata(bands))
     with pytest.raises(ValueError, match="ordered input bands: band0, band1"):
         local_ee_integer_values({"data": cube, "spec": _binary_spec()}, None)
+
+
+@pytest.mark.parametrize(
+    "bands",
+    [("band1", "band0", "band2"), ("band0", "band1"),
+     ("band0", "band1", "band2", "extra")],
+)
+def test_actual_cube_select_rejects_wrong_three_band_order_or_count(bands):
+    from openeo_driver.datacube import DriverDataCube
+
+    cube = DriverDataCube(metadata=_metadata(bands))
+    with pytest.raises(ValueError, match="ordered input bands: band0, band1, band2"):
+        local_ee_integer_values({"data": cube, "spec": _select_spec()}, None)
+
+
+@pytest.mark.parametrize(
+    "bands",
+    [("band1", "band0", "band2"), ("band0", "band1"),
+     ("band0", "band1", "band2", "extra")],
+)
+def test_actual_cube_where_select_rejects_wrong_three_band_order_or_count(bands):
+    from openeo_driver.datacube import DriverDataCube
+
+    cube = DriverDataCube(metadata=_metadata(bands))
+    with pytest.raises(ValueError, match="ordered input bands: band0, band1, band2"):
+        local_ee_integer_values({"data": cube, "spec": _where_select_spec()}, None)
 
 
 def test_dry_run_trace_walk_is_bounded_and_cycle_checked():

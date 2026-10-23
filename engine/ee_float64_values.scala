@@ -4,6 +4,8 @@ import geotrellis.raster.{DoubleArrayTile, DoubleConstantNoDataCellType, Multiba
 
 /** Closed Float64 raster-value operations added to the historical integer-values v1 SPI. */
 private[reduce] object LocalEeFloat64Values {
+  private[reduce] val ConditionalOperations: Set[String] = Set("select", "where_select")
+
   private[reduce] val OperationArities: Map[String, Int] = Map(
     "add" -> 2,
     "subtract" -> 2,
@@ -15,6 +17,8 @@ private[reduce] object LocalEeFloat64Values {
     "max2" -> 2,
     "and" -> 2,
     "or" -> 2,
+    "select" -> 3,
+    "where_select" -> 3,
     "absolute" -> 1,
     "sqrt" -> 1,
     "log" -> 1,
@@ -41,6 +45,8 @@ private[reduce] object LocalEeFloat64Values {
     "max2" -> 1L,
     "and" -> 1L,
     "or" -> 1L,
+    "select" -> 3L,
+    "where_select" -> 3L,
     "absolute" -> 1L,
     "sqrt" -> TranscendentalWork,
     "log" -> TranscendentalWork,
@@ -64,7 +70,7 @@ private[reduce] object LocalEeFloat64Values {
       throw new IllegalStateException(s"Float64 value operation has no work weight: $operation"))
   }
 
-  /** Read real cells as Float64, intersect masks, and map nonfinite results to NaN NoData. */
+  /** Read real cells as Float64 and evaluate the closed raster-value operations. */
   def applyTile(input: MultibandTile, spec: LocalEeIntegerValuesSpec.Value): Tile = {
     val requiredBands = OperationArities.getOrElse(spec.op,
       throw new IllegalArgumentException(s"unsupported Float64 value operation: ${spec.op}"))
@@ -79,7 +85,7 @@ private[reduce] object LocalEeFloat64Values {
     val copied = LocalEeReduceSupport.copyAsDouble(input, spec.inputBands, cols, rows)
     val sources = Array.tabulate(spec.inputBands)(index => copied.band(index))
     val output = new Array[Double](Math.multiplyExact(cols, rows))
-    val values = new Array[Double](2)
+    val values = new Array[Double](requiredBands)
     var row = 0
     while (row < rows) {
       var col = 0
@@ -91,14 +97,29 @@ private[reduce] object LocalEeFloat64Values {
             case LocalEeIntegerValuesSpec.Band(index) =>
               val value = sources(index).getDouble(col, row)
               values(operandIndex) = value
-              if (value.isNaN) valid = false
+              if (!ConditionalOperations(spec.op) && value.isNaN) valid = false
             case LocalEeIntegerValuesSpec.Constant(bits) =>
               values(operandIndex) = java.lang.Double.longBitsToDouble(bits)
           }
           operandIndex += 1
         }
         val index = row * cols + col
-        if (!valid) output(index) = Double.NaN
+        if (spec.op == "select") {
+          val condition = values(0)
+          if (condition.isNaN) output(index) = Double.NaN
+          else {
+            val selected = values(if (condition != 0d) 1 else 2)
+            output(index) = if (selected.isNaN) Double.NaN else selected
+          }
+        } else if (spec.op == "where_select") {
+          val condition = values(0)
+          val replacement = values(1)
+          val original = values(2)
+          output(index) = if (original.isNaN) Double.NaN
+            else if (condition.isNaN || replacement.isNaN) original
+            else if (condition != 0d) replacement
+            else original
+        } else if (!valid) output(index) = Double.NaN
         else {
           val result = applyValue(spec.op, values)
           output(index) = if (result.isFinite) result else Double.NaN
@@ -123,6 +144,8 @@ private[reduce] object LocalEeFloat64Values {
       case "max2" => java.lang.StrictMath.max(left, values(1))
       case "and" => boolValue(isTrue(left) && isTrue(values(1)))
       case "or" => boolValue(isTrue(left) || isTrue(values(1)))
+      case "select" => throw new IllegalStateException("select uses conditional NoData semantics")
+      case "where_select" => throw new IllegalStateException("where_select uses conditional NoData semantics")
       case "absolute" => java.lang.StrictMath.abs(left)
       case "sqrt" => java.lang.StrictMath.sqrt(left)
       case "log" => java.lang.StrictMath.log(left)

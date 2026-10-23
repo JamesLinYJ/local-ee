@@ -178,14 +178,7 @@ def invoke_image(translator, name, arguments):
         for index, (name, pixel) in enumerate(image.bands):
             test_pixel = test.bands[0 if len(test.bands) == 1 else index][1]
             value_pixel = value.bands[0 if len(value.bands) == 1 else index][1]
-            condition = Pixel(
-                "if",
-                (Pixel("is_nodata", (test_pixel,), True), const(False), Pixel("neq", (test_pixel, const(0)), True)),
-                True,
-            )
-            condition = Pixel("if", (Pixel("is_nodata", (value_pixel,), True), const(False), condition), True)
-            replacement = Pixel("if", (condition, value_pixel, pixel))
-            bands.append((name, Pixel("preserve_mask", (replacement, pixel))))
+            bands.append((name, Pixel("where", (test_pixel, value_pixel, pixel))))
         return replace(image, bands=bands)
     if name in {"Image.clamp", "Image.unitScale"}:
         translator.allowed(a, {"input", "low", "high"})

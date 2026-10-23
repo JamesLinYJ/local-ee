@@ -1,4 +1,4 @@
-"""Stable keyed permutations of fixed Float32 raster-array pixels."""
+"""Stable keyed permutations of fixed explicitly cast raster-array pixels."""
 from __future__ import annotations
 
 import math
@@ -6,6 +6,7 @@ import math
 from .array_core import charge_array
 from .ir import Pixel, fail
 from .raster_array_core import combined_mask, wrap_array_image
+from .raster_array_precision import require_cast_cells
 from .raster_array_values import _array, _result_image
 
 
@@ -26,19 +27,12 @@ def _sort_axis(shape, key_shape):
     return axis
 
 
-def _float_cells(value):
-    if any(pixel.op != "to_float" or len(pixel.args) != 1
-           or not isinstance(pixel.args[0], Pixel) or pixel.boolean
-           for pixel in value.cells):
-        fail("Image.arraySort requires explicit top-level toFloat() for every value and key cell")
-
-
-def _swap(condition, left, right):
+def _swap(condition, left, right, cast):
     # Selection performs no arithmetic on payload values. An explicit cast
-    # preserves the existing array callback dtype for downstream operations.
+    # preserves the array's declared dtype for downstream operations.
     return (
-        Pixel("to_float", (Pixel("if", (condition, right, left)),)),
-        Pixel("to_float", (Pixel("if", (condition, left, right)),)),
+        Pixel(cast, (Pixel("if", (condition, right, left)),)),
+        Pixel(cast, (Pixel("if", (condition, left, right)),)),
     )
 
 
@@ -46,8 +40,10 @@ def invoke_raster_sort(translator, name, arguments):
     """Sort one fixed axis, moving full slices under the same key permutation.
 
     Adjacent compare-exchange uses strict greater-than, retaining the original
-    order of equal Float32 keys. This is an explicit local tie policy, without
-    a Google comparison. All key and payload validity contributes to the mask.
+    order of equal keys at their explicitly declared precision. Value and key
+    arrays each require one explicit cast, but their dtypes may differ. This is
+    an explicit local tie policy, without a Google comparison. All key and
+    payload validity contributes to the mask.
     """
     if name not in RASTER_ARRAY_SORT_FUNCTIONS:
         fail(f"Unsupported raster array sort operation: {name}")
@@ -71,19 +67,23 @@ def invoke_raster_sort(translator, name, arguments):
     metadata_work = len(value.image.bands) + len(value.image.props) + len(value.name)
     charge_array(translator, len(value.cells) + len(keys.cells) + 2 * len(value.shape)
                  + exchanges * (5 + 4 * slices) + metadata_work + 1)
-    _float_cells(value)
-    _float_cells(keys)
+    value_cast = require_cast_cells(value, "Image.arraySort", "value")
+    key_cast = require_cast_cells(keys, "Image.arraySort", "key")
     cells, ordered_keys = list(value.cells), list(keys.cells)
     for end in range(length - 1, 0, -1):
         for position in range(end):
             left_key, right_key = ordered_keys[position:position + 2]
             condition = Pixel("gt", (left_key, right_key), True)
-            ordered_keys[position:position + 2] = _swap(condition, left_key, right_key)
+            ordered_keys[position:position + 2] = _swap(
+                condition, left_key, right_key, key_cast,
+            )
             for block in range(outer):
                 for offset in range(inner):
                     left = (block * length + position) * inner + offset
                     right = left + inner
-                    cells[left], cells[right] = _swap(condition, cells[left], cells[right])
+                    cells[left], cells[right] = _swap(
+                        condition, cells[left], cells[right], value_cast,
+                    )
 
     return wrap_array_image(
         _result_image(value, keys), value.shape, tuple(cells),

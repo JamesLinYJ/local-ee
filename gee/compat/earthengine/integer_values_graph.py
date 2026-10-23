@@ -24,7 +24,8 @@ def _validate_spec(spec, operands):
         fail("Integer Image Pixel has an unsupported specification")
     band_indexes = sorted({item["band"] for item in decoded["operands"]
                            if type(item) is dict and set(item) == {"band"}})
-    if band_indexes != list(range(len(operands))) or not 1 <= len(operands) <= 2:
+    maximum = 3 if decoded["op"] in {"select", "where_select"} else 2
+    if band_indexes != list(range(len(operands))) or not 1 <= len(operands) <= maximum:
         fail("Integer Image Pixel specification does not match its ordered input bands")
     return decoded
 
@@ -87,9 +88,9 @@ def compile_numeric_values_pixel(graph, pixel):
     else:
         fail("Internal integer Image compiler received an unsupported Pixel")
 
-    if (type(operands) is not tuple or not 1 <= len(operands) <= 2
+    if (type(operands) is not tuple or not 1 <= len(operands) <= 3
             or any(not isinstance(value, Pixel) for value in operands)):
-        fail("Integer Image Pixel requires one or two scalar raster operands")
+        fail("Integer Image Pixel has an invalid number of scalar raster operands")
     decoded = _validate_spec(spec, operands)
 
     # A finite source/grid proof must finish before input expressions can
@@ -103,7 +104,10 @@ def compile_numeric_values_pixel(graph, pixel):
     if len(operands) > 1:
         from .numeric_reducer_grid import require_common_grid
 
-        require_common_grid(graph.t, operands, label="Integer Image operations")
+        require_common_grid(
+            graph.t, operands, label="Integer Image operations",
+            check_single_item_assets=decoded["op"] in {"select", "where_select"},
+        )
 
     # Account for copies, spec traversal, possible Double casts and the final
     # native node before materializing either input or merging their cubes.
@@ -138,8 +142,8 @@ def compile_numeric_values_pixel(graph, pixel):
         refs.append(graph.rename_band(ref, f"band{index}"))
 
     data = refs[0]
-    if len(refs) == 2:
-        data = graph.node("merge_cubes", cube1=refs[0], cube2=refs[1])
+    for reference in refs[1:]:
+        data = graph.node("merge_cubes", cube1=data, cube2=reference)
     # The native process returns physical Float64 0/1 predicates or exact
     # integer-valued doubles and preserves masks as NaN NoData.
     operation = decoded.get("op")

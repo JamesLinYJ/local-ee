@@ -13,9 +13,10 @@ def _band_count(spec):
         for operand in spec["operands"]
         if set(operand) == {"band"}
     }
-    if not 1 <= len(bands) <= 2 or bands != set(range(len(bands))):
+    maximum = 3 if spec["op"] in {"select", "where_select"} else 2
+    if not 1 <= len(bands) <= maximum or bands != set(range(len(bands))):
         raise ValueError(
-            f"{_PROCESS_ID} requires one or two contiguous ordered operand bands"
+            f"{_PROCESS_ID} requires one to {maximum} contiguous ordered operand bands"
         )
     return len(bands)
 

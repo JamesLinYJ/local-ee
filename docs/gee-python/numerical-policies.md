@@ -44,14 +44,14 @@ Image.matrixFnorm 采用最大绝对值缩放、比例平方和、开方后再�
 
 固定 SDK 的 Array.argmax／Image.arrayArgmax 都要求并列最大值取第一个。本地按行主序扫描，只在后一个值严格大于当前最大值时更新坐标；多维输出是每个轴的下标。静态 Array 保留原有数值类型直接比较，不先复制成 Float64，仍遵守既有有限值、整数精确域 ±2^53、rank≤8、10000 单元及共享工作预算。rank0 返回空坐标列表，已有 typed 空切片返回 null；直接空构造仍受 PixelType 限制。
 
-Image.arrayArgmax 当前只接受 rank1..8、≤64 单元且每个单元显式顶层 toFloat 的单数组影像。比较在该显式 Float32 输入上执行：原来不同的 Double 值可能量化成相同值，再按首个最大值取坐标。这是用户选择 toFloat 后的本地子集行为，不是对 Google Double 比较的替代。输出为 shape(rank,) 的实际条件表达式，坐标在 0..63 内，以整数值 Float32 表示；尚未实现或证明 Google Integer 结果 dtype 等价。
+Image.arrayArgmax 接受 rank1..8、≤64 单元且每个单元统一显式顶层 toFloat 或 toDouble 的单数组影像，按声明精度比较。只有显式 Float32 转换才会使不同 Double 值量化成相同值；外层转回 Double 不能恢复已丢失的位。输出为 shape(rank,) 的实际条件表达式，坐标在 0..63 内，以整数值 Float32 表示；尚未实现或证明 Google Integer 结果 dtype 等价。
 
-整个输入数组的掩膜和来源／名称／元数据保留，即使缺测单元不会成为最大值，也掩膜全部坐标。rank0 栅格所需的空坐标向量不能由现有非空数组 IR 表示，因此明确拒绝；Double、标量和多数组波段不静默转换。扫描及构造前收费，50000 工作和 500 图节点预算保持。合成光谱原型选择用真实平方距离的负值求 argmax，是明确固定原型的计算流程，未实现 Image.classify 或完整分类训练。无栅格 E／Google G 结论。
+整个输入数组的掩膜和来源／名称／元数据保留，即使缺测单元不会成为最大值，也掩膜全部坐标。rank0 栅格所需的空坐标向量不能由现有非空数组 IR 表示，因此明确拒绝；未转换／混合顶层类型、标量和多数组波段不静默转换。扫描及构造前收费，50000 工作和 500 图节点预算保持。合成光谱原型选择用真实平方距离的负值求 argmax，是明确固定原型的计算流程，未实现 Image.classify 或完整分类训练。无栅格 E／Google G 结论。
 
 
 ## 按键排序与逐类指标
 
-Array.sort／Image.arraySort 的可选 keys 按唯一非单例轴确定方向，保持整个切片的对应关系。并列键使用稳定升序的本地政策，未经过 Google 验证。静态数组保留原始 dtype；栅格值和键都要求显式 Float32，量化后不同 Double 可能成为并列。完整值／键掩膜共同作用，保留非赢家缺测，不删除观测。静态 rank0 单单元 identity 和 typed 空切片行为也是本地子集；栅格仍要求非空固定维度。工作收费在排序／DAG 分配前执行，图规模保持 500 节点。
+Array.sort／Image.arraySort 的可选 keys 按唯一非单例轴确定方向，保持整个切片的对应关系。并列键使用稳定升序的本地政策，未经过 Google 验证。静态数组保留原始 dtype；栅格值和键分别要求内部统一显式 Float32 或 Double，两者精度可以不同；Float32 量化后不同 Double 可能成为并列。完整值／键掩膜共同作用，保留非赢家缺测，不删除观测。静态 rank0 单单元 identity 和 typed 空切片行为也是本地子集；栅格仍要求非空固定维度。工作收费在排序／DAG 分配前执行，图规模保持 500 节点。
 
 ConfusionMatrix 的固定描述把 consumersAccuracy 定义为对角／行和，producersAccuracy 定义为对角／列和，尽管同一参考说明 actual 为行、predicted 为列。实现按固定方法描述计算，不暗中交换两个名字。Fβ 参考页只说 beta 加权 recall，故采用实际行 recall、预测列 precision 的明确推断：`(1+β²)TP/(β²·rowTotal+columnTotal)`。返回 rank1 Float64 是本地物化政策，官方 Array 返回声明不足以证明其与 Google rank／dtype 相同。相同数值不等于完整形状兼容。
 

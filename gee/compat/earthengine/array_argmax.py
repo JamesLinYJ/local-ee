@@ -11,6 +11,7 @@ from .raster_array_core import (
     check_shape,
     wrap_array_image,
 )
+from .raster_array_precision import require_cast_cells
 
 
 STATIC_ARGMAX_FUNCTIONS = frozenset({"Array.argmax"})
@@ -100,11 +101,10 @@ def _raster_argmax(translator, value):
         count * (2 * rank + 4) + rank * rank + 2 * rank + metadata_work,
     )
 
-    for pixel in value.cells:
-        if (not isinstance(pixel, Pixel) or pixel.op != "to_float"
-                or len(pixel.args) != 1 or not isinstance(pixel.args[0], Pixel)
-                or pixel.boolean):
-            fail("Image.arrayArgmax requires explicit top-level toFloat() for every array cell")
+    # Honor the explicit top-level precision on every value. In particular,
+    # preserve Double cells throughout comparisons instead of narrowing the
+    # running maximum to Float32; only the bounded output coordinates are cast.
+    require_cast_cells(value, "Image.arrayArgmax")
 
     best = value.cells[0]
     coordinates = [const(0) for _ in range(rank)]
@@ -124,7 +124,7 @@ def _raster_argmax(translator, value):
 
 
 def invoke_raster_argmax(translator, name, arguments):
-    """Build Float32 coordinate Pixels for a fixed-shape array image."""
+    """Build exact bounded Float32 coordinate Pixels for an array image."""
     if name not in RASTER_ARGMAX_FUNCTIONS:
         fail(f"Unsupported raster Array operation: {name}")
     _arguments(translator, name, arguments)

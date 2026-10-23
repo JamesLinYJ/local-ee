@@ -8,6 +8,7 @@ import struct
 from .integer_values_contract import (
     check_constant, evaluate_integer_values, finite_number, validate_operation,
 )
+from .float64_values_contract import FLOAT64_ARITIES
 
 
 MAX_BYTES = 1024
@@ -29,6 +30,8 @@ def _check(spec):
             or type(spec["v"]) is not int or spec["v"] != 1):
         raise ValueError("Integer image spec requires exactly dtype/op/operands/v1")
     arity = validate_operation(spec["op"], spec["dtype"])
+    if spec["op"] in FLOAT64_ARITIES:
+        arity = FLOAT64_ARITIES[spec["op"]]
     operands = spec["operands"]
     if type(operands) is not list or len(operands) != arity:
         raise ValueError(f"Integer image operation requires exactly {arity} operands")
@@ -38,7 +41,10 @@ def _check(spec):
             raise ValueError("Integer image operand requires exactly one band or constant")
         if set(operand) == {"band"}:
             band = operand["band"]
-            if type(band) is not int or band not in (0, 1):
+            maximum_band = 2 if spec["op"] in {"select", "where_select"} else 1
+            if type(band) is not int or not 0 <= band <= maximum_band:
+                if spec["op"] in {"select", "where_select"}:
+                    raise ValueError("Integer image ternary selection band index must be 0, 1, or 2")
                 raise ValueError("Integer image band index must be 0 or 1")
             bands.add(band)
         elif set(operand) == {"constant"}:
@@ -84,13 +90,19 @@ def integer_values_process_spec():
     cube = {"type": "object", "subtype": "raster-cube"}
     return {
         "id": "local_ee_integer_values", "experimental": True,
-        "summary": "Bounded integer-value operations and closed Float64 pixel math",
+        "summary": "Bounded integer-value operations and closed Float64 pixel selection/math",
         "description": (
-            "Canonical v1 specification over one or two ordered operand bands. "
+            "Canonical v1 specification over one to three ordered operand bands; "
+            "closed select and where_select have exactly three operands and other operations "
+            "remain unary or binary. "
             "Bit inputs/results must be integral within +/-2^53, signed shifts use counts0..63 "
             "without left-shift wrapping, bitCount counts64-bit two's complement. "
             "Integer casts clamp and truncate toward zero; int64 is limited to +/-2^53. "
             "Comparisons and closed core arithmetic preserve finite Float64 values and intersect operand masks. "
+            "Closed select validates three finite inputs; condition NoData and selected-branch NoData "
+            "propagate, while an unselected branch's NoData does not mask the result. "
+            "Closed where_select validates three finite inputs; original NoData propagates, while "
+            "condition or replacement NoData retains the original value. "
             "Arithmetic domain/overflow results become NoData; divide by zero returns0. "
             "Mod uses signed remainder and zero divisor becomes NoData; round uses local ties toward+infinity. "
             "Grid/time/key limits, decoded10M cells/tile and100M total, work100M/tile "
@@ -98,7 +110,7 @@ def integer_values_process_spec():
         ),
         "categories": ["cubes"],
         "parameters": [
-            {"name": "data", "description": "One or two ordered operand bands", "schema": cube},
+            {"name": "data", "description": "One to three ordered operand bands", "schema": cube},
             {"name": "spec", "description": "Canonical v1 integer image specification",
              "schema": {"type": "string", "maxLength": MAX_BYTES}},
         ],

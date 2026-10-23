@@ -5,8 +5,9 @@ import numpy as np
 import pytest
 
 from gee.compat.earthengine.decoder import Translator
-from gee.compat.earthengine.ir import Image, Pixel, const
+from gee.compat.earthengine.ir import Image, Pixel, Source, const
 from gee.compat.earthengine.raster_array_core import wrap_array_image
+from gee.compat.earthengine import raster_array_sort
 from gee.compat.earthengine.raster_array_sort import invoke_raster_sort
 from gee.ee_translate import UnsupportedEEError
 from scripts.ee_python_api.offline import OfflineGuard
@@ -28,6 +29,12 @@ def fixed(shape=(3,), *, dtype="to_float"):
     return wrap_array_image(Image([], {"tag": "input"}), shape, cells, const(True), "data")
 
 
+def cast_array(*casts):
+    cells = tuple(Pixel(cast, (const(index),)) for index, cast in enumerate(casts))
+    return wrap_array_image(Image([], {"tag": "input"}), (len(cells),), cells,
+                            const(True), "data")
+
+
 def invoke(args, translator=None):
     return invoke_raster_sort(translator or Translator([], {}, {}), "Image.arraySort", args)
 
@@ -42,8 +49,9 @@ def invoke(args, translator=None):
     ({"image": fixed((3,)), "keys": fixed((1, 3))}, "matching rank"),
     ({"image": fixed((2, 3)), "keys": fixed((1, 2))}, "key length"),
     ({"image": fixed((2, 3)), "keys": fixed((1, 1))}, "one non-singleton axis"),
-    ({"image": fixed(dtype="to_double")}, "top-level toFloat"),
-    ({"image": fixed(), "keys": fixed(dtype="to_double")}, "top-level toFloat"),
+    ({"image": cast_array("to_float", "to_double")}, "uniform explicit cast"),
+    ({"image": fixed(), "keys": cast_array("to_float", "to_double", "to_float")},
+     "uniform explicit cast"),
 ])
 def test_invalid_inputs_fail_explicitly(args, match):
     with pytest.raises(UnsupportedEEError, match=match):
@@ -61,6 +69,51 @@ def test_single_cell_identity_preserves_layout_name_metadata_and_input(shape):
     assert value.image.props == {"tag": "input"}
 
 
+def test_value_and_key_casts_are_uniform_independently_and_survive_selection():
+    footprint = {"type": "Polygon", "coordinates": [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]]}
+    value = wrap_array_image(
+        Image([], {"tag": "payload"}, Source("payload", ("scene-p",), ("p0", "p1")),
+              footprint=footprint, footprint_is_absolute=True),
+        (2,), tuple(Pixel("to_double", (const(index),)) for index in range(2)),
+        const(True), "payload-array",
+    )
+    keys = wrap_array_image(
+        Image([], {"tag": "keys"}, Source("keys", ("scene-k",), ("k0", "k1"))),
+        (2,), tuple(Pixel("to_float", (const(index),)) for index in range(2)),
+        const(True), "key-array",
+    )
+    result = invoke({"image": value, "keys": keys})
+
+    assert result.shape == value.shape
+    assert result.name == value.name == "payload-array"
+    assert result.mask == value.mask == keys.mask
+    assert result.image.props == value.image.props == {"tag": "payload"}
+    assert result.image.source == value.image.source
+    assert result.image.footprint == footprint and result.image.footprint_is_absolute
+    assert [cell.op for cell in result.cells] == ["to_double", "to_double"]
+    first_selection = result.cells[0].args[0]
+    second_selection = result.cells[1].args[0]
+    assert first_selection.op == second_selection.op == "if"
+    condition = first_selection.args[0]
+    assert condition.op == "gt" and condition.boolean
+    assert condition.args == keys.cells
+    assert first_selection.args[1:] == (value.cells[1], value.cells[0])
+    assert second_selection.args[1:] == (value.cells[0], value.cells[1])
+
+
+def test_rank_eight_and_64_cells_remain_inside_the_existing_work_cap():
+    shape = (2, 2, 2, 2, 2, 2, 1, 1)
+    value = fixed(shape)
+    keys = fixed((2, 1, 1, 1, 1, 1, 1, 1), dtype="to_double")
+    translator = Translator([], {}, {})
+
+    result = invoke({"image": value, "keys": keys}, translator)
+
+    assert result.shape == shape
+    assert len(result.cells) == 64
+    assert 0 < translator.steps < 50_000
+
+
 @pytest.mark.parametrize("corrupt", [
     lambda array: replace(array, cells=(const(1),)),
     lambda array: replace(array, cells=tuple(const(1) for _ in array.cells)),
@@ -73,11 +126,16 @@ def test_malformed_internal_array_is_rejected(corrupt):
         invoke({"image": corrupt(fixed())})
 
 
-def test_work_budget_is_checked_before_sort_dag_construction():
+def test_work_budget_is_checked_before_cast_scans_or_sort_dag_construction(monkeypatch):
     translator = Translator([], {}, {})
     translator.steps = 49_999
     value = fixed((64,))
     original_cells = value.cells
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("sort scanned casts or built its DAG before precharge")
+
+    monkeypatch.setattr(raster_array_sort, "require_cast_cells", forbidden)
     with pytest.raises(UnsupportedEEError, match="work|budget|limit"):
         invoke({"image": value}, translator)
     assert value.cells is original_cells
