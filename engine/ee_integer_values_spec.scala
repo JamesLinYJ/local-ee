@@ -12,15 +12,17 @@ private[reduce] object LocalEeIntegerValuesSpec {
 
   final case class Value(dtype: Option[String], op: String, operands: Vector[Operand]) extends Serializable {
     val inputBands: Int = operands.collect { case Band(index) => index }.distinct.size
-    val integerOnly: Boolean = !ComparisonOperations(op)
+    val integerOnly: Boolean = !ComparisonOperations(op) && !LocalEeFloat64Values.supports(op)
   }
 
   private val MaxBytes = 1024
   private val Fields = Set("dtype", "op", "operands", "v")
-  private val Operations = Set(
+  private val IntegerOperations = Set(
     "bit_and", "bit_or", "bit_xor", "bit_not", "left_shift", "right_shift", "bit_count",
     "cast", "eq", "neq", "lt", "lte", "gt", "gte")
-  private val UnaryOperations = Set("bit_not", "bit_count", "cast")
+  private val Operations = IntegerOperations ++ LocalEeFloat64Values.OperationArities.keySet
+  private val UnaryOperations = Set("bit_not", "bit_count", "cast") ++
+    LocalEeFloat64Values.OperationArities.collect { case (name, 1) => name }.toSet
   private[reduce] val ComparisonOperations = Set("eq", "neq", "lt", "lte", "gt", "gte")
   private val CastTypes = Set("int8", "uint8", "int16", "uint16", "int32", "uint32", "int64")
   private val HexDigits = "0123456789abcdef"
@@ -163,7 +165,8 @@ private[reduce] object LocalEeIntegerValuesSpec {
   /** Check fixed numeric values at parse time, independent of whether a raster has valid cells. */
   private def validateConstant(operation: String, index: Int, value: Double): Unit = {
     require(value.isFinite, "integer values constants must be finite")
-    if (ComparisonOperations(operation) || operation == "cast") return
+    if (ComparisonOperations(operation) || operation == "cast" ||
+      LocalEeFloat64Values.supports(operation)) return
     require(value == java.lang.Math.rint(value) && value >= -9007199254740992d &&
       value <= 9007199254740992d,
       "integer values bit constants must be integral within +/-2^53")

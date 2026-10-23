@@ -1,5 +1,7 @@
-"""Compile bounded integer-value and exact comparison Pixels to the native SPI."""
+"""Compile typed numeric Pixels and exact predicates to the bounded native SPI."""
 from __future__ import annotations
+
+from gee.float64_values_contract import FLOAT64_ARITIES, FLOAT64_BOOLEAN
 
 from .ir import Image, Pixel, fail
 
@@ -31,13 +33,25 @@ def _comparison_pixel(graph, pixel):
     from .image_integer import _pixel
 
     try:
-        return _pixel(graph.t, "Image." + pixel.op, pixel.op, pixel.args)
+        return _pixel(
+            graph.t, "Image." + pixel.op, pixel.op, pixel.args,
+            known_boolean_literals=True,
+        )
     except (TypeError, ValueError, OverflowError, RecursionError) as error:
         fail(f"Float64 Image comparison is unsupported: {error}")
 
 
-def compile_integer_values_pixel(graph, pixel):
-    """Lower a prebuilt integer Pixel to a single Float64 NaN-NoData band."""
+def _float64_pixel(graph, pixel):
+    from .image_integer import _float64_pixel
+
+    try:
+        return _float64_pixel(graph.t, "Image." + pixel.op, pixel.op, pixel.args)
+    except (TypeError, ValueError, OverflowError, RecursionError) as error:
+        fail(f"Float64 Image operation is unsupported: {error}")
+
+
+def compile_numeric_values_pixel(graph, pixel):
+    """Lower typed integer/Double Pixels to one Float64 NaN-NoData band."""
     if not isinstance(pixel, Pixel):
         fail("Internal integer Image compiler received an invalid Pixel")
     if pixel.op == "integer_values" and len(pixel.args) == 2:
@@ -54,6 +68,21 @@ def compile_integer_values_pixel(graph, pixel):
             return graph.expression(pixel)
         if pixel.op != "integer_values" or len(pixel.args) != 2:
             fail("Float64 Image comparison did not produce a supported scalar result")
+        operands, spec = pixel.args
+    elif pixel.op in FLOAT64_ARITIES:
+        if len(pixel.args) != FLOAT64_ARITIES[pixel.op]:
+            fail("Float64 Image operation has an invalid operand count")
+        if not any(graph.has_double_precision(value) for value in pixel.args):
+            fail("Internal Float64 operation path received only Float32 operands")
+        pixel = _float64_pixel(graph, pixel)
+        if pixel.op != "integer_values":
+            if pixel.op not in {"constant", "to_double"}:
+                fail("Float64 Image operation folded to an unsupported value")
+            # Preserve pure source-free static folding; a typed Double wrapper
+            # remains visible to later source binding and precision checks.
+            return graph.expression(pixel)
+        if len(pixel.args) != 2:
+            fail("Float64 Image operation did not produce a supported scalar result")
         operands, spec = pixel.args
     else:
         fail("Internal integer Image compiler received an unsupported Pixel")
@@ -113,7 +142,15 @@ def compile_integer_values_pixel(graph, pixel):
         data = graph.node("merge_cubes", cube1=refs[0], cube2=refs[1])
     # The native process returns physical Float64 0/1 predicates or exact
     # integer-valued doubles and preserves masks as NaN NoData.
-    if decoded.get("op") in _COMPARISONS and not pixel.boolean:
-        fail("Float64 Image comparison must retain its Boolean marker")
+    operation = decoded.get("op")
+    boolean_operations = _COMPARISONS | FLOAT64_BOOLEAN
+    if operation in boolean_operations and not pixel.boolean:
+        fail("Float64 Image predicate must retain its Boolean marker")
+    if operation not in boolean_operations and pixel.boolean:
+        fail("Float64 Image numeric operation cannot carry a Boolean marker")
     result = graph.node("local_ee_integer_values", data=data, spec=spec)
     return result, "v", bool(timed)
+
+
+# Keep the previous private name for compiler callers and focused tests.
+compile_integer_values_pixel = compile_numeric_values_pixel

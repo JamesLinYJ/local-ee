@@ -9,6 +9,11 @@ from gee.integer_values_spec import (
     evaluate_integer_values,
     prepare_integer_values_spec,
 )
+from gee.float64_values_contract import (
+    FLOAT64_ARITIES,
+    FLOAT64_BOOLEAN,
+    evaluate_float64_values,
+)
 
 from .ir import Image, Pixel, as_image, fail, pairs
 
@@ -84,8 +89,33 @@ def _literal(pixel):
     return False, None
 
 
-def _pixel(translator, api_name, op, operands, dtype=None, *, precharged=False):
-    literal_flags = [_literal(operand) for operand in operands]
+def _literal_value(pixel, *, allow_boolean=False):
+    """Read a scalar, unwrapping only pure Double casts.
+
+    Boolean literals are numeric 0/1 only when their Pixel carries the explicit
+    Boolean marker. Raw Python booleans never enter the numeric wire by
+    accidental coercion.
+    """
+    is_literal, value = _literal(pixel)
+    if not is_literal or type(value) is not bool or not allow_boolean:
+        return is_literal, value
+    current = pixel
+    depth = 0
+    while (isinstance(current, Pixel) and current.op == "to_double"
+           and len(current.args) == 1 and depth < 96):
+        current = current.args[0]
+        depth += 1
+    if isinstance(current, Pixel) and current.boolean:
+        return True, int(value)
+    return True, value
+
+
+def _pixel(translator, api_name, op, operands, dtype=None, *, precharged=False,
+           known_boolean_literals=False):
+    literal_flags = [
+        _literal_value(operand, allow_boolean=known_boolean_literals)
+        for operand in operands
+    ]
     if all(is_literal for is_literal, _value in literal_flags):
         try:
             result = evaluate_integer_values(
@@ -112,7 +142,9 @@ def _pixel(translator, api_name, op, operands, dtype=None, *, precharged=False):
     descriptors = []
     try:
         for operand in operands:
-            is_literal, value = _literal(operand)
+            is_literal, value = _literal_value(
+                operand, allow_boolean=known_boolean_literals,
+            )
             if is_literal:
                 descriptors.append(constant_operand(value))
                 continue
@@ -133,6 +165,52 @@ def _pixel(translator, api_name, op, operands, dtype=None, *, precharged=False):
             raise
         fail(f"{api_name} has unsupported integer values: {error}")
     return Pixel("integer_values", (tuple(dynamic), spec), op in _COMPARISONS)
+
+
+def _float64_pixel(translator, api_name, op, operands):
+    """Build a typed Double/logical Pixel using the closed Float64 contract."""
+    if op not in FLOAT64_ARITIES or len(operands) != FLOAT64_ARITIES[op]:
+        fail(f"{api_name} has an invalid Float64 operand count")
+    literals = [_literal_value(value, allow_boolean=True) for value in operands]
+    boolean = op in FLOAT64_BOOLEAN
+    if all(is_literal for is_literal, _value in literals):
+        try:
+            result = evaluate_float64_values(
+                op, [value for _is_literal, value in literals],
+            )
+        except (TypeError, ValueError, OverflowError, RecursionError) as error:
+            fail(f"{api_name} has unsupported Float64 values: {error}")
+        if result is None:
+            return Pixel("constant", (None,), boolean)
+        if boolean:
+            return Pixel("constant", (bool(result),), True)
+        constant = Pixel("constant", (result,))
+        # Retain the Double type even for integral results such as round/floor.
+        return Pixel("to_double", (constant,))
+
+    reserve = 160 + 32 * len(operands)
+    if type(translator.steps) is not int or translator.steps + reserve > _MAX_WORK:
+        fail(f"{api_name} exceeds the shared 50000-step compilation work budget")
+    translator.steps += reserve
+    dynamic, indexes = [], {}
+    descriptors = []
+    try:
+        for operand in operands:
+            is_literal, value = _literal_value(operand, allow_boolean=True)
+            if is_literal:
+                descriptors.append(constant_operand(value))
+                continue
+            identity = id(operand)
+            index = indexes.get(identity)
+            if index is None:
+                index = len(dynamic)
+                indexes[identity] = index
+                dynamic.append(operand)
+            descriptors.append({"band": index})
+        spec = prepare_integer_values_spec(op, descriptors, dtype=None)
+    except (TypeError, ValueError, OverflowError, RecursionError) as error:
+        fail(f"{api_name} has unsupported Float64 values: {error}")
+    return Pixel("integer_values", (tuple(dynamic), spec), boolean)
 
 
 def invoke_image_integer(translator, name, arguments):

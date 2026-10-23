@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import math
+import struct
 from dataclasses import replace
 
 from gee.pixel_math_contract import PIXEL_MATH_ARITIES
@@ -195,11 +196,17 @@ def _evaluate(pixel: Pixel, memo=None, active=None):
                 value = _BINARY[pixel.op](*values)
             elif pixel.op in _UNARY and len(values) == 1:
                 value = _UNARY[pixel.op](values[0])
+            elif pixel.op in _CASTS and len(values) == 1:
+                # Casts are part of a constant's value, not merely wrappers
+                # around a value that can be rebound later. In particular,
+                # Float32 must round at this boundary before an outer
+                # arithmetic operation is evaluated.
+                value = float(values[0])
+                if pixel.op == "to_float":
+                    value = struct.unpack("!f", struct.pack("!f", value))[0]
             else:
                 if pixel.op == "clip":
                     fail("Cannot bind a clipped constant band; its source footprint must be preserved")
-                if pixel.op in _CASTS:
-                    fail("Casts nested inside constant arithmetic cannot be rebound safely")
                 fail(f"Cannot bind constant band expression with unsupported operation: {pixel.op}")
             value = _checked(value)
         except UnsupportedEEError:

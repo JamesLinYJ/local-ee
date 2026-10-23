@@ -1,4 +1,5 @@
 import type { ReferenceEntry } from "../types";
+import { javascriptTypedRasterDocs } from "./typed-raster-docs";
 // Pinned client syntax and explicit local semantics; served entirely from this app.
 const entries: ReferenceEntry[] = [
   {
@@ -179,6 +180,7 @@ const entries: ReferenceEntry[] = [
     text: "Image.sample 默认遍历有限影像范围内的像元，也可显式指定 region。factor 与近似 numPixels 二选一，seed 固定本地抽样；不保证与 Google 抽中相同像元。dropNulls 默认删除任一波段缺测的行，false 保留空值；训练前用 notNull 清理。geometries=true 输出真实像元中心。返回 band_order，分类器省略 inputProperties 时采用其完整顺序；排除类别等字段时显式填写输入列表。结果最多1000行，近似抽样超过上限会报错。tileScale 仅支持1，投影与米制 scale 遵循本站网格限制。独立组件验证与完整任务运行验收分别记录。",
     code: "// image 和 roi 为已有的有限本地影像与研究区\nvar samples = image.sample({region:roi, numPixels:100, seed:42, dropNulls:false, geometries:true});\nprint('波段', samples.get('band_order'));\nExport.table.toDrive({collection:samples, fileFormat:'CSV'});",
   },
+  ...javascriptTypedRasterDocs,
   {
     id: "gee-random-column",
     title: "随机列与训练／验证拆分",

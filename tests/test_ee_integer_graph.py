@@ -190,14 +190,25 @@ def test_float32_and_explicit_to_float_comparisons_keep_the_existing_callback(ee
     assert nodes(explicit, "reduce_dimension")
 
 
-def test_general_double_and_integer_value_arithmetic_still_requires_to_float(ee, local):
+def test_double_and_integer_value_arithmetic_uses_native_double_graph(ee, local):
     image = ee.Image("scene-a").select("x")
-    with pytest.raises(UnsupportedEEError, match="Float64 pixel arithmetic"):
-        compile_expression(encode(ee, image.toDouble().add(1)), *local)
-    with pytest.raises(UnsupportedEEError, match="Float64 pixel arithmetic"):
-        compile_expression(encode(ee, image.toDouble().And(image.eq(1))), *local)
-    with pytest.raises(UnsupportedEEError, match="Float64 pixel arithmetic"):
-        compile_expression(encode(ee, image.toDouble().toInt16().add(1)), *local)
+    for expression, expected_ops in (
+        (image.toDouble().add(1), ["add"]),
+        (image.toDouble().And(image.eq(1)), ["and"]),
+        (image.toDouble().toInt16().add(1), ["cast", "add"]),
+    ):
+        result = compile_expression(encode(ee, expression), *local)
+        integer = nodes(result, "local_ee_integer_values")
+        specs = [json.loads(node["arguments"]["spec"]) for node in integer]
+        assert [spec["op"] for spec in specs] == expected_ops
+        assert all(spec["dtype"] is None for spec in specs if spec["op"] != "cast")
+        assert result["bands"] == ["x"]
+        band_callbacks = [node for node in nodes(result, "reduce_dimension")
+                          if node["arguments"].get("dimension") == "bands"]
+        # Image.eq(1) intentionally stays on the proven Float32 predicate path;
+        # the logical Double operation is the final native arithmetic node.
+        assert bool(band_callbacks) is (expected_ops == ["and"])
+        validate(result["process_graph"])
 
     explicit = image.toDouble().bitwiseAnd(1024).toFloat().add(1)
     result = compile_expression(encode(ee, explicit), *local)

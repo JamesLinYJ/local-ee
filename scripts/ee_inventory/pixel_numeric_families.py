@@ -177,7 +177,7 @@ PIXEL_NUMERIC_LIMITS["Image.distance"] = [
     "eligibility uses exact binary64 radius; Euclidean compares squared integer offsets "
     "before final square root. Center targets yield0, absent targets yield NaN, and "
     "skipMasked controls center validity only. Physical output Float64; ordinary "
-    "callback arithmetic requires explicit toFloat. Preserve observed keys/time, full "
+    "closed native Double core arithmetic is available. Preserve observed keys/time, full "
     "source bounds and common-grid proof before output ROI/resampling. Compiler50000/"
     "graph500/JSON1MB caps remain; native halo must be smaller than the tile dimensions, "
     "decoded cells<=1e7/tile and1e8/aggregate, work<=1e8/tile and1e9/aggregate. "

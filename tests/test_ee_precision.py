@@ -1,10 +1,11 @@
 """A cast must change physical type, and unsupported narrowing must be explicit."""
+import json
 import pytest
 import numpy as np
 
 from gee import graph
 from gee.backend import Processes
-from gee.ee_translate import UnsupportedEEError
+from gee.integer_values_spec import constant_operand
 from test_ee_translate import local, compile, call, evaluate_graph
 
 
@@ -20,11 +21,30 @@ def test_double_emits_native_process_and_float_is_a_real_narrowing(local):
         assert any(n['process_id'] == expected for n in result['process_graph'].values())
 
 
-def test_double_math_rejects_implicit_float32_narrowing(local):
+def test_double_math_uses_native_float64_and_float32_remains_explicit(local):
     double = call('Image.toDouble', value=single())
-    with pytest.raises(UnsupportedEEError, match='Float64 pixel arithmetic'):
-        compile(call('Image.add', image1=double, image2=1),local)
-    compile(call('Image.add', image1=call('Image.toFloat', value=double), image2=1),local)
+    native = compile(call('Image.add', image1=double, image2=1), local)
+    graph.validate(native['process_graph'])
+    integer = [node for node in native['process_graph'].values()
+               if node['process_id'] == 'local_ee_integer_values']
+    assert len(integer) == 5  # Image.first() retains the five source bands.
+    assert [json.loads(node['arguments']['spec']) for node in integer] == [{
+        'dtype': None, 'op': 'add',
+        'operands': [{'band': 0}, constant_operand(1)], 'v': 1,
+    }] * 5
+    assert not any(node['process_id'] == 'reduce_dimension'
+                   and node['arguments'].get('dimension') == 'bands'
+                   for node in native['process_graph'].values())
+
+    explicit_float = compile(
+        call('Image.add', image1=call('Image.toFloat', value=double), image2=1), local,
+    )
+    graph.validate(explicit_float['process_graph'])
+    assert not any(node['process_id'] == 'local_ee_integer_values'
+                   for node in explicit_float['process_graph'].values())
+    assert any(node['process_id'] == 'reduce_dimension'
+               and node['arguments'].get('dimension') == 'bands'
+               for node in explicit_float['process_graph'].values())
     collection = call('Collection.map', collection=call('ImageCollection.load', id='sentinel-2-l2a'), baseAlgorithm={
         'type':'Function','argumentNames':['im'],'body':call('Image.toDouble',value={'type':'ArgumentRef','value':'im'})})
     result = compile(call('reduce.mean',collection=collection),local)

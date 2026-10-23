@@ -12,8 +12,9 @@ for name in (
         "Finite scalar Image bands only. Local casts clamp and truncate toward zero; "
         "int64 is restricted to +/-2^53, not full signed64 storage. Physical output is "
         "Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata "
-        "and source grid are retained; generic callback arithmetic requires explicit "
-        "toFloat. Finite constant-only results need an existing local destination grid. "
+        "and source grid are retained; the closed native Double arithmetic family is "
+        "available, other Float32-only consumers require explicit toFloat. Finite "
+        "constant-only results need an existing local destination grid. "
         "Shared compiler/graph/output and native key/cell/work budgets apply. "
         "Google rounding, integer dtype propagation and full Spark/service parity are unverified."
     ]
@@ -27,8 +28,8 @@ for name in (
         "shift with counts0..63. Illegal constants reject even on all-masked images. "
         "One-band broadcast or natural-order equal-band pairing, independent mask "
         "intersection and proven common finite grid precede native execution. Output "
-        "is Float64 v, renamed by compiler; use exact predicates or explicit toFloat "
-        "before generic callback arithmetic. Shared budgets apply; Google dtype, "
+        "is Float64 v, renamed by compiler; exact predicates and closed native Double "
+        "arithmetic are available. Shared budgets apply; Google dtype, "
         "overflow and distributed execution parity remain unverified."
     ]
 for name in ("eq", "neq", "lt", "lte", "gt", "gte"):
@@ -36,6 +37,6 @@ for name in ("eq", "neq", "lt", "lte", "gt", "gte"):
         "Existing Float32 path retained. Explicit Float64 operands and local integer "
         "outputs use a native finite binary64 comparison, preserving subnormals/high "
         "bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real "
-        "raster operands require common-grid evidence. General Float64 arithmetic "
-        "and Google same-data parity remain unverified."
+        "raster operands require common-grid evidence. Closed native Double core "
+        "arithmetic has a separate bounded contract; Google same-data parity is unverified."
     ]

@@ -17780,8 +17780,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -17849,8 +17851,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -17937,8 +17941,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -18169,7 +18175,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Fixed-shape Double add/subtract/multiply/divide can use the native scalar path and preserve whole-array masks; larger graphs still reject and generic Double matrix algorithms remain unsupported. Other Float32-only callbacks require explicit casts. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -18207,7 +18213,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Fixed-shape Double add/subtract/multiply/divide can use the native scalar path and preserve whole-array masks; larger graphs still reject and generic Double matrix algorithms remain unsupported. Other Float32-only callbacks require explicit casts. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -18245,7 +18251,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Fixed-shape Double add/subtract/multiply/divide can use the native scalar path and preserve whole-array masks; larger graphs still reject and generic Double matrix algorithms remain unsupported. Other Float32-only callbacks require explicit casts. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -18278,7 +18284,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Fixed-shape Double add/subtract/multiply/divide can use the native scalar path and preserve whole-array masks; larger graphs still reject and generic Double matrix algorithms remain unsupported. Other Float32-only callbacks require explicit casts. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -18395,7 +18401,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Fixed-shape Double add/subtract/multiply/divide can use the native scalar path and preserve whole-array masks; larger graphs still reject and generic Double matrix algorithms remain unsupported. Other Float32-only callbacks require explicit casts. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -18445,7 +18451,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Fixed-shape Double add/subtract/multiply/divide can use the native scalar path and preserve whole-array masks; larger graphs still reject and generic Double matrix algorithms remain unsupported. Other Float32-only callbacks require explicit casts. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -18592,7 +18598,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Fixed-shape Double add/subtract/multiply/divide can use the native scalar path and preserve whole-array masks; larger graphs still reject and generic Double matrix algorithms remain unsupported. Other Float32-only callbacks require explicit casts. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -18679,7 +18685,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Fixed-shape Double add/subtract/multiply/divide can use the native scalar path and preserve whole-array masks; larger graphs still reject and generic Double matrix algorithms remain unsupported. Other Float32-only callbacks require explicit casts. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -18878,7 +18884,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; exact predicates and closed native Double arithmetic are available. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -18947,7 +18953,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; exact predicates and closed native Double arithmetic are available. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -18980,7 +18986,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; exact predicates and closed native Double arithmetic are available. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -19018,7 +19024,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; exact predicates and closed native Double arithmetic are available. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -19056,7 +19062,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; exact predicates and closed native Double arithmetic are available. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -19094,7 +19100,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; exact predicates and closed native Double arithmetic are available. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -19127,7 +19133,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; exact predicates and closed native Double arithmetic are available. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -19165,7 +19171,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; exact predicates and closed native Double arithmetic are available. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -19203,7 +19209,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; exact predicates and closed native Double arithmetic are available. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -19272,7 +19278,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -19411,8 +19417,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -19492,8 +19500,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing scalar lowering can use the closed native Double core when its operands carry Float64. normalizedDifference keeps negative-input and zero-denominator masks; an explicit arithmetic expression has its distinct signed/zero-divisor policy. Existing band naming/property behavior, finite grid/source proof and all resource limits remain. Arbitrary execution text, dynamic arrays and full Google same-data/production parity are not established."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -19961,8 +19971,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -20343,7 +20355,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Nearest valid finite nonzero pixel per input band; original euclidean/manhattan/chebyshev Kernel provenance required, with pixel radius0..16, normalize=false and magnitude1. Missing/null, fixed, transformed and metre kernels reject. Radius eligibility uses exact binary64 radius; Euclidean compares squared integer offsets before final square root. Center targets yield0, absent targets yield NaN, and skipMasked controls center validity only. Physical output Float64; ordinary callback arithmetic requires explicit toFloat. Preserve observed keys/time, full source bounds and common-grid proof before output ROI/resampling. Compiler50000/graph500/JSON1MB caps remain; native halo must be smaller than the tile dimensions, decoded cells<=1e7/tile and1e8/aggregate, work<=1e8/tile and1e9/aggregate. fastDistanceTransform has a separate capped local contract. Trusted tile tests are not full Spark, deployment, private-data or Google same-data acceptance."
+          "Nearest valid finite nonzero pixel per input band; original euclidean/manhattan/chebyshev Kernel provenance required, with pixel radius0..16, normalize=false and magnitude1. Missing/null, fixed, transformed and metre kernels reject. Radius eligibility uses exact binary64 radius; Euclidean compares squared integer offsets before final square root. Center targets yield0, absent targets yield NaN, and skipMasked controls center validity only. Physical output Float64; ordinary closed native Double core arithmetic is available. Preserve observed keys/time, full source bounds and common-grid proof before output ROI/resampling. Compiler50000/graph500/JSON1MB caps remain; native halo must be smaller than the tile dimensions, decoded cells<=1e7/tile and1e8/aggregate, work<=1e8/tile and1e9/aggregate. fastDistanceTransform has a separate capped local contract. Trusted tile tests are not full Spark, deployment, private-data or Google same-data acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -20380,8 +20392,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -20484,7 +20498,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. General Float64 arithmetic and Google same-data parity remain unverified."
+          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. Closed native Double core arithmetic has a separate bounded contract; Google same-data parity is unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -20648,8 +20662,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -20872,8 +20888,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -21793,7 +21811,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. General Float64 arithmetic and Google same-data parity remain unverified."
+          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. Closed native Double core arithmetic has a separate bounded contract; Google same-data parity is unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -21831,7 +21849,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. General Float64 arithmetic and Google same-data parity remain unverified."
+          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. Closed native Double core arithmetic has a separate bounded contract; Google same-data parity is unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -22114,7 +22132,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -22147,7 +22165,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -22180,7 +22198,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -22213,7 +22231,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -22246,7 +22264,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -22363,7 +22381,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; exact predicates and closed native Double arithmetic are available. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -22401,7 +22419,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; exact predicates and closed native Double arithmetic are available. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -22642,8 +22660,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22673,8 +22693,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22705,7 +22727,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -22743,7 +22765,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. General Float64 arithmetic and Google same-data parity remain unverified."
+          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. Closed native Double core arithmetic has a separate bounded contract; Google same-data parity is unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -22781,7 +22803,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. General Float64 arithmetic and Google same-data parity remain unverified."
+          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. Closed native Double core arithmetic has a separate bounded contract; Google same-data parity is unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -23083,7 +23105,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Fixed-shape Double add/subtract/multiply/divide can use the native scalar path and preserve whole-array masks; larger graphs still reject and generic Double matrix algorithms remain unsupported. Other Float32-only callbacks require explicit casts. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -23363,8 +23385,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -23487,8 +23511,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -23523,8 +23549,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -23559,8 +23587,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -23677,7 +23707,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. General Float64 arithmetic and Google same-data parity remain unverified."
+          "Existing Float32 path retained. Explicit Float64 operands and local integer outputs use a native finite binary64 comparison, preserving subnormals/high bits and -0==+0, with mask intersection and numeric0/1 output. Distinct real raster operands require common-grid evidence. Closed native Double core arithmetic has a separate bounded contract; Google same-data parity is unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -23716,8 +23746,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing scalar lowering can use the closed native Double core when its operands carry Float64. normalizedDifference keeps negative-input and zero-denominator masks; an explicit arithmetic expression has its distinct signed/zero-divisor policy. Existing band naming/property behavior, finite grid/source proof and all resource limits remain. Arbitrary execution text, dynamic arrays and full Google same-data/production parity are not established."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -23747,8 +23779,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -23783,8 +23817,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -23881,8 +23917,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing scalar lowering can use the closed native Double core when its operands carry Float64. normalizedDifference keeps negative-input and zero-denominator masks; an explicit arithmetic expression has its distinct signed/zero-divisor policy. Existing band naming/property behavior, finite grid/source proof and all resource limits remain. Arbitrary execution text, dynamic arrays and full Google same-data/production parity are not established."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -24034,8 +24072,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -25117,7 +25157,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; exact predicates and closed native Double arithmetic are available. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -25155,7 +25195,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; use exact predicates or explicit toFloat before generic callback arithmetic. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
+          "Actual finite integral raster values and results within +/-2^53; signed64 two's complement, bitCount64, signed right shift and exact nonwrapping left shift with counts0..63. Illegal constants reject even on all-masked images. One-band broadcast or natural-order equal-band pairing, independent mask intersection and proven common finite grid precede native execution. Output is Float64 v, renamed by compiler; exact predicates and closed native Double arithmetic are available. Shared budgets apply; Google dtype, overflow and distributed execution parity remain unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -25187,8 +25227,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -25618,7 +25660,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -25683,8 +25725,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26025,8 +26069,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26167,8 +26213,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26198,8 +26246,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing Float32 path is retained unless a typed Float64 operand requires the closed native binary64 path. One/two ordered finite source operands, explicit grid proof before merging, per-used-band mask intersection and metadata/time preservation. NoData remains NaN; domain or nonfinite arithmetic results mask, division by zero yields0, mod uses signed remainder and a zero divisor masks. Round uses local ties toward positive infinity without perturbing large integral values. Native StrictMath and staged binary64, not Google ULP/dtype parity. Source-free constants require existing finite grid binding and keep its +/-2^53 exact-domain limit; nested explicit toFloat boundaries round. Shared compiler50000/graph500/public1MB and native key/cell/work caps apply. Fixed-shape array add/subtract/multiply/divide can reuse this scalar path with whole-array masks; this does not enable arbitrary callbacks, general Double array/matrix algorithms, trinary where or other Float32-only scientific operators, or prove full Spark/service acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26270,7 +26320,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Existing Float32 callback limits apply and unsupported Float64 arithmetic rejects. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
+          "Fixed-shape single-array-band intermediate images only: rank <=8, <=64 elements/axis and <=64 total cells; shared 50000-step work and 500 graph-node limits. Scalar bands toArray have a common mask requiring every band valid; layout/reduction/arithmetic/matrix outputs preserve the whole-array mask. Static Array constants can provide coefficient arrays. No dynamic shapes, multiple array bands, scalar/broadcast coercion, empty axes or direct array raster export; use arrayFlatten/arrayGet for scalar output. Project requires ascending unique axes with dropped axes length 1; slice/get require constant coordinates; rank-zero flatten rejects. Reduce supports single-output sum/mean/min/max/count/median/sampleStdDev only, no fieldAxis; singleton sampleStdDev rejects. Fixed-shape Double add/subtract/multiply/divide can use the native scalar path and preserve whole-array masks; larger graphs still reject and generic Double matrix algorithms remain unsupported. Other Float32-only callbacks require explicit casts. Source-preserving synthetic graph numerical controls are not actual raster-engine or Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26303,7 +26353,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26336,7 +26386,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Uses the local adapter to cast scalar raster cells to Float64. Bounded native temporal reducers support mean, median, min, max, sum, count, first, last, and sampleStdDev; general Float64 callback pixel arithmetic and array-valued Image.toDouble remain unsupported. Cast toFloat before callback arithmetic when Float32 precision is acceptable; Google parity is unverified."
+          "Uses the local adapter to cast scalar raster cells to Float64. Bounded native temporal reducers support mean, median, min, max, sum, count, first, last, and sampleStdDev; closed native Double core arithmetic is supported; arbitrary callbacks and array-valued Image.toDouble remain unsupported. Cast toFloat for Float32-only consumers when that precision is acceptable; Google parity is unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26402,7 +26452,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26435,7 +26485,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26468,7 +26518,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26501,7 +26551,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26534,7 +26584,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26567,7 +26617,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26600,7 +26650,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26633,7 +26683,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26666,7 +26716,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26699,7 +26749,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26819,7 +26869,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26852,7 +26902,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26885,7 +26935,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; generic callback arithmetic requires explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
+          "Finite scalar Image bands only. Local casts clamp and truncate toward zero; int64 is restricted to +/-2^53, not full signed64 storage. Physical output is Float64 with NaN NoData to preserve valid dtype minima. Names, masks, metadata and source grid are retained; the closed native Double arithmetic family is available, other Float32-only consumers require explicit toFloat. Finite constant-only results need an existing local destination grid. Shared compiler/graph/output and native key/cell/work budgets apply. Google rounding, integer dtype propagation and full Spark/service parity are unverified."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -26927,8 +26977,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Existing scalar lowering can use the closed native Double core when its operands carry Float64. normalizedDifference keeps negative-input and zero-denominator masks; an explicit arithmetic expression has its distinct signed/zero-divisor policy. Existing band naming/property behavior, finite grid/source proof and all resource limits remain. Arbitrary execution text, dynamic arrays and full Google same-data/production parity are not established."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26974,7 +27026,7 @@
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
           "Requires bounded aligned local grids and identical observation instants; defaults to valid zero and retains the input footprint. Global constants with sameFootprint=false, implicit time/grid broadcasting, and non-finite or out-of-range Float64 values reject.",
-          "Physical output is Float64. Bounded native temporal reducers support mean, median, min, max, sum, count, first, last, and sampleStdDev; general Float64 callback arithmetic remains unsupported. No Google-service comparison."
+          "Physical output is Float64. Bounded native temporal reducers support mean, median, min, max, sum, count, first, last, and sampleStdDev; closed native Double core arithmetic is supported; arbitrary callbacks remain unsupported. No Google-service comparison."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -27703,7 +27755,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Only implemented reducer families and local collection/data semantics are available. linearFit supports1..8 ordered two-band frames, complete rows and centered OLS. linearRegression supports numX=1 through-origin or numX=2 with proven numeric literal-one first predictor, numY=1..4,1..8 homogeneous frames. All inputs/responses share complete-case masks; n<=numX/rank-degenerate masks coefficients and RMS. Typed coefficient/residual array bands must be selected then scalarized; only parallelScale=1, shared work/500-node cap and Float32 callback limits. Deferred singleton labels preserve all numeric callbacks. Max dimensions/frames are not jointly guaranteed: four-frame two-response full coefficients and predictions fit; full RMS and all-field combinations exceed cap, individual response paths are verified. No raster E/Google acceptance."
+          "Only implemented reducer families and local collection/data semantics are available. linearFit supports1..8 ordered two-band frames, complete rows and centered OLS. linearRegression supports numX=1 through-origin or numX=2 with proven numeric literal-one first predictor, numY=1..4,1..8 homogeneous frames. All inputs/responses share complete-case masks; n<=numX/rank-degenerate masks coefficients and RMS. Typed coefficient/residual array bands must be selected then scalarized; only parallelScale=1 and shared work/500-node caps. Float32 callback limits remain for other consumers; a separately verified three-observation Float64 through-origin coefficient graph uses the closed native scalar path, while its residual branch exceeds compilation limits. Deferred singleton labels preserve all numeric callbacks. Max dimensions/frames are not jointly guaranteed: four-frame two-response full coefficients and predictions fit; full RMS and all-field combinations exceed cap, individual response paths are verified. No raster E/Google acceptance."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -36982,7 +37034,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Unweighted inline table/List rows have typed coefficients/RMS and null underdetermined outputs. Raster ImageCollection path supports numX=1 through-origin or numX=2 with proven literal-one first predictor, numY=1..4 and1..8 ordered homogeneous frames; joint complete-case rows, n>numX, and both output arrays masked on degeneracy. RMS uses residual sum squares/n; repeated observations preserve row weights. Binary NoData, parallelScale=1, shared work/graph and Float32 callback limits; generic independent predictor systems, image/reduceRegion, fractional weights and Google acceptance remain unsupported."
+          "Unweighted inline table/List rows have typed coefficients/RMS and null underdetermined outputs. Raster ImageCollection path supports numX=1 through-origin or numX=2 with proven literal-one first predictor, numY=1..4 and1..8 ordered homogeneous frames; joint complete-case rows, n>numX, and both output arrays masked on degeneracy. RMS uses residual sum squares/n; repeated observations preserve row weights. Binary NoData, parallelScale=1, shared work/graph limits. A three-observation Float64 through-origin coefficient graph has an independent Fraction sample-graph proof; its residual branch exceeds compilation limits. Other Float32 callback limits remain; generic independent predictor systems, image/reduceRegion, fractional weights and Google acceptance remain unsupported."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,

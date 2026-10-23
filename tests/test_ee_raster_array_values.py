@@ -1,5 +1,6 @@
 """Fixed-shape raster-array value semantics through the pinned Python SDK."""
 from copy import deepcopy
+import json
 from pathlib import Path
 
 import numpy as np
@@ -7,6 +8,7 @@ import pytest
 
 from gee.ee_python_client import configure_local_ee
 from gee.ee_translate import UnsupportedEEError, compile_expression
+from ee_float64_graph_reference import evaluate_float64_graph
 from test_ee_translate import arrays as sample_arrays
 from test_ee_translate import evaluate_graph, local as local_fixture
 
@@ -27,8 +29,9 @@ def compile_value(ee, value, local):
     return compile_expression(expression, *local)
 
 
-def evaluated_bands(result, rasters):
-    values, names, timed = evaluate_graph(result, rasters)
+def evaluated_bands(result, rasters, *, float64_spi=False):
+    evaluator = evaluate_float64_graph if float64_spi else evaluate_graph
+    values, names, timed = evaluator(result, rasters)
     if timed:
         assert values.shape[0] == 1, "these fixtures contain one output observation"
         values = values[0]
@@ -213,8 +216,60 @@ def test_array_shape_unknown_argument_work_and_nonfinite_bounds(ee, local_fixtur
         compile_value(ee, ee.Image("a").select(["red", "nir"]).toArray(), local_fixture)
 
 
-def test_generic_float64_callback_rejects_array_arithmetic(ee, local_fixture):
-    vector = ee.Image("a").select(["red", "nir"]).toDouble().toArray()
-    result = vector.add(vector).arrayFlatten([["red", "nir"]])
-    with pytest.raises(UnsupportedEEError, match="Float64 pixel arithmetic"):
-        compile_value(ee, result, local_fixture)
+@pytest.mark.parametrize("operation", ["add", "subtract", "multiply", "divide"])
+def test_generic_float64_array_binary_arithmetic_uses_native_scalarization(
+    ee, local_fixture, sample_arrays, operation,
+):
+    arrays = deepcopy(sample_arrays)
+    arrays["a"]["red"] = np.array([2**24 + 1., 4., 6., 3.], dtype=np.float64)
+    arrays["a"]["nir"] = np.array([2**24 + 3., 8., np.nan, 5.], dtype=np.float64)
+    arrays["a"]["blue"] = np.array([2., 2., 3., 0.], dtype=np.float64)
+    arrays["a"]["green"] = np.array([3., np.nan, 4., 0.], dtype=np.float64)
+
+    source = ee.Image("a").set("array_source", "double-fixture")
+    left = source.select(["red", "nir"]).toDouble().toArray()
+    right = source.select(["blue", "green"]).toDouble().toArray()
+    value = getattr(left, operation)(right).arrayFlatten([["red_out", "nir_out"]])
+    result = compile_value(ee, value, local_fixture)
+
+    assert result["bands"] == ["red_out", "nir_out"]
+    assert result["properties"]["array_source"] == "double-fixture"
+    assert result["source_item_ids"] == ["a"]
+    specs = [
+        json.loads(node["arguments"]["spec"])
+        for node in result["process_graph"].values()
+        if node["process_id"] == "local_ee_integer_values"
+    ]
+    assert [spec["op"] for spec in specs] == [operation, operation]
+    assert all(spec["operands"] == [{"band": 0}, {"band": 1}] for spec in specs)
+    assert not any(node["process_id"] == "local_ee_to_float"
+                   for node in result["process_graph"].values())
+
+    left_values = np.array([
+        arrays["a"]["red"], arrays["a"]["nir"],
+    ], dtype=np.float64)
+    right_values = np.array([
+        arrays["a"]["blue"], arrays["a"]["green"],
+    ], dtype=np.float64)
+    functions = {
+        "add": np.add,
+        "subtract": np.subtract,
+        "multiply": np.multiply,
+        "divide": np.divide,
+    }
+    with np.errstate(all="ignore"):
+        if operation == "divide":
+            expected = np.divide(
+                left_values, right_values,
+                out=np.zeros_like(left_values), where=right_values != 0,
+            )
+        else:
+            expected = functions[operation](left_values, right_values)
+    # ArrayImage has one shared mask: a missing cell in either vector masks
+    # every flattened output component at that pixel.
+    expected[:, 1:3] = np.nan
+    actual = evaluated_bands(result, arrays, float64_spi=True)
+    np.testing.assert_allclose(actual["red_out"], expected[0], rtol=0, atol=0,
+                               equal_nan=True)
+    np.testing.assert_allclose(actual["nir_out"], expected[1], rtol=0, atol=0,
+                               equal_nan=True)

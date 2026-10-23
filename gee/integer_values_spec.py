@@ -1,4 +1,4 @@
-"""Canonical bounded v1 wire for actual integer-image and Float64 predicates."""
+"""Canonical bounded v1 wire for actual integer values and closed Float64 operations."""
 from __future__ import annotations
 
 import json
@@ -84,13 +84,15 @@ def integer_values_process_spec():
     cube = {"type": "object", "subtype": "raster-cube"}
     return {
         "id": "local_ee_integer_values", "experimental": True,
-        "summary": "Bounded integer-value operations and Float64 predicates",
+        "summary": "Bounded integer-value operations and closed Float64 pixel math",
         "description": (
             "Canonical v1 specification over one or two ordered operand bands. "
             "Bit inputs/results must be integral within +/-2^53, signed shifts use counts0..63 "
             "without left-shift wrapping, bitCount counts64-bit two's complement. "
             "Integer casts clamp and truncate toward zero; int64 is limited to +/-2^53. "
-            "Comparisons preserve finite Float64 values and intersect operand masks. "
+            "Comparisons and closed core arithmetic preserve finite Float64 values and intersect operand masks. "
+            "Arithmetic domain/overflow results become NoData; divide by zero returns0. "
+            "Mod uses signed remainder and zero divisor becomes NoData; round uses local ties toward+infinity. "
             "Grid/time/key limits, decoded10M cells/tile and100M total, work100M/tile "
             "and1B total apply. Google dtype and full-service parity remain unverified."
         ),

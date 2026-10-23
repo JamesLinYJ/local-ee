@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import math
 
+from .float64_values_contract import FLOAT64_ARITIES, FLOAT64_BOOLEAN, evaluate_float64_values
+
 
 MAX_INTEGER = 2**53
 CAST_BOUNDS = {
@@ -16,8 +18,11 @@ CAST_BOUNDS = {
     "int64": (-MAX_INTEGER, MAX_INTEGER),
 }
 COMPARISONS = frozenset({"eq", "neq", "lt", "lte", "gt", "gte"})
-UNARY = frozenset({"cast", "bit_not", "bit_count"})
-OPERATIONS = COMPARISONS | UNARY | frozenset({
+BOOLEAN_OPERATIONS = COMPARISONS | FLOAT64_BOOLEAN
+UNARY = frozenset({"cast", "bit_not", "bit_count"}) | frozenset(
+    name for name, arity in FLOAT64_ARITIES.items() if arity == 1
+)
+OPERATIONS = COMPARISONS | UNARY | frozenset(FLOAT64_ARITIES) | frozenset({
     "bit_and", "bit_or", "bit_xor", "left_shift", "right_shift",
 })
 
@@ -44,7 +49,7 @@ def exact_integer(value):
 def check_constant(operation, index, value):
     """Validate fixed operands even when every raster cell is masked or absent."""
     finite_number(value)
-    if operation in COMPARISONS or operation == "cast":
+    if operation in COMPARISONS or operation in FLOAT64_ARITIES or operation == "cast":
         return
     integer = exact_integer(value)
     if operation in {"left_shift", "right_shift"} and index == 1 and not 0 <= integer <= 63:
@@ -69,6 +74,8 @@ def evaluate_integer_values(operation, values, dtype=None):
         raise ValueError(f"Integer image {operation} requires exactly {arity} operands")
     for index, value in enumerate(values):
         check_constant(operation, index, value)
+    if operation in FLOAT64_ARITIES:
+        return evaluate_float64_values(operation, values)
     left = values[0]
     if operation in COMPARISONS:
         right = values[1]

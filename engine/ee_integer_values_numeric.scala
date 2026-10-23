@@ -2,7 +2,7 @@ package local.ee.reduce
 
 import geotrellis.raster.{DoubleArrayTile, DoubleConstantNoDataCellType, MultibandTile, Tile}
 
-/** Pixel kernels for integer-value operations and comparisons over physical Float64 cells. */
+/** Pixel dispatch for integer operations, predicates, and the Float64 value-kernel family. */
 private[reduce] object LocalEeIntegerValuesNumeric {
   private val MaxSafeInteger = 9007199254740992L // 2^53
   private val MaxSafeIntegerDouble = MaxSafeInteger.toDouble
@@ -10,6 +10,9 @@ private[reduce] object LocalEeIntegerValuesNumeric {
 
   /** Validate/copy source cells to Float64 first, then evaluate only mask-valid operand tuples. */
   def applyTile(input: MultibandTile, spec: LocalEeIntegerValuesSpec.Value): Tile = {
+    if (LocalEeFloat64Values.supports(spec.op)) {
+      return LocalEeFloat64Values.applyTile(input, spec)
+    }
     require(input != null, "integer values input tile must not be null")
     require(input.cols > 0 && input.rows > 0, "integer values tile dimensions must be positive")
     require(input.bandCount == spec.inputBands,

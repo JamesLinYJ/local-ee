@@ -11,7 +11,7 @@ final class LocalEeIntegerValuesCubeProcesses extends Serializable {
 
   @OpenEOProcess(
     id = "local_ee_integer_values",
-    description = "Apply a strict bitwise, integer cast, or Float64 comparison operation to raster pixels.",
+    description = "Apply a strict bitwise, cast, Float64 arithmetic, logical, or comparison operation to raster pixels.",
     returns = "datacube"
   )
   def localEeIntegerValues(data: Object, arguments: java.util.Map[String, Object]): Object = {
@@ -37,19 +37,20 @@ final class LocalEeIntegerValuesCubeProcesses extends Serializable {
     require(keyCount > 0L && keyCount <= 100000L,
       "local_ee_integer_values supports 1 to 100000 tile keys")
 
-    // Charge the source conversion/read/write and shared Float64 copy/read/write (four
-    // cell-work units per input value), then per-operand dispatch/checks, band reads,
-    // operation work and output writes. Left shift has a fixed-width BigInt bound: inputs
-    // are at most 2^53 and shifts at most 63, so magnitude is at most 2^116 (117 bits).
+    // Retain the conservative four cell-work units per input value from v1 for
+    // source reads, mask checks and Float64 copies, then per-operand dispatch/checks,
+    // band reads, operation work,
+    // and output writes. Left shift has a fixed-width BigInt bound: inputs are at most
+    // 2^53 and shifts at most 63, so magnitude is at most 2^116 (117 bits).
     // LocalEeReduceSupport has already enforced 10M decoded cells per tile and 100M total.
     val copyCellsPerPixel = Math.multiplyExact(input.names.size.toLong, 4L)
     val operandReadsPerPixel = spec.operands.count(_.isInstanceOf[LocalEeIntegerValuesSpec.Band]).toLong
     val operandWorkPerPixel = spec.operands.length.toLong
-    val operationWorkPerPixel = spec.op match {
+    val operationWorkPerPixel = LocalEeFloat64Values.workWeight(spec.op).getOrElse(spec.op match {
       case "left_shift" => 4L
       case "cast" => 2L
       case _ => 1L
-    }
+    })
     val workPerPixel = Math.addExact(
       Math.addExact(Math.addExact(copyCellsPerPixel, operandReadsPerPixel), operandWorkPerPixel),
       Math.addExact(operationWorkPerPixel, 1L))

@@ -7,6 +7,7 @@ import pytest
 from gee.ee_python_client import configure_local_ee
 from gee.ee_translate import UnsupportedEEError, compile_expression
 from gee.graph import validate
+from gee.integer_values_spec import constant_operand
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -153,5 +154,22 @@ def test_remap_marks_native_float64_and_bypasses_float32_callback(ee, local):
                     and node["arguments"].get("dimension") == "bands")
                for node in result["process_graph"].values())
 
-    with pytest.raises(UnsupportedEEError, match="Float64 pixel arithmetic"):
-        compile_value(ee, remapped.add(1), local)
+    arithmetic = compile_value(ee, remapped.add(1), local)
+    validate(arithmetic["process_graph"])
+    integer = [node for node in arithmetic["process_graph"].values()
+               if node["process_id"] == "local_ee_integer_values"]
+    assert len(integer) == 1
+    integer_node = integer[0]
+    assert json.loads(integer_node["arguments"]["spec"]) == {
+        "dtype": None, "op": "add",
+        "operands": [{"band": 0}, constant_operand(1)], "v": 1,
+    }
+    remap = [(key, node) for key, node in arithmetic["process_graph"].items()
+             if node["process_id"] == "local_ee_remap"]
+    assert len(remap) == 1
+    input_ref = integer_node["arguments"]["data"]["from_node"]
+    input_node = arithmetic["process_graph"][input_ref]
+    assert input_node["process_id"] == "rename_labels"
+    assert input_node["arguments"]["data"] == {"from_node": remap[0][0]}
+    assert not any(node["process_id"] == "reduce_dimension"
+                   for node in arithmetic["process_graph"].values())

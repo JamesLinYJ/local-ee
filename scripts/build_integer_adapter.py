@@ -29,7 +29,7 @@ SOURCES += [ROOT / "engine/ee_image_sample_options.scala",
             ROOT / "engine/ee_image_sample_kernel.scala", ROOT / "engine/ee_image_sample_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_pixel_math_numeric.scala", ROOT / "engine/ee_pixel_math_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_integer_values_spec.scala", ROOT / "engine/ee_integer_values_numeric.scala",
-            ROOT / "engine/ee_integer_values_adapter.scala"]
+            ROOT / "engine/ee_integer_values_adapter.scala", ROOT / "engine/ee_float64_values.scala"]
 SOURCES += [ROOT / "engine/ee_focal_spec.scala", ROOT / "engine/ee_focal_numeric.scala",
             ROOT / "engine/ee_focal_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_convolve_spec.scala", ROOT / "engine/ee_convolve_numeric.scala",

@@ -7,8 +7,9 @@ import numpy as np
 import pytest
 
 from gee.ee_python_client import configure_local_ee
-from gee.ee_translate import UnsupportedEEError, compile_expression
+from gee.ee_translate import compile_expression
 from gee.graph import validate
+from gee.integer_values_spec import constant_operand
 from test_ee_raster_linear_fit import local as raster_local
 from test_ee_translate import arrays as sample_arrays
 from test_ee_translate import evaluate_graph, local as sample_local
@@ -161,10 +162,22 @@ def test_mask_clip_and_float_cast_remain_across_delayed_output_label(ee, local):
     assert np.isnan(values[0, 3:]).all()
 
 
-def test_explicit_float64_arithmetic_is_still_rejected(ee, local):
-    expression = ee.Image("a").select("x").toDouble().add(1).rename("unsupported")
-    with pytest.raises(UnsupportedEEError, match="Float64 pixel arithmetic"):
-        compile_value(ee, expression, local)
+def test_explicit_float64_arithmetic_after_labeling_uses_native_double_graph(ee, local):
+    expression = ee.Image("a").select("x").toDouble().add(1).rename("native_double")
+    result = compile_value(ee, expression, local)
+    assert_canonical_graph(result)
+    assert result["bands"] == ["native_double"]
+    native = [(key, node) for key, node in result["process_graph"].items()
+              if node["process_id"] == "local_ee_integer_values"]
+    assert len(native) == 1
+    native_id, native_node = native[0]
+    assert json.loads(native_node["arguments"]["spec"]) == {
+        "dtype": None, "op": "add",
+        "operands": [{"band": 0}, constant_operand(1)], "v": 1,
+    }
+    assert depends_on(result["process_graph"], native_id, "local_ee_to_double")
+    assert not any(node["process_id"] == "reduce_dimension"
+                   for node in result["process_graph"].values())
 
 
 def test_same_day_fit_respects_a_nonrectangular_source_geometry_and_label_chain(

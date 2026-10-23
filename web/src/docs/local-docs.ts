@@ -1,6 +1,7 @@
 import type { ReferenceEntry } from "../types";
 // Local reference. No runtime fetch to a documentation or CDN service.
 import geeDocs from "./gee-docs";
+import { pythonTypedRasterDocs } from "./typed-raster-docs";
 const entries: ReferenceEntry[] = [
   {
     id: "gee-python-distribution-summary",
@@ -44,6 +45,7 @@ const entries: ReferenceEntry[] = [
     text: "支持有界 Number.expression、UTC Date.parse/update/getRange/unitRatio、String.match/replace/split、Dictionary 正则选择，以及内联 FeatureCollection.distinct/remap/fromColumns。正则使用本地 RE2；替换仅接受字面文本，匹配不返回捕获组。Array 支持 bitsToArray、cut，以及同形单轴 mask。保留50000工作预算；不支持的时区、类型转换或动态表参数报错。日历和去重规则详见语法文档；例41提供 Python/JS 与 CSV 合成验证。",
     code: "parts = ee.String('S2_20200229_tile').split('_')\ndate = ee.Date.parse('yyyyMMdd', ee.String(parts.get(1)))\nprint(date.getRange('month').getInfo())\nprint(ee.Number.expression('(nir-red)/(nir+red)', {'nir':0.8,'red':0.2}).getInfo())\nrows = ee.FeatureCollection.fromColumns([['forest','water'],[1,2]], ['name','label'])\nprint(rows.distinct(['label']).getInfo())",
   },
+  ...pythonTypedRasterDocs,
   ...geeDocs,
   {
     id: "gee-python-numeric-preparation",

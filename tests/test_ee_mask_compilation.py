@@ -6,6 +6,7 @@ import pytest
 from gee import graph
 from gee.backend import Processes
 from gee.ee_translate import UnsupportedEEError
+from gee.integer_values_spec import constant_operand
 from test_ee_translate import local, compile, call, first, select, col
 
 
@@ -42,10 +43,31 @@ def test_fixed_official_sdk_raster_expressions_reach_valid_native_graphs(local):
         assert result["has_time_dimension"] is False
 
 
-def test_float64_fill_cannot_be_silently_narrowed_by_callbacks(local):
-    with pytest.raises(UnsupportedEEError, match="Float64 pixel arithmetic"):
-        compile(call("Image.add", image1=filled(), image2=1), local)
-    compile(call("Image.add", image1=call("Image.toFloat", value=filled()), image2=1), local)
+def test_float64_fill_uses_native_arithmetic_and_explicit_float_uses_callback(local):
+    native = compile(call("Image.add", image1=filled(), image2=1), local)
+    graph.validate(native["process_graph"])
+    integer = [node for node in native["process_graph"].values()
+               if node["process_id"] == "local_ee_integer_values"]
+    assert len(integer) == 1
+    assert json.loads(integer[0]["arguments"]["spec"]) == {
+        "dtype": None, "op": "add",
+        "operands": [{"band": 0}, constant_operand(1)], "v": 1,
+    }
+    assert any(node["process_id"] == "local_ee_unmask"
+               for node in native["process_graph"].values())
+    assert not any(node["process_id"] == "reduce_dimension"
+                   and node["arguments"].get("dimension") == "bands"
+                   for node in native["process_graph"].values())
+
+    explicit_float = compile(
+        call("Image.add", image1=call("Image.toFloat", value=filled()), image2=1), local,
+    )
+    graph.validate(explicit_float["process_graph"])
+    assert not any(node["process_id"] == "local_ee_integer_values"
+                   for node in explicit_float["process_graph"].values())
+    assert any(node["process_id"] == "reduce_dimension"
+               and node["arguments"].get("dimension") == "bands"
+               for node in explicit_float["process_graph"].values())
     mapped = call("Collection.map", collection=col(), baseAlgorithm={
         "type": "Function", "argumentNames": ["im"], "body": call("Image.unmask", input={"type": "ArgumentRef", "value": "im"})})
     result = compile(call("reduce.mean", collection=mapped), local)
