@@ -1,0 +1,516 @@
+{
+  "schema": "local-ee-python-wave41/v1",
+  "date": "2026-10-23",
+  "base_commit": "6943b7f5a15a18173c93d0838062c8eaea1b056e",
+  "title": "Finite quantile, moment and circular reducer families",
+  "entry_inventory": {
+    "before": 549,
+    "after": 557,
+    "new_entry_count": 8,
+    "new_names": [
+      "Reducer.percentile",
+      "Reducer.intervalMean",
+      "Reducer.mode",
+      "Reducer.skew",
+      "Reducer.kurtosis",
+      "Reducer.circularMean",
+      "Reducer.circularStddev",
+      "Reducer.circularVariance"
+    ],
+    "pinned_signatures": 991,
+    "name_entry_percentage": 56.21,
+    "interpretation": "Names only; finite List/inline-table semantics and parameters are partial, not complete GEE compatibility"
+  },
+  "implementation": {
+    "contexts": [
+      "List.reduce",
+      "inline FeatureCollection.reduceColumns",
+      "combine/group/setOutputs/getOutputs/repeat/forEach",
+      "static results and existing CSV export"
+    ],
+    "local_policies": [
+      "Exact rational Type7 percentile interpolation; final binary64 values",
+      "intervalMean includes observed values within the closed interpolated percentile-value interval; default label intervalMean is local",
+      "mode uses smallest tied value",
+      "population standardized third moment and excess fourth moment (minus3)",
+      "circular radians; variance1-R and SDsqrt(-2lnR); R<=32*epsilon yields null mean/SD, variance1"
+    ],
+    "numerics": [
+      "bounded rational inputs avoid interpolation/mean overflow",
+      "power-of-two scale and anchor-centered moments preserve extreme/subnormal differences",
+      "centered angular differences, sin-squared deficit and log1p preserve tiny spread; libm handles huge absolute angles"
+    ],
+    "limits": "Original1000 rows/50000 shared compiler work/1MB public output; actual table capacity may be lower from decoding/selected-value work; 256 percentile outputs and64-character custom labels; maxRaw limits valid rows",
+    "rejected": [
+      "explicit nonnull histogram maxBuckets/minBucketWidth",
+      "weights",
+      "new family Array/raster/dynamic table consumers"
+    ],
+    "module_lines": {
+      "circular_reducers.py": 221,
+      "moment_reducer_values.py": 42,
+      "moment_reducers.py": 136,
+      "quantile_reducer_spec.py": 241,
+      "quantile_reducer_values.py": 146,
+      "quantile_reducers.py": 16
+    }
+  },
+  "validation": {
+    "python": {
+      "tests": 4219,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 12,
+      "passed": 4207,
+      "seconds": 57.184
+    },
+    "warnings": "3 existing Rasterio PendingDeprecationWarnings; unchanged12 skips",
+    "earlier_full_suite": "One obsolete skew rejection expectation updated; retained explicit histogram rejection and positive independent controls. Production implementation unchanged between full runs.",
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "Python_JS_identical_workflow_outputs": 12,
+      "guarded_network_attempts": 0
+    },
+    "numeric_references": [
+      "Fraction quantile/interpolation/interval values",
+      "Decimal population moments including huge offsets and subnormals",
+      "analytic circular resultant and independent Decimal trigonometric references"
+    ],
+    "synthetic_CSV": {
+      "rows": 2,
+      "route": "official SDK -> synthetic dispatch/queue/worker -> physical CSV -> result asset readback",
+      "scope": "store/launcher doubles, not deployed service/sandbox/browser acceptance"
+    },
+    "evidence_directory": "audit/gee-python-wave41/final-verified-v2",
+    "frontend_evidence_directory": "audit/gee-python-wave41/final-verified",
+    "frozen_code_sha256": {
+      "examples/46_GEE_python_distribution_summary.py": "c0a81051d260d4b1e7f9dbab64fe142af7f5d14d9a5ef159674d1b04f6545d0a",
+      "gee/compat/earthengine/capabilities.py": "83ed8723dce9aaa1acbaab5287f6d458341ed233b5d6284d70dab07ab35b035d",
+      "gee/compat/earthengine/circular_reducers.py": "3f857d090e315c162535c9c6e4197f44b7baef294328d092f39dd869a03d29c6",
+      "gee/compat/earthengine/moment_reducer_values.py": "7b62333ec4de67664611d9a45715faa64934355ef341ae1e07d33a67f2244ee5",
+      "gee/compat/earthengine/moment_reducers.py": "0a1797b72dfaabc8b83d9eaf0d8296b646daafaf019f86f4ac109ae1009643c6",
+      "gee/compat/earthengine/quantile_reducer_spec.py": "00c8c330063f1a91a0dfc410c64f8076311c1f28c29fa2857c861a30b08c8dad",
+      "gee/compat/earthengine/quantile_reducer_values.py": "d856e6e7bb9fc94d8107681c7be51e12ae0d95db71b1eff9cae64231efb813da",
+      "gee/compat/earthengine/quantile_reducers.py": "bc236cfe469ee50cb63594aaa458e17b9e6c69ae06cbc36a46936e4883739cbb",
+      "gee/compat/earthengine/statistical_reducer_leaves.py": "ba8d7cc62c72dbc0b13a98ed90c1bef5e5433f700f6a93cbda050bea9072e3f5",
+      "tests/test_ee_circular_reducers.py": "ab4ddbfb1b304ae4c33b9f4cb071aa56187b2a76737a66f7ebd35d9ad473b7bf",
+      "tests/test_ee_distribution_integration.py": "77c461756d4487a4317fc43be8c10c2bbaf572c921268ef47a52839dab07abf7",
+      "tests/test_ee_distribution_workflow.py": "cfeeddb3c2bec369af3437cba57036abb3c5ce49db992fd5aebe84f3be01591f",
+      "tests/test_ee_list_reduce.py": "5297f88f6eaef2d87a4cb3b34683a06fac2c2a6530a3cff48602c751889d05c6",
+      "tests/test_ee_moment_reducers.py": "ee3f89553b5a08239a00cd483c0e766e47923e4835d1516bc20e6ecf7373fe12",
+      "tests/test_ee_quantile_reducers.py": "d7f4c448c52a37e593592a3c5c747cb223ff8336bd9723b8c4ee736aa3652271",
+      "tests/test_ee_statistical_reducers_workflow.py": "1adad5e928dfc251b9e0d52871841e3ab1b7489f4fc122ae09510a91f42447b2",
+      "web/src/docs/gee-docs.ts": "9a63751d361e330620a72951f5b5e12202cfb75cfde4ad5135b43d313756c69c",
+      "web/src/docs/local-docs.ts": "f673b19d751bd5491c4b374fe6466ab701541cdff3e900881c49ce5e0d54f959"
+    }
+  },
+  "scale": {
+    "scope": "full official-client static compilation, not raster execution or throughput",
+    "table500": [
+      {
+        "family": "percentile",
+        "rows": 500,
+        "steps": 25891,
+        "seconds": 0.049294,
+        "status": "passed"
+      },
+      {
+        "family": "intervalMean",
+        "rows": 500,
+        "steps": 26848,
+        "seconds": 0.009473,
+        "status": "passed"
+      },
+      {
+        "family": "mode",
+        "rows": 500,
+        "steps": 22142,
+        "seconds": 0.008103,
+        "status": "passed"
+      },
+      {
+        "family": "skew",
+        "rows": 500,
+        "steps": 27193,
+        "seconds": 0.007708,
+        "status": "passed"
+      },
+      {
+        "family": "kurtosis",
+        "rows": 500,
+        "steps": 27237,
+        "seconds": 0.007504,
+        "status": "passed"
+      },
+      {
+        "family": "circularMean",
+        "rows": 500,
+        "steps": 26717,
+        "seconds": 0.007449,
+        "status": "passed"
+      },
+      {
+        "family": "circularStddev",
+        "rows": 500,
+        "steps": 26733,
+        "seconds": 0.007231,
+        "status": "passed"
+      },
+      {
+        "family": "circularVariance",
+        "rows": 500,
+        "steps": 26749,
+        "seconds": 0.008128,
+        "status": "passed"
+      }
+    ],
+    "cases100_and1000": [
+      {
+        "rows": 100,
+        "family": "percentile",
+        "context": "list",
+        "status": "passed",
+        "steps": 4082,
+        "seconds": 0.020465,
+        "value_or_error": {
+          "p25": 0.2,
+          "p50": 0.5,
+          "p75": 0.8
+        }
+      },
+      {
+        "rows": 100,
+        "family": "percentile",
+        "context": "table",
+        "status": "passed",
+        "steps": 5291,
+        "seconds": 0.006769,
+        "value_or_error": {
+          "p25": 0.2,
+          "p50": 0.5,
+          "p75": 0.8
+        }
+      },
+      {
+        "rows": 100,
+        "family": "intervalMean",
+        "context": "list",
+        "status": "passed",
+        "steps": 4213,
+        "seconds": 0.000507,
+        "value_or_error": 0.5
+      },
+      {
+        "rows": 100,
+        "family": "intervalMean",
+        "context": "table",
+        "status": "passed",
+        "steps": 5448,
+        "seconds": 0.001737,
+        "value_or_error": {
+          "intervalMean": 0.5
+        }
+      },
+      {
+        "rows": 100,
+        "family": "mode",
+        "context": "list",
+        "status": "passed",
+        "steps": 3323,
+        "seconds": 0.000245,
+        "value_or_error": 0.0
+      },
+      {
+        "rows": 100,
+        "family": "mode",
+        "context": "table",
+        "status": "passed",
+        "steps": 4542,
+        "seconds": 0.001791,
+        "value_or_error": {
+          "mode": 0.0
+        }
+      },
+      {
+        "rows": 100,
+        "family": "skew",
+        "context": "list",
+        "status": "passed",
+        "steps": 4374,
+        "seconds": 0.000177,
+        "value_or_error": 0.008422272687525517
+      },
+      {
+        "rows": 100,
+        "family": "skew",
+        "context": "table",
+        "status": "passed",
+        "steps": 5593,
+        "seconds": 0.001457,
+        "value_or_error": {
+          "skew": 0.008422272687525517
+        }
+      },
+      {
+        "rows": 100,
+        "family": "kurtosis",
+        "context": "list",
+        "status": "passed",
+        "steps": 4410,
+        "seconds": 0.000131,
+        "value_or_error": -1.2289101604985007
+      },
+      {
+        "rows": 100,
+        "family": "kurtosis",
+        "context": "table",
+        "status": "passed",
+        "steps": 5637,
+        "seconds": 0.001325,
+        "value_or_error": {
+          "kurtosis": -1.2289101604985007
+        }
+      },
+      {
+        "rows": 100,
+        "family": "circularMean",
+        "context": "list",
+        "status": "passed",
+        "steps": 4282,
+        "seconds": 0.000126,
+        "value_or_error": 0.4949534846120546
+      },
+      {
+        "rows": 100,
+        "family": "circularMean",
+        "context": "table",
+        "status": "passed",
+        "steps": 5517,
+        "seconds": 0.001681,
+        "value_or_error": {
+          "circularMean": 0.4949534846120546
+        }
+      },
+      {
+        "rows": 100,
+        "family": "circularStddev",
+        "context": "list",
+        "status": "passed",
+        "steps": 4294,
+        "seconds": 0.000192,
+        "value_or_error": 0.320235325216037
+      },
+      {
+        "rows": 100,
+        "family": "circularStddev",
+        "context": "table",
+        "status": "passed",
+        "steps": 5533,
+        "seconds": 0.001413,
+        "value_or_error": {
+          "circularStdDev": 0.320235325216037
+        }
+      },
+      {
+        "rows": 100,
+        "family": "circularVariance",
+        "context": "list",
+        "status": "passed",
+        "steps": 4306,
+        "seconds": 0.000158,
+        "value_or_error": 0.049982935348769415
+      },
+      {
+        "rows": 100,
+        "family": "circularVariance",
+        "context": "table",
+        "status": "passed",
+        "steps": 5549,
+        "seconds": 0.001504,
+        "value_or_error": {
+          "circularVariance": 0.049982935348769415
+        }
+      },
+      {
+        "rows": 1000,
+        "family": "percentile",
+        "context": "list",
+        "status": "passed",
+        "steps": 40382,
+        "seconds": 0.002691,
+        "value_or_error": {
+          "p25": 0.2,
+          "p50": 0.5,
+          "p75": 0.8
+        }
+      },
+      {
+        "rows": 1000,
+        "family": "percentile",
+        "context": "table",
+        "status": "bounded_rejection",
+        "steps": 42363,
+        "seconds": 0.014003,
+        "value_or_error": "Quantile sorting and interpolation exceeds the shared 50000-step work budget"
+      },
+      {
+        "rows": 1000,
+        "family": "intervalMean",
+        "context": "list",
+        "status": "passed",
+        "steps": 42313,
+        "seconds": 0.002822,
+        "value_or_error": 0.5
+      },
+      {
+        "rows": 1000,
+        "family": "intervalMean",
+        "context": "table",
+        "status": "bounded_rejection",
+        "steps": 40327,
+        "seconds": 0.012563,
+        "value_or_error": "Quantile sorting and interpolation exceeds the shared 50000-step work budget"
+      },
+      {
+        "rows": 1000,
+        "family": "mode",
+        "context": "list",
+        "status": "passed",
+        "steps": 32123,
+        "seconds": 0.001794,
+        "value_or_error": 0.0
+      },
+      {
+        "rows": 1000,
+        "family": "mode",
+        "context": "table",
+        "status": "passed",
+        "steps": 44142,
+        "seconds": 0.014061,
+        "value_or_error": {
+          "mode": 0.0
+        }
+      },
+      {
+        "rows": 1000,
+        "family": "skew",
+        "context": "list",
+        "status": "passed",
+        "steps": 42174,
+        "seconds": 0.000672,
+        "value_or_error": 0.0007852153989155798
+      },
+      {
+        "rows": 1000,
+        "family": "skew",
+        "context": "table",
+        "status": "bounded_rejection",
+        "steps": 18102,
+        "seconds": 0.013536,
+        "value_or_error": "Moment reducer exceeds the shared 50000-step work budget"
+      },
+      {
+        "rows": 1000,
+        "family": "kurtosis",
+        "context": "list",
+        "status": "passed",
+        "steps": 42210,
+        "seconds": 0.000858,
+        "value_or_error": -1.2191325361091883
+      },
+      {
+        "rows": 1000,
+        "family": "kurtosis",
+        "context": "table",
+        "status": "bounded_rejection",
+        "steps": 18138,
+        "seconds": 0.013267,
+        "value_or_error": "Moment reducer exceeds the shared 50000-step work budget"
+      },
+      {
+        "rows": 1000,
+        "family": "circularMean",
+        "context": "list",
+        "status": "passed",
+        "steps": 41182,
+        "seconds": 0.000773,
+        "value_or_error": 0.49949577132238
+      },
+      {
+        "rows": 1000,
+        "family": "circularMean",
+        "context": "table",
+        "status": "bounded_rejection",
+        "steps": 21135,
+        "seconds": 0.012967,
+        "value_or_error": "Circular reducer exceeds the shared 50000-step compilation work budget"
+      },
+      {
+        "rows": 1000,
+        "family": "circularStddev",
+        "context": "list",
+        "status": "passed",
+        "steps": 41194,
+        "seconds": 0.000704,
+        "value_or_error": 0.3176200737809562
+      },
+      {
+        "rows": 1000,
+        "family": "circularStddev",
+        "context": "table",
+        "status": "bounded_rejection",
+        "steps": 21147,
+        "seconds": 0.012686,
+        "value_or_error": "Circular reducer exceeds the shared 50000-step compilation work budget"
+      },
+      {
+        "rows": 1000,
+        "family": "circularVariance",
+        "context": "list",
+        "status": "passed",
+        "steps": 41206,
+        "seconds": 0.000881,
+        "value_or_error": 0.04919021825069526
+      },
+      {
+        "rows": 1000,
+        "family": "circularVariance",
+        "context": "table",
+        "status": "bounded_rejection",
+        "steps": 21159,
+        "seconds": 0.013801,
+        "value_or_error": "Circular reducer exceeds the shared 50000-step compilation work budget"
+      }
+    ],
+    "process_peak_rss_bytes_macos": 74448896,
+    "finding": "All eight1000-value Lists and500-row tables pass;1000-row tables pass mode only, seven other families reject under original50000 work cap"
+  },
+  "cleanup": {
+    "owned_scratch": "/Users/james/Documents/Codex/2026-10-21/wo/work/ee-wave41-web-build",
+    "files": 16,
+    "logical_bytes": 1697179,
+    "physical_space_reclaimed_measured": false,
+    "removed": true
+  },
+  "unchanged": [
+    "dependency locks",
+    "installed native toolchains/runtime",
+    "user accounts/research data/results",
+    "existing VM/container-free architecture",
+    "UI animations",
+    "compiler/graph/table work caps"
+  ],
+  "acceptance_limits": [
+    "No new raster kernel or Array reduction support in this batch",
+    "No unchanged JVM rebuild necessary for pure static implementation",
+    "No Google same-data comparison",
+    "No production deployment, complete Spark, browser or private real-data acceptance",
+    "Overall compatibility goal remains incomplete"
+  ]
+}

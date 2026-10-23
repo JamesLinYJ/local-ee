@@ -1,5 +1,7 @@
 # GEE Python 兼容清单
 
+第四十一批新增 **8个有限分布统计入口**：百分位数、区间均值、众数、偏度／峰度及三种圆周统计。完整回归 **4207 passed／12 skipped**，前端11／类型／临时构建通过；Python／JS十二项组合输出一致，两行分组CSV实际写出并读回。名称 **557／991（56.21%）** 仅为入口统计。八种1000值列表和500行表格通过，1000行表格仅众数通过，其余按原50000工作预算拒绝。插值、并列值、总体矩和不确定方向的本地规则已说明；显式直方图近似参数、权重、这些新增归约的Array／栅格／动态表路径拒绝。依赖、安装环境和数据不变，临时构建已清理；未部署，无Google同数据或生产验收。见 [百分位数](quantile-reducers.md)、[矩统计](moment-reducers.md)、[圆周统计](circular-reducers.md)、[示例46](../../examples/46_GEE_python_distribution_summary.py) 和 [报告](../../reports/gee-python-wave41.json)。
+
 第四十批扩展已有数值归约的实际上下文：product、总体标准差／方差、样本方差及 minMax 接通影像波段、时间轴和数组，多输出支持共享输入 combine／setOutputs 与 fieldAxis。完整回归 **4078 passed／12 skipped**，前端11／类型／临时构建通过；Python／JS五项组合输出一致，实际 GeoTrellis 瓦片7种归约、41个像元及8项拒绝控制通过，19源文件完整适配器构建通过。修复极大共同偏移／微小差值的标准差、乘积中间溢出、选景及掩膜的 Float64 精度；跨观测需明确 STAC 网格证据。名称仍 **549／991（55.40%）**，仅统计入口，本批未增加名称。单波段方差50景生成351节点，100景触及原500节点上限。依赖、安装环境、数据与预算不变，临时构建已清理；未部署，无完整Spark／任务导出／浏览器／Google同数据验收。见 [栅格统计](raster-statistics.md)、[静态数组](array-statistics.md)、[栅格数组](raster-array-statistics.md)、[示例45](../../examples/45_GEE_python_raster_statistics.py) 和 [报告](../../reports/gee-python-wave40.json)。
 
 第三十九批历史记录：新增 **10个有限统计归约入口**：Pearson／Spearman／Kendall相关性、Sen趋势、向量协方差、固定一维／二维直方图及列表／要素收集。完整回归 **3983 passed／11 skipped**，前端11／类型／临时构建通过；Python／JS十五项组合输出一致，统计摘要1行与收集表6行CSV实际写出并读回。名称 **549／991（55.40%）** 仅为入口统计，不代表完整语义兼容。保留原50000工作预算；1000行Pearson、二维向量协方差、固定直方图和toList通过，部分排序／成对算法及toCollection在该规模超限。已修复大偏移中心化、零／次正规数中位排序与p值尾部精度问题。部分默认结果名、协方差归一化及Sen截距采用明确的本地政策，Google同数据验证仍缺；依赖与运行环境未变，本批未部署。见 [相关性与趋势](correlation-reducers.md)、[协方差](covariance-reducers.md)、[固定直方图](fixed-histograms.md)、[收集归约](collecting-reducers.md)、[示例44](../../examples/44_GEE_python_trends_and_distributions.py) 和 [报告](../../reports/gee-python-wave39.json)。
@@ -34,7 +36,7 @@
 第二十五批 [报告](../../reports/gee-python-wave25.json)：新增标签 Image.remap、受限 Filter.expression、取样表 filter／无排序 limit 及累计资源计费。示例 30 的标签掩膜、17 个几何候选位置、15 行有效样本、14 行 notNull、11 行条件通过和 8 行限量训练，以及三度量预测，有独立原始网格参考。便携 Python **2068 passed／3 skipped**（另排除 4 项原生测试），前端 **11 passed**／构建通过，SDK 图一致性 **77**，真实 tile 内核通过。入口 **275／991（27.75%）** 只表示名称，不是完整参数或计算兼容率。完整 Spark／部署／浏览器／真实数据／Google 验收未运行；[该批尚未实现随机森林](random-forest-roadmap.md)。
 
 第二十四批 [报告](../../reports/gee-python-wave24.json) 与 [取样语法文档](sampling.md)：接通有限 sampleRegions、实际样本运行时训练、栅格分类与样本 getInfo／CSV 任务合同。便携 Python **1882 passed／3 skipped**（另排除 4 项原生测试）、前端 **11 passed**／构建通过，Python／JS 官方客户端一致性 **72** 项；取样与分类的可信独立 JVM tile 内核均通过。API 名称入口 **273／991（27.55%）**，参数和数值语义仍需逐项验证；此数值不代表完整兼容率。完整 Spark cube、部署／浏览器、真实数据和 Google 对照未运行。
-状态：2026-10-23，第三十三批已验证，整体兼容目标尚未完成。
+状态：2026-10-23，第四十一批已验证，整体兼容目标尚未完成。
 
 第二十三批 [验证报告](../../reports/gee-python-wave23.json)：新增有限 `Image.classify` 的 schema 选择、精确模型编译、Python 桥与真实 GeoTrellis tile 内核，训练仍使用内联要素。macOS ARM64 Python **1751 passed／3 skipped**（启用可信独立 JVM 内核测试，另排除 4 项原生运行测试），前端 **11 passed**、TypeScript／构建通过；较[第二十二批](../../reports/gee-python-wave22.json)增加 66 项通过。独立 tile 内核是组件运行证据，完整 Spark cube、沙箱任务、HTTP／浏览器、部署和 Google 对照均未在本批验收。
 

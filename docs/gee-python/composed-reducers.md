@@ -24,6 +24,10 @@ Supported leaves are unweighted scalar `sum`, `mean`, `min`, `max`, `count`,
 and [discrete](discrete-reducer-leaves.md) leaves now cover variance, extrema,
 product, distinct/run counts, histograms and logical/bitwise statistics.
 [repeat and forEach](reducer-expansion.md) apply independent input blocks.
+[Quantiles and mode](quantile-reducers.md), [skew and kurtosis](moment-reducers.md),
+and [circular statistics](circular-reducers.md) also participate in this same
+finite table/list tree, with their local numerical policies and unsupported
+histogram/weight/raster contexts kept explicit.
 `countEvery` consumes zero selected columns and counts source rows, including
 empty records; it combines with a one-input reducer using separate inputs.
 `group()` uses the selected-input

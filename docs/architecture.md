@@ -107,6 +107,8 @@ RF 要素分类与矩阵计算保留独立运行时 IR 和生产者合同。真�
 
 `statistical_reducer_leaves` 将相关性／趋势、向量协方差、固定分箱和列表／要素收集接入同一不可变归约树。各算子族分别负责描述、参数校验、有限数值内核与输出复制；表格选择器可保留经验证的 typed Array，不能将普通 List 隐式作为协方差向量。统计输出继续走已有公开值和 CSV 边界，保留原资源限制；例44验证官方双客户端、独立数值和物理 CSV 读回，默认命名及 Google 对照缺口另记。
 
+第四十一批继续复用此树，接入百分位数／区间均值／众数、偏度／峰度和圆周统计。`quantile_reducer_spec` 管理不可变参数与有界分数，`quantile_reducer_values` 执行排序／插值；`moment_reducer_values` 通过中心化和缩放处理极大偏移与微小差值，`circular_reducers` 分开处理方向、离散度和不确定合向量。仅开放有限列表／内联表，保留原工作预算；直方图近似、权重、Array／栅格及动态表仍拒绝。例46复用现有任务和文件边界导出两行分组 CSV，公式细节中的本地规则及未完成的 Google 对照见各语法页。
+
 第四十批将其中有限单输入数值叶子接入影像波段、时间轴、静态数组及固定栅格数组。`numeric_reducer_plan` 验证共享输入组合与输出选择；`numeric_reducer_grid`／`numeric_reducer_projection` 分开检查来源和 STAC 仿射网格证据，不同观测只有同 CRS、同像元基与整数像元偏移时才能合并。数组以额外单例字段轴承载多输出。新栅格路径进入 `local_ee_reduce_bands` 的 Float64 统计内核，选择和掩膜分别处理，避免先经 Float32 回调丢失数值。总体／样本分母、单值和全缺测政策明确；极大共同偏移、次正规数及乘积中间溢出有实际 GeoTrellis 瓦片控制。可信独立组件和合成图的验证不等于完整 Spark、导出任务或部署验收。见[栅格统计](gee-python/raster-statistics.md)、[数组统计](gee-python/array-statistics.md)和[栅格数组统计](gee-python/raster-array-statistics.md)。
 
 ### 3.1 EE 编译器模块边界

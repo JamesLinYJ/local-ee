@@ -89,7 +89,15 @@ def test_all_ten_entry_declarations_have_closed_finite_implementations():
     from gee.compat.earthengine.statistical_reducer_leaves import STATISTICAL_REDUCER_NAMES
     from scripts.ee_inventory.declarations import read_declared_handlers
 
-    assert len(STATISTICAL_REDUCER_NAMES) == 10
+    wave39 = {
+        "Reducer." + name for name in (
+            "pearsonsCorrelation", "spearmansCorrelation", "kendallsCorrelation",
+            "sensSlope", "covariance", "centeredCovariance", "fixedHistogram",
+            "fixed2DHistogram", "toList", "toCollection",
+        )
+    }
+    assert len(wave39) == 10
+    assert wave39 <= STATISTICAL_REDUCER_NAMES
     assert STATISTICAL_REDUCER_NAMES <= read_declared_handlers(ROOT / "gee/ee_translate.py")
 
 

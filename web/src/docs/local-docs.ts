@@ -3,6 +3,13 @@ import type { ReferenceEntry } from "../types";
 import geeDocs from "./gee-docs";
 const entries: ReferenceEntry[] = [
   {
+    id: "gee-python-distribution-summary",
+    category: "GEE Python",
+    title: "百分位数、形状与方向统计",
+    text: "有限 List 和内联表支持 percentile、intervalMean、mode、skew、kurtosis 及三个 circular 归约器，可组合、分组后导出 CSV。百分位数采用本地线性插值，众数并列取最小值；偏度使用总体标准矩，峰度减3，角度使用弧度。最多1000行并保留共享预算；maxRaw 是有效值数量上限，显式直方图参数拒绝。这些新算子尚不支持栅格、Array、动态取样表或权重；公式细节与 Google 数值等价性尚未验证，见例46。",
+    code: "values = ee.List([0, 1, 1, 2, 4, 8])\nr = ee.Reducer.percentile([25, 50, 75], ['q1', 'median', 'q3'])\nprint(values.reduce(r).getInfo())\nprint(values.reduce(ee.Reducer.skew()).getInfo())\nprint(ee.List([-0.5, 0, 0.5]).reduce(ee.Reducer.circularMean()).getInfo())",
+  },
+  {
     id: "gee-python-raster-statistics",
     category: "GEE Python",
     title: "影像与数组统计",

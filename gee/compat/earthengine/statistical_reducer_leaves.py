@@ -6,21 +6,29 @@ authorize raster, sampled-table, weighted or arbitrary Python execution.
 from __future__ import annotations
 
 from . import collecting_reducers, correlation_reducers, covariance_reducers, histogram_reducers
+from . import circular_reducers, moment_reducers, quantile_reducers
+from .circular_reducers import CircularReducerLeaf
 from .collecting_reducers import CollectingReducerLeaf
 from .correlation_reducers import CorrelationReducerLeaf
 from .covariance_reducers import CovarianceReducerLeaf
 from .histogram_reducers import HistogramReducerLeaf
+from .moment_reducers import MomentReducerLeaf
+from .quantile_reducers import QuantileReducerLeaf
 from .ir import fail
 
 
 StatisticalReducerLeaf = (
     CollectingReducerLeaf | CorrelationReducerLeaf | CovarianceReducerLeaf | HistogramReducerLeaf
+    | CircularReducerLeaf | MomentReducerLeaf | QuantileReducerLeaf
 )
 _FAMILIES = (
     (collecting_reducers, "collecting", CollectingReducerLeaf),
     (correlation_reducers, "correlation", CorrelationReducerLeaf),
     (covariance_reducers, "covariance", CovarianceReducerLeaf),
     (histogram_reducers, "histogram", HistogramReducerLeaf),
+    (circular_reducers, "circular", CircularReducerLeaf),
+    (moment_reducers, "moment", MomentReducerLeaf),
+    (quantile_reducers, "quantile", QuantileReducerLeaf),
 )
 _BY_NAME = {
     name: (module, prefix)

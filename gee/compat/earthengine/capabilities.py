@@ -8,6 +8,10 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 # nor that Google-service numerical equivalence has been established.
 SUPPORTED_FUNCTIONS = frozenset({
     *("Reducer." + n for n in (
+        "percentile", "intervalMean", "mode", "skew", "kurtosis",
+        "circularMean", "circularStddev", "circularVariance",
+    )),
+    *("Reducer." + n for n in (
         "pearsonsCorrelation", "spearmansCorrelation", "kendallsCorrelation", "sensSlope",
         "covariance", "centeredCovariance", "fixedHistogram", "fixed2DHistogram",
         "toList", "toCollection",
@@ -134,6 +138,12 @@ def get_capabilities():
         "level": "C",
         "numerical_equivalence_to_google_verified": False,
         "restrictions": [
+            ("Finite List/inline table distribution reducers add percentile/intervalMean/mode, "
+             "population skew/excess kurtosis and circular statistics in radians. "
+             "Type7 interpolation, inclusive percentile-value interval, smallest tied mode and "
+             "undefined-direction policies are local, not Google-verified. Histogram approximation, "
+             "weights, Array/raster/dynamic table consumers reject; maxRaw limits actual valid rows. "
+             "Original1000 rows/50000 work/1MB output caps remain."),
             ("Finite table/List statistical reducers support correlations, Sen slope, typed-vector covariance, "
              "fixed 1D/2D histograms and collecting lists/features. No raster/dynamic table/weight support. "
              "Null, covariance denominator, Sen intercept and histogram grid policies are explicit; "

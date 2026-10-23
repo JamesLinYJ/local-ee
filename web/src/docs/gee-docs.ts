@@ -2,6 +2,12 @@ import type { ReferenceEntry } from "../types";
 // Pinned client syntax and explicit local semantics; served entirely from this app.
 const entries: ReferenceEntry[] = [
   {
+    id: "gee-distribution-summary",
+    title: "百分位数、形状与方向统计",
+    text: "有限 List／内联表可计算 percentile、intervalMean、mode、skew、kurtosis 和 circularMean／circularStddev／circularVariance，并组合、分组、导出。采用明确的本地插值、并列、总体矩及圆周统计政策；新算子不用于栅格、Array 或动态表，权重与显式直方图参数拒绝。最多1000行并保留共享预算，Google 同数据比较未完成。",
+    code: "var values=ee.List([0,1,1,2,4,8]);\nprint(values.reduce(ee.Reducer.percentile([25,50,75],['q1','median','q3'])));\nprint(values.reduce(ee.Reducer.kurtosis()));\nprint(ee.List([-0.5,0,0.5]).reduce(ee.Reducer.circularMean()));",
+  },
+  {
     id: "gee-raster-statistics",
     title: "影像与数组统计",
     text: "product、总体标准差／方差、样本方差及 minMax 支持影像、时间序列和数组归约。共享输入 combine 与 setOutputs 保留输出顺序；数组多输出使用额外的长度1字段轴。新栅格归约使用 Float64，跨观测要求 STAC 网格对齐证据；空值、精度和规模限制见语法文档。并非完整多输入／带权归约，尚无 Google 同数据对照或部署验收。",
