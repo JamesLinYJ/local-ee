@@ -27,6 +27,16 @@ def test_dimension_changing_processes_accept_only_canonical_cube_refs(process_id
     graph.validate(_graph(process_id, arguments))
 
 
+@pytest.mark.parametrize("reducer", sorted(EE_BAND_REDUCERS))
+def test_every_shared_scalar_reducer_has_a_valid_public_contract(reducer):
+    from engine.ee_process_adapters import EE_BAND_REDUCERS as engine_reducers
+
+    assert engine_reducers == EE_BAND_REDUCERS
+    graph.validate(_graph("local_ee_reduce_bands", {
+        "data": {"from_node": "load"}, "reducer": reducer,
+    }))
+
+
 @pytest.mark.parametrize(
     "process_id,arguments",
     [
@@ -36,7 +46,7 @@ def test_dimension_changing_processes_accept_only_canonical_cube_refs(process_id
             "local_ee_reduce_bands",
             {"data": {"from_node": "load"}, "reducer": "mean", "callback": {"process_graph": {}}},
         ),
-        ("local_ee_reduce_bands", {"data": {"from_node": "load"}, "reducer": "product"}),
+        ("local_ee_reduce_bands", {"data": {"from_node": "load"}, "reducer": "not_a_reducer"}),
         ("local_ee_reduce_bands", {"data": {"from_node": "load"}, "reducer": {"from_node": "load"}}),
     ],
 )

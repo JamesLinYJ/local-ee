@@ -209,7 +209,8 @@ def test_actual_smile_training_and_geotrellis_tile_kernel():
     base_sources = [ROOT / path for path in (
         "engine/ee_integer_adapter.scala", "engine/ee_grid_adapter.scala",
         "engine/ee_mask_adapter.scala", "engine/ee_reduce_support.scala",
-        "engine/ee_reduce_numeric.scala", "engine/ee_reduce_adapter.scala",
+        "engine/ee_reduce_numeric.scala", "engine/ee_reduce_statistics.scala",
+        "engine/ee_reduce_adapter.scala",
         "engine/ee_classify_numeric.scala", "engine/ee_classify_model.scala",
         "engine/ee_classify_adapter.scala", "engine/ee_sample_kernel.scala",
         "engine/ee_sample_adapter.scala", "engine/ee_remap_numeric.scala",

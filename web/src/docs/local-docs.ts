@@ -3,6 +3,13 @@ import type { ReferenceEntry } from "../types";
 import geeDocs from "./gee-docs";
 const entries: ReferenceEntry[] = [
   {
+    id: "gee-python-raster-statistics",
+    category: "GEE Python",
+    title: "影像与数组统计",
+    text: "product、总体 stdDev／variance、sampleVariance 和 minMax 可用于影像波段、集合时间轴、静态 Array 及固定栅格数组。支持共享输入 combine 和 setOutputs；数组多输出需额外的长度1字段轴。新栅格归约使用 Float64，保留缺测；不同观测需 STAC 投影证明网格对齐。静态数组10000单元、栅格数组64单元和既有预算不变。不支持权重或通用栅格多输入归约；Google同数据对照及部署验收未完成。",
+    code: "r = ee.Reducer.variance().combine(ee.Reducer.minMax(), sharedInputs=True)\nresult = collection.reduce(r)\nfirst = collection.first()\nfields = first.toArray().toArray(1).arrayReduce(ee.Reducer.minMax(), [0], 1)\nresult_array = fields.arrayFlatten([['bands'], ['min', 'max']])",
+  },
+  {
     id: "gee-python-trends-distributions",
     category: "GEE Python",
     title: "相关性、趋势与分布统计",
@@ -13,14 +20,14 @@ const entries: ReferenceEntry[] = [
     id: "gee-python-reducer-statistics",
     category: "GEE Python",
     title: "多列归约与方差",
-    text: "有限列表和内联表支持 minMax、product、总体 stdDev／variance、sampleVariance，以及去重计数、频数表、连续段计数和逻辑／位运算归约。repeat 按独立输入列返回结果列表；forEach 按列命名。countEvery 不取属性列，直接计行数。可继续 combine／group 后导出 CSV；不适用于栅格或动态取样表。最多1000行，仍受共享工作预算约束；空值及输出命名边界见文档，未完成 Google 同数据对照。",
+    text: "有限列表和内联表支持 minMax、product、总体 stdDev／variance、sampleVariance，以及去重计数、频数表、连续段计数和逻辑／位运算归约。repeat 按独立输入列返回结果列表；forEach 按列命名。countEvery 不取属性列，直接计行数。可继续 combine／group 后导出 CSV；其中数值叶子的栅格子集见“影像与数组统计”，动态取样表不在此范围。最多1000行，仍受共享工作预算约束；空值及输出命名边界见文档，未完成 Google 同数据对照。",
     code: "rows = ee.FeatureCollection([\n    ee.Feature(None, {'x': 1, 'y': 10}), ee.Feature(None, {'x': 3, 'y': 30})])\nprint(rows.reduceColumns(ee.Reducer.variance().repeat(2), ['x', 'y']).getInfo())\nprint(rows.reduceColumns(ee.Reducer.minMax().forEach(['x', 'y']), ['x', 'y']).getInfo())",
   },
   {
     id: "gee-python-grouped-tables",
     category: "GEE Python",
     title: "集合展开与分组统计",
-    text: "内联 FeatureCollection 支持 map 返回子集合后 flatten；可用 aggregate_* 读取已有属性的均值、方差、计数和直方图。reduceColumns 和 List.reduce 支持有限 combine、group、setOutputs、getOutputs；组合归约暂不用于栅格或动态取样表。最多1000行，继续受共享工作预算约束。DateRange 支持有限区间交并与包含判断；无界区间须经有限交集或布尔访问器使用。例42演示分组结果转表并导出 CSV，具体空值及顺序规则见语法文档。",
+    text: "内联 FeatureCollection 支持 map 返回子集合后 flatten；可用 aggregate_* 读取已有属性的均值、方差、计数和直方图。reduceColumns 和 List.reduce 支持有限 combine、group、setOutputs、getOutputs；数值共享输入组合另有有限栅格路径；分组和动态取样表不在该范围。最多1000行，继续受共享工作预算约束。DateRange 支持有限区间交并与包含判断；无界区间须经有限交集或布尔访问器使用。例42演示分组结果转表并导出 CSV，具体空值及顺序规则见语法文档。",
     code: "rows = ee.FeatureCollection([\n    ee.Feature(None, {'zone':1, 'value':10}),\n    ee.Feature(None, {'zone':1, 'value':12})])\nr = ee.Reducer.mean().combine(ee.Reducer.count(), sharedInputs=True)\nprint(rows.reduceColumns(r.group(1, 'zone'), ['value', 'zone']).getInfo())\nprint(rows.aggregate_sample_var('value').getInfo())",
   },
   {

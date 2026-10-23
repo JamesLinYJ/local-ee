@@ -1,5 +1,6 @@
 """Preserve exact local observation identity when compiling time reductions."""
 from dataclasses import replace
+from gee.reduction_contract import SINGLE_OBSERVATION_KERNELS
 from .ir import Pixel, _substitute, fail
 
 
@@ -37,7 +38,7 @@ def reduce_time(graph, p):
     if not timed:
         from .constant_graph import is_spatialized_constant
         if is_spatialized_constant(p.args[0]):
-            if p.args[1] in {"count", "sd"}:
+            if p.args[1] in SINGLE_OBSERVATION_KERNELS:
                 ref = graph.node("local_ee_reduce_bands", data=ref, reducer=p.args[1])
             elif p.args[1] not in {"mean", "median", "min", "max", "sum", "first", "last"}:
                 fail("Unsupported constant temporal reducer")
@@ -48,7 +49,7 @@ def reduce_time(graph, p):
         # additionally rejects multiple actual instants and duplicate keys.
         # Removing one verified time coordinate performs no numeric reduction.
         ref = graph.node("local_ee_drop_single_time", data=ref)
-        if p.args[1] in {"count", "sd"}:
+        if p.args[1] in SINGLE_OBSERVATION_KERNELS:
             ref = graph.node("local_ee_reduce_bands", data=ref, reducer=p.args[1])
         elif p.args[1] not in {"mean", "median", "min", "max", "sum", "first", "last"}:
             fail("Unsupported Float64 temporal reducer")

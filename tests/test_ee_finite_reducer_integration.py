@@ -66,16 +66,27 @@ def test_count_every_still_rejects_opaque_or_unbounded_list_values():
         reduce_list(Translator([], {}, {}), cycle, reducer)
 
 
-def test_new_reducers_cannot_escape_as_public_objects_or_enter_raster_array_consumers(ee):
+def test_finite_descriptors_reject_public_escape_and_unsupported_consumers(ee):
+    numeric = {"product", "stdDev", "variance", "sampleVariance", "minMax"}
     for name in finite_leaf_outputs():
         reducer = ee.call("Reducer." + name)
-        for expression in (
+        expressions = [
             reducer, ee.Algorithms.If(reducer, 1, 0),
-            ee.Image.constant(1).reduce(reducer), ee.Array([1, 2]).reduce(reducer, [0]),
+            ee.Image.constant(1).reduce(reducer),
             ee.ImageCollection([]).reduce(reducer),
-        ):
+        ]
+        if name not in numeric:
+            expressions.append(ee.Array([1, 2]).reduce(reducer, [0]))
+        for expression in expressions:
             with pytest.raises(UnsupportedEEError):
                 output(ee, expression)
+
+
+def test_numeric_finite_descriptors_enter_only_audited_array_paths(ee):
+    expected = {"product": 2, "stdDev": 0.5, "variance": 0.25, "sampleVariance": 0.5}
+    for name, value in expected.items():
+        assert output(ee, ee.Array([1, 2]).reduce(ee.call("Reducer." + name), [0])) == pytest.approx([value], rel=1e-15)
+    assert output(ee, ee.Array([[1], [2]]).reduce(ee.Reducer.minMax(), [0], 1)) == [[1, 2]]
 
 
 def test_leaf_descriptors_validate_name_arity_outputs_and_unused_fields():

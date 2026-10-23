@@ -5,7 +5,7 @@ from typing import Any
 
 # These reducers are a small fixed engine contract. The classifier additionally
 # reuses the pure audited model validator in the sandbox-readable gee package.
-EE_BAND_REDUCERS = frozenset({"mean", "median", "min", "max", "sum", "count", "first", "last", "sd"})
+from gee.reduction_contract import EE_BAND_REDUCERS
 
 
 def _drop_single_time_metadata(metadata):

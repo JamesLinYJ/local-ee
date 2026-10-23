@@ -7,7 +7,9 @@ import org.openeo.geotrelliscommon.{CubeProcessProvider, OpenEORasterCube, OpenE
 
 /** Float64-only adapters for the EE time and band reducer boundaries. */
 final class LocalEeReduceCubeProcesses extends Serializable {
-  private val Reducers = Set("mean", "median", "min", "max", "sum", "count", "first", "last", "sd")
+  private val Reducers = Set(
+    "mean", "median", "min", "max", "sum", "count", "first", "last", "sd",
+    "product", "stdDev", "variance", "sampleVariance")
 
   @OpenEOProcess(
     id = "local_ee_drop_single_time",

@@ -4,7 +4,12 @@ import geotrellis.raster.{DoubleArrayTile, DoubleConstantNoDataCellType, Multiba
 
 /** Per-tile Float64 kernels; NoData is NaN and input band order is stable. */
 private[reduce] object LocalEeReduceNumeric {
+  private val Reducers = Set(
+    "first", "last", "min", "max", "count", "median", "sum", "mean", "sd",
+    "product", "stdDev", "variance", "sampleVariance")
+
   def reduceTile(tile: MultibandTile, bands: Int, cols: Int, rows: Int, reducer: String): Tile = {
+    require(Reducers.contains(reducer), s"unsupported raster reducer: $reducer")
     require(tile.bandCount == bands && tile.cols == cols && tile.rows == rows,
       "tile band count or dimensions changed within the input cube")
     val source = Array.tabulate(bands)(band => tile.band(band).convert(DoubleConstantNoDataCellType))
@@ -43,7 +48,8 @@ private[reduce] object LocalEeReduceNumeric {
           case "count" => count.toDouble
           case "median" => median(values, count)
           case "sum" | "mean" => compensatedReduction(values, count, scale, reducer)
-          case "sd" => if (count < 2) Double.NaN else sampleSd(values, count, scale)
+          case "sd" | "product" | "stdDev" | "variance" | "sampleVariance" =>
+            LocalEeReduceStatistics.reduce(values, count, reducer)
         }
         col += 1
       }
@@ -103,39 +109,4 @@ private[reduce] object LocalEeReduceNumeric {
     result
   }
 
-  private def sampleSd(values: Array[Double], count: Int, scale: Double): Double = {
-    if (scale == 0d) return 0d
-    val origin = values(0)
-    var mean = 0d
-    var m2 = 0d
-    var index = 0
-    while (index < count) {
-      val value = values(index) - origin
-      if (!value.isFinite) return scaledSampleSd(values, count, scale)
-      val delta = value - mean
-      mean += delta / (index + 1)
-      m2 += delta * (value - mean)
-      if (!m2.isFinite) return scaledSampleSd(values, count, scale)
-      index += 1
-    }
-    val result = math.sqrt(math.max(0d, m2) / (count - 1))
-    require(result.isFinite, "sd reducer overflowed Float64")
-    result
-  }
-
-  private def scaledSampleSd(values: Array[Double], count: Int, scale: Double): Double = {
-    var mean = 0d
-    var m2 = 0d
-    var index = 0
-    while (index < count) {
-      val value = values(index) / scale
-      val delta = value - mean
-      mean += delta / (index + 1)
-      m2 += delta * (value - mean)
-      index += 1
-    }
-    val result = scale * math.sqrt(math.max(0d, m2) / (count - 1))
-    require(result.isFinite, "sd reducer overflowed Float64")
-    result
-  }
 }

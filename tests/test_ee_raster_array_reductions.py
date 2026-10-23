@@ -61,9 +61,13 @@ def test_invalid_axes_are_explicitly_rejected(ee, axes):
 
 
 def test_field_axis_multi_output_and_undefined_sample_deviation_reject(ee):
+    values, names = compute(ee, matrix(ee).arrayReduce(
+        ee.Reducer.mean(), [0], fieldAxis=1).arrayFlatten([["r"], ["c"]]))
+    assert names == ["r_c"]
+    np.testing.assert_allclose(values, [[11, np.nan, np.nan, 25]], equal_nan=True)
     for expression, reason in [
-        (matrix(ee).arrayReduce(ee.Reducer.mean(), [0], fieldAxis=1), "fieldAxis"),
-        (matrix(ee).arrayReduce(ee.Reducer.linearRegression(1), [0]), "single-output scalar"),
+        (matrix(ee).arrayReduce(ee.Reducer.mean(), [0], fieldAxis=0), "fieldAxis"),
+        (matrix(ee).arrayReduce(ee.Reducer.linearRegression(1), [0]), "legacy Reducer or closed ReducerSpec"),
         (matrix(ee).arrayReduce(ee.Reducer.sampleStdDev(), [1]), "at least two"),
     ]:
         with pytest.raises(UnsupportedEEError, match=reason):

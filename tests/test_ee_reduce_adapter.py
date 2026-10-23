@@ -29,6 +29,7 @@ def test_reducer_sources_are_in_the_atomic_adapter_build():
     builder = (ROOT / "scripts/build_integer_adapter.py").read_text()
     assert 'ROOT / "engine/ee_reduce_support.scala"' in builder
     assert 'ROOT / "engine/ee_reduce_numeric.scala"' in builder
+    assert 'ROOT / "engine/ee_reduce_statistics.scala"' in builder
     assert 'ROOT / "engine/ee_reduce_adapter.scala"' in builder
     assert "local.ee.reduce.LocalEeReduceCubeProcessProvider\\n" in builder
     for provider in ("integer.LocalEeInteger", "grid.LocalEeGrid", "mask.LocalEeMask"):
@@ -271,6 +272,7 @@ object ReduceAdapterProbe {
         "-classpath", classpath, "-d", str(classes),
         str(ROOT / "engine/ee_reduce_support.scala"),
         str(ROOT / "engine/ee_reduce_numeric.scala"),
+        str(ROOT / "engine/ee_reduce_statistics.scala"),
         str(ROOT / "engine/ee_reduce_adapter.scala"), str(source),
     ], check=False, cwd=ROOT, capture_output=True, text=True)
     assert compile_result.returncode == 0, compile_result.stdout + compile_result.stderr

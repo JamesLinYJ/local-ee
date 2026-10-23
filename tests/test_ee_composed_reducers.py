@@ -75,10 +75,10 @@ def test_sdk_group_combine_set_outputs_reduce_columns_and_independent_values(ee)
     }
 
 
-def test_composed_specs_never_enter_raster_reducer_consumers(ee):
+def test_composed_raster_reducers_still_require_a_bound_source_grid(ee):
     image = ee.Image.constant(1)
     reducer = ee.Reducer.mean().combine(ee.Reducer.sum(), sharedInputs=True)
-    with pytest.raises(UnsupportedEEError, match="static List.reduce"):
+    with pytest.raises(UnsupportedEEError, match="finite source lineage"):
         output(ee, image.reduce(reducer))
 
 

@@ -71,13 +71,25 @@ def invoke(translator, name, arguments):
     if handles_composed_reducer(name):
         return invoke_composed_reducer(translator, name, a)
     if is_reducer_spec(a.get("reducer")):
+        if name in {"Image.reduce", "ImageCollection.reduce"}:
+            from .image_numeric_reducers import invoke_raster_numeric_reducer
+
+            return invoke_raster_numeric_reducer(translator, name, a)
+        if name == "Array.reduce":
+            from .array_reductions import invoke_reduction
+
+            return invoke_reduction(translator, name, a)
+        if name == "Image.arrayReduce":
+            from .raster_array_reductions import invoke_raster_reduction
+
+            return invoke_raster_reduction(translator, name, a)
         if name == "List.reduce":
             from .composed_reducer_values import reduce_list
 
             translator.allowed(a, {"list", "reducer"})
             return reduce_list(translator, a.get("list"), a["reducer"])
         if name != "Collection.reduceColumns":
-            fail("Composed Reducers currently support static List.reduce and inline FeatureCollection.reduceColumns only")
+            fail("This composed Reducer context is unsupported; use an audited list, table, array or raster reduction")
     from .raster_array_bands import handles_array_bands, invoke_array_bands
     from .image_pixel_math import IMAGE_PIXEL_MATH_FUNCTIONS, invoke_image_pixel_math
 

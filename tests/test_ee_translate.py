@@ -190,6 +190,11 @@ def evaluate_graph(result, arrays, grid=None, source_geometries=None,
             v = (np.where(inside, data, np.nan), names, timed)
         elif process_handlers is not None and p in process_handlers:
             v = process_handlers[p](a, values)
+        elif p in {"local_ee_reduce_bands", "local_ee_drop_single_time"}:
+            from ee_reducer_reference import drop_single_time, reduce_bands
+
+            handler = reduce_bands if p == "local_ee_reduce_bands" else drop_single_time
+            v = handler(a, values)
         else: raise AssertionError(p)
         values[key] = v
         if node.get("result"): result_value = v
@@ -319,13 +324,16 @@ def test_expression_functions_broadcast_and_parameter_rejection(local,arrays):
         compile(expression("unknown + 1"),local)
     with pytest.raises(UnsupportedEEError,match="Unsupported algorithm arguments"):
         compile(call("Image.select",input=first(),bandSelectors=["red"],unexpected=True),local)
-    # Population stdDev now computes finite lists but is never replaced by the
-    # existing sample-standard-deviation raster kernel.
+    # Population stdDev is a distinct native operation from sample sd.
     assert compile(call("List.reduce",list=[0,2],reducer=call("Reducer.stdDev")),local)["value"]==1
     with pytest.raises(UnsupportedEEError,match="not a computable output"):
         compile(call("Reducer.stdDev"),local)
-    with pytest.raises(UnsupportedEEError,match="static List.reduce"):
-        compile(call("Image.reduce",image=first(),reducer=call("Reducer.stdDev")),local)
+    result = compile(call("Image.reduce", image=first(), reducer=call("Reducer.stdDev")), local)
+    native = [node["arguments"]["reducer"] for node in result["process_graph"].values()
+              if node["process_id"] == "local_ee_reduce_bands"]
+    assert native == ["stdDev"]
+    with pytest.raises(UnsupportedEEError, match="context is unsupported"):
+        compile(call("Image.reduceRegion", image=first(), reducer=call("Reducer.stdDev")), local)
 
 
 def test_region_and_count_contract(local,arrays):

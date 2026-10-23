@@ -78,9 +78,11 @@ def test_invalid_or_unimplemented_axes_are_rejected(ee, axes):
 
 
 def test_field_axis_empty_inputs_and_unsupported_reducers_are_not_ignored(ee):
+    assert output(ee, ee.Array([[1], [2]]).reduce(
+        ee.Reducer.mean(), [0], fieldAxis=1)) == [[1.5]]
     with pytest.raises(UnsupportedEEError, match="fieldAxis"):
-        output(ee, ee.Array([[1], [2]]).reduce(ee.Reducer.mean(), [0], fieldAxis=1))
-    with pytest.raises(UnsupportedEEError, match="single-output scalar Reducer"):
+        output(ee, ee.Array([[1, 2], [3, 4]]).reduce(ee.Reducer.mean(), [0], fieldAxis=1))
+    with pytest.raises(UnsupportedEEError, match="legacy Reducer or closed ReducerSpec"):
         output(ee, ee.Array([[1, 2]]).reduce(ee.Reducer.linearRegression(1), [0]))
     with pytest.raises(UnsupportedEEError, match="sum/min/max only"):
         output(ee, ee.Array([1, 2]).accum(0, ee.Reducer.mean()))

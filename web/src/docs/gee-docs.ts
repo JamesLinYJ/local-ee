@@ -2,6 +2,12 @@ import type { ReferenceEntry } from "../types";
 // Pinned client syntax and explicit local semantics; served entirely from this app.
 const entries: ReferenceEntry[] = [
   {
+    id: "gee-raster-statistics",
+    title: "影像与数组统计",
+    text: "product、总体标准差／方差、样本方差及 minMax 支持影像、时间序列和数组归约。共享输入 combine 与 setOutputs 保留输出顺序；数组多输出使用额外的长度1字段轴。新栅格归约使用 Float64，跨观测要求 STAC 网格对齐证据；空值、精度和规模限制见语法文档。并非完整多输入／带权归约，尚无 Google 同数据对照或部署验收。",
+    code: "var r=ee.Reducer.variance().combine({reducer2:ee.Reducer.minMax(),sharedInputs:true});\nvar stats=collection.reduce(r);\nvar fields=collection.first().toArray().toArray(1)\n  .arrayReduce(ee.Reducer.minMax(),[0],1);\nvar bands=fields.arrayFlatten([['bands'],['min','max']]);",
+  },
+  {
     id: "gee-trends-distributions",
     title: "相关性、趋势与分布统计",
     text: "静态 List 和内联表可计算 Pearson／Spearman／Kendall、Sen 趋势、向量协方差、固定分箱直方图，以及收集列表／要素。支持组合和显式结果命名，例44有 Python／JS 同输出与实际 CSV 验证。新归约器尚不用于栅格、动态取样表或带权计算；部分默认结果名与数值边界仍待 Google 对照。",
@@ -10,13 +16,13 @@ const entries: ReferenceEntry[] = [
   {
     id: "gee-reducer-statistics",
     title: "多列归约与方差",
-    text: "静态 List 和内联 FeatureCollection 新增总体／样本方差、minMax、product、去重计数、频数表及逻辑／位运算归约。repeat 将各输入块的结果放入列表；forEach 为各输入块命名，可继续组合、分组和导出。countEvery 读取零个属性列并计行数。栅格、动态取样表及带权归约不在此范围；最多1000行并保留共享预算，未验证 Google 数值等价性。",
+    text: "静态 List 和内联 FeatureCollection 新增总体／样本方差、minMax、product、去重计数、频数表及逻辑／位运算归约。repeat 将各输入块的结果放入列表；forEach 为各输入块命名，可继续组合、分组和导出。countEvery 读取零个属性列并计行数。数值叶子的有限栅格路径另见“影像与数组统计”；动态取样表及权重不在此范围；最多1000行并保留共享预算，未验证 Google 数值等价性。",
     code: "var rows=ee.FeatureCollection([ee.Feature(null,{x:1,y:10}),ee.Feature(null,{x:3,y:30})]);\nprint(rows.reduceColumns(ee.Reducer.variance().repeat(2),['x','y']));\nprint(rows.reduceColumns(ee.Reducer.minMax().forEach(['x','y']),['x','y']));",
   },
   {
     id: "gee-grouped-tables",
     title: "集合展开、属性统计与分组",
-    text: "有限内联集合可 map 返回子集合后 flatten，再进行属性 aggregate_* 和组合／分组 reduceColumns。combine 支持共享或分开的输入；setOutputs 重命名输出，getOutputs 查询输出名。最多1000行，资源限制仍生效；不支持组合归约的栅格路径或动态取样表。DateRange 增加区间访问、交并、包含和空集判断；空值、分组顺序等本地规则尚无 Google 对照。",
+    text: "有限内联集合可 map 返回子集合后 flatten，再进行属性 aggregate_* 和组合／分组 reduceColumns。combine 支持共享或分开的输入；setOutputs 重命名输出，getOutputs 查询输出名。最多1000行，资源限制仍生效；栅格仅另支持有限数值共享输入组合；动态取样表仍不支持。DateRange 增加区间访问、交并、包含和空集判断；空值、分组顺序等本地规则尚无 Google 对照。",
     code: "var rows = ee.FeatureCollection([\n  ee.Feature(null,{zone:1,value:10}),ee.Feature(null,{zone:1,value:12})]);\nvar r = ee.Reducer.mean().combine({reducer2:ee.Reducer.count(),sharedInputs:true});\nprint(rows.reduceColumns(r.group({groupField:1,groupName:'zone'}),['value','zone']));\nprint(rows.aggregate_sample_var('value'));",
   },
   {

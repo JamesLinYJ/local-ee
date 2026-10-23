@@ -15,7 +15,7 @@ LOCAL_PROCESSES = frozenset({
     "local_ee_remap", "local_ee_sample_table_op", "local_ee_pixel_math",
 }) | RF_PROCESSES | VALIDATION_PROCESSES
 CUBE = {"type": "object", "subtype": "raster-cube"}
-EE_BAND_REDUCERS = frozenset({"mean", "median", "min", "max", "sum", "count", "first", "last", "sd"})
+from .reduction_contract import EE_BAND_REDUCERS
 
 
 def validate_local_process(name, arguments, depth, *, node_context=None):

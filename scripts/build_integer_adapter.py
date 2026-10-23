@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "engine/ee_integer_adapter.scala"
 SOURCES = [SOURCE, ROOT / "engine/ee_grid_adapter.scala", ROOT / "engine/ee_mask_adapter.scala",
            ROOT / "engine/ee_reduce_support.scala", ROOT / "engine/ee_reduce_numeric.scala",
+           ROOT / "engine/ee_reduce_statistics.scala",
            ROOT / "engine/ee_reduce_adapter.scala", ROOT / "engine/ee_classify_numeric.scala",
            ROOT / "engine/ee_classify_model.scala", ROOT / "engine/ee_classify_adapter.scala",
            ROOT / "engine/ee_sample_kernel.scala", ROOT / "engine/ee_sample_adapter.scala"]

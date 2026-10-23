@@ -107,6 +107,8 @@ RF 要素分类与矩阵计算保留独立运行时 IR 和生产者合同。真�
 
 `statistical_reducer_leaves` 将相关性／趋势、向量协方差、固定分箱和列表／要素收集接入同一不可变归约树。各算子族分别负责描述、参数校验、有限数值内核与输出复制；表格选择器可保留经验证的 typed Array，不能将普通 List 隐式作为协方差向量。统计输出继续走已有公开值和 CSV 边界，保留原资源限制；例44验证官方双客户端、独立数值和物理 CSV 读回，默认命名及 Google 对照缺口另记。
 
+第四十批将其中有限单输入数值叶子接入影像波段、时间轴、静态数组及固定栅格数组。`numeric_reducer_plan` 验证共享输入组合与输出选择；`numeric_reducer_grid`／`numeric_reducer_projection` 分开检查来源和 STAC 仿射网格证据，不同观测只有同 CRS、同像元基与整数像元偏移时才能合并。数组以额外单例字段轴承载多输出。新栅格路径进入 `local_ee_reduce_bands` 的 Float64 统计内核，选择和掩膜分别处理，避免先经 Float32 回调丢失数值。总体／样本分母、单值和全缺测政策明确；极大共同偏移、次正规数及乘积中间溢出有实际 GeoTrellis 瓦片控制。可信独立组件和合成图的验证不等于完整 Spark、导出任务或部署验收。见[栅格统计](gee-python/raster-statistics.md)、[数组统计](gee-python/array-statistics.md)和[栅格数组统计](gee-python/raster-array-statistics.md)。
+
 ### 3.1 EE 编译器模块边界
 
 逐像元科学函数通过独立 `local_ee_pixel_math` SPI，使用共享的固定操作／输入数量合同。编译器保留显式 Double 请求的拒绝，将默认源／常量转换为 Float32；常量绑定真实有限网格，集合中按需复用逐景展开。二元实际输入只接受相同的已证明来源谱系，避免上游 merge 隐式最近邻重采样。JVM 使用已有固定 Commons Math，负 digamma／trigamma 用有界反射公式，独立构建记录依赖摘要，不覆盖安装环境。实际瓦片数值验证与完整 Spark／服务部署分开。语法和精度边界见[影像数学](gee-python/pixel-math.md)。

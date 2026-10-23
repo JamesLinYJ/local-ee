@@ -1,0 +1,273 @@
+{
+  "schema": "local-ee-python-wave40/v1",
+  "date": "2026-10-23",
+  "base_commit": "f046fbe20801d10ae910727c26dbbd8461cd85c3",
+  "title": "One-input numeric reducers across raster bands, time and array field axes",
+  "entry_inventory": {
+    "before": 549,
+    "after": 549,
+    "new_entry_count": 0,
+    "pinned_signatures": 991,
+    "name_entry_percentage": 55.4,
+    "interpretation": "Names only; this batch expands real contexts/parameters and does not increase registration or claim complete semantics/Google parity"
+  },
+  "implementation": {
+    "families": [
+      "product",
+      "population stdDev",
+      "population variance",
+      "sampleVariance",
+      "minMax",
+      "shared-input numeric combine/setOutputs"
+    ],
+    "contexts": [
+      "Image.reduce",
+      "ImageCollection.reduce",
+      "Array.reduce",
+      "Image.arrayReduce"
+    ],
+    "module_lines": {
+      "numeric_reducer_plan.py": 162,
+      "image_numeric_reducers.py": 234,
+      "numeric_reducer_grid.py": 220,
+      "numeric_reducer_projection.py": 136,
+      "array_numeric_reductions.py": 206,
+      "array_reduction_layout.py": 53,
+      "raster_array_reduction_layout.py": 57
+    },
+    "native_statistics_lines": 170,
+    "precision_fixes": [
+      "Centered/scaled dispersion handles adjacent large/small floats without intermediate moment loss",
+      "Legacy sample sd now uses the same robust numerical kernel, preserving denominator/undefined policies",
+      "Normalized product avoids transient overflow/underflow; bounded exact integer product prechecks output",
+      "Double first/last selection occurs before narrowing callbacks; array validity masks use a separate cube"
+    ],
+    "alignment": "Distinct observed items require exact selected STAC CRS/affine basis and integer-pixel offset proof, no implicit alignment from export settings; six-value transforms only",
+    "limits": "Unchanged shared50000 steps, graph500 nodes, static Array rank8/cells10000/exact integer2^53, raster Array rank8/axis64/cells64, public output1MB; selected numeric trees only"
+  },
+  "validation": {
+    "python": {
+      "tests": 4090,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 12,
+      "passed": 4078,
+      "seconds": 40.065
+    },
+    "warnings": "3 existing Rasterio PendingDeprecationWarnings",
+    "skip_delta": "One new opt-in standalone native statistics kernel skips in default suite; it passed separately",
+    "evidence_directory": "audit/gee-python-wave40/final-verified-v2",
+    "earlier_full_run": "3 obsolete raster-rejection test expectations updated with positive native controls and retained unsupported-context controls; no implementation changes after the first full run",
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "deployed": false,
+      "evidence_directory": "audit/gee-python-wave40/final-verified"
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "Python_JS_identical_workflow_outputs": 5,
+      "guarded_network_attempts": 0
+    },
+    "independent_numerics": [
+      "Fraction/Decimal actual native tile expectations with max16 ULP checks",
+      "Hand values for band/time/array combined statistics, same-day and repeated observations, sample/population denominators and NoData",
+      "Static arrays noncontiguous layouts, exact integers, product cancellation, adjacent Float64 stdDev"
+    ],
+    "native_tile": {
+      "status": "passed",
+      "reducers": 7,
+      "cases": 7,
+      "pixels": 41,
+      "reject_controls": 8,
+      "scope": "Actual GeoTrellis tiles through reducer kernel; no SparkContext/service/sandbox/browser/Google acceptance",
+      "evidence": "audit/gee-python-wave40/native-statistics/20261023T084356Z-a6a1e6581d"
+    },
+    "native_build": {
+      "status": "passed",
+      "sources": 19,
+      "jar_sha256": "38932765b859c3b489a4a7f032e298fa46831d7c4f346de65d7ec3769bb72aee",
+      "manifest_sha256": "7400aabb47d59bae4ec32dfd7b760a244d57dd77b0cba777ccfce8f7ae27d7fd",
+      "installed": false,
+      "dependencies_changed": false,
+      "evidence": "audit/gee-python-wave40/native-statistics/adapter-build-20261023T084415Z-2806f025ec"
+    },
+    "scale": [
+      {
+        "observations": 1,
+        "bands": 1,
+        "operation": "variance",
+        "status": "compiled",
+        "nodes": 7,
+        "temporal": false,
+        "steps": 198,
+        "seconds": 0.008928666997235268
+      },
+      {
+        "observations": 10,
+        "bands": 1,
+        "operation": "variance",
+        "status": "compiled",
+        "nodes": 71,
+        "temporal": false,
+        "steps": 437,
+        "seconds": 0.0020607499754987657
+      },
+      {
+        "observations": 20,
+        "bands": 1,
+        "operation": "variance",
+        "status": "compiled",
+        "nodes": 141,
+        "temporal": false,
+        "steps": 687,
+        "seconds": 0.001876416994491592
+      },
+      {
+        "observations": 30,
+        "bands": 1,
+        "operation": "variance",
+        "status": "compiled",
+        "nodes": 211,
+        "temporal": false,
+        "steps": 937,
+        "seconds": 0.002043833985226229
+      },
+      {
+        "observations": 50,
+        "bands": 1,
+        "operation": "variance",
+        "status": "compiled",
+        "nodes": 351,
+        "temporal": false,
+        "steps": 1437,
+        "seconds": 0.003923666983610019
+      },
+      {
+        "observations": 100,
+        "bands": 1,
+        "operation": "variance",
+        "status": "bounded_rejection",
+        "reason": "Compiled process graph exceeds 500 nodes; reduce the script scope",
+        "steps": 2687,
+        "seconds": 0.004272332997061312
+      },
+      {
+        "observations": 1000,
+        "bands": 1,
+        "operation": "variance",
+        "status": "bounded_rejection",
+        "reason": "Compiled process graph exceeds 500 nodes; reduce the script scope",
+        "steps": 25187,
+        "seconds": 0.02757708399440162
+      }
+    ],
+    "workflow_graphs": {
+      "band_stats": {
+        "kind": "image",
+        "nodes": 29,
+        "bands": [
+          "variance",
+          "stdDev",
+          "sample_var",
+          "min",
+          "max",
+          "product"
+        ],
+        "source_item_ids": [
+          "a"
+        ]
+      },
+      "time_stats": {
+        "kind": "image",
+        "nodes": 72,
+        "bands": [
+          "red_variance",
+          "red_stdDev",
+          "red_sample_var",
+          "red_min",
+          "red_max",
+          "red_product",
+          "nir_variance",
+          "nir_stdDev",
+          "nir_sample_var",
+          "nir_min",
+          "nir_max",
+          "nir_product"
+        ],
+        "source_item_ids": [
+          "a",
+          "b",
+          "c"
+        ]
+      },
+      "repeated_stats": {
+        "kind": "image",
+        "nodes": 63,
+        "bands": [
+          "red_variance",
+          "red_stdDev",
+          "red_sample_var",
+          "red_min",
+          "red_max",
+          "red_product",
+          "nir_variance",
+          "nir_stdDev",
+          "nir_sample_var",
+          "nir_min",
+          "nir_max",
+          "nir_product"
+        ],
+        "source_item_ids": [
+          "a",
+          "b"
+        ]
+      },
+      "array_stats": {
+        "kind": "image",
+        "nodes": 57,
+        "bands": [
+          "bands_variance",
+          "bands_stdDev",
+          "bands_sample_var",
+          "bands_min",
+          "bands_max",
+          "bands_product"
+        ],
+        "source_item_ids": [
+          "a"
+        ]
+      },
+      "static_stats": {
+        "kind": "value",
+        "nodes": 0,
+        "bands": [],
+        "source_item_ids": []
+      }
+    }
+  },
+  "cleanup": {
+    "path": "work/gee-python-wave40-web-build",
+    "files": 16,
+    "logical_bytes": 1695572,
+    "scope": "Temporary frontend verification build only; no physical free-space claim",
+    "removed": true
+  },
+  "boundaries": [
+    "No general multi-input, weighted, grouped/repeated raster reducers or new region reducers",
+    "Population singleton dispersion zero; sample singleton undefined (native NaN, static error); all-NoData raster stays NaN",
+    "Whole raster-array mask retained; general Float64 arithmetic still explicitly restricted",
+    "No full Spark/batch/export/browser/deployment, private-data or Google same-data acceptance; installed runtimes and user data unchanged",
+    "Compilation scale is not measured runtime throughput"
+  ],
+  "primary_sources": [
+    "https://developers.google.com/earth-engine/apidocs/ee-image-reduce",
+    "https://developers.google.com/earth-engine/apidocs/ee-imagecollection-reduce",
+    "https://developers.google.com/earth-engine/apidocs/ee-array-reduce",
+    "https://developers.google.com/earth-engine/apidocs/ee-image-arrayreduce",
+    "https://github.com/stac-extensions/projection"
+  ],
+  "publication_policy": "Publish exact validated commit to temporary validation branch, require python/frontend checks, fast-forward protected main and remove owned temporary branch; no PR or protection bypass",
+  "goal_status": "in progress"
+}

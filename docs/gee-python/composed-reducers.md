@@ -83,3 +83,5 @@ Weighted calculations, arbitrary reducers, non-inline or dynamic
 collections, nested selectors, and raster reducer consumers remain outside this
 slice. Reducer specifications are separate from raster reducer kernels so a
 table descriptor cannot be interpreted as an image algorithm.
+
+The later [numeric raster adapter](raster-statistics.md) also accepts shared-input numeric combine/setOutputs, including array field axes. Group, repeat, forEach, independent inputs and nonnumeric leaves remain excluded from that adapter.

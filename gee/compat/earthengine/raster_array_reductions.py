@@ -1,48 +1,84 @@
-"""Lower fixed-shape, single-field array pixel reductions to scalar IR."""
+"""Lower bounded Image.arrayReduce calls to single-band pixel reductions."""
 from __future__ import annotations
 
-import itertools
 import math
 
 from .array_core import charge_array
-from .ir import Pixel, Reducer, fail, integer
+from .ir import Pixel, Reducer, fail
+from .numeric_reducer_plan import numeric_outputs
 from .raster_array_core import RasterArrayImage, check_shape, wrap_array_image
+from .raster_array_reduction_layout import reduction_groups, reduction_layout
 
 
 RASTER_ARRAY_REDUCTION_FUNCTIONS = frozenset({"Image.arrayReduce"})
-_REDUCERS = frozenset({"sum", "mean", "min", "max", "count", "median", "sd"})
+_OPERATIONS = frozenset({
+    "sum", "mean", "min", "max", "count", "first", "last", "median", "sd",
+    "product", "stdDev", "variance", "sampleVariance",
+})
 
 
 def invoke_raster_reduction(translator, name, arguments):
     if name not in RASTER_ARRAY_REDUCTION_FUNCTIONS:
         fail(f"Unsupported raster array reduction: {name}")
     translator.allowed(arguments, {"input", "reducer", "axes", "fieldAxis"})
-    array, reducer, axes = (arguments.get(key) for key in ("input", "reducer", "axes"))
+    array = arguments.get("input")
     if not isinstance(array, RasterArrayImage):
         fail("Image.arrayReduce requires a fixed-shape array image")
-    if arguments.get("fieldAxis") is not None:
-        fail("Image.arrayReduce fieldAxis is currently unsupported")
-    if not isinstance(reducer, Reducer) or reducer.name not in _REDUCERS or reducer.unweighted:
-        fail("Image.arrayReduce requires a supported single-output scalar Reducer")
-    if not isinstance(axes, list) or not axes or len(axes) > len(array.shape):
-        fail("Image.arrayReduce requires a nonempty list of array axes")
-    axes = tuple(integer(axis, "Image.arrayReduce axis", 0) for axis in axes)
-    if len(set(axes)) != len(axes) or any(axis >= len(array.shape) for axis in axes):
-        fail("Image.arrayReduce axes must be unique and within the array rank")
-    count = math.prod(array.shape[axis] for axis in axes)
-    if reducer.name == "sd" and count < 2:
+    input_count = check_shape(array.shape)
+    if (type(array.cells) is not tuple or len(array.cells) != input_count
+            or any(not isinstance(cell, Pixel) for cell in array.cells)):
+        fail("Image.arrayReduce received malformed fixed-shape array cells")
+
+    outputs = numeric_outputs(translator, arguments.get("reducer"))
+    if (type(outputs) is not tuple or not outputs
+            or any(type(item) is not tuple or len(item) != 2
+                   or type(item[0]) is not str or type(item[1]) is not str
+                   or item[1] not in _OPERATIONS
+                   for item in outputs)):
+        fail("Image.arrayReduce requires supported numeric reducer outputs")
+    axes, field_axis, shape = reduction_layout(
+        array.shape,
+        arguments.get("axes"),
+        arguments.get("fieldAxis"),
+        len(outputs),
+    )
+    output_count = check_shape(shape)
+    reduction_count = math.prod(array.shape[axis] for axis in axes)
+    if "sd" in {operation for _, operation in outputs} and reduction_count < 2:
         fail("Sample standard deviation requires at least two array elements")
-    shape = tuple(1 if axis in axes else length for axis, length in enumerate(array.shape))
-    size = check_shape(shape)
-    charge_array(translator, len(array.cells) * (4 + len(shape)) + size)
-    strides = [math.prod(array.shape[axis + 1:]) for axis in range(len(shape))]
+
+    # Reserve the input visits for each output field before making group and
+    # cast tuples. The existing shape, rank and shared 50000-work caps apply.
+    charge_array(
+        translator,
+        input_count * len(outputs) * (4 + len(array.shape)) + output_count,
+    )
+    typed = type(arguments.get("reducer")) is not Reducer
+    if typed:
+        # Prove every set of operands before constructing any Float64 cast
+        # node. A fieldAxis can leave several independent groups in the array.
+        from .numeric_reducer_grid import require_common_grid
+
+        validated_groups = set()
+        for _, offsets in reduction_groups(array.shape, shape, axes, field_axis):
+            if offsets in validated_groups:
+                continue
+            validated_groups.add(offsets)
+            require_common_grid(
+                translator,
+                tuple(array.cells[offset] for offset in offsets),
+                label="Image.arrayReduce typed operands",
+            )
+
     cells = []
-    for position in itertools.product(*(range(length) for length in shape)):
-        group = []
-        ranges = [range(array.shape[axis]) if axis in axes else [index]
-                  for axis, index in enumerate(position)]
-        for coordinates in itertools.product(*ranges):
-            offset = sum(index * stride for index, stride in zip(coordinates, strides))
-            group.append(array.cells[offset])
-        cells.append(Pixel("reduce_bands", (tuple(group), reducer.name)))
-    return wrap_array_image(array.image, shape, tuple(cells), array.mask, array.name)
+    for position, offsets in reduction_groups(array.shape, shape, axes, field_axis):
+        field = 0 if field_axis is None else position[field_axis]
+        group = tuple(array.cells[offset] for offset in offsets)
+        if typed:
+            # Composed and finite numeric descriptors use native Float64
+            # reducers. Legacy Reducer callbacks retain their Float32 path.
+            group = tuple(Pixel("to_double", (cell,)) for cell in group)
+        cells.append(Pixel("reduce_bands", (group, outputs[field][1])))
+    return wrap_array_image(
+        array.image, shape, tuple(cells), array.mask, array.name,
+    )

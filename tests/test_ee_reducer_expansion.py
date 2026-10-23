@@ -241,5 +241,5 @@ def test_malformed_unused_expansion_fields_fail_closed():
 
 
 def test_composed_expansions_are_still_rejected_by_raster_consumers(ee):
-    with pytest.raises(UnsupportedEEError, match="static List.reduce"):
+    with pytest.raises(UnsupportedEEError, match="exactly one input"):
         output(ee, ee.Image.constant(1).reduce(ee.Reducer.sum().repeat(2)))

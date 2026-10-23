@@ -3,6 +3,27 @@ import math
 from .ir import Pixel, fail
 
 
+def mask_float64(graph, condition, value):
+    """Apply a validity condition without sending values into Float32 callbacks."""
+    from .ir import const
+
+    data, label, timed = graph.expression(value)
+    if label is None:
+        fail("Float64 validity masking requires a finite raster grid")
+    # A missing condition is invalid, as is false. Mask callbacks only inspect
+    # the boolean condition; the Float64 result stays in the separate data cube.
+    invalid = Pixel("if", (
+        Pixel("is_nodata", (condition,), True), const(1),
+        Pixel("if", (condition, const(0), const(1))),
+    ))
+    mask, mask_label, mask_timed = graph.expression(invalid)
+    if mask_label is None:
+        mask = constant(graph, data, mask)
+    elif mask_timed != timed:
+        fail("Float64 validity mask dimensions do not match")
+    return graph.node("mask", data=data, mask=mask), label, timed
+
+
 def constant(graph, data, value):
     if (isinstance(value, bool) or not isinstance(value, (int, float))
             or abs(value) > 2**53 or not math.isfinite(value)):

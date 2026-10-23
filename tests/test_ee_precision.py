@@ -1,10 +1,11 @@
 """A cast must change physical type, and unsupported narrowing must be explicit."""
 import pytest
+import numpy as np
 
 from gee import graph
 from gee.backend import Processes
 from gee.ee_translate import UnsupportedEEError
-from test_ee_translate import local, compile, call
+from test_ee_translate import local, compile, call, evaluate_graph
 
 
 def single():
@@ -40,3 +41,34 @@ def test_local_cast_specs_and_canonical_top_level_boundary():
         with pytest.raises(ValueError,match='top-level cube reference'):
             graph.validate({'load':{'process_id':'load_collection','arguments':{'id':'test'}},'cast':{
                 'process_id':'local_ee_to_double','arguments':arguments,'result':True}})
+
+
+@pytest.mark.parametrize("valid", [0, 1])
+def test_constant_mask_preserves_double_values_and_missing_cells(local, valid):
+    selected = call("Image.select", input=single(), bandSelectors=["red"])
+    masked = call("Image.updateMask", image=call("Image.toDouble", value=selected),
+                  mask=call("Image.constant", value=valid))
+    result = compile(masked, local)
+    graph.validate(result["process_graph"])
+    data, names, timed = evaluate_graph(result, {"a": {"red": np.array([2**24 + 1., np.nan])}})
+    np.testing.assert_array_equal(data, [[2**24 + 1. if valid else np.nan, np.nan]])
+    assert names == ["red"] and not timed
+    processes = [node["process_id"] for node in result["process_graph"].values()]
+    assert "local_ee_drop_single_time" in processes
+    assert "mask" in processes
+
+
+def test_missing_boolean_mask_never_restores_float64_values(local):
+    from gee.compat.earthengine.decoder import Translator
+    from gee.compat.earthengine.graph import Graph
+    from gee.compat.earthengine.ir import Image, Pixel, Source, const
+
+    translator = Translator(*local, {})
+    source = Source("sentinel-2-l2a", ("a",), ("red",))
+    data = Pixel("reduce_t", (Pixel("to_double", (Pixel("band", (source, "red")),)), "first"))
+    value = Pixel("if", (const(None), data, const(None)))
+    compiler = Graph(translator)
+    ref, _ = compiler.image(Image([("red", value)], {}, source))
+    result = {"process_graph": compiler.finish(ref)}
+    output, _, _ = evaluate_graph(result, {"a": {"red": np.array([2**24 + 1., np.nan])}})
+    assert np.isnan(output).all()

@@ -80,6 +80,15 @@ class PixelCompiler:
             if label is None: fail("Clipping an unbound constant image is unsupported")
             return self.node("mask_polygon", data=ref, mask=p.args[1]), label, timed
         if p.op in {"to_double", "to_float"}:
+            if (p.op == "to_double" and p.args[0].op == "reduce_t"
+                    and p.args[0].args[1] in {"first", "last"}):
+                # first()/last() select observations, not arithmetic values.
+                # Cast before selection so the legacy time callback cannot
+                # destroy source precision before the requested Double cast.
+                selected = p.args[0]
+                return self.expression(Pixel("reduce_t", (
+                    Pixel("to_double", (selected.args[0],)), selected.args[1],
+                )))
             ref, label, timed = self.expression(p.args[0])
             if label is None:
                 if ref is None: return None, None, timed
@@ -101,6 +110,11 @@ class PixelCompiler:
         if p.op == "reduce_bands" and self.has_double_precision(p):
             from .reduction_graph import reduce_bands_double
             return reduce_bands_double(self, p)
+        if (p.op == "if" and p.args[2].op == "constant"
+                and p.args[2].args == (None,) and self.has_double_precision(p.args[1])):
+            from .mask_graph import mask_float64
+
+            return mask_float64(self, p.args[0], p.args[1])
         if p.op != "is_nodata" and self.has_double_precision(p):
             fail("Float64 pixel arithmetic is not supported by the pinned callback backend; apply toDouble() after arithmetic or explicitly toFloat() first")
         operands = p.args[0] if p.op == "reduce_bands" else p.args
