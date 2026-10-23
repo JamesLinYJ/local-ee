@@ -1,0 +1,215 @@
+{
+  "schema": "local-ee-python-wave47/v1",
+  "date": "2026-10-23",
+  "base_commit": "876b9f8afc7d66486b661005f1fa123b251a1198",
+  "title": "Bounded nearest-target Image.distance with source-preserving Float64 lowering",
+  "entry_inventory": {
+    "before": 598,
+    "after": 599,
+    "new_entry_count": 1,
+    "pinned_signatures": 991,
+    "name_entry_percentage": 60.44,
+    "interpretation": "Exact API name entries only, including partial signatures and aliases; not complete semantic compatibility or project migration success"
+  },
+  "implementation": {
+    "distance": "Per scalar band, Euclidean/Manhattan/Chebyshev distance to valid nonzero cells; explicit original pixel-distance kernel only, binary64 radius0..16 retained exactly, skipMasked defaults true; targets0, absent targets NaN NoData.",
+    "kernel_provenance": "Original metric/radius plus exact matrix/focus validation; fixed, normalized, scaled and all transformed kernels reject, including identity rotations. Existing generic kernel consumers retain their weights.",
+    "grid_and_extent": "Proven finite source grid, full source bounds before all output bands; output ROI/resampling follows search. Six existing driver pushdown constraints are blocked at the distance process. Spatial/time keys and band names retained; missing tiles not invented.",
+    "precision": "Move Double casts through eligible raster first/last selection, clipping and masks before native search. Ordinary arithmetic, explicit Float32 casts, source-free conditional values and mixed scalar/raster band reductions keep existing callback policies.",
+    "native": "Strict independent canonical Scala wire parser; exact integer squared-radius inclusion; sorted nearest-offset search; source validation/copy before spatial or temporal buffering; Float64 NaN output v.",
+    "budgets": {
+      "compiler_steps": 50000,
+      "graph_nodes": 500,
+      "public_json_bytes": 1000000,
+      "wire_ascii_bytes": 1024,
+      "source_keys": 100000,
+      "decoded_cells_per_tile": 10000000,
+      "decoded_cells_total": 100000000,
+      "work_per_tile": 100000000,
+      "work_total": 1000000000,
+      "scope": "Conservative own-kernel setup/read/copy/halo/output work including the repeated validation action; upstream graph, IO and Spark retries have separate costs. Nonzero halo must be smaller than the tile short side."
+    },
+    "last_node": "Cached Double operand can add the single required distance node at499→500 without false preflight rejection."
+  },
+  "validation": {
+    "python": {
+      "tests": 4784,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 19,
+      "passed": 4765,
+      "seconds": 41.277
+    },
+    "warnings": {
+      "count": 51,
+      "kind": "Existing Rasterio PendingDeprecationWarning, not new dependency-vulnerability findings"
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "Python_JS_identical_compiled_workflows": 9,
+      "guarded_network_attempts": 0,
+      "scope": "Synthetic catalog; metric/multiband/map/time/mask/clip/threshold/export graphs. No physical export or user script execution."
+    },
+    "precision_regression": {
+      "scope": "Compiled graphs evaluated with a test-only Float32 callback-input model; distance handler deliberately observes its input rather than computing a second reference transform. Native distance is checked separately.",
+      "negative_control": "Disable the structural rewrite: direct first/clip/updateMask/distance input loses the smallest binary64 subnormal to zero. Fixed graph retains its exact bits.",
+      "boundaries": "Explicit Float32/arithmetic/mean and source-free paths retain existing order; cycle/depth/work/node boundaries tested."
+    },
+    "targeted_probes": {
+      "SDK_serialized": 50,
+      "compiled": 47,
+      "directed_rejections": 3,
+      "scope": "Original fixed probes only, not a random API coverage sample"
+    },
+    "native_distance": {
+      "scope": "actual Float64 GeoTrellis tiles, independent whole-grid Fraction oracle, manual halo and BufferTilesRDD paths; no SparkContext/service/user code",
+      "case_count": 14,
+      "manual_pixels": 660,
+      "collection_buffer_pixels": 660,
+      "possible_grid_slots_per_path": 672,
+      "time_keys": 4,
+      "max_euclidean_ulps": 0,
+      "euclidean_tolerance_ulps": 1,
+      "other_metrics_and_masks": "Exact independent equality",
+      "reference": "Whole finite-grid Fraction radius/distance reference, Decimal120-digit square root; separate from production offset plan.",
+      "wire_rejections": 10,
+      "numeric_rejections": 5,
+      "budget_guard_rejections": 5,
+      "total_budget_boundary_rejections": 3,
+      "large_tile_budget": {
+        "tile": [
+          256,
+          256
+        ],
+        "radius_pixels": 16,
+        "euclidean": {
+          "offsets": 797,
+          "buffered_cells": 82944,
+          "per_tile_work": 52729927,
+          "accepted_keys": 18
+        },
+        "manhattan": {
+          "offsets": 545,
+          "buffered_cells": 82944,
+          "per_tile_work": 36212083,
+          "accepted_keys": 27
+        },
+        "chebyshev": {
+          "offsets": 1089,
+          "buffered_cells": 82944,
+          "per_tile_work": 71870740,
+          "accepted_keys": 13
+        },
+        "interpretation": "Measured admission boundaries, not throughput benchmarks"
+      },
+      "full_adapter_source_count": 40,
+      "adapter_jar_sha256": "bd95555c576c0e714cdf2c7bf57e55cbc20156c721d1f5f5167d1649d65ecb01",
+      "build_seconds": 3.809280375018716,
+      "probe_seconds": 0.6448287500243168,
+      "evidence": "audit/gee-python-wave47/native/distance-kernel-20261023T123025Z-8afd08b230/kernel-result.json"
+    },
+    "evidence_directory": "audit/gee-python-wave47/final-verified",
+    "frozen_code_sha256": {
+      "engine/ee_distance.py": "07f5705fefa6df3d205bf69c0ddfbef7c2e3ade220e862e3707e25b4666bd7be",
+      "engine/ee_distance_adapter.scala": "bdd42d034b9fe80a2eb4e9f68df5c6f445a64fb55d8a4d649127685758d11c56",
+      "engine/ee_distance_budget.scala": "9327fdee9af8e9982c9422dada94b17f33acc2b97d3f6b85e0e2a785647da79a",
+      "engine/ee_distance_numeric.scala": "4c6863a06ff8cbc45ef6776969aa8d5dcd128daccc71849d1a3a3fc599bc5250",
+      "engine/ee_distance_spec.scala": "3401ad64c862bce34daad1ad1712ab09732a8f64b5f84221a2a7790dfa758004",
+      "engine/ee_process_adapters.py": "de02f6496961e2fae669b0953dcb0e36d60ac87ce83a38fb761bb7edad5d05c0",
+      "examples/52_GEE_python_distance.py": "a54138e48f0637a1095cd6ed537e67300cf74e7a7b116b517cdfa252d6423d6e",
+      "gee/compat/earthengine/capabilities.py": "9f150e5a6d321a55fa721d00c261852b1904b9e587cd3530276b1612b05fa63e",
+      "gee/compat/earthengine/dispatch.py": "f65504f2226b359b91e10b7de5af69c661529879cccb826ac1d36ee5cdf97c4a",
+      "gee/compat/earthengine/distance_graph.py": "c50299e345653942ee80ab1e83ae78d20046ca252f9cf326be13d7fb8e62383d",
+      "gee/compat/earthengine/graph.py": "8f46be88ea6e3cad3a07d81456a8051418b655f32b3c0c919162c729b3e58f45",
+      "gee/compat/earthengine/image_distance.py": "8cc1b7e2335d35575908db9af283e34a1cc89569f263194b42afe6f1d87fffea",
+      "gee/compat/earthengine/kernel_distance.py": "92279a29dc352c0ee1cb2da5ca8078c417edcacee14f7c655d2c11c634a8c3d1",
+      "gee/compat/earthengine/kernel_transform.py": "6db18e4ecc1a383f9340c1237b2e45f54b980f49c3fb3592a532de31cc93ac13",
+      "gee/compat/earthengine/kernel_values.py": "1cd4bcbc1d312dd385a3377f8c75103415f5c652c82e1dbf83b0d007edbbe130",
+      "gee/compat/earthengine/pixel_graph.py": "86e6e77c8e4a468a54aed4cd8db4980ba574a254a870450eb3961fe81073e1f1",
+      "gee/distance_spec.py": "ee564e14f83b61101f23b04272c9f1a31f2fadf15259363da66e6828bebe8778",
+      "gee/local_processes.py": "76e6e32c0d872eebb17d1f763ef019ac691de8915eef60dd4c53a34a5a222845",
+      "gee/sampling_graph.py": "dccbcb8e6ec83da6cffca460bb9827e35e2917d2c5ddaa2fdf8f5d53c03da579",
+      "gee/smile_rf_processes.py": "01764125ce8613859d71381aa922596d74e7bc295a6018bda1abe5e42b4f4f0e",
+      "scripts/build_integer_adapter.py": "c6805ab4aee3daa5e023e954d4477fe91dfba724f7c35078e7cb546889df15d1",
+      "scripts/ee_inventory/pixel_numeric_families.py": "94d5d00ac0aaf09ba2c5ac29f426c14d9295736f0136a613ed8b92ea729b860e",
+      "tests/ee_distance_kernel_helpers.py": "20826d3741ca9d19c70cedf277545c10654d25fdbbfc39cc5dfa4f0a674f3c96",
+      "tests/fixtures/ee-distance-kernel-probe.scala": "15ca4c98a35b3b6b4b61f9189f141b2d6d52b8fd9c750be559da2efd060be5af",
+      "tests/test_ee_distance_kernel.py": "97cd56596cd2bae534ac575014fed3fb561be95998527d980bd5cb93c79bdfbe",
+      "tests/test_ee_distance_process.py": "df339340baee96a787c0b10e094b50427b8458acfe0e307ab95d3c476366fb8b",
+      "tests/test_ee_distance_workflow.py": "fc58c0f53c4047b1b791e3279c9e6fb1531a9b7725178d2a4a27b71ce2a5655b",
+      "tests/test_ee_image_distance_compiler.py": "b3d305d4b525d74426cc399f1abe8fa9a6db3713da0048e5edbce285159ee33a",
+      "tests/test_ee_neighborhood_metadata.py": "60db60ccae8f6e701ab64cbe63aa3f8f616a54b19c8b23d0ed534b91a9672b18",
+      "tests/test_ee_structural_precision.py": "a05825e695bb02a3c658687f4f938d3887c6eb49e6fb431a2770948b73a42f0a"
+    },
+    "native_final_hash_readback": {
+      "source_hashes_checked": 47,
+      "adapter_sources": 40,
+      "drift": []
+    }
+  },
+  "environment_failure_and_retry": {
+    "retained_evidence": "audit/gee-python-wave47/restricted-attempt",
+    "first_result": {
+      "passed": 4749,
+      "failed": 13,
+      "errors": 3,
+      "skipped": 19
+    },
+    "cause": "Execution-tool sandbox denied loopback binding, sandbox-exec, process enumeration and test-owned bounded scratch operations.",
+    "retry": "Same frozen code passed all4765 tests with the permissions needed for existing native-runner controls. No test was removed or weakened."
+  },
+  "cleanup": {
+    "owned_python_and_frontend": [
+      {
+        "path": "work/gee-python-wave47-pytest",
+        "files": 484,
+        "logical_bytes": 13637161,
+        "open_handles": 0,
+        "mounted_images": 0,
+        "removed": true
+      },
+      {
+        "path": "work/gee-python-wave47-pytest-final",
+        "files": 487,
+        "logical_bytes": 13635829,
+        "open_handles": 0,
+        "mounted_images": 0,
+        "removed": true
+      },
+      {
+        "path": "work/gee-python-wave47-web-build",
+        "files": 16,
+        "logical_bytes": 1697179,
+        "open_handles": 0,
+        "mounted_images": 0,
+        "removed": true
+      }
+    ],
+    "native_scratch": true,
+    "retained": "Compact success/failure logs, source hashes, manifests and synthetic fixture evidence"
+  },
+  "preservation": {
+    "dependencies_changed": false,
+    "installed_runtime_modified": false,
+    "user_data_modified": false,
+    "containers_or_VMs_created": false,
+    "goal_complete": false
+  },
+  "not_verified": [
+    "Meter-unit distance, arbitrary transformed kernels, fastDistanceTransform and general Float64 callbacks",
+    "Full Spark graph/RDD action execution and batch scheduler",
+    "Deployed sandbox/browser/map/export workflow",
+    "Private real data and Google same-data numerical parity",
+    "Large-scene throughput beyond explicit admission budgets"
+  ],
+  "documentation": [
+    "docs/gee-python/distance.md"
+  ],
+  "example": "examples/52_GEE_python_distance.py"
+}

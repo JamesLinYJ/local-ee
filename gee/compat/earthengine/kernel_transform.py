@@ -56,7 +56,9 @@ def _rotate(translator, arguments):
     rotations = _integer(arguments["rotations"], "Kernel.rotate rotations") % 4
     if rotations == 0:
         _charge(translator, 1, "Kernel.rotate")
-        return kernel
+        # Even an identity rotation is a generic transform and cannot be used
+        # to carry the constructor-only distance-kernel provenance forward.
+        return KernelSpec(kernel.weights, kernel.x, kernel.y)
 
     cells = kernel.width * kernel.height
     _charge(translator, 2 + rotations * (3 * cells) + 2 * cells,

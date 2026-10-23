@@ -34,13 +34,130 @@ class PixelCompiler:
         key = id(p)
         if key not in self.double_precision:
             if p.op in {"classify", "trained_classify", "smile_rf_classify"}: result = False
-            elif p.op in {"to_double", "unmask", "unmask_constant", "on_grid", "remap", "focal", "convolve", "neighborhood", "terrain"}: result = True
+            elif p.op in {"to_double", "unmask", "unmask_constant", "on_grid", "remap", "focal", "convolve", "neighborhood", "terrain", "distance"}: result = True
             elif p.op in {"to_float", "is_nodata"}: result = False
             else:
                 operands = p.args[0] if p.op == "reduce_bands" else p.args[:1] if p.op in {"clip", "preserve_mask"} else p.args
                 result = any(self.has_double_precision(x) for x in operands if isinstance(x, Pixel))
             self.double_precision[key] = (p, result)
         return self.double_precision[key][1]
+
+    def _prepare_double_structural_rewrite(self, pixel):
+        """Reserve work, then build one value-preserving cast rewrite."""
+        if not isinstance(pixel, Pixel):
+            return None
+        cache = getattr(self, "_double_structural_cache", None)
+        if cache is None:
+            cache = self._double_structural_cache = {}
+        key = id(pixel)
+        cached = cache.get(key)
+        if cached is not None and cached[0] is pixel:
+            return cached[1]
+
+        kind = None
+        if pixel.op == "clip" and len(pixel.args) == 2:
+            kind = "clip"
+        elif pixel.op == "preserve_mask" and len(pixel.args) == 2:
+            kind = "preserve_mask"
+        elif (pixel.op == "if" and len(pixel.args) == 3
+                and isinstance(pixel.args[2], Pixel)
+                and pixel.args[2].op == "constant"
+                and pixel.args[2].args == (None,)):
+            kind = "if"
+        elif (pixel.op == "reduce_t" and len(pixel.args) >= 2
+                and type(pixel.args[1]) is str
+                and pixel.args[1] in {"first", "last"}):
+            kind = "reduce_t"
+        elif (pixel.op == "reduce_bands" and len(pixel.args) >= 2
+                and type(pixel.args[1]) is str
+                and pixel.args[1] in {"first", "last"}
+                and isinstance(pixel.args[0], (tuple, list))
+                and pixel.args[0]):
+            kind = "reduce_bands"
+        if kind is None:
+            return None
+
+        depth = getattr(self, "_double_structural_depth", 0)
+        if depth >= 96:
+            fail("Earth Engine graph exceeds compilation limits")
+        work = 1 + len(pixel.args)
+        if kind == "reduce_bands":
+            # Reserve before scanning or allocating the rewritten input tuple.
+            work += len(pixel.args[0])
+        steps = getattr(self.t, "steps", None)
+        if (type(steps) is not int or steps < 0 or steps + work > 50_000):
+            fail("Earth Engine graph exceeds compilation limits")
+        self.t.steps = steps + work
+
+        if kind == "if":
+            # Source-free accept values are outside the typed raster rewrite.
+            # Keep their existing callback policy for scalar/grid binding.
+            from .pixel_math_graph import _PixelFactsWalker
+
+            if not _PixelFactsWalker(self.t).inspect(pixel.args[1]).sources:
+                cache[key] = (pixel, None)
+                return None
+        if kind == "reduce_bands":
+            # The typed band reducer needs a raster for every input. Mixed
+            # source-free scalars keep the existing callback policy, which
+            # owns their scalar/grid binding and precision behavior.
+            if not all(isinstance(value, Pixel) for value in pixel.args[0]):
+                cache[key] = (pixel, None)
+                return None
+            from .pixel_math_graph import _PixelFactsWalker
+
+            facts = _PixelFactsWalker(self.t)
+            if not all(facts.inspect(value).sources for value in pixel.args[0]):
+                cache[key] = (pixel, None)
+                return None
+
+        rewrite = self._double_structural_rewrite(pixel, kind)
+        cache[key] = (pixel, rewrite)
+        return rewrite
+
+    @staticmethod
+    def _double_structural_rewrite(pixel, kind):
+        """Move a Double cast through one value-preserving Pixel operation."""
+        def cast(value):
+            # Explicit toFloat and numeric operations are not structural, so
+            # this wrapper stays outside them and preserves their precision.
+            return Pixel("to_double", (value,))
+
+        if kind == "clip":
+            return Pixel("clip", (cast(pixel.args[0]), pixel.args[1]), pixel.boolean)
+        if kind == "preserve_mask":
+            return Pixel(
+                "preserve_mask", (cast(pixel.args[0]), pixel.args[1]), pixel.boolean,
+            )
+        if kind == "if":
+            return Pixel(
+                "if", (pixel.args[0], cast(pixel.args[1]), pixel.args[2]),
+                pixel.boolean,
+            )
+        if kind == "reduce_t":
+            # Preserve optional order metadata such as mosaic's
+            # collection_order marker while casting only selected values.
+            return Pixel(
+                "reduce_t", (cast(pixel.args[0]), *pixel.args[1:]), pixel.boolean,
+            )
+        if kind == "reduce_bands":
+            return Pixel(
+                "reduce_bands",
+                (tuple(cast(value) for value in pixel.args[0]), *pixel.args[1:]),
+                pixel.boolean,
+            )
+        raise AssertionError("unrecognized value-preserving Pixel operation")
+
+    def _expression_with_double_structural_cast(self, rewrite):
+        """Compile one structural cast rewrite under the shared depth limit."""
+        depth = getattr(self, "_double_structural_depth", 0)
+        if depth >= 96:
+            fail("Earth Engine graph exceeds compilation limits")
+        self._double_structural_depth = depth + 1
+        try:
+            return self.expression(rewrite)
+        finally:
+            self._double_structural_depth = depth
 
     def _expression(self, p):
         if p.op.startswith("math_"):
@@ -75,6 +192,10 @@ class PixelCompiler:
             from .terrain_graph import compile_terrain_pixel
 
             return compile_terrain_pixel(self, p)
+        if p.op == "distance":
+            from .distance_graph import compile_distance_pixel
+
+            return compile_distance_pixel(self, p)
         if p.op == "remap":
             from .remap_graph import compile_remap_pixel
 
@@ -96,15 +217,10 @@ class PixelCompiler:
             if label is None: fail("Clipping an unbound constant image is unsupported")
             return self.node("mask_polygon", data=ref, mask=p.args[1]), label, timed
         if p.op in {"to_double", "to_float"}:
-            if (p.op == "to_double" and p.args[0].op == "reduce_t"
-                    and p.args[0].args[1] in {"first", "last"}):
-                # first()/last() select observations, not arithmetic values.
-                # Cast before selection so the legacy time callback cannot
-                # destroy source precision before the requested Double cast.
-                selected = p.args[0]
-                return self.expression(Pixel("reduce_t", (
-                    Pixel("to_double", (selected.args[0],)), selected.args[1],
-                )))
+            if p.op == "to_double":
+                rewrite = self._prepare_double_structural_rewrite(p.args[0])
+                if rewrite is not None:
+                    return self._expression_with_double_structural_cast(rewrite)
             ref, label, timed = self.expression(p.args[0])
             if label is None:
                 if ref is None: return None, None, timed

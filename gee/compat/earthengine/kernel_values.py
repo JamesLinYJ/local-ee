@@ -32,6 +32,10 @@ class KernelSpec:
     weights: tuple[tuple[float, ...], ...]
     x: int
     y: int
+    # Only raw metric distance kernels carry this provenance. Consumers must
+    # validate the exact matrix against these fields before relying on them.
+    distance_metric: str | None = None
+    distance_radius: float | None = None
 
     @property
     def width(self) -> int:
@@ -73,7 +77,8 @@ def _boolean(value, label: str) -> bool:
 
 
 def _finish(translator, values, x: int, y: int, normalize: bool,
-            magnitude: float = 1.0) -> KernelSpec:
+            magnitude: float = 1.0, *, distance_metric: str | None = None,
+            distance_radius: float | None = None) -> KernelSpec:
     """Precharge and safely normalize/scale before making owned rows."""
     height, width = len(values), len(values[0])
     cells = height * width
@@ -112,7 +117,7 @@ def _finish(translator, values, x: int, y: int, normalize: bool,
             output.append(value)
             index += 1
         rows.append(tuple(output))
-    return KernelSpec(tuple(rows), x, y)
+    return KernelSpec(tuple(rows), x, y, distance_metric, distance_radius)
 
 
 def _fixed(translator, arguments) -> KernelSpec:
@@ -183,7 +188,20 @@ def validate_kernel(translator, kernel) -> KernelSpec:
                 fail("KernelSpec weights must be finite floats")
             owned.append(value)
         copied.append(tuple(owned))
-    return KernelSpec(tuple(copied), kernel.x, kernel.y)
+    distance_metric = kernel.distance_metric
+    distance_radius = kernel.distance_radius
+    if (distance_metric is None) != (distance_radius is None):
+        fail("KernelSpec has incomplete distance-kernel provenance")
+    if distance_metric is not None:
+        from .kernel_distance import validate_distance_kernel_provenance
+
+        validate_distance_kernel_provenance(
+            translator, tuple(copied), kernel.x, kernel.y,
+            distance_metric, distance_radius,
+        )
+    return KernelSpec(
+        tuple(copied), kernel.x, kernel.y, distance_metric, distance_radius,
+    )
 
 
 def invoke_kernel(translator, name: str, arguments: dict) -> KernelSpec:

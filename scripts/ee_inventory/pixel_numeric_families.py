@@ -154,8 +154,8 @@ for _operation in ("Terrain", "Terrain.products", "Terrain.slope", "Terrain.aspe
         "proven common grids and Float64 before temporal selection. Compiler50000/graph500/"
         "JSON1MB and native key/cell/work caps unchanged; one-pixel halo smaller than tile "
         "dimensions. No implicit height scaling, hillShadow or fillMinima. Metric, rounding "
-        "and mask policies are local; the production EE DEM catalog adapter is pending, "
-        "with the existing accepted-catalog gate unchanged. Full Spark/deployment/private "
+        "and mask policies are local; versioned local cop-dem-glo-30/v1 DEM metadata is "
+        "admitted, while Google DEM aliases and generic uploaded rasters are not. Full Spark/deployment/private "
         "data/Google parity unverified."
     ]
 
@@ -168,4 +168,19 @@ PIXEL_NUMERIC_LIMITS["Image.neighborhoodToBands"] = [
     "cells, offsets<=32 and compiler50000/graph500/JSON1MB/native caps unchanged. "
     "Source grid/extent precedes export resampling/ROI. Naming/empty-image policies "
     "lack Google parity; trusted component evidence is separate from full deployed workflows."
+]
+
+PIXEL_NUMERIC_LIMITS["Image.distance"] = [
+    "Nearest valid finite nonzero pixel per input band; original euclidean/manhattan/"
+    "chebyshev Kernel provenance required, with pixel radius0..16, normalize=false and "
+    "magnitude1. Missing/null, fixed, transformed and metre kernels reject. Radius "
+    "eligibility uses exact binary64 radius; Euclidean compares squared integer offsets "
+    "before final square root. Center targets yield0, absent targets yield NaN, and "
+    "skipMasked controls center validity only. Physical output Float64; ordinary "
+    "callback arithmetic requires explicit toFloat. Preserve observed keys/time, full "
+    "source bounds and common-grid proof before output ROI/resampling. Compiler50000/"
+    "graph500/JSON1MB caps remain; native halo must be smaller than the tile dimensions, "
+    "decoded cells<=1e7/tile and1e8/aggregate, work<=1e8/tile and1e9/aggregate. "
+    "fastDistanceTransform is separate and unimplemented. Trusted tile tests are not "
+    "full Spark, deployment, private-data or Google same-data acceptance."
 ]

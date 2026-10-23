@@ -234,6 +234,12 @@ def local_ee_neighborhood(args, env):
     return handler(args, env)
 
 
+def local_ee_distance(args, env):
+    from .ee_distance import local_ee_distance as handler
+
+    return handler(args, env)
+
+
 def local_ee_terrain(args, env):
     from .ee_terrain import local_ee_terrain as handler
 
@@ -254,6 +260,7 @@ def local_ee_smile_rf_explain(args, env):
 
 _HANDLERS = {
     "local_ee_terrain": local_ee_terrain,
+    "local_ee_distance": local_ee_distance,
     "local_ee_neighborhood": local_ee_neighborhood,
     "local_ee_convolve": local_ee_convolve,
     "local_ee_focal": local_ee_focal,
@@ -286,11 +293,13 @@ def register_local_ee_processes() -> None:
     from .ee_convolve import register_convolve_pushdown_boundary
     from .ee_neighborhood import register_neighborhood_pushdown_boundary
     from .ee_terrain import register_terrain_pushdown_boundary
+    from .ee_distance import register_distance_pushdown_boundary
 
     register_focal_pushdown_boundary()
     register_convolve_pushdown_boundary()
     register_neighborhood_pushdown_boundary()
     register_terrain_pushdown_boundary()
+    register_distance_pushdown_boundary()
     for registry in (process_registry_100, process_registry_2xx):
         for process_id, handler in _HANDLERS.items():
             if registry.contains(process_id):

@@ -10,6 +10,7 @@ SUPPORTED_FUNCTIONS = frozenset({
     "Terrain", "Terrain.products", "Terrain.slope", "Terrain.aspect", "Terrain.hillshade",
     "Image.neighborhoodToBands",
     "Image.convolve",
+    "Image.distance",
     *("Kernel." + n for n in ("gaussian", "laplacian4", "laplacian8", "sobel", "prewitt", "roberts", "rotate", "add")),
     *("Kernel." + n for n in ("euclidean", "manhattan", "chebyshev", "compass", "kirsch", "inverse")),
     "Reducer.unweighted",
@@ -170,6 +171,17 @@ def get_capabilities():
              "Meter kernels and signed normalization reject; fractional Gaussian footprint and mask "
              "policies are local, without Google parity. Native halo/work limits and full input extent "
              "boundaries remain; full Spark/deployment acceptance is separate."),
+            ("Image.distance accepts only an explicit raw Euclidean/Manhattan/Chebyshev Kernel "
+             "with validated constructor provenance, unnormalized unit-magnitude weights, and radius0..16 pixels. "
+             "It searches only offsets within the selected metric radius (Euclidean uses dx²+dy²<=radius²), "
+             "uses finite nonzero unmasked targets, emits Float64 distances or NoData when none is found, "
+             "and preserves each scalar band's name, properties, source keys and time. skipMasked controls "
+             "only whether an input-masked output center stays masked. Source precision is retained through "
+             "eligible selection and masking before search; existing arithmetic/cast precision boundaries remain. "
+             "Source grids must be proven and full source bounds are retained before output ROI. "
+             "Missing/null kernels, fixed/transformed/normalized/scaled kernels, meter units and constants reject. "
+             "Radius, grid, graph and existing compiler/native-work limits remain. Local behavior has no "
+             "Google same-data parity or full Spark/deployment acceptance."),
             ("Pixel-unit focalMin/Max/Mean/Median/Mode and aliases retain bounded Float64 halos per "
              "iteration. reduceNeighborhood additionally supports actual positive weighted sum/mean/"
              "population variance/stdDev, support count/min/max, unit-weight product/sample dispersion/"

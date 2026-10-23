@@ -38,6 +38,8 @@ SOURCES += [ROOT / "engine/ee_terrain_spec.scala", ROOT / "engine/ee_terrain_bud
 SOURCES += [ROOT / "engine/ee_neighborhood_spec.scala", ROOT / "engine/ee_neighborhood_budget.scala",
             ROOT / "engine/ee_neighborhood_exact.scala", ROOT / "engine/ee_neighborhood_statistics.scala",
             ROOT / "engine/ee_neighborhood_numeric.scala", ROOT / "engine/ee_neighborhood_adapter.scala"]
+SOURCES += [ROOT / "engine/ee_distance_spec.scala", ROOT / "engine/ee_distance_budget.scala",
+            ROOT / "engine/ee_distance_numeric.scala", ROOT / "engine/ee_distance_adapter.scala"]
 SERVICE_NAME = "org.openeo.geotrelliscommon.CubeProcessProvider"
 SERVICE_ENTRY = ("local.ee.integer.LocalEeIntegerCubeProcessProvider\n"
                  "local.ee.grid.LocalEeGridCubeProcessProvider\n"
@@ -52,6 +54,7 @@ SERVICE_ENTRY += "local.ee.math.LocalEePixelMathCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeFocalCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeConvolveCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeTerrainCubeProcessProvider\n"
+SERVICE_ENTRY += "local.ee.reduce.LocalEeDistanceCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeNeighborhoodCubeProcessProvider\n"
 
 
