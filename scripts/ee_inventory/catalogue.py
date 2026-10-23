@@ -363,8 +363,10 @@ CLIENT_ALIAS_LOWERINGS = [
 
 # Batch static families keep their per-name evidence limits in one cohesive table.
 from .static_families import STATIC_FAMILY_LIMITS
+from .table_families import TABLE_FAMILY_LIMITS
 
 KNOWN_PARTIAL_LIMITS.update(STATIC_FAMILY_LIMITS)
+KNOWN_PARTIAL_LIMITS.update(TABLE_FAMILY_LIMITS)
 
 from .pixel_numeric_families import PIXEL_NUMERIC_LIMITS
 

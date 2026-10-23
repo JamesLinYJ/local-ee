@@ -110,5 +110,5 @@ for _name in ('Collection.distinct', 'Collection.remap', 'Collection.fromColumns
         'fromColumns uses equal-length literal columns, unique names, null geometry, no invented IDs; '
         'non-null propertyTypes unsupported. Actual IDs/metadata/order retained by selection. '
         'Pinned JS uses ee.call for hidden fromColumns. No sampled/RF/image collections, '
-        'nested flatten or Google hash/type/collision parity.'
+        'or Google hash/type/collision parity; nested flatten has a separate bounded adapter.'
     ]

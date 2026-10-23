@@ -57,10 +57,9 @@ most 1000 rows. Sampled tables, RF-classified tables, ImageCollections,
 unknown parameters, dynamic values, and incompatible column shapes fail
 explicitly. Row copies and collection metadata are independently owned.
 
-`Collection.flatten` remains unsupported. The current `Collection` constructor
-rejects nested FeatureCollections before flatten can receive a finite nested
-representation; supporting it requires a separate constructor representation
-change.
+`Collection.flatten` now has a separate bounded nested-collection adapter.
+See [nested collections](nested-collections.md) for constructor, map, metadata
+and output limits; these three table operations still require a flat collection.
 
 ## References
 

@@ -2,6 +2,12 @@ import type { ReferenceEntry } from "../types";
 // Pinned client syntax and explicit local semantics; served entirely from this app.
 const entries: ReferenceEntry[] = [
   {
+    id: "gee-grouped-tables",
+    title: "集合展开、属性统计与分组",
+    text: "有限内联集合可 map 返回子集合后 flatten，再进行属性 aggregate_* 和组合／分组 reduceColumns。combine 支持共享或分开的输入；setOutputs 重命名输出，getOutputs 查询输出名。最多1000行，资源限制仍生效；不支持组合归约的栅格路径或动态取样表。DateRange 增加区间访问、交并、包含和空集判断；空值、分组顺序等本地规则尚无 Google 对照。",
+    code: "var rows = ee.FeatureCollection([\n  ee.Feature(null,{zone:1,value:10}),ee.Feature(null,{zone:1,value:12})]);\nvar r = ee.Reducer.mean().combine({reducer2:ee.Reducer.count(),sharedInputs:true});\nprint(rows.reduceColumns(r.group({groupField:1,groupName:'zone'}),['value','zone']));\nprint(rows.aggregate_sample_var('value'));",
+  },
+  {
     id: "gee-metadata-tables",
     title: "日期解析、正则与数值表达式",
     text: "支持有限 UTC 日历、纯数值 Number.expression 和本地 RE2 字符串匹配、替换、拆分。Dictionary.select/remove 按整个键作正则匹配；替换仅支持字面文本。内联表支持 distinct/remap；固定 JS SDK 的 fromColumns 通过 ee.call 调用。Array.mask 仅支持同形且单一变化轴。共享原有预算，未验证 Google 同数据一致性。",

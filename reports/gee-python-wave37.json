@@ -1,0 +1,159 @@
+{
+  "schema": "local-ee-python-wave37/v1",
+  "date": "2026-10-23",
+  "base_commit": "786ca8fb4eefa3d26a653fa18ca810db141f316e",
+  "title": "Finite nested collections, property statistics, grouped reducers and date intervals",
+  "entry_inventory": {
+    "before": 491,
+    "after": 519,
+    "new_entry_count": 28,
+    "pinned_signatures": 991,
+    "name_entry_percentage": 52.37,
+    "new_names": [
+      "AggregateFeatureCollection.count",
+      "AggregateFeatureCollection.count_distinct",
+      "AggregateFeatureCollection.first",
+      "AggregateFeatureCollection.histogram",
+      "AggregateFeatureCollection.max",
+      "AggregateFeatureCollection.mean",
+      "AggregateFeatureCollection.min",
+      "AggregateFeatureCollection.product",
+      "AggregateFeatureCollection.sample_sd",
+      "AggregateFeatureCollection.sample_var",
+      "AggregateFeatureCollection.stats",
+      "AggregateFeatureCollection.sum",
+      "AggregateFeatureCollection.total_sd",
+      "AggregateFeatureCollection.total_var",
+      "Collection.flatten",
+      "DateRange.contains",
+      "DateRange.end",
+      "DateRange.intersection",
+      "DateRange.intersects",
+      "DateRange.isEmpty",
+      "DateRange.isUnbounded",
+      "DateRange.start",
+      "DateRange.unbounded",
+      "DateRange.union",
+      "Reducer.combine",
+      "Reducer.getOutputs",
+      "Reducer.group",
+      "Reducer.setOutputs"
+    ],
+    "extended_existing_names": [
+      "Collection",
+      "Collection.map",
+      "Collection.reduceColumns",
+      "List.reduce",
+      "Date",
+      "DateRange"
+    ],
+    "interpretation": "Name entries only, not full argument, semantic, migration or Google equivalence coverage"
+  },
+  "implementation": {
+    "owners": "Four disjoint Luna/max family agents; parent review, integration and publication",
+    "new_implementation_modules": 13,
+    "largest_new_module_lines": 265,
+    "limits": "Unchanged shared50000 compiler work,1000rows and1MB public output; nested depth96/nodes10000; reducer tree depth16/nodes64/inputs32/outputs256"
+  },
+  "validation": {
+    "python": {
+      "tests": 3732,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 10,
+      "passed": 3722,
+      "seconds": 37.487
+    },
+    "python_evidence": "audit/gee-python-wave37/final-verified/python.xml",
+    "focused_parent_integration_passed": 52,
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "node": "24.22.1",
+      "deployed": false
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "Python_JS_identical_workflow_outputs": 14,
+      "guarded_network_attempts": 0
+    },
+    "csv": {
+      "rows": 2,
+      "zone_average_total_count": [
+        [
+          1,
+          11,
+          22,
+          2
+        ],
+        [
+          2,
+          21,
+          42,
+          2
+        ]
+      ],
+      "path": "Official Python SDK -> dispatch -> test queue/worker -> actual CSV writer -> trusted publication/result reader",
+      "scope": "Portable synthetic integration; DB and native task launch are test doubles"
+    },
+    "scale": {
+      "official_SDK_simple_features": 1000,
+      "count": 1000,
+      "count_compiler_steps": 16037,
+      "sum": 1000.0,
+      "sum_compiler_steps": 27063,
+      "shared_work_limit": 50000
+    },
+    "frozen_source_files": 31,
+    "source_hashes_unchanged_during_final_regression": true,
+    "warnings": "3 existing Rasterio PendingDeprecationWarnings",
+    "parent_review_fixes": [
+      "Nested flatten iterates once instead of repeated depth-dependent list copying; empty mapped input retains actual outer metadata",
+      "Date validates before Float64 conversion so an explicit Date wrapper cannot hide large-integer precision loss",
+      "Mean/dispersion avoid unrelated sum-of-squares overflow; requested statistics retain finite extreme values",
+      "Canonical row field checks preserve meaningful1000-row statistics without raising the shared budget",
+      "Reducer descriptors detach scalar leaves, validate complete arity/name/child invariants and precharge repeated names",
+      "Grouped reducers fail in unsupported raster/Array contexts; first/last outputs recursively preserve owned readonly arrays"
+    ],
+    "focused_refinements": [
+      "Family runs briefly observed in-progress module import races; final assembled suite has no import failures",
+      "Independent population variance assertion now uses2e-15 relative Float64 tolerance instead of exact equality for25.999999999999996 versus26; Python and JS outputs still agree exactly"
+    ],
+    "post_validation_changes": {
+      "files": [
+        "gee/compat/earthengine/composed_reducer_tables.py",
+        "gee/compat/earthengine/composed_reducer_values.py",
+        "tests/test_ee_date_ranges.py"
+      ],
+      "change": "Only surplus trailing blank lines removed; AST comparison unchanged. Exact final commit will also run CI."
+    }
+  },
+  "dependency_delta": "None; package/runtime locks and installed engine unchanged",
+  "remaining_limits": [
+    "Finite inline nested collections only; flatten retains outer collection metadata and discards child collection metadata under documented local policy",
+    "Scalar aggregate statistics read actual inline/declared image metadata only; not raster pixels or runtime sampled/classified tables; null/empty/type/key policies are local",
+    "Composed reducers support only explicit scalar and table regression leaves in List.reduce and inline reduceColumns; weights,repeat,arbitrary reducers and raster/runtime table consumers remain unsupported",
+    "DateRange endpoints limited to finite UTC milliseconds within±2^53; unbounded endpoints/public JSON/date-filter contexts rejected; empty interval and bounding-union edge policies unverified against Google",
+    "No new full Spark,business services,browser,private real-data,isolation-platform or Google same-data acceptance"
+  ],
+  "runtime": "No business service startup or deployment; no VM/container/JVM rebuild; accounts,credentials,datasets and results untouched",
+  "goal_status": "Python-first full API/semantic compatibility and production goal remain incomplete and ongoing",
+  "references": [
+    "docs/gee-python/list.md",
+    "docs/gee-python/nested-collections.md",
+    "docs/gee-python/aggregate-statistics.md",
+    "docs/gee-python/composed-reducers.md",
+    "docs/gee-python/date-ranges.md",
+    "examples/42_GEE_python_grouped_tables.py"
+  ],
+  "cleanup": {
+    "removed": [
+      {
+        "owned_scratch": "work/gee-python-wave37/web-dist",
+        "logical_file_bytes": 1690525
+      }
+    ],
+    "preserved": "Runtime dependencies,user data/results and original audit evidence; no physical-free-space claim"
+  }
+}

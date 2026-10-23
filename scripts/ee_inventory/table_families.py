@@ -1,0 +1,52 @@
+"""Explicit contracts for finite nested, aggregate and grouped table families."""
+
+TABLE_FAMILY_LIMITS = {}
+
+for _name in (
+    'DateRange.contains', 'DateRange.end', 'DateRange.intersection',
+    'DateRange.intersects', 'DateRange.isEmpty', 'DateRange.isUnbounded',
+    'DateRange.start', 'DateRange.union', 'DateRange.unbounded',
+):
+    TABLE_FAMILY_LIMITS[_name] = [
+        'Finite half-open UTC millisecond intervals within ±2^53; actual interval algebra. '
+        'Only contains accepts a Date point directly; pinned SDK promotes other scalar '
+        'range operands through the one-millisecond constructor. Unbounded is typed IR, '
+        'not an invented timestamp; direct endpoints/JSON/date-filter contexts reject. '
+        'Empty intersections and bounding interval unions use documented local policies; '
+        'shared50000 work and1MB output, no Google interval-edge parity.'
+    ]
+
+TABLE_FAMILY_LIMITS['Collection.flatten'] = [
+    'Finite nested FeatureCollections from constructor or homogeneous map results; '
+    'typed nested IR, depth96/nodes10000/immediate children1000/flattened rows1000. '
+    'Depth-first source order, actual feature IDs/geometry/properties preserved; '
+    'outer metadata retained, child collection metadata discarded by explicit local policy. '
+    'Full validation and owned copies precharged within shared50000 work/1MB output. '
+    'Empty flatten supported; mixed/dynamic/Image children and unflattened public IR reject. '
+    'No remote vector engine or Google identity/metadata parity.'
+]
+
+for _suffix in (
+    'first', 'count', 'count_distinct', 'min', 'max', 'mean', 'product',
+    'sum', 'sample_sd', 'sample_var', 'total_sd', 'total_var', 'stats', 'histogram',
+):
+    TABLE_FAMILY_LIMITS['AggregateFeatureCollection.' + _suffix] = [
+        'Actual bounded inline feature or declared finite image metadata, <=1000 rows; '
+        'not sampled/RF table or pixel evaluation. Numeric statistics require finite '
+        'numbers/exact integers<=2^53; min/max also support homogeneous strings. '
+        'Missing/null/empty/singleton, Unicode ordering and histogram string-key collision '
+        'policies documented locally. Bounded JSON, stable numerical kernels, precharged '
+        'scans/copies/hash/output under shared50000 work/1MB; no Google numerical parity.'
+    ]
+
+for _name in ('Reducer.combine', 'Reducer.group', 'Reducer.setOutputs', 'Reducer.getOutputs',
+              'List.reduce', 'Collection.reduceColumns'):
+    TABLE_FAMILY_LIMITS[_name] = [
+        'Actual closed immutable reducer trees consumed by static List.reduce and inline '
+        'FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; '
+        'shared/concatenated inputs, grouping and output renaming/removal. '
+        'No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. '
+        'Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; '
+        'owned JSON and typed arrays, explicit collision/null/group-order policies. '
+        'No Google grouping/statistical parity.'
+    ]

@@ -31,6 +31,16 @@ def compile_expression(expression, catalog, items, options=None):
     translator = Translator(catalog, items, options)
     try:
         value = translator.evaluate(expression)
+        from .date_ranges import UnboundedDateRange
+        from .nested_collections import NestedFeatureCollection
+        from .composed_reducers import is_reducer_spec
+
+        if isinstance(value, UnboundedDateRange):
+            fail("Unbounded DateRange output requires a finite intersection or boolean accessor")
+        if isinstance(value, NestedFeatureCollection):
+            fail("Nested FeatureCollection output requires flatten()")
+        if is_reducer_spec(value):
+            fail("A Reducer is not a computable output value; use getOutputs or a supported reduction")
         from .raster_array_core import RasterArrayImage
 
         if isinstance(value, RasterArrayImage):

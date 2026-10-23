@@ -93,6 +93,12 @@ def invoke_filter(translator, name, arguments):
     for side in ("left", "right"):
         if side + "Field" in arguments and side + "Value" in arguments:
             fail("Filter operands cannot specify both field and value")
+    if operation == "dateRangeContains" and "leftValue" in arguments:
+        from .date_ranges import UnboundedDateRange, is_date_range
+
+        value = arguments["leftValue"]
+        if isinstance(value, UnboundedDateRange) or not is_date_range(value):
+            fail("Filter.dateRangeContains requires a finite DateRange")
     return Filter(operation, arguments)
 
 
@@ -144,6 +150,10 @@ def matches_filter(translator, filt, item):
     if name == "dateRangeContains":
         if arguments.get("rightField") != "system:time_start" or "leftValue" not in arguments:
             fail("Only system:time_start date filtering is supported")
+        from .date_ranges import UnboundedDateRange, is_date_range
+
+        if isinstance(arguments["leftValue"], UnboundedDateRange) or not is_date_range(arguments["leftValue"]):
+            fail("Filter.dateRangeContains requires a finite DateRange")
         start, end = arguments["leftValue"]
         if "system:time_start" not in properties:
             fail("Item metadata property is unavailable: system:time_start")

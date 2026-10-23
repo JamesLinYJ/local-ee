@@ -1,5 +1,7 @@
 # GEE Python 兼容清单
 
+第三十七批新增 **28个有限计算入口**：DateRange9、属性统计14、组合归约4、集合flatten1，并扩展构造／map及List.reduce／reduceColumns。完整回归 **3722 passed／10 skipped**，前端11／类型／临时构建通过；Python／JS十四项结果一致，两行分组CSV通过合成dispatch／worker／实际写出与结果读回。名称 **519／991（52.37%）** 仅为入口统计，不代表完整语义兼容。1000行统计在原50000预算内通过；新增模块按描述／校验／计算／输出拆分，依赖及运行环境未变。未部署，Google／真实数据／生产验收仍未完成。见 [嵌套集合](nested-collections.md)、[属性统计](aggregate-statistics.md)、[分组归约](composed-reducers.md)、[日期区间](date-ranges.md)、[示例42](../../examples/42_GEE_python_grouped_tables.py) 和 [报告](../../reports/gee-python-wave37.json)。
+
 第三十六批新增 **14个有限静态入口**：UTC日历4、Array选择3、内联表3、Number.expression1、String正则3，并扩展已有Dictionary.select/remove的RE2正则选择。完整回归 **3644 passed／10 skipped**，前端11／类型／临时构建通过；Python／JS十三项结果一致，两行CSV通过合成dispatch／worker／结果读回。名称 **491／991（49.55%）** 仅为入口统计，不代表完整语义兼容。固定RE2依赖的OSV／PyPI已知告警查询为0，原锁定包版本未变；50000工作预算保持。未启动或部署业务服务，Google／真实数据／生产验收仍未完成。见 [日期](date-calendar.md)、[表达式](number-expression.md)、[正则](string-regex.md)、[数组选择](array-selection.md)、[表格](feature-table-selection.md)、[示例41](../../examples/41_GEE_python_metadata_tables.py) 和 [报告](../../reports/gee-python-wave36.json)。
 
 第三十五批新增 **61个有限静态入口**：Number类型转换24、Array类型转换26、特殊函数8、容器筛选3，包含25个单列别名。最终完整回归 **3409 passed／10 skipped**，前端11／类型／临时构建通过；Python／JS十一项输出一致，三行CSV通过合成dispatch／worker／结果读回集成。名称 **477／991（48.13%）** 仅为入口统计。原预算保持，未改依赖或重建JVM，未启动业务服务；没有新增栅格／浏览器／生产／Google验收。整数舍入推断、Int64精确域和正则等限制单列，整体目标仍进行中。见 [Number转换](number-casts.md)、[Array转换](array-casts.md)、[特殊函数](static-special-math.md)、[容器筛选](container-selection.md)、[示例40](../../examples/40_GEE_python_numeric_preparation.py) 和 [报告](../../reports/gee-python-wave35.json)。
@@ -88,6 +90,9 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 
 | 能力 | 本次证据 | 尚未覆盖 |
 | --- | --- | --- |
+| 嵌套集合与属性统计 | S/C 与独立静态 N；Collection 构造／map 返回子集合后 flatten，14种 aggregate 统计实际字段，Python／JS 分组表及合成 CSV 工作流 | <=1000行，共享预算；outer 元数据保留、child 元数据丢弃为本地规则；混合／动态子集合拒绝，影像 aggregate 仅读取已声明元数据，无 G |
+| 组合与分组归约 | S/C 与独立静态 N；combine／group／setOutputs／getOutputs，List.reduce 与内联 reduceColumns 的真实标量／行回归组合 | 描述树64节点／深度16／32输入／256输出；权重、repeat、栅格／运行时表消费者拒绝；空值、分组顺序与碰撞政策见 [语法](composed-reducers.md)，无 G |
+| DateRange | S/C 与独立区间参考；9种访问、布尔及交并方法，数值转换前验证精确域 | 有限UTC毫秒±2^53；无界区间端点／直接JSON／日期过滤拒绝；空区间政策尚无G，见 [语法](date-ranges.md) |
 | Python GeoJSON | S/C，命名 EPSG:4326 CRS、有限合法二维平面几何及非法输入 | 非 WGS84、球面边、left-inside、重投影容差；旧输入未写 geodesic 时延续既有平面策略，无 E/G |
 | Filter.notNull | S/C，最多 1000 个平面属性名，共享 50000 步预算 | 嵌套属性选择器、Google 对照 |
 | Dictionary／List | S/C；NumPy linspace／Python range 独立静态参考；空 keys 和缺键默认值回归 | 完整所有方法和类型强制转换；分数步长按生成 Float64 值比较端点，无 G |
@@ -98,7 +103,7 @@ S＝官方客户端实际序列化；C＝本地编译；E＝实际栅格引擎�
 | 静态行回归 | S/C 与独立 N；表格 reduceColumns／List.reduce 的 linearFit、linearRegression，多响应系数／RMS；缺失／null 行跳过；秩不足／n<=numX 返回 null | <=1000 行、<=32 个输入列，表格只支持平面属性选择器，List 要求精确行宽；共享预算、无权重；通用栅格 linearRegression 与 G 未覆盖 |
 | 栅格 linearFit | S/C；完整 x/y 行、中心化两遍 OLS，输出 scale／offset；独立闭式与 NumPy SVD N 核对系数、重复景权重、缺测、空间范围及目标日期预测 | 1..8 帧，恰两个同名同序标量波段；binary NoData 掩膜，n<2／x 方差为零则两个输出均掩膜；parallelScale 仅 1，仍受 Float32 callback／工作／图预算约束；无实际 E/G，非通用栅格 linearRegression |
 | 有限分类评估 | S/C 与独立标签频数 N；静态 ConfusionMatrix 构造、array／order／accuracy／kappa 与有限逐类指标；内联 errorMatrix 保留 actual 行／predicted 列及显式顺序 | <=64 类／4096 单元，非负整数 Array 计数总和 <=2^53、<=1000 完整标签行，共享预算；原始 List／浮点计数 Array、缺失／null、未定义分母、直接对象 JSON、Feature 属性对象拒绝；逐类指标返回本地 rank1 Float64，Fβ 采用实际行 recall 的明确推断，无 Google 形状／数值对照 |
-| 有限 List 布局／归约 | S/C 与独立静态 N；zip／unzip 截短、flatten 只展开 List、repeat／reverse／set／swap 保留 typed 原子；单输出值、多输出回归字典／typed Array | 布局 <=10000 顶层值、flatten 深度 96，reduce <=1000 行／32 回归列，共享预算；严格下标边界，非默认 reducer 组合／权重拒绝；空值政策见下文，无 E/G |
+| 有限 List 布局／归约 | S/C 与独立静态 N；zip／unzip 截短、flatten 只展开 List、repeat／reverse／set／swap 保留 typed 原子；单输出值、多输出回归字典／typed Array | 布局 <=10000 顶层值、flatten 深度 96，reduce <=1000 行／32 回归列，共享预算；严格下标边界，组合归约见上表，权重仍拒绝；空值政策见下文，无 E/G |
 | 静态最小距离分类 | S/C 与独立 N；欧式／曼哈顿／cosine 光谱角、真实类均值、FeatureCollection.classify、schema 和训练重代入矩阵 | k=1／CLASSIFICATION、训练 1..1000 行、显式 1..8 平面属性、类别 0..63、subsampling=1／seed=0，共享预算；精确 binary64 有理数排名，等距、属性碰撞和 cosine 零范数查询／类中心拒绝；Mahalanobis、采样、图像分类及 G 未覆盖 |
 | 有限栅格 linearRegression | S/C 与独立样点／SVD N；过原点或单位截距模型，多响应共用完整行，真实系数 (numX,numY) 与 RMS (numY,) | numX=1，或 numX=2 且首列证明为单位字面量；numY=1..4、1..8 同序标量帧，n>numX／非退化，RMS 按 n；parallelScale=1、Float32 callback、工作／500 节点限制，无通用设计矩阵／E/G |
 | Number／String | S/C；%s／%d／%f、有限符号及填充；数值 String 构造与三个基础方法；指数拼接预算负控 | Number 按 Python 最短十进制拼写半入舍入，String 按 Python code point；科学／十六进制格式等拒绝；本地政策无 G |

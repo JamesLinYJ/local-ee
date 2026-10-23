@@ -7,6 +7,16 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 # Handler inventory, not a claim that every overload or parameter is supported,
 # nor that Google-service numerical equivalence has been established.
 SUPPORTED_FUNCTIONS = frozenset({
+    "Collection.flatten",
+    *("DateRange." + n for n in (
+        "contains", "end", "intersection", "intersects", "isEmpty",
+        "isUnbounded", "start", "union", "unbounded",
+    )),
+    *("AggregateFeatureCollection." + n for n in (
+        "first", "count", "count_distinct", "min", "max", "mean", "product",
+        "sum", "sample_sd", "sample_var", "total_sd", "total_var", "stats", "histogram",
+    )),
+    "Reducer.combine", "Reducer.group", "Reducer.setOutputs", "Reducer.getOutputs",
     "Date.parse", "Date.update", "Date.getRange", "Date.unitRatio",
     "Array.bitsToArray", "Array.cut", "Array.mask", "Number.expression",
     "String.match", "String.replace", "String.split",
@@ -113,6 +123,18 @@ def get_capabilities():
         "level": "C",
         "numerical_equivalence_to_google_verified": False,
         "restrictions": [
+            ("Nested finite FeatureCollections support constructor/map then flatten with owned rows, "
+             "source order/actual IDs and outer metadata; child metadata is discarded under the local policy. "
+             "Depth96/nodes10000/rows1000 and shared50000 work/1MB output remain. Mixed/Image/dynamic children reject."),
+            ("AggregateFeatureCollection statistics read <=1000 inline features or real declared image metadata. "
+             "Finite numeric kernels, homogeneous string min/max, explicit null/empty/first/histogram policies; "
+             "no pixel or dynamic sampled-table aggregation, no Google numerical comparison."),
+            ("Reducer combine/group/setOutputs/getOutputs support static List.reduce and inline reduceColumns "
+             "with scalar/regression leaves, bounded immutable trees and owned outputs. "
+             "Raster/Array/dynamic-table consumers and nonempty weights reject; grouping and null policies are local."),
+            ("DateRange accessors/contains/intersection/intersects/union/empty/unbounded use half-open finite "
+             "UTC endpoints within ±2^53 milliseconds. Unbounded is private typed IR without invented dates; "
+             "its endpoints, direct public output and date filtering reject. Empty-set policies are not Google-verified."),
             ("Finite static Number/Array casts support explicit integer widths and Float32/Float64. "
              "Number integer fractions truncate; Array integers round nearest with half ties toward positive infinity; both clamp. "
              "Array non-byte rounding and negative ties are local inferences, not Google-verified semantics. "

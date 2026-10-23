@@ -52,12 +52,14 @@
       "description": "Aggregates over a given property of the objects in a collection, calculating the number of non-null values of the property.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded inline feature or declared finite image metadata, <=1000 rows; not sampled/RF table or pixel evaluation. Numeric statistics require finite numbers/exact integers<=2^53; min/max also support homogeneous strings. Missing/null/empty/singleton, Unicode ordering and histogram string-key collision policies documented locally. Bounded JSON, stable numerical kernels, precharged scans/copies/hash/output under shared50000 work/1MB; no Google numerical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -88,12 +90,14 @@
       "description": "Aggregates over a given property of the objects in a collection, calculating the number of distinct values for the selected property.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded inline feature or declared finite image metadata, <=1000 rows; not sampled/RF table or pixel evaluation. Numeric statistics require finite numbers/exact integers<=2^53; min/max also support homogeneous strings. Missing/null/empty/singleton, Unicode ordering and histogram string-key collision policies documented locally. Bounded JSON, stable numerical kernels, precharged scans/copies/hash/output under shared50000 work/1MB; no Google numerical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -124,12 +128,14 @@
       "description": "Aggregates over a given property of the objects in a collection, calculating the property value of the first object in the collection.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded inline feature or declared finite image metadata, <=1000 rows; not sampled/RF table or pixel evaluation. Numeric statistics require finite numbers/exact integers<=2^53; min/max also support homogeneous strings. Missing/null/empty/singleton, Unicode ordering and histogram string-key collision policies documented locally. Bounded JSON, stable numerical kernels, precharged scans/copies/hash/output under shared50000 work/1MB; no Google numerical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -160,12 +166,14 @@
       "description": "Aggregates over a given property of the objects in a collection, calculating a histogram of the selected property.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded inline feature or declared finite image metadata, <=1000 rows; not sampled/RF table or pixel evaluation. Numeric statistics require finite numbers/exact integers<=2^53; min/max also support homogeneous strings. Missing/null/empty/singleton, Unicode ordering and histogram string-key collision policies documented locally. Bounded JSON, stable numerical kernels, precharged scans/copies/hash/output under shared50000 work/1MB; no Google numerical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -196,12 +204,14 @@
       "description": "Aggregates over a given property of the objects in a collection, calculating the maximum of the values of the selected property.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded inline feature or declared finite image metadata, <=1000 rows; not sampled/RF table or pixel evaluation. Numeric statistics require finite numbers/exact integers<=2^53; min/max also support homogeneous strings. Missing/null/empty/singleton, Unicode ordering and histogram string-key collision policies documented locally. Bounded JSON, stable numerical kernels, precharged scans/copies/hash/output under shared50000 work/1MB; no Google numerical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -232,12 +242,14 @@
       "description": "Aggregates over a given property of the objects in a collection, calculating the mean of the selected property.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded inline feature or declared finite image metadata, <=1000 rows; not sampled/RF table or pixel evaluation. Numeric statistics require finite numbers/exact integers<=2^53; min/max also support homogeneous strings. Missing/null/empty/singleton, Unicode ordering and histogram string-key collision policies documented locally. Bounded JSON, stable numerical kernels, precharged scans/copies/hash/output under shared50000 work/1MB; no Google numerical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -268,12 +280,14 @@
       "description": "Aggregates over a given property of the objects in a collection, calculating the minimum of the values of the selected property.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded inline feature or declared finite image metadata, <=1000 rows; not sampled/RF table or pixel evaluation. Numeric statistics require finite numbers/exact integers<=2^53; min/max also support homogeneous strings. Missing/null/empty/singleton, Unicode ordering and histogram string-key collision policies documented locally. Bounded JSON, stable numerical kernels, precharged scans/copies/hash/output under shared50000 work/1MB; no Google numerical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -304,12 +318,14 @@
       "description": "Aggregates over a given property of the objects in a collection, calculating the product of the values of the selected property.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded inline feature or declared finite image metadata, <=1000 rows; not sampled/RF table or pixel evaluation. Numeric statistics require finite numbers/exact integers<=2^53; min/max also support homogeneous strings. Missing/null/empty/singleton, Unicode ordering and histogram string-key collision policies documented locally. Bounded JSON, stable numerical kernels, precharged scans/copies/hash/output under shared50000 work/1MB; no Google numerical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -340,12 +356,14 @@
       "description": "Aggregates over a given property of the objects in a collection, calculating the sample std. deviation of the values of the selected property.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded inline feature or declared finite image metadata, <=1000 rows; not sampled/RF table or pixel evaluation. Numeric statistics require finite numbers/exact integers<=2^53; min/max also support homogeneous strings. Missing/null/empty/singleton, Unicode ordering and histogram string-key collision policies documented locally. Bounded JSON, stable numerical kernels, precharged scans/copies/hash/output under shared50000 work/1MB; no Google numerical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -376,12 +394,14 @@
       "description": "Aggregates over a given property of the objects in a collection, calculating the sample variance of the values of the selected property.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded inline feature or declared finite image metadata, <=1000 rows; not sampled/RF table or pixel evaluation. Numeric statistics require finite numbers/exact integers<=2^53; min/max also support homogeneous strings. Missing/null/empty/singleton, Unicode ordering and histogram string-key collision policies documented locally. Bounded JSON, stable numerical kernels, precharged scans/copies/hash/output under shared50000 work/1MB; no Google numerical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -412,12 +432,14 @@
       "description": "Aggregates over a given property of the objects in a collection, calculating the sum, min, max, mean, sample standard deviation, sample variance, total standard deviation and total variance of the selected property.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded inline feature or declared finite image metadata, <=1000 rows; not sampled/RF table or pixel evaluation. Numeric statistics require finite numbers/exact integers<=2^53; min/max also support homogeneous strings. Missing/null/empty/singleton, Unicode ordering and histogram string-key collision policies documented locally. Bounded JSON, stable numerical kernels, precharged scans/copies/hash/output under shared50000 work/1MB; no Google numerical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -448,12 +470,14 @@
       "description": "Aggregates over a given property of the objects in a collection, calculating the sum of the values of the selected property.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded inline feature or declared finite image metadata, <=1000 rows; not sampled/RF table or pixel evaluation. Numeric statistics require finite numbers/exact integers<=2^53; min/max also support homogeneous strings. Missing/null/empty/singleton, Unicode ordering and histogram string-key collision policies documented locally. Bounded JSON, stable numerical kernels, precharged scans/copies/hash/output under shared50000 work/1MB; no Google numerical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -484,12 +508,14 @@
       "description": "Aggregates over a given property of the objects in a collection, calculating the total std. deviation of the values of the selected property.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded inline feature or declared finite image metadata, <=1000 rows; not sampled/RF table or pixel evaluation. Numeric statistics require finite numbers/exact integers<=2^53; min/max also support homogeneous strings. Missing/null/empty/singleton, Unicode ordering and histogram string-key collision policies documented locally. Bounded JSON, stable numerical kernels, precharged scans/copies/hash/output under shared50000 work/1MB; no Google numerical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -520,12 +546,14 @@
       "description": "Aggregates over a given property of the objects in a collection, calculating the total variance of the values of the selected property.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded inline feature or declared finite image metadata, <=1000 rows; not sampled/RF table or pixel evaluation. Numeric statistics require finite numbers/exact integers<=2^53; min/max also support homogeneous strings. Missing/null/empty/singleton, Unicode ordering and histogram string-key collision policies documented locally. Bounded JSON, stable numerical kernels, precharged scans/copies/hash/output under shared50000 work/1MB; no Google numerical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -7862,7 +7890,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite inline FeatureCollections only,1000rows/shared50000 work/1MB output. distinct uses canonical local JSON/SHA256 and collision byte comparison, first row; missing/null/dynamic selected values reject, .geo is exact decoded geometry. remap accepts unique string/integer keys and exact integer outputs; unmatched rows drop. fromColumns uses equal-length literal columns, unique names, null geometry, no invented IDs; non-null propertyTypes unsupported. Actual IDs/metadata/order retained by selection. Pinned JS uses ee.call for hidden fromColumns. No sampled/RF/image collections, nested flatten or Google hash/type/collision parity."
+          "Finite inline FeatureCollections only,1000rows/shared50000 work/1MB output. distinct uses canonical local JSON/SHA256 and collision byte comparison, first row; missing/null/dynamic selected values reject, .geo is exact decoded geometry. remap accepts unique string/integer keys and exact integer outputs; unmatched rows drop. fromColumns uses equal-length literal columns, unique names, null geometry, no invented IDs; non-null propertyTypes unsupported. Actual IDs/metadata/order retained by selection. Pinned JS uses ee.call for hidden fromColumns. No sampled/RF/image collections, or Google hash/type/collision parity; nested flatten has a separate bounded adapter."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -8061,12 +8089,14 @@
       "description": "Flattens collections of collections.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite nested FeatureCollections from constructor or homogeneous map results; typed nested IR, depth96/nodes10000/immediate children1000/flattened rows1000. Depth-first source order, actual feature IDs/geometry/properties preserved; outer metadata retained, child collection metadata discarded by explicit local policy. Full validation and owned copies precharged within shared50000 work/1MB output. Empty flatten supported; mixed/dynamic/Image children and unflattened public IR reject. No remote vector engine or Google identity/metadata parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -8109,7 +8139,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite inline FeatureCollections only,1000rows/shared50000 work/1MB output. distinct uses canonical local JSON/SHA256 and collision byte comparison, first row; missing/null/dynamic selected values reject, .geo is exact decoded geometry. remap accepts unique string/integer keys and exact integer outputs; unmatched rows drop. fromColumns uses equal-length literal columns, unique names, null geometry, no invented IDs; non-null propertyTypes unsupported. Actual IDs/metadata/order retained by selection. Pinned JS uses ee.call for hidden fromColumns. No sampled/RF/image collections, nested flatten or Google hash/type/collision parity."
+          "Finite inline FeatureCollections only,1000rows/shared50000 work/1MB output. distinct uses canonical local JSON/SHA256 and collision byte comparison, first row; missing/null/dynamic selected values reject, .geo is exact decoded geometry. remap accepts unique string/integer keys and exact integer outputs; unmatched rows drop. fromColumns uses equal-length literal columns, unique names, null geometry, no invented IDs; non-null propertyTypes unsupported. Actual IDs/metadata/order retained by selection. Pinned JS uses ee.call for hidden fromColumns. No sampled/RF/image collections, or Google hash/type/collision parity; nested flatten has a separate bounded adapter."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -8492,7 +8522,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Static inline FeatureCollection linearFit/linearRegression only, <=1000 rows and <=32 flat selected inputs under shared compilation budgets; nonempty weights and image/raster reduction reject."
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -8581,7 +8611,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite inline FeatureCollections only,1000rows/shared50000 work/1MB output. distinct uses canonical local JSON/SHA256 and collision byte comparison, first row; missing/null/dynamic selected values reject, .geo is exact decoded geometry. remap accepts unique string/integer keys and exact integer outputs; unmatched rows drop. fromColumns uses equal-length literal columns, unique names, null geometry, no invented IDs; non-null propertyTypes unsupported. Actual IDs/metadata/order retained by selection. Pinned JS uses ee.call for hidden fromColumns. No sampled/RF/image collections, nested flatten or Google hash/type/collision parity."
+          "Finite inline FeatureCollections only,1000rows/shared50000 work/1MB output. distinct uses canonical local JSON/SHA256 and collision byte comparison, first row; missing/null/dynamic selected values reject, .geo is exact decoded geometry. remap accepts unique string/integer keys and exact integer outputs; unmatched rows drop. fromColumns uses equal-length literal columns, unique names, null geometry, no invented IDs; non-null propertyTypes unsupported. Actual IDs/metadata/order retained by selection. Pinned JS uses ee.call for hidden fromColumns. No sampled/RF/image collections, or Google hash/type/collision parity; nested flatten has a separate bounded adapter."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -9767,12 +9797,14 @@
       "description": "Returns true if the given Date or DateRange is within this DateRange.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite half-open UTC millisecond intervals within ±2^53; actual interval algebra. Only contains accepts a Date point directly; pinned SDK promotes other scalar range operands through the one-millisecond constructor. Unbounded is typed IR, not an invented timestamp; direct endpoints/JSON/date-filter contexts reject. Empty intersections and bounding interval unions use documented local policies; shared50000 work and1MB output, no Google interval-edge parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -9797,12 +9829,14 @@
       "description": "Returns the (exclusive) end of this DateRange.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite half-open UTC millisecond intervals within ±2^53; actual interval algebra. Only contains accepts a Date point directly; pinned SDK promotes other scalar range operands through the one-millisecond constructor. Unbounded is typed IR, not an invented timestamp; direct endpoints/JSON/date-filter contexts reject. Empty intersections and bounding interval unions use documented local policies; shared50000 work and1MB output, no Google interval-edge parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -9831,12 +9865,14 @@
       "description": "Returns a DateRange that contains all points in the intersection of this DateRange and another.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite half-open UTC millisecond intervals within ±2^53; actual interval algebra. Only contains accepts a Date point directly; pinned SDK promotes other scalar range operands through the one-millisecond constructor. Unbounded is typed IR, not an invented timestamp; direct endpoints/JSON/date-filter contexts reject. Empty intersections and bounding interval unions use documented local policies; shared50000 work and1MB output, no Google interval-edge parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -9865,12 +9901,14 @@
       "description": "Returns true if the given DateRange has at least one point in common with this DateRange.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite half-open UTC millisecond intervals within ±2^53; actual interval algebra. Only contains accepts a Date point directly; pinned SDK promotes other scalar range operands through the one-millisecond constructor. Unbounded is typed IR, not an invented timestamp; direct endpoints/JSON/date-filter contexts reject. Empty intersections and bounding interval unions use documented local policies; shared50000 work and1MB output, no Google interval-edge parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -9895,12 +9933,14 @@
       "description": "Returns true if this DateRange contains no dates (i.e. start >= end).",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite half-open UTC millisecond intervals within ±2^53; actual interval algebra. Only contains accepts a Date point directly; pinned SDK promotes other scalar range operands through the one-millisecond constructor. Unbounded is typed IR, not an invented timestamp; direct endpoints/JSON/date-filter contexts reject. Empty intersections and bounding interval unions use documented local policies; shared50000 work and1MB output, no Google interval-edge parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -9925,12 +9965,14 @@
       "description": "Returns true if this DateRange contains all dates.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite half-open UTC millisecond intervals within ±2^53; actual interval algebra. Only contains accepts a Date point directly; pinned SDK promotes other scalar range operands through the one-millisecond constructor. Unbounded is typed IR, not an invented timestamp; direct endpoints/JSON/date-filter contexts reject. Empty intersections and bounding interval unions use documented local policies; shared50000 work and1MB output, no Google interval-edge parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -9955,12 +9997,14 @@
       "description": "Returns the (inclusive) start of this DateRange.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite half-open UTC millisecond intervals within ±2^53; actual interval algebra. Only contains accepts a Date point directly; pinned SDK promotes other scalar range operands through the one-millisecond constructor. Unbounded is typed IR, not an invented timestamp; direct endpoints/JSON/date-filter contexts reject. Empty intersections and bounding interval unions use documented local policies; shared50000 work and1MB output, no Google interval-edge parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -9980,12 +10024,14 @@
       "description": "Returns a DateRange that includes all possible dates.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite half-open UTC millisecond intervals within ±2^53; actual interval algebra. Only contains accepts a Date point directly; pinned SDK promotes other scalar range operands through the one-millisecond constructor. Unbounded is typed IR, not an invented timestamp; direct endpoints/JSON/date-filter contexts reject. Empty intersections and bounding interval unions use documented local policies; shared50000 work and1MB output, no Google interval-edge parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -10014,12 +10060,14 @@
       "description": "Returns a DateRange that contains all points in the union of this DateRange and another.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite half-open UTC millisecond intervals within ±2^53; actual interval algebra. Only contains accepts a Date point directly; pinned SDK promotes other scalar range operands through the one-millisecond constructor. Unbounded is typed IR, not an invented timestamp; direct endpoints/JSON/date-filter contexts reject. Empty intersections and bounding interval unions use documented local policies; shared50000 work and1MB output, no Google interval-edge parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -30091,7 +30139,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "At most 1000 inline rows, shared work budget. Scalar count counts all non-null values; first/last return the first/last non-null typed value. Numeric sum/mean/min/max/median/sampleStdDev require finite real values, exact integers <=2^53, and skip nulls. Empty/all-null sum/count=0, other empty outputs and sample-SD below two values=null are documented local policies without Google comparison. Unweighted linearFit/linearRegression take ordered rows of exactly numX+numY inputs (<=32); null rows/fields exclude the row but other invalid fields still reject. Rank-deficient/n<=numX regression returns null outputs; typed coefficients/RMS are real computed values. Remote values, reducer combinations/weights and native raster execution are outside scope."
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -35828,12 +35876,14 @@
       "description": "Creates a Reducer that runs two reducers in parallel. The combined reducer's outputs will be those of reducer1 followed by those of reducer2, where the output names of reducer2 are prefixed with the given string.<p>If sharedInputs is true, the reducers must have the same number of inputs, and the combined reducer's will match them; if it is false, the inputs of the combined reducer will be those of reducer1 followed by those of reducer2.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -36369,12 +36419,14 @@
       "description": "Returns a list of the output names of the given reducer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -36414,12 +36466,14 @@
       "description": "Groups reducer records by the value of a given input and reduces each group with the given reducer.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37312,12 +37366,14 @@
       "description": "Returns a Reducer with the same inputs as the given Reducer, but with outputs renamed and/or removed.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual closed immutable reducer trees consumed by static List.reduce and inline FeatureCollection.reduceColumns. Scalar leaves and existing table regressions; shared/concatenated inputs, grouping and output renaming/removal. No raster/Array/runtime table consumer, nonempty weights or arbitrary reducer leaves. Depth16/nodes64/inputs32/outputs256/rows1000 plus shared50000 work/1MB output; owned JSON and typed arrays, explicit collision/null/group-order policies. No Google grouping/statistical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -41302,7 +41358,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 491,
+    "declared_handler_name_count": 519,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41310,7 +41366,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 1,
         "appears_in_successful_compile_context": 1,
-        "declared_handler_count": 1,
+        "declared_handler_count": 15,
         "signature_count": 15
       },
       "Array": {
@@ -41380,7 +41436,7 @@
         "appears_in_rejected_compile_context": 6,
         "appears_in_selected_sdk_serialization": 7,
         "appears_in_successful_compile_context": 2,
-        "declared_handler_count": 16,
+        "declared_handler_count": 17,
         "signature_count": 25
       },
       "ConfusionMatrix": {
@@ -41408,7 +41464,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 1,
+        "declared_handler_count": 10,
         "signature_count": 10
       },
       "DateRangeCollection": {
@@ -41660,7 +41716,7 @@
         "appears_in_rejected_compile_context": 7,
         "appears_in_selected_sdk_serialization": 7,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 11,
+        "declared_handler_count": 15,
         "signature_count": 64
       },
       "S1": {
@@ -41783,7 +41839,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 491,
+    "pinned_signatures_with_same_name_declared_handler": 519,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

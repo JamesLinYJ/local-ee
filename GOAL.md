@@ -16,7 +16,9 @@
 
 ## 当前基线
 
-- 最新第三十六批新增 **14个有限静态入口**：UTC日历4、Array选择3、内联表3、Number.expression1、String正则3，并扩展已有Dictionary.select/remove的RE2正则选择。完整回归 **3644 passed／10 skipped**，前端11／类型／临时构建通过；Python／JS十三项结果一致，两行CSV通过合成dispatch／worker／结果读回。名称 **491／991（49.55%）** 仅为入口统计，不代表完整语义兼容。固定RE2依赖的OSV／PyPI已知告警查询为0，原锁定包版本未变；50000工作预算保持。未启动或部署业务服务，Google／真实数据／生产验收仍未完成。见 reports/gee-python-wave36.json。
+- 最新第三十七批新增 **28个有限计算入口**：DateRange9、属性统计14、组合归约4、集合flatten1，并扩展构造／map及List.reduce／reduceColumns。完整回归 **3722 passed／10 skipped**，前端11／类型／临时构建通过；Python／JS十四项结果一致，两行分组CSV通过合成dispatch／worker／实际写出与结果读回。名称 **519／991（52.37%）** 仅为入口统计，不代表完整语义兼容。1000行统计在原50000预算内通过；新增模块按描述／校验／计算／输出拆分，依赖及运行环境未变。未部署，Google／真实数据／生产验收仍未完成。见 reports/gee-python-wave37.json。
+
+- 第三十六批历史记录：新增 **14个有限静态入口**：UTC日历4、Array选择3、内联表3、Number.expression1、String正则3，并扩展已有Dictionary.select/remove的RE2正则选择。完整回归 **3644 passed／10 skipped**，前端11／类型／临时构建通过；Python／JS十三项结果一致，两行CSV通过合成dispatch／worker／结果读回。名称 **491／991（49.55%）** 仅为入口统计，不代表完整语义兼容。固定RE2依赖的OSV／PyPI已知告警查询为0，原锁定包版本未变；50000工作预算保持。未启动或部署业务服务，Google／真实数据／生产验收仍未完成。见 reports/gee-python-wave36.json。
 
 - 第三十五批历史记录：新增 **61个有限静态入口**：Number类型转换24、Array类型转换26、特殊函数8、容器筛选3，包含25个单列别名。最终完整回归 **3409 passed／10 skipped**，前端11／类型／临时构建通过；Python／JS十一项输出一致，三行CSV通过合成dispatch／worker／结果读回集成。名称 **477／991（48.13%）** 仅为入口统计。原预算保持，未改依赖或重建JVM，未启动业务服务；没有新增栅格／浏览器／生产／Google验收。整数舍入推断、Int64精确域和正则等限制单列，整体目标仍进行中。见 reports/gee-python-wave35.json 及 docs/gee-python/list.md。
 

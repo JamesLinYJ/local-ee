@@ -70,6 +70,8 @@ flowchart LR
 
 内联要素 CSV 使用 `local_ee_table` 输入直连 `save_result(CSV)` 的两节点图，保留现有创建／排队／取消／恢复、脚本父任务权限、去重与文件发布合同。`engine/native_run.py` 在同一受限批任务入口处理该封闭图，实际写出 CSV 后返回，不初始化 Spark/JVM；普通栅格仍交给 GeoTrellis。此分支不是新的执行／隔离适配器，也没有无沙箱回退。数据中的 `process_id`、`from_node` 和 `process_graph` 等属性只是字面值，不参与目录依赖扫描或图物化。可信合成集成可验证应用路径，实际部署、内核隔离和浏览器验收另行记录。
 
+有限表格整理由 `nested_collection*`、`aggregate_statistics*`、`composed_reducer*` 和 `date_ranges` 分工实现。嵌套集合只有显式 flatten 后才成为普通表；组合归约器采用不可变描述、独立结构校验、数值计算和输出复制模块，只进入静态 List／内联 reduceColumns。属性统计读取实际已有元数据，日期无界区间保持内部类型，不构造虚假端点。所有路径保留原50000工作、1000行及1MB输出限制；例42把 map→flatten→分组→CSV 串联，Google 同数据和生产运行证据另行记录。
+
 影像取样另走 `local_ee_sample_regions → local_ee_train_minimum_distance → local_ee_minimum_distance` 的类型化计算图。采样／训练规格通过规范 JSON 字符串传递，避免要素属性成为流程指令；采样表和模型引用限定生产者。固定训练影像由独立子图保留来源和网格，不受目标导出范围污染；训练输入与输出像元分别计费。dry-run 只携带 schema／traces，真实样本表复用上游 SaveResult 和既有任务物理输出／CSV／权限边界。此链路不放宽沙箱，不改变纯内联表格的封闭执行分支；支持和证据边界见 [取样文档](gee-python/sampling.md)。
 
 `Image.sample` 使用同一公开采样进程的严格 v2 规格，桥接独立内部 `local_ee_image_sample` SPI；v1 行为保留。有限元数据网格生成有界键并与真实瓦片左连接，缺失瓦片按 dropNulls 决定丢弃或保留 null，按全局像元行列和本地固定哈希抽样。多边形采用中心覆盖，返回结果仅在有界溢出检查后排序；保留源键／形状／重复与解码预算。band_order 来自已验证规格，像元数值仅来自实际内核／CSV。后续训练继续显式 schema，详见 [Image.sample](gee-python/image-sampling.md)。独立内核验证不能代替完整 Spark／任务／浏览器／Google 对照。

@@ -3,6 +3,13 @@ import type { ReferenceEntry } from "../types";
 import geeDocs from "./gee-docs";
 const entries: ReferenceEntry[] = [
   {
+    id: "gee-python-grouped-tables",
+    category: "GEE Python",
+    title: "集合展开与分组统计",
+    text: "内联 FeatureCollection 支持 map 返回子集合后 flatten；可用 aggregate_* 读取已有属性的均值、方差、计数和直方图。reduceColumns 和 List.reduce 支持有限 combine、group、setOutputs、getOutputs；组合归约暂不用于栅格或动态取样表。最多1000行，继续受共享工作预算约束。DateRange 支持有限区间交并与包含判断；无界区间须经有限交集或布尔访问器使用。例42演示分组结果转表并导出 CSV，具体空值及顺序规则见语法文档。",
+    code: "rows = ee.FeatureCollection([\n    ee.Feature(None, {'zone':1, 'value':10}),\n    ee.Feature(None, {'zone':1, 'value':12})])\nr = ee.Reducer.mean().combine(ee.Reducer.count(), sharedInputs=True)\nprint(rows.reduceColumns(r.group(1, 'zone'), ['value', 'zone']).getInfo())\nprint(rows.aggregate_sample_var('value').getInfo())",
+  },
+  {
     id: "gee-python-metadata-tables",
     category: "GEE Python",
     title: "日期、正则与表格整理",

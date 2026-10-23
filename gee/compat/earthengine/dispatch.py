@@ -50,6 +50,26 @@ def invoke(translator, name, arguments):
         )
         if result is not UNHANDLED:
             return result
+    if name == "DateRange" or name.startswith("DateRange."):
+        from .date_ranges import invoke_date_range
+
+        return invoke_date_range(translator, name, a)
+    if name.startswith("AggregateFeatureCollection.") and name != "AggregateFeatureCollection.array":
+        from .aggregate_statistics import invoke_aggregate_statistics
+
+        return invoke_aggregate_statistics(translator, name, a)
+    from .composed_reducers import handles_composed_reducer, invoke_composed_reducer, is_reducer_spec
+
+    if handles_composed_reducer(name):
+        return invoke_composed_reducer(translator, name, a)
+    if is_reducer_spec(a.get("reducer")):
+        if name == "List.reduce":
+            from .composed_reducer_values import reduce_list
+
+            translator.allowed(a, {"list", "reducer"})
+            return reduce_list(translator, a.get("list"), a["reducer"])
+        if name != "Collection.reduceColumns":
+            fail("Composed Reducers currently support static List.reduce and inline FeatureCollection.reduceColumns only")
     from .raster_array_bands import handles_array_bands, invoke_array_bands
     from .image_pixel_math import IMAGE_PIXEL_MATH_FUNCTIONS, invoke_image_pixel_math
 
@@ -120,6 +140,12 @@ def invoke(translator, name, arguments):
     if handles_table_reducer(name):
         return invoke_table_reducer(translator, name, a)
     if name == "Collection.reduceColumns":
+        from .ir import Reducer
+
+        if isinstance(a.get("reducer"), Reducer) or is_reducer_spec(a.get("reducer")):
+            from .composed_reducer_tables import reduce_columns
+
+            return reduce_columns(translator, a, a["reducer"])
         return invoke_reduce_columns(translator, name, a)
     if (name == "ImageCollection.reduce" and isinstance(a.get("reducer"), TableReducer)
             and a["reducer"].name == "linearFit"):
@@ -141,6 +167,12 @@ def invoke(translator, name, arguments):
 
     if handles_feature_table_selection(name, a):
         return invoke_feature_table_selection(translator, name, a)
+    from .nested_collections import (
+        handles_nested_collection_operation, invoke_nested_collection_operation,
+    )
+
+    if handles_nested_collection_operation(name, a):
+        return invoke_nested_collection_operation(translator, name, a)
     from .feature_ops import handles_feature, invoke_feature
 
     if handles_feature(name, a):

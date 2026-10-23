@@ -17,6 +17,7 @@ from .feature_values import (
 from .feature_filters import matches_feature_filter
 from .collection_metadata import copy_collection_metadata, collection_with_metadata
 from .ir import Filter, Function, Image, ImageSequence, SampledFeatures, fail, integer
+from .nested_collections import construct_nested_collection, is_collection_value
 from .runtime_feature_ir import RFClassifiedFeatureTable
 
 
@@ -194,6 +195,8 @@ def _invoke_collection(translator, name, a):
                 if drop_nulls is True:
                     continue
                 fail("FeatureCollection.map returned null; set dropNulls=true")
+            if is_collection_value(mapped):
+                output.append(mapped)
             if isinstance(mapped, Image):
                 # A common Join.inner workflow maps matched Features back to
                 # Images, then wraps the result with ee.ImageCollection. Both
@@ -207,7 +210,13 @@ def _invoke_collection(translator, name, a):
                     metadata = copy_collection_metadata(translator, a["collection"])
                 output.append(validate_feature(translator, mapped))
             else:
-                fail("FeatureCollection.map must return a Feature or Image")
+                if not is_collection_value(mapped):
+                    fail("FeatureCollection.map must return a Feature, Image, or FeatureCollection")
+        if any(is_collection_value(value) for value in output):
+            if not all(is_collection_value(value) for value in output):
+                fail("Collection.map cannot mix FeatureCollections with Features or Images")
+            metadata = copy_collection_metadata(translator, a["collection"])
+            return construct_nested_collection(translator, output, metadata)
         if any(isinstance(value, Image) for value in output):
             if not all(isinstance(value, Image) for value in output):
                 fail("Collection.map cannot mix Feature and Image outputs")

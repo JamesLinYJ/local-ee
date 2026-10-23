@@ -28,10 +28,12 @@ def handles_value(name):
 def invoke_value(translator, name, arguments):
     a = arguments
     if name == "Date":
+        from .date_ranges import validated_millis
+
         translator.allowed(a, {"value", "timeZone"})
         if a.get("timeZone") not in (None, "UTC"):
             fail("Only UTC Date is supported")
-        return millis(a["value"])
+        return validated_millis(translator, a["value"])
     if name == "Projection":
         translator.allowed(a, {"crs", "transform", "transformWkt"})
         if a.get("transform") is not None or a.get("transformWkt") is not None:
@@ -44,11 +46,9 @@ def invoke_value(translator, name, arguments):
         translator.allowed(a, {"projection"})
         return a["projection"]
     if name == "DateRange":
-        translator.allowed(a, {"start", "end", "timeZone"})
-        if a.get("timeZone") not in (None, "UTC"):
-            fail("Only UTC DateRange is supported")
-        start = millis(a["start"])
-        return start, millis(a["end"]) if a.get("end") is not None else start + 1
+        from .date_ranges import invoke_date_range
+
+        return invoke_date_range(translator, name, a)
     if name == "Date.millis":
         return a["date"]
     if name == "Date.advance":
@@ -105,10 +105,15 @@ def invoke_value(translator, name, arguments):
             return a["metadata"]
         return {"type": "Feature", "geometry": a.get("geometry"), "properties": a.get("metadata", {})}
     if name in {"Collection", "FeatureCollection"}:
+        from .nested_collections import construct_nested_collection, is_collection_value
+        from .feature_values import charge
+
         translator.allowed(a, {"features"})
         features = a.get("features")
         if not isinstance(features, list):
             fail("FeatureCollection requires an inline feature list")
+        # Reserve constructor classification work before inspecting elements.
+        charge(translator, len(features) + 1)
         if len(features) == 1 and isinstance(features[0], Region):
             return features[0]
         dynamic = [isinstance(feature, SampledFeatures) for feature in features]
@@ -116,6 +121,11 @@ def invoke_value(translator, name, arguments):
             if len(features) == 1 and dynamic[0]:
                 return features[0]
             fail("A sampled FeatureCollection cannot be combined with static or other dynamic features")
+        nested = [is_collection_value(feature) for feature in features]
+        if any(nested):
+            if not all(nested):
+                fail("A nested FeatureCollection cannot mix Features and child collections")
+            return construct_nested_collection(translator, features)
         if not all(isinstance(feature, dict) and feature.get("type") == "Feature" for feature in features):
             fail("Only static Features or one reduceRegion Feature can be exported as a FeatureCollection")
         return {"type": "FeatureCollection", "features": features}
