@@ -1,0 +1,276 @@
+{
+  "schema": "local-ee-python-wave33/v1",
+  "date": "2026-10-23",
+  "base_commit": "33ea91e92127e9dd52b49e0d7aa913c8058b8d8c",
+  "title": "Batch actual finite static Number, Array, List, Dictionary and String families",
+  "entry_inventory": {
+    "before": 279,
+    "after": 377,
+    "pinned_signatures": 991,
+    "new_names": {
+      "Number": [
+        "Number.acos",
+        "Number.and",
+        "Number.asin",
+        "Number.atan",
+        "Number.cbrt",
+        "Number.clamp",
+        "Number.cosh",
+        "Number.erf",
+        "Number.erfc",
+        "Number.exp",
+        "Number.first",
+        "Number.firstNonZero",
+        "Number.first_nonzero",
+        "Number.gamma",
+        "Number.log",
+        "Number.log10",
+        "Number.max",
+        "Number.min",
+        "Number.not",
+        "Number.or",
+        "Number.signum",
+        "Number.sinh",
+        "Number.tan",
+        "Number.tanh",
+        "Number.unitScale"
+      ],
+      "Array": [
+        "Array.acos",
+        "Array.and",
+        "Array.asin",
+        "Array.atan",
+        "Array.cbrt",
+        "Array.ceil",
+        "Array.cos",
+        "Array.cosh",
+        "Array.eq",
+        "Array.erf",
+        "Array.erfc",
+        "Array.exp",
+        "Array.first",
+        "Array.firstNonZero",
+        "Array.first_nonzero",
+        "Array.floor",
+        "Array.gamma",
+        "Array.gt",
+        "Array.gte",
+        "Array.log",
+        "Array.log10",
+        "Array.lt",
+        "Array.lte",
+        "Array.max",
+        "Array.min",
+        "Array.mod",
+        "Array.neq",
+        "Array.not",
+        "Array.or",
+        "Array.pow",
+        "Array.round",
+        "Array.signum",
+        "Array.sin",
+        "Array.sinh",
+        "Array.tan",
+        "Array.tanh"
+      ],
+      "List": [
+        "List.containsAll",
+        "List.equals",
+        "List.frequency",
+        "List.getArray",
+        "List.getGeometry",
+        "List.getNumber",
+        "List.getString",
+        "List.indexOf",
+        "List.indexOfSublist",
+        "List.insert",
+        "List.join",
+        "List.lastIndexOfSubList",
+        "List.remove",
+        "List.removeAll",
+        "List.replace",
+        "List.replaceAll",
+        "List.rotate",
+        "List.splice"
+      ],
+      "Dictionary": [
+        "Dictionary.combine",
+        "Dictionary.fromLists",
+        "Dictionary.getArray",
+        "Dictionary.getGeometry",
+        "Dictionary.getNumber",
+        "Dictionary.getString",
+        "Dictionary.map",
+        "Dictionary.rename",
+        "Dictionary.size",
+        "Dictionary.toArray"
+      ],
+      "String": [
+        "String.decodeJSON",
+        "String.encodeJSON",
+        "String.equals",
+        "String.index",
+        "String.rindex",
+        "String.slice",
+        "String.toLowerCase",
+        "String.toUpperCase",
+        "String.trim"
+      ]
+    },
+    "new_entry_count": 98,
+    "name_entry_percentage_before": 28.15,
+    "name_entry_percentage_after": 38.04,
+    "interpretation": "Name-entry counts include separately pinned aliases; not complete argument, contextual/runtime, Google, or arbitrary project migration compatibility"
+  },
+  "implementation": [
+    "Five disjoint Luna/max family workers; parent integrates routes, exact capability/limits inventory and cross-family workflow, then one publication batch",
+    "Real finite static math, elementwise array selection/logic/power/mod, list data preparation/typed getters, dictionary transformations/map/array/getters, String/JSON",
+    "Keep shared50000 compiler work, rank8/cells10000,1MB output and typed opaque-object restrictions; no budget increase or registration-only placeholders",
+    "Opt-in strict exact-integer checks on new List calls preserve legacy equality/contains/distinct behavior",
+    "Cohesive modules under400 lines; largest new runtime module330, helpers separated by real responsibility"
+  ],
+  "validation": {
+    "full_regression": {
+      "passed": 2989,
+      "skipped": 9,
+      "failed": 0,
+      "duration_seconds": 16.95,
+      "evidence": "audit/gee-python-wave33/final-verified/python.xml",
+      "frozen_source_files": 25,
+      "warnings": "3 existing Rasterio PendingDeprecationWarnings",
+      "native_runtime_tests_excluded": 4,
+      "skips": [
+        {
+          "test": "tests.test_ee_classify_kernel.test_actual_native_tile_kernel_matches_independent_reference",
+          "reason": "opt-in trusted JVM tile-kernel probe; no full native/Spark batch acceptance"
+        },
+        {
+          "test": "tests.test_ee_grid_adapter.test_native_grid_and_unmask_spi_semantics",
+          "reason": "set LOCAL_EE_RUN_NATIVE_GRID_TEST=1 for the opt-in local[1] JVM/Spark probe"
+        },
+        {
+          "test": "tests.test_ee_image_sample_kernel.test_actual_image_sample_kernel_matches_independent_hash_and_grid_reference",
+          "reason": "opt-in trusted standalone Image.sample kernel; no SparkContext or service"
+        },
+        {
+          "test": "tests.test_ee_integer.test_native_adapter_builds_and_executes_real_spi_tile_conversion",
+          "reason": "set LOCAL_EE_RUN_NATIVE_INTEGER_TEST=1 for the lightweight JVM/Spark probe"
+        },
+        {
+          "test": "tests.test_ee_random_split_native_integration.test_actual_image_sample_random_filter_and_smile_rf_python_jvm_bridge",
+          "reason": "opt-in authenticated loopback Python/JVM component proof; no SparkContext or service"
+        },
+        {
+          "test": "tests.test_ee_reduce_adapter.test_native_single_time_and_band_reducer_semantics",
+          "reason": "set LOCAL_EE_RUN_NATIVE_REDUCER_TEST=1 for the opt-in local[1] JVM/Spark probe"
+        },
+        {
+          "test": "tests.test_ee_remap_kernel.test_actual_geotrellis_remap_kernel_matches_independent_binary64_oracle",
+          "reason": "opt-in trusted JVM GeoTrellis remap kernel; no SparkContext or service acceptance"
+        },
+        {
+          "test": "tests.test_ee_sample_kernel.test_actual_native_tile_kernel_matches_shapely_oracle",
+          "reason": "opt-in trusted standalone GeoTrellis tile probe; no SparkContext or engine service"
+        },
+        {
+          "test": "tests.test_ee_smile_rf_kernel.test_actual_smile_training_and_geotrellis_tile_kernel",
+          "reason": "opt-in trusted Smile/GeoTrellis JVM kernel; excludes Spark batch and service acceptance"
+        }
+      ],
+      "scope": "Portable regression; unchanged native/JVM kernels not rebuilt or rerun. Static N is not raster E/Google G.",
+      "source_hashes_unchanged_during_full_run": true,
+      "post_full_metadata_whitespace": {
+        "path": "scripts/ee_inventory/static_families.py",
+        "change": "Remove one extra blank line at EOF only",
+        "compatibility_implementation_unchanged": true,
+        "inventory_tests_rerun": 5
+      }
+    },
+    "focused": {
+      "Number_with_existing_math": 116,
+      "Array_with_existing_arithmetic_vector": 94,
+      "List_and_legacy_after_integer_fix": 89,
+      "Dictionary": 28,
+      "String_with_existing": 34,
+      "inventory": 5,
+      "cross_family_workflow": 2
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "new_named_handlers": "Actual SDK serialization and compiled computation tested by each family",
+      "cross_family_Python_JS_outputs": 10,
+      "cross_family_parity": "passed",
+      "network_attempts": 0,
+      "full_python_inventory_sha256": "c6ac45cda226f793eafffb4c633172f11ef4aedda8a2bf3b3852c6ae41edeb12"
+    },
+    "independent_workflow": {
+      "example": "examples/38_GEE_python_static_families.py",
+      "expected_scores": {
+        "red": 0,
+        "nir": 8,
+        "quality": 10,
+        "version": 1
+      },
+      "expected_score_vector": [
+        0,
+        8,
+        10
+      ],
+      "expected_normalized_nir": 0.8,
+      "expected_label_path": "wet/land/wet",
+      "expected_splice": [
+        1,
+        2,
+        8,
+        9,
+        4
+      ],
+      "expected_signed_remainder": [
+        -1,
+        1
+      ],
+      "trig_roundtrip": "[0,0.5,1] within2e-15",
+      "scope": "Static data preparation/computation, no real imagery or runtime service"
+    },
+    "frontend": {
+      "passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "review": {
+      "scope": "Parent direct review plus independent Luna/max read-only review",
+      "finding": "Legacy structural equality accepts wide Python integers; new List contract required exact domain",
+      "correction": "Opt-in recursive strict integer/StaticArray validation only for new calls; unsafe direct/nested SDK negatives, ±2**53 positives, legacy test retained",
+      "evidence": "audit/gee-python-wave33/source-review-exact-integers.json",
+      "final": "Narrow fix sound, no further concrete blocker identified; reviewer did not run tests",
+      "initial_full_regression": "2986 passed/9 skipped; source finding led to added boundary tests and final rerun, not a hidden test failure"
+    }
+  },
+  "local_policies": [
+    "Finite real/static domain; exact integer bounds, no general Array broadcast; libc/libm/dtype/rounding not Google-verified",
+    "unitScale equal bounds returns0, no output clamp; reversed clamp bounds reject",
+    "List positive-right rotation and join formatting are local; typed equality follows existing bool/Array conventions",
+    "Dictionary duplicate/collision/rename/negative-axis policies documented; map supports static closures and drops null",
+    "Python Unicode codepoint/case/trim and compact sorted-key JSON; strict duplicate/nonfinite/depth/opaque/unsafe integer rejection"
+  ],
+  "not_implemented": [
+    "Corresponding new Image raster math is not implied",
+    "List.filter/shuffle; Dictionary.select/remove/toImage; String regex match/replace/split",
+    "Remaining casts/special functions, general dynamic runtime containers and full API parameter semantics",
+    "Focal/neighborhood native computation: read-only source reconnaissance saved, not implementation or acceptance",
+    "Google same-data/numerical comparison, new full Spark/native/browser/deployment acceptance"
+  ],
+  "workflow_change": "Focused per-family checks, one integrated freeze/full regression/CI publication; rerun combined tests only after actual code fix. No unchanged JVM rebuild for pure static family changes.",
+  "cleanup": {
+    "schema": "local-ee-owned-cleanup/v1",
+    "directories": 3,
+    "bytes_removed": 28379588,
+    "lsof_unused_verified": true,
+    "historical_files_hashes_unchanged": 8,
+    "frozen_sources_unchanged": 25,
+    "data_accounts_runtime_locks_preserved": true
+  },
+  "deployed": false,
+  "overall_goal_complete": false
+}

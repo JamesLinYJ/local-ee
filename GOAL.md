@@ -16,7 +16,9 @@
 
 ## 当前基线
 
-- 最新第三十二批：实际Smile RF explain三字段及有界字典投影／JSON任务，真实JVM与独立三树Gini参考和物理JSON读回通过。冻结源码2788 passed／3 skipped（排除4项延期原生测试），六组件与前端11／类型／构建通过；另有2项静态控制流精确图测试。普通大列表／表格的7项扫描回归已根因修复，原预算和样本保留。入口279／991（28.15%）仅名称；原50探针45编译不代表任意项目迁移率。模型解释仍有参数、资源和原始OOB政策边界，无Google对照或完整Spark／服务／浏览器／部署验收。见 reports/gee-python-wave32.json、docs/gee-python/rf-explanation.md。
+- 最新第三十三批：5组并行批量实现98个有限静态入口，Number25／Array36／List18／Dictionary10／String9。冻结便携2989 passed／9 skipped（排除4项延期原生测试），Python／JS10项组合输出与独立预期、前端11／类型／构建通过。名称377／991（38.04%）仅入口，含官方单列别名；没有完整参数／上下文／Google兼容声明。保留旧预算、历史List比较和数据／运行环境；未部署。采用整族定向验证后集中回归／CI发布，纯静态改动不重建未改JVM。见 reports/gee-python-wave33.json、docs/gee-python/static-families.md。
+
+- 第三十二批历史记录：实际Smile RF explain三字段及有界字典投影／JSON任务，真实JVM与独立三树Gini参考和物理JSON读回通过。冻结源码2788 passed／3 skipped（排除4项延期原生测试），六组件与前端11／类型／构建通过；另有2项静态控制流精确图测试。普通大列表／表格的7项扫描回归已根因修复，原预算和样本保留。入口279／991（28.15%）仅名称；原50探针45编译不代表任意项目迁移率。模型解释仍有参数、资源和原始OOB政策边界，无Google对照或完整Spark／服务／浏览器／部署验收。见 reports/gee-python-wave32.json、docs/gee-python/rf-explanation.md。
 
 - 第三十一批历史记录：RF分类后filter／无排序limit／randomColumn→验证矩阵／getInfo／CSV，保留不可变分类规格和顺序列谱系；取样与分类后操作合计16步、表50000与RF150000分别计费。64项弱身份校验缓存预充开销、突变拒绝、淘汰全量校验。冻结源码2690 passed／3 skipped（另排除4项延期原生测试），六个可信组件和前端11／类型／构建通过；显式排除类别字段的真实JVM模型产生32→16→16→8行与[[3,0],[0,5]]合成计数，实际JSON／CSV读回通过。入口278／991（28.05%）仍只表示名称。未部署，无完整Spark／服务／浏览器／Google对照；完整API和生产目标保持进行中。见 reports/gee-python-wave31.json、docs/gee-python/classified-tables.md。
 
@@ -38,6 +40,8 @@
 - 历史两波段均值模拟目录探针中，30 景生成 335 节点，50 景超过现有 500 节点限制；该计数属于优化前证据。长时序执行与吞吐仍需单独验证。
 
 ## 实施顺序
+
+按用户2026-10-23要求，后续以算子族批量并行开发、统一集成为默认；每组做定向计算／参数验证，冻结整批后统一回归和发布。不得为了增加入口比例注册空实现，也不逐个小函数重复完整发布。
 
 1. 建立全量签名与重载清单、公开项目样本、能力矩阵和可重复回归。分别记录支持、部分支持、未支持、语义差异及验证证据。
 2. 优先修复 Python 实测失败：GeoJSON／投影解码、Filter.notNull、Dictionary 空 keys／缺键和 List.sequence 参数语义；再补 QA 位运算、真实整数类型转换、unmask 与掩膜/足迹、qualityMosaic、日期运算、逐景动态属性、常量栅格及投影网格。

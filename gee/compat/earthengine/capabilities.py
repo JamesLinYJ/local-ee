@@ -23,6 +23,34 @@ SUPPORTED_FUNCTIONS = frozenset({
     "ConfusionMatrix", "ConfusionMatrix.array", "ConfusionMatrix.order",
     "ConfusionMatrix.accuracy", "ConfusionMatrix.kappa", "Collection.errorMatrix",
     "ConfusionMatrix.consumersAccuracy", "ConfusionMatrix.producersAccuracy", "ConfusionMatrix.fscore",
+    # Bulk finite static families; detailed restrictions below.
+    "Number.acos", "Number.and", "Number.asin", "Number.atan",
+    "Number.cbrt", "Number.clamp", "Number.cosh", "Number.erf",
+    "Number.erfc", "Number.exp", "Number.first", "Number.firstNonZero",
+    "Number.first_nonzero", "Number.gamma", "Number.log", "Number.log10",
+    "Number.max", "Number.min", "Number.not", "Number.or",
+    "Number.signum", "Number.sinh", "Number.tan", "Number.tanh",
+    "Number.unitScale",
+    "Array.acos", "Array.and", "Array.asin", "Array.atan",
+    "Array.cbrt", "Array.ceil", "Array.cos", "Array.cosh",
+    "Array.eq", "Array.erf", "Array.erfc", "Array.exp",
+    "Array.first", "Array.firstNonZero", "Array.first_nonzero", "Array.floor",
+    "Array.gamma", "Array.gt", "Array.gte", "Array.log",
+    "Array.log10", "Array.lt", "Array.lte", "Array.max",
+    "Array.min", "Array.mod", "Array.neq", "Array.not",
+    "Array.or", "Array.pow", "Array.round", "Array.signum",
+    "Array.sin", "Array.sinh", "Array.tan", "Array.tanh",
+    "List.containsAll", "List.equals", "List.frequency", "List.getArray",
+    "List.getGeometry", "List.getNumber", "List.getString", "List.indexOf",
+    "List.indexOfSublist", "List.insert", "List.join", "List.lastIndexOfSubList",
+    "List.remove", "List.removeAll", "List.replace", "List.replaceAll",
+    "List.rotate", "List.splice",
+    "Dictionary.combine", "Dictionary.fromLists", "Dictionary.getArray", "Dictionary.getGeometry",
+    "Dictionary.getNumber", "Dictionary.getString", "Dictionary.map", "Dictionary.rename",
+    "Dictionary.size", "Dictionary.toArray",
+    "String.decodeJSON", "String.encodeJSON", "String.equals", "String.index",
+    "String.rindex", "String.slice", "String.toLowerCase", "String.toUpperCase",
+    "String.trim",
     "Classifier.minimumDistance", "Classifier.smileRandomForest", "Classifier.train", "Classifier.schema",
     "Classifier.setOutputMode", "Classifier.confusionMatrix", "Classifier.explain", "FeatureCollection.classify", "Image.classify",
     *("List." + n for n in ("zip", "unzip", "flatten", "repeat", "reverse", "set", "swap", "reduce")),
@@ -54,6 +82,12 @@ def get_capabilities():
         "level": "C",
         "numerical_equivalence_to_google_verified": False,
         "restrictions": [
+            ("Bulk static Number/Array/List/Dictionary/String families perform actual finite local computations, not registration-only stubs. "
+             "Number integers remain exact<=2^53 and nonfinite/domain/overflow errors reject; Array rank<=8/cells<=10000, exact same shape/no broadcasting, owned readonly outputs. "
+             "List structural equality retains typed-array and bool/number rules; dictionary map is finite static two-argument evaluation, null drops keys. "
+             "String offsets/casing/trim use the existing Python Unicode codepoint policy; JSON primitives/list/dictionary only, duplicate/nonfinite/unsafe integers/deep/cyclic/opaque values reject. "
+             "All retain shared50000 compiler work and1MB public output; maxima are not guaranteed in combination. "
+             "Rotation direction, collision/formatting and numeric rounding policies are documented locally; no Google same-data/numerical/dtype parity or raster-engine acceptance is implied."),
             ("Classifier.smileRandomForest uses actual pinned Apache-2.0 Smile1.5.3 with all six constructor parameters, "
              "1..256 trees, mtry null or1..p, minLeaf1..1000, bagFraction(0,1], maxNodes null or2..1000 and signed32 seed. "
              "Static inline rows and actual sampleRegions tables train only in the trusted JVM; the compiler does not fit models. "

@@ -361,3 +361,12 @@ Smile1.5.3四JAR与复用SLF4J固定于`deploy/smile-rf-lock.json`，`scripts/bu
 冻结源码2788 passed／3 skipped（排除4项延期原生测试），六可信组件与前端11／类型／临时构建通过；两项后续静态控制流精确图测试通过，生产代码未再改。实际三树独立Gini参考 `[0,1.5]`／树数3／OOB0及JSON读回通过；它不是任意森林或Google／真实数据能力证明。首次全回归2772通过／7失败／3跳过暴露普通列表与表格重复扫描回归，根因修复后原样本和预算通过。见 `reports/gee-python-wave32.json`、`docs/gee-python/rf-explanation.md`、示例37。入口279／991（28.15%）只统计名称；完整兼容目标继续。
 
 保留较大内联训练与投影链的50000编译工作上限，可能先于1000行上限触发。OOB沿用Smile1.5.3无票时也可能返回0的策略；无树文本／模型保存／通用动态数学／CSV或栅格输出。未部署，无完整Spark／沙箱任务／HTTP浏览器／Google同数据验收。继续从最新main，优先完成真实工作流依赖而非单纯增加名称；不运行容器或恢复虚拟机，用户数据和现有账号保持原状。
+
+
+## 第三十三批接续：按族批量静态API
+
+五组Luna/max并行、父任务集中集成Number25／Array36／List18／Dictionary10／String9，共98个新增名称，全部实际有限静态计算；官方单列别名包含在入口统计内。冻结便携2989 passed／9 skipped（排除4项延期原生测试），前端11／类型／临时构建通过；示例38的10个组合输出有独立预期及官方Python／JS结果一致性，网络尝试0。共享工作50000、rank8／10000单元／1MB输出等预算不提高。
+
+新List操作显式启用递归精确整数检查；旧static_equal宽整数比较／contains／distinct政策保留。初次全回归2986通过／9跳过，独立源审查仍找到此边界缺口，修复和新增边界测试后统一复验通过。其余局部旋转／字典碰撞／轴／Unicode／JSON格式／浮点政策与Google尚无对照。见`reports/gee-python-wave33.json`、`docs/gee-python/static-families.md`和示例38。
+
+当前名称377／991（38.04%）不是完整GEE语义覆盖率；新静态函数不自动支持同名Image算法。只改编译器及帮助文本，本批不重建未变化JVM，无新栅格／Spark／沙箱任务／浏览器／部署验收。邻域source reconnaissance保留于本地audit，已找到MultibandFocalOperation的halo／逐波段路线，但focal／Kernel仍未实现，后续需真实接缝／时间／掩膜验证。继续批量按真实项目依赖推进，保持目标active，沿用protected-main精确SHA检查后directpush，及时清理本批闲置scratch。

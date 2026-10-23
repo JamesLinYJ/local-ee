@@ -11,6 +11,8 @@ from .array_core import (
     charge_array as _charge, check_array_values as _shape,
     require_array as _array, require_matrix as _matrix, wrap_array as _wrap,
 )
+from .array_unary import ARRAY_UNARY_FUNCTIONS, invoke_unary
+from .array_binary import ARRAY_BINARY_FUNCTIONS, invoke_binary
 from .array_arithmetic import ARRAY_ARITHMETIC_FUNCTIONS, invoke_arithmetic
 from .array_reductions import ARRAY_REDUCTION_FUNCTIONS, invoke_reduction
 from .array_layout import ARRAY_LAYOUT_FUNCTIONS, invoke_layout
@@ -19,11 +21,18 @@ from .array_decompositions import ARRAY_DECOMPOSITION_FUNCTIONS, invoke_decompos
 from .array_argmax import STATIC_ARGMAX_FUNCTIONS, invoke_static_argmax
 from .array_sort import STATIC_ARRAY_SORT_FUNCTIONS, invoke_static_sort
 
-ARRAY_FUNCTIONS = frozenset({
-    "Array", "Array.get", "Array.length", "Array.toList", "Array.reshape",
-    "Array.transpose", "Array.matrixTranspose", "Array.matrixMultiply",
-    "Array.matrixInverse", "Array.matrixSolve", "Array.matrixPseudoInverse",
-}) | ARRAY_ARITHMETIC_FUNCTIONS | ARRAY_REDUCTION_FUNCTIONS | ARRAY_LAYOUT_FUNCTIONS | ARRAY_MATRIX_FUNCTIONS | ARRAY_DECOMPOSITION_FUNCTIONS | STATIC_ARGMAX_FUNCTIONS | STATIC_ARRAY_SORT_FUNCTIONS
+ARRAY_FUNCTIONS = (
+    frozenset({
+        "Array", "Array.get", "Array.length", "Array.toList", "Array.reshape",
+        "Array.transpose", "Array.matrixTranspose", "Array.matrixMultiply",
+        "Array.matrixInverse", "Array.matrixSolve", "Array.matrixPseudoInverse",
+    })
+    | ARRAY_UNARY_FUNCTIONS | ARRAY_BINARY_FUNCTIONS
+    | ARRAY_ARITHMETIC_FUNCTIONS | ARRAY_REDUCTION_FUNCTIONS
+    | ARRAY_LAYOUT_FUNCTIONS | ARRAY_MATRIX_FUNCTIONS
+    | ARRAY_DECOMPOSITION_FUNCTIONS | STATIC_ARGMAX_FUNCTIONS
+    | STATIC_ARRAY_SORT_FUNCTIONS
+)
 
 
 def _axes(arguments, array):
@@ -62,6 +71,10 @@ def invoke_array(translator, name, arguments):
         return invoke_static_sort(translator, name, arguments)
     if name in STATIC_ARGMAX_FUNCTIONS:
         return invoke_static_argmax(translator, name, arguments)
+    if name in ARRAY_UNARY_FUNCTIONS:
+        return invoke_unary(translator, name, arguments)
+    if name in ARRAY_BINARY_FUNCTIONS:
+        return invoke_binary(translator, name, arguments)
     if name in ARRAY_ARITHMETIC_FUNCTIONS:
         return invoke_arithmetic(translator, name, arguments)
     if name in ARRAY_REDUCTION_FUNCTIONS:

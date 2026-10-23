@@ -669,12 +669,14 @@
       "description": "On an element-wise basis, computes the arccosine in radians of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -743,12 +745,14 @@
       "description": "On an element-wise basis, returns 1 if and only if both values are non-zero.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -806,12 +810,14 @@
       "description": "On an element-wise basis, computes the arcsine in radians of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -837,12 +843,14 @@
       "description": "On an element-wise basis, computes the arctangent in radians of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1317,12 +1325,14 @@
       "description": "On an element-wise basis, computes the cubic root of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1348,12 +1358,14 @@
       "description": "On an element-wise basis, computes the smallest integer greater than or equal to the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1379,12 +1391,14 @@
       "description": "On an element-wise basis, computes the cosine of the input in radians.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1410,12 +1424,14 @@
       "description": "On an element-wise basis, computes the hyperbolic cosine of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1651,12 +1667,14 @@
       "description": "On an element-wise basis, returns 1 if and only if the first value is equal to the second.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1682,12 +1700,14 @@
       "description": "On an element-wise basis, computes the error function of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1744,12 +1764,14 @@
       "description": "On an element-wise basis, computes the complementary error function of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1806,12 +1828,14 @@
       "description": "On an element-wise basis, computes the Euler's number e raised to the power of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1842,12 +1866,14 @@
       "description": "On an element-wise basis, selects the value of the first value.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1878,12 +1904,14 @@
       "description": "On an element-wise basis, selects the first value if it is non-zero, and the second value otherwise.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1914,12 +1942,14 @@
       "description": "On an element-wise basis, selects the first value if it is non-zero, and the second value otherwise.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1976,12 +2006,14 @@
       "description": "On an element-wise basis, computes the largest integer less than or equal to the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -2007,12 +2039,14 @@
       "description": "On an element-wise basis, computes the gamma function of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -2117,12 +2151,14 @@
       "description": "On an element-wise basis, returns 1 if and only if the first value is greater than the second.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -2153,12 +2189,14 @@
       "description": "On an element-wise basis, returns 1 if and only if the first value is greater than or equal to the second.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -2544,12 +2582,14 @@
       "description": "On an element-wise basis, computes the natural logarithm of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -2575,12 +2615,14 @@
       "description": "On an element-wise basis, computes the base-10 logarithm of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -2642,12 +2684,14 @@
       "description": "On an element-wise basis, returns 1 if and only if the first value is less than the second.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -2678,12 +2722,14 @@
       "description": "On an element-wise basis, returns 1 if and only if the first value is less than or equal to the second.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3236,12 +3282,14 @@
       "description": "On an element-wise basis, selects the maximum of the first and second values.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3272,12 +3320,14 @@
       "description": "On an element-wise basis, selects the minimum of the first and second values.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3308,12 +3358,14 @@
       "description": "On an element-wise basis, calculates the remainder of the first value divided by the second.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3382,12 +3434,14 @@
       "description": "On an element-wise basis, returns 1 if and only if the first value is not equal to the second.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3413,12 +3467,14 @@
       "description": "On an element-wise basis, returns 0 if the input is non-zero, and 1 otherwise.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3449,12 +3505,14 @@
       "description": "On an element-wise basis, returns 1 if and only if either input value is non-zero.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3528,12 +3586,14 @@
       "description": "On an element-wise basis, raises the first value to the power of the second.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3804,12 +3864,14 @@
       "description": "On an element-wise basis, computes the integer nearest to the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3866,12 +3928,14 @@
       "description": "On an element-wise basis, computes the signum function (sign) of the input; 0 if the input is 0, 1 if the input is greater than 0, -1 if the input is less than 0.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3897,12 +3961,14 @@
       "description": "On an element-wise basis, computes the sine of the input in radians.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3928,12 +3994,14 @@
       "description": "On an element-wise basis, computes the hyperbolic sine of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -4131,12 +4199,14 @@
       "description": "On an element-wise basis, computes the tangent of the input in radians.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -4162,12 +4232,14 @@
       "description": "On an element-wise basis, computes the hyperbolic tangent of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual elementwise finite numeric math; exact same shape, no broadcast; rank8/cells10000/shared50000 work, precharged kernels, owned readonly outputs. Exact integer powers reject before huge allocations; mod retains dividend sign; round uses existing tie-toward-positive-infinity policy. Non-real/nonfinite/overflow and typed dynamic operands reject. No Google dtype/numerical equivalence or raster-array implementation implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -10051,12 +10123,14 @@
       "description": "Combines two dictionaries. In the case of duplicate names, the output will contain the value of the second dictionary unless overwrite is false. Null values in both dictionaries are ignored / removed.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static combine/fromLists/rename/size/map/toArray/typed getters with owned deep values and existing50000 work/1MB/depth caps. Map expects two-argument serialized pure Function and drops null results. Local duplicate fromLists last-value-wins; rename rejects missing/duplicate sources or destinations, overwrites only when requested. Array values require coherent shape/axis. No regex select/remove, arbitrary dynamic objects or Google collision/dtype parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -10121,12 +10195,14 @@
       "description": "Construct a dictionary from two parallel lists of keys and values.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static combine/fromLists/rename/size/map/toArray/typed getters with owned deep values and existing50000 work/1MB/depth caps. Map expects two-argument serialized pure Function and drops null results. Local duplicate fromLists last-value-wins; rename rejects missing/duplicate sources or destinations, overwrites only when requested. Array values require coherent shape/axis. No regex select/remove, arbitrary dynamic objects or Google collision/dtype parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -10197,12 +10273,14 @@
       "description": "Extracts a named array value from a dictionary.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static combine/fromLists/rename/size/map/toArray/typed getters with owned deep values and existing50000 work/1MB/depth caps. Map expects two-argument serialized pure Function and drops null results. Local duplicate fromLists last-value-wins; rename rejects missing/duplicate sources or destinations, overwrites only when requested. Array values require coherent shape/axis. No regex select/remove, arbitrary dynamic objects or Google collision/dtype parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -10231,12 +10309,14 @@
       "description": "Extracts a named geometry value from a dictionary.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static combine/fromLists/rename/size/map/toArray/typed getters with owned deep values and existing50000 work/1MB/depth caps. Map expects two-argument serialized pure Function and drops null results. Local duplicate fromLists last-value-wins; rename rejects missing/duplicate sources or destinations, overwrites only when requested. Array values require coherent shape/axis. No regex select/remove, arbitrary dynamic objects or Google collision/dtype parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -10265,12 +10345,14 @@
       "description": "Extracts a named number value from a dictionary.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static combine/fromLists/rename/size/map/toArray/typed getters with owned deep values and existing50000 work/1MB/depth caps. Map expects two-argument serialized pure Function and drops null results. Local duplicate fromLists last-value-wins; rename rejects missing/duplicate sources or destinations, overwrites only when requested. Array values require coherent shape/axis. No regex select/remove, arbitrary dynamic objects or Google collision/dtype parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -10299,12 +10381,14 @@
       "description": "Extracts a named string value from a dictionary.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static combine/fromLists/rename/size/map/toArray/typed getters with owned deep values and existing50000 work/1MB/depth caps. Map expects two-argument serialized pure Function and drops null results. Local duplicate fromLists last-value-wins; rename rejects missing/duplicate sources or destinations, overwrites only when requested. Array values require coherent shape/axis. No regex select/remove, arbitrary dynamic objects or Google collision/dtype parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -10363,12 +10447,14 @@
       "description": "Map an algorithm over a dictionary. The algorithm is expected to take 2 arguments, a key from the existing dictionary and the value it corresponds to, and return a new value for the given key. If the algorithm returns null, the key is dropped.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static combine/fromLists/rename/size/map/toArray/typed getters with owned deep values and existing50000 work/1MB/depth caps. Map expects two-argument serialized pure Function and drops null results. Local duplicate fromLists last-value-wins; rename rejects missing/duplicate sources or destinations, overwrites only when requested. Array values require coherent shape/axis. No regex select/remove, arbitrary dynamic objects or Google collision/dtype parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -10452,12 +10538,14 @@
       "description": "Rename elements in a dictionary.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static combine/fromLists/rename/size/map/toArray/typed getters with owned deep values and existing50000 work/1MB/depth caps. Map expects two-argument serialized pure Function and drops null results. Local duplicate fromLists last-value-wins; rename rejects missing/duplicate sources or destinations, overwrites only when requested. Array values require coherent shape/axis. No regex select/remove, arbitrary dynamic objects or Google collision/dtype parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -10562,12 +10650,14 @@
       "description": "Returns the number of entries in a dictionary.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static combine/fromLists/rename/size/map/toArray/typed getters with owned deep values and existing50000 work/1MB/depth caps. Map expects two-argument serialized pure Function and drops null results. Local duplicate fromLists last-value-wins; rename rejects missing/duplicate sources or destinations, overwrites only when requested. Array values require coherent shape/axis. No regex select/remove, arbitrary dynamic objects or Google collision/dtype parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -10604,12 +10694,14 @@
       "description": "Returns numeric values of a dictionary as an array. If no keys are specified, all values are returned in the natural ordering of the dictionary's keys. The default 'axis' is 0.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static combine/fromLists/rename/size/map/toArray/typed getters with owned deep values and existing50000 work/1MB/depth caps. Map expects two-argument serialized pure Function and drops null results. Local duplicate fromLists last-value-wins; rename rejects missing/duplicate sources or destinations, overwrites only when requested. Array values require coherent shape/axis. No regex select/remove, arbitrary dynamic objects or Google collision/dtype parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29229,12 +29321,14 @@
       "description": "Returns true if list contains all of the elements of other, regardless of order.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29293,12 +29387,14 @@
       "description": "Returns true if list contains the same elements as other, in the same order.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29393,12 +29489,14 @@
       "description": "Returns the number of elements in list equal to element.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29461,12 +29559,14 @@
       "description": "Returns the array at the specified position in list. A negative index counts backwards from the end of the list. If the value is not an array, an error will occur.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29495,12 +29595,14 @@
       "description": "Returns the geometry at the specified position in list. A negative index counts backwards from the end of the list. If the value is not a geometry, an error will occur.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29529,12 +29631,14 @@
       "description": "Returns the number at the specified position in list. A negative index counts backwards from the end of the list. If the value is not a number, an error will occur.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29563,12 +29667,14 @@
       "description": "Returns the string at the specified position in list. A negative index counts backwards from the end of the list. If the value is not a string, an error will occur.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29597,12 +29703,14 @@
       "description": "Returns the position of the first occurrence of element in list, or -1 if list does not contain element.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29631,12 +29739,14 @@
       "description": "Returns the starting position of the first occurrence of target within list, or -1 if there is no such occurrence.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29669,12 +29779,14 @@
       "description": "Inserts element at the specified position in list. A negative index counts backwards from the end of the list.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29743,12 +29855,14 @@
       "description": "Returns a string containing the elements of the list joined together with the specified separator between elements.<p>Note: The string form of list elements which are not strings, numbers, or booleans is currently not well-defined and subject to change.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29777,12 +29891,14 @@
       "description": "Returns the starting position of the last occurrence of target within list, or -1 if there is no such occurrence.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29918,12 +30034,14 @@
       "description": "Removes the first occurrence of the specified element from list, if it is present.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -29952,12 +30070,14 @@
       "description": "Removes from list all of the elements that are contained in other list.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -30028,12 +30148,14 @@
       "description": "Replaces the first occurrence of oldval in list with newval.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -30066,12 +30188,14 @@
       "description": "Replaces all occurrences of oldval in list with newval.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -30132,12 +30256,14 @@
       "description": "Rotates the elements of the list by the specified distance.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -30421,12 +30547,14 @@
       "description": "Starting at the start index, removes count elements from list and inserts the contents of other at that location. If start is negative, it counts backwards from the end of the list.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded static lists up to10000values subject to shared50000 work/output1MB; structural comparisons retain existing typed-array/bool rules. Input ownership preserved; negative index/empty/null/duplicate policies tested. Positive rotate uses local rightward convention; join formatting and typed getters have documented finite scope. No Google runtime/value formatting or arbitrary dynamic-list parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -30921,12 +31049,14 @@
       "description": "Computes the arccosine in radians of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -30993,12 +31123,14 @@
       "description": "Returns 1 if and only if both values are non-zero.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -31024,12 +31156,14 @@
       "description": "Computes the arcsine in radians of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -31055,12 +31189,14 @@
       "description": "Computes the arctangent in radians of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -31474,12 +31610,14 @@
       "description": "Computes the cubic root of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -31545,12 +31683,14 @@
       "description": "Clamps the value to lie within the range of min to max.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -31609,12 +31749,14 @@
       "description": "Computes the hyperbolic cosine of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -31774,12 +31916,14 @@
       "description": "Computes the error function of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -31836,12 +31980,14 @@
       "description": "Computes the complementary error function of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -31898,12 +32044,14 @@
       "description": "Computes the Euler's number e raised to the power of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -31972,12 +32120,14 @@
       "description": "Selects the value of the first value.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -32008,12 +32158,14 @@
       "description": "Selects the first value if it is non-zero, and the second value otherwise.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -32044,12 +32196,14 @@
       "description": "Selects the first value if it is non-zero, and the second value otherwise.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -32177,12 +32331,14 @@
       "description": "Computes the gamma function of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -32614,12 +32770,14 @@
       "description": "Computes the natural logarithm of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -32645,12 +32803,14 @@
       "description": "Computes the base-10 logarithm of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -32784,12 +32944,14 @@
       "description": "Selects the maximum of the first and second values.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -32820,12 +32982,14 @@
       "description": "Selects the minimum of the first and second values.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -32959,12 +33123,14 @@
       "description": "Returns 0 if the input is non-zero, and 1 otherwise.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -32995,12 +33161,14 @@
       "description": "Returns 1 if and only if either input value is non-zero.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -33236,12 +33404,14 @@
       "description": "Computes the signum function (sign) of the input; 0 if the input is 0, 1 if the input is greater than 0, -1 if the input is less than 0.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -33300,12 +33470,14 @@
       "description": "Computes the hyperbolic sine of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -33398,12 +33570,14 @@
       "description": "Computes the tangent of the input in radians.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -33429,12 +33603,14 @@
       "description": "Computes the hyperbolic tangent of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -33994,12 +34170,14 @@
       "description": "Scales the input so that the range of input values [min, max] becomes [0, 1]. Values outside the range are NOT clamped.  If min == max, 0 is returned.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static numeric operands, exact integer magnitude<=2^53, true finite libm/Fraction computation; domain/nonfinite/overflow reject. All operands checked including first/firstNonZero. Clamp reversed bounds reject; unitScale equal bounds returns0 and does not clamp outside values. Float64/libm/zero-bound policies are local without Google parity. Shared50000 compiler work/output1MB."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37793,12 +37971,14 @@
       "description": "Decodes a JSON string.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static equals/search/slice/case/trim and bounded JSON primitives/list/dictionary. Existing Python Unicode codepoint/case/whitespace policy; compact sorted-key local JSON formatting, exact integers<=2^53 and finite numbers. Reject duplicates/nonfinite/cycles/opaque/deep/oversized values before unsafe allocation. No regex additions, Google Unicode/JSON formatting parity; existing50000work/1MB output remain."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37824,12 +38004,14 @@
       "description": "Encodes an object to JSON. Supports primitives, lists, and dictionaries.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static equals/search/slice/case/trim and bounded JSON primitives/list/dictionary. Existing Python Unicode codepoint/case/whitespace policy; compact sorted-key local JSON formatting, exact integers<=2^53 and finite numbers. Reject duplicates/nonfinite/cycles/opaque/deep/oversized values before unsafe allocation. No regex additions, Google Unicode/JSON formatting parity; existing50000work/1MB output remain."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37860,12 +38042,14 @@
       "description": "Checks for string equality with a given object. Returns true if the target is a string and is lexicographically equal to the reference, or false otherwise.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static equals/search/slice/case/trim and bounded JSON primitives/list/dictionary. Existing Python Unicode codepoint/case/whitespace policy; compact sorted-key local JSON formatting, exact integers<=2^53 and finite numbers. Reject duplicates/nonfinite/cycles/opaque/deep/oversized values before unsafe allocation. No regex additions, Google Unicode/JSON formatting parity; existing50000work/1MB output remain."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -37896,12 +38080,14 @@
       "description": "Searches a string for the first occurrence of a substring.  Returns the index of the first match, or -1.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static equals/search/slice/case/trim and bounded JSON primitives/list/dictionary. Existing Python Unicode codepoint/case/whitespace policy; compact sorted-key local JSON formatting, exact integers<=2^53 and finite numbers. Reject duplicates/nonfinite/cycles/opaque/deep/oversized values before unsafe allocation. No regex additions, Google Unicode/JSON formatting parity; existing50000work/1MB output remain."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -38056,12 +38242,14 @@
       "description": "Searches a string for the last occurrence of a substring. Returns the index of the first match, or -1.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static equals/search/slice/case/trim and bounded JSON primitives/list/dictionary. Existing Python Unicode codepoint/case/whitespace policy; compact sorted-key local JSON formatting, exact integers<=2^53 and finite numbers. Reject duplicates/nonfinite/cycles/opaque/deep/oversized values before unsafe allocation. No regex additions, Google Unicode/JSON formatting parity; existing50000work/1MB output remain."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -38099,12 +38287,14 @@
       "description": "Returns a substring of the given string. If the specified range exceeds the length of the string, returns a shorter substring.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static equals/search/slice/case/trim and bounded JSON primitives/list/dictionary. Existing Python Unicode codepoint/case/whitespace policy; compact sorted-key local JSON formatting, exact integers<=2^53 and finite numbers. Reject duplicates/nonfinite/cycles/opaque/deep/oversized values before unsafe allocation. No regex additions, Google Unicode/JSON formatting parity; existing50000work/1MB output remain."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -38173,12 +38363,14 @@
       "description": "Converts all of the characters in a string to lower case.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static equals/search/slice/case/trim and bounded JSON primitives/list/dictionary. Existing Python Unicode codepoint/case/whitespace policy; compact sorted-key local JSON formatting, exact integers<=2^53 and finite numbers. Reject duplicates/nonfinite/cycles/opaque/deep/oversized values before unsafe allocation. No regex additions, Google Unicode/JSON formatting parity; existing50000work/1MB output remain."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -38204,12 +38396,14 @@
       "description": "Converts all of the characters in a string to upper case.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static equals/search/slice/case/trim and bounded JSON primitives/list/dictionary. Existing Python Unicode codepoint/case/whitespace policy; compact sorted-key local JSON formatting, exact integers<=2^53 and finite numbers. Reject duplicates/nonfinite/cycles/opaque/deep/oversized values before unsafe allocation. No regex additions, Google Unicode/JSON formatting parity; existing50000work/1MB output remain."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -38235,12 +38429,14 @@
       "description": "Returns a string whose value is the original string, with any leading and trailing whitespace removed.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static equals/search/slice/case/trim and bounded JSON primitives/list/dictionary. Existing Python Unicode codepoint/case/whitespace policy; compact sorted-key local JSON formatting, exact integers<=2^53 and finite numbers. Reject duplicates/nonfinite/cycles/opaque/deep/oversized values before unsafe allocation. No regex additions, Google Unicode/JSON formatting parity; existing50000work/1MB output remain."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -40996,7 +41192,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 279,
+    "declared_handler_name_count": 377,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41011,7 +41207,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 37,
+        "declared_handler_count": 73,
         "signature_count": 124
       },
       "BACCINI/ModisComposite": {
@@ -41123,7 +41319,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 6,
+        "declared_handler_count": 16,
         "signature_count": 19
       },
       "Element": {
@@ -41256,7 +41452,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 20,
+        "declared_handler_count": 38,
         "signature_count": 40
       },
       "Model": {
@@ -41270,7 +41466,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 31,
+        "declared_handler_count": 56,
         "signature_count": 94
       },
       "ObjectType": {
@@ -41403,7 +41599,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 4,
+        "declared_handler_count": 13,
         "signature_count": 16
       },
       "TemporalSegmentation": {
@@ -41477,7 +41673,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 279,
+    "pinned_signatures_with_same_name_declared_handler": 377,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

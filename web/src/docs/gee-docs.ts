@@ -2,6 +2,12 @@ import type { ReferenceEntry } from "../types";
 // Pinned client syntax and explicit local semantics; served entirely from this app.
 const entries: ReferenceEntry[] = [
   {
+    id: "gee-static-families",
+    title: "静态计算与元数据整理",
+    text: "Number、Array、List、Dictionary和String可执行批量新增的静态运算；例如字典映射后构造数组、列表清洗拼接和JSON往返。Array保持同形、rank≤8、10000单元；全部共享50000工作和1MB输出限制。它们不自动开放同名Image算法。旋转方向、字典冲突、Unicode与格式化采用已记录的本地政策；未作Google数值或输出格式一致性验收。",
+    code: "var scores = ee.Dictionary.fromLists(['red','nir'],[-2,8]);\nscores = scores.map(function(key,value) {return ee.Number(value).clamp(0,10);});\nprint(scores.toArray(['red','nir']));\nprint(ee.List(['cloud','land']).removeAll(['cloud']).join('/'));",
+  },
+  {
     id: "gee-start",
     title: "GEE JavaScript 入门",
     text: "选择编辑器的 GEE JavaScript 模式。标准 JavaScript 由 macOS 原生沙箱中的 Node 进程执行；ee.* 使用固定的官方客户端构造延迟计算图，本地兼容层执行支持的算法。只有本地入库范围可计算；导出创建后在任务面板开始。",

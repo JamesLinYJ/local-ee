@@ -4,6 +4,13 @@ import geeDocs from "./gee-docs";
 const entries: ReferenceEntry[] = [
   ...geeDocs,
   {
+    id: "gee-python-static-families",
+    category: "GEE Python",
+    title: "数值、数组与数据整理",
+    text: "支持有限静态 Number/Array 的三角、双曲、指数对数、误差函数、Gamma、符号、逻辑和比较，以及列表搜索/删除/替换/拼接、字典 combine/fromLists/rename/map/toArray 和类型读取。字符串支持搜索/切片/大小写/trim 与 JSON 编解码。这里处理已解析的本地静态值，不代表对应 Image 栅格算法已实现。数组要求同形，无广播；共享50000工作和1MB输出上限。Unicode按Python码点；旋转、冲突与数值政策见项目语法文档，尚无Google同数据对照。",
+    code: "scores = ee.Dictionary.fromLists(['red', 'nir'], [-2, 8])\nscores = scores.map(lambda key, value: ee.Number(value).clamp(0, 10))\nprint(scores.toArray(['red', 'nir']).getInfo())\nprint(ee.Array([-7, 7]).mod(ee.Array([3, -3])).getInfo())\nprint(ee.List(['cloud', 'land']).removeAll(['cloud']).join('/').getInfo())",
+  },
+  {
     id: "gee-python-rf-explanation",
     category: "GEE Python",
     title: "随机森林解释与特征重要性",

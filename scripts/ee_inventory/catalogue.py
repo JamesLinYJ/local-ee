@@ -359,3 +359,9 @@ CLIENT_ALIAS_LOWERINGS = [
         "source": "vendor/earthengine-js/earthengine.cjs",
     },
 ]
+
+
+# Batch static families keep their per-name evidence limits in one cohesive table.
+from .static_families import STATIC_FAMILY_LIMITS
+
+KNOWN_PARTIAL_LIMITS.update(STATIC_FAMILY_LIMITS)
