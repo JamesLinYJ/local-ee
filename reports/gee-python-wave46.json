@@ -1,0 +1,190 @@
+{
+  "schema": "local-ee-python-wave46/v1",
+  "date": "2026-10-23",
+  "base_commit": "442be3b918cdef34896fa7982b9ce9ed1e03b05d",
+  "title": "Versioned local DEM catalog admission and physical GeoTIFF terrain workflow",
+  "entry_inventory": {
+    "before": 598,
+    "after": 598,
+    "new_entry_count": 0,
+    "pinned_signatures": 991,
+    "name_entry_percentage": 60.34,
+    "interpretation": "Name entries only; this batch connects existing operations to normalized DEM data, not new API names or complete GEE parity"
+  },
+  "implementation": {
+    "catalog": "Only local cop-dem-glo-30 with cop-dem-glo-30/v1 normalized collection/item metadata is admitted. Single elevation band in metres; no Google alias, arbitrary upload, Landsat or ERA5 admission.",
+    "source": "Provider-shaped cop-dem-glo-30 single-band GTiff; original axis-aligned north-up EPSG grid cropped to actual source pixels without resampling; maximum4M cells. Ancillary preview assets are retained in source metadata but never read.",
+    "normalization": "Finite scale/offset applied once through Float64 into Float32; valid0/-9999 preserved and source masks become NaN NoData. Explicit STAC/TIFF scale/offset/NoData disagreement rejects; STAC-only NoData adds a mask. Real numeric float32/float64 and integers up to32bits; complex,int64,uint64,nonfinite valid values and overflow reject.",
+    "provenance": "Explicit timezone-qualified provider time; original interval/source version when supplied; source JSON checksum, native CRS/shape/affine, actual footprint, normalized COG checksum, EGM2008 and no cloud-mask claim. No fabricated date or source release version.",
+    "lifecycle": "New normalization fingerprint; old immutable assets/snapshots untouched. Known failed publication cleans owned files; unknown DB outcome preserves files. Normal admin publication/snapshot/file/authorization paths unchanged.",
+    "metadata": "Bounded pure metadata validation charged to the existing50000 compiler budget. Validated numeric EE timestamps/source IDs preserved through filtering, Image.load/first, properties and overrides. All-items scan precedes filterBounds; large catalogs may exceed this budget.",
+    "limits": {
+      "compiler_steps": 50000,
+      "graph_nodes": 500,
+      "serialized_expression_bytes": 1000000,
+      "source_item_cells": 4000000,
+      "local_item_id_characters": 250,
+      "footprint_ring_positions": 129
+    },
+    "metadata_work": {
+      "129_coordinate_fixture_item": 1488,
+      "actual_normalized_items": {
+        "geographic-inputs": 1710,
+        "projected-utm-inputs": 1689
+      },
+      "limit_scope": "Per-item numbers exclude collection and subsequent expression/property work; no claim of1000-item acceptance or global catalog capacity"
+    }
+  },
+  "validation": {
+    "python": {
+      "tests": 4703,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 18,
+      "passed": 4685,
+      "seconds": 38.488
+    },
+    "warnings": {
+      "count": 51,
+      "kind": "Rasterio PendingDeprecationWarning for its internal Affine multiplication; existing warning category also exercised by new synthetic ingestion coverage, not vulnerability scan findings"
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "Python_JS_identical_compiled_workflows": 6,
+      "guarded_network_attempts": 0,
+      "export": "Explicit region, projected output CRS and scale pass existing pixel-budget and immutable selection/materialization controls"
+    },
+    "native_dem": {
+      "scope": "Synthetic source GeoTIFF normalized by gee.ingest.optical_item; official SDK graph compiled against captured local catalog metadata; exact selected item id and LocalEeTerrainSpec passed to standalone GeoTrellis numeric kernel; GeoTrellis wrote each output GeoTIFF and Rasterio independently read it back. No full graph executor, SparkContext, service, private data, or Google comparison.",
+      "crs_cases": [
+        "EPSG:32610",
+        "EPSG:4326"
+      ],
+      "source_cogs": 2,
+      "output_geotiffs": 6,
+      "pixel_comparisons_including_nodata": 1536,
+      "valid_value_comparisons": 1116,
+      "nodata_comparisons": 420,
+      "max_angle_error_degrees": 3.71866804016463e-09,
+      "angle_tolerance_degrees": 2e-07,
+      "slope_additional_relative_tolerance": 2e-08,
+      "hillshade": "Exact integer equality to independent Lambert reference, including0/255; physicalFloat64NaN",
+      "grid_readback": "Identical dimensions/CRS; coefficient-specific tolerance <=1e-10 relative cell size and <=32 coordinateULP; geographic pixel-width delta1.1018204577883939e-17, other deltas0",
+      "source_fixture_sha256": "32a48fe1bb5a1a9db30f33fba7b3bcc426bc4a57bd6876bbfcb30c5615637a5b",
+      "probe_sha256": "ff261c228f08422f8702fba63ae5f98f6be2c4c51c70d8638dae45c84293ebdb",
+      "full_adapter_source_count": 36,
+      "adapter_jar_sha256": "8c5296cba7f049636106a786ef4c795a2b6f4d212a57d78d33731ba887f50736",
+      "evidence": "audit/gee-python-wave46/native/dem/20261023T120108Z-e132f56634/dem-workflow-result.json"
+    },
+    "evidence_directory": "audit/gee-python-wave46/final-verified",
+    "frozen_code_sha256": {
+      "examples/51_GEE_python_local_dem.py": "7ae7a365df813168c12bc8eea75cbb4e1dcb3b90bc7d3f18ab238166df8403af",
+      "gee/dem_contract.py": "02725c13a880637321b14cfc871308f8631cbd86a10fc1f9847c24a3fafcb32f",
+      "gee/dem_ingest.py": "cb1d1078a11972c775facdee6d32bdf336e4e1988817bfda7b303e3701731ff3",
+      "gee/dem_ingest_helpers.py": "9a42433149c0a446bd2c75156127759953c0b56e695e860b8b660d6b4943e9e3",
+      "tests/dem_ingest_helpers.py": "186e47bf0d071904551b794e2a7094495d9b019ee857d5dac8c83f1700f1e957",
+      "tests/dem_workflow_fixture.py": "4be4d9d49012e496bbab22b3b7915739a72a176f962a266b5c902d076a459a8f",
+      "tests/ee_dem_catalog_helpers.py": "c1eeb29c2a129b912ece02bf459dee6d6055e21c688de69f230c2fab4ab74ed6",
+      "tests/ee_dem_workflow_helpers.py": "97678275bce72afe2a67e7563b6de8170f21245c47c577df1edd13884bbb7738",
+      "tests/fixtures/ee-dem-workflow-probe.scala": "ff261c228f08422f8702fba63ae5f98f6be2c4c51c70d8638dae45c84293ebdb",
+      "tests/test_dem_ingest.py": "130db01957d5f311187697fc6b0c6021c30d520b7b2105a4a8833d4aa30be79a",
+      "tests/test_ee_dem_catalog.py": "66e0b8fd1a402e2d66c650b05677871b99aaed4dfc3d5989b2656aa9e455744b",
+      "tests/test_ee_dem_clients.py": "c60a5d2c66750c1e8764b03fe1813ba157a842e87dc640512091ec293d9b8f6a",
+      "tests/test_ee_dem_workflow.py": "2879407996782fa2dac3080f4fc6b16183605ea7b8f8b6f7b532c3a888076adb",
+      "gee/compat/earthengine/capabilities.py": "55008febc54b46db78301f7a23fe295a9634483c8a1a57f52c095527981cf22a",
+      "gee/compat/earthengine/catalog.py": "e0ed90f323a171235ebdff3bea9f680521b20f3c77caf530bc637112dc4a1bd9",
+      "gee/ingest.py": "2a0ab742b4b85a7a2c8afee03081e02a414084b6e8d0cb31431c43f4d6868cd3"
+    },
+    "native_final_source_hash_drift": [
+      "gee/dem_ingest.py",
+      "gee/dem_ingest_helpers.py",
+      "tests/dem_workflow_fixture.py"
+    ],
+    "post_validation_trailing_blank_line_removal": {
+      "gee/dem_ingest.py": {
+        "before": "9a9645395684a52a8534acab86970b7d9920f7156168554d126fb7339837a470",
+        "after": "cb1d1078a11972c775facdee6d32bdf336e4e1988817bfda7b303e3701731ff3",
+        "change": "Only final blank lines removed; all preceding bytes identical"
+      },
+      "gee/dem_ingest_helpers.py": {
+        "before": "eff4cc4d6092fde7ec886c96288f4c460bb2e7ae59484808dac5e1afd3a4815c",
+        "after": "9a42433149c0a446bd2c75156127759953c0b56e695e860b8b660d6b4943e9e3",
+        "change": "Only final blank lines removed; all preceding bytes identical"
+      },
+      "tests/dem_workflow_fixture.py": {
+        "before": "7cf4430f89c1e9fa5a2bbd1e0e3463f9acb7aab89159a3ca6a6f45d56798a74e",
+        "after": "4be4d9d49012e496bbab22b3b7915739a72a176f962a266b5c902d076a459a8f",
+        "change": "Only final blank lines removed; all preceding bytes identical"
+      }
+    }
+  },
+  "review_fixes": [
+    "Removed DEM optical fallback date/cloud-mask/-9999 sentinel behavior",
+    "Rejected conflicting normalization metadata and lossy integer-to-Float64 inputs",
+    "Kept collection time bounds aligned with its actual chosen datetime label",
+    "Preserved files when DB publication outcome cannot be determined",
+    "Kept item ID plus .json suffix within filesystem component limits",
+    "Preserved numeric timestamp/index and property inheritance semantics",
+    "Omitted invalid EO common_name=elevation while retaining the declared band name"
+  ],
+  "harness_refinements": {
+    "failed_audits_retained": [
+      "audit/gee-python-wave46/native/dem/20261023T115858Z-e5a7ac081d",
+      "audit/gee-python-wave46/native/dem/20261023T120047Z-9706a93a9e"
+    ],
+    "fixes": [
+      "Replace exact geographic Affine equality with recorded per-coefficient floating tolerances far below one pixel",
+      "Correct stale report variable names after the tolerance change"
+    ],
+    "final_opt_in_run": "56 passed across focused ingest/catalog/clients/workflow; native source hash differences after verification are limited to the recorded trailing blank-line removal in three Python files"
+  },
+  "cleanup": {
+    "owned_python_and_frontend": [
+      {
+        "path": "work/gee-python-wave46-pytest",
+        "files": 496,
+        "logical_bytes": 13627366,
+        "removed": true
+      },
+      {
+        "path": "work/gee-python-wave46-web-build",
+        "files": 16,
+        "logical_bytes": 1697179,
+        "removed": true
+      }
+    ],
+    "native_scratch": "All three owned native run directories removed; failure evidence and successful compact manifests retained"
+  },
+  "preservation": {
+    "dependencies_changed": false,
+    "installed_runtime_modified": false,
+    "user_data_modified": false,
+    "containers_or_VMs_created": false,
+    "goal_complete": false
+  },
+  "not_verified": [
+    "Live supplier synchronization/current network allowlist",
+    "Generic uploaded DEM admission or automatic legacy migration",
+    "Full Spark graph/RDD execution and task scheduler",
+    "Deployed sandbox/browser/maps/export acceptance",
+    "Private real data and Google same-data numerical parity",
+    "Large catalog and real-scene throughput"
+  ],
+  "documentation": [
+    "docs/gee-python/local-dem.md",
+    "docs/gee-python/terrain.md"
+  ],
+  "example": "examples/51_GEE_python_local_dem.py",
+  "references": [
+    "https://planetarycomputer.microsoft.com/api/stac/v1/collections/cop-dem-glo-30",
+    "https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_DEM_GLO30",
+    "https://stac-extensions.github.io/eo/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/raster/v1.1.0/schema.json"
+  ]
+}

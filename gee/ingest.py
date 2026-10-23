@@ -91,12 +91,14 @@ def open_optical_asset(href):
     return rasterio.open(href,driver="GTiff")
 
 def optical_item(item,cid,bbox,sign=lambda x:x,budget=None):
+    if cid=='cop-dem-glo-30':
+        from .dem_ingest import optical_dem_item
+        return optical_dem_item(item,bbox,sign=sign,budget=budget)
     if cid=='sentinel-2-l2a':
         if item.get('collection')!='sentinel-2-c1-l2a':
             raise ValueError('仅接收 Sentinel-2 Collection 1；旧 Earth Search L2A 存在偏移元数据歧义')
         bands=S2_BANDS
     elif cid=='landsat-c2-l2': bands=LS_BANDS
-    elif cid=='cop-dem-glo-30': bands={'data':'elevation'}
     else: raise ValueError('Unknown source')
     # Include all source metadata in the version key: changed source products get new local assets.
     fingerprint=hashlib.sha256(json.dumps([item,bbox,'normalize-v2'],sort_keys=True).encode()).hexdigest()[:16]
@@ -158,7 +160,7 @@ def optical_item(item,cid,bbox,sign=lambda x:x,budget=None):
                       'gee:source_version':item['properties'].get('s2:processing_baseline',item['properties'].get('landsat:collection_number')),
                       'gee:processing':processing,'gee:cloud_mask':'SCL 4,5,6,7 / Landsat QA_PIXEL bits 0..5 and QA_RADSAT=0',
                       'gee:source_metadata':'/data/'+str((folder/'source.json').relative_to(ROOT))},'assets':assets}
-    meta=collection_metadata(cid,{'sentinel-2-l2a':'Sentinel-2 L2A · 已去云反射率','landsat-c2-l2':'Landsat C2 L2 · 已去云反射率','cop-dem-glo-30':'Copernicus DEM · 30 m'}[cid],list(assets),bbox,[date,date],units)
+    meta=collection_metadata(cid,{'sentinel-2-l2a':'Sentinel-2 L2A · 已去云反射率','landsat-c2-l2':'Landsat C2 L2 · 已去云反射率'}[cid],list(assets),bbox,[date,date],units)
     meta['license']=item.get('properties',{}).get('license','various')
     register(cid,meta,local,budget=budget)
     return item_id

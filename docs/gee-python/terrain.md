@@ -1,12 +1,12 @@
 # Bounded `ee.Terrain`
 
-Deployment boundary: the current EE catalog gate still admits only the
-accepted `sentinel-2-l2a` collection and its Sentinel-2 aliases. This batch does
-not register a DEM dataset or relax that gate. Compiler tests inject synthetic
-elevation metadata under the existing fixture ID; native tests supply separate
-synthetic elevation tiles. A production DEM catalog adapter and end-to-end
-terrain job remain pending. Renaming a reflectance band to `elevation` does not
-make it elevation data.
+Catalog boundary: normalized local `cop-dem-glo-30/v1` elevation items are now
+admitted alongside the existing Sentinel-2 path; see the [DEM contract](local-dem.md).
+Legacy or arbitrary uploaded DEMs and Google DEM aliases are not admitted.
+Wave45 compiler fixtures still inject synthetic elevation metadata under their
+historical fixture ID. Wave46 separately exercises actual synthetic DEM files.
+A deployed end-to-end terrain job remains unverified. Renaming a reflectance
+band to `elevation` does not make it elevation data.
 
 The offline compiler supports the pinned SDK calls `ee.Terrain.products`,
 `ee.Terrain.slope`, `ee.Terrain.aspect`, `ee.Terrain.hillshade`, and the

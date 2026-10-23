@@ -1,9 +1,15 @@
 """Local collection catalogue operations for decoded Earth Engine values."""
 from __future__ import annotations
 
+import math
 import re
 from dataclasses import replace
 
+from ...dem_contract import (
+    COLLECTION_ID as DEM_COLLECTION_ID,
+    DEMContractError,
+    validate_dem_collection,
+)
 from .ir import (
     Collection,
     Image,
@@ -28,7 +34,18 @@ class CatalogOperations:
             self.warn("Sentinel-2 alias uses only locally ingested, pre-cloud-masked reflectance converted to a DN view (x10000); limited coverage and bands B2/B3/B4/B8/SCL do not equal the full official Earth Engine dataset.")
         if cid not in self.catalog:
             fail(f"Collection is not locally ingested or verified: {original}")
-        if cid != "sentinel-2-l2a":
+        if cid == DEM_COLLECTION_ID:
+            selected = self.items.get(cid, [])
+            try:
+                validate_dem_collection(
+                    self.catalog[cid], selected, charge=self._charge_dem_metadata
+                )
+            except DEMContractError as exc:
+                fail(
+                    "Local DEM catalog metadata is legacy or invalid; resync/re-ingest "
+                    f"cop-dem-glo-30 with the {DEM_COLLECTION_ID}/v1 contract ({exc})"
+                )
+        elif cid != "sentinel-2-l2a":
             fail(f"Collection has not passed Earth Engine compatibility acceptance: {cid}")
         metadata = self.catalog[cid]
         names = metadata.get("cube:dimensions", {}).get("bands", {}).get("values", [])
@@ -50,15 +67,76 @@ class CatalogOperations:
             if len(selected) != 1:
                 fail("Image.load requires an unambiguous local image id; use ImageCollection.first()")
             result.props = dict(selected[0].get("properties", {}))
+            if cid == DEM_COLLECTION_ID:
+                result.props = self._base_properties(selected[0], cid)
             result.bands = [(name, Pixel("reduce_t", (pixel, "first"))) for name, pixel in result.bands]
             return result
         return Collection(source, result)
 
+    def _charge_dem_metadata(self, count):
+        if type(count) is not int or count < 0:
+            fail("DEM metadata scan has an invalid work estimate")
+        self.steps += count
+        if self.steps > 50000:
+            fail("DEM catalog metadata exceeds the shared 50000-step compilation work budget")
+
     def member(self, source, iid):
         return next(item for item in self.items[source.cid] if item["id"] == iid)
 
+    def _base_properties(self, item, cid):
+        original = item.get("properties", {})
+        if cid != DEM_COLLECTION_ID:
+            return dict(original)
+
+        # Charge the shallow property copy and each string before scanning it.
+        # Nested non-contract STAC values remain opaque and are not recursively
+        # copied or treated as a security attestation by this schema.
+        if type(original) is not dict or len(original) > 128:
+            fail("DEM item properties are malformed or exceed 128 fields")
+        self._charge_dem_metadata(len(original) + 1)
+        for key, value in original.items():
+            if type(key) is not str or len(key) > 4096:
+                fail("DEM item property names must be bounded strings")
+            self._charge_dem_metadata(len(key) + 1)
+            if isinstance(value, str):
+                if len(value) > 4096:
+                    fail("DEM item property strings exceed the metadata string limit")
+                self._charge_dem_metadata(len(value) + 1)
+            else:
+                self._charge_dem_metadata(1)
+
+        from .date_values import millis
+
+        properties = dict(original)
+        timestamp = millis(original["datetime"])
+        supplied_timestamp = original.get("system:time_start")
+        if supplied_timestamp is not None:
+            try:
+                observed_timestamp = millis(supplied_timestamp)
+            except (OverflowError, TypeError, ValueError):
+                fail("DEM system:time_start must be a finite timestamp matching datetime")
+            if not math.isclose(observed_timestamp, timestamp, rel_tol=0.0, abs_tol=0.001):
+                fail("DEM system:time_start does not match its explicit datetime")
+            # Keep an already-normalized numeric timestamp; convert an ISO value
+            # to the numeric EE property expected by Image.get and Image.date.
+            if isinstance(supplied_timestamp, (int, float)) and not isinstance(supplied_timestamp, bool):
+                properties["system:time_start"] = supplied_timestamp
+            else:
+                properties["system:time_start"] = timestamp
+        else:
+            properties["system:time_start"] = timestamp
+        source_id = properties["gee:source_id"]
+        if "system:index" not in properties:
+            properties["system:index"] = source_id
+        elif (type(properties["system:index"]) is not str
+              or not properties["system:index"].strip()
+              or properties["system:index"] != source_id):
+            fail("DEM system:index must match gee:source_id")
+        return properties
+
     def properties(self, collection, iid):
-        original = self.member(collection.source, iid).get("properties", {})
+        item = self.member(collection.source, iid)
+        original = self._base_properties(item, collection.source.cid)
         image = collection.image
         props = dict(original) if image.inherit_props else {
             key: original[key] for key in image.copied_props if key in original

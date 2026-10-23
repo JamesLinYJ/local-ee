@@ -154,8 +154,8 @@ def get_capabilities():
              "does not redefine terrain. Flat aspect0 and periodic illumination are local "
              "policies; hillshade0..255 remains Float64 with NaN, not byte storage. Products "
              "retains bands/properties and rejects collisions. Invalid metrics, unbound "
-             "sources, hillShadow and fillMinima reject. DEM catalog mapping remains pending; "
-             "the current EE catalog gate is unchanged. Native budgets and Google/full "
+             "sources, hillShadow and fillMinima reject. Local cop-dem-glo-30 requires the "
+             "versioned normalized DEM contract; Google DEM aliases remain unsupported. Native budgets and Google/full "
              "Spark/deployment evidence remain separate."),
             ("Image.neighborhoodToBands emits one band per nonzero pixel-kernel cell, "
              "ignores signed coefficient magnitude and uses focus-relative input_dx_dy "
@@ -301,7 +301,7 @@ def get_capabilities():
             "Array.sort and Image.arraySort use same-rank keys with one selected non-singleton axis and matching axis length; all other key dimensions are singleton. Stable ascending ties are a local policy without Google comparison. Static typed arrays retain dtype within rank8/cells10000/shared50000 work, including unambiguous typed empty arrays and local scalar identity. Raster sorting requires explicit Float32 value/key cells, retains coupled slices and full value/key masks; rank1..8/cells64/500 graph cap. No raster-engine or Google acceptance",
             "ConfusionMatrix consumersAccuracy uses diagonal/row totals and producersAccuracy diagonal/column totals per pinned descriptions. fscore uses actual-row recall/predicted-column precision as an explicit inference. All return local finite rank1 Float64 arrays; Google shape/dtype parity is unverified. Finite positive beta, exact rational intermediates, undefined denominator rejection and existing counts/class/work limits apply",
             "Array.argmax returns the first row-major maximum's coordinate list, [] for rank0 and null for typed empty slices, within existing finite exact-domain/static budgets. Image.arrayArgmax supports one fixed rank1..8 array with explicit top-level Float32 cells, returning actual first-maximum coordinates under the full input mask. Raster coordinate values are locally Float32 integers, not verified Google Integer dtype equivalence; scalar/Double/bundle inputs reject. Work is precharged and64-cell/50000-work/500-node limits remain. No raster-engine or Google acceptance",
-            "local Sentinel-2 only; limited pre-cloud-masked DN alias",
+            "local Sentinel-2 with a limited pre-cloud-masked DN alias; local cop-dem-glo-30 requires verified v1 metadata, elevation metres and native grid evidence; no automatic Google DEM alias or arbitrary upload admission",
             "metadata-dependent collection maps expand a finite local item sequence; pure pixel maps retain the compact path",
             "UTC date fields supported with documented local policies for average year/month durations and ISO weeks; no Google numerical comparison",
             "qualityMosaic requires identical bands; equal quality uses the last local item, not yet Google-compared",

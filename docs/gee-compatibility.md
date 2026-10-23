@@ -1,6 +1,8 @@
 # GEE Python／JavaScript 兼容范围
 
-第四十五批新增 **6个有限入口（含1个弃用别名）**：Terrain产品／坡度／坡向／阴影及 neighborhoodToBands。Python／JS十八项组合图一致；真实GeoTrellis地形14场景在两条路径各比较504像元，最大角度误差5.56×10⁻⁹°；邻域展开6输出／384像元精确匹配。完整回归 **4630 passed／17 skipped**，前端11／类型／临时构建通过。名称 **598／991（60.34%）** 仅为入口统计，原50探针47编译／3拒绝。修复极端高程差误归零、微小角度和过早节点限额；原预算保持，业务模块分为独立参数／度量／数值／预算／适配层。生产EE DEM目录适配仍待完成，现有目录准入不变；合成高程测试不表示真实DEM已接入。切平面弦长度量、阴影Float64和邻域命名为明确本地政策。未改依赖／安装环境／数据，临时产物已清理；无完整Spark／部署／Google同数据验收。见 [语法清单](gee-python/list.md)、[示例50](../examples/50_GEE_python_terrain.py) 和 [报告](../reports/gee-python-wave45.json)。
+第四十六批接通版本化本地 `cop-dem-glo-30` 高程目录：源网格裁切、尺度／单位／掩膜校验、NaN COG 与来源记录。Python／JS六组流程图一致；两种坐标系的实际 COG→GeoTrellis 地形内核→GeoTIFF 读回比较 **1536 像元**，最大角度误差3.72×10⁻⁹°，阴影精确一致。完整回归 **4685 passed／18 skipped**，前端11／类型／临时构建通过；51条 Rasterio 弃用提示单列。名称仍 **598／991（60.34%）**，本批不增加算法入口。原工作预算不变，目录全量元数据扫描通常只能容纳几十条密集轮廓；Google别名、通用上传DEM、完整Spark／部署／真实数据验收仍未完成。未改依赖、安装环境或用户数据，临时产物已清理。见 [DEM合同](gee-python/local-dem.md)、[示例51](../examples/51_GEE_python_local_dem.py) 和 [报告](../reports/gee-python-wave46.json)。
+
+第四十五批历史记录：新增 **6个有限入口（含1个弃用别名）**：Terrain产品／坡度／坡向／阴影及 neighborhoodToBands。Python／JS十八项组合图一致；真实GeoTrellis地形14场景在两条路径各比较504像元，最大角度误差5.56×10⁻⁹°；邻域展开6输出／384像元精确匹配。完整回归 **4630 passed／17 skipped**，前端11／类型／临时构建通过。名称 **598／991（60.34%）** 仅为入口统计，原50探针47编译／3拒绝。修复极端高程差误归零、微小角度和过早节点限额；原预算保持，业务模块分为独立参数／度量／数值／预算／适配层。生产EE DEM目录适配仍待完成，现有目录准入不变；合成高程测试不表示真实DEM已接入。切平面弦长度量、阴影Float64和邻域命名为明确本地政策。未改依赖／安装环境／数据，临时产物已清理；无完整Spark／部署／Google同数据验收。见 [语法清单](gee-python/list.md)、[示例50](../examples/50_GEE_python_terrain.py) 和 [报告](../reports/gee-python-wave45.json)。
 
 第四十四批新增 **7个有限入口**：三种距离核、Compass／Kirsch、Kernel.inverse 和邻域专用 Reducer.unweighted；扩展 reduceNeighborhood 的12种统计及共享输入多输出组合。Python／JS十八项组合图一致；真实GeoTrellis与独立Fraction／Decimal参考验证19场景，两条路径各456像元、4个时间键，31源文件适配器构建通过。完整回归 **4556 passed／15 skipped**，前端11／类型／临时构建通过。名称 **592／991（59.74%）** 仅为入口统计，原50探针47编译／3拒绝。修复组合权重互相影响、工作预充和标准差预算漏算；原上限不变。单位3×3均值在256方瓦片通过，3×3方差在128方通过、256方超限；密集7×7均值超限。二值有效性、空支持NoData、众数并列和分数半径为明确本地政策。未改依赖／安装环境／数据，临时构建已清理；未部署，无完整Spark／浏览器／Google同数据验收。见 [邻域统计](gee-python/neighborhood-statistics.md)、[示例49](../examples/49_GEE_python_local_texture.py) 和 [报告](../reports/gee-python-wave44.json)。
 
@@ -200,7 +202,7 @@ Export.image.toDrive({image:ndvi,description:'NDVI',fileNamePrefix:'ndvi',
 
 额外 14 个规模编译探针发现：单波段均值 50 景为 302 节点，100 景超过 500；双波段均值 30 景为 335 节点，50 景超过 500。该结果仅测图规模，未测吞吐。需要紧凑而保留精确观测身份的加载/归约路径，不能只放宽节点上限。
 
-数据与算子须分别处理：当前 `Translator.load` 仅放行已验证的 `sentinel-2-l2a`；新增 STAC 数据并不自动获得 Landsat、ERA5 或其他 EE 别名。需要各自的波段、单位、缩放、QA 与实样验收。历史 50 个表达式的计数保持原记录，不作为当前全部实现的统计。
+数据与算子须分别处理：当前 `Translator.load` 放行已有 `sentinel-2-l2a` 及通过 `cop-dem-glo-30/v1` 合同检查的本地 DEM；新增 STAC 数据并不自动获得 Landsat、ERA5 或其他 EE 别名。需要各自的波段、单位、缩放、QA 与实样验收。历史 50 个表达式的计数保持原记录，不作为当前全部实现的统计。
 
 复现探针（无数据库、无任务提交、无网络的原生 Seatbelt）：
 
