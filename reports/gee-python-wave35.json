@@ -169,5 +169,23 @@
   "dependencies_changed": false,
   "services_started": false,
   "deployed": false,
-  "overall_goal_complete": false
+  "overall_goal_complete": false,
+  "ci_dependencies_changed": true,
+  "ci_actions": {
+    "checkout": {
+      "version": "7.0.1",
+      "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1"
+    },
+    "setup-node": {
+      "version": "7.1.0",
+      "commit": "949feb2413d6458794dcd2491c4babbbce0c15c1"
+    },
+    "setup-python": {
+      "version": "7.1.0",
+      "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0"
+    },
+    "runtime": "node24 verified from official action.yml",
+    "runner": "ubuntu-24.04; previous passing run usedUbuntu24.04.5",
+    "reason": "Remove deprecated Node20 Action runtime and moving ubuntu-latest migration; runtime dependencies unchanged"
+  }
 }
