@@ -16,7 +16,9 @@
 
 ## 当前基线
 
-- 最新第三十三批：5组并行批量实现98个有限静态入口，Number25／Array36／List18／Dictionary10／String9。冻结便携2989 passed／9 skipped（排除4项延期原生测试），Python／JS10项组合输出与独立预期、前端11／类型／构建通过。名称377／991（38.04%）仅入口，含官方单列别名；没有完整参数／上下文／Google兼容声明。保留旧预算、历史List比较和数据／运行环境；未部署。采用整族定向验证后集中回归／CI发布，纯静态改动不重建未改JVM。见 reports/gee-python-wave33.json、docs/gee-python/static-families.md。
+- 最新第三十四批：39个名称入口，含16个实际Image科学函数及23个静态结构／解析／别名入口。冻结便携3180 passed／10 skipped，七个可信原生组件、前端11／类型／临时构建通过；Python／JS十项输出一致。名称416／991（41.98%）仅为入口，含本批12个别名。有限网格常量按需逐景绑定，不同atan2来源在隐式重采样前拒绝；4000景普通map保留原预算。Float32及极点政策明确，未部署，无完整Spark／服务／浏览器／Google验收。见 reports/gee-python-wave34.json、docs/gee-python/pixel-math.md。整体目标保持进行。
+
+- 第三十三批历史记录：5组并行批量实现98个有限静态入口，Number25／Array36／List18／Dictionary10／String9。冻结便携2989 passed／9 skipped（排除4项延期原生测试），Python／JS10项组合输出与独立预期、前端11／类型／构建通过。名称377／991（38.04%）仅入口，含官方单列别名；没有完整参数／上下文／Google兼容声明。保留旧预算、历史List比较和数据／运行环境；未部署。采用整族定向验证后集中回归／CI发布，纯静态改动不重建未改JVM。见 reports/gee-python-wave33.json、docs/gee-python/static-families.md。
 
 - 第三十二批历史记录：实际Smile RF explain三字段及有界字典投影／JSON任务，真实JVM与独立三树Gini参考和物理JSON读回通过。冻结源码2788 passed／3 skipped（排除4项延期原生测试），六组件与前端11／类型／构建通过；另有2项静态控制流精确图测试。普通大列表／表格的7项扫描回归已根因修复，原预算和样本保留。入口279／991（28.15%）仅名称；原50探针45编译不代表任意项目迁移率。模型解释仍有参数、资源和原始OOB政策边界，无Google对照或完整Spark／服务／浏览器／部署验收。见 reports/gee-python-wave32.json、docs/gee-python/rf-explanation.md。
 

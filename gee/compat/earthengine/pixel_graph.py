@@ -43,6 +43,10 @@ class PixelCompiler:
         return self.double_precision[key][1]
 
     def _expression(self, p):
+        if p.op.startswith("math_"):
+            from .pixel_math_graph import compile_pixel_math
+
+            return compile_pixel_math(self, p)
         if p.op == "classify":
             from .classification_graph import classify_pixel
 
@@ -102,7 +106,24 @@ class PixelCompiler:
         operands = p.args[0] if p.op == "reduce_bands" else p.args
         results = [self.expression(x) for x in operands]
         rasters = [(i, r) for i, r in enumerate(results) if r[1] is not None]
+        if rasters:
+            from .pixel_math_graph import bind_deferred_pixel_math, contains_pixel_math
+
+            template = operands[rasters[0][0]]
+            for index, result in enumerate(results):
+                value, label, _ = result
+                if label is None and isinstance(value, Pixel) and contains_pixel_math(value):
+                    results[index] = self.expression(
+                        bind_deferred_pixel_math(value, template)
+                    )
+            rasters = [(i, r) for i, r in enumerate(results) if r[1] is not None]
         if not rasters:
+            from .pixel_math_graph import contains_pixel_math
+
+            if contains_pixel_math(p):
+                # Keep an unbound math subtree deferred until it meets a real
+                # source grid. It must never acquire a fabricated global grid.
+                return p, None, True
             # Only constant operations are computed here; arbitrary expressions
             # never pass through eval() or an interpreter supplied by the user.
             values = [r[0] for r in results]

@@ -12,7 +12,7 @@ LOCAL_PROCESSES = frozenset({
     "local_ee_unmask", "local_ee_drop_single_time", "local_ee_reduce_bands",
     "local_ee_table", "local_ee_minimum_distance",
     "local_ee_sample_regions", "local_ee_train_minimum_distance",
-    "local_ee_remap", "local_ee_sample_table_op",
+    "local_ee_remap", "local_ee_sample_table_op", "local_ee_pixel_math",
 }) | RF_PROCESSES | VALIDATION_PROCESSES
 CUBE = {"type": "object", "subtype": "raster-cube"}
 EE_BAND_REDUCERS = frozenset({"mean", "median", "min", "max", "sum", "count", "first", "last", "sd"})
@@ -35,6 +35,8 @@ def validate_local_process(name, arguments, depth, *, node_context=None):
         required.add("value")
     if name == "local_ee_reduce_bands":
         required.add("reducer")
+    if name == "local_ee_pixel_math":
+        required.add("operation")
     if name == "local_ee_minimum_distance":
         required.add("model")
     if name in {"local_ee_sample_regions", "local_ee_train_minimum_distance",
@@ -85,9 +87,15 @@ def validate_local_process(name, arguments, depth, *, node_context=None):
         reducer = arguments["reducer"]
         if type(reducer) is not str or reducer not in EE_BAND_REDUCERS:
             raise ValueError("Local EE band reducer must be one of the supported reducer names")
+    if name == "local_ee_pixel_math":
+        from .pixel_math_contract import validate_pixel_math_operation
+
+        validate_pixel_math_operation(arguments["operation"])
 
 
 def process_spec(name):
+    if name == "local_ee_pixel_math":
+        return _pixel_math_spec()
     if name in VALIDATION_PROCESSES:
         return validation_process_spec(name)
     if name in RF_PROCESSES:
@@ -127,6 +135,29 @@ def _cube_process_spec(name, description, parameters):
     return {"id": name, "summary": description.split(".")[0], "description": description,
             "experimental": True, "categories": ["cubes"], "parameters": parameters,
             "returns": {"description": "Float64 raster cube", "schema": CUBE}}
+
+
+def _pixel_math_spec():
+    from .pixel_math_contract import PIXEL_MATH_OPERATIONS
+
+    return {
+        "id": "local_ee_pixel_math", "experimental": True,
+        "summary": "Bounded Float32 scientific pixel math",
+        "description": (
+            "Top-level raster reference with ordered x or x,y input bands and one v output. "
+            "Grid, observation keys and spatial/temporal dimensions are preserved. "
+            "Actual Float32 finite inputs only; NaN masks, real-domain errors, nonfinite "
+            "and Float32-overflow results become NoData. Existing grid/key/cell limits "
+            "and 67108864 pixel-operation work limit apply. Google parity is unverified."
+        ),
+        "categories": ["cubes"],
+        "parameters": [
+            {"name": "data", "description": "Ordered Float32 operand bands", "schema": CUBE},
+            {"name": "operation", "description": "Fixed native math operation",
+             "schema": {"type": "string", "enum": sorted(PIXEL_MATH_OPERATIONS)}},
+        ],
+        "returns": {"description": "One Float32 NoData band v", "schema": CUBE},
+    }
 
 
 def _sample_preparation_spec(name):

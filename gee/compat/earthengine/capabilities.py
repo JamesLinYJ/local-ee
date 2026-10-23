@@ -23,6 +23,17 @@ SUPPORTED_FUNCTIONS = frozenset({
     "ConfusionMatrix", "ConfusionMatrix.array", "ConfusionMatrix.order",
     "ConfusionMatrix.accuracy", "ConfusionMatrix.kappa", "Collection.errorMatrix",
     "ConfusionMatrix.consumersAccuracy", "ConfusionMatrix.producersAccuracy", "ConfusionMatrix.fscore",
+    # Wave34 actual raster math and bounded static helpers.
+    "Image.asin", "Image.acos", "Image.atan", "Image.atan2",
+    "Image.sinh", "Image.cosh", "Image.tanh", "Image.cbrt",
+    "Image.signum", "Image.gamma", "Image.digamma", "Image.trigamma",
+    "Image.erf", "Image.erfc", "Image.erfInv", "Image.erfcInv",
+    "Array.bitCount", "Array.bitwiseNot", "Array.bitwise_not", "Array.bitwiseAnd",
+    "Array.bitwise_and", "Array.bitwiseOr", "Array.bitwise_or", "Array.bitwiseXor",
+    "Array.bitwise_xor", "Array.leftShift", "Array.left_shift", "Array.rightShift",
+    "Array.right_shift", "Array.identity", "Array.dotProduct", "Array.pad",
+    "Number.bitwise_not", "Number.bitwise_and", "Number.bitwise_or", "Number.bitwise_xor",
+    "Number.left_shift", "Number.right_shift", "Number.parse",
     # Bulk finite static families; detailed restrictions below.
     "Number.acos", "Number.and", "Number.asin", "Number.atan",
     "Number.cbrt", "Number.clamp", "Number.cosh", "Number.erf",
@@ -82,6 +93,19 @@ def get_capabilities():
         "level": "C",
         "numerical_equivalence_to_google_verified": False,
         "restrictions": [
+            ("Image scientific math uses an actual closed Float32 native SPI for asin/acos/atan/atan2, "
+             "hyperbolic/cbrt/signum/Gamma derivatives/erf and inverses. Default untyped source/constants "
+             "are visibly converted to Float32 (16777217 becomes16777216); explicit Double inputs require "
+             "explicit toFloat. Invalid/nonfinite/domain/Float32 overflow becomes NaN. Binary real inputs "
+             "require matching proven source lineages; no implicit nearest-neighbor alignment. Deferred "
+             "constant math binds finite raster grids, with bounded individual map expansion when needed. "
+             "Existing grid/key/cell/compiler/graph caps plus67108864 pixel-work apply. Actual standalone "
+             "tile proof is separate from full Spark/service/browser/deployment/Google acceptance."),
+            ("Static Array bitwise operations and Number snake aliases use constrained integer policies; "
+             "Array.identity includes0x0, dotProduct equal rank1 vectors, trailing pad without truncation. "
+             "Number.parse is bounded256-char complete ASCII decimal/radix2..36 parsing. "
+             "Rank8/cells10000/exact2^53/shared50000 work/1MB output unchanged; no general PixelTypes, "
+             "raster bitwise or Google dtype/formatting/numerical parity."),
             ("Bulk static Number/Array/List/Dictionary/String families perform actual finite local computations, not registration-only stubs. "
              "Number integers remain exact<=2^53 and nonfinite/domain/overflow errors reject; Array rank<=8/cells<=10000, exact same shape/no broadcasting, owned readonly outputs. "
              "List structural equality retains typed-array and bool/number rules; dictionary map is finite static two-argument evaluation, null drops keys. "
@@ -176,7 +200,7 @@ def get_capabilities():
             "Multiple fixed-shape array bands use a bounded typed container (1..8 bands, <=64 total cells) with exact shared metadata provenance; exact name/index selection, rename and scoped metadata only. Select a single array before scalarization; true casts, generic array bundle operations and direct raster export reject. Deferred singleton labels remove redundant metadata nodes without fusing numeric callbacks. Work and 500-node graph limits still apply; the four-frame/two-response example supports full coefficients and predictions, while full RMS and all-field outputs still exceed the cap",
             "Number.format supports bounded finite static %s/%d/%f forms with limited sign/width/precision flags; half-up decimal rounding uses Python shortest decimal spelling, signed-64-bit exact %d only; scientific/hex/grouping and unverified string spellings reject, no Google rounding comparison",
             "Number.sin/cos take finite static numeric radians, exact-domain integers only, with precharged shared work. Float64 libm argument reduction is a local policy, not Google numerical parity",
-            "Number/Array hypot use real stable Float64 kernels with finite results; static Array operands must have the same typed shape and share existing budgets. Static atan2 interprets left=x,right=y per pinned SDK documentation and calls libm/NumPy atan2(right,left); the official community harmonic example conflicts with this axis interpretation, so Google orientation remains unverified. Image.atan2 and the unimplemented JVM arctan2 process remain unsupported",
+            "Number/Array hypot use real stable Float64 kernels with finite results; static Array operands must have the same typed shape and share existing budgets. Static atan2 interprets left=x,right=y per pinned SDK documentation and calls libm/NumPy atan2(right,left); the official community harmonic example conflicts with this axis interpretation, so Google orientation remains unverified. Image.atan2 uses its independent native Float32 process with the same pinned x/y convention; its finite scope is documented separately",
             "Image.hypot uses existing pixel operations for the stable ratio norm, an explicit Float32 result and normal band pairing/broadcast/names, masks and left metadata/source fallback. Work is charged before constructing expressions; graph cap is unchanged. Known direct constant Float32 overflow rejects; a dynamic norm outside Float32 range can become infinity in local sample evaluation. Explicit Float64 callback operands still reject; local staged rounding is not Google bitwise parity",
             "Image.arrayCat concatenates same-rank single fixed arrays along an existing axis with matching other dimensions and conjunction of whole-array masks. Image.arrayRepeat repeats complete axis blocks using a provably valid positive constant scalar copies Image; dynamic/masked/spatial copies reject. Row-major cells and dtype are retained, rank<=8/axes<=64/cells<=64 with precharged shared work and unchanged500-node graph cap; no raster-engine/Google acceptance",
             "Single fixed-array Image.matrixDiagonal extracts a rank2 rectangular diagonal as a column while retaining cell casts and whole-array mask. Image.matrixToDiag takes an explicit Float32 single column of1..8 cells and inserts real Float32 zeros. Image.matrixTrace supports Float32 square matrices1..8, matrixDeterminant square1..4, using actual staged Float32 sums/products and scalar outputs with the entire input mask. Work is precharged,64-cell/500-node caps retained; general4x4 raster graphs can still exceed the cap. Polynomial determinant cancellation/overflow is a local policy, not stable LU or Google equivalence",

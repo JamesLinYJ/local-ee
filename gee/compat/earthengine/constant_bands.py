@@ -2,8 +2,11 @@
 from __future__ import annotations
 
 import math
+from dataclasses import replace
 
-from .ir import Image, Pixel, UnsupportedEEError, fail
+from gee.pixel_math_contract import PIXEL_MATH_ARITIES
+
+from .ir import Image, Pixel, Source, UnsupportedEEError, fail
 from .static_values import scalar_power
 
 
@@ -50,6 +53,67 @@ def _children(value):
     elif isinstance(value, (tuple, list)):
         for item in value:
             yield from _children(item)
+
+
+def _contains_pixel_math(value, seen=None):
+    seen = set() if seen is None else seen
+    if isinstance(value, Pixel):
+        key = id(value)
+        if key in seen:
+            return False
+        seen.add(key)
+        if value.op.startswith("math_"):
+            if value.op[5:] not in PIXEL_MATH_ARITIES:
+                fail(f"Unsupported Image pixel math operation: {value.op[5:]}")
+            return True
+        return any(_contains_pixel_math(argument, seen) for argument in value.args)
+    if isinstance(value, (tuple, list)):
+        return any(_contains_pixel_math(argument, seen) for argument in value)
+    return False
+
+
+def _bind_pixel_math_constants(pixel, template, grid_source, footprint, absolute):
+    """Materialize finite constant leaves while leaving math for the native tile."""
+    if pixel.op == "constant" and len(pixel.args) == 1:
+        value = _literal(pixel.args[0])
+        if type(value) is bool:
+            value = int(value)
+        grid_constant = Pixel(
+            "on_grid",
+            (Pixel("constant", (value,)), template, grid_source, footprint, absolute),
+        )
+        # local_ee_constant_on_grid is Float64; the pixel-math contract consumes
+        # Float32 operands, with the narrowing visible in this generated IR.
+        return Pixel("to_float", (grid_constant,))
+
+    def bind(value):
+        if isinstance(value, Pixel):
+            return _bind_pixel_math_constants(
+                value, template, grid_source, footprint, absolute,
+            )
+        if isinstance(value, tuple):
+            return tuple(bind(child) for child in value)
+        if isinstance(value, list):
+            return [bind(child) for child in value]
+        return value
+
+    return replace(pixel, args=tuple(bind(argument) for argument in pixel.args))
+
+
+def bind_pixel_math_constants(
+        pixel: Pixel, template: Pixel, grid_source, footprint=None,
+        footprint_is_absolute=False) -> Pixel:
+    """Bind a constant-only math expression to an existing finite image grid."""
+    if not isinstance(pixel, Pixel) or not _contains_pixel_math(pixel):
+        fail("Expected a deferred Image pixel math expression")
+    if _has_raster(pixel):
+        fail("Deferred Image pixel math expression already has a raster source")
+    if (not isinstance(template, Pixel) or not isinstance(grid_source, Source)
+            or not grid_source.ids):
+        fail("Image pixel math constants require a finite local raster grid")
+    return _bind_pixel_math_constants(
+        pixel, template, grid_source, footprint, footprint_is_absolute,
+    )
 
 
 def _has_raster(pixel: Pixel, memo=None, active=None) -> bool:
@@ -157,12 +221,19 @@ def _bind_pixel(pixel: Pixel, destination: Image, template: Pixel, source: Image
         return pixel
     if source.footprint is not None or source.footprint_is_absolute:
         fail("Cannot bind a constant band with an explicit source footprint")
-    _evaluate(base)
-    bound = Pixel(
-        "on_grid",
-        (base, template, destination.source, destination.footprint, destination.footprint_is_absolute),
-        boolean=base.boolean,
-    )
+    if _contains_pixel_math(base):
+        bound = bind_pixel_math_constants(
+            base, template, destination.source, destination.footprint,
+            destination.footprint_is_absolute,
+        )
+    else:
+        _evaluate(base)
+        bound = Pixel(
+            "on_grid",
+            (base, template, destination.source, destination.footprint,
+             destination.footprint_is_absolute),
+            boolean=base.boolean,
+        )
     for cast in reversed(casts):
         bound = Pixel(cast.op, (bound,), boolean=cast.boolean)
     return bound

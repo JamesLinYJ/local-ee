@@ -1,5 +1,7 @@
 # GEE Python／JavaScript 兼容范围
 
+第三十四批并行新增 **39个入口**，含16个实际Image科学函数、Array位运算／向量／padding及Number解析／别名。冻结便携 **3180 passed／10 skipped**（另排除4项延期原生测试），七个可信JVM／GeoTrellis组件、前端11／类型／构建通过；Python／JS十项组合输出一致。名称入口 **416／991（41.98%）**，其中本批12个为官方单列别名，不是完整参数／语义／Google兼容率。修复常量数学逐景绑定、不同atan2来源隐式重采样和4000景普通map的新增预算开销，原预算不提高。Float32精度和极点政策明确；未部署，无完整Spark／服务／浏览器／Google验收。见 [影像数学语法](gee-python/pixel-math.md)、[示例39](../examples/39_GEE_python_pixel_math.py)、[报告](../reports/gee-python-wave34.json)。
+
 第三十批补齐已有Classifier.train的元数据默认字段，以及内联集合的Element元数据和行操作传递。冻结源码 **2640通过／3跳过**（另排除4项延期原生测试），六个可信JVM／栅格组件与前端11／构建通过；自动字段规格由官方客户端编译后进入实际Smile训练／预测，另有独立MD数值和Python／JS图对照。入口仍 **278／991（28.05%）**，不是完整兼容率。sampleRegions v1默认字段、动态取样元数据修改及全量API仍有缺口；完整Spark／服务／浏览器／部署／Google未验收。见 [语法](gee-python/training-schema.md)、[报告](../reports/gee-python-wave30.json)。
 
 第二十九批新增有限 `FeatureCollection.randomColumn`，完整保留采样后新增／覆盖列的schema与结果，接通训练／验证随机划分及真实RF链路。冻结源码完整回归 **2600通过／3跳过**（另排除4项延期原生测试），六个可信JVM／栅格组件和前端11／构建通过。入口 **278／991（28.05%）** 仅为名称；原50探针45编译／5拒绝。32行真实组件样本分为16／16并进入实际Smile训练与预测，矩阵频数通过；本地随机序列不承诺Google相同，无完整Spark／批任务／浏览器／部署／Google验收。见 [语法](gee-python/random-split.md) 和 [报告](../reports/gee-python-wave29.json)。

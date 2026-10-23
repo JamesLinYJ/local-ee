@@ -67,7 +67,7 @@ GitHub Actions 执行便携组件检查。原生 Seatbelt 和实际 GeoTrellis/�
 ## 文档
 
 - [架构](docs/architecture.md)、[工程约束](AGENTS.md)、[兼容目标](GOAL.md)
-- [语法参考](docs/syntax.md)、[GEE 兼容矩阵](docs/gee-compatibility.md)、[991 项固定 API 清单](docs/gee-api-inventory.md)
+- [语法参考](docs/syntax.md)、[影像数学](docs/gee-python/pixel-math.md)、[GEE 兼容矩阵](docs/gee-compatibility.md)、[991 项固定 API 清单](docs/gee-api-inventory.md)
 - [原生部署](docs/native-macos.md)、[数据集文件](docs/dataset-files.md)
 - [管理与认证组件](docs/admin-components.md)、[数据来源与连接](docs/data-connections.md)
 - [验证范围](docs/verification.md)、[仓库与发布边界](docs/repository.md)

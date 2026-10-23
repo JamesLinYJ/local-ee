@@ -51,7 +51,10 @@ def invoke(translator, name, arguments):
         if result is not UNHANDLED:
             return result
     from .raster_array_bands import handles_array_bands, invoke_array_bands
+    from .image_pixel_math import IMAGE_PIXEL_MATH_FUNCTIONS, invoke_image_pixel_math
 
+    if name in IMAGE_PIXEL_MATH_FUNCTIONS:
+        return invoke_image_pixel_math(translator, name, a)
     if name == "Image.remap":
         from .image_remap import invoke_image_remap
 
@@ -140,6 +143,10 @@ def invoke(translator, name, arguments):
         from .number_format import format_number
 
         return format_number(translator, a)
+    if name == "Number.parse":
+        from .number_parse import invoke_number_parse
+
+        return invoke_number_parse(translator, name, a)
     if name == "Array" or name.startswith("Array."):
         from .array_values import invoke_array
 
@@ -163,10 +170,12 @@ def invoke(translator, name, arguments):
         if name in SUPPORTED_DATE_FUNCTIONS:
             return invoke_date(translator, name, a)
     if name.startswith("Number."):
+        from .integer_aliases import canonical_integer_name
         from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS, invoke_integer
 
-        if name in SUPPORTED_INTEGER_FUNCTIONS:
-            return invoke_integer(translator, name, a)
+        integer_name = canonical_integer_name(name)
+        if integer_name in SUPPORTED_INTEGER_FUNCTIONS:
+            return invoke_integer(translator, integer_name, a)
     if name == "ImageCollection.qualityMosaic":
         translator.allowed(a, {"collection", "qualityBand"})
         from ...ee_quality import quality_mosaic

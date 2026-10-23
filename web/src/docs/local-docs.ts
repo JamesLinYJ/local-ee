@@ -4,6 +4,13 @@ import geeDocs from "./gee-docs";
 const entries: ReferenceEntry[] = [
   ...geeDocs,
   {
+    id: "gee-python-pixel-math",
+    category: "GEE Python",
+    title: "影像数学、数组与数字解析",
+    text: "影像支持16种反三角、双曲、Gamma、误差函数及方向角运算，使用Float32精度；已有Double输入须明确toFloat。常量表达式可通过addBands或数学运算绑定真实影像，集合中按需逐景处理。静态Array新增位运算、identity、dotProduct、pad；Number.parse支持有界十进制和2–36进制整数，另支持6种位运算蛇形别名。共享原有资源限制，尚无Google同数据对照。",
+    code: "phase = coefficients.select('cosine').toFloat().atan2(\n    coefficients.select('sine').toFloat()).rename('phase')\nprint(ee.Array([3, 4]).dotProduct(ee.Array([3, 4])).getInfo())\nprint(ee.Array([1, 2]).pad([4], -1).getInfo())\nprint(ee.Number.parse('101', 2).bitwise_and(4).getInfo())",
+  },
+  {
     id: "gee-python-static-families",
     category: "GEE Python",
     title: "数值、数组与数据整理",

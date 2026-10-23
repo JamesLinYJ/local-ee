@@ -2,6 +2,12 @@ import type { ReferenceEntry } from "../types";
 // Pinned client syntax and explicit local semantics; served entirely from this app.
 const entries: ReferenceEntry[] = [
   {
+    id: "gee-pixel-math",
+    title: "影像科学函数与方向角",
+    text: "支持 asin/acos/atan/atan2、双曲函数、cbrt/signum、Gamma及其导数、erf/erfc和逆函数。x.atan2(y) 按 x、y 方向角解释。运算使用Float32，默认源像素和常量会转换精度；显式Double须先toFloat，域错误、无穷和溢出成为缺测。两个实际输入须来自相同的已证明来源，常量数学须绑定真实影像；没有独立全球常量栅格或通用投影对齐。完整任务部署和Google结果一致性另行验收。",
+    code: "// coefficients 含 cosine、sine 波段\nvar coefficients = coefficients.toFloat();\nvar phase = coefficients.select('cosine')\n  .atan2(coefficients.select('sine')).rename('phase');\nvar result = phase.addBands(ee.Image.constant(1).gamma().rename('gamma_one'));",
+  },
+  {
     id: "gee-static-families",
     title: "静态计算与元数据整理",
     text: "Number、Array、List、Dictionary和String可执行批量新增的静态运算；例如字典映射后构造数组、列表清洗拼接和JSON往返。Array保持同形、rank≤8、10000单元；全部共享50000工作和1MB输出限制。它们不自动开放同名Image算法。旋转方向、字典冲突、Unicode与格式化采用已记录的本地政策；未作Google数值或输出格式一致性验收。",

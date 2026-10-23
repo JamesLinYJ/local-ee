@@ -20,6 +20,8 @@ from .array_matrix_extra import ARRAY_MATRIX_FUNCTIONS, invoke_matrix_extra
 from .array_decompositions import ARRAY_DECOMPOSITION_FUNCTIONS, invoke_decomposition
 from .array_argmax import STATIC_ARGMAX_FUNCTIONS, invoke_static_argmax
 from .array_sort import STATIC_ARRAY_SORT_FUNCTIONS, invoke_static_sort
+from .array_bitwise import ARRAY_BITWISE_FUNCTIONS, invoke_array_bitwise
+from .array_vector_ops import ARRAY_VECTOR_FUNCTIONS, invoke_array_vector
 
 ARRAY_FUNCTIONS = (
     frozenset({
@@ -31,7 +33,7 @@ ARRAY_FUNCTIONS = (
     | ARRAY_ARITHMETIC_FUNCTIONS | ARRAY_REDUCTION_FUNCTIONS
     | ARRAY_LAYOUT_FUNCTIONS | ARRAY_MATRIX_FUNCTIONS
     | ARRAY_DECOMPOSITION_FUNCTIONS | STATIC_ARGMAX_FUNCTIONS
-    | STATIC_ARRAY_SORT_FUNCTIONS
+    | STATIC_ARRAY_SORT_FUNCTIONS | ARRAY_BITWISE_FUNCTIONS | ARRAY_VECTOR_FUNCTIONS
 )
 
 
@@ -67,6 +69,10 @@ def invoke_array(translator, name, arguments):
     """Evaluate only the explicitly listed pinned static array algorithms."""
     if name not in ARRAY_FUNCTIONS:
         fail(f"Unsupported static Array operation: {name}")
+    if name in ARRAY_BITWISE_FUNCTIONS:
+        return invoke_array_bitwise(translator, name, arguments)
+    if name in ARRAY_VECTOR_FUNCTIONS:
+        return invoke_array_vector(translator, name, arguments)
     if name in STATIC_ARRAY_SORT_FUNCTIONS:
         return invoke_static_sort(translator, name, arguments)
     if name in STATIC_ARGMAX_FUNCTIONS:

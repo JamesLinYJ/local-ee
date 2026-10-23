@@ -72,6 +72,11 @@ def invoke_collection(translator, name, arguments):
         )
         if not isinstance(image, Image):
             fail("Collection.map must return an Image")
+        from .pixel_math_graph import requires_per_item_pixel_math
+
+        if (getattr(translator, "_pixel_math_seen", False)
+                and requires_per_item_pixel_math(image, translator)):
+            return evaluate_per_image_map(translator, collection, function)
         return replace(collection, image=replace(image, mapped=False, source=collection.source))
     if name in {"Collection.limit", "Collection.sort"}:
         translator.allowed(a, {"collection", "limit", "key", "ascending"})

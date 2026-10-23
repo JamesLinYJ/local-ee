@@ -4,7 +4,9 @@
 
 Python 类型、方法、继承方法、参数默认值和命名绑定另见 [Python API 报告](../reports/gee-python-api-inventory.json) 与 [Python 优先清单](gee-python/list.md)。2026-10-22 新增的有限 metadata Join 和静态 Array／矩阵支持，不表示 Image.array*、栅格回归或整个公开工作流已经完成。旧审计计数继续作为历史上下文保留。
 
-第三十三批按五个静态算子族新增98个实际计算入口，当前同名处理器声明 **377／991（38.04%）**。包括官方目录单列别名，只统计名称，不能作为完整参数、运行时、数值或迁移成功率。分组语法、局部政策和证据见 [Python当前清单](gee-python/list.md)、[批量合同](gee-python/static-families.md) 与 [验证报告](../reports/gee-python-wave33.json)。
+第三十三批历史按五个静态算子族新增98个实际计算入口，当批同名处理器声明 **377／991（38.04%）**。包括官方目录单列别名，只统计名称，不能作为完整参数、运行时、数值或迁移成功率。分组语法、局部政策和证据见 [Python当前清单](gee-python/list.md)、[批量合同](gee-python/static-families.md) 与 [验证报告](../reports/gee-python-wave33.json)。
+
+第三十四批当前名称入口 **416／991（41.98%）**，新增39个名称（含12个官方单列别名），其中16种Image科学函数经过实际瓦片计算验证。完整参数、网格／精度和Google行为仍有边界；参见[影像数学合同](gee-python/pixel-math.md)与[报告](../reports/gee-python-wave34.json)。
 
 ## 清单范围
 

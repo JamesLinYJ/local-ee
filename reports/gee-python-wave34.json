@@ -1,0 +1,186 @@
+{
+  "schema": "local-ee-python-wave34/v1",
+  "date": "2026-10-23",
+  "base_commit": "14b0adb188d869643e18b96f9f809693c6cd80ee",
+  "title": "Actual Float32 scientific pixel math and bounded numeric preparation",
+  "entry_inventory": {
+    "before": 377,
+    "after": 416,
+    "pinned_signatures": 991,
+    "new_entry_count": 39,
+    "separately_pinned_alias_names": 12,
+    "new_names": [
+      "Array.bitCount",
+      "Array.bitwiseAnd",
+      "Array.bitwiseNot",
+      "Array.bitwiseOr",
+      "Array.bitwiseXor",
+      "Array.bitwise_and",
+      "Array.bitwise_not",
+      "Array.bitwise_or",
+      "Array.bitwise_xor",
+      "Array.dotProduct",
+      "Array.identity",
+      "Array.leftShift",
+      "Array.left_shift",
+      "Array.pad",
+      "Array.rightShift",
+      "Array.right_shift",
+      "Image.acos",
+      "Image.asin",
+      "Image.atan",
+      "Image.atan2",
+      "Image.cbrt",
+      "Image.cosh",
+      "Image.digamma",
+      "Image.erf",
+      "Image.erfInv",
+      "Image.erfc",
+      "Image.erfcInv",
+      "Image.gamma",
+      "Image.signum",
+      "Image.sinh",
+      "Image.tanh",
+      "Image.trigamma",
+      "Number.bitwise_and",
+      "Number.bitwise_not",
+      "Number.bitwise_or",
+      "Number.bitwise_xor",
+      "Number.left_shift",
+      "Number.parse",
+      "Number.right_shift"
+    ],
+    "name_entry_percentage": 41.98,
+    "interpretation": "Names only, including aliases; not complete parameters, computation semantics, Google compatibility or migration success"
+  },
+  "implementation": [
+    "Six disjoint Luna/max workers plus independent read-only review; parent integration and one frozen publication batch",
+    "16 actual Image native operations; compiler/process spec/trusted Python handler/Scala tile kernel/SPI/build provider are connected",
+    "Array bitwise seven canonical plus six alias names; Number six existing-integer aliases, Number.parse; Array.identity/dotProduct/pad",
+    "Finite-grid deferred constants, bounded per-image map binding, strict ordered x or x,y and singleton v, matching proven binary source lineages",
+    "Shared50000 compiler work, graph500/rank8/cells10000/output1MB and old grid/key/decoded caps unchanged; native pixel work67108864 checked before allocation",
+    "Default untyped raster/scalar operands visibly normalize to Float32; explicit Double operands reject until caller explicitly narrows"
+  ],
+  "validation": {
+    "portable": {
+      "tests": 3190,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 10,
+      "passed": 3180,
+      "seconds": 17.528,
+      "evidence": "audit/gee-python-wave34/final-verified/python.xml",
+      "excluded_native_runtime_cases": 4,
+      "skips": "Seven opt-in trusted component tests plus three separate JVM/Spark grid/integer/reducer probes",
+      "warnings": "Three existing Rasterio PendingDeprecationWarnings"
+    },
+    "native_components": {
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 7,
+      "seconds": 53.751,
+      "evidence": "audit/gee-python-wave34/final-verified/native.xml",
+      "components": [
+        "minimum-distance tile",
+        "sampleRegions tile",
+        "exact remap tile",
+        "Image.sample tile",
+        "actual Smile RF tile",
+        "authenticated Python/JVM sampling/random/filter/Smile bridge",
+        "scientific pixel math tile"
+      ],
+      "scope": "Standalone trusted JVM/tile/authenticated-loopback components; no SparkContext/service/user-code/full batch acceptance"
+    },
+    "pixel_math": {
+      "operations": 16,
+      "cases": 16,
+      "pixels": 176,
+      "invalid_checks": 5,
+      "independent_references": "Closed-form Gamma/digamma/trigamma/erf anchors, Python libm, independent asymptotic/series/bisection references; staged Float32 rounding, masks and quadrants",
+      "max_float32_ulps_by_operation": {
+        "asin": 4,
+        "acos": 4,
+        "atan": 4,
+        "atan2": 4,
+        "sinh": 4,
+        "cosh": 4,
+        "tanh": 4,
+        "cbrt": 4,
+        "signum": 4,
+        "gamma": 4,
+        "digamma": 4,
+        "trigamma": 4,
+        "erf": 4,
+        "erfc": 4,
+        "erfInv": 4,
+        "erfcInv": 4
+      },
+      "signed_zero": "Exact for atan2 and signum; Commons Math erf(-0) returns +0 documented local policy",
+      "negative_extremes": "Negative poles, huge negative Float32 and minimum negative subnormal are bounded and masked when outside output domain",
+      "final_jar_sha256": "07906ee678be5ad7e334efccc285aaaeab3def9d8e2cb003bb984774dbbbaca6",
+      "scala": "2.13.16",
+      "spark": "4.0.4",
+      "architecture": "arm64",
+      "math_dependencies": {
+        "commons-math3-3.6.1.jar": "1e56d7b058d28b65abd256b8458e3885b674c1d588fa43cd7d1cbb9c7ef2b308"
+      }
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "all_new_entries": "Actual SDK serialization and compiler computation/lowering checks",
+      "Python_JS_workflow_outputs": 10,
+      "network_attempts_in_guarded_workflows": 0,
+      "full_python_inventory_unchanged": true
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "frozen_source_files": 39,
+    "source_hashes_unchanged_across_verification": true,
+    "historical_files_hashes_unchanged": 9,
+    "review": {
+      "independent": "Luna/max source review; tests reported separately",
+      "resolved": [
+        "Float64 on_grid false positive in deferred constant math",
+        "Multi-item map constants route through bounded individual observations",
+        "Binary upstream merge implicit resampling prevented by source-lineage rejection",
+        "Legacy four-thousand-item no-op map avoids new source-ID scans, including prior unrelated math hint",
+        "Negative digamma/trigamma library recurrence replaced with bounded reflection and explicit poles",
+        "Zero-size identity supported; decimal context overflow/rounding guarded"
+      ],
+      "focused_after_final_compiler_fixes": 102,
+      "final_source_review": "No further concrete issue identified; not a full security, Spark or Google audit"
+    },
+    "initial_failures": [
+      "First integration used a nonaccepted catalog ID; corrected synthetic fixture while preserving catalog acceptance guard",
+      "Test asserted no warnings key; corrected assertion to public value/kind contract",
+      "Initial native probe incorrectly required erf negative zero; actual locked-library behavior preserved and documented",
+      "Initial broad regression3177passed/10skipped/1failed: historical test required Image.atan2 rejection; replaced with native-process positive and retained generic arctan2 rejection"
+    ]
+  },
+  "documentation": [
+    "docs/gee-python/pixel-math.md",
+    "examples/39_GEE_python_pixel_math.py",
+    "local Python/JavaScript syntax reference"
+  ],
+  "not_implemented": [
+    "Focal/neighborhood, generic projection/grid alignment, arbitrary Float64 pixel math",
+    "Standalone global constant raster; general dynamic containers and unsupported parameter overloads",
+    "List.filter and String regex families",
+    "Full Spark/native sandbox/service/browser/deployment/private real data/Google same-data acceptance"
+  ],
+  "cleanup": {
+    "paths_removed": 18,
+    "bytes_removed": 45691870,
+    "lsof_unused_verified": true,
+    "formal_JAR_manifest_files_retained": 6,
+    "locked_dependencies_runtime_user_data_accounts_preserved": true
+  },
+  "deployed": false,
+  "overall_goal_complete": false
+}

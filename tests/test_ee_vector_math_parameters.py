@@ -243,15 +243,21 @@ def test_image_hypot_rejects_bad_arguments_float64_and_real_over_budget_graph(ee
         compile_expression(encoded(ee, chain), *local)
 
 
-def test_image_atan2_stays_unsupported_until_the_pixel_kernel_exists(ee, local):
+def test_image_atan2_uses_its_native_kernel_without_exposing_generic_arctan2(ee, local):
     expression = encoded(ee, ee.Image("vector-scene").select("x").atan2(2))
     assert any(
         node.get("functionName") == "Image.atan2"
         for _, node in expression.get("scope", [])
         if isinstance(node, dict)
     )
-    with pytest.raises(UnsupportedEEError):
-        compile_expression(expression, *local)
+    result = compile_expression(expression, *local)
+    native_math = [node for node in result["process_graph"].values()
+                   if node["process_id"] == "local_ee_pixel_math"]
+    assert len(native_math) == 1
+    assert native_math[0]["arguments"]["operation"] == "atan2"
+    assert any(node["process_id"] == "local_ee_constant_on_grid"
+               for node in result["process_graph"].values())
+    validate(result["process_graph"])
 
     assert "arctan2" not in SUPPORTED
     with pytest.raises(ValueError, match="不支持的算子"):

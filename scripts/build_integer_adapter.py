@@ -26,6 +26,7 @@ SOURCES = [SOURCE, ROOT / "engine/ee_grid_adapter.scala", ROOT / "engine/ee_mask
 SOURCES += [ROOT / "engine/ee_remap_numeric.scala", ROOT / "engine/ee_remap_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_image_sample_options.scala",
             ROOT / "engine/ee_image_sample_kernel.scala", ROOT / "engine/ee_image_sample_adapter.scala"]
+SOURCES += [ROOT / "engine/ee_pixel_math_numeric.scala", ROOT / "engine/ee_pixel_math_adapter.scala"]
 SERVICE_NAME = "org.openeo.geotrelliscommon.CubeProcessProvider"
 SERVICE_ENTRY = ("local.ee.integer.LocalEeIntegerCubeProcessProvider\n"
                  "local.ee.grid.LocalEeGridCubeProcessProvider\n"
@@ -35,6 +36,7 @@ SERVICE_ENTRY = ("local.ee.integer.LocalEeIntegerCubeProcessProvider\n"
                  "local.ee.sample.LocalEeSampleCubeProcessProvider\n")
 SERVICE_ENTRY += "local.ee.remap.LocalEeRemapCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.image.sample.LocalEeImageSampleCubeProcessProvider\n"
+SERVICE_ENTRY += "local.ee.math.LocalEePixelMathCubeProcessProvider\n"
 
 
 def sha256(path: Path) -> str:
@@ -90,6 +92,13 @@ def build(output: Path) -> dict:
         if not source.is_file():
             raise RuntimeError(f"Adapter source is missing: {source}")
     java, jar_tool, scala_tools, runtime_jars, locked_jars = _engine_paths()
+    math_dependencies = [path for path in runtime_jars if path.name.startswith("commons-math3-")]
+    if len(math_dependencies) != 1:
+        raise RuntimeError("Expected exactly one existing Apache Commons Math 3 JAR")
+    math_dependency = math_dependencies[0]
+    if (math_dependency.name != "commons-math3-3.6.1.jar"
+            or sha256(math_dependency) != "1e56d7b058d28b65abd256b8458e3885b674c1d588fa43cd7d1cbb9c7ef2b308"):
+        raise RuntimeError("Apache Commons Math dependency does not match the audited 3.6.1 digest")
     engine_lock = json.loads((ROOT / ".native/engine-lock.json").read_text())
     scala_version = scala_tools[1].stem.rsplit("-", 1)[-1]
     java_home = java.parent.parent
@@ -131,6 +140,7 @@ def build(output: Path) -> dict:
             "scala_version": scala_version,
             "spark_version": engine_lock["spark"],
             "upstream_jars": locked_jars,
+            "math_dependencies": {math_dependency.name: sha256(math_dependency)},
             "services": {SERVICE_NAME: SERVICE_ENTRY.strip()},
         }
         staged_manifest.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")

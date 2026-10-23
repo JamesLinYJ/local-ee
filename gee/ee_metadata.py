@@ -83,6 +83,14 @@ _IMAGE_RECEIVERS = {
     "Image.tan": ("image", "value"),
     "Image.not": ("image", "value"),
 }
+_IMAGE_RECEIVERS.update({
+    "Image." + operation: ("value",)
+    for operation in (
+        "asin", "acos", "atan", "sinh", "cosh", "tanh", "cbrt", "signum",
+        "gamma", "digamma", "trigamma", "erf", "erfc", "erfInv", "erfcInv",
+    )
+})
+_IMAGE_RECEIVERS["Image.atan2"] = ("image1",)
 
 
 def _flows_from_argument(value: Any, argument: str, scope: Mapping[str, Any],

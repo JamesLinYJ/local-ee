@@ -23,6 +23,7 @@ class Translator(CatalogOperations, FilteringOperations):
         self._root_env = None
         self._root_value_cache = {}
         self._runtime_rf_explanation_seen = False
+        self._pixel_math_seen = False
         # Reused only inside this compilation. Sample-table schema facts may
         # be checked at several consumers of the same immutable IR node.
         self._sampled_schema_cache = {}

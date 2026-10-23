@@ -914,12 +914,14 @@
       "description": "On an element-wise basis, calculates the number of one-bits in the 64-bit two's complement binary representation of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite nonempty static integer Arrays, rank8/cells10000/shared50000 work and1MB output; exact magnitude<=2^53. AND/OR/XOR require identical shapes and nonnegative operands; left shift nonnegative and nonoverflowing, signed right shift; counts0..63 are scalar or same shape. bitCount uses signed64 two's-complement; NOT signed complement. Results remain exact-domain owned readonly Arrays. Negative binary width policies, PixelTypes/raster implementation and Google dtype parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -981,12 +983,14 @@
       "description": "On an element-wise basis, calculates the bitwise AND of the input values.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite nonempty static integer Arrays, rank8/cells10000/shared50000 work and1MB output; exact magnitude<=2^53. AND/OR/XOR require identical shapes and nonnegative operands; left shift nonnegative and nonoverflowing, signed right shift; counts0..63 are scalar or same shape. bitCount uses signed64 two's-complement; NOT signed complement. Results remain exact-domain owned readonly Arrays. Negative binary width policies, PixelTypes/raster implementation and Google dtype parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1012,12 +1016,14 @@
       "description": "On an element-wise basis, calculates the bitwise NOT of the input, in the smallest signed integer type that can hold the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite nonempty static integer Arrays, rank8/cells10000/shared50000 work and1MB output; exact magnitude<=2^53. AND/OR/XOR require identical shapes and nonnegative operands; left shift nonnegative and nonoverflowing, signed right shift; counts0..63 are scalar or same shape. bitCount uses signed64 two's-complement; NOT signed complement. Results remain exact-domain owned readonly Arrays. Negative binary width policies, PixelTypes/raster implementation and Google dtype parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1048,12 +1054,14 @@
       "description": "On an element-wise basis, calculates the bitwise OR of the input values.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite nonempty static integer Arrays, rank8/cells10000/shared50000 work and1MB output; exact magnitude<=2^53. AND/OR/XOR require identical shapes and nonnegative operands; left shift nonnegative and nonoverflowing, signed right shift; counts0..63 are scalar or same shape. bitCount uses signed64 two's-complement; NOT signed complement. Results remain exact-domain owned readonly Arrays. Negative binary width policies, PixelTypes/raster implementation and Google dtype parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1084,12 +1092,14 @@
       "description": "On an element-wise basis, calculates the bitwise XOR of the input values.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite nonempty static integer Arrays, rank8/cells10000/shared50000 work and1MB output; exact magnitude<=2^53. AND/OR/XOR require identical shapes and nonnegative operands; left shift nonnegative and nonoverflowing, signed right shift; counts0..63 are scalar or same shape. bitCount uses signed64 two's-complement; NOT signed complement. Results remain exact-domain owned readonly Arrays. Negative binary width policies, PixelTypes/raster implementation and Google dtype parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1120,12 +1130,14 @@
       "description": "On an element-wise basis, calculates the bitwise AND of the input values.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite nonempty static integer Arrays, rank8/cells10000/shared50000 work and1MB output; exact magnitude<=2^53. AND/OR/XOR require identical shapes and nonnegative operands; left shift nonnegative and nonoverflowing, signed right shift; counts0..63 are scalar or same shape. bitCount uses signed64 two's-complement; NOT signed complement. Results remain exact-domain owned readonly Arrays. Negative binary width policies, PixelTypes/raster implementation and Google dtype parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1151,12 +1163,14 @@
       "description": "On an element-wise basis, calculates the bitwise NOT of the input, in the smallest signed integer type that can hold the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite nonempty static integer Arrays, rank8/cells10000/shared50000 work and1MB output; exact magnitude<=2^53. AND/OR/XOR require identical shapes and nonnegative operands; left shift nonnegative and nonoverflowing, signed right shift; counts0..63 are scalar or same shape. bitCount uses signed64 two's-complement; NOT signed complement. Results remain exact-domain owned readonly Arrays. Negative binary width policies, PixelTypes/raster implementation and Google dtype parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1187,12 +1201,14 @@
       "description": "On an element-wise basis, calculates the bitwise OR of the input values.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite nonempty static integer Arrays, rank8/cells10000/shared50000 work and1MB output; exact magnitude<=2^53. AND/OR/XOR require identical shapes and nonnegative operands; left shift nonnegative and nonoverflowing, signed right shift; counts0..63 are scalar or same shape. bitCount uses signed64 two's-complement; NOT signed complement. Results remain exact-domain owned readonly Arrays. Negative binary width policies, PixelTypes/raster implementation and Google dtype parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1223,12 +1239,14 @@
       "description": "On an element-wise basis, calculates the bitwise XOR of the input values.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite nonempty static integer Arrays, rank8/cells10000/shared50000 work and1MB output; exact magnitude<=2^53. AND/OR/XOR require identical shapes and nonnegative operands; left shift nonnegative and nonoverflowing, signed right shift; counts0..63 are scalar or same shape. bitCount uses signed64 two's-complement; NOT signed complement. Results remain exact-domain owned readonly Arrays. Negative binary width policies, PixelTypes/raster implementation and Google dtype parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -1567,12 +1585,14 @@
       "description": "Compute the dot product between two 1-D arrays.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded static identity(size>=0, zero yields0x0), equal-length rank1 dot product, or trailing pad to at least each requested nonnegative axis length (no truncation). Finite exact-domain input, rank8/cells10000/shared50000 work/1MB output remain; integer dot products exact, floating products use rational accumulation and one Float64 conversion. Omitted/null pad=0, unchanged input and owned outputs. Explicit PixelTypes, general broadcasting and Google dtype/numeric parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -2260,12 +2280,14 @@
       "description": "Creates a 2D identity matrix of the given size.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded static identity(size>=0, zero yields0x0), equal-length rank1 dot product, or trailing pad to at least each requested nonnegative axis length (no truncation). Finite exact-domain input, rank8/cells10000/shared50000 work/1MB output remain; integer dot products exact, floating products use rational accumulation and one Float64 conversion. Omitted/null pad=0, unchanged input and owned outputs. Explicit PixelTypes, general broadcasting and Google dtype/numeric parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -2482,12 +2504,14 @@
       "description": "On an element-wise basis, calculates the left shift of v1 by v2 bits.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite nonempty static integer Arrays, rank8/cells10000/shared50000 work and1MB output; exact magnitude<=2^53. AND/OR/XOR require identical shapes and nonnegative operands; left shift nonnegative and nonoverflowing, signed right shift; counts0..63 are scalar or same shape. bitCount uses signed64 two's-complement; NOT signed complement. Results remain exact-domain owned readonly Arrays. Negative binary width policies, PixelTypes/raster implementation and Google dtype parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -2518,12 +2542,14 @@
       "description": "On an element-wise basis, calculates the left shift of v1 by v2 bits.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite nonempty static integer Arrays, rank8/cells10000/shared50000 work and1MB output; exact magnitude<=2^53. AND/OR/XOR require identical shapes and nonnegative operands; left shift nonnegative and nonoverflowing, signed right shift; counts0..63 are scalar or same shape. bitCount uses signed64 two's-complement; NOT signed complement. Results remain exact-domain owned readonly Arrays. Negative binary width policies, PixelTypes/raster implementation and Google dtype parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3550,12 +3576,14 @@
       "description": "Pad an array to a given length. The pad value will be repeatedly appended to the array to extend it to given length along each axis. If the array is already as large or larger than a given length, it will remain unchanged along that axis.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual bounded static identity(size>=0, zero yields0x0), equal-length rank1 dot product, or trailing pad to at least each requested nonnegative axis length (no truncation). Finite exact-domain input, rank8/cells10000/shared50000 work/1MB output remain; integer dot products exact, floating products use rational accumulation and one Float64 conversion. Omitted/null pad=0, unchanged input and owned outputs. Explicit PixelTypes, general broadcasting and Google dtype/numeric parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3797,12 +3825,14 @@
       "description": "On an element-wise basis, calculates the signed right shift of v1 by v2 bits.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite nonempty static integer Arrays, rank8/cells10000/shared50000 work and1MB output; exact magnitude<=2^53. AND/OR/XOR require identical shapes and nonnegative operands; left shift nonnegative and nonoverflowing, signed right shift; counts0..63 are scalar or same shape. bitCount uses signed64 two's-complement; NOT signed complement. Results remain exact-domain owned readonly Arrays. Negative binary width policies, PixelTypes/raster implementation and Google dtype parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -3833,12 +3863,14 @@
       "description": "On an element-wise basis, calculates the signed right shift of v1 by v2 bits.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite nonempty static integer Arrays, rank8/cells10000/shared50000 work and1MB output; exact magnitude<=2^53. AND/OR/XOR require identical shapes and nonnegative operands; left shift nonnegative and nonoverflowing, signed right shift; counts0..63 are scalar or same shape. bitCount uses signed64 two's-complement; NOT signed complement. Results remain exact-domain owned readonly Arrays. Negative binary width policies, PixelTypes/raster implementation and Google dtype parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -17703,12 +17735,14 @@
       "description": "Computes the arccosine in radians of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual native Float32 tile math through a closed top-level SPI; ordered x[/y] input, singleton v output, original band pairing/names, grid/time and masks. Default untyped source/constant operands are visibly converted to Float32; precision outside Float32 is not preserved. Explicit Double arithmetic rejects until toFloat. Binary real operands require the same proven source lineage, not an implicit nearest-neighbor alignment. Constant subtrees need a real finite grid; no global constant raster. NaN/nonfinite inputs, invalid real domains, poles and nonfinite/Float32-overflow outputs become NaN. JVM Math/locked Commons Math3.6.1 with bounded digamma/trigamma reflection for negative nonpoles; atan2 uses SDK x,y and JVM atan2(y,x), retaining signed zero. Existing compiler50000/graph500/grid/key/decoded-cell and67108864 pixel-work limits. Trusted standalone tile proof is separate from unrun full Spark/service/browser/deployment/Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -18601,12 +18635,14 @@
       "description": "Computes the arcsine in radians of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual native Float32 tile math through a closed top-level SPI; ordered x[/y] input, singleton v output, original band pairing/names, grid/time and masks. Default untyped source/constant operands are visibly converted to Float32; precision outside Float32 is not preserved. Explicit Double arithmetic rejects until toFloat. Binary real operands require the same proven source lineage, not an implicit nearest-neighbor alignment. Constant subtrees need a real finite grid; no global constant raster. NaN/nonfinite inputs, invalid real domains, poles and nonfinite/Float32-overflow outputs become NaN. JVM Math/locked Commons Math3.6.1 with bounded digamma/trigamma reflection for negative nonpoles; atan2 uses SDK x,y and JVM atan2(y,x), retaining signed zero. Existing compiler50000/graph500/grid/key/decoded-cell and67108864 pixel-work limits. Trusted standalone tile proof is separate from unrun full Spark/service/browser/deployment/Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -18632,12 +18668,14 @@
       "description": "Computes the arctangent in radians of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual native Float32 tile math through a closed top-level SPI; ordered x[/y] input, singleton v output, original band pairing/names, grid/time and masks. Default untyped source/constant operands are visibly converted to Float32; precision outside Float32 is not preserved. Explicit Double arithmetic rejects until toFloat. Binary real operands require the same proven source lineage, not an implicit nearest-neighbor alignment. Constant subtrees need a real finite grid; no global constant raster. NaN/nonfinite inputs, invalid real domains, poles and nonfinite/Float32-overflow outputs become NaN. JVM Math/locked Commons Math3.6.1 with bounded digamma/trigamma reflection for negative nonpoles; atan2 uses SDK x,y and JVM atan2(y,x), retaining signed zero. Existing compiler50000/graph500/grid/key/decoded-cell and67108864 pixel-work limits. Trusted standalone tile proof is separate from unrun full Spark/service/browser/deployment/Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -18668,12 +18706,14 @@
       "description": "Calculates the angle formed by the 2D vector [x, y] for each matched pair of bands in image1 and image2. If either image1 or image2 has only 1 band, then it is used against all the bands in the other image. If the images have the same number of bands, but not the same names, they're used pairwise in the natural order. The output bands are named for the longer of the two inputs, or if they're equal in length, in image1's order. The type of the output pixels is float.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual native Float32 tile math through a closed top-level SPI; ordered x[/y] input, singleton v output, original band pairing/names, grid/time and masks. Default untyped source/constant operands are visibly converted to Float32; precision outside Float32 is not preserved. Explicit Double arithmetic rejects until toFloat. Binary real operands require the same proven source lineage, not an implicit nearest-neighbor alignment. Constant subtrees need a real finite grid; no global constant raster. NaN/nonfinite inputs, invalid real domains, poles and nonfinite/Float32-overflow outputs become NaN. JVM Math/locked Commons Math3.6.1 with bounded digamma/trigamma reflection for negative nonpoles; atan2 uses SDK x,y and JVM atan2(y,x), retaining signed zero. Existing compiler50000/graph500/grid/key/decoded-cell and67108864 pixel-work limits. Trusted standalone tile proof is separate from unrun full Spark/service/browser/deployment/Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -19242,12 +19282,14 @@
       "description": "Computes the cubic root of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual native Float32 tile math through a closed top-level SPI; ordered x[/y] input, singleton v output, original band pairing/names, grid/time and masks. Default untyped source/constant operands are visibly converted to Float32; precision outside Float32 is not preserved. Explicit Double arithmetic rejects until toFloat. Binary real operands require the same proven source lineage, not an implicit nearest-neighbor alignment. Constant subtrees need a real finite grid; no global constant raster. NaN/nonfinite inputs, invalid real domains, poles and nonfinite/Float32-overflow outputs become NaN. JVM Math/locked Commons Math3.6.1 with bounded digamma/trigamma reflection for negative nonpoles; atan2 uses SDK x,y and JVM atan2(y,x), retaining signed zero. Existing compiler50000/graph500/grid/key/decoded-cell and67108864 pixel-work limits. Trusted standalone tile proof is separate from unrun full Spark/service/browser/deployment/Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -19852,12 +19894,14 @@
       "description": "Computes the hyperbolic cosine of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual native Float32 tile math through a closed top-level SPI; ordered x[/y] input, singleton v output, original band pairing/names, grid/time and masks. Default untyped source/constant operands are visibly converted to Float32; precision outside Float32 is not preserved. Explicit Double arithmetic rejects until toFloat. Binary real operands require the same proven source lineage, not an implicit nearest-neighbor alignment. Constant subtrees need a real finite grid; no global constant raster. NaN/nonfinite inputs, invalid real domains, poles and nonfinite/Float32-overflow outputs become NaN. JVM Math/locked Commons Math3.6.1 with bounded digamma/trigamma reflection for negative nonpoles; atan2 uses SDK x,y and JVM atan2(y,x), retaining signed zero. Existing compiler50000/graph500/grid/key/decoded-cell and67108864 pixel-work limits. Trusted standalone tile proof is separate from unrun full Spark/service/browser/deployment/Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -19993,12 +20037,14 @@
       "description": "Computes the digamma function of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual native Float32 tile math through a closed top-level SPI; ordered x[/y] input, singleton v output, original band pairing/names, grid/time and masks. Default untyped source/constant operands are visibly converted to Float32; precision outside Float32 is not preserved. Explicit Double arithmetic rejects until toFloat. Binary real operands require the same proven source lineage, not an implicit nearest-neighbor alignment. Constant subtrees need a real finite grid; no global constant raster. NaN/nonfinite inputs, invalid real domains, poles and nonfinite/Float32-overflow outputs become NaN. JVM Math/locked Commons Math3.6.1 with bounded digamma/trigamma reflection for negative nonpoles; atan2 uses SDK x,y and JVM atan2(y,x), retaining signed zero. Existing compiler50000/graph500/grid/key/decoded-cell and67108864 pixel-work limits. Trusted standalone tile proof is separate from unrun full Spark/service/browser/deployment/Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -20368,12 +20414,14 @@
       "description": "Computes the error function of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual native Float32 tile math through a closed top-level SPI; ordered x[/y] input, singleton v output, original band pairing/names, grid/time and masks. Default untyped source/constant operands are visibly converted to Float32; precision outside Float32 is not preserved. Explicit Double arithmetic rejects until toFloat. Binary real operands require the same proven source lineage, not an implicit nearest-neighbor alignment. Constant subtrees need a real finite grid; no global constant raster. NaN/nonfinite inputs, invalid real domains, poles and nonfinite/Float32-overflow outputs become NaN. JVM Math/locked Commons Math3.6.1 with bounded digamma/trigamma reflection for negative nonpoles; atan2 uses SDK x,y and JVM atan2(y,x), retaining signed zero. Existing compiler50000/graph500/grid/key/decoded-cell and67108864 pixel-work limits. Trusted standalone tile proof is separate from unrun full Spark/service/browser/deployment/Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -20399,12 +20447,14 @@
       "description": "Computes the inverse error function of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual native Float32 tile math through a closed top-level SPI; ordered x[/y] input, singleton v output, original band pairing/names, grid/time and masks. Default untyped source/constant operands are visibly converted to Float32; precision outside Float32 is not preserved. Explicit Double arithmetic rejects until toFloat. Binary real operands require the same proven source lineage, not an implicit nearest-neighbor alignment. Constant subtrees need a real finite grid; no global constant raster. NaN/nonfinite inputs, invalid real domains, poles and nonfinite/Float32-overflow outputs become NaN. JVM Math/locked Commons Math3.6.1 with bounded digamma/trigamma reflection for negative nonpoles; atan2 uses SDK x,y and JVM atan2(y,x), retaining signed zero. Existing compiler50000/graph500/grid/key/decoded-cell and67108864 pixel-work limits. Trusted standalone tile proof is separate from unrun full Spark/service/browser/deployment/Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -20430,12 +20480,14 @@
       "description": "Computes the complementary error function of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual native Float32 tile math through a closed top-level SPI; ordered x[/y] input, singleton v output, original band pairing/names, grid/time and masks. Default untyped source/constant operands are visibly converted to Float32; precision outside Float32 is not preserved. Explicit Double arithmetic rejects until toFloat. Binary real operands require the same proven source lineage, not an implicit nearest-neighbor alignment. Constant subtrees need a real finite grid; no global constant raster. NaN/nonfinite inputs, invalid real domains, poles and nonfinite/Float32-overflow outputs become NaN. JVM Math/locked Commons Math3.6.1 with bounded digamma/trigamma reflection for negative nonpoles; atan2 uses SDK x,y and JVM atan2(y,x), retaining signed zero. Existing compiler50000/graph500/grid/key/decoded-cell and67108864 pixel-work limits. Trusted standalone tile proof is separate from unrun full Spark/service/browser/deployment/Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -20461,12 +20513,14 @@
       "description": "Computes the inverse complementary error function of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual native Float32 tile math through a closed top-level SPI; ordered x[/y] input, singleton v output, original band pairing/names, grid/time and masks. Default untyped source/constant operands are visibly converted to Float32; precision outside Float32 is not preserved. Explicit Double arithmetic rejects until toFloat. Binary real operands require the same proven source lineage, not an implicit nearest-neighbor alignment. Constant subtrees need a real finite grid; no global constant raster. NaN/nonfinite inputs, invalid real domains, poles and nonfinite/Float32-overflow outputs become NaN. JVM Math/locked Commons Math3.6.1 with bounded digamma/trigamma reflection for negative nonpoles; atan2 uses SDK x,y and JVM atan2(y,x), retaining signed zero. Existing compiler50000/graph500/grid/key/decoded-cell and67108864 pixel-work limits. Trusted standalone tile proof is separate from unrun full Spark/service/browser/deployment/Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -21405,12 +21459,14 @@
       "description": "Computes the gamma function of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual native Float32 tile math through a closed top-level SPI; ordered x[/y] input, singleton v output, original band pairing/names, grid/time and masks. Default untyped source/constant operands are visibly converted to Float32; precision outside Float32 is not preserved. Explicit Double arithmetic rejects until toFloat. Binary real operands require the same proven source lineage, not an implicit nearest-neighbor alignment. Constant subtrees need a real finite grid; no global constant raster. NaN/nonfinite inputs, invalid real domains, poles and nonfinite/Float32-overflow outputs become NaN. JVM Math/locked Commons Math3.6.1 with bounded digamma/trigamma reflection for negative nonpoles; atan2 uses SDK x,y and JVM atan2(y,x), retaining signed zero. Existing compiler50000/graph500/grid/key/decoded-cell and67108864 pixel-work limits. Trusted standalone tile proof is separate from unrun full Spark/service/browser/deployment/Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -25434,12 +25490,14 @@
       "description": "Computes the signum function (sign) of the input; 0 if the input is 0, 1 if the input is greater than 0, -1 if the input is less than 0.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual native Float32 tile math through a closed top-level SPI; ordered x[/y] input, singleton v output, original band pairing/names, grid/time and masks. Default untyped source/constant operands are visibly converted to Float32; precision outside Float32 is not preserved. Explicit Double arithmetic rejects until toFloat. Binary real operands require the same proven source lineage, not an implicit nearest-neighbor alignment. Constant subtrees need a real finite grid; no global constant raster. NaN/nonfinite inputs, invalid real domains, poles and nonfinite/Float32-overflow outputs become NaN. JVM Math/locked Commons Math3.6.1 with bounded digamma/trigamma reflection for negative nonpoles; atan2 uses SDK x,y and JVM atan2(y,x), retaining signed zero. Existing compiler50000/graph500/grid/key/decoded-cell and67108864 pixel-work limits. Trusted standalone tile proof is separate from unrun full Spark/service/browser/deployment/Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -25496,12 +25554,14 @@
       "description": "Computes the hyperbolic sine of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual native Float32 tile math through a closed top-level SPI; ordered x[/y] input, singleton v output, original band pairing/names, grid/time and masks. Default untyped source/constant operands are visibly converted to Float32; precision outside Float32 is not preserved. Explicit Double arithmetic rejects until toFloat. Binary real operands require the same proven source lineage, not an implicit nearest-neighbor alignment. Constant subtrees need a real finite grid; no global constant raster. NaN/nonfinite inputs, invalid real domains, poles and nonfinite/Float32-overflow outputs become NaN. JVM Math/locked Commons Math3.6.1 with bounded digamma/trigamma reflection for negative nonpoles; atan2 uses SDK x,y and JVM atan2(y,x), retaining signed zero. Existing compiler50000/graph500/grid/key/decoded-cell and67108864 pixel-work limits. Trusted standalone tile proof is separate from unrun full Spark/service/browser/deployment/Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26009,12 +26069,14 @@
       "description": "Computes the hyperbolic tangent of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual native Float32 tile math through a closed top-level SPI; ordered x[/y] input, singleton v output, original band pairing/names, grid/time and masks. Default untyped source/constant operands are visibly converted to Float32; precision outside Float32 is not preserved. Explicit Double arithmetic rejects until toFloat. Binary real operands require the same proven source lineage, not an implicit nearest-neighbor alignment. Constant subtrees need a real finite grid; no global constant raster. NaN/nonfinite inputs, invalid real domains, poles and nonfinite/Float32-overflow outputs become NaN. JVM Math/locked Commons Math3.6.1 with bounded digamma/trigamma reflection for negative nonpoles; atan2 uses SDK x,y and JVM atan2(y,x), retaining signed zero. Existing compiler50000/graph500/grid/key/decoded-cell and67108864 pixel-work limits. Trusted standalone tile proof is separate from unrun full Spark/service/browser/deployment/Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -26541,12 +26603,14 @@
       "description": "Computes the trigamma function of the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual native Float32 tile math through a closed top-level SPI; ordered x[/y] input, singleton v output, original band pairing/names, grid/time and masks. Default untyped source/constant operands are visibly converted to Float32; precision outside Float32 is not preserved. Explicit Double arithmetic rejects until toFloat. Binary real operands require the same proven source lineage, not an implicit nearest-neighbor alignment. Constant subtrees need a real finite grid; no global constant raster. NaN/nonfinite inputs, invalid real domains, poles and nonfinite/Float32-overflow outputs become NaN. JVM Math/locked Commons Math3.6.1 with bounded digamma/trigamma reflection for negative nonpoles; atan2 uses SDK x,y and JVM atan2(y,x), retaining signed zero. Existing compiler50000/graph500/grid/key/decoded-cell and67108864 pixel-work limits. Trusted standalone tile proof is separate from unrun full Spark/service/browser/deployment/Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -31445,12 +31509,14 @@
       "description": "Calculates the bitwise AND of the input values.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Pinned alias delegates to the existing audited canonical Number integer operation; signed64 integral domain, constrained nonnegative binary/left shift, signed right shift0..63, overflow rejects. No Image/raster algorithm or broader coercion implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -31476,12 +31542,14 @@
       "description": "Calculates the bitwise NOT of the input, in the smallest signed integer type that can hold the input.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Pinned alias delegates to the existing audited canonical Number integer operation; signed64 integral domain, constrained nonnegative binary/left shift, signed right shift0..63, overflow rejects. No Image/raster algorithm or broader coercion implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -31512,12 +31580,14 @@
       "description": "Calculates the bitwise OR of the input values.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Pinned alias delegates to the existing audited canonical Number integer operation; signed64 integral domain, constrained nonnegative binary/left shift, signed right shift0..63, overflow rejects. No Image/raster algorithm or broader coercion implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -31548,12 +31618,14 @@
       "description": "Calculates the bitwise XOR of the input values.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Pinned alias delegates to the existing audited canonical Number integer operation; signed64 integral domain, constrained nonnegative binary/left shift, signed right shift0..63, overflow rejects. No Image/raster algorithm or broader coercion implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -32739,12 +32811,14 @@
       "description": "Calculates the left shift of v1 by v2 bits.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Pinned alias delegates to the existing audited canonical Number integer operation; signed64 integral domain, constrained nonnegative binary/left shift, signed right shift0..63, overflow rejects. No Image/raster algorithm or broader coercion implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -33201,12 +33275,14 @@
       "description": "Convert a string to a number.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite static ASCII string up to256 chars, decimal/fraction/exponent at radix10 (omitted/null default), complete signed integers at radix2..36; no prefixes or partial parse. Exact integer magnitude<=2^53 and finite Float64 output. Preserves negative zero; extreme underflow returns signed zero by local policy. Work is precharged before lexing/conversion. Shared50000 work/1MB output; Google formatting/parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -33311,12 +33387,14 @@
       "description": "Calculates the signed right shift of v1 by v2 bits.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Pinned alias delegates to the existing audited canonical Number integer operation; signed64 integral domain, constrained nonnegative binary/left shift, signed right shift0..63, overflow rejects. No Image/raster algorithm or broader coercion implied."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -40966,9 +41044,9 @@
           "same_name_handler_declared": true
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.atan2",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
           "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
@@ -41192,7 +41270,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 377,
+    "declared_handler_name_count": 416,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41207,7 +41285,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 73,
+        "declared_handler_count": 89,
         "signature_count": 124
       },
       "BACCINI/ModisComposite": {
@@ -41410,7 +41488,7 @@
         "appears_in_rejected_compile_context": 31,
         "appears_in_selected_sdk_serialization": 35,
         "appears_in_successful_compile_context": 8,
-        "declared_handler_count": 77,
+        "declared_handler_count": 93,
         "signature_count": 232
       },
       "ImageCollection": {
@@ -41466,7 +41544,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 56,
+        "declared_handler_count": 63,
         "signature_count": 94
       },
       "ObjectType": {
@@ -41673,7 +41751,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 377,
+    "pinned_signatures_with_same_name_declared_handler": 416,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"
