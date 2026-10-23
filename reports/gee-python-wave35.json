@@ -1,0 +1,173 @@
+{
+  "schema": "local-ee-python-wave35/v1",
+  "date": "2026-10-23",
+  "base_commit": "7575ee2a8276443a3ff328f1837ba20716fe6257",
+  "title": "Finite dtype conversion, special functions and static container selection",
+  "entry_inventory": {
+    "before": 416,
+    "after": 477,
+    "new_entry_count": 61,
+    "separately_pinned_alias_names": 25,
+    "pinned_signatures": 991,
+    "name_entry_percentage": 48.13,
+    "new_names": [
+      "Array.byte",
+      "Array.digamma",
+      "Array.double",
+      "Array.erfInv",
+      "Array.erfcInv",
+      "Array.float",
+      "Array.int",
+      "Array.int16",
+      "Array.int32",
+      "Array.int64",
+      "Array.int8",
+      "Array.long",
+      "Array.short",
+      "Array.toByte",
+      "Array.toDouble",
+      "Array.toFloat",
+      "Array.toInt",
+      "Array.toInt16",
+      "Array.toInt32",
+      "Array.toInt64",
+      "Array.toInt8",
+      "Array.toLong",
+      "Array.toShort",
+      "Array.toUint16",
+      "Array.toUint32",
+      "Array.toUint8",
+      "Array.trigamma",
+      "Array.uint16",
+      "Array.uint32",
+      "Array.uint8",
+      "Dictionary.remove",
+      "Dictionary.select",
+      "List.filter",
+      "Number.byte",
+      "Number.digamma",
+      "Number.double",
+      "Number.erfInv",
+      "Number.erfcInv",
+      "Number.float",
+      "Number.int16",
+      "Number.int32",
+      "Number.int64",
+      "Number.int8",
+      "Number.long",
+      "Number.short",
+      "Number.toByte",
+      "Number.toDouble",
+      "Number.toFloat",
+      "Number.toInt16",
+      "Number.toInt32",
+      "Number.toInt64",
+      "Number.toInt8",
+      "Number.toLong",
+      "Number.toShort",
+      "Number.toUint16",
+      "Number.toUint32",
+      "Number.toUint8",
+      "Number.trigamma",
+      "Number.uint16",
+      "Number.uint32",
+      "Number.uint8"
+    ],
+    "interpretation": "Name entries only, including aliases; not complete argument/semantic compatibility or migration success"
+  },
+  "implementation": [
+    "Four disjoint Luna/max owners; parent integration and independent read-only compatibility review",
+    "24 Number casts,26 Array casts,8 finite special functions,List.filter,Dictionary.select/remove",
+    "Actual finite computation using existing shared50000 compiler work,rank8/cells10000/1MB limits",
+    "Typed readonly owned Array outputs; cloned retained container values; full Filter preflight including empty inputs",
+    "Capability inventory uses source-only AST names; no scientific import or private runtime required"
+  ],
+  "validation": {
+    "python": {
+      "tests": 3414,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 10,
+      "passed": 3404,
+      "seconds": 36.278
+    },
+    "python_evidence": "audit/gee-python-wave35/final-verified-v2/python.xml",
+    "frontend": {
+      "tests_passed": 11,
+      "typescript": "passed",
+      "temporary_build": "passed",
+      "node": "24.22.1",
+      "deployed": false
+    },
+    "official_clients": {
+      "version": "1.7.49",
+      "all_new_names": "SDK serialization plus local computation/dispatch checks",
+      "Python_JS_identical_workflow_outputs": 11,
+      "guarded_network_attempts": 0
+    },
+    "csv": {
+      "rows": 3,
+      "values": [
+        63,
+        204,
+        255
+      ],
+      "path": "Official Python SDK export -> local dispatch -> test queue/worker -> actual CSV writer -> trusted publication/result reader",
+      "scope": "Synthetic in-process integration; database and native task launch are test doubles"
+    },
+    "independent_numeric_controls": [
+      "Integer bounds and saturation; Number local truncation; Array documented byte rounding and inferred other dtype rules",
+      "Exact positive/negative integers2^52+1 and2^53-1 preserved",
+      "Float32 16777217 ->16777216, finite rounding near max, signed zero, typed-empty/rank0 shapes",
+      "Euler/pi closed forms, non-positive poles, inverse-erf tiny/subnormal/near-one and100-digit Decimal inverse-erfc minimum-subnormal anchor"
+    ],
+    "frozen_source_files": 17,
+    "source_hashes_unchanged_during_final_regression": true,
+    "review": {
+      "concrete_issue": "Empty-list calendarRange non-string field caused rawTypeError in handler; type guard and []/{} controls added",
+      "parent_corrections": [
+        "Large exact integer rounding perturbation",
+        "Inverse error-function tiny-input and tail plateaus",
+        "Malformed Filter branches on empty inputs",
+        "Ambiguous literal-looking regex selectors",
+        "Source-only inventory regression and obsolete unsupported assertions"
+      ],
+      "further_concrete_issue": "None identified in final compatibility review; not a new security or Google audit"
+    },
+    "initial_full_regression": {
+      "passed": 3396,
+      "failed": 5,
+      "skipped": 10,
+      "causes": [
+        "AST source inventory could not resolve imported family sets",
+        "Old Array.erfInv unsupported assertion now reaches implemented domain check"
+      ],
+      "evidence": "audit/gee-python-wave35/final-verified/python.xml"
+    }
+  },
+  "not_implemented": [
+    "Number fractional truncation direction and Array non-byte/negative-half rounding have no Google numerical oracle",
+    "Number.toInt/int retain historical range handling; Int64 outside exact2^53 domain rejects",
+    "Regex Dictionary selectors, List.shuffle and String regex family",
+    "General dynamic containers, full PixelType/raster casting, full Python/JS/GEE semantics",
+    "Full production profile/OIDC/object permissions/TLS/capacity, new service/browser/native-raster/private-data/Google comparison acceptance"
+  ],
+  "documentation": [
+    "docs/gee-python/number-casts.md",
+    "docs/gee-python/array-casts.md",
+    "docs/gee-python/static-special-math.md",
+    "docs/gee-python/container-selection.md",
+    "examples/40_GEE_python_numeric_preparation.py",
+    "Local Python/JavaScript reference"
+  ],
+  "cleanup": {
+    "owned_directories_removed": 2,
+    "file_bytes_removed": 1688888,
+    "formal_evidence_runtime_accounts_data_preserved": true
+  },
+  "native_components_rebuilt": false,
+  "dependencies_changed": false,
+  "services_started": false,
+  "deployed": false,
+  "overall_goal_complete": false
+}

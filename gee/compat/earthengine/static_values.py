@@ -27,6 +27,20 @@ def scalar_power(left, right):
 
 def invoke_static(translator, name, a):
     """Evaluate a decoded static algorithm using the translator's validators."""
+    from .number_casts import NUMBER_CAST_FUNCTIONS, invoke_number_cast
+    from .static_container_selection import (
+        STATIC_CONTAINER_SELECTION_FUNCTIONS, invoke_static_container_selection,
+    )
+    from .static_special_math import (
+        STATIC_SPECIAL_MATH_FUNCTIONS, invoke_static_special_math,
+    )
+
+    if name in NUMBER_CAST_FUNCTIONS:
+        return invoke_number_cast(translator, name, a)
+    if name in STATIC_CONTAINER_SELECTION_FUNCTIONS:
+        return invoke_static_container_selection(translator, name, a)
+    if name in STATIC_SPECIAL_MATH_FUNCTIONS:
+        return invoke_static_special_math(translator, name, a)
     if name.startswith("List."):
         from .static_list_ops import LIST_EXTRA_FUNCTIONS, invoke_list_extra
 

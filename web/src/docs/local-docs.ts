@@ -4,6 +4,13 @@ import geeDocs from "./gee-docs";
 const entries: ReferenceEntry[] = [
   ...geeDocs,
   {
+    id: "gee-python-numeric-preparation",
+    category: "GEE Python",
+    title: "类型转换、筛选与特殊函数",
+    text: "静态 Number/Array 新增整数宽度、Float32/Float64 转换和 digamma/trigamma/erfInv/erfcInv。Number 整数按本站规则截去小数；Array 取最近整数，半值向正方向，两者均限制目标范围。Array 保留形状与 dtype；Int64 输出仍限于 ±2^53。List.filter 通过 item 筛选普通值；Dictionary.select/remove 只支持精确键，未支持正则。定义域错误和未支持参数明确失败；不代表同名 Image 算法或 Google 数值已完全兼容。例40含独立基准及 Python/JS 同输出检查。",
+    code: "values = ee.List([-0.1, 0.25, 0.8, 1.1]).filter(ee.Filter.gt('item', 0))\nprint(values.map(lambda x: ee.Number(x).multiply(255).toByte()).getInfo())\nprint(ee.Dictionary({'red':2,'nir':8,'cloud':90}).select(['red','nir']).getInfo())\nprint(ee.Array([16777217,1.25]).toFloat().toDouble().getInfo())\nprint(ee.Number(1).digamma().getInfo())",
+  },
+  {
     id: "gee-python-pixel-math",
     category: "GEE Python",
     title: "影像数学、数组与数字解析",

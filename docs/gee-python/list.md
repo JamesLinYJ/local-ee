@@ -1,5 +1,7 @@
 # GEE Python 兼容清单
 
+第三十五批新增 **61个有限静态入口**：Number类型转换24、Array类型转换26、特殊函数8、容器筛选3，包含25个单列别名。最终完整回归 **3404 passed／10 skipped**，前端11／类型／临时构建通过；Python／JS十一项输出一致，三行CSV通过合成dispatch／worker／结果读回集成。名称 **477／991（48.13%）** 仅为入口统计。原预算保持，未改依赖或重建JVM，未启动业务服务；没有新增栅格／浏览器／生产／Google验收。整数舍入推断、Int64精确域和正则等限制单列，整体目标仍进行中。见 [Number转换](number-casts.md)、[Array转换](array-casts.md)、[特殊函数](static-special-math.md)、[容器筛选](container-selection.md)、[示例40](../../examples/40_GEE_python_numeric_preparation.py) 和 [报告](../../reports/gee-python-wave35.json)。
+
 第三十四批并行新增 **39个入口**，含16个实际Image科学函数、Array位运算／向量／padding及Number解析／别名。冻结便携 **3180 passed／10 skipped**（另排除4项延期原生测试），七个可信JVM／GeoTrellis组件、前端11／类型／构建通过；Python／JS十项组合输出一致。名称入口 **416／991（41.98%）**，其中本批12个为官方单列别名，不是完整参数／语义／Google兼容率。修复常量数学逐景绑定、不同atan2来源隐式重采样和4000景普通map的新增预算开销，原预算不提高。Float32精度和极点政策明确；未部署，无完整Spark／服务／浏览器／Google验收。见 [影像数学语法](pixel-math.md)、[示例39](../../examples/39_GEE_python_pixel_math.py)、[报告](../../reports/gee-python-wave34.json)。
 
 第三十三批按5个算子族批量新增 **98个实际计算入口**：Number25、Array36、List18、Dictionary10、String9。冻结便携回归 **2989 passed／9 skipped**（另排除4项延期原生测试），前端11／类型／临时构建及Python／JS的10项组合输出通过；保留50000工作／1MB输出等上限，纯静态批次不重复构建未改动的JVM。新List严格整数校验采用显式模式，保留历史结构比较。名称入口 **377／991（38.04%）**，包括官方单列别名，不代表完整参数／运行时或Google兼容率。新能力不自动开放同名Image栅格算子；旋转、碰撞、Unicode等局部政策有明确边界。未部署。见 [批量语法](static-families.md)、[示例38](../../examples/38_GEE_python_static_families.py)、[报告](../../reports/gee-python-wave33.json)。

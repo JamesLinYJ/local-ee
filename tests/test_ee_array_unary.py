@@ -153,4 +153,4 @@ def test_unary_arguments_types_and_static_only_boundary():
     with pytest.raises(UnsupportedEEError, match="static ee.Array"):
         invoke_array(translator, "Array.sin", {"input": [1, 2]})
     with pytest.raises(UnsupportedEEError, match="Unsupported static Array"):
-        invoke_array(translator, "Array.erfInv", {"input": StaticArray(np.array([1.]))})
+        invoke_array(translator, "Array.gammainc", {"input": StaticArray(np.array([1.]))})

@@ -7,6 +7,22 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 # Handler inventory, not a claim that every overload or parameter is supported,
 # nor that Google-service numerical equivalence has been established.
 SUPPORTED_FUNCTIONS = frozenset({
+    # Literal names keep the source-only inventory independent of importing
+    # scientific code or needing a configured runtime in a clean checkout.
+    *("Number." + n for n in (
+        "toByte", "toInt8", "toInt16", "toInt32", "toInt64", "toLong", "toShort",
+        "toUint8", "toUint16", "toUint32", "toFloat", "toDouble", "byte", "int8",
+        "int16", "int32", "int64", "long", "short", "uint8", "uint16", "uint32",
+        "float", "double", "digamma", "trigamma", "erfInv", "erfcInv",
+    )),
+    *("Array." + n for n in (
+        "toByte", "toInt", "toInt8", "toInt16", "toInt32", "toInt64", "toLong",
+        "toShort", "toUint8", "toUint16", "toUint32", "toFloat", "toDouble",
+        "byte", "int", "int8", "int16", "int32", "int64", "long", "short",
+        "uint8", "uint16", "uint32", "float", "double", "digamma", "trigamma",
+        "erfInv", "erfcInv",
+    )),
+    "List.filter", "Dictionary.select", "Dictionary.remove",
     *SUPPORTED_DATE_FUNCTIONS,
     *SUPPORTED_INTEGER_FUNCTIONS,
     "ImageCollection.load", "Image.load", "Image.constant", "Image", "ImageCollection",
@@ -93,6 +109,16 @@ def get_capabilities():
         "level": "C",
         "numerical_equivalence_to_google_verified": False,
         "restrictions": [
+            ("Finite static Number/Array casts support explicit integer widths and Float32/Float64. "
+             "Number integer fractions truncate; Array integers round nearest with half ties toward positive infinity; both clamp. "
+             "Array non-byte rounding and negative ties are local inferences, not Google-verified semantics. "
+             "Integer inputs/results remain exact<=2^53, including Int64; nonfinite Float32 overflow rejects. "
+             "Static digamma/trigamma and inverse erf/erfc retain bounded work, finite real domains and explicit pole rejection. "
+             "These methods do not cast raster Images or provide arbitrary dynamic scalar/array algebra."),
+            ("List.filter accepts finite static values with item predicates or actual Feature properties, "
+             "preflighting all Filter branches even on empty input. Dictionary.select/remove accept exact literal keys "
+             "only; regex metacharacters reject before lookup, even if an exact dictionary key has that spelling. "
+             "Owned copies, source key order, null policy and shared50000 work/1MB output limits remain; no Google comparison."),
             ("Image scientific math uses an actual closed Float32 native SPI for asin/acos/atan/atan2, "
              "hyperbolic/cbrt/signum/Gamma derivatives/erf and inverses. Default untyped source/constants "
              "are visibly converted to Float32 (16777217 becomes16777216); explicit Double inputs require "

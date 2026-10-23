@@ -2,6 +2,12 @@ import type { ReferenceEntry } from "../types";
 // Pinned client syntax and explicit local semantics; served entirely from this app.
 const entries: ReferenceEntry[] = [
   {
+    id: "gee-numeric-preparation",
+    title: "数值类型与列表筛选",
+    text: "静态 Number/Array 支持整数宽度与 Float32/Float64 转换。Number 整数转换按本站规则截去小数并限制在目标范围；Array 整数转换取最近整数并限制范围，半值取向正方向，负半值及其他宽度未与 Google 对照。Array 保留形状与 dtype；Int64 结果仍限于 ±2^53 的精确整数域。List.filter 使用 item 字段筛选普通值；Dictionary.select/remove 当前只接受精确键，正则报错。特殊函数支持静态 digamma/trigamma/erfInv/erfcInv，定义域外明确失败。它们不转换 Image 栅格；共享原有工作与输出预算。",
+    code: "var values = ee.List([-0.1,0.25,0.8,1.1])\n  .filter(ee.Filter.gt('item',0));\nprint(values.map(function(x) {return ee.Number(x).multiply(255).toByte();}));\nprint(ee.Dictionary({red:2,nir:8,cloud:90}).select(['red','nir']));\nprint(ee.Array([16777217,1.25]).toFloat().toDouble());",
+  },
+  {
     id: "gee-pixel-math",
     title: "影像科学函数与方向角",
     text: "支持 asin/acos/atan/atan2、双曲函数、cbrt/signum、Gamma及其导数、erf/erfc和逆函数。x.atan2(y) 按 x、y 方向角解释。运算使用Float32，默认源像素和常量会转换精度；显式Double须先toFloat，域错误、无穷和溢出成为缺测。两个实际输入须来自相同的已证明来源，常量数学须绑定真实影像；没有独立全球常量栅格或通用投影对齐。完整任务部署和Google结果一致性另行验收。",
