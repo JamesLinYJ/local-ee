@@ -16,7 +16,7 @@
 
 ## 当前基线
 
-- 最新第三十五批：新增 **61个有限静态入口**：Number类型转换24、Array类型转换26、特殊函数8、容器筛选3，包含25个单列别名。最终完整回归 **3404 passed／10 skipped**，前端11／类型／临时构建通过；Python／JS十一项输出一致，三行CSV通过合成dispatch／worker／结果读回集成。名称 **477／991（48.13%）** 仅为入口统计。原预算保持，未改依赖或重建JVM，未启动业务服务；没有新增栅格／浏览器／生产／Google验收。整数舍入推断、Int64精确域和正则等限制单列，整体目标仍进行中。见 reports/gee-python-wave35.json 及 docs/gee-python/list.md。
+- 最新第三十五批：新增 **61个有限静态入口**：Number类型转换24、Array类型转换26、特殊函数8、容器筛选3，包含25个单列别名。最终完整回归 **3409 passed／10 skipped**，前端11／类型／临时构建通过；Python／JS十一项输出一致，三行CSV通过合成dispatch／worker／结果读回集成。名称 **477／991（48.13%）** 仅为入口统计。原预算保持，未改依赖或重建JVM，未启动业务服务；没有新增栅格／浏览器／生产／Google验收。整数舍入推断、Int64精确域和正则等限制单列，整体目标仍进行中。见 reports/gee-python-wave35.json 及 docs/gee-python/list.md。
 
 - 第三十四批历史记录：39个名称入口，含16个实际Image科学函数及23个静态结构／解析／别名入口。冻结便携3180 passed／10 skipped，七个可信原生组件、前端11／类型／临时构建通过；Python／JS十项输出一致。名称416／991（41.98%）仅为入口，含本批12个别名。有限网格常量按需逐景绑定，不同atan2来源在隐式重采样前拒绝；4000景普通map保留原预算。Float32及极点政策明确，未部署，无完整Spark／服务／浏览器／Google验收。见 reports/gee-python-wave34.json、docs/gee-python/pixel-math.md。整体目标保持进行。
 

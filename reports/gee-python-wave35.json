@@ -84,14 +84,14 @@
   ],
   "validation": {
     "python": {
-      "tests": 3414,
+      "tests": 3419,
       "failures": 0,
       "errors": 0,
       "skipped": 10,
-      "passed": 3404,
-      "seconds": 36.278
+      "passed": 3409,
+      "seconds": 39.274
     },
-    "python_evidence": "audit/gee-python-wave35/final-verified-v2/python.xml",
+    "python_evidence": "audit/gee-python-wave35/final-verified-v3/python.xml",
     "frontend": {
       "tests_passed": 11,
       "typescript": "passed",
@@ -130,7 +130,8 @@
         "Inverse error-function tiny-input and tail plateaus",
         "Malformed Filter branches on empty inputs",
         "Ambiguous literal-looking regex selectors",
-        "Source-only inventory regression and obsolete unsupported assertions"
+        "Source-only inventory regression and obsolete unsupported assertions",
+        "erfcInv immediately below/above1: direct-function rounding plateau caused~50%/~25% relative error; exactcentered erfInv branch fixes with2e-15 relative controls"
       ],
       "further_concrete_issue": "None identified in final compatibility review; not a new security or Google audit"
     },
@@ -143,7 +144,41 @@
         "Old Array.erfInv unsupported assertion now reaches implemented domain check"
       ],
       "evidence": "audit/gee-python-wave35/final-verified/python.xml"
-    }
+    },
+    "prior_full_regression": {
+      "tests": 3414,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 10,
+      "passed": 3404,
+      "seconds": 36.278
+    },
+    "erfc_inverse_central_precision": [
+      {
+        "input": 0.9999999999999999,
+        "actual": 9.83909537680414e-17,
+        "independent_first_order_reference": 9.83909537680414e-17,
+        "relative_error": 0.0
+      },
+      {
+        "input": 1.0000000000000002,
+        "actual": -1.967819075360828e-16,
+        "independent_first_order_reference": -1.967819075360828e-16,
+        "relative_error": 0.0
+      },
+      {
+        "input": 0.9999999999990905,
+        "actual": 8.060186932677952e-13,
+        "independent_first_order_reference": 8.060186932677952e-13,
+        "relative_error": 0.0
+      },
+      {
+        "input": 1.0000000000009095,
+        "actual": -8.060186932677952e-13,
+        "independent_first_order_reference": -8.060186932677952e-13,
+        "relative_error": 0.0
+      }
+    ]
   },
   "not_implemented": [
     "Number fractional truncation direction and Array non-byte/negative-half rounding have no Google numerical oracle",

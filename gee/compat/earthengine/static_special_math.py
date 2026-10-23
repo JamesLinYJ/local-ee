@@ -179,6 +179,11 @@ def _erfc_inverse(value):
         fail("erfcInv requires input strictly inside (0, 2)")
     if value == 1.0:
         return 0.0
+    if 0.5 <= value <= 1.5:
+        # Sterbenz subtraction is exact near one, while direct erfc comparisons
+        # quantize tiny roots onto a broad plateau. Here erfInv stays on its
+        # well-conditioned central branch, so this cannot recurse via erfcInv.
+        return _erf_inverse(1.0 - value)
     negative = value > 1.0
     tail = 2.0 - value if negative else value
     result = _positive_erfc_inverse(tail)

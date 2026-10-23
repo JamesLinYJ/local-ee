@@ -238,3 +238,23 @@ def test_work_is_precharged_before_array_scans_or_output_allocation(monkeypatch)
     at_limit.steps = MAX_ARRAY_WORK - 33
     assert math.isfinite(_invoke("Number.trigamma", 1.0, at_limit))
     assert at_limit.steps == MAX_ARRAY_WORK
+
+
+@pytest.mark.parametrize("value", [
+    math.nextafter(1.0, 0.0), math.nextafter(1.0, 2.0),
+    1.0 - 2**-40, 1.0 + 2**-40,
+])
+def test_erfc_inverse_tiny_roots_keep_relative_precision_in_official_sdk(ee, value):
+    # From the inverse-function derivative at erfc(0)=1. The cubic correction
+    # is <1e-24 relative on these exact binary distances, below Float64 error.
+    expected = (1.0 - value) * math.sqrt(math.pi) / 2.0
+    expression = ee.serializer.encode(ee.Number(value).erfcInv(), for_cloud_api=False)
+    actual = compile_expression(expression, [], {})["value"]
+    assert actual == pytest.approx(expected, rel=2e-15, abs=0.0)
+
+
+def test_array_erfc_inverse_tiny_roots_preserve_both_signs():
+    values = np.asarray([math.nextafter(1.0, 0.0), math.nextafter(1.0, 2.0)])
+    actual = _invoke("Array.erfcInv", StaticArray(values))
+    expected = (1.0 - values) * math.sqrt(math.pi) / 2.0
+    np.testing.assert_allclose(actual.data, expected, rtol=2e-15, atol=0)
