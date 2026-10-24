@@ -1,8 +1,6 @@
 """Validate inline Feature filter trees before row-dependent evaluation."""
 from __future__ import annotations
 
-import math
-
 from .array_values import StaticArray
 from .feature_values import charge, property_name
 from .filter_normalization import lower_filter_node
@@ -69,50 +67,6 @@ def _operands(translator, arguments):
             charge(translator, max(1, len(value)) if isinstance(value, str) else 1)
             result.append((False, value))
     return result
-
-
-def _validate_geojson(translator, value):
-    """Validate and charge a finite literal ROI without inventing a source row."""
-    if not isinstance(value, dict):
-        fail("Only collection footprint intersection filtering is supported")
-    geometry = value.get("geometry") if value.get("type") == "Feature" else value
-    if not isinstance(geometry, dict):
-        fail("Invalid footprint filter geometry")
-    active = set()
-
-    def visit(item, depth):
-        charge(translator)
-        if depth > 96:
-            fail("Filter geometry exceeds the metadata depth limit")
-        if isinstance(item, dict) or isinstance(item, (list, tuple)):
-            identity = id(item)
-            if identity in active:
-                fail("Filter geometry contains a cycle")
-            active.add(identity)
-            try:
-                children = item.values() if isinstance(item, dict) else item
-                for child in children:
-                    visit(child, depth + 1)
-            finally:
-                active.remove(identity)
-        elif item is None or isinstance(item, (str, bool)) or type(item) is int:
-            return
-        elif type(item) is float:
-            if not math.isfinite(item):
-                fail("Filter geometry coordinates must be finite")
-        else:
-            fail("Filter geometry must be GeoJSON data")
-
-    visit(value, 0)
-    from .geometry_consumers import reject_spherical_edges
-
-    reject_spherical_edges(translator, geometry, "Filter.intersects")
-    from shapely.geometry import shape
-
-    try:
-        shape(geometry)
-    except (TypeError, ValueError, KeyError) as exc:
-        fail(f"Invalid footprint filter geometry: {exc}")
 
 
 def validate_filter_structure(translator, filt):
@@ -194,13 +148,9 @@ def validate_filter_structure(translator, filt):
                     fail("Filter.dateRangeContains requires a finite DateRange on system:time_start")
                 return
             if name == "intersects":
-                if (set(arguments) - {"leftField", "rightValue", "maxError"}
-                        or arguments.get("leftField") != ".all"
-                        or "rightValue" not in arguments):
-                    fail("Only collection footprint intersection filtering is supported")
-                if arguments.get("maxError") is not None:
-                    fail("Filter.intersects maxError is unsupported")
-                _validate_geojson(translator, arguments["rightValue"])
+                from .spatial_filters import prepare_intersects_filter
+
+                prepare_intersects_filter(translator, arguments)
                 return
             if name == "maxDifference":
                 if "difference" not in arguments:

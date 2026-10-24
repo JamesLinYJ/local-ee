@@ -131,11 +131,9 @@ def matches_feature_filter(translator, filt, feature, depth=0):
             fail("Only system:time_start date filtering is supported")
         return translator.matches(filt, feature)
     if name == "intersects":
-        if "maxError" in arguments and arguments["maxError"] is not None:
-            fail("Feature geometry filter maxError is unsupported")
-        if set(arguments) - {"maxError", "leftField", "rightValue"}:
-            fail("Only collection footprint intersection filtering is supported")
-        return translator.matches(filt, feature)
+        from .spatial_filters import evaluate_intersects_filter
+
+        return evaluate_intersects_filter(translator, arguments, feature)
     if name == "maxDifference":
         if "difference" not in arguments:
             fail("Filter.maxDifference requires difference")

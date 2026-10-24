@@ -7,6 +7,7 @@ import numpy as np
 
 from .array_values import MAX_ARRAY_CELLS, MAX_ARRAY_RANK, StaticArray
 from .geometry_values import GEOMETRY_TYPES, own_geometry_bounded
+from .geometry_topology import geometry_edge_models as _geometry_edge_models
 from .ir import Image, Pixel, fail
 
 
@@ -115,18 +116,6 @@ def property_names(value, label):
     if any(not isinstance(name, str) for name in value):
         fail(f"{label} must contain only strings")
     return value
-
-
-def _geometry_edge_models(value, inherited=None):
-    """Yield effective models of edge-bearing components without a list."""
-    from .geometry_topology import _edge_model, _has_edges
-
-    model = _edge_model(value, inherited)
-    if value.get("type") == "GeometryCollection":
-        for child in value.get("geometries", []):
-            yield from _geometry_edge_models(child, model)
-    elif _has_edges(value):
-        yield model
 
 
 def _invoke_element(translator, name, arguments):

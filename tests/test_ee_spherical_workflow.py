@@ -264,9 +264,9 @@ def test_explicit_spherical_reprojection_parameters_and_planar_edges_stay_visibl
         planar = ee.Geometry.Polygon(
             coordinates, proj="EPSG:4326", geodesic=False,
         )
-        # SDK serialization wraps a positive maxError in the unsupported
-        # ErrorMargin algorithm, so the compiler must reject it explicitly.
-        with pytest.raises(UnsupportedEEError, match="ErrorMargin"):
+        # The typed margin constructor exists; this binary consumer still
+        # rejects reprojection rather than silently discarding its tolerance.
+        with pytest.raises(UnsupportedEEError, match="maxError transformations"):
             compile_expression(ee.serializer.encode(
                 spherical.intersection(point, maxError=1), for_cloud_api=False,
             ), [], {})

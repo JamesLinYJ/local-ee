@@ -35,7 +35,10 @@ def compile_expression(expression, catalog, items, options=None, *, for_table_ex
         from .nested_collections import NestedFeatureCollection
         from .composed_reducers import is_reducer_spec
         from .neighborhood_reducer_plan import NeighborhoodUnweighted
+        from .error_margin import ErrorMarginValue
 
+        if isinstance(value, ErrorMarginValue):
+            fail("ErrorMargin output requires a supported spatial filter or Collection.geometry consumer")
         if isinstance(value, UnboundedDateRange):
             fail("Unbounded DateRange output requires a finite intersection or boolean accessor")
         if isinstance(value, NestedFeatureCollection):

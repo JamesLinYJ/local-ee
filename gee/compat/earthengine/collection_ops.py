@@ -49,6 +49,9 @@ def invoke_collection(translator, name, arguments):
         collection, filt = a["collection"], a["filter"]
         if not isinstance(collection, Collection) or not isinstance(filt, Filter):
             fail("Expected a collection and filter")
+        from .filter_structure import validate_filter_structure
+
+        validate_filter_structure(translator, filt)
         return rebind(
             collection,
             [

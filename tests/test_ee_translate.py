@@ -220,7 +220,13 @@ def test_millisecond_date_and_single_argument(local):
 
 def test_filter_bounds_does_not_clip(local):
     f=call("Filter.intersects",leftField=".all",rightValue=call("Feature",geometry=rect(1,1,1.5,1.5)))
-    r=compile(call("Collection.filter",collection=col(),filter=f),local)
+    # Preserve the original default-spherical expression as a visible gap;
+    # raw catalog footprints remain planar and must not be silently relabeled.
+    with pytest.raises(UnsupportedEEError, match="Mixed geodesic.*reprojection"):
+        compile(call("Collection.filter",collection=col(),filter=f),local)
+    planar_filter=call("Filter.intersects",leftField=".all",rightValue=call(
+        "Feature",geometry={**rect(1,1,1.5,1.5),"geodesic":False}))
+    r=compile(call("Collection.filter",collection=col(),filter=planar_filter),local)
     assert loads(r)[0]["_gee_item_ids"]==["a","b"]
     assert loads(r)[0]["spatial_extent"]==dict(west=0,south=0,east=3,north=2)
     assert "mask_polygon" not in processes(r)
@@ -461,11 +467,19 @@ def test_mapped_clip_controls_footprint_selection(local):
     clipped=call('Collection.map',collection=col(),baseAlgorithm={'type':'Function','argumentNames':['im'],
         'body':call('Image.clip',input=arg,geometry=rect(0,0,.5,.5))})
     filt=call('Filter.intersects',leftField='.all',rightValue=call('Feature',geometry=rect(1,1,1.5,1.5)))
-    assert compile(call('Collection.size',collection=call('Collection.filter',collection=clipped,filter=filt)),local)['value']==0
+    with pytest.raises(UnsupportedEEError, match="spherical geometry edges|Mixed geodesic.*reprojection"):
+        compile(call('Collection.size',collection=call('Collection.filter',collection=clipped,filter=filt)),local)
+    planar_clipped=call('Collection.map',collection=col(),baseAlgorithm={'type':'Function','argumentNames':['im'],
+        'body':call('Image.clip',input=arg,geometry={**rect(0,0,.5,.5),'geodesic':False})})
+    planar_filter=call('Filter.intersects',leftField='.all',rightValue=call(
+        'Feature',geometry={**rect(1,1,1.5,1.5),'geodesic':False}))
+    assert compile(call('Collection.size',collection=call('Collection.filter',collection=planar_clipped,filter=planar_filter)),local)['value']==0
+    # This retains the legacy planar clip/footprint control, not spherical
+    # pixel-mask acceptance. The source catalog and original wire stay intact.
     from shapely.geometry import shape
-    for value in [clipped,call('reduce.median',collection=clipped)]:
-        algorithm='Collection.geometry' if value is clipped else 'Image.geometry'
-        assert shape(compile(call(algorithm,**{'collection' if value is clipped else 'feature':value}),local)['value']).area==.25
+    for value in [planar_clipped,call('reduce.median',collection=planar_clipped)]:
+        algorithm='Collection.geometry' if value is planar_clipped else 'Image.geometry'
+        assert shape(compile(call(algorithm,**{'collection' if value is planar_clipped else 'feature':value}),local)['value']).area==.25
 
 
 def test_if_is_lazy_and_computed_lists_are_bounded(local):

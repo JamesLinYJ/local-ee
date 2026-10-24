@@ -359,13 +359,8 @@ def test_feature_geometry_rejects_nonnull_max_error_value(ee_sdk):
     ee = ee_sdk
     feature = ee.Feature(ee.Geometry.Point(0, 0))
     expression = ee.serializer.encode(feature.geometry(maxError=ee.ErrorMargin(1)), for_cloud_api=False)
-    # ErrorMargin itself is outside this inline compatibility slice. Replace
-    # the wrapper value with a decoded scalar to exercise Feature.geometry's
-    # explicit handling of a non-null reprojection tolerance.
-    expression["scope"] = [
-        (key, 1 if isinstance(value, dict) and value.get("functionName") == "ErrorMargin" else value)
-        for key, value in expression["scope"]
-    ]
+    # The typed constructor is supported; this consumer still rejects any
+    # non-null reprojection tolerance. Keep the actual SDK wire unchanged.
     with pytest.raises(UnsupportedEEError, match="maxError reprojection"):
         compile_expression(expression, [], {})
 

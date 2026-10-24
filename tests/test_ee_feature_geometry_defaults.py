@@ -140,10 +140,6 @@ def test_feature_geometry_rejects_unimplemented_parameters_and_bad_boolean_types
         feature.geometry(maxError=ee.ErrorMargin(1)), for_cloud_api=False,
     )
     assert "maxError" in _call_arguments(expression)
-    expression["scope"] = [
-        (key, 1 if isinstance(value, dict) and value.get("functionName") == "ErrorMargin" else value)
-        for key, value in expression["scope"]
-    ]
     with pytest.raises(UnsupportedEEError, match="maxError reprojection is unsupported"):
         compile_expression(expression, [], {})
 

@@ -25,6 +25,10 @@ _METADATA_ARGUMENTS = {
 def invoke(translator, name, arguments):
     """Dispatch in the same precedence order as the legacy translator."""
     a = arguments
+    if name == "ErrorMargin":
+        from .error_margin import construct_error_margin
+
+        return construct_error_margin(translator, a)
     if name in {"Terrain", "Terrain.products", "Terrain.slope", "Terrain.aspect", "Terrain.hillshade"}:
         from .image_terrain import invoke_terrain
 

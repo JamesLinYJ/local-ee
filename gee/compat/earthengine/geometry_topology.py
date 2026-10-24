@@ -70,6 +70,38 @@ def _has_edges(value):
     return False
 
 
+def geometry_edge_models(value, inherited=None):
+    """Yield effective models of actual edge leaves after bounded decoding."""
+    from .spherical_wire import FullSphere
+
+    if isinstance(value, FullSphere):
+        yield True
+        return
+    model = _edge_model(value, inherited)
+    if value["type"] == "GeometryCollection":
+        for child in value["geometries"]:
+            yield from geometry_edge_models(child, model)
+    elif _has_edges(value):
+        yield model
+
+
+def common_edge_model(*values):
+    """Resolve a homogeneous model without treating points as curved edges.
+
+    Callers own fresh validated input and reserve this complete model walk
+    before entering it. This helper neither transforms nor relabels geometry.
+    """
+    result = None
+    for value in values:
+        for model in geometry_edge_models(value):
+            if type(model) is not bool:
+                fail("Geometry edge model is unresolved")
+            if result is not None and model is not result:
+                fail("Mixed geodesic edge models require unsupported reprojection")
+            result = model
+    return True if result is None else result
+
+
 def effective_geometry_geodesic(value):
     """Return a scalar effective edge flag, rejecting mixed collections."""
     model = component_model(value)

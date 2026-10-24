@@ -152,13 +152,23 @@ class CatalogOperations:
             for iid in collection.source.ids
         ]
         if collection.image.footprint:
-            from shapely.geometry import mapping, shape
             from .geometry_consumers import reject_spherical_edges
+            from .geometry_binary import invoke_geometry_binary
+            from .geometry_preflight import _charge, measure_geometry
+            from .geometry_topology import geometry_edge_models
+            from .spatial_filters import _own_catalog_geometry
 
             reject_spherical_edges(self, collection.image.footprint, "Collection footprint")
-            clip = shape(collection.image.footprint)
+            clip = _own_catalog_geometry(self, collection.image.footprint)
+            cost = measure_geometry(clip)
+            _charge(self, cost.nodes + cost.positions, "Collection footprint model inspection")
+            if any(model is not False for model in geometry_edge_models(clip)):
+                fail("Collection footprint does not support spherical geometry edges")
             items = [
-                {**item, "geometry": mapping(shape(item["geometry"]).intersection(clip))}
+                {**item, "geometry": invoke_geometry_binary(self, "Geometry.intersection", {
+                    "left": _own_catalog_geometry(self, item["geometry"]),
+                    "right": clip, "proj": "EPSG:4326",
+                })}
                 for item in items
             ]
         return items

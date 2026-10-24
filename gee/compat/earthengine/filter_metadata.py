@@ -128,32 +128,11 @@ def matches_filter(translator, filt, item):
         value = fields[field]
         return start <= value <= end if start <= end else value >= start or value <= end
     if name == "intersects":
-        if (set(arguments) - {"leftField", "rightValue", "maxError"}
-                or arguments.get("leftField") != ".all"
-                or "rightValue" not in arguments):
-            fail("Only collection footprint intersection filtering is supported")
-        if "maxError" in arguments and arguments["maxError"] is not None:
-            fail("Filter.intersects maxError is unsupported")
-        geometry = arguments["rightValue"]
-        from shapely.geometry import shape
+        from .spatial_filters import evaluate_intersects_filter
 
-        try:
-            if not isinstance(geometry, dict):
-                raise ValueError("intersection value must be GeoJSON")
-            if geometry.get("type") == "Feature":
-                geometry = geometry.get("geometry")
-            from .geometry_consumers import reject_spherical_edges
-
-            reject_spherical_edges(translator, geometry, "Filter.intersects")
-            filter_geometry = shape(geometry)
-            # Null or absent source geometry is a valid non-match, after validating
-            # the supplied filter geometry and the full intersects signature.
-            if item.get("geometry") is None:
-                return False
-            reject_spherical_edges(translator, item["geometry"], "Filter.intersects")
-            return shape(item["geometry"]).intersects(filter_geometry)
-        except (ValueError, KeyError, TypeError) as exc:
-            fail(f"Invalid footprint filter geometry: {exc}")
+        return evaluate_intersects_filter(
+            translator, arguments, item, catalog_geometry=True,
+        )
 
     def operand(side):
         field_key, value_key = side + "Field", side + "Value"

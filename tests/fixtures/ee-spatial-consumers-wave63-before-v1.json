@@ -1,0 +1,1282 @@
+{
+  "schema": "local-ee-spatial-consumers-baseline/v1",
+  "base_commit": "c4ca9477b7e6c3c38a3db40a4317a15f93a94879",
+  "source": "Pinned official Python SDK1.7.49 legacy serialization and local compiler only; no Google runtime. Expected values are handwritten nonboundary geometric controls.",
+  "records": [
+    {
+      "name": "inline_dateline",
+      "wire": {
+        "type": "CompoundValue",
+        "scope": [
+          [
+            "0",
+            {
+              "type": "Point",
+              "coordinates": [
+                179,
+                0
+              ]
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "site": "east"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "3",
+            {
+              "type": "Point",
+              "coordinates": [
+                -179,
+                0
+              ]
+            }
+          ],
+          [
+            "4",
+            {
+              "type": "Dictionary",
+              "value": {
+                "site": "west"
+              }
+            }
+          ],
+          [
+            "5",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "3"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "6",
+            {
+              "type": "Point",
+              "coordinates": [
+                0,
+                0
+              ]
+            }
+          ],
+          [
+            "7",
+            {
+              "type": "Dictionary",
+              "value": {
+                "site": "origin"
+              }
+            }
+          ],
+          [
+            "8",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "6"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "7"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "9",
+            {
+              "type": "Point",
+              "coordinates": [
+                160,
+                0
+              ]
+            }
+          ],
+          [
+            "10",
+            {
+              "type": "Dictionary",
+              "value": {
+                "site": "outside"
+              }
+            }
+          ],
+          [
+            "11",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "9"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "10"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "12",
+            [
+              {
+                "type": "ValueRef",
+                "value": "2"
+              },
+              {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              {
+                "type": "ValueRef",
+                "value": "11"
+              }
+            ]
+          ],
+          [
+            "13",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "features": {
+                  "type": "ValueRef",
+                  "value": "12"
+                }
+              },
+              "functionName": "Collection"
+            }
+          ],
+          [
+            "14",
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -5
+                  ],
+                  [
+                    -170,
+                    -5
+                  ],
+                  [
+                    -170,
+                    5
+                  ],
+                  [
+                    170,
+                    5
+                  ],
+                  [
+                    170,
+                    -5
+                  ]
+                ]
+              ],
+              "evenOdd": true
+            }
+          ],
+          [
+            "15",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "14"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "16",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "leftField": ".all",
+                "rightValue": {
+                  "type": "ValueRef",
+                  "value": "15"
+                }
+              },
+              "functionName": "Filter.intersects"
+            }
+          ],
+          [
+            "17",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "13"
+                },
+                "filter": {
+                  "type": "ValueRef",
+                  "value": "16"
+                }
+              },
+              "functionName": "Collection.filter"
+            }
+          ],
+          [
+            "18",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "17"
+                },
+                "property": "site"
+              },
+              "functionName": "AggregateFeatureCollection.array"
+            }
+          ]
+        ],
+        "value": {
+          "type": "ValueRef",
+          "value": "18"
+        }
+      },
+      "expected": [
+        "east",
+        "west"
+      ],
+      "before": {
+        "compiled": true,
+        "value": [
+          "origin",
+          "outside"
+        ],
+        "matches_independent_expectation": false
+      }
+    },
+    {
+      "name": "inline_polar",
+      "wire": {
+        "type": "CompoundValue",
+        "scope": [
+          [
+            "0",
+            {
+              "type": "Point",
+              "coordinates": [
+                0,
+                89
+              ]
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "site": "polar"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "3",
+            {
+              "type": "Point",
+              "coordinates": [
+                0,
+                60
+              ]
+            }
+          ],
+          [
+            "4",
+            {
+              "type": "Dictionary",
+              "value": {
+                "site": "south"
+              }
+            }
+          ],
+          [
+            "5",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "3"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "6",
+            [
+              {
+                "type": "ValueRef",
+                "value": "2"
+              },
+              {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            ]
+          ],
+          [
+            "7",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "features": {
+                  "type": "ValueRef",
+                  "value": "6"
+                }
+              },
+              "functionName": "Collection"
+            }
+          ],
+          [
+            "8",
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -120,
+                    80
+                  ],
+                  [
+                    0,
+                    80
+                  ],
+                  [
+                    120,
+                    80
+                  ],
+                  [
+                    -120,
+                    80
+                  ]
+                ]
+              ],
+              "evenOdd": true
+            }
+          ],
+          [
+            "9",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "8"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "10",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "leftField": ".all",
+                "rightValue": {
+                  "type": "ValueRef",
+                  "value": "9"
+                }
+              },
+              "functionName": "Filter.intersects"
+            }
+          ],
+          [
+            "11",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "7"
+                },
+                "filter": {
+                  "type": "ValueRef",
+                  "value": "10"
+                }
+              },
+              "functionName": "Collection.filter"
+            }
+          ],
+          [
+            "12",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "11"
+                },
+                "property": "site"
+              },
+              "functionName": "AggregateFeatureCollection.array"
+            }
+          ]
+        ],
+        "value": {
+          "type": "ValueRef",
+          "value": "12"
+        }
+      },
+      "expected": [
+        "polar"
+      ],
+      "before": {
+        "compiled": true,
+        "value": [],
+        "matches_independent_expectation": false
+      }
+    },
+    {
+      "name": "inline_bowed",
+      "wire": {
+        "type": "CompoundValue",
+        "scope": [
+          [
+            "0",
+            {
+              "type": "Point",
+              "coordinates": [
+                0,
+                65
+              ]
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "site": "low"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "3",
+            {
+              "type": "Point",
+              "coordinates": [
+                0,
+                78
+              ]
+            }
+          ],
+          [
+            "4",
+            {
+              "type": "Dictionary",
+              "value": {
+                "site": "mid"
+              }
+            }
+          ],
+          [
+            "5",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "3"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "6",
+            {
+              "type": "Point",
+              "coordinates": [
+                0,
+                86
+              ]
+            }
+          ],
+          [
+            "7",
+            {
+              "type": "Dictionary",
+              "value": {
+                "site": "high"
+              }
+            }
+          ],
+          [
+            "8",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "6"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "7"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "9",
+            [
+              {
+                "type": "ValueRef",
+                "value": "2"
+              },
+              {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            ]
+          ],
+          [
+            "10",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "features": {
+                  "type": "ValueRef",
+                  "value": "9"
+                }
+              },
+              "functionName": "Collection"
+            }
+          ],
+          [
+            "11",
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -60,
+                    60
+                  ],
+                  [
+                    60,
+                    60
+                  ],
+                  [
+                    60,
+                    80
+                  ],
+                  [
+                    -60,
+                    80
+                  ],
+                  [
+                    -60,
+                    60
+                  ]
+                ]
+              ],
+              "evenOdd": true
+            }
+          ],
+          [
+            "12",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "11"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "13",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "leftField": ".all",
+                "rightValue": {
+                  "type": "ValueRef",
+                  "value": "12"
+                }
+              },
+              "functionName": "Filter.intersects"
+            }
+          ],
+          [
+            "14",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "10"
+                },
+                "filter": {
+                  "type": "ValueRef",
+                  "value": "13"
+                }
+              },
+              "functionName": "Collection.filter"
+            }
+          ],
+          [
+            "15",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "14"
+                },
+                "property": "site"
+              },
+              "functionName": "AggregateFeatureCollection.array"
+            }
+          ]
+        ],
+        "value": {
+          "type": "ValueRef",
+          "value": "15"
+        }
+      },
+      "expected": [
+        "mid"
+      ],
+      "before": {
+        "compiled": true,
+        "value": [
+          "low",
+          "mid"
+        ],
+        "matches_independent_expectation": false
+      }
+    },
+    {
+      "name": "union_dateline",
+      "wire": {
+        "type": "CompoundValue",
+        "scope": [
+          [
+            "0",
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -5
+                  ],
+                  [
+                    -170,
+                    -5
+                  ],
+                  [
+                    -170,
+                    5
+                  ],
+                  [
+                    170,
+                    5
+                  ],
+                  [
+                    170,
+                    -5
+                  ]
+                ]
+              ],
+              "evenOdd": true
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "2",
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    100,
+                    -2
+                  ],
+                  [
+                    110,
+                    -2
+                  ],
+                  [
+                    110,
+                    2
+                  ],
+                  [
+                    100,
+                    2
+                  ],
+                  [
+                    100,
+                    -2
+                  ]
+                ]
+              ],
+              "evenOdd": true
+            }
+          ],
+          [
+            "3",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "2"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "4",
+            [
+              {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            ]
+          ],
+          [
+            "5",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "features": {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              },
+              "functionName": "Collection"
+            }
+          ],
+          [
+            "6",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Collection.geometry"
+            }
+          ],
+          [
+            "7",
+            {
+              "type": "Point",
+              "coordinates": [
+                179,
+                0
+              ]
+            }
+          ],
+          [
+            "8",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "6"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "7"
+                }
+              },
+              "functionName": "Geometry.contains"
+            }
+          ]
+        ],
+        "value": {
+          "type": "ValueRef",
+          "value": "8"
+        }
+      },
+      "expected": true,
+      "before": {
+        "compiled": true,
+        "value": true,
+        "matches_independent_expectation": true
+      }
+    },
+    {
+      "name": "union_origin",
+      "wire": {
+        "type": "CompoundValue",
+        "scope": [
+          [
+            "0",
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -5
+                  ],
+                  [
+                    -170,
+                    -5
+                  ],
+                  [
+                    -170,
+                    5
+                  ],
+                  [
+                    170,
+                    5
+                  ],
+                  [
+                    170,
+                    -5
+                  ]
+                ]
+              ],
+              "evenOdd": true
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "2",
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    100,
+                    -2
+                  ],
+                  [
+                    110,
+                    -2
+                  ],
+                  [
+                    110,
+                    2
+                  ],
+                  [
+                    100,
+                    2
+                  ],
+                  [
+                    100,
+                    -2
+                  ]
+                ]
+              ],
+              "evenOdd": true
+            }
+          ],
+          [
+            "3",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "2"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "4",
+            [
+              {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            ]
+          ],
+          [
+            "5",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "features": {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              },
+              "functionName": "Collection"
+            }
+          ],
+          [
+            "6",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Collection.geometry"
+            }
+          ],
+          [
+            "7",
+            {
+              "type": "Point",
+              "coordinates": [
+                0,
+                0
+              ]
+            }
+          ],
+          [
+            "8",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "6"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "7"
+                }
+              },
+              "functionName": "Geometry.contains"
+            }
+          ]
+        ],
+        "value": {
+          "type": "ValueRef",
+          "value": "8"
+        }
+      },
+      "expected": false,
+      "before": {
+        "compiled": true,
+        "value": false,
+        "matches_independent_expectation": true
+      }
+    },
+    {
+      "name": "union_planar",
+      "wire": {
+        "type": "CompoundValue",
+        "scope": [
+          [
+            "0",
+            [
+              0,
+              0
+            ]
+          ],
+          [
+            "1",
+            [
+              4,
+              0
+            ]
+          ],
+          [
+            "2",
+            [
+              4,
+              4
+            ]
+          ],
+          [
+            "3",
+            [
+              0,
+              4
+            ]
+          ],
+          [
+            "4",
+            [
+              {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              {
+                "type": "ValueRef",
+                "value": "2"
+              },
+              {
+                "type": "ValueRef",
+                "value": "3"
+              },
+              {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            ]
+          ],
+          [
+            "5",
+            [
+              {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            ]
+          ],
+          [
+            "6",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "coordinates": {
+                  "type": "ValueRef",
+                  "value": "5"
+                },
+                "geodesic": false
+              },
+              "functionName": "GeometryConstructors.Polygon"
+            }
+          ],
+          [
+            "7",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "6"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "8",
+            [
+              {
+                "type": "ValueRef",
+                "value": "7"
+              },
+              {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            ]
+          ],
+          [
+            "9",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "features": {
+                  "type": "ValueRef",
+                  "value": "8"
+                }
+              },
+              "functionName": "Collection"
+            }
+          ],
+          [
+            "10",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "9"
+                }
+              },
+              "functionName": "Collection.geometry"
+            }
+          ],
+          [
+            "11",
+            {
+              "type": "Point",
+              "coordinates": [
+                2,
+                2
+              ]
+            }
+          ],
+          [
+            "12",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "crs": "EPSG:4326"
+              },
+              "functionName": "Projection"
+            }
+          ],
+          [
+            "13",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "10"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "11"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "12"
+                }
+              },
+              "functionName": "Geometry.contains"
+            }
+          ]
+        ],
+        "value": {
+          "type": "ValueRef",
+          "value": "13"
+        }
+      },
+      "expected": true,
+      "before": {
+        "compiled": false,
+        "error": "Geometry.contains requires explicit geodesic=false for every component with edges",
+        "matches_independent_expectation": false
+      }
+    }
+  ]
+}

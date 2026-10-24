@@ -24,7 +24,7 @@ for _family in ("Geometry", "Feature"):
             "S2 CLOSED and GEOS interior-boundary policies are local; binary64 "
             "input/output conversion has measured exact-incidence and inserted-"
             "vertex roundtrip gaps. Nearby distinct points are not epsilon-merged. "
-            "Explicit spherical outputs reject at legacy planar raster/filter "
+            "Explicit spherical outputs reject at legacy planar raster/join "
             "consumers; unflagged raster input retains the earlier planar path "
             "and has no GEE geodesic parity claim. Trusted synthetic SDK/CSV and "
             "native component checks are not full Spark/deployment/Google acceptance."

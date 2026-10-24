@@ -203,6 +203,13 @@ def invoke_image(translator, name, arguments):
 
         return millis(translator.invoke("Element.get", {"object": a["image"], "property": "system:time_start"}))
     if name in {"Image.geometry", "Feature.geometry", "Collection.geometry"}:
+        if name == "Collection.geometry":
+            from .feature_values import is_collection
+
+            if is_collection(a.get("collection")):
+                from .collection_geometry import invoke_collection_geometry
+
+                return invoke_collection_geometry(translator, a)
         translator.allowed(a, {"feature", "collection", "maxError", "proj", "geodesics"})
         if a.get("proj") not in (None, "EPSG:4326") or a.get("geodesics") is True:
             fail("Geometry extraction currently supports planar EPSG:4326 only")

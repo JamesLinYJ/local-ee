@@ -1,0 +1,128 @@
+{
+  "schema": "local-ee-compatibility-wave/v1",
+  "date": "2026-10-24",
+  "base_commit": "c4ca9477b7e6c3c38a3db40a4317a15f93a94879",
+  "title": "Preserve default spherical spatial filters and inline ROI merges",
+  "entry_inventory": {
+    "pinned_signatures": 991,
+    "declared_same_name_handlers": 710,
+    "names_only_percentage": 71.64,
+    "remaining_same_name_handlers": 281,
+    "new_entry_count": 1,
+    "interpretation": "Names only; not full parameter/default/numerical or Google compatibility."
+  },
+  "implementation": {
+    "spatial_filters": "Official four field/value operand forms, Feature literal unwrapping and complete preflight including empty catalog branches. Fresh ownership, actual homogeneous model routing via S2/GEOS, Point edge neutrality and child overrides.",
+    "catalog_policy": "Raw unflagged STAC GeoJSON footprints retain RFC7946 planar edges; spherical polygon ROI vs planar footprint explicitly rejects unsupported transformation. Point or actual planar ROI remains supported. No scientific relabeling.",
+    "derived_catalog_footprints": "Use existing bounded planar intersection after full original-source/clip ownership, coordinate/topology/CRS/model validation. Genuine empties canonicalize without laundering invalid original input; legitimate empty Multi geometries remain supported. Typed spherical clip footprints reject before planar conversion.",
+    "collection_geometry": "Finite inline Features merge non-null real geometries through bounded S2 or planar GEOS; normalize single spherical overlapping MultiPolygon, preserve dimensions/holes/model and owned coordinates. Invalid OGC planar topology still rejects; catalog geometry path unchanged.",
+    "error_margin": "One new typed constructor entry; pinned finite normalization and units. Filter/merge consumers accept only proven no-transform static margins; no buffer, generic reprojection or public opaque output.",
+    "empty_map": "Exact Collection.geometry, Filter.intersects and ErrorMargin keyword contracts checked without inventing callback rows.",
+    "modularity": "New compiler modules58/123/220 readable lines, canonical model walk shared with Feature.geometry. Native/ABI/build/dependency sources unchanged."
+  },
+  "verification": {
+    "full_pytest": {
+      "passed": 6183,
+      "skipped": 27,
+      "warnings": 53,
+      "failures": 0,
+      "seconds": 57.89,
+      "source_files_hashed": 32,
+      "source_stable_during_run": true
+    },
+    "baseline": "Six unchanged pinned official wires: before five compiled/two matched manual expected, three wrong default selections and one planar-model rejection; after all six match independent nonboundary controls. Two old union successes are incidental controls, not claimed prior failures.",
+    "official_clients_and_csv": "Both pinned clients preserve their actual omitted/null wires and compile equal semantics; four independent intersects forms and dateline/polar/high-latitude selections, independent unit-vector winding. Two actual synthetic CSV rows (selected overlap Point45,75 and merged regionGeometry) via dispatch/worker/file/asset/official SDK readback. No running-service or deployment claim.",
+    "scoped_independent_review": {
+      "model": "gpt-6.1-sol",
+      "unresolved_findings": 0,
+      "controls_passed": 29,
+      "source_files_hashed": 14,
+      "catalog_addendum_controls_passed": 74,
+      "catalog_addendum": "Original-input laundering defect and empty-row clip model bypass found and closed. Final path validates original data through existing bounded binary and precharges known clip edge-model inspection before rows. 74 focused controls include original29; not74 additional distinct controls.",
+      "scope": "Correctness/resource review with socket/DNS denial controls; not a full vulnerability audit or packet capture."
+    },
+    "frontend": "Source unchanged; exact-commit python/frontend GitHub Actions required before publishing.",
+    "Google_runtime": "Not run. Offline local independent references remain default; discuss remote comparison only for unusually complex unresolved algorithms."
+  },
+  "failures_preserved": [
+    "Before fixture records three ordinary default ROI selections returning wrong rows and one explicit planar merged ROI rejection; originals retained unchanged.",
+    "Independent review found Filter.intersects absent from empty-map keyword contracts; corrected with pinned signature and explicit regression.",
+    "An actual Export.table expression merging all four dateline/polar/high-latitude regions exceeded shared50000 work; exact wire/error/source hashes retained locally. The passing two-row workflow merges the high-latitude pair and tests other selections separately, without changing any budget.",
+    "First frozen run6159passed/2failed/27skipped exposed two old tests relying on silent default-spherical ROI against raw planar footprints. Original calls remain explicit rejection controls, with separate explicit-planar positives. No catalog/model rewrite.",
+    "Intermediate empty-output fix passed6163 tests but independent review showed invalid empty/out-of-bounds originals could be hidden by clipping. Replaced the shortcut with full original-input validation and existing bounded intersection; raw failures and pre-fix full receipts retained. Final report uses only the subsequent frozen run.",
+    "Review then found known typed-spherical clip model accepted only on empty catalogs; model admission now precedes row enumeration with a precharged actual-edge walk. Point/empty remain neutral. Intermediate6179-test full run retained, not used as final evidence."
+  ],
+  "limits_and_unverified": [
+    "Default spherical polygon ROI against raw planar catalog footprints now fails explicitly rather than silently applying GEOS; bounded mixed-curve transformations remain needed.",
+    "Spherical raster clipping/statistics, non-WGS84 CRS, geometry binary non-null maxError, public full sphere and measurement defaults remain gaps. Legacy unflagged raster route is still planar.",
+    "Empty inline merge output and CLOSED/GEOS boundary policies are local; Google same-data behavior and three existing strict S2 binary64 incidence/roundtrip failures remain unverified or unresolved.",
+    "No services deployed/restarted, browser/private real-data/new JVM/full Spark or Google runtime acceptance in this batch."
+  ],
+  "primary_sources": [
+    "https://developers.google.com/earth-engine/apidocs/ee-filter-intersects",
+    "https://developers.google.com/earth-engine/apidocs/ee-featurecollection-geometry",
+    "https://developers.google.com/earth-engine/apidocs/ee-errormargin",
+    "https://www.rfc-editor.org/rfc/rfc7946#section-3.1.1"
+  ],
+  "preservation": {
+    "accounts_research_data_credentials_read_or_modified": false,
+    "VMs_or_containers_used": false,
+    "system_or_existing_venv_modified": false,
+    "services_started_or_restarted": false,
+    "native_library_sha256": "01a3ef76605dcff33682555246ed3ab88a15c2754b816240f7cfba201e0503e5",
+    "native_source_and_dependency_locks_changed": false,
+    "goal_complete": false
+  },
+  "cleanup": {
+    "new_native_or_frontend_build_scratch_created": false,
+    "task_specific_uv_cache_removed": {
+      "files": 6,
+      "bytes": 1955
+    },
+    "raw_audits": "Small ignored receipts/logs retained; no raw local audits forced into public Git."
+  },
+  "receipt_sha256": {
+    "audit/gee-python-wave63/root/full-4.json": "8545abab87fd6c23d55b93368f0f31f9323072664bec1a99e179e7a1c4af7928",
+    "audit/gee-python-wave63/review/receipt.json": "c9874bbd0a5d24019753ead39460721842ee307e022321056dae690339cd3118",
+    "audit/gee-python-wave63/review/addendum-empty-catalog.json": "9979485bd29beaa43299914f579de51cd64bedaf979f1086d83eb08d34b35657",
+    "audit/gee-python-wave63/root/full-1.json": "f1edf925225cd8bc5f6e73e5934283e451b5daebf492aafaba3d2e8fa1d78b01",
+    "audit/gee-python-wave63/root/full-2.json": "da314b82a482fe36d5bb4390c4e40f197512078c5f55e61b910ebb53f67dd7cb",
+    "audit/gee-python-wave63/root/full-3.json": "5d89f76fc0c3b09345b5b7494b5342ec70a50c0f0462ae937d7f93b3c5107527",
+    "audit/gee-python-wave63/workflow/receipt.md": "ef727d0f42e79057fe902189b92001e3f5bf3e88a40c324e75e507de2a32f29c",
+    "audit/gee-python-wave63/workflow/four-region-budget-failure.json": "41b05ff4995fea3c9baa4e344f98ee6792a8c4aafa19b7078bd9bc7afcea8fca"
+  },
+  "frozen_tested_source_sha256": {
+    "examples/67_GEE_python_spatial_selection.py": "69feacb7b6be15641f57b216807f2a5409f08560f1e69c8c25e13f54541e4462",
+    "examples/javascript/21_\u7403\u9762\u7b5b\u9009\u4e0e\u7814\u7a76\u533a.js": "ef698dd589037f94573c1a32e89e246cd9162321d833078f7dde23ce13399b26",
+    "gee/compat/earthengine/capabilities.py": "3eb901a169b4e76a4f3e28d3fcc417d8d7cc44d3f8b6201c98b30ec1c2e75aa6",
+    "gee/compat/earthengine/catalog.py": "fea8fe52d0e0f5f104a68d696a612227e3505af502ea1df730c37558a7ce97ea",
+    "gee/compat/earthengine/collection_geometry.py": "91fd4a0e08272f3e800e7e94ade1d41973169e94cce5e272d43466f12d63754d",
+    "gee/compat/earthengine/collection_ops.py": "a8ff9e13df2b8616b3205f48c02b7402ee52eca4b2afbff0f24c89bc78a4c728",
+    "gee/compat/earthengine/compile.py": "395926b20be588ab950465e3cd082e3a438e647769dd1a7d72f9ab9123bf4c05",
+    "gee/compat/earthengine/dispatch.py": "bc2f2c89d72a7d94403938acbd9192308f1041b6768b59334b68cd061d12acbd",
+    "gee/compat/earthengine/error_margin.py": "209dd4d8894302a8d6b9323770f627fc4251dd7a45e33cc68325546c5589dc72",
+    "gee/compat/earthengine/feature_filters.py": "c7372959344146f9b74065d8b87a49e11e9d4f0caa128c9eda20a79f4e049c21",
+    "gee/compat/earthengine/feature_map_preflight.py": "94e7d5d565f82c633409c524f01cb756e6cc2438d814fd7e45327a1615ccc823",
+    "gee/compat/earthengine/feature_values.py": "bc9c79d63f5d158e2350f3ab38be43a7a03ec93ddbf38c7900af0795db82ab5a",
+    "gee/compat/earthengine/filter_metadata.py": "3eddd885e5d291ae13b0acf396ea66c217bf1ace04622ef7da1018e4f35ffad8",
+    "gee/compat/earthengine/filter_structure.py": "eae1bddb8eeb0f915973272c096bc9bc2266254cb7647621f8fef734af1b6111",
+    "gee/compat/earthengine/geometry_topology.py": "a277ae17db0fda2bef5a43bb775cc79a74b342d0030dfb04d86d126776141443",
+    "gee/compat/earthengine/image_ops.py": "b5adfe250ae7dbc06032b85ac7db7835832a4fbf7bc853e2d8a7cf3e23a5e4b9",
+    "gee/compat/earthengine/spatial_filters.py": "3f8cb9f0017bc3768577ab322e1440f26732690e8bad8a1d75067d62ed0f71f7",
+    "scripts/ee_inventory/catalogue.py": "0382bb77155510efbc5eaa41f1a6688b998cb741ec51d9670b28f45cc9fd1211",
+    "scripts/ee_inventory/geometry_binary.py": "62423a73af789ce4f492e31f3803f5f9cc00b3c3b735a0ec506caf2d32b89067",
+    "scripts/ee_inventory/spatial_consumers.py": "9cc0a6cb94344f6e2f52fe2845b66abaf6a64fadf4bfba3dffcf723f6bae8a56",
+    "tests/ee_spatial_selection_workflow_helpers.py": "66753474fd9ef1326fb75fec3fcaba574c34b53c28cf965bedb03ad475da06d5",
+    "tests/fixtures/ee-spatial-consumers-wave63-before-v1.json": "bcdf5162c1da9b7a39d9be963722d140fc088fe3d475113a9d017573898d92bd",
+    "tests/test_ee_catalog_spatial_empty.py": "0be9172f499fbc58943ad5a20c24c9d5cab6b1433a21d0e1ac0e9008797a6aae",
+    "tests/test_ee_collection_geometry.py": "17781107f60f8809c476b86a6b11dd40df3984deaacf961a866600c278a6aa0d",
+    "tests/test_ee_error_margin.py": "1011c07984230714caf7f32a778c542e35e40fbb0a521b4536bc342ba83e2527",
+    "tests/test_ee_feature_collections.py": "500251a8d7a837859c7aac45a1986394fb8564d5afbab3ddba37cd830ab3e309",
+    "tests/test_ee_feature_geometry_defaults.py": "f57694b3db98d7b80af31b6f676f4c4e24d82b39504d1a6851ea12faf2dd4087",
+    "tests/test_ee_spatial_filters.py": "389084973d3efe858cc48a4d8d76cb375c680f5486c909bc2616abccca005bf4",
+    "tests/test_ee_spatial_preflight.py": "3646379ea557d3b364865b4804085eaf27bd445070ab6b0eee56f47fed5b4a1a",
+    "tests/test_ee_spatial_selection_workflow.py": "a4ef784e3da5cbb698af824e0c55019d9b5b9cd05c0db0e7a52b65426255c8e3",
+    "tests/test_ee_spherical_workflow.py": "9727699fc455c11d05a71ec6753db0db63d056a1c9fc00f94129871bb8efac6f",
+    "tests/test_ee_translate.py": "57f891c47cc308df8c0c3f96b0817952ee8fad962df7e06f0ca0cec76d4db6a8"
+  }
+}

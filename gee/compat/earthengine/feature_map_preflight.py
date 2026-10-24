@@ -15,6 +15,9 @@ def _contract(name):
     from .geometry_binary import GEOMETRY_BINARY_ARGUMENTS
     from .feature_geometry_binary import FEATURE_GEOMETRY_BINARY_ARGUMENTS
     from .feature_values import FEATURE_GEOMETRY_ARGUMENTS
+    from .collection_geometry import COLLECTION_GEOMETRY_ARGUMENTS
+    from .error_margin import ERROR_MARGIN_ARGUMENTS
+    from .spatial_filters import SPATIAL_FILTER_ARGUMENTS
     from .image_band_preparation import BAND_PREPARATION_ARGUMENTS
     from .image_metadata_raster import IMAGE_METADATA_RASTER_ARGUMENTS
     from .image_unmix import IMAGE_UNMIX_ARGUMENTS
@@ -29,6 +32,8 @@ def _contract(name):
         GEOMETRY_CONSTRUCTOR_ARGUMENTS,
         GEOMETRY_BINARY_ARGUMENTS, FEATURE_GEOMETRY_BINARY_ARGUMENTS,
         FEATURE_GEOMETRY_ARGUMENTS,
+        COLLECTION_GEOMETRY_ARGUMENTS, ERROR_MARGIN_ARGUMENTS,
+        SPATIAL_FILTER_ARGUMENTS,
         BAND_PREPARATION_ARGUMENTS, IMAGE_METADATA_RASTER_ARGUMENTS,
         IMAGE_UNMIX_ARGUMENTS, RASTER_ARRAY_PREPARATION_ARGUMENTS,
         RASTER_ARRAY_DOT_ARGUMENTS,
