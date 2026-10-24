@@ -48,7 +48,11 @@ def test_remap_compiles_selected_band_with_canonical_wire_and_preserved_metadata
         "type": "Polygon",
         "coordinates": [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]],
     }
-    image = ee.Image("scene-a").set("marker", "kept").clip(clip)
+    base = ee.Image("scene-a").set("marker", "kept")
+    with pytest.raises(UnsupportedEEError, match="Image.clip spherical geometry edges"):
+        compile_value(ee, base.clip(clip).remap(
+            [1, 2.5], [7.25, 8], defaultValue=0, bandName="y"), local)
+    image = base.clip({**clip, "geodesic": False})
     result = compile_value(
         ee, image.remap([1, 2.5], [7.25, 8], defaultValue=0, bandName="y"), local,
     )

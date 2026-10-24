@@ -218,6 +218,12 @@ def test_full_source_bounds_and_float64_conversion_precede_output_grid_changes(e
     image = elevation_image(ee).clip(
         ee.Geometry.Rectangle([100.1, 30.1, 100.9, 30.9]),
     )
+    with pytest.raises(UnsupportedEEError, match="Image.clip spherical geometry edges"):
+        compile_sdk(ee, ee.Terrain.products(image),
+                    options={"region": EXPORT_REGION, "scale": 40})
+    image = elevation_image(ee).clip(
+        ee.Geometry.Rectangle([100.1, 30.1, 100.9, 30.9], geodesic=False),
+    )
     result = compile_sdk(
         ee, ee.Terrain.products(image),
         options={"region": EXPORT_REGION, "scale": 40},

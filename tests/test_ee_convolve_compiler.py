@@ -149,6 +149,11 @@ def test_full_source_bbox_clip_convolve_resample_and_export_region_order(ee):
     clip = ee.Geometry.Rectangle([100.1, 30.1, 100.9, 30.9])
     image = (ee.ImageCollection("sentinel-2-l2a").first()
              .select("nir").clip(clip).convolve(kernel))
+    with pytest.raises(UnsupportedEEError, match="Image.clip spherical geometry edges"):
+        compile_sdk(ee, image, options={"region": EXPORT_REGION, "scale": 40})
+    planar_clip = ee.Geometry.Rectangle([100.1, 30.1, 100.9, 30.9], geodesic=False)
+    image = (ee.ImageCollection("sentinel-2-l2a").first()
+             .select("nir").clip(planar_clip).convolve(kernel))
     result = compile_sdk(ee, image, options={"region": EXPORT_REGION, "scale": 40})
     graph = result["process_graph"]
     nodes = list(graph.values())

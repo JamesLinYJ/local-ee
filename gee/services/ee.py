@@ -252,6 +252,9 @@ def dispatch(backend,account,payload):
     if action=='export_table':
         compiled=compile_expression(payload.get('expression'),catalog,items,compile_options,
                                     for_table_export=True)
+    elif action=='evaluate':
+        compiled=compile_expression(payload.get('expression'),catalog,items,compile_options,
+                                    for_image_metadata=True)
     else:
         compiled=compile_expression(payload.get('expression'),catalog,items,compile_options)
     if any(node['process_id']=='local_ee_sample_regions' for node in compiled.get('process_graph',{}).values()):

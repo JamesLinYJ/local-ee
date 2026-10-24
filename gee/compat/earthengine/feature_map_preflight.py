@@ -6,6 +6,16 @@ from .geometry_values import GEOMETRY_TYPES
 from .ir import fail
 
 
+_BAND_STATE_ARGUMENTS = {
+    "Image.select": (frozenset({"input", "bandSelectors"}), frozenset({"newNames"})),
+    "Image.rename": (frozenset({"input", "names"}), frozenset()),
+    "Image.addBands": (frozenset({"dstImg", "srcImg"}), frozenset({"names", "overwrite"})),
+    "Image.bandNames": (frozenset({"image"}), frozenset()),
+    "Image.constant": (frozenset({"value"}), frozenset()),
+    "Collection.iterate": (frozenset({"collection", "function"}), frozenset({"first"})),
+}
+
+
 def _contract(name):
     from .element_metadata_values import ELEMENT_METADATA_VALUE_ARGUMENTS
     from .feature_structure import FEATURE_STRUCTURE_ARGUMENTS
@@ -28,6 +38,7 @@ def _contract(name):
     from .image_curves import IMAGE_CURVE_REQUIRED_ARGUMENTS, IMAGE_CURVE_OPTIONAL_ARGUMENTS
 
     for contracts in (
+        _BAND_STATE_ARGUMENTS,
         ELEMENT_METADATA_VALUE_ARGUMENTS, FEATURE_STRUCTURE_ARGUMENTS,
         FILTER_PREPARATION_ARGUMENTS, GEOMETRY_STRUCTURE_ARGUMENTS,
         GEOMETRY_CONSTRUCTOR_ARGUMENTS,
@@ -68,20 +79,30 @@ def preflight_empty_feature_map(translator, function):
         if depth > 96:
             fail("Empty Feature map callback exceeds the serialized depth limit")
         if type(value) not in (dict, list):
-            return
+            return 0
         key = (id(value), id(scope))
         if key in active:
             fail("Empty Feature map callback contains a serialized cycle")
-        if key in complete:
-            return
+        cached = complete.get(key)
+        if cached is not None:
+            height = cached[2]
+            if depth + height > 96:
+                fail("Empty Feature map callback exceeds the serialized depth limit")
+            return height
         active.add(key)
+        height = 0
+
+        def descend(child, child_scope=scope):
+            nonlocal height
+            height = max(height, 1 + walk(child, child_scope, depth + 1))
+
         try:
             if type(value) is list:
                 if len(value) > 10000:
                     fail("Inline list exceeds 10000 values in empty Feature map")
                 charge_array(translator, len(value))
                 for child in value:
-                    walk(child, scope, depth + 1)
+                    descend(child)
             else:
                 kind = value.get("type")
                 if kind is not None and type(kind) is not str:
@@ -90,7 +111,7 @@ def preflight_empty_feature_map(translator, function):
                     reference = value.get("value")
                     if type(reference) is not str or reference not in scope:
                         fail("Empty Feature map callback has an unknown value reference")
-                    walk(scope[reference], scope, depth + 1)
+                    descend(scope[reference])
                 elif kind == "CompoundValue":
                     pairs = value.get("scope", [])
                     if type(pairs) is not list:
@@ -102,7 +123,7 @@ def preflight_empty_feature_map(translator, function):
                                 or type(pair[0]) is not str or pair[0] in nested):
                             fail("Empty Feature map callback has an invalid scope reference")
                         nested[pair[0]] = pair[1]
-                    walk(value.get("value"), nested, depth + 1)
+                    descend(value.get("value"), nested)
                 elif kind == "Invocation":
                     arguments = value.get("arguments", {})
                     if type(arguments) is not dict:
@@ -126,18 +147,18 @@ def preflight_empty_feature_map(translator, function):
                             if required - arguments.keys():
                                 fail(f"{name} is missing required arguments in empty Feature map")
                     else:
-                        walk(value.get("function"), scope, depth + 1)
+                        descend(value.get("function"))
                     for child in arguments.values():
-                        walk(child, scope, depth + 1)
+                        descend(child)
                 elif kind == "Function":
-                    walk(value.get("body"), scope, depth + 1)
+                    descend(value.get("body"))
                 elif kind == "Dictionary":
                     entries = value.get("value", {})
                     if type(entries) is not dict:
                         fail("Empty Feature map callback dictionary must be an object")
                     charge_array(translator, len(entries))
                     for child in entries.values():
-                        walk(child, scope, depth + 1)
+                        descend(child)
                 elif kind in GEOMETRY_TYPES or kind == "ArgumentRef":
                     pass
                 elif kind:
@@ -145,12 +166,15 @@ def preflight_empty_feature_map(translator, function):
                 else:
                     charge_array(translator, len(value))
                     for child in value.values():
-                        walk(child, scope, depth + 1)
+                        descend(child)
         finally:
             active.remove(key)
         charge_array(translator, 1)
         # Retain both identities for this bounded walk, including temporary
         # CompoundValue scopes, so recycled ids cannot authorize a cache hit.
-        complete[key] = (value, scope)
+        # Reusing a shallow occurrence must not hide the same subtree's true
+        # depth when it is reached under a longer path later in this DAG.
+        complete[key] = (value, scope, height)
+        return height
 
     walk(function.body, translator.scope, 0)

@@ -260,6 +260,12 @@ def test_first_clip_mask_input_is_widened_before_fast_transform(ee):
              .clip(ee.Geometry.Rectangle([100.1, 30.1, 100.9, 30.9]))
              .updateMask(ee.Image.constant(1))
              .fastDistanceTransform(neighborhood=2))
+    with pytest.raises(UnsupportedEEError, match="Image.clip spherical geometry edges"):
+        compile_sdk(ee, image)
+    image = (source(ee).select("nir")
+             .clip(ee.Geometry.Rectangle([100.1, 30.1, 100.9, 30.9], geodesic=False))
+             .updateMask(ee.Image.constant(1))
+             .fastDistanceTransform(neighborhood=2))
     result = compile_sdk(ee, image)
     graph = result["process_graph"]
     nodes = list(graph.values())

@@ -101,6 +101,8 @@ class Graph(PixelCompiler, BandLabels):
         return self.sources[source]
 
     def image(self, image):
+        if not image.bands:
+            fail("Zero-band Images contain no raster bands; add actual bands before raster computation or export")
         seen = set()
         def collect(value, full_extent=False):
             if isinstance(value, Pixel):

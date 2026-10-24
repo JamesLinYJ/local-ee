@@ -18,11 +18,14 @@ from .runtime_feature_ir import (
 )
 
 
-def compile_expression(expression, catalog, items, options=None, *, for_table_export=False):
+def compile_expression(expression, catalog, items, options=None, *, for_table_export=False,
+                       for_image_metadata=False):
     """Compile one legacy ee.Serializer.encode value; no network or execution.
 
     Internal load_collection._gee_item_ids must be validated and materialized
     only by the trusted backend; this function does not resolve file paths.
+    for_image_metadata permits describing a zero-band Image without creating
+    a raster graph. Raster consumers must keep the default False.
     """
     if isinstance(expression, str):
         try: expression = json.loads(expression)
@@ -86,8 +89,19 @@ def compile_expression(expression, catalog, items, options=None, *, for_table_ex
                                  "bands":[{"id":n} for n,_ in im.bands]} for i,im in enumerate(value.images)],
                     "has_time_dimension":True,"warnings":translator.warnings,"properties":{}})
         if isinstance(value, (Image, Collection)):
-            graph = Graph(translator)
             image = value.image if isinstance(value, Collection) else value
+            if for_image_metadata and not image.bands:
+                # Image.getInfo describes the object, rather than requesting a
+                # pixel cube. A bandless object needs no invented raster node
+                # or discarded source pixels to describe its schema.
+                return public_result({
+                    "kind": "collection" if isinstance(value, Collection) else "image",
+                    "bands": [], "properties": image.props,
+                    "warnings": translator.warnings, "metadata_only": True,
+                    "has_time_dimension": isinstance(value, Collection),
+                    "source_item_ids": list(image.source.ids) if image.source else [],
+                })
+            graph = Graph(translator)
             ref, timed = graph.image(image)
             return public_result({"kind": "collection" if isinstance(value, Collection) else "image",
                     "process_graph": graph.finish(ref), "bands": [n for n, _ in image.bands],

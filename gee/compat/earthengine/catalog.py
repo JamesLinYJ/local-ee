@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import math
-import re
 from dataclasses import replace
 
 from ...dem_contract import (
@@ -16,6 +15,7 @@ from .ir import (
     ImageSequence,
     Pixel,
     Source,
+    UnsupportedEEError,
     as_image,
     const,
     fail,
@@ -176,7 +176,6 @@ class CatalogOperations:
     def footprint(self, value):
         from shapely.geometry import mapping, shape
         from shapely.ops import unary_union
-        from .geometry_consumers import reject_spherical_edges
 
         if isinstance(value, ImageSequence):
             geometries = [self.footprint(image) for image in value.images]
@@ -187,13 +186,40 @@ class CatalogOperations:
                 return value.footprint
             if value.source is None:
                 fail("Image geometry requires a source footprint")
-            geometries = [self.member(value.source, iid)["geometry"] for iid in value.source.ids]
+            from .geometry_preflight import _charge, measure_geometry
+            from .geometry_topology import geometry_edge_models
+            from .spatial_filters import _own_catalog_geometry
+
+            geometries = [
+                _own_catalog_geometry(
+                    self, self.member(value.source, iid)["geometry"],
+                )
+                for iid in value.source.ids
+            ]
             for geometry in geometries:
-                reject_spherical_edges(self, geometry, "Image.geometry")
+                cost = measure_geometry(geometry)
+                _charge(self, cost.nodes + cost.positions, "Image.geometry model scan")
+                if any(model is True for model in geometry_edge_models(geometry)):
+                    fail("Image.geometry spherical geometry edges require a spherical raster/reprojection adapter")
+            clip = None
             if value.footprint is not None:
-                reject_spherical_edges(self, value.footprint, "Image.geometry")
+                clip = _own_catalog_geometry(self, value.footprint)
+                cost = measure_geometry(clip)
+                _charge(self, cost.nodes + cost.positions, "Image.geometry clip model scan")
+                if any(model is True for model in geometry_edge_models(clip)):
+                    fail("Image.geometry spherical geometry edges require a spherical raster/reprojection adapter")
             base = unary_union([shape(geometry) for geometry in geometries])
-            return mapping(base.intersection(shape(value.footprint)) if value.footprint else base)
+            result = mapping(base.intersection(shape(clip)) if clip else base)
+            kind = result.get("type")
+            if kind in {"LineString", "LinearRing", "MultiLineString", "Polygon",
+                        "MultiPolygon", "GeometryCollection"}:
+                # This branch used only explicitly planar catalog/clip edges
+                # with GEOS. Keep that model visible to downstream EE geometry
+                # consumers instead of returning an unflagged spherical value.
+                result["geodesic"] = False
+                if kind in {"Polygon", "MultiPolygon"}:
+                    result["evenOdd"] = True
+            return result
         elif isinstance(value, dict) and value.get("type") == "Feature":
             return value["geometry"]
         elif isinstance(value, dict) and value.get("type") == "FeatureCollection":
@@ -202,6 +228,8 @@ class CatalogOperations:
             fail("Geometry requires an Image, Collection or Feature")
         if not geometries:
             fail("An empty collection has no footprint")
+        from .geometry_consumers import reject_spherical_edges
+
         for geometry in geometries:
             reject_spherical_edges(self, geometry, "Collection.geometry")
         return mapping(unary_union([shape(geometry) for geometry in geometries]))
@@ -212,41 +240,118 @@ class CatalogOperations:
         if isinstance(image, Collection):
             return replace(image, image=self.select(image.image, selectors, names))
         image = as_image(image)
+        from .array_core import charge_array
+
+        if type(image.bands) is not list or len(image.bands) > 10_000:
+            fail("Image.select supports at most10000 input bands")
         selectors = selectors if isinstance(selectors, list) else [selectors]
+        if len(selectors) > 10_000:
+            fail("Image.select supports at most10000 selectors")
+        charge_array(self, len(selectors) + 1)
+        has_string_selector = any(isinstance(selector, str) for selector in selectors)
+        if has_string_selector:
+            charge_array(self, len(image.bands) + 1)
+            for band in image.bands:
+                if (type(band) is not tuple or len(band) != 2
+                        or type(band[0]) is not str):
+                    fail("Image.select requires named Pixel bands")
+
+        # Exact selector work depends on the candidate's length.  Comparing a
+        # long selector to a differently sized band name is an O(1) length
+        # check, so do not charge or scan every band name just to find that
+        # out.  Reserve all comparisons before performing any equality test.
+        selection_work = 0
+        for selector in selectors:
+            if isinstance(selector, str):
+                selection_work += len(image.bands) + 1
+                selection_work += sum(
+                    len(selector) for name, _ in image.bands
+                    if len(name) == len(selector)
+                )
+            elif isinstance(selector, int) and not isinstance(selector, bool):
+                selection_work += 1
+            else:
+                fail("Band selectors must be strings or zero-based integer indices")
+        charge_array(self, selection_work)
+
         output = []
         for selector in selectors:
             if isinstance(selector, int) and not isinstance(selector, bool):
                 if selector < 0 or selector >= len(image.bands):
                     fail(f"Band index out of range: {selector}")
-                output.append(image.bands[selector])
+                matched = [image.bands[selector]]
             elif isinstance(selector, str):
-                matched = [band for band in image.bands if band[0] == selector]
+                matched = [
+                    band for band in image.bands
+                    if len(band[0]) == len(selector) and band[0] == selector
+                ]
                 if not matched:
+                    from .regex_values import compile_pattern
+
+                    # Pay for the bounded subject-list copy before allocating it;
+                    # compile_pattern separately charges UTF-8 and RE2 scan work.
+                    charge_array(self, len(image.bands) + 1)
                     try:
-                        pattern = re.compile(selector)
-                    except re.error:
-                        fail(f"Invalid band selector: {selector}")
-                    matched = [band for band in image.bands if pattern.fullmatch(band[0])]
+                        pattern = compile_pattern(
+                            self, selector, tuple(name for name, _ in image.bands),
+                        )
+                    except UnsupportedEEError as exc:
+                        # Keep the existing selector-facing diagnostic for
+                        # unsupported RE2 syntax while allowing all shared
+                        # work and size-budget failures to propagate intact.
+                        if ("Regular expression is invalid or uses syntax unsupported by RE2"
+                                in str(exc)):
+                            fail(f"Invalid band selector: {selector}")
+                        raise
+                    matched = [
+                        band for band in image.bands
+                        if pattern.fullmatch(band[0])
+                    ]
                 if not matched:
+                    from .array_core import charge_array
+
+                    charge_array(self, len(image.bands) + 1)
+                    charge_array(self, sum(len(name) + 1 for name, _ in image.bands))
                     available = [name for name, _ in image.bands]
                     fail(f"Band selector {selector!r} did not match; available: {available}")
-                output.extend(matched)
             else:
+                # Non-string selector types were rejected in the preflight.
                 fail("Band selectors must be strings or zero-based integer indices")
-        if len({name for name, _ in output}) != len(output):
+            if len(output) + len(matched) > 10_000:
+                fail("Image.select exceeds10000 output bands")
+            output.extend(matched)
+        charge_array(self, len(output) + 1)
+        output_name_work = sum(len(name) + 1 for name, _ in output)
+        charge_array(self, output_name_work)
+        output_names = [name for name, _ in output]
+        if len(set(output_names)) != len(output):
             fail("Repeated selected bands are not supported")
         if names is not None:
-            valid_names = (
-                isinstance(names, list)
-                and len(names) == len(output)
-                and all(isinstance(name, str) for name in names)
-                and len(set(names)) == len(names)
-            )
-            if not valid_names:
+            if not isinstance(names, list) or len(names) != len(output):
+                fail("New band names must be distinct strings matching the band count")
+            charge_array(self, len(names) + 1)
+            if any(not isinstance(name, str) for name in names):
+                fail("New band names must be distinct strings matching the band count")
+            charge_array(self, sum(len(name) + 1 for name in names))
+            if len(set(names)) != len(names):
                 fail("New band names must be distinct strings matching the band count")
             output = [(name, pixel) for name, (_, pixel) in zip(names, output)]
+        # The pinned EE clients serialize select([]) as an ordinary empty
+        # bandSelectors list.  Keep the Image envelope (including its source,
+        # footprint and properties) while dropping every selected Pixel DAG;
+        # downstream raster consumers decide whether their operation accepts
+        # a zero-band image.
         if not output:
-            fail("Zero-band images are not supported")
+            from .owned_metadata_values import owned_metadata_copy
+
+            props = owned_metadata_copy(self, image.props, "Image.select properties")
+            if image.footprint is None:
+                footprint = None
+            else:
+                from .spatial_filters import _own_catalog_geometry
+
+                footprint = _own_catalog_geometry(self, image.footprint)
+            return replace(image, bands=output, props=props, footprint=footprint)
         return replace(image, bands=output)
 
     def first(self, collection):

@@ -1,5 +1,7 @@
 """Strict SDK contracts and resource boundaries for raster array cat/repeat."""
 from copy import deepcopy
+import hashlib
+import json
 from pathlib import Path
 
 import numpy as np
@@ -319,7 +321,7 @@ def test_rank_eight_and_64_cell_concatenation_boundaries_are_real_sdk_compilatio
         )
 
 
-def test_deep_array_expression_hits_the_real_500_process_graph_cap(ee, high_local):
+def test_deep_array_expression_hits_the_shared_resource_cap(ee, high_local):
     image = ee.ImageCollection("sentinel-2-l2a").first()
     base = image.select(HIGH_BANDS[:32]).toArray().arrayCat(
         image.select(HIGH_BANDS[32:64]).toArray(), 0)
@@ -327,8 +329,16 @@ def test_deep_array_expression_hits_the_real_500_process_graph_cap(ee, high_loca
     for _ in range(10):
         chained = chained.add(base)
     expression = chained.arrayFlatten([[f"v{index}" for index in range(64)]])
-    with pytest.raises(UnsupportedEEError, match="500 nodes"):
-        compile_value(ee, expression, high_local)
+    encoded = encode(ee, expression)
+    original = deepcopy(encoded)
+    assert hashlib.sha256(json.dumps(
+        encoded, sort_keys=True, separators=(",", ":"),
+    ).encode()).hexdigest() == "3026033fbb9d9482125f2cc4d445832bd91a8701d5686f24bc8cd7edc9710bc4"
+    # The same previously rejected graph now reaches paid selection/copy work
+    # before node allocation. Both original 50000-work/500-node caps remain.
+    with pytest.raises(UnsupportedEEError, match="Static Array operation exceeds the compilation work budget"):
+        compile_expression(encoded, high_local["catalog"], high_local["items"])
+    assert encoded == original
 
 
 def _raw_arrays():

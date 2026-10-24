@@ -232,6 +232,10 @@ def as_image(value: Any) -> Image:
 
 def pairs(a: Any, b: Any):
     a, b = as_image(a), as_image(b)
+    if bool(a.bands) != bool(b.bands):
+        # One-band broadcasting has no proven zero-band counterpart. Reject
+        # this local gap symmetrically instead of silently erasing one input.
+        fail("Zero-band Image arithmetic with a nonempty Image is unsupported")
     if len(a.bands) == 1 and len(b.bands) > 1:
         return a, b, [(name, a.bands[0][1], pixel) for name, pixel in b.bands]
     if len(b.bands) == 1:

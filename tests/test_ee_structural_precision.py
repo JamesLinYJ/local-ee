@@ -115,15 +115,18 @@ def _evaluate_distance_input(result, arrays):
     )
 
 
-def _first_clip_mask_distance(ee):
+def _first_clip_mask_distance(ee, *, planar=False):
+    options = {"geodesic": False} if planar else {}
     return (source(ee).select("nir")
-            .clip(ee.Geometry.Rectangle([100.1, 30.1, 100.9, 30.9]))
+            .clip(ee.Geometry.Rectangle([100.1, 30.1, 100.9, 30.9], **options))
             .updateMask(ee.Image.constant(1))
             .distance(kernel=ee.Kernel.euclidean(0)))
 
 
 def test_first_clip_update_mask_distance_keeps_actual_subnormal(ee, monkeypatch):
-    result = compile_sdk(ee, _first_clip_mask_distance(ee))
+    with pytest.raises(UnsupportedEEError, match="Image.clip spherical geometry edges"):
+        compile_sdk(ee, _first_clip_mask_distance(ee))
+    result = compile_sdk(ee, _first_clip_mask_distance(ee, planar=True))
     process_graph = result["process_graph"]
     nodes = list(process_graph.values())
     drop = next(node for node in nodes
@@ -152,13 +155,15 @@ def test_float32_callback_fixture_proves_pre_rewrite_subnormal_loss(
         ee, monkeypatch):
     from gee.compat.earthengine.pixel_graph import PixelCompiler
 
-    fixed = compile_sdk(ee, _first_clip_mask_distance(ee))
+    with pytest.raises(UnsupportedEEError, match="Image.clip spherical geometry edges"):
+        compile_sdk(ee, _first_clip_mask_distance(ee))
+    fixed = compile_sdk(ee, _first_clip_mask_distance(ee, planar=True))
     with monkeypatch.context() as disabled:
         disabled.setattr(
             PixelCompiler, "_prepare_double_structural_rewrite",
             lambda self, pixel: None,
         )
-        pre_rewrite = compile_sdk(ee, _first_clip_mask_distance(ee))
+        pre_rewrite = compile_sdk(ee, _first_clip_mask_distance(ee, planar=True))
 
     tiny = np.nextafter(np.float64(0), np.float64(1))
     arrays = {

@@ -258,6 +258,18 @@ def bind_source_bands(
 
     memo = {}
     template = None
+    binding_destination = destination
+    context_checked = False
+
+    def grid_destination():
+        nonlocal binding_destination, context_checked
+        if not context_checked:
+            from .image_binding_context import binding_context
+
+            binding_destination = binding_context(translator, destination)
+            context_checked = True
+        return binding_destination
+
     bound = []
     for name, pixel in source.bands:
         # A weighted constant needs two independently bound grid branches. Do
@@ -266,6 +278,7 @@ def bind_source_bands(
         if is_masked_constant_candidate(pixel):
             masked = bind_masked_pixel(
                 pixel, source, destination, translator, name,
+                destination_factory=grid_destination,
             )
             if masked is None:
                 fail("Internal masked constant binding shape changed")
@@ -275,10 +288,11 @@ def bind_source_bands(
             bound.append((name, pixel))
             continue
         if template is None:
-            template = destination_template(destination)
+            binding_destination = grid_destination()
+            template = destination_template(binding_destination)
         if template is None:
             fail("Cannot bind a constant band without a finite local raster grid in dstImg")
-        bound.append((name, _bind_pixel(pixel, destination, template, source)))
+        bound.append((name, _bind_pixel(pixel, binding_destination, template, source)))
     return bound
 
 

@@ -5,6 +5,7 @@ from gee.compat.earthengine.decoder import Translator
 from gee.compat.earthengine.geometry_consumers import reject_spherical_edges
 from gee.compat.earthengine.image_ops import invoke_image
 from gee.compat.earthengine.ir import Image, Reducer, UnsupportedEEError, const
+from gee.compat.earthengine.geometry_values import GeometryValue
 from gee.compat.earthengine.spherical_wire import FULL_SPHERE
 
 
@@ -38,10 +39,17 @@ def test_full_sphere_clip_has_a_clear_error_instead_of_dict_attribute_error():
 
 def test_legacy_planar_inputs_and_edgeless_points_keep_their_existing_route():
     translator = Translator([], {}, {})
-    reject_spherical_edges(translator, geometry(False), "clip")
-    reject_spherical_edges(translator, {"type": "Point", "coordinates": [1, 2],
-                                        "geodesic": True}, "clip")
-    assert translator.steps == 2
+    planar = geometry(False)
+    point = {"type": "Point", "coordinates": [1, 2], "geodesic": True}
+    reject_spherical_edges(translator, planar, "clip")
+    reject_spherical_edges(translator, point, "clip")
+    from gee.compat.earthengine.geometry_preflight import measure_geometry
+
+    expected = sum(
+        cost.nodes + cost.positions
+        for cost in (measure_geometry(planar), measure_geometry(point))
+    )
+    assert translator.steps == expected
 
 
 def test_nested_public_spherical_flags_cannot_bypass_the_consumer_guard():
@@ -63,3 +71,44 @@ def test_consumer_flag_inspection_is_finite_and_charged():
     cyclic["geometries"].append(cyclic)
     with pytest.raises(UnsupportedEEError, match="finite nesting"):
         reject_spherical_edges(Translator([], {}, {}), cyclic, "clip")
+
+
+def test_typed_sidecar_models_are_resolved_but_points_and_empty_values_are_neutral():
+    typed_spherical = GeometryValue(
+        {key: value for key, value in geometry().items() if key != "geodesic"},
+        {"geodesic": True}, validated=True,
+    )
+    with pytest.raises(UnsupportedEEError, match="spherical geometry edges"):
+        reject_spherical_edges(Translator([], {}, {}), typed_spherical, "clip")
+
+    point = GeometryValue(
+        {"type": "Point", "coordinates": [1, 2]}, {"geodesic": True},
+        validated=True,
+    )
+    empty_collection = GeometryValue(
+        {"type": "GeometryCollection", "geometries": []},
+        {"geodesic": True}, validated=True,
+    )
+    empty_multi = GeometryValue(
+        {"type": "MultiPolygon", "coordinates": []}, {"geodesic": True},
+        validated=True,
+    )
+    for value in (point, empty_collection, empty_multi):
+        reject_spherical_edges(Translator([], {}, {}), value, "clip")
+
+
+def test_untyped_unflagged_geojson_keeps_the_legacy_planar_default():
+    raw = {key: value for key, value in geometry().items() if key != "geodesic"}
+    reject_spherical_edges(Translator([], {}, {}), raw, "clip")
+
+
+def test_feature_collection_geometry_route_imports_and_uses_shared_guard():
+    translator = Translator([], {}, {})
+    result = translator.footprint({
+        "type": "FeatureCollection",
+        "features": [{"type": "Feature", "geometry": {
+            key: value for key, value in geometry(False).items()
+            if key != "geodesic"
+        }}],
+    })
+    assert result["type"] == "Polygon"

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from . import collection_ops, filtering, image_ops, metadata_ops, value_ops
 from .collection_metadata import handles_collection_metadata, invoke_collection_metadata
-from .ir import ImageSequence, fail
+from .ir import Collection, ImageSequence, fail
 
 
 _SIMPLE_ARGUMENTS = {
@@ -295,6 +295,11 @@ def invoke(translator, name, arguments):
 
     if handles_feature(name, a):
         return invoke_feature(translator, name, a)
+    if (name == "Collection.iterate"
+            and isinstance(a.get("collection"), (Collection, ImageSequence))):
+        from .image_collection_iterate import invoke_image_collection_iterate
+
+        return invoke_image_collection_iterate(translator, a)
     if name == "Number.format":
         from .number_format import format_number
 

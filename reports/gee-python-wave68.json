@@ -1,0 +1,444 @@
+{
+  "schema": "local-ee-gee-python-wave68/v1",
+  "date": "2026-10-25",
+  "status": "bounded offline wave verified; full project goal active",
+  "base_commit": "670b22e6206078fa305c29fa9ece7dca43c468aa",
+  "focus": [
+    "Actual zero-band select/rename and addBands/List/ImageCollection finite accumulators; transparent Image() remains one band",
+    "Metadata-only zero-band getInfo without graph/jobs; map/export/sampling require actual raster bands",
+    "First-image identity/properties/effective footprint independent of retained scientific source and finite binding grid",
+    "Owned geometry/metadata copies with effective planar/spherical edge models preserved",
+    "RE2 full-match selection and bounded catalog-frame/callback/lineage depth and work checks"
+  ],
+  "coverage": {
+    "entry_names_supported": 710,
+    "pinned_entry_names": 991,
+    "entry_name_percentage": 71.64,
+    "semantic_or_google_equivalence_percentage": null,
+    "note": "Existing entries gained signatures and compositions; this is not full signature/default/algorithm coverage."
+  },
+  "local_validation": {
+    "full_regression": {
+      "summary": "6576 passed, 27 skipped, 53 warnings in 75.92s (0:01:15)",
+      "source_files_hashed": 44,
+      "source_stable": true,
+      "seconds_wall": 76.677
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typecheck": "passed",
+      "temporary_build": "passed",
+      "source_stable": true,
+      "temporary_output_removed": true,
+      "deployed": false
+    },
+    "official_clients": {
+      "final_cases_per_client": 14,
+      "canonical_semantic_graphs_equal": true,
+      "original_probes_per_client": 18,
+      "google_calls": 0,
+      "network_attempts": 0,
+      "note": "Raw Python/JS SDK wires and five explicit review expectation corrections retained separately."
+    },
+    "synthetic_raster_reference": {
+      "cells": 24,
+      "evaluated_band_order": [
+        "red",
+        "nir",
+        "red_1",
+        "nir_1",
+        "red_total",
+        "nir_total"
+      ],
+      "maximum_absolute_error": 0.0,
+      "missing_cells": 6,
+      "negative_science_values": 3,
+      "numeric_cells": 18,
+      "numeric_or_mask_mismatches": 0,
+      "reference_source": "Independent explicit fixture arrays and per-cell sum rules; local process-graph evaluation only."
+    },
+    "first_footprint_reference": {
+      "cases": 9,
+      "cells": 36,
+      "finite": 15,
+      "missing": 21,
+      "maximum_absolute_error": 0,
+      "actual_input_arrays": [
+        "scene-b"
+      ],
+      "metadata_identity": "scene-a",
+      "constant": 7,
+      "metadata_value": 123.5,
+      "reference": "Independent rectangular interval membership and explicit donor values; graph evaluator only."
+    },
+    "physical_csv": {
+      "row_count": 4,
+      "columns": [
+        "system:index",
+        "red",
+        "nir",
+        "red_1",
+        "nir_1",
+        "red_total",
+        "nir_total",
+        ".geo"
+      ],
+      "science_value_cells_asserted": 24,
+      "missing_cells_encoded_as_empty_fields": 6,
+      "sha256": "ebdd8c00bc13450a70b356073f7ae7fe18c892f590747d691fcd989ec5460e13"
+    },
+    "transport": {
+      "actions": {
+        "evaluate": 5,
+        "export_image": 1,
+        "map": 1,
+        "result": 1
+      },
+      "actual_components": [
+        "LocalEETransport.request JSON encoding, HTTP request/poll/response handling",
+        "ee.data.computeValue captured from configure_local_ee before the test harness override",
+        "real in-process gee.services.ee.dispatch",
+        "real worker.finish and SampledFeatureTable CSV writer"
+      ],
+      "connections_closed": true,
+      "map_and_export_rejection": {
+        "http_status": 400,
+        "jobs_created": 0,
+        "message": "Zero-band Images contain no raster bands; add actual bands before raster computation or export"
+      },
+      "mock_boundary": "Only HTTPConnection is replaced. Its request method captures actual serialized body/headers; getresponse dispatches parsed bodies through the real local service in-process. No TCP server or native raster producer is involved.",
+      "sample_getinfo": {
+        "feature_count": 4,
+        "finished_jobs": 1,
+        "independent_reference_rows_injected": true,
+        "pending_then_result": true
+      },
+      "sdk_entrypoints": "Official Python Image.getInfo, bandNames().getInfo, Map.addLayer, Export.image.toDrive Task.start, and sample.getInfo"
+    },
+    "independent_review": {
+      "raw_controls": 148,
+      "original_expectation_corrections": 5,
+      "unexpected": [],
+      "production_hashes_stable": true,
+      "model": "gpt-6.1-sol",
+      "scope": "Scoped correctness/source/SDK/compiler controls; not a repository-wide security audit."
+    },
+    "native_engine": "No local native rebuild or new native raster producer acceptance in this wave. The unchanged CI workflow builds the existing pinned S2 adapter; inherited suite components remain separate from full engine acceptance.",
+    "Google": "No authentication or computation; offline verification is the user-authorized default."
+  },
+  "fixed_issues": [
+    "Empty select/rename formerly rejected or confused with transparent single-band constructors",
+    "Dropped source metadata could replace actual retained science grid when binding constants or Image.metadata()",
+    "Empty destination could lose original effective source footprint or alias mutable metadata",
+    "Tuple GeoJSON ownership and GeometryValue sidecars could fail or silently change edge models",
+    "Shared Pixel/callback memo could hide deeper occurrences; generated frame wrappers and atomic leaves now count",
+    "Selection scans/comparisons, frame allocation and metadata copies are charged before work",
+    "Python regex accepted unsupported RE2 lookahead/backreferences; shared bounded RE2 now used",
+    "Collection footprint union lacked the canonical spherical guard import"
+  ],
+  "unchanged_limits": {
+    "shared_work": 50000,
+    "depth": 96,
+    "graph_nodes": 500,
+    "finite_iterate_frames": 1000,
+    "image_input_bands": 10000
+  },
+  "historical_negative_diagnostics": [
+    {
+      "case": "deep_array_concat",
+      "wire_sha256": "3026033fbb9d9482125f2cc4d445832bd91a8701d5686f24bc8cd7edc9710bc4",
+      "before": {
+        "error": "Compiled process graph exceeds 500 nodes; reduce the script scope",
+        "steps": 8455,
+        "emitted_nodes": 500
+      },
+      "after": {
+        "error": "Static Array operation exceeds the compilation work budget",
+        "steps": 34668,
+        "emitted_nodes": 0
+      },
+      "same_wire": true,
+      "new_compatibility_pass": false
+    },
+    {
+      "case": "svd_truncation_reconstruction",
+      "wire_sha256": "cf9ac2f5672e6d7ab1f2d2017bfad18536e0c41a149ecda430f94bee30b2d1bf",
+      "before": {
+        "error": "Numeric raster grid validation exceeds the shared 50000-step work budget",
+        "steps": 50000,
+        "emitted_nodes": 347
+      },
+      "after": {
+        "error": "Float64 Image operation is unsupported: Image.multiply exceeds the shared 50000-step compilation work budget",
+        "steps": 49960,
+        "emitted_nodes": 341
+      },
+      "same_wire": true,
+      "new_compatibility_pass": false
+    }
+  ],
+  "withdrawn_incorrect_acceptances": [
+    {
+      "case": "clip_default_polygon",
+      "wire_sha256": "1f3cf79668a3bce60e097d4b2b1ee293bd6ea3f08dee91e62539e9bb6c6658ea",
+      "before": "incorrectly accepted by planar raster consumer",
+      "after": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+      "same_wire": true,
+      "separate_explicit_planar_control": "passed in full regression",
+      "new_compatibility_pass": false
+    },
+    {
+      "case": "region_default_polygon",
+      "wire_sha256": "b0363614af2cd5ea3e44d811f9b7e2f5b1593a4e4c46395fd03c2889117b0d67",
+      "before": "incorrectly accepted by planar raster consumer",
+      "after": "Image.reduceRegion spherical geometry edges require a spherical raster/reprojection adapter",
+      "same_wire": true,
+      "separate_explicit_planar_control": "passed in full regression",
+      "new_compatibility_pass": false
+    },
+    {
+      "case": "wrapped_region_default_polygon",
+      "wire_sha256": "f96c02bbb66dac2e7e559f1d8874197f52faa071d4dc68af1bd409c162fcf980",
+      "before": "incorrectly accepted by planar raster consumer",
+      "after": "Image.reduceRegion spherical geometry edges require a spherical raster/reprojection adapter",
+      "same_wire": true,
+      "separate_explicit_planar_control": "passed in full regression",
+      "new_compatibility_pass": false
+    },
+    {
+      "case": "tests/test_ee_band_label_compilation.py::test_mask_clip_and_float_cast_remain_across_delayed_output_label",
+      "wire_sha256": "b328f01021a6a46c50477ac787888bc85e8945a82a2185488c42e4dd3d90306b",
+      "before": "accepted",
+      "after": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+      "same_wire": true,
+      "new_compatibility_pass": false,
+      "separate_explicit_planar_control": "passed in full regression"
+    },
+    {
+      "case": "tests/test_ee_convolve_compiler.py::test_full_source_bbox_clip_convolve_resample_and_export_region_order",
+      "wire_sha256": "a24307c149af20516040f2ee81b1c72d8109d0faa7680e2f4e8761760c866fd6",
+      "before": "accepted",
+      "after": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+      "same_wire": true,
+      "new_compatibility_pass": false,
+      "separate_explicit_planar_control": "passed in full regression"
+    },
+    {
+      "case": "tests/test_ee_fast_distance_compiler.py::test_first_clip_mask_input_is_widened_before_fast_transform",
+      "wire_sha256": "f3840b05c9179ce4675ba30b0dbbfc49c8f6ffbeb4e9cb0e6bfec27d1f7e3049",
+      "before": "accepted",
+      "after": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+      "same_wire": true,
+      "new_compatibility_pass": false,
+      "separate_explicit_planar_control": "passed in full regression"
+    },
+    {
+      "case": "tests/test_ee_image_distance_compiler.py::test_distance_preserves_mapped_time_and_full_input_bounds_before_output_roi",
+      "wire_sha256": "07c64c16da3290e6c20a5fec706cbba12cf679c2cb4f77692f5fd1bb06aad9c8",
+      "before": "accepted",
+      "after": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+      "same_wire": true,
+      "new_compatibility_pass": false,
+      "separate_explicit_planar_control": "passed in full regression"
+    },
+    {
+      "case": "tests/test_ee_remap_compiler.py::test_remap_compiles_selected_band_with_canonical_wire_and_preserved_metadata",
+      "wire_sha256": "13193b83c025e3223d71b4175ff8f6a8a0d44e2f7ee881e466905bb71664e5da",
+      "before": "accepted",
+      "after": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+      "same_wire": true,
+      "new_compatibility_pass": false,
+      "separate_explicit_planar_control": "passed in full regression"
+    },
+    {
+      "case": "tests/test_ee_structural_precision.py::test_first_clip_update_mask_distance_keeps_actual_subnormal",
+      "wire_sha256": "ab272f9abb827f5d33be0048df80ef22101bb32521f3287940bd6e5d919d47b8",
+      "before": "accepted",
+      "after": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+      "same_wire": true,
+      "new_compatibility_pass": false,
+      "separate_explicit_planar_control": "passed in full regression"
+    },
+    {
+      "case": "tests/test_ee_structural_precision.py::test_float32_callback_fixture_proves_pre_rewrite_subnormal_loss",
+      "wire_sha256": "ab272f9abb827f5d33be0048df80ef22101bb32521f3287940bd6e5d919d47b8",
+      "before": "accepted",
+      "after": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+      "same_wire": true,
+      "new_compatibility_pass": false,
+      "separate_explicit_planar_control": "passed in full regression"
+    },
+    {
+      "case": "tests/test_ee_terrain_compiler.py::test_full_source_bounds_and_float64_conversion_precede_output_grid_changes",
+      "wire_sha256": "95ddf85d6beab4f574ee0acd0c96b7cb1adaaa5cc2f858e8524fec5adc6d3a24",
+      "before": "accepted",
+      "after": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+      "same_wire": true,
+      "new_compatibility_pass": false,
+      "separate_explicit_planar_control": "passed in full regression"
+    }
+  ],
+  "withdrawn_path_count": 11,
+  "withdrawn_unique_positive_wire_count": 10,
+  "additional_spatial_failure_precedence": [
+    {
+      "case": "tests/test_ee_neighborhood_compiler.py::test_unweighted_reducer_remains_neighborhood_only",
+      "wire_sha256": "15b49d4f69287ebc61b0d845cdeea445acc382464f9a10222e37697318ed6b0e",
+      "before": "Expected a supported Reducer",
+      "after": "Image.reduceRegion spherical geometry edges require a spherical raster/reprojection adapter",
+      "same_wire": true,
+      "new_compatibility_pass": false
+    },
+    {
+      "case": "tests/test_ee_sample_mask_projection.py::test_nested_weighted_carriers_remain_rejected[clip]",
+      "wire_sha256": "752b1120ac3a9208b538109922373186b0b43c6f8198075ec90ee7e64ae7ddc4",
+      "before": "Fractional image masks require a mask-aware consumer; use mask() to read fractional weights or sample supported weighted math. Unaudited weighted raster consumers, statistics, visualization and export are not implemented",
+      "after": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+      "same_wire": true,
+      "new_compatibility_pass": false
+    }
+  ],
+  "sample_metadata_representation": {
+    "changed_test_files": 2,
+    "focused_tests_passed": 19,
+    "change": "Default catalog-derived sampling regions retain original coordinates plus geodesic=false/evenOdd=true; explicit SDK regions and numerical reference inputs unchanged.",
+    "observations": "audit/gee-python-wave68/impl/sample-test-originals/observed-planar-footprint-regions.json"
+  },
+  "preserved_evidence": {
+    "initial_full_regression": "audit/gee-python-wave68/root/full-1.json",
+    "initial_full_summary": "5 failed, 6551 passed, 27 skipped, 53 warnings in 71.39s (0:01:11)",
+    "original_negative_tests": "audit/gee-python-wave68/root/original-negative-tests.json",
+    "negative_baseline": "audit/gee-python-wave68/root/negative-contracts-baseline.json",
+    "negative_final": "audit/gee-python-wave68/root/negative-contracts-final.json",
+    "spatial_baseline": "audit/gee-python-wave68/root/spatial-contracts-baseline.json",
+    "spatial_final": "audit/gee-python-wave68/root/spatial-contracts-final.json",
+    "spatial_original_test_bytes": "audit/gee-python-wave68/root/original-spatial-tests.py",
+    "raster_baseline": "audit/gee-python-wave68/root/raster-contracts-baseline.json",
+    "raster_final": "audit/gee-python-wave68/root/raster-contracts-final.json",
+    "raster_original_test_bytes": "audit/gee-python-wave68/root/original-raster-tests.json",
+    "second_full_regression": "audit/gee-python-wave68/root/full-2.json",
+    "second_full_summary": "12 failed, 6564 passed, 27 skipped, 53 warnings in 77.98s (0:01:17)",
+    "policy": "Original wires/scripts and failures retained; calibrated expectations and earlier rejection precedence are not new compatibility passes."
+  },
+  "remaining_gaps": [
+    "Global constant raster grid; adding only source-free constants to a zero-band object without actual science grid",
+    "Direct zero-band/nonempty image arithmetic rejects symmetrically; not claimed as Google error parity",
+    "Point/line/empty/spherical raster footprints and spherical fractional clipping/reprojection; omitted geodesic typed polygon clipping/reduceRegion now correctly rejects rather than silently using GEOS",
+    "Weighted constant binding to an already clipped destination remains outside immutable finite-grid subset",
+    "Geometry.bounds remains unsupported; direct Image.geometry support does not cover it",
+    "Default expression b() receiver and other documented defaults, cross-scene Float32 alignment, broader weighted consumers",
+    "Full Spark/batch, browser, native macOS deployment, private real-data and Google-equivalence acceptance remain separate",
+    "Existing runtime-JAR provenance gaps remain historical unresolved evidence; this wave is not a fresh dependency/security attestation"
+  ],
+  "internal_representation_limit": {
+    "observation": "A raw untyped GeometryCollection containing a typed sidecar-only spherical child may inherit the raw root planar default.",
+    "reachability": "No admitted SDK/JSON-catalog route established; ordinary decoded SDK roots are typed.",
+    "receipt": "audit/gee-python-wave68/review/final-nested-model-observation.json",
+    "status": "Unverified internal representation limitation retained; no full IR-equivalence claim."
+  },
+  "environment": {
+    "dependency_or_lock_changes": false,
+    "user_data_or_credentials_read": false,
+    "runtime_services_deployed": false,
+    "containers_or_vms_used": false,
+    "new_local_native_build": false,
+    "ci_builds_existing_pinned_s2": true
+  },
+  "cleanup": {
+    "frontend": {
+      "files": 16,
+      "bytes": 1726526
+    },
+    "frontend_output_removed": true,
+    "review_receipt": "audit/gee-python-wave68/review/cleanup-final.json",
+    "review_receipt_sha256": "c81cb4604846a65722d8babfd0120071e4f453cd18baba67633cdaa4e0471178",
+    "policy": "Remove only owned reproducible baseline/build copies; retain original failures, small overlay and rebuild receipts.",
+    "owned_audit_cache": {
+      "files": 1,
+      "bytes": 5746,
+      "removed": true
+    },
+    "review_source_copies": {
+      "files": 1007,
+      "bytes": 7863869,
+      "directories": 20,
+      "removed": true,
+      "rebuild_verified": true,
+      "retained_overlay_files": 9,
+      "retained_overlay_bytes": 109450
+    }
+  },
+  "audit_receipts": {
+    "full_regression": "audit/gee-python-wave68/root/full-3.json",
+    "full_regression_sha256": "91d33cae77da291643fb87fbed53b42e67447e9c5e4ea8fdb2a11a88242cbfc4",
+    "independent_review": "audit/gee-python-wave68/review/final-receipt-2.json",
+    "independent_review_sha256": "50c7bf6cbba4fdbd94b3948ba65522c681f7ecaaf397e7c20d0f507d7e84b9a9",
+    "workflow": "audit/gee-python-wave68/workflow/final-receipt.json",
+    "workflow_sha256": "461d5a4fd2f98e92b130ddb0b95c02eabb744538a06f37eb37b95618ee3d05d3",
+    "frontend": "audit/gee-python-wave68/root/frontend.json",
+    "frontend_sha256": "d1ff7a3d4d8361b17dd07225492e207b88f758f59c5681b7b07f607622b8d156"
+  },
+  "production_source_sha256": {
+    "gee/compat/earthengine/catalog.py": "d15bcb208fb7db1dfe243c5b12d19d756c76c4a288118dc9d3673771c55a96a9",
+    "gee/compat/earthengine/compile.py": "77c77b5f1ec30276ed6d62b83f17877a1aad7687c37e26e12aaae7280cdabb09",
+    "gee/compat/earthengine/constant_bands.py": "a070aa20dae69e57536bd18b670b706d1edba85f21f72c93f72cd4645dfff77c",
+    "gee/compat/earthengine/constant_mask_binding.py": "a55746fa922cb0b9c5b2095ace72d8541fe41ef0610f29d70dd85659224d169c",
+    "gee/compat/earthengine/constant_mask_lineage.py": "dc6452086c07edc51221687062b2c3d843816e5b5c9b130c8676a9893f1b3ae9",
+    "gee/compat/earthengine/dispatch.py": "d9574df2242eeabfef20c09a73b8ac8a5bfc342a7e274d38a4389e66c4ed65f7",
+    "gee/compat/earthengine/feature_map_preflight.py": "badca275d0ba21d5f8d266ea4d938806fa8b42529e5db7537c5d6d7381d04cb5",
+    "gee/compat/earthengine/geometry_consumers.py": "8667a48c4da6e07a9c74e8cb829c914d5a6573120bc09dc286128680567f7362",
+    "gee/compat/earthengine/graph.py": "4df7374cda9f68d1931fca52d6e230d3bcc1effad2f470f0a04a87153d051e66",
+    "gee/compat/earthengine/image_add_bands.py": "61ea886eb1d813b23a3df95145947873518a208c3fe9d20c9c756f8c76be2046",
+    "gee/compat/earthengine/image_binding_context.py": "9025c5e9ae0d875b3ecd012572a756ca42a975355e52400520dfdb833e4c5865",
+    "gee/compat/earthengine/image_collection_iterate.py": "b0a80edc3bb59ae07ae6b7774d79fae0606af306258b933fe34c4e60ae47be12",
+    "gee/compat/earthengine/ir.py": "ee74bce1784844d6c69f644b8de1c64d1f55997712be64cb4c80989d9a012c34",
+    "gee/services/ee.py": "8d85072d03ab5a2219895037bcb856eeb0efb7f294664efc026574a584f5dd23"
+  },
+  "frozen_tested_source_sha256": {
+    "examples/72_GEE_python_bandless_accumulator.py": "59cead1748a7636931aea60cc0d46ee825f089ef039f839f2398b0d659b3c7cd",
+    "examples/javascript/26_零波段累加.js": "4cb2d96eb1771d4cd2aae4065a97415a482a6751241381fae2b7e9e708db5bb2",
+    "gee/compat/earthengine/catalog.py": "d15bcb208fb7db1dfe243c5b12d19d756c76c4a288118dc9d3673771c55a96a9",
+    "gee/compat/earthengine/compile.py": "77c77b5f1ec30276ed6d62b83f17877a1aad7687c37e26e12aaae7280cdabb09",
+    "gee/compat/earthengine/constant_bands.py": "a070aa20dae69e57536bd18b670b706d1edba85f21f72c93f72cd4645dfff77c",
+    "gee/compat/earthengine/constant_mask_binding.py": "a55746fa922cb0b9c5b2095ace72d8541fe41ef0610f29d70dd85659224d169c",
+    "gee/compat/earthengine/constant_mask_lineage.py": "dc6452086c07edc51221687062b2c3d843816e5b5c9b130c8676a9893f1b3ae9",
+    "gee/compat/earthengine/dispatch.py": "d9574df2242eeabfef20c09a73b8ac8a5bfc342a7e274d38a4389e66c4ed65f7",
+    "gee/compat/earthengine/feature_map_preflight.py": "badca275d0ba21d5f8d266ea4d938806fa8b42529e5db7537c5d6d7381d04cb5",
+    "gee/compat/earthengine/geometry_consumers.py": "8667a48c4da6e07a9c74e8cb829c914d5a6573120bc09dc286128680567f7362",
+    "gee/compat/earthengine/graph.py": "4df7374cda9f68d1931fca52d6e230d3bcc1effad2f470f0a04a87153d051e66",
+    "gee/compat/earthengine/image_add_bands.py": "61ea886eb1d813b23a3df95145947873518a208c3fe9d20c9c756f8c76be2046",
+    "gee/compat/earthengine/image_binding_context.py": "9025c5e9ae0d875b3ecd012572a756ca42a975355e52400520dfdb833e4c5865",
+    "gee/compat/earthengine/image_collection_iterate.py": "b0a80edc3bb59ae07ae6b7774d79fae0606af306258b933fe34c4e60ae47be12",
+    "gee/compat/earthengine/ir.py": "ee74bce1784844d6c69f644b8de1c64d1f55997712be64cb4c80989d9a012c34",
+    "gee/services/ee.py": "8d85072d03ab5a2219895037bcb856eeb0efb7f294664efc026574a584f5dd23",
+    "tests/ee_bandless_reference.py": "37d77c18bf8b1e5979409af2e90f1db02c6c1fe1341cad7d44e9ac530b61b05d",
+    "tests/ee_bandless_sdk.py": "05afe34afa635008244755f769811be7ebbde9d3a411ffef0f23054f94965ed6",
+    "tests/fixtures/ee-bandless-wave68-v1.json": "98cb9826d7e8d32845ed2d9d9ba5d6e6b8e5744c035a0d91880827894904849f",
+    "tests/test_ee_band_label_compilation.py": "717214f917454a5500eaef568dbdb9103e17db1916c8e3bf9def863e349ad341",
+    "tests/test_ee_bandless_add_bands.py": "118175c4047bf779a8e52dff2445e10a8d9ed4bbc390678429a733c6357d86f4",
+    "tests/test_ee_bandless_arithmetic.py": "8b928973b44429ecd6d7746ecc6e55619481b5a9349da55c82569f3d375487c8",
+    "tests/test_ee_bandless_footprint_workflow.py": "58e81c8d7bb1b21fb4e445a0e363bb23b3dd93820d233ae95d83e5dd2ccbaaa6",
+    "tests/test_ee_bandless_metadata.py": "7601c77234014cd2be21acf8e852b34b2a486175186c37d82443d0456b784fd9",
+    "tests/test_ee_bandless_selection.py": "3e7664c498f2abba163356d48246c97dba18e8caa83e0d96545dbbcc586e5f9d",
+    "tests/test_ee_bandless_transport.py": "401c8276aeb3605366b6e6aac895e41704d3a9f15151107fad603cb5549608a8",
+    "tests/test_ee_bandless_workflow.py": "3a2e56b94def207fec692d435427c1cf46504c749e5845468ba9dc76cdab9864",
+    "tests/test_ee_convolve_compiler.py": "c621d99c21bb30f1d7e1f32a513f2fc037b16d4fb6b38bfca674bfbd7c75b62c",
+    "tests/test_ee_empty_preflight_depth.py": "f0afd8911700d2b247c5a55a0f9a0b92d06b326f0c91154002cd9186d22491e1",
+    "tests/test_ee_fast_distance_compiler.py": "0e99d48704354cb35581963261da8a60350407a3950787b2744c6230f0f086a8",
+    "tests/test_ee_image_collection_iterate.py": "840f940028251846760ee53a6d1a9e99499940e21b0b08013fe20b95183db83b",
+    "tests/test_ee_image_distance_compiler.py": "67c79d768e337a8876a51a1233d54c44bd4d3e7bd1760a3cb2f2b74e04f7a2ce",
+    "tests/test_ee_image_sample_workflow.py": "289685cee1b75cf37f2a367a79314b52251baf81116c10e749cd2dc0f2d0df66",
+    "tests/test_ee_image_sampling_compiler.py": "9dcf2a5aafd217c99d0a3e0d7418b357c740110d44db2f981eec434c6262938e",
+    "tests/test_ee_matrix_orthogonal_workflow.py": "fab00e8aa78c89b016a3e1003d381d4926839b6b14683faacfbc90b08d03e332",
+    "tests/test_ee_neighborhood_compiler.py": "94a1674b2e03b9f4209487b75cde7c814a2ada51e34ad22df8d4aba26f6d6a69",
+    "tests/test_ee_raster_array_concatenation_parameters.py": "471252fcf0afad6b3952999acec6ac40287e7dca891308c5f33ac84b1b63a969",
+    "tests/test_ee_remap_compiler.py": "29a295a0dd4fdd41059688a2352968fb741cb303109dcff18302fb7903880a8d",
+    "tests/test_ee_sample_mask_projection.py": "4bee07fee392f20fdc1f02428c833042c3468f93187a2167c62deea18730178f",
+    "tests/test_ee_spherical_consumers.py": "14e54e0953f18993e8866cfc40bdd4fe6f80a63121286ab9b2888251189c492a",
+    "tests/test_ee_structural_precision.py": "d049cc357b19506d1797e4bdb46533ed51112a3954490b824807d82e644c05eb",
+    "tests/test_ee_terrain_compiler.py": "1c3e481c1a70ffcfc114dba253f68aeb16451fcdc987c21dbea40bf221ca4572",
+    "tests/test_ee_translate.py": "f3e1e443531653a840a1fb19653d8657a7ca06faefa2a001a0e114dfdfa92a3d",
+    "web/src/docs/typed-raster-docs.ts": "eff87e8c9a979df1744f2d6300954435b2d6e5c34ad386632098009e56bdc4c4"
+  },
+  "publication": "Follow exact-SHA protected validation/main workflow; final Git/CI readback in ignored root/publication.json; no service deployment."
+}

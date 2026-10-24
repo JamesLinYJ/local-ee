@@ -134,6 +134,11 @@ def test_distance_preserves_mapped_time_and_full_input_bounds_before_output_roi(
     clipped = (source(ee).select("nir")
                .clip(ee.Geometry.Rectangle([100.1, 30.1, 100.9, 30.9]))
                .distance(kernel=kernel))
+    with pytest.raises(UnsupportedEEError, match="Image.clip spherical geometry edges"):
+        compile_sdk(ee, clipped, options={"region": EXPORT_REGION, "scale": 40})
+    clipped = (source(ee).select("nir")
+               .clip(ee.Geometry.Rectangle([100.1, 30.1, 100.9, 30.9], geodesic=False))
+               .distance(kernel=kernel))
     exported = compile_sdk(
         ee, clipped, options={"region": EXPORT_REGION, "scale": 40},
     )

@@ -265,9 +265,13 @@ def test_unweighted_reducer_remains_neighborhood_only(ee):
     ))
     assert focal_nodes(result)
 
-    with pytest.raises(UnsupportedEEError, match="Expected a supported Reducer"):
+    with pytest.raises(UnsupportedEEError, match="Image.reduceRegion spherical geometry edges"):
         compile_sdk(ee, image(ee).reduceRegion(
             reducer=unweighted, geometry=EXPORT_REGION,
+        ))
+    with pytest.raises(UnsupportedEEError, match="Expected a supported Reducer"):
+        compile_sdk(ee, image(ee).reduceRegion(
+            reducer=unweighted, geometry={**EXPORT_REGION, "geodesic": False},
         ))
     with pytest.raises(UnsupportedEEError, match="supported scalar or regression Reducer"):
         compile_sdk(ee, ee.List([1, 2]).reduce(unweighted))

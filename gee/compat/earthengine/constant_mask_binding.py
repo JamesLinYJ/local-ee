@@ -332,7 +332,7 @@ def _bind_tree(pixel: Pixel, template: Pixel, destination: Image, memo, *, allow
 
 def bind_masked_pixel(
         pixel: Pixel, source: Image, destination: Image,
-        translator, band_name: str) -> Pixel | None:
+        translator, band_name: str, *, destination_factory=None) -> Pixel | None:
     """Bind only a direct source-free `with_mask` value/weight pair to a real grid.
 
     A source-backed raw science branch is already an actual raster and remains
@@ -355,6 +355,11 @@ def bind_masked_pixel(
         fail("Masked sampling requires source-backed raw pixel values; source-free masked science cannot borrow a grid from its mask branch")
 
     _charge_closure(translator, band_name, pixel, destination)
+    # A source-backed weighted value needs no grid rebinding. Defer any
+    # science-grid context scan until the source-free candidate has passed the
+    # lineage checks and full immutable-closure preflight above.
+    if destination_factory is not None:
+        destination = destination_factory()
     if source.footprint is not None or source.footprint_is_absolute:
         fail("Cannot bind a constant band with an explicit source footprint")
     if any(candidate.op == "clip" for candidate in _walk_pixels(pixel)):

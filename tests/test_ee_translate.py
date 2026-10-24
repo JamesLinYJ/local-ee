@@ -233,7 +233,11 @@ def test_filter_bounds_does_not_clip(local):
     assert loads(r)[0]["_gee_item_ids"]==["a","b"]
     assert loads(r)[0]["spatial_extent"]==dict(west=0,south=0,east=3,north=2)
     assert "mask_polygon" not in processes(r)
-    clipped=compile(call("Image.clip",input=first(),geometry=rect(.5,.5,1,1)),local)
+    # Default spherical input must not silently enter the planar mask path.
+    with pytest.raises(UnsupportedEEError, match="Image.clip spherical geometry edges"):
+        compile(call("Image.clip",input=first(),geometry=rect(.5,.5,1,1)),local)
+    clipped=compile(call("Image.clip",input=first(),geometry={
+        **rect(.5,.5,1,1),"geodesic":False}),local)
     assert "mask_polygon" in processes(clipped)
 
 
@@ -346,7 +350,10 @@ def test_expression_functions_broadcast_and_parameter_rejection(local,arrays):
 
 
 def test_region_and_count_contract(local,arrays):
-    r=compile(call("Image.reduceRegion",image=select(first(),"red"),geometry=rect(),reducer=call("Reducer.mean")),local)
+    with pytest.raises(UnsupportedEEError, match="Image.reduceRegion spherical geometry edges"):
+        compile(call("Image.reduceRegion",image=select(first(),"red"),geometry=rect(),reducer=call("Reducer.mean")),local)
+    r=compile(call("Image.reduceRegion",image=select(first(),"red"),geometry={
+        **rect(),"geodesic":False},reducer=call("Reducer.mean")),local)
     assert r["kind"]=="region" and processes(r)[-1]=="aggregate_spatial"
     assert r["warnings"]
     count=compile(call("reduce.count",collection=call("Collection.map",collection=col(),baseAlgorithm={"type":"Function","argumentNames":["im"],"body":select({"type":"ArgumentRef","value":"im"},"nir")})),local)
@@ -358,7 +365,13 @@ def test_featurecollection_region_projection_wrapper(local):
     reduction=call("Image.reduceRegion",image=select(first(),"red"),geometry=rect(),reducer=call("Reducer.mean"),
                    scale=10,crs=call("Projection",crs="EPSG:32649"))
     wrapper=call("Collection",features=[call("Feature",geometry=None,metadata=reduction)])
-    r=compile(wrapper,local)
+    with pytest.raises(UnsupportedEEError, match="Image.reduceRegion spherical geometry edges"):
+        compile(wrapper,local)
+    # Separately exercise the already-supported explicit planar consumer.
+    planar_reduction=copy.deepcopy(reduction)
+    planar_reduction["arguments"]["geometry"]["geodesic"]=False
+    planar_wrapper=call("Collection",features=[call("Feature",geometry=None,metadata=planar_reduction)])
+    r=compile(planar_wrapper,local)
     assert r["kind"]=="region" and r["bands"]==["red"]
     assert "resample_spatial" in processes(r)
     static=compile(call("Collection",features=[call("Feature",geometry=None,metadata={"mean":3.0})]),local)

@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 from gee.ee_python_client import configure_local_ee
-from gee.ee_translate import compile_expression
+from gee.ee_translate import UnsupportedEEError, compile_expression
 from gee.graph import validate
 from gee.integer_values_spec import constant_operand
 from test_ee_raster_linear_fit import local as raster_local
@@ -137,10 +137,12 @@ def test_mask_clip_and_float_cast_remain_across_delayed_output_label(ee, local):
         "type": "Polygon",
         "coordinates": [[[0, 0], [5, 0], [0, 1], [0, 0]]],
     }
-    image = ee.Image("a").select("x").updateMask(
+    base = ee.Image("a").select("x").updateMask(
         ee.Image("a").select("y").gt(0)
-    ).toFloat().rename("masked_float").clip(region)
-    result = compile_value(ee, image, local)
+    ).toFloat().rename("masked_float")
+    with pytest.raises(UnsupportedEEError, match="Image.clip spherical geometry edges"):
+        compile_value(ee, base.clip(region), local)
+    result = compile_value(ee, base.clip({**region, "geodesic": False}), local)
     assert_canonical_graph(result)
     assert result["bands"] == ["masked_float"]
 

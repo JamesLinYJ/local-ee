@@ -1,0 +1,220 @@
+{
+  "schema": "local-ee-bandless-wave68/v1",
+  "fixture_id": "ee-bandless-wave68-v1",
+  "source_id": "sentinel-2-l2a",
+  "source_bands": [
+    "red",
+    "nir"
+  ],
+  "grid": {
+    "crs": "EPSG:4326",
+    "transform": [
+      1,
+      0,
+      0,
+      0,
+      -1,
+      2
+    ],
+    "bbox": [
+      0,
+      0,
+      2,
+      2
+    ],
+    "rows": 2,
+    "columns": 2
+  },
+  "region": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    ]
+  },
+  "scenes": [
+    {
+      "id": "wave68-scene-a",
+      "properties": {
+        "system:index": "wave68-scene-a",
+        "system:time_start": 1700000000000,
+        "scene_label": "first"
+      },
+      "values": {
+        "red": [
+          1,
+          -2,
+          3,
+          null
+        ],
+        "nir": [
+          10,
+          20,
+          null,
+          40
+        ]
+      }
+    },
+    {
+      "id": "wave68-scene-b",
+      "properties": {
+        "system:index": "wave68-scene-b",
+        "system:time_start": 1700003600000,
+        "scene_label": "second"
+      },
+      "values": {
+        "red": [
+          100,
+          200,
+          -300,
+          400
+        ],
+        "nir": [
+          1000,
+          null,
+          3000,
+          4000
+        ]
+      }
+    }
+  ],
+  "reference": {
+    "accumulated_band_order": [
+      "red",
+      "nir",
+      "red_1",
+      "nir_1"
+    ],
+    "science_band_order": [
+      "red",
+      "nir",
+      "red_1",
+      "nir_1",
+      "red_total",
+      "nir_total"
+    ],
+    "science_values": {
+      "red": [
+        1,
+        -2,
+        3,
+        null
+      ],
+      "nir": [
+        10,
+        20,
+        null,
+        40
+      ],
+      "red_1": [
+        100,
+        200,
+        -300,
+        400
+      ],
+      "nir_1": [
+        1000,
+        null,
+        3000,
+        4000
+      ],
+      "red_total": [
+        101,
+        198,
+        -297,
+        null
+      ],
+      "nir_total": [
+        1010,
+        null,
+        null,
+        4040
+      ]
+    },
+    "overwrite_band_order": [
+      "nir",
+      "red"
+    ],
+    "overwrite_values": {
+      "nir": [
+        1000,
+        null,
+        3000,
+        4000
+      ],
+      "red": [
+        100,
+        200,
+        -300,
+        400
+      ]
+    },
+    "copied_properties": {
+      "system:index": "wave68-scene-a",
+      "system:time_start": 1700000000000,
+      "scene_label": "first",
+      "seed": "wave68"
+    }
+  },
+  "provenance": {
+    "role": "synthetic local input and independent expected pixel values",
+    "native_or_google_outputs_included": false,
+    "google_equivalence": "not claimed",
+    "global_grid_for_bandless_images": "none"
+  },
+  "sdk_wire_sha256": {
+    "hash_method": "sha256 of sorted-key canonical JSON after SDK numeric normalization",
+    "python": {
+      "constructor": "7151cd9a15d20cb71ea615e238ff4a34466df02eb4475d34aff5274147f8287b",
+      "empty": "84de1c57209d74bcbe075bd03798e93cab74e84702c6cf41c0c8195fe2b8b142",
+      "empty_metadata": "24694200b0e73cd055f8bd50504e413d6c6ba6a5a3e0651d25274a56bbdec3d8",
+      "source_empty_metadata": "85e8fa35297f936f2419bc5e4ef38519911cc9a446cfc9dda13283e83dde0264",
+      "empty_add_source": "49faf8c4060cae4ec201dbe7f878b627eb1d579bf4d13f94f6e22ff925c9220f",
+      "source_add_empty": "2ce2de28769bc3d1533746af6c77c75338636cdf854fc63985863316343a7dbb",
+      "empty_add_empty": "71346fb48a4d77c305f829bd852ccfa1d1f468e446ad4221f25a0c18ba0d6cfb",
+      "ordered_add": "c329c97960d9e6cea88998f5e4621f7227b0e3413eb2818232f07e7cc058061e",
+      "collision_default": "448f1f5bdaf19823728bd2286bbe2ed35e81ed5dcdecbc8827e6c3799aa950ca",
+      "collision_overwrite": "53cd7aca03f05441961ab89be4e7b30ae188ed6eac6fa954da80ef4cec7af712",
+      "accumulated": "bf7f0945e4eecaf86f1737f6d4e05afaba3b26d7258b214693108909ef33ec7a",
+      "science": "f0d198ccbe531b22a44e5b34ff9aeb4b2d8b62bdadbbfba6ccf7b187d4193223",
+      "samples": "8d485487b6c0f49e4baf81f6453d7c06e7218d83719d9b78c8340b8f5057efb4",
+      "collection_iterate": "be33cf324dbd40b55baec4d6f8bcd4b6208940f9f5795bfa456102c4db301635"
+    },
+    "javascript": {
+      "constructor": "7151cd9a15d20cb71ea615e238ff4a34466df02eb4475d34aff5274147f8287b",
+      "empty": "84de1c57209d74bcbe075bd03798e93cab74e84702c6cf41c0c8195fe2b8b142",
+      "empty_metadata": "24694200b0e73cd055f8bd50504e413d6c6ba6a5a3e0651d25274a56bbdec3d8",
+      "source_empty_metadata": "85e8fa35297f936f2419bc5e4ef38519911cc9a446cfc9dda13283e83dde0264",
+      "empty_add_source": "49faf8c4060cae4ec201dbe7f878b627eb1d579bf4d13f94f6e22ff925c9220f",
+      "source_add_empty": "2ce2de28769bc3d1533746af6c77c75338636cdf854fc63985863316343a7dbb",
+      "empty_add_empty": "71346fb48a4d77c305f829bd852ccfa1d1f468e446ad4221f25a0c18ba0d6cfb",
+      "ordered_add": "c329c97960d9e6cea88998f5e4621f7227b0e3413eb2818232f07e7cc058061e",
+      "collision_default": "448f1f5bdaf19823728bd2286bbe2ed35e81ed5dcdecbc8827e6c3799aa950ca",
+      "collision_overwrite": "be614769cf720590a145d85a31748830d8b76e22ef35a3c10c89f14eb5b1a9cd",
+      "accumulated": "bf7f0945e4eecaf86f1737f6d4e05afaba3b26d7258b214693108909ef33ec7a",
+      "science": "f0d198ccbe531b22a44e5b34ff9aeb4b2d8b62bdadbbfba6ccf7b187d4193223",
+      "samples": "8d485487b6c0f49e4baf81f6453d7c06e7218d83719d9b78c8340b8f5057efb4",
+      "collection_iterate": "be33cf324dbd40b55baec4d6f8bcd4b6208940f9f5795bfa456102c4db301635"
+    }
+  }
+}

@@ -114,7 +114,12 @@ def test_image_sample_defaults_to_finite_image_footprint_and_first_band_grid(ee,
 
     spec = decode_sampling_spec(result["sample_spec"])
     assert spec["version"] == 2
-    assert spec["regions"]["features"][0]["geometry"] == GEOMETRY
+    # Raw local catalog footprints use the legacy planar model. The footprint
+    # union retains that model explicitly so a later typed-geometry consumer
+    # does not reinterpret it as EE's default spherical geometry.
+    assert spec["regions"]["features"][0]["geometry"] == {
+        **GEOMETRY, "geodesic": False, "evenOdd": True,
+    }
     assert spec["regions"]["features"][0]["properties"] == {}
     assert spec["grid"] == {"scale": None, "crs": None}
     assert spec["image_sample"] == {

@@ -2,11 +2,19 @@ import type { ReferenceEntry } from "../types";
 
 export const pythonTypedRasterDocs: ReferenceEntry[] = [
   {
+    id: "gee-python-bandless-accumulators",
+    category: "GEE Python",
+    language: "python",
+    title: "零波段累加器与逐景遍历",
+    text: "ee.Image() 有一个透明波段；select([]) 才创建零波段状态。可用 List／有限 ImageCollection.iterate 按顺序 addBands，保留首幅属性及有效足迹；names 只选择源波段。空对象可读取 bandNames／getInfo 元数据，不能直接计算像元或导出。已删除的波段、空源和仅掩膜来源不提供科学网格；全球常量网格、零波段与非空影像的算术仍不支持。保持共享工作和图规模限制，没有Google等价声明。详见 docs/gee-python/bandless-accumulators.md。",
+    code: "def append_scene(image, state):\n    return ee.Image(state).addBands(ee.Image(image).select('red'))\n\nstack = ee.Image(collection.iterate(append_scene, ee.Image().select([])))\nprint(stack.bandNames().getInfo())",
+  },
+  {
     id: "gee-python-empty-expression",
     category: "GEE Python",
     language: "python",
     title: "空接收者表达式与掩膜替换",
-    text: "ee.Image() 是一个带零掩膜的 constant 波段，命名变量公式可以保留原写法；b(...) 仍读取接收者。mask(new_mask) 替换已有有限网格上的权重，新有效像元填0，不恢复隐藏观测；updateMask 不恢复旧零权重。新掩膜范围[0,1]与自身缺测贡献0是本地政策。支持已审查的mask读取、算术及取样；全球常量网格、通用零波段、双栅格小数权重组合和带权显示／导出仍待完成。没有Google等价声明。详见 docs/gee-python/empty-expression.md。",
+    text: "ee.Image() 是一个带零掩膜的 constant 波段，命名变量公式可以保留原写法；b(...) 仍读取接收者。mask(new_mask) 替换已有有限网格上的权重，新有效像元填0，不恢复隐藏观测；updateMask 不恢复旧零权重。新掩膜范围[0,1]与自身缺测贡献0是本地政策。支持已审查的mask读取、算术及取样；零波段需添加实际波段后才能执行栅格，全球常量网格、双栅格小数权重组合和带权显示／导出仍待完成。没有Google等价声明。详见 docs/gee-python/empty-expression.md。",
     code: "source = ee.Image(collection.first()).select(['red','nir']).toDouble()\nresult = ee.Image().expression('nd = (x.nir-x.red)/(x.nir+x.red)', {'x': source})\nrows = result.sample(dropNulls=False)\nhidden = source.select('red').updateMask(0.25).updateMask(0)\nrestored = hidden.mask(1)\nweights = restored.mask()",
   },
   {

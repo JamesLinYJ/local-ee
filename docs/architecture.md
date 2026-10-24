@@ -80,8 +80,17 @@ select、rename、addBands 可传递权重，其他带权科学值消费者须�
 权重锚定填补后的真实科学支持；不借新掩膜来源虚构网格。`image_expression` 校验并
 保有官方二阶表达式的完整声明参数，使透明单波段 `ee.Image()` 接收者可进入命名变量
 公式。`constant_mask_binding` 分别绑定有限常量科学值与权重，`image_add_bands`
-独立管理有界有序合并、严格overwrite和后缀预算；通用零波段与全球常量网格仍未实现。
+独立管理有界有序合并、严格overwrite和后缀预算；零波段的有限累加与元数据路径
+另见[零波段合同](gee-python/bandless-accumulators.md)，全球常量网格仍未实现。
 见[空接收者与替换合同](gee-python/empty-expression.md)。
+
+零波段影像只保留模式、属性和足迹，实际科学来源仍沿保留的Pixel检查。
+首幅足迹在添加后续影像时独立裁切，不能为常量加载已删除的波段。
+`image_collection_iterate` 在共享预算内按实际目录／显式集合顺序展开，逐景绑定
+真实元数据；空回调只做结构预检，不虚构输入影像。共享子树预检保留高度并在每个
+出现位置重新检查深度。`compile_expression(for_image_metadata=True)` 仅供evaluate
+描述零波段对象，不构造流程图；地图和导出继续要求有实际波段的图。
+本地数值、可信CSV／服务协议与完整运行部署分别记录。
 `Graph.source` 创建实际load时通过 `callback_grid` 检查所选资产的逐景显式CRS／
 仿射矛盾；同cid／item的不同别名合并真实选中字段，新load读取新鲜证据。只记录
 选中字段历史，不缓存网格批准；未使用的表达式变量不成为科学输入。可选元数据缺失及跨观测的Float32对齐保留原路径，

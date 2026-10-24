@@ -153,8 +153,26 @@ def test_sample_filter_train_prediction_matrix_and_workbench_graphs():
     assert factor_descriptors["band_order"].get("value") == data["sample_bands"]
     assert factor_descriptors["sample_property_names"].get("value") == ["band_order"]
 
+    # The default region comes from a raw STAC/catalog footprint. The local
+    # catalog path treats those legacy edges as planar and emits that model
+    # explicitly after the planar union; keep the numerical reference inputs
+    # untouched while asserting the model-preserving graph representation.
+    graph_expectations = {
+        **data,
+        "items": [
+            {
+                **item,
+                "geometry": {
+                    **item["geometry"],
+                    "geodesic": False,
+                    "evenOdd": True,
+                },
+            }
+            for item in data["items"]
+        ],
+    }
     for mode, (_, descriptors) in outputs_by_mode.items():
-        assert_sample_workflow_graph(data, mode, descriptors)
+        assert_sample_workflow_graph(graph_expectations, mode, descriptors)
         assert_sample_rows_match_reference(
             data, mode, descriptors, arrays, geometries, handlers,
         )
