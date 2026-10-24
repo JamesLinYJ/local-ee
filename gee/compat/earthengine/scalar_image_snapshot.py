@@ -5,7 +5,9 @@ import copy
 from dataclasses import dataclass
 
 from .array_core import charge_array
-from .ir import Image, Pixel, Source
+from .ir import (
+    ClipFootprintIdentity, Image, Pixel, Source, valid_clip_footprint_identity,
+)
 from .raster_factor_snapshot import _immutable_pixels, _json_metadata_work
 
 
@@ -22,6 +24,7 @@ class ScalarImageSnapshot:
     copied_props: tuple
     footprint: dict | None
     footprint_is_absolute: bool
+    clip_footprint: ClipFootprintIdentity | None
     clone_work: int
 
 
@@ -32,10 +35,12 @@ def snapshot_scalar_image(translator, value):
             or type(value.props) is not dict
             or type(value.inherit_props) is not bool
             or type(value.footprint_is_absolute) is not bool
+            or value.clip_footprint is not None
+            and not valid_clip_footprint_identity(value.clip_footprint)
             or type(value.copied_props) is not tuple
             or value.source is not None and type(value.source) is not Source):
         return None
-    charge_array(translator, 2 * len(value.bands) + len(value.copied_props) + 1)
+    charge_array(translator, 2 * len(value.bands) + len(value.copied_props) + 2)
     names = set()
     band_chars = 0
     for band in value.bands:
@@ -64,7 +69,7 @@ def snapshot_scalar_image(translator, value):
         return None
     clone_work = (
         2 * metadata_work + 3 * len(bands) + band_chars
-        + len(value.copied_props) + copied_chars + 8
+        + len(value.copied_props) + copied_chars + 9
     )
     # Precharge the complete detached copy before the snapshot owns a mutable
     # metadata container. Every restore pays the same copy work separately.
@@ -72,7 +77,7 @@ def snapshot_scalar_image(translator, value):
     return ScalarImageSnapshot(
         bands, copy.deepcopy(value.props), value.source,
         value.inherit_props, value.copied_props, copy.deepcopy(value.footprint),
-        value.footprint_is_absolute, clone_work,
+        value.footprint_is_absolute, value.clip_footprint, clone_work,
     )
 
 
@@ -86,4 +91,5 @@ def restore_scalar_image(translator, value):
         source=value.source, mapped=False, inherit_props=value.inherit_props,
         copied_props=value.copied_props, footprint=copy.deepcopy(value.footprint),
         footprint_is_absolute=value.footprint_is_absolute,
+        clip_footprint=value.clip_footprint,
     )

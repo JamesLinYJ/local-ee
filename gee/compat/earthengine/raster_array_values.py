@@ -4,7 +4,9 @@ from __future__ import annotations
 import numpy as np
 
 from .array_core import StaticArray, charge_array
-from .ir import Image, Pixel, as_image, const, fail, integer
+from .ir import (
+    Image, Pixel, as_image, clip_footprint_after_first_input, const, fail, integer,
+)
 from .raster_array_core import (
     RasterArrayImage,
     check_shape,
@@ -108,6 +110,9 @@ def _result_image(left: RasterArrayImage, right: RasterArrayImage) -> Image:
         copied_props=left.image.copied_props,
         footprint=left.image.footprint,
         footprint_is_absolute=left.image.footprint_is_absolute,
+        clip_footprint=clip_footprint_after_first_input(
+            left.image.clip_footprint, right.image.clip_footprint,
+        ),
     )
 
 

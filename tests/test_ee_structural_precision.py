@@ -124,7 +124,7 @@ def _first_clip_mask_distance(ee, *, planar=False):
 
 
 def test_first_clip_update_mask_distance_keeps_actual_subnormal(ee, monkeypatch):
-    with pytest.raises(UnsupportedEEError, match="Image.clip spherical geometry edges"):
+    with pytest.raises(UnsupportedEEError, match="Fractional image masks require a mask-aware consumer"):
         compile_sdk(ee, _first_clip_mask_distance(ee))
     result = compile_sdk(ee, _first_clip_mask_distance(ee, planar=True))
     process_graph = result["process_graph"]
@@ -155,7 +155,7 @@ def test_float32_callback_fixture_proves_pre_rewrite_subnormal_loss(
         ee, monkeypatch):
     from gee.compat.earthengine.pixel_graph import PixelCompiler
 
-    with pytest.raises(UnsupportedEEError, match="Image.clip spherical geometry edges"):
+    with pytest.raises(UnsupportedEEError, match="Fractional image masks require a mask-aware consumer"):
         compile_sdk(ee, _first_clip_mask_distance(ee))
     fixed = compile_sdk(ee, _first_clip_mask_distance(ee, planar=True))
     with monkeypatch.context() as disabled:

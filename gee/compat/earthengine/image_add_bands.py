@@ -231,15 +231,27 @@ def add_bands(translator, arguments):
                 footprint_is_absolute=(image.footprint_is_absolute
                                        if first_footprint is not None
                                        else source.footprint_is_absolute),
+                clip_footprint=(
+                    image.clip_footprint
+                    if image.clip_footprint is not None
+                    else source.clip_footprint if first_footprint is None else None
+                ),
             )
         elif first_footprint is not None:
             image = replace(image, footprint=first_footprint)
     if image.source is None and source.source is not None:
         charge_array(translator, 2 * len(image.bands) + len(source.bands) + 8)
+        # addBands keeps the destination's footprint. Only carry the donor's
+        # pending marker when this local source-free destination adopts that
+        # donor as its own raster/footprint lineage.
         image = replace(
             image, bands=bind_source_bands(image, source, translator=translator),
             source=source.source, footprint=source.footprint,
             footprint_is_absolute=source.footprint_is_absolute,
+            clip_footprint=(
+                image.clip_footprint
+                if image.clip_footprint is not None else source.clip_footprint
+            ),
         )
     bound = bind_source_bands(source, image, translator=translator)
     charge_array(translator, 2 * len(image.bands) + len(bound) + 2)

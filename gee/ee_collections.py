@@ -1,7 +1,19 @@
 """Finite EE image-axis operations; no code execution or invented timestamps."""
 from dataclasses import replace
 
-from .compat.earthengine.ir import Collection, Image, ImageSequence, Function, Filter, Pixel, Reducer, as_image, fail, integer, rebind
+from .compat.earthengine.ir import (
+    Collection, Image, ImageSequence, Function, Filter, Pixel, Reducer,
+    as_image, combine_clip_footprints, fail, integer, rebind,
+)
+
+
+def _sequence_clip_footprint(t, images):
+    # This is an additional bounded marker scan over an already materialized
+    # sequence; keep it on the caller's shared compiler work ledger.
+    from .compat.earthengine.array_core import charge_array
+
+    charge_array(t, len(images) + 1)
+    return combine_clip_footprints(*(image.clip_footprint for image in images))
 
 
 def frames(t, value):
@@ -22,7 +34,11 @@ def reduce_sequence(t, sequence, reducer, suffix=False):
     # Footprints can differ by period. Keep their union, rather than inheriting
     # the first frame's clip geometry or a fabricated observation date.
     footprint=t.footprint(sequence)
-    return Image(bands,{},images[0].source,inherit_props=False,footprint=footprint,footprint_is_absolute=True)
+    return Image(
+        bands, {}, images[0].source, inherit_props=False,
+        footprint=footprint, footprint_is_absolute=True,
+        clip_footprint=_sequence_clip_footprint(t, images),
+    )
 
 
 def invoke_sequence(t, name, a):
@@ -64,11 +80,21 @@ def invoke_sequence(t, name, a):
     if name=='Collection.filter':
         t.allowed(a,{'collection','filter'});f=a['filter']
         if not isinstance(f,Filter):fail('Expected an ee.Filter')
-        def spatial(f):
-            if f.name=='intersects':return True
-            if f.name in {'and','or'}:return any(spatial(child) for child in f.args['filters'])
-            return f.name=='not' and spatial(f.args['filter'])
-        return ImageSequence([im for im in images if t.matches(f,{'geometry':t.footprint(im) if spatial(f) else None,'properties':im.props})])
+        from .compat.earthengine.filter_structure import validate_filter_structure
+
+        reads_geometry = validate_filter_structure(t, f)
+        if reads_geometry:
+            from .compat.earthengine.array_core import charge_array
+
+            charge_array(t, len(images) + 1)
+        if reads_geometry and any(image.clip_footprint is not None for image in images):
+            fail('Collection.filter cannot use the conservative source envelope as a clipped geometry')
+        return ImageSequence([
+            im for im in images if t.matches(
+                f, {"geometry": t.footprint(im) if reads_geometry else None,
+                    "properties": im.props},
+            )
+        ])
     if name in {'Collection.limit','Collection.sort'}:
         t.allowed(a,{'collection','key','ascending','limit'});images=list(images)
         if a.get('key') is not None:
@@ -82,7 +108,13 @@ def invoke_sequence(t, name, a):
         if any(key not in im.props for im in images):fail('Item metadata property is unavailable: '+str(key))
         return [im.props[key] for im in images]
     if name=='Collection.geometry':
-        t.allowed(a,{'collection','maxError'});return t.footprint(sequence)
+        t.allowed(a,{'collection','maxError'})
+        from .compat.earthengine.array_core import charge_array
+
+        charge_array(t, len(images) + 1)
+        if any(image.clip_footprint is not None for image in images):
+            fail('Collection.geometry cannot expose the conservative source envelope as a clipped geometry')
+        return t.footprint(sequence)
     if name=='ImageCollection.toBands':
         t.allowed(a,{'collection'});bands=[]
         for image in images:
@@ -91,7 +123,11 @@ def invoke_sequence(t, name, a):
             bands.extend((index+'_'+n,p) for n,p in image.bands)
         if len(bands)>100:fail('Local toBands is limited to 100 output bands')
         if not images or len({n for n,_ in bands})!=len(bands):fail('toBands needs nonempty images with distinct output band names')
-        return Image(bands,{},images[0].source,inherit_props=False,footprint=t.footprint(sequence),footprint_is_absolute=True)
+        return Image(
+            bands, {}, images[0].source, inherit_props=False,
+            footprint=t.footprint(sequence), footprint_is_absolute=True,
+            clip_footprint=_sequence_clip_footprint(t, images),
+        )
     if name=='ImageCollection.mosaic':
         t.allowed(a,{'collection'});return reduce_sequence(t,sequence,'last')
     if name.startswith('reduce.'):

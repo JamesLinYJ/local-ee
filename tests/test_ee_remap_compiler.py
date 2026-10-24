@@ -49,7 +49,7 @@ def test_remap_compiles_selected_band_with_canonical_wire_and_preserved_metadata
         "coordinates": [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]],
     }
     base = ee.Image("scene-a").set("marker", "kept")
-    with pytest.raises(UnsupportedEEError, match="Image.clip spherical geometry edges"):
+    with pytest.raises(UnsupportedEEError, match="Fractional image masks require a mask-aware consumer"):
         compile_value(ee, base.clip(clip).remap(
             [1, 2.5], [7.25, 8], defaultValue=0, bandName="y"), local)
     image = base.clip({**clip, "geodesic": False})

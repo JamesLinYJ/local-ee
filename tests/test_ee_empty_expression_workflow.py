@@ -152,8 +152,11 @@ def test_compiled_sample_workflow_reaches_actual_kernels_csv_and_sdk_getinfo(
     assert logical_control["or_x_nonzero"] == [1.0, 1.0, 1.0]
     assert logical_control["not_x_equal_zero"] == [0.0, 0.0, 1.0]
     assert native_probe["deployment_eligible"] is False
+    from scripts import build_integer_adapter
+
+    assert len(build_integer_adapter.SOURCES) == 75
     assert (native_probe["source_count"], native_probe["scala_tool_count"],
-            native_probe["runtime_jar_count"]) == (70, 3, 245)
+            native_probe["runtime_jar_count"]) == (len(build_integer_adapter.SOURCES), 3, 245)
     assert native_probe["sample_row_counts"] == {key: 16 for key in (
         "map_sample_rows", "default_value_sample_rows", "default_weight_sample_rows",
         "setter_value_sample_rows", "setter_weight_sample_rows",

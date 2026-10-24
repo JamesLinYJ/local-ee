@@ -1,0 +1,462 @@
+{
+  "schema": "local-ee-gee-python-wave70/v1",
+  "date": "2026-10-25",
+  "status": "Bounded offline wave verified; broader project goal remains active",
+  "base_commit": "c5537cdf0058ba4b8168ceb5a32217e60eb8231e",
+  "focus": [
+    "Default-geodesic polygon clip with actual-grid fractional masks",
+    "Strict pending-footprint lifecycle and consumer gates"
+  ],
+  "coverage": {
+    "entry_names_supported": 712,
+    "pinned_entry_names": 991,
+    "entry_name_percentage": 71.85,
+    "new_entry_names": 0,
+    "semantic_or_google_equivalence_percentage": null,
+    "note": "Declared-name inventory only; bounded clip extends existing names",
+    "inventory_sha256": "81f39a9e4300d45578a8e36ff7e597b71e5cc69a58ea698f1a3b6bcdef8088c1"
+  },
+  "local_validation": {
+    "full_regression": {
+      "summary": "6738 passed, 27 skipped, 53 warnings in 72.23s (0:01:12)",
+      "source_files_hashed": 76,
+      "source_stable": true,
+      "seconds_wall": 72.814,
+      "execution_mode": "approved escalation for existing macOS sandbox, loopback and process-enumeration tests"
+    },
+    "initial_full_regression": {
+      "summary": "33 failed, 6702 passed, 27 skipped, 53 warnings, 3 errors",
+      "source_files_hashed": 60,
+      "source_stable": true,
+      "note": "Original failure log preserved; obsolete rejection/source-count expectations, missing test stub ledger, full-sphere diagnostic and execution-environment permissions addressed separately"
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typecheck": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "official_clients": {
+      "pinned_version": "1.7.49",
+      "original_semantic_graphs_per_client": 10,
+      "original_postimplementation_compiled": 2,
+      "original_postimplementation_rejected": 8,
+      "original_wire_and_fixture_unchanged": true,
+      "example74_outputs_compiled": 4,
+      "note": "Serialization and local compilation are separate from numerical execution"
+    },
+    "native_tile": {
+      "cells": 64,
+      "positive_weights": 52,
+      "fractional_weights": 25,
+      "numeric_controls": 10,
+      "sample_route_rows": [
+        44,
+        43,
+        44,
+        52,
+        52,
+        52
+      ],
+      "physical_csv_readback_rows": [
+        44,
+        43
+      ],
+      "source_nodata_weight": "valid zero",
+      "science": "Original finite science bits retained; weights separate",
+      "injected_reference_rows": false
+    },
+    "independent_review_groups": {
+      "numerical_v2": [
+        21,
+        21
+      ],
+      "numerical_v3": [
+        23,
+        23
+      ],
+      "production_admission": [
+        14,
+        14
+      ],
+      "mask_identity_and_depth": [
+        22,
+        22
+      ],
+      "lifecycle": [
+        59,
+        59
+      ],
+      "note": "Groups overlap; never add these as unique API or semantic coverage"
+    },
+    "default_256_grid": {
+      "positive_weights": 24793,
+      "partial_weights": 656,
+      "unique_global_boundary_cells": 675,
+      "work": 30781465,
+      "work_limit": 67108864,
+      "two_times_work": 61515801,
+      "two_spatial_keys_work": 32053401,
+      "positive_cells_outside_polygon_center": 322,
+      "factor_0_02_default_region_sample_rows": 524,
+      "sampled_outside_center_edge_rows": 7,
+      "existing_sample_row_cap": 1000,
+      "note": "Synthetic actual-kernel/admission/encoder controls, not full Spark or throughput acceptance"
+    },
+    "google": {
+      "requests": 0,
+      "same_data_equivalence_verified": false,
+      "policy": "Local references first; discuss remote checks only for exceptionally complex unresolved behavior"
+    },
+    "test_maintenance_review": {
+      "original_sources_verified": 20,
+      "original_assertions_checked": 596,
+      "new_tests_and_fixture_files_unchanged_since_full1": 10,
+      "numeric_mask_data_tolerance_or_skip_weakening": false,
+      "source_count_assertions_use_current_exact_set": true
+    }
+  },
+  "native_component": {
+    "source_files": 75,
+    "build_seconds": 4.977696750007453,
+    "source_stable": true,
+    "jar_sha256": "a46778297d684128d9f46389bc8f61bf13a0f2b94412fb369333550448b03b55",
+    "format": "local-ee-standalone-audit-v1",
+    "legacy_manifest_adapter_label": "local-ee-mask-weights-audit-adapter",
+    "provider": "local.ee.reduce.LocalEeClipCoverageCubeProcessProvider",
+    "deployment_eligible": false,
+    "installed": false,
+    "runtime_jars_verified_against_existing_audit_bytes": 245,
+    "scala_tools": 3,
+    "java": "25.0.4.1",
+    "scala": "2.13.18",
+    "public_runtime_origin_attestation": {
+      "matched": 39,
+      "mismatched": 7,
+      "unlisted": 199,
+      "new_security_or_deployment_attestation": false
+    }
+  },
+  "fixed_issues": [
+    "Exact same-meridian/equator contact no longer manufactures positive weights",
+    "Closed-cell global boundary candidate dedup avoids repeated budget counting and multiplies actual time count",
+    "Default sample requires exact retained clip identity plus zero-preserving weight support",
+    "Pending footprints survive source/metadata/snapshot/bandless/donor/overwrite/expression/collection/unmask paths",
+    "Geometry-dependent collection filters reject pending footprints before catalog/support reads, including empty inputs; metadata filters remain available",
+    "Shared-DAG occurrence depth and prepaid S2 envelope checks retain original work limits",
+    "Full-sphere diagnostic restored; test stub explicitly models the shared ledger"
+  ],
+  "unchanged_limits": {
+    "shared_work": 50000,
+    "graph_depth": 96,
+    "graph_nodes": 500,
+    "native_work": 67108864,
+    "boundary_visits": 1000000,
+    "boundary_unique_cells": 1000000,
+    "decoded_cells": 100000000,
+    "tile_keys": 100000,
+    "sample_rows": 1000
+  },
+  "explicit_local_policies": [
+    "Projected polygon-cell intersection area divided by actual pixel area; no multiplication into science",
+    "Great-circle q1/mid/q3 chord target1e-6pixel, max angular step0.25degree; no formal area error certificate",
+    "Exact endpoints and meridian/equator identities, no epsilon merging or positive-weight threshold",
+    "EPSG4326/3857/normal-zone UTM only; strict finite nonpolar/nonwrapped inputs and precision guards",
+    "Legacy explicit planar binary-center mask remains distinct",
+    "Pending public footprint is a strict gap, internal source support is not a public answer"
+  ],
+  "remaining_gaps": [
+    "Exact public clipped footprint; multiband/default-non-dropping samples need explicit supported regions",
+    "Repeated clips, prior fractional input composition, wrapped/polar/point/line/left-inside geometry and general reprojection",
+    "Weighted regional statistics, map transparency and scientific raster export",
+    "Google clip quantization/composition and exact curved-contact equivalence",
+    "Three existing strict S2 binary64 failures carried forward from Wave69, not rerun or fixed here",
+    "Full pinned API parameters/defaults/algorithms, global constant grid and other documented differences",
+    "Full Spark, browser, private real-data and production acceptance",
+    "Incomplete existing runtime-JAR public provenance; no dependency upgrade/security scan in this wave"
+  ],
+  "preservation": {
+    "dependency_or_lock_changes": false,
+    "user_data_or_credentials_read": false,
+    "system_or_venv_install_modified": false,
+    "containers_or_vms_used": false,
+    "runtime_services_started_stopped_restarted": false,
+    "goal_complete": false
+  },
+  "cleanup": {
+    "path": "audit/gee-python-wave70/root/web-dist",
+    "files": {
+      "index.html": {
+        "bytes": 684,
+        "sha256": "8d2393ef511c8622324a4bffdb270d97868157bb8387d5dab748f1347ee4405f"
+      },
+      "assets/Workbench-Dbs4hEo5.js": {
+        "bytes": 127309,
+        "sha256": "36bd0eecfdfc7be60000d072e269c2ce26e605a0b620f87365b6f240e3ef6004"
+      },
+      "assets/AdminApp-Cc8EdIeF.js": {
+        "bytes": 194418,
+        "sha256": "c991f480ae515ad6fbe356c4be53a6736466a6fe563a287e13ab4bcc525a3338"
+      },
+      "assets/motion-C5PynPuY.js": {
+        "bytes": 145400,
+        "sha256": "09016d08acfe8898fc5dc921de52238b9afd747e13b4912cd1d7590091e942c0"
+      },
+      "assets/index-AKPO0PQ8.js": {
+        "bytes": 8178,
+        "sha256": "65ac451cd762bf7ccd20a5615c2f894093159672d90202c994a567eca6b33868"
+      },
+      "assets/react-VPJ4IFiM.js": {
+        "bytes": 210550,
+        "sha256": "b080bf5b6fe7973608f872d3b54faadaf8af2dc0c335119f70c0b6ba2ebe6b33"
+      },
+      "assets/map-Dx-ML1gg.js": {
+        "bytes": 338827,
+        "sha256": "37304ad513bcd0ed5fd489858f868e46187a813dc351e88838095951182c7250"
+      },
+      "assets/fileHash.worker-BDNCRKBE.js": {
+        "bytes": 5797,
+        "sha256": "01fa7f1b1493e5a4661558c513d26ddad258a83fa438c1d12ac3cde651b63323"
+      },
+      "assets/rolldown-runtime-pP25SEvz.js": {
+        "bytes": 989,
+        "sha256": "c7d5a9b5d4023712538018b5b2ca9c285054e9b3ad27dc9f9189d24e73ce8395"
+      },
+      "assets/editor-5UsZrAHJ.js": {
+        "bytes": 446261,
+        "sha256": "6eb81fd3ebb71dcb79f40073f4ba85a3feb4dc3bdd533b51e05d9989427d5765"
+      },
+      "assets/GraphEditor-BBSUAalY.css": {
+        "bytes": 18204,
+        "sha256": "79b9af64a24dd09655161496f9081430ab93009e1688e69e5103f4c477abbb30"
+      },
+      "assets/AdminApp-CberucYy.css": {
+        "bytes": 7581,
+        "sha256": "8908f3ea433a2c83de8f0689e3124704b96d4c7e8c85cd2dfccbbf378bef3619"
+      },
+      "assets/map-c_1sG1-7.css": {
+        "bytes": 5263,
+        "sha256": "3a2b8467811c3aa89ce93c07ec06cb0598e8c8c6e9570c10da44590ddfd08c77"
+      },
+      "assets/index-HrqOZ6hc.css": {
+        "bytes": 29980,
+        "sha256": "67305b63a786d9f0dae2510961d7e21c534c54caed090698066a64070f7db0bd"
+      },
+      "assets/CodeEditor-DubImaKf.js": {
+        "bytes": 1953,
+        "sha256": "e0c05b284f3f6f07d756ba3951633970d344900244b28df6b5f9e99af1453304"
+      },
+      "assets/GraphEditor-CZwvT34f.js": {
+        "bytes": 187279,
+        "sha256": "9eaa09fdf9d2e57b4a2dd22d86b0f187a3506c012ba9547be4dcece174212f0c"
+      }
+    },
+    "logical_bytes": 1728673,
+    "build_completed": true,
+    "deployed": false,
+    "removed": true,
+    "owned_audit_python_caches_removed": [
+      {
+        "path": "audit/gee-python-wave70/workflow/__pycache__",
+        "logical_bytes": 10992
+      }
+    ]
+  },
+  "frozen_tested_source_sha256": {
+    "engine/ee_clip_coverage.py": "0d2a6385704d70ae6812b127b67ae2b19b0ae85ad54d1c8e05860f1b9500b0f5",
+    "engine/ee_clip_coverage_adapter.scala": "5a416da35d1b7f31baee37b1c794f3f576e76c40ed228c8ee97c1f1c7a3b3286",
+    "engine/ee_clip_coverage_budget.scala": "9da045ff0cc667ba2e21e650d96390e17cc09751edc5f3167d8b652dcf23f29a",
+    "engine/ee_clip_coverage_geometry.scala": "7df8087804980fc3dba3e20ae93b9736d358c821b1db13a79e95bd324cd30897",
+    "engine/ee_clip_coverage_numeric.scala": "0274710f1077954d2705f2e4bee3ea8ba70c17e279e59da3a771f9953fc2314d",
+    "engine/ee_clip_coverage_spec.scala": "d8ef7bb233ecd145ca8c4e21d56e97fb099ffa4066c482aada1b15ae317400b3",
+    "engine/ee_process_adapters.py": "28f2fb0df13be52be11d3d831dc3e03fb095031a34c020a7f01e424078d39e18",
+    "examples/74_GEE_python_geodesic_clip.py": "54d96c3c9e40aa0937a05f2c02e548470a9ae136ac293af7a0e773f16893a236",
+    "examples/javascript/28_球面裁切.js": "fcbb66ac7e96c4fc3f81afe52dab71456e5fd56368e80e2ddc469d9fa5ce98bf",
+    "gee/clip_coverage_spec.py": "5a3df80a4c3c1fbdbcbbe56cd978502674688f3d009e62ccc8369503801a7cf8",
+    "gee/compat/earthengine/capabilities.py": "238623f1ac8f9e38e38e733de8984d362a27a45e403a88363e88555c14459ad8",
+    "gee/compat/earthengine/clip_coverage_graph.py": "b9f507121eb72377d8001e37d522d4df532b93b20853ab27a1d2d420e3500d39",
+    "gee/compat/earthengine/collection_ops.py": "d0803ee9e708c26211cf68fb8bf3f7d0cf94dd859e18cbb1df812463b347145a",
+    "gee/compat/earthengine/element_metadata_values.py": "28d8b523948ffcebaae629f0e4027aa02538f52307cae5c1644ae399426acc64",
+    "gee/compat/earthengine/filter_structure.py": "d98fb0a866440c5ffe7d1208442d76e9279e89fb52639afffb8f0cc2dab53ff8",
+    "gee/compat/earthengine/graph.py": "f258e421594a364282fa9cff2faee2dbf38a9b88d70040689d3feef68a20afb4",
+    "gee/compat/earthengine/image_add_bands.py": "fc10b46166af7ebabf122518bf3d9aebef2035810f50ad60b1c9d962ba4a1bb4",
+    "gee/compat/earthengine/image_clip.py": "89906596a7f3e808d98dbb4479d70a1adab822454d7a220be749d3c7f6438990",
+    "gee/compat/earthengine/image_integer.py": "60b6a2d46846a001d1b6f942c30d2abeef7f48957bdf6957f458de8244e0ff25",
+    "gee/compat/earthengine/image_metadata_raster.py": "bc8367a346150a2700632208ca2867260d0f9d3e5e29bbf406c3c6b13cd7f8c2",
+    "gee/compat/earthengine/image_numeric_reducers.py": "b70610a6f9afdab40823fb6979a24b8c4797e9c8bb2e37bd2acfec3343fa5b76",
+    "gee/compat/earthengine/image_ops.py": "ee2b92b52302ef9002ea0006d58ef4a36050cd536872c895757aacad1049cb25",
+    "gee/compat/earthengine/image_pixel_math.py": "34bc4b2a64bd171dd310d65e8800bba3296d2410e1254c557baa456e6132c85e",
+    "gee/compat/earthengine/image_sampling.py": "26b1f7ab105cf3a6b519b8d13e27e41b061e9cbbe8b6b8eff352ca4d050e228a",
+    "gee/compat/earthengine/ir.py": "cb1c201fe7a8962333557148c2c65a43882cc4cbba8dcb287a0bcface10fa6c9",
+    "gee/compat/earthengine/owned_metadata_values.py": "9b52227c6e2a31adbfee7776f04b5f74bbbab4cf433224ee753465227f08d43a",
+    "gee/compat/earthengine/pixel_graph.py": "fbae04574bfa9b14bf8bb83597f73e017041d6616e3ec1f665160d88b3ccdf23",
+    "gee/compat/earthengine/pixel_math_graph.py": "481854b83dcfb87207d47201b8569e25e24bf303ceba5a6da1613aa95e5bf0ae",
+    "gee/compat/earthengine/raster_array_values.py": "c8438415c57a7e1343ba7787545bcbae6f3eec97e3d11f1668ea1f5ee7aaf346",
+    "gee/compat/earthengine/raster_collection_arrays.py": "ef381cdabb674c458845535534394b21e25dcc64e9ca81634d5dff706b94c0c7",
+    "gee/compat/earthengine/raster_factor_snapshot.py": "8f06432b158b9a30b461a84fdd56b48d5a5fba53cf59180df5d4405f2bf854fb",
+    "gee/compat/earthengine/raster_linear_fit.py": "c2c76d9401ee9e926eaeb7d8ead56997cd7b7d5140f0666e8b2afdb2e515a3c7",
+    "gee/compat/earthengine/raster_linear_regression.py": "250ade7f58c1e8a31624287ce6a1a6defd0e22dfafe49fd941e92d9ff9d5756b",
+    "gee/compat/earthengine/raster_matrix_decomposition.py": "8b2f2950f14d5e0d1309329ad55d9d127945830d51dd1fdeabd6cbd5a3046d76",
+    "gee/compat/earthengine/sampled_training.py": "e4deffe858fd938b3bed7fe7c5e8ba697ddad4d7d1f73cd616321e61570738bf",
+    "gee/compat/earthengine/scalar_image_snapshot.py": "ff72205f09e4741a07e4c9f6fb690c62b0cd7ea44bff9ab16bf3663bac6a707a",
+    "gee/ee_collections.py": "8a9fbdd61107d4b498daaeeeafd9800a42f7ffb59a990b935c97c6bc9cdb93b1",
+    "gee/ee_expression.py": "71c057e51090eccf46911bd353cc7e4a6627b2a178d23b186b6d4558d89e1d0a",
+    "gee/ee_masks.py": "918708bb63480a81d3964f1e403429cdaeacd5ce113e1ea3b1409798a21b87ef",
+    "gee/ee_quality.py": "316f4036c7cef3a243425d64b0d6a016983ed20b6e4dc5cebd179213e0d110e5",
+    "gee/local_processes.py": "ca75b1cd268efacf1b7b257ec43c7397880fc7f53bd6c21af002bb2bb27f6389",
+    "scripts/build_integer_adapter.py": "b563e28b852b512c51375d731202acd4f90c0c7a5be59e17ca97006d7696ff9a",
+    "scripts/ee_audit_native_manifest.py": "1e90c5a57517d758912ab43822636d9ae3b0ba20580ca98e21875b7feb22f41d",
+    "scripts/ee_inventory/catalogue.py": "bf9dfb2a57a674d112d53baecf63587c7f7110364bde5ceb31d5713f5d3bb949",
+    "scripts/ee_inventory/geodesic_clip.py": "77058e5915161bae2ef707b4e203284370a7cfd6a03095b2d2ef4311b3dab90e",
+    "scripts/probe_clip_coverage_native.py": "8c8dac320756bc3429cfa5329f4b846fdea2731eaa3ff4dceea93d87a774b875",
+    "scripts/probe_empty_expression_native.py": "7654ca365611025d5bb1d67ac83a0755ae0fb8e89db8f1bb2e588276f71af388",
+    "scripts/probe_mask_math_native.py": "6d82993fb2f2b935086827835602fb7c1ca382b417f4de5b5e7afde0d439a034",
+    "scripts/probe_weighted_sampling_native.py": "edc47dc620fb385f0bff97dde7c6a1f3b1a0f5394f1a3fad34f631d731929ce7",
+    "tests/fixtures/ee-clip-coverage-kernel-probe.scala": "2aad18723f6b8a95621aec4391df86b5dbc687df2d259bc7c68393f13ccd71bc",
+    "tests/fixtures/ee-geodesic-clip-wave70-v1.json": "eb494b45b97cf293d49fed21b6782bf9de7504dfc770724dc0821e80a5881c2b",
+    "tests/test_ee_band_label_compilation.py": "721ed9604751bbf62ba38cbc1b6ffa25b30074e39dfe9592ead52ff4bca566ad",
+    "tests/test_ee_clip_coverage_compiler.py": "a2aefaa57ac2aeeb968f727e8ac6df96e37f545bf920ef4d911e2178415f2017",
+    "tests/test_ee_clip_coverage_engine.py": "dbefc33b47c8ebc4ec0fff59801cb55df8ad4fe752e8b1b973c5af5f39c88c8e",
+    "tests/test_ee_clip_coverage_footprint_lifecycle.py": "54f8a9716bb63d5b951733e3b2ab4dc8efd530c18dd9cfa844d90c8f1431f777",
+    "tests/test_ee_clip_coverage_graph.py": "e295c81c2a6c3c7b3cfd83d15613609bb173df1227c5e2959bf918f0f1253448",
+    "tests/test_ee_clip_coverage_native_sources.py": "862a298012c1bcfdb38bb2e9b017e69336b3dc5b6aefd10cbf0929f8d27e8bcc",
+    "tests/test_ee_clip_coverage_sdk.py": "bf9305b4633385b7f40f6e0a720883ae59342fbf9c241b340f7f87c3fafeb91a",
+    "tests/test_ee_clip_coverage_spec.py": "12c034053518c6d869987dc4128887488adcac1841379ffffcd7c246d36b8d56",
+    "tests/test_ee_clip_coverage_workflow.py": "d90a553531af11467b83a2fdbdf2852e1a41551dc930747eab7bbb2e6690dda4",
+    "tests/test_ee_convolve_compiler.py": "277a77a00ccba783e5a209d93f29271b43a8456d11d98ee0f2c3daf24f30f523",
+    "tests/test_ee_empty_expression_workflow.py": "b5d569f2bf24946f8977ef5820ec455934454586dda069400a2e9bd8c29cd2ed",
+    "tests/test_ee_fast_distance_compiler.py": "602d4c6abea6f8e82523e0bc2209d4eef33ca540f8aea664c84089b5a8d890df",
+    "tests/test_ee_image_distance_compiler.py": "23af036e1b0fa794bd9bf876c4229eeedbf2b66d8bdf157357b8e69d8446a504",
+    "tests/test_ee_mask_cast_consumers.py": "0c3f3d62c3ae4bec67067200ad3eb374e96f151f947949960d5c59ea89a4ad7a",
+    "tests/test_ee_mask_math_workflow.py": "a83d99738bf0d190f6cbd3578098b585d1a3ba1e2d0edf739251360b9f0a0d0f",
+    "tests/test_ee_masks.py": "b6188ce0bb8a33c66b5bf9fa75046c862aae4948a02a03b3dbe9c140dabd6725",
+    "tests/test_ee_region_boundary_wave69.py": "814eee1ea95f3cef6baf0970a6367ec554d71c7fb747143e68e2ad201f4f8d7a",
+    "tests/test_ee_remap_compiler.py": "0855ee65448ed380d6661fa3d9ecbfd6a5f226fb56a77b32982a0d1676383696",
+    "tests/test_ee_sample_mask_projection.py": "ce88ffebc2eac4fb2150c7291351f26e65aa54097a35472a2e5a9a907f41253e",
+    "tests/test_ee_spherical_consumers.py": "bd738a828b130c9bca243134ebd83c8ff07fb72df7abde4f1c76a6abb22a69a7",
+    "tests/test_ee_structural_precision.py": "3aa38f110a529862f36ff1847c7d5a18e85c3fb50222338a8699a00fa04aa16e",
+    "tests/test_ee_terrain_compiler.py": "e4ef72a8e902083cc3e3555154742e80853b3f32ea6f516fc3745ec190729b40",
+    "tests/test_ee_translate.py": "a9c90736201c861b9413308a1ae05cf852ff563909b21e0c19fc7e1ec670d2be",
+    "tests/test_ee_weighted_sampling_workflow.py": "5e556dc39ae5475b6fdf8d2c4ce68195cf6c64b660dfa55ef51794595b9ff725",
+    "web/src/docs/typed-raster-docs.ts": "698117d688ec2a65f251ced92c8a974636c5be5599802d920d92275d588dd487"
+  },
+  "audit_receipts": {
+    "audit/gee-python-wave70/root/full-1.json": {
+      "path": "audit/gee-python-wave70/root/full-1.json",
+      "sha256": "9b10a5184eb532ee1e7083b1a4ec0b9a1ee33418b24914cfe4bae4211f9dbe15"
+    },
+    "audit/gee-python-wave70/root/full-2.json": {
+      "path": "audit/gee-python-wave70/root/full-2.json",
+      "sha256": "440cbdc0ea7f17215175e67b8dd775c41aad18212211dce0451c43584b4c1877"
+    },
+    "audit/gee-python-wave70/root/frontend.json": {
+      "path": "audit/gee-python-wave70/root/frontend.json",
+      "sha256": "7bbab5a72d9c9467728a9de05fe7d14bc67b6d7a16b753fb857b672f7ec0c257"
+    },
+    "audit/gee-python-wave70/root/build-4.json": {
+      "path": "audit/gee-python-wave70/root/build-4.json",
+      "sha256": "dd3d885c478a78d59cc7a997d28a4313ad90d7e9fa99a4e97097251bf0ef643a"
+    },
+    "audit/gee-python-wave70/native/source-freeze-v4.json": {
+      "path": "audit/gee-python-wave70/native/source-freeze-v4.json",
+      "sha256": "891d5759f31739358d96430ad9bc812f4f27428b97b08e5176b8d97d5735a643"
+    },
+    "audit/gee-python-wave70/native/tile-receipt-v4.json": {
+      "path": "audit/gee-python-wave70/native/tile-receipt-v4.json",
+      "sha256": "301d58291da9e9d9764d0e2d03a72551136edb288f9b037caa426f36158286e1"
+    },
+    "audit/gee-python-wave70/workflow/final4-addendum.md": {
+      "path": "audit/gee-python-wave70/workflow/final4-addendum.md",
+      "sha256": "7c84527c613ab606b65c635fc4af8b9a62fd87cbd4cfb38d2ecb2c81be7afaa2"
+    },
+    "audit/gee-python-wave70/workflow/baseline-local.json": {
+      "path": "audit/gee-python-wave70/workflow/baseline-local.json",
+      "sha256": "0b15f6d1046c1770d20f5e160322cdce2ee0e23587ed7f3f79104ed99d25098c"
+    },
+    "audit/gee-python-wave70/root/full-1-originals/sha256.json": {
+      "path": "audit/gee-python-wave70/root/full-1-originals/sha256.json",
+      "sha256": "e561b49e6e8ecb3c681b4a247c0df4d103cb5d2d400a69a560c498c0c5b270a0"
+    },
+    "audit/gee-python-wave70/review/final-implementation-review-v1.json": {
+      "path": "audit/gee-python-wave70/review/final-implementation-review-v1.json",
+      "sha256": "f2a29a22988f501080ec82166421335850d67144a01c9b2fbbfbcbdf16be13f2"
+    },
+    "audit/gee-python-wave69/review/existing-precision-gaps-523b98ccc9a4.json": {
+      "path": "audit/gee-python-wave69/review/existing-precision-gaps-523b98ccc9a4.json",
+      "sha256": "f013b58643f4793cde599ca23c1b90fe42b3ba4872f8979043755aced9f4b035"
+    },
+    "audit/gee-python-wave70/review/test-maintenance-v1/receipt-final2.json": {
+      "path": "audit/gee-python-wave70/review/test-maintenance-v1/receipt-final2.json",
+      "sha256": "c2931b03dc1002564f5e3ebc87a569d94c760adfd7882b6f6206c43a33cea6e6"
+    },
+    "audit/gee-python-wave70/root/full1-reclassification-addendum.md": {
+      "path": "audit/gee-python-wave70/root/full1-reclassification-addendum.md",
+      "sha256": "87556b3d6e03fcf55a0dd601b5a23093deb5f4a3afcf2d23e80e5067a74677fe"
+    },
+    "audit/gee-python-wave70/review/native-independent-v2-20261024T233044.124490Z/receipt.json": {
+      "path": "audit/gee-python-wave70/review/native-independent-v2-20261024T233044.124490Z/receipt.json",
+      "sha256": "18a26d875dba267ddbb6206dcea78c94bc24d0d422220e2647a27f5ff67a9848"
+    },
+    "audit/gee-python-wave70/review/native-independent-v3-20261024T233059.184006Z/receipt.json": {
+      "path": "audit/gee-python-wave70/review/native-independent-v3-20261024T233059.184006Z/receipt.json",
+      "sha256": "858953a9934a91200e077f7283ef1e1c31d20fbf3731ef0f4bd1220264b78f8f"
+    },
+    "audit/gee-python-wave70/review/native-budget-v2-20261024T233224.083593Z/receipt.json": {
+      "path": "audit/gee-python-wave70/review/native-budget-v2-20261024T233224.083593Z/receipt.json",
+      "sha256": "10cb628633fcaccd3f5467d06612b4a8a7f2a5aaa1a403cb1f9810f57c70bc03"
+    },
+    "audit/gee-python-wave70/review/compiler-gate-review-v2.json": {
+      "path": "audit/gee-python-wave70/review/compiler-gate-review-v2.json",
+      "sha256": "647aa8dba606b7769fa1009501eeeb2f181d74c1e6c0d67ecdeb597c1bc182d5"
+    },
+    "audit/gee-python-wave70/review/lifecycle-review-v2.json": {
+      "path": "audit/gee-python-wave70/review/lifecycle-review-v2.json",
+      "sha256": "d3f32fdbd9f6610f7067eff9a2a1932516df479ed18ee261ce33d1c665f1549c"
+    }
+  },
+  "publication": "Exact commit and protected CI recorded separately after commit; no PR, force push or branch-protection bypass.",
+  "documentation_sha256": {
+    "AGENTS.md": "e07e5a97527418b179a5d4378c5979902232dd33742708e8e8897a945f8d2820",
+    "GOAL.md": "4b81c453a309961647b2e108e81971a45a3a6ed75025681ac2451a37f1b0a350",
+    "docs/architecture.md": "c8fa916c1d81507ef705ac966d814227905dd59ecf7402e2e7b909c3eeccbbcf",
+    "docs/gee-compatibility.md": "3ddd6437f362436642897aae76faafaaee251d44bf0792259f4300a8f135c2a8",
+    "docs/gee-python/list.md": "afa77a77795b2bee656a03886de5acf1101725e62a7ff23156c6a44cac0323c8",
+    "docs/gee-python/geodesic-clip.md": "702b142b4111b03ca14facdc5feddd1da98c2f3021ecd584c69d2c7394599cf7"
+  },
+  "preserved_failures_and_calibrations": [
+    {
+      "path": "audit/gee-python-wave70/review/native-independent-v2-20261024T230638.185708Z/receipt.json",
+      "note": "Original failed exact-meridian contact produced a positive ~9.37e-17 weight; exact axis identity fix passed immutable V2/V3 controls",
+      "sha256": "adc7114878381831e5dd25667acde0733e9e0b79c9709e872087887b0f9f6351"
+    },
+    {
+      "path": "audit/gee-python-wave70/review/native-budget-v1-20261024T231400.975156Z/receipt.json",
+      "note": "Original unchanged-cap admission rejected the256 grid despite actual bounded numerical execution; global closed-cell candidate dedup fixed it",
+      "sha256": "25c7ff24de76a27ef040cfa4d9f70f956e54ee46839924b4b8a5fccba2606844"
+    },
+    {
+      "path": "audit/gee-python-wave70/root/bridge-original",
+      "note": "Test-only internal Float64 token normalization; public SDK geometry preparation already normalizes integers; not a compatibility gain"
+    },
+    {
+      "path": "audit/gee-python-wave70/root/build-3.json",
+      "note": "Two Scala API type compilation errors retained; fixed Set.size and checked-bound BigInt conversion without changing numerical policy",
+      "sha256": "5dc75d34f80802972a05a8be6b38b79130f75e207944ac7ee83529df68224b38"
+    },
+    {
+      "path": "audit/gee-python-wave70/root/full-1-originals/sha256.json",
+      "note": "All20 prior test/probe sources retained; exact error-boundary and current-source-count maintenance does not count as added compatibility",
+      "sha256": "e561b49e6e8ecb3c681b4a247c0df4d103cb5d2d400a69a560c498c0c5b270a0"
+    },
+    {
+      "path": "audit/gee-python-wave70/root/full-1.json",
+      "note": "Restricted test executor denied loopback/psutil/nested macOS sandbox; full2 passed with proper test-environment permission and unchanged product isolation",
+      "sha256": "9b10a5184eb532ee1e7083b1a4ec0b9a1ee33418b24914cfe4bae4211f9dbe15"
+    },
+    {
+      "path": "audit/gee-python-wave70/workflow/baseline-local.json",
+      "note": "Original10 SDK cases and baseline remain immutable; only2 postimplementation compile,8 still explicitly reject",
+      "sha256": "0b15f6d1046c1770d20f5e160322cdce2ee0e23587ed7f3f79104ed99d25098c"
+    }
+  ]
+}

@@ -51,7 +51,12 @@ def invoke_collection(translator, name, arguments):
             fail("Expected a collection and filter")
         from .filter_structure import validate_filter_structure
 
-        validate_filter_structure(translator, filt)
+        reads_geometry = validate_filter_structure(translator, filt)
+        if reads_geometry and collection.image.clip_footprint is not None:
+            fail(
+                "Collection.filter cannot use the conservative source envelope "
+                "as a clipped geometry"
+            )
         return rebind(
             collection,
             [
@@ -141,7 +146,11 @@ def invoke_collection(translator, name, arguments):
             bands.extend((prefix + "_" + name, pixel) for name, pixel in image.bands)
         if len({name for name, _ in bands}) != len(bands):
             fail("toBands produced duplicate band names")
-        return Image(bands, {}, collection.source, inherit_props=False, footprint=collection.image.footprint)
+        return Image(
+            bands, {}, collection.source, inherit_props=False,
+            footprint=collection.image.footprint,
+            clip_footprint=collection.image.clip_footprint,
+        )
     if name == "ImageCollection.reduce":
         translator.allowed(a, {"collection", "reducer", "parallelScale"})
         parallel = a.get("parallelScale", 1)
@@ -154,6 +163,7 @@ def invoke_collection(translator, name, arguments):
         return Image(
             [(name + "_" + suffix, Pixel("reduce_t", (pixel, reducer.name))) for name, pixel in collection.image.bands],
             {}, collection.source, inherit_props=False, footprint=collection.image.footprint,
+            clip_footprint=collection.image.clip_footprint,
         )
     if name.startswith("reduce."):
         translator.allowed(a, {"collection"})
@@ -164,6 +174,7 @@ def invoke_collection(translator, name, arguments):
         return Image(
             [(band, Pixel("reduce_t", (pixel, reducer))) for band, pixel in collection.image.bands],
             {}, collection.source, inherit_props=False, footprint=collection.image.footprint,
+            clip_footprint=collection.image.clip_footprint,
         )
     if name == "ImageCollection.mosaic":
         translator.allowed(a, {"collection"})
@@ -171,5 +182,6 @@ def invoke_collection(translator, name, arguments):
         return Image(
             [(band, Pixel("reduce_t", (pixel, "last", "collection_order"))) for band, pixel in collection.image.bands],
             {}, collection.source, inherit_props=False, footprint=collection.image.footprint,
+            clip_footprint=collection.image.clip_footprint,
         )
     fail(f"Unsupported Earth Engine algorithm: {name}")

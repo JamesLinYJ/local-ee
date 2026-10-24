@@ -422,3 +422,8 @@ from .float64_images import FLOAT64_IMAGE_LIMITS
 
 for operation, limits in FLOAT64_IMAGE_LIMITS.items():
     KNOWN_PARTIAL_LIMITS.setdefault(operation, []).extend(limits)
+
+from .geodesic_clip import CLIP_CONTEXT_LIMITS
+
+for operation, limits in CLIP_CONTEXT_LIMITS.items():
+    KNOWN_PARTIAL_LIMITS.setdefault(operation, []).extend(limits)

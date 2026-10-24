@@ -62,7 +62,10 @@ def test_actual_mask_apply_then_existing_sampling_kernels(native_probe):
 
     assert native_probe["manifest_format"] == "local-ee-standalone-audit-v1"
     assert native_probe["deployment_eligible"] is False
-    assert native_probe["source_count"] == 70
+    from scripts import build_integer_adapter
+
+    assert len(build_integer_adapter.SOURCES) == 75
+    assert native_probe["source_count"] == len(build_integer_adapter.SOURCES)
     assert native_probe["runtime_jar_count"] == 245
     from scripts.probe_weighted_sampling_native import EXPECTED_MANIFEST
     assert native_probe["manifest_path"] == str(EXPECTED_MANIFEST.resolve())

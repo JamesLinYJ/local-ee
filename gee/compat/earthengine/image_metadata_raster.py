@@ -115,6 +115,7 @@ def _metadata(translator, arguments):
         bind_source_bands(unbound, image, translator=translator), dict(image.props), image.source,
         image.mapped, image.inherit_props, image.copied_props,
         image.footprint, image.footprint_is_absolute,
+        image.clip_footprint,
     )
 
 

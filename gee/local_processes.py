@@ -9,7 +9,7 @@ from .rf_validation_processes import (
 
 LOCAL_PROCESSES = frozenset({
     "local_ee_to_double", "local_ee_to_float", "local_ee_constant_on_grid",
-    "local_ee_unmask", "local_ee_mask_weights", "local_ee_drop_single_time", "local_ee_reduce_bands",
+    "local_ee_unmask", "local_ee_mask_weights", "local_ee_clip_coverage", "local_ee_drop_single_time", "local_ee_reduce_bands",
     "local_ee_table", "local_ee_minimum_distance",
     "local_ee_sample_regions", "local_ee_train_minimum_distance",
     "local_ee_remap", "local_ee_sample_table_op", "local_ee_pixel_math", "local_ee_integer_values", "local_ee_focal", "local_ee_convolve",
@@ -42,7 +42,7 @@ def validate_local_process(name, arguments, depth, *, node_context=None):
         required.add("model")
     if name in {"local_ee_sample_regions", "local_ee_train_minimum_distance",
                 "local_ee_remap", "local_ee_sample_table_op", "local_ee_focal", "local_ee_convolve",
-                "local_ee_neighborhood", "local_ee_terrain", "local_ee_distance", "local_ee_fast_distance_transform", "local_ee_integer_values", "local_ee_matrix_values", "local_ee_unmix", "local_ee_mask_weights"}:
+                "local_ee_neighborhood", "local_ee_terrain", "local_ee_distance", "local_ee_fast_distance_transform", "local_ee_integer_values", "local_ee_matrix_values", "local_ee_unmix", "local_ee_mask_weights", "local_ee_clip_coverage"}:
         required.add("spec")
     allowed = required | ({"same_footprint"} if name == "local_ee_unmask" else set())
     if depth != 0 or not required <= set(arguments) <= allowed:
@@ -133,9 +133,17 @@ def validate_local_process(name, arguments, depth, *, node_context=None):
         from .mask_weights_spec import decode_mask_weights_spec
 
         decode_mask_weights_spec(arguments["spec"])
+    if name == "local_ee_clip_coverage":
+        from .clip_coverage_spec import decode_clip_coverage_spec
+
+        decode_clip_coverage_spec(arguments["spec"])
 
 
 def process_spec(name):
+    if name == "local_ee_clip_coverage":
+        from .clip_coverage_spec import clip_coverage_process_spec
+
+        return clip_coverage_process_spec()
     if name == "local_ee_mask_weights":
         from .mask_weights_spec import mask_weights_process_spec
 

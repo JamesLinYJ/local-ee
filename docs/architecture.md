@@ -49,7 +49,7 @@ flowchart LR
 
 标量流程组合通过 `scalar_work_plan`／`scalar_work_ledger` 减少已付费不可变 DAG 的重复扫描，图内账本最多4096项、强引用保留身份及子树高度；未识别或可变载荷执行原估算。`scalar_image_snapshot` 只在根作用域复用最多64个明确的 RGB／HSV ValueRef，元数据和足迹在存取时各自复制。实际深度、每次节点预检、规格成本和新鲜来源／网格证明不由缓存替代；原50000工作／500节点上限及执行隔离不变。见 [多步颜色组合](gee-python/scalar-composition.md)。
 
-几何二元操作由 `geometry_binary` 分开路由：显式WGS84平面／直线边仍用GEOS，省略或空投影的有限测地线输入走 `spherical_binary` 与固定S2／Abseil C ABI。`geometry_topology` 保留有效默认值及集合继承规则；`spherical_preflight`、原生计数和独立输出界限共同约束工作，`spherical_native` 校验源码／产物／平台／许可证摘要，运行时不下载。球面CSV使用独立模型校验和全表预充，公开标志按官方客户端接受的几何类型输出。S2 binary64输入关联及构造结果往返仍有3项严格控制不通过；显式球面结果在旧平面栅格／Join消费者前拒绝，原先未标边类型的栅格路径仍不代表GEE测地线兼容。球面掩膜、投影／误差传播、完整球面公开编码及Google同数据对照继续待实现。见 [球面合同](gee-python/spherical-geometry.md) 与 [平面合同](gee-python/geometry-binary.md)。
+几何二元操作由 `geometry_binary` 分开路由：显式WGS84平面／直线边仍用GEOS，省略或空投影的有限测地线输入走 `spherical_binary` 与固定S2／Abseil C ABI。`geometry_topology` 保留有效默认值及集合继承规则；`spherical_preflight`、原生计数和独立输出界限共同约束工作，`spherical_native` 校验源码／产物／平台／许可证摘要，运行时不下载。球面CSV使用独立模型校验和全表预充，公开标志按官方客户端接受的几何类型输出。S2 binary64输入关联及构造结果往返仍有3项严格控制不通过；显式球面结果在旧平面栅格／Join消费者前拒绝，原先未标边类型的栅格路径仍不代表GEE测地线兼容。有限球面裁切有独立合同，其余掩膜消费者、投影／误差传播、完整球面公开编码及Google同数据对照继续待实现。见 [球面合同](gee-python/spherical-geometry.md) 与 [平面合同](gee-python/geometry-binary.md)。
 
 有限要素筛选由 `spatial_filters` 预检全部官方字段／字面操作数组合并按实际边模型路由；`collection_geometry` 在同一CRS／边模型下合并内联集合，保留真实分量并归一化。`error_margin` 仅在这两种已证明没有变换的路径中消费，不能冒充重投影。原始STAC GeoJSON保留平面线段，因此与默认球面多边形ROI混用目前明确拒绝；Point无边情形仍可运算。重复验证、模型扫描及输出继续计入原50000预算，空目录也先验证全部筛选分支。目录足迹合并、球面栅格掩膜和混合模型转换继续待实现，见[空间筛选合同](gee-python/spatial-selection.md)。
 
@@ -58,15 +58,17 @@ flowchart LR
 原生固定记录、矩形解码和公开映射在调用前预充，不能用临时账本运行未计费模板。
 `ee_geometry_regions` 分离服务的区域验证；公开 EE 几何与已知 STAC 足迹按真实来源
 分别保留球面默认和平面规则，字典取值与嵌套模型须新鲜校验。
-空／退化／跨日期线公开编码、一般 CRS 和球面部分像元栅格化仍未完成。
+空／退化／跨日期线公开编码、一般 CRS 和其余球面栅格消费者仍未完成；有限裁切另见专节。
 见[几何范围合同](gee-python/geometry-bounds.md)。
+
+有限默认球面多边形裁切由 `image_clip`／`clip_coverage_graph` 与独立原生覆盖生产者实现。科学值与 Float64 部分像元权重分开保存，使用真实 CRS、网格及观察键；精确经线／赤道关系保持，其他大圆弧采用有界投影细分。`ee_clip_coverage_budget` 在构造前计费，并以投影边界的全局闭合像元候选去重、实际时间键数和原资源上限预检任务。内部保存未解决足迹的裁切身份；默认取样必须证明输出权重在该区域外为零，不能借用另一研究区或恢复掩膜后的数据。公开精确足迹、重复裁切、带权统计／地图／科学栅格导出仍待完成。固定误差政策与独立瓦片／CSV证据不能代替 Google 或生产部署验收。见[球面裁切合同](gee-python/geodesic-clip.md)。
 
 栅格小数掩膜由 `image_mask_weights` 把科学值与权重保存在独立不可变IR中；
 `mask_weights_graph` 和闭合的 `local_ee_mask_weights` 只物化已审查的权重读取／组合。
 select、rename、addBands 可传递权重，其他带权科学值消费者须逐项接通，不能把权重
 压成NoData或乘进科学值。映射中的mask getter按真实场景展开，避免同日观测被上游合并；
 网格、时间、Float64边界和原预算分别验证。普通权重影像可进入已有数值路径；
-默认球面部分像元裁切、带权统计、透明度与结果编码仍未完成。独立classpath构建只生成
+有限默认球面裁切有独立生产者；带权统计、透明度与科学值结果编码仍未完成。独立classpath构建只生成
 不可部署的审计产物，记录工具／源码／依赖摘要及未匹配公开清单，不能代替正式运行库
 准入。见[小数掩膜合同](gee-python/mask-weights.md)。
 

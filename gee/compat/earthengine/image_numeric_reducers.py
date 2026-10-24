@@ -5,7 +5,10 @@ import math
 from dataclasses import replace
 
 from .composed_reducer_spec import MAX_REDUCER_NAME_CHARS
-from .ir import Collection, Image, ImageSequence, Pixel, Source, fail
+from .ir import (
+    Collection, Image, ImageSequence, Pixel, Source,
+    combine_clip_footprints, fail,
+)
 from .numeric_reducer_plan import MAX_NUMERIC_REDUCER_WORK, numeric_outputs
 from .numeric_reducer_grid import require_common_grid
 
@@ -129,6 +132,7 @@ def _collection_reduction(translator, collection, outputs, label):
         bands, {}, source, inherit_props=False,
         footprint=collection.image.footprint,
         footprint_is_absolute=collection.image.footprint_is_absolute,
+        clip_footprint=collection.image.clip_footprint,
     )
 
 
@@ -195,6 +199,9 @@ def _sequence_reduction(translator, sequence, outputs, label):
     return Image(
         bands, {}, images[0].source, inherit_props=False,
         footprint=footprint, footprint_is_absolute=True,
+        clip_footprint=combine_clip_footprints(
+            *(image.clip_footprint for image in images)
+        ),
     )
 
 

@@ -6,7 +6,7 @@ from dataclasses import dataclass, replace
 import math
 
 from .array_core import charge_array
-from .ir import Image, Pixel, Source
+from .ir import Image, Pixel, Source, valid_clip_footprint_identity
 from .raster_array_bands import RasterArrayBands
 from .raster_array_core import RasterArrayImage
 
@@ -122,7 +122,9 @@ def snapshot_factor(translator, value):
     if type(value) not in (RasterArrayImage, RasterArrayBands):
         return None
     image = value.image
-    if type(image) is not Image or image.bands or image.mapped or image.copied_props:
+    if (type(image) is not Image or image.bands or image.mapped or image.copied_props
+            or image.clip_footprint is not None
+            and not valid_clip_footprint_identity(image.clip_footprint)):
         return None
     arrays = value.arrays if type(value) is RasterArrayBands else (value,)
     if (type(arrays) is not tuple or not 1 <= len(arrays) <= 3
@@ -130,6 +132,7 @@ def snapshot_factor(translator, value):
                    or type(array.cells) is not tuple or type(array.shape) is not tuple for array in arrays)
             or sum(len(array.cells) for array in arrays) > 64):
         return None
+    charge_array(translator, 1)
     work = _json_metadata_work(translator, (image.props, image.footprint))
     if work is None or not _immutable_pixels(
             translator, (tuple((array.cells, array.mask) for array in arrays), image.source)):

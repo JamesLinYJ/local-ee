@@ -42,6 +42,7 @@ class PixelCompiler:
             elif p.op == "where": result = any(self.has_double_precision(value) for value in p.args[1:])
             elif p.boolean and p.op in BOOLEAN_OPERATIONS: result = False
             elif p.op in {"classify", "trained_classify", "smile_rf_classify", "fast_distance"}: result = False
+            elif p.op == "clip_coverage": result = True
             elif p.op in {"mask_validity", "mask_update", "mask_apply", "to_double", "unmask", "unmask_constant", "on_grid", "remap", "focal", "convolve", "neighborhood", "terrain", "distance", "unmix_component"}: result = True
             elif p.op in {"to_float", "is_nodata"}: result = False
             else:
@@ -189,6 +190,10 @@ class PixelCompiler:
             from .unmix_graph import compile_unmix_component
 
             return compile_unmix_component(self, p)
+        if p.op == "clip_coverage":
+            from .clip_coverage_graph import compile_clip_coverage_pixel
+
+            return compile_clip_coverage_pixel(self, p)
         if p.op == "matrix_element":
             from .matrix_values_graph import compile_matrix_element
 

@@ -45,6 +45,9 @@ def _pixel_cost(pixel, seen, sources):
         # emits its closed native process. Reserve a possible Float64 input
         # conversion too, even when a scalar happens not to materialize it.
         return child_cost + 5 + max(0, len(children) - 2)
+    if pixel.op == "clip_coverage":
+        # One native independent-weight producer and its actual grid binding.
+        return child_cost + 2
     if pixel.op in {"clip", "to_double", "to_float", "unmask", "unmask_constant", "on_grid"}:
         return child_cost + 2
     if pixel.op == "reduce_bands":
@@ -121,6 +124,12 @@ def image_work_estimate(image):
                 # The parent graph precharges specifications in both the target
                 # and independently compiled sample-image lineages.
                 work += 6 * len(value.args[1]) + 1
+            if (value.op == "clip_coverage" and len(value.args) == 2
+                    and type(value.args[1]) is str):
+                # The canonical geometry is immutable but remains an input
+                # scan/copy in each sampled graph; never treat its string as
+                # free merely because its Pixel closure is memoized.
+                work += len(value.args[1]) + 1
             for argument in value.args:
                 scan(argument)
         elif isinstance(value, (tuple, list)):

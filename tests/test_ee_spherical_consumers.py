@@ -1,10 +1,15 @@
 """New spherical outputs must not silently enter the legacy planar masks."""
+import json
+
 import pytest
 
 from gee.compat.earthengine.decoder import Translator
 from gee.compat.earthengine.geometry_consumers import reject_spherical_edges
+from gee.compat.earthengine.graph import Graph
 from gee.compat.earthengine.image_ops import invoke_image
-from gee.compat.earthengine.ir import Image, Reducer, UnsupportedEEError, const
+from gee.compat.earthengine.ir import (
+    Image, Pixel, Reducer, Source, UnsupportedEEError, const,
+)
 from gee.compat.earthengine.geometry_values import GeometryValue
 from gee.compat.earthengine.spherical_wire import FULL_SPHERE
 
@@ -20,13 +25,43 @@ def test_raster_consumer_rejects_spherical_edges_before_geos(operation, monkeypa
 
     calls = []
     monkeypatch.setattr(shapely.geometry, "shape", lambda value: calls.append(value))
-    image = Image([("B1", const(1))], {})
-    arguments = {"input" if operation == "Image.clip" else "image": image,
-                 "geometry": geometry()}
     if operation == "Image.reduceRegion":
+        image = Image([("B1", const(1))], {})
+        arguments = {"image": image, "geometry": geometry()}
         arguments["reducer"] = Reducer("mean")
-    with pytest.raises(UnsupportedEEError, match="spherical geometry edges"):
-        invoke_image(Translator([], {}, {}), operation, arguments)
+        with pytest.raises(UnsupportedEEError, match="spherical geometry edges"):
+            invoke_image(Translator([], {}, {}), operation, arguments)
+    else:
+        # Image.clip now lowers default-geodesic polygons into independent
+        # coverage and raw science IR. Its ordinary image output remains
+        # unsupported until a mask-aware consumer proves the real grid.
+        image = Image([("B1", const(1))], {})
+        clipped = invoke_image(Translator([], {}, {}), operation, {
+            "input": image, "geometry": geometry(),
+        })
+        assert isinstance(clipped, Image)
+        assert clipped.clip_footprint is not None
+        assert len(clipped.bands) == 1
+        assert clipped.bands[0][0] == "B1"
+        carrier = clipped.bands[0][1]
+        assert carrier.op == "with_mask"
+        raw_science, coverage = carrier.args
+        assert raw_science is image.bands[0][1]
+        assert coverage.op == "clip_coverage"
+        assert coverage.args[0] is raw_science
+        assert json.loads(coverage.args[1])["model"] == "great-circle"
+
+        with pytest.raises(UnsupportedEEError, match="Fractional image masks require a mask-aware consumer"):
+            Graph(Translator([], {}, {})).expression(carrier)
+        unbound_science = Pixel(
+            "band", (Source("synthetic", (), ("B1",)), "B1"),
+        )
+        unbound = invoke_image(Translator([], {}, {}), operation, {
+            "input": Image([("B1", unbound_science)], {}),
+            "geometry": geometry(),
+        }).bands[0][1].args[1]
+        with pytest.raises(UnsupportedEEError, match="Image.clip coverage requires a finite actual raster source and grid"):
+            Graph(Translator([], {}, {})).expression(unbound)
     assert calls == []
 
 

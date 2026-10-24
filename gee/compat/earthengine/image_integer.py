@@ -15,7 +15,7 @@ from gee.float64_values_contract import (
     evaluate_float64_values,
 )
 
-from .ir import Image, Pixel, as_image, fail, pairs
+from .ir import Image, Pixel, as_image, clip_footprint_after_first_input, fail, pairs
 
 
 _CASTS = {
@@ -294,6 +294,9 @@ def invoke_image_integer(translator, name, arguments):
             bands, dict(left.props), left.source or right.source,
             left.mapped or right.mapped, left.inherit_props, left.copied_props,
             left.footprint, left.footprint_is_absolute,
+            clip_footprint_after_first_input(
+                left.clip_footprint, right.clip_footprint,
+            ),
         )
     except OverflowError:
         fail(f"{name} operands must be finite numeric values")

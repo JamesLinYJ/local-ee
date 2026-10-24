@@ -233,8 +233,9 @@ def test_filter_bounds_does_not_clip(local):
     assert loads(r)[0]["_gee_item_ids"]==["a","b"]
     assert loads(r)[0]["spatial_extent"]==dict(west=0,south=0,east=3,north=2)
     assert "mask_polygon" not in processes(r)
-    # Default spherical input must not silently enter the planar mask path.
-    with pytest.raises(UnsupportedEEError, match="Image.clip spherical geometry edges"):
+    # Default spherical clip enters fractional clip IR; serializing its raw
+    # science result still stops at the unaudited mask-aware consumer.
+    with pytest.raises(UnsupportedEEError, match="Fractional image masks require a mask-aware consumer"):
         compile(call("Image.clip",input=first(),geometry=rect(.5,.5,1,1)),local)
     clipped=compile(call("Image.clip",input=first(),geometry={
         **rect(.5,.5,1,1),"geodesic":False}),local)
@@ -483,7 +484,7 @@ def test_mapped_clip_controls_footprint_selection(local):
     clipped=call('Collection.map',collection=col(),baseAlgorithm={'type':'Function','argumentNames':['im'],
         'body':call('Image.clip',input=arg,geometry=rect(0,0,.5,.5))})
     filt=call('Filter.intersects',leftField='.all',rightValue=call('Feature',geometry=rect(1,1,1.5,1.5)))
-    with pytest.raises(UnsupportedEEError, match="spherical geometry edges|Mixed geodesic.*reprojection"):
+    with pytest.raises(UnsupportedEEError, match="Collection.filter cannot use the conservative source envelope as a clipped geometry"):
         compile(call('Collection.size',collection=call('Collection.filter',collection=clipped,filter=filt)),local)
     planar_clipped=call('Collection.map',collection=col(),baseAlgorithm={'type':'Function','argumentNames':['im'],
         'body':call('Image.clip',input=arg,geometry={**rect(0,0,.5,.5),'geodesic':False})})

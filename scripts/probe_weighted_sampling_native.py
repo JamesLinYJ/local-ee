@@ -17,16 +17,13 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tests"))
 
-from scripts.ee_audit_native_manifest import validate_native_manifest
+from scripts.ee_audit_native_manifest import CURRENT_ADAPTER_MANIFEST, validate_native_manifest
 from ee_kernel_subprocess import run_bounded
 
 
 PROBE_SOURCE = ROOT / "tests/fixtures/ee-weighted-sampling-kernel-probe.scala"
 DEFAULT_FIXTURE = ROOT / "tests/fixtures/ee-weighted-sampling-wave65-v1.json"
-EXPECTED_MANIFEST = ROOT / (
-    "audit/gee-python-wave66/native/final-1-20261024/"
-    "local-ee-mask-math-adapter.jar.manifest.json"
-)
+EXPECTED_MANIFEST = CURRENT_ADAPTER_MANIFEST
 SERVICE_NAME = "org.openeo.geotrelliscommon.CubeProcessProvider"
 MAX_FIXTURE_BYTES = 1_000_000
 

@@ -17,13 +17,11 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tests"))
 
 from ee_kernel_subprocess import run_bounded
-from scripts.ee_audit_native_manifest import validate_native_manifest
+from scripts.ee_audit_native_manifest import CURRENT_ADAPTER_MANIFEST, validate_native_manifest
+from scripts.build_integer_adapter import SOURCES
 
 
-EXPECTED_MANIFEST = ROOT / (
-    "audit/gee-python-wave66/native/final-1-20261024/"
-    "local-ee-mask-math-adapter.jar.manifest.json"
-)
+EXPECTED_MANIFEST = CURRENT_ADAPTER_MANIFEST
 DEFAULT_FIXTURE = ROOT / "tests/fixtures/ee-empty-expression-wave67-v1.json"
 PROBE_SOURCE = ROOT / "tests/fixtures/ee-empty-expression-kernel-probe.scala"
 EXPECTED_ADAPTER = "local-ee-mask-weights-audit-adapter"
@@ -103,12 +101,12 @@ def run_probe(fixture_path: Path = DEFAULT_FIXTURE,
         manifest_path, expected_adapter=EXPECTED_ADAPTER,
     )
     manifest = checked["manifest"]
-    if (len(manifest.get("sources", {})) != 70
+    if (len(manifest.get("sources", {})) != len(SOURCES)
             or len(checked["scala_tools"]) != 3
             or len(checked["runtime_jars"]) != 245
             or manifest.get("deployment_eligible") is not False
             or "25" not in str(manifest.get("java_version", ""))):
-        raise ValueError("Wave66 manifest must verify 70 sources, JDK 25, and the retained 245-JAR classpath")
+        raise ValueError("Native manifest must verify the current exact source set, JDK 25, and the retained 245-JAR classpath")
     fixture_path = Path(fixture_path).expanduser().resolve(strict=True)
     fixture_bytes, fixture = _validate_fixture(fixture_path)
     probe_bytes = PROBE_SOURCE.read_bytes()

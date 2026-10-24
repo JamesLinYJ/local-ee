@@ -238,6 +238,7 @@ def _replace_properties(translator, arguments):
         staged = Image(
             destination.bands, replacement, destination.source, False,
             False, (), destination.footprint, destination.footprint_is_absolute,
+            destination.clip_footprint,
         )
         # Prevent cleared catalog properties from reappearing on resolution.
         return owned_metadata_copy(translator, staged, name)

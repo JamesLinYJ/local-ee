@@ -4,7 +4,9 @@ from __future__ import annotations
 import math
 
 from .array_core import charge_array
-from .ir import Collection, Image, ImageSequence, Pixel, const, fail
+from .ir import (
+    Collection, Image, ImageSequence, Pixel, combine_clip_footprints, const, fail,
+)
 from .raster_array_bands import wrap_array_bands
 from .raster_array_core import wrap_array_image
 from .raster_regression_frames import regression_frames, scalar_regression_rows
@@ -149,6 +151,9 @@ def invoke_raster_linear_regression(translator, name, arguments):
     base_image = Image(
         [], {}, images[0].source, inherit_props=False,
         footprint=footprint, footprint_is_absolute=True,
+        clip_footprint=combine_clip_footprints(
+            *(image.clip_footprint for image in images)
+        ),
     )
 
     # Bound the complete-case expressions, both centered passes and outputs

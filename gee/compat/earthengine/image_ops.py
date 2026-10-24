@@ -4,7 +4,10 @@ from __future__ import annotations
 import math
 from dataclasses import replace
 
-from .ir import Image, Pixel, Reducer, Region, as_image, binary, const, fail, pairs, unary
+from .ir import (
+    Collection, Image, ImageSequence, Pixel, Reducer, Region, as_image, binary,
+    clip_footprint_after_first_input, const, fail, pairs, unary,
+)
 
 
 _IMAGE_NAMES = {
@@ -89,6 +92,17 @@ def _check_constant_float32(matched):
 
 def invoke_image(translator, name, arguments):
     a = arguments
+    if name == "Collection.geometry":
+        target = a.get("collection")
+        if (isinstance(target, Image) and target.clip_footprint is not None
+                or isinstance(target, Collection) and target.image.clip_footprint is not None
+                or isinstance(target, ImageSequence) and any(
+                    image.clip_footprint is not None for image in target.images
+                )):
+            fail("Image.geometry cannot expose the conservative source envelope as a clipped geometry")
+        # FeatureCollections are dictionaries and have no pending image
+        # footprint. The internal ImageCollection is caught above before its
+        # image can be converted into inline Features.
     if name == "Image.hypot":
         translator.allowed(a, {"image1", "image2"})
         for parameter in ("image1", "image2"):
@@ -111,8 +125,13 @@ def invoke_image(translator, name, arguments):
             radicand = Pixel("add", (const(1), square))
             magnitude = Pixel("multiply", (high, Pixel("sqrt", (radicand,))))
             bands.append((band_name, Pixel("to_float", (magnitude,))))
-        return replace(image, bands=bands, source=image.source or other.source,
-                       mapped=image.mapped or other.mapped)
+        return replace(
+            image, bands=bands, source=image.source or other.source,
+            mapped=image.mapped or other.mapped,
+            clip_footprint=clip_footprint_after_first_input(
+                image.clip_footprint, other.clip_footprint,
+            ),
+        )
     if name == "Image.select":
         translator.allowed(a, {"input", "bandSelectors", "newNames"})
         return translator.select(a["input"], a["bandSelectors"], a.get("newNames"))
@@ -147,6 +166,7 @@ def invoke_image(translator, name, arguments):
             [("nd", Pixel("if", (valid, ratio, const(None))))],
             {}, image.source, image.mapped, False,
             footprint=image.footprint, footprint_is_absolute=image.footprint_is_absolute,
+            clip_footprint=image.clip_footprint,
         )
     if name == "Image.parseExpression":
         from .image_expression import descriptor
@@ -166,7 +186,12 @@ def invoke_image(translator, name, arguments):
             test_pixel = test.bands[0 if len(test.bands) == 1 else index][1]
             value_pixel = value.bands[0 if len(value.bands) == 1 else index][1]
             bands.append((name, Pixel("where", (test_pixel, value_pixel, pixel))))
-        return replace(image, bands=bands)
+        return replace(
+            image, bands=bands,
+            clip_footprint=clip_footprint_after_first_input(
+                image.clip_footprint, test.clip_footprint, value.clip_footprint,
+            ),
+        )
     if name in {"Image.clamp", "Image.unitScale"}:
         translator.allowed(a, {"input", "low", "high"})
         low, high = a["low"], a["high"]
@@ -197,6 +222,13 @@ def invoke_image(translator, name, arguments):
                 from .collection_geometry import invoke_collection_geometry
 
                 return invoke_collection_geometry(translator, a)
+        target = a.get("feature", a.get("collection"))
+        if (isinstance(target, Image) and target.clip_footprint is not None
+                or isinstance(target, Collection) and target.image.clip_footprint is not None
+                or isinstance(target, ImageSequence) and any(
+                    image.clip_footprint is not None for image in target.images
+                )):
+            fail("Image.geometry cannot expose the conservative source envelope as a clipped geometry")
         translator.allowed(a, {"feature", "collection", "maxError", "proj", "geodesics"})
         if a.get("proj") not in (None, "EPSG:4326") or a.get("geodesics") is True:
             fail("Geometry extraction currently supports planar EPSG:4326 only")
@@ -206,30 +238,9 @@ def invoke_image(translator, name, arguments):
 
         return add_bands(translator, a)
     if name == "Image.clip":
-        translator.allowed(a, {"input", "geometry"})
-        image, geometry = as_image(a["input"]), a["geometry"]
-        from .geometry_regions import own_ee_region
+        from .image_clip import invoke_image_clip
 
-        geometry, geometry_mapping = own_ee_region(
-            translator, geometry, name, strip_inferred_even_odd=True,
-        )
-        if geometry_mapping.get("type") not in {"Polygon", "MultiPolygon"}:
-            fail("clip supports Polygon/MultiPolygon only")
-        from shapely.geometry import mapping, shape
-
-        if image.footprint:
-            _, base = own_ee_region(
-                translator, image.footprint, name,
-                strip_inferred_even_odd=True,
-            )
-            footprint = mapping(shape(base).intersection(shape(geometry_mapping)))
-            from .geometry_topology import _has_edges
-
-            if _has_edges(footprint):
-                footprint["geodesic"] = False
-        else:
-            footprint = geometry_mapping
-        return replace(image, bands=[(name, Pixel("clip", (pixel, geometry_mapping))) for name, pixel in image.bands], footprint=footprint)
+        return invoke_image_clip(translator, a)
     if name == "Image.reduceRegion":
         translator.allowed(a, {"image", "reducer", "geometry", "scale", "crs", "crsTransform", "bestEffort", "maxPixels", "tileScale"})
         if a.get("crsTransform") is not None or a.get("bestEffort") or a.get("tileScale", 1) != 1:

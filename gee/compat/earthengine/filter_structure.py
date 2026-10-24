@@ -70,10 +70,12 @@ def _operands(translator, arguments):
 
 
 def validate_filter_structure(translator, filt):
-    """Validate filter structure before row evaluation, charging the graph budget."""
+    """Validate a filter and report whether it reads row geometry."""
     active = set()
+    reads_geometry = False
 
     def visit(node, depth):
+        nonlocal reads_geometry
         charge(translator)
         if depth > 32:
             fail("Feature filter nesting exceeds the depth limit")
@@ -116,6 +118,7 @@ def validate_filter_structure(translator, filt):
                 visit(arguments["filter"], depth + 1)
                 return
             if name == "hasGeometry":
+                reads_geometry = True
                 return
             if name == "notNull":
                 fields = arguments.get("properties")
@@ -148,6 +151,7 @@ def validate_filter_structure(translator, filt):
                     fail("Filter.dateRangeContains requires a finite DateRange on system:time_start")
                 return
             if name == "intersects":
+                reads_geometry = True
                 from .spatial_filters import prepare_intersects_filter
 
                 prepare_intersects_filter(translator, arguments)
@@ -201,3 +205,4 @@ def validate_filter_structure(translator, filt):
             active.remove(identity)
 
     visit(filt, 0)
+    return reads_geometry

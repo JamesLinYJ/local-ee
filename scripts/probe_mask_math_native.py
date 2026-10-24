@@ -18,13 +18,10 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tests"))
 
 from ee_kernel_subprocess import run_bounded
-from scripts.ee_audit_native_manifest import validate_native_manifest
+from scripts.ee_audit_native_manifest import CURRENT_ADAPTER_MANIFEST, validate_native_manifest
 
 
-EXPECTED_MANIFEST = ROOT / (
-    "audit/gee-python-wave66/native/final-1-20261024/"
-    "local-ee-mask-math-adapter.jar.manifest.json"
-)
+EXPECTED_MANIFEST = CURRENT_ADAPTER_MANIFEST
 DEFAULT_FIXTURE = ROOT / "tests/fixtures/ee-mask-math-wave66-v1.json"
 PROBE_SOURCE = ROOT / "tests/fixtures/ee-mask-math-kernel-probe.scala"
 EXPECTED_ADAPTER = "local-ee-mask-weights-audit-adapter"

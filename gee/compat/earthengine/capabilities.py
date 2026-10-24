@@ -425,8 +425,13 @@ def get_capabilities():
              "Finite compound constants retain prior casts and type promotion. These math results enter "
              "mask getters or sampling consumers; independent raster-mask combinations, statistics, visualization "
              "and raster export remain unsupported consumers and reject; numeric mask() views use ordinary raster "
-             "paths. No spherical fractional clip rasterizer is implemented; legacy planar center-based "
-             "raster clipping is not GEE fractional-mask compatibility."),
+             "paths. Bounded geodesic Polygon/MultiPolygon clip produces projected-cell fractions on "
+             "actual EPSG:4326/3857/normal-zone UTM grids. Its fixed chord/arc approximation is a local "
+             "policy, without a certified area bound or Google quantizer parity. Pending clipped footprints "
+             "cannot expose source support as public geometry; default sampling currently requires one "
+             "weighted band, dropNulls=true and proof of zero support for that exact clip identity. "
+             "Wrapped/polar/point/line/repeated clips and prior fractional-mask composition reject. "
+             "Legacy planar center-based clipping is not GEE fractional-mask compatibility."),
             ("Image.mask(mask) replaces weights on the proven input grid, zero-filling newly valid science; "
              "finite[0,1] weights and masked mask-input becoming zero are explicit local policies. "
              "The official transparent ee.Image() constructor retains one masked constant band, enabling "

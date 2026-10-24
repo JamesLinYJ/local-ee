@@ -55,6 +55,9 @@ SOURCES += [ROOT / "engine/ee_terrain_spec.scala", ROOT / "engine/ee_terrain_bud
             ROOT / "engine/ee_terrain_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_mask_weights_spec.scala", ROOT / "engine/ee_mask_weights_numeric.scala",
             ROOT / "engine/ee_mask_weights_adapter.scala"]
+SOURCES += [ROOT / "engine/ee_clip_coverage_spec.scala", ROOT / "engine/ee_clip_coverage_geometry.scala",
+            ROOT / "engine/ee_clip_coverage_numeric.scala", ROOT / "engine/ee_clip_coverage_budget.scala",
+            ROOT / "engine/ee_clip_coverage_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_neighborhood_spec.scala", ROOT / "engine/ee_neighborhood_budget.scala",
             ROOT / "engine/ee_neighborhood_exact.scala", ROOT / "engine/ee_neighborhood_statistics.scala",
             ROOT / "engine/ee_neighborhood_numeric.scala", ROOT / "engine/ee_neighborhood_adapter.scala"]
@@ -85,6 +88,7 @@ SERVICE_ENTRY += "local.ee.reduce.LocalEeDistanceCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeFastDistanceCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeNeighborhoodCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeMaskWeightsCubeProcessProvider\n"
+SERVICE_ENTRY += "local.ee.reduce.LocalEeClipCoverageCubeProcessProvider\n"
 
 
 def sha256(path: Path) -> str:

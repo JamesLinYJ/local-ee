@@ -2,7 +2,10 @@
 from __future__ import annotations
 
 from .array_core import charge_array
-from .ir import Collection, Image, ImageSequence, Pixel, fail, integer
+from .ir import (
+    Collection, Image, ImageSequence, Pixel, combine_clip_footprints,
+    fail, integer,
+)
 from .raster_array_bands import wrap_array_bands
 from .raster_array_core import (
     MAX_RASTER_ARRAY_CELLS,
@@ -80,6 +83,9 @@ def invoke_collection_array(translator, name, arguments):
     base_image = Image(
         [], {}, frames[0].source, inherit_props=False,
         footprint=footprint, footprint_is_absolute=True,
+        clip_footprint=combine_clip_footprints(
+            *(frame.clip_footprint for frame in frames)
+        ),
     )
 
     arrays = []

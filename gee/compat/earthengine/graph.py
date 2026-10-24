@@ -115,7 +115,7 @@ class Graph(PixelCompiler, BandLabels):
                         self.full_extent_sources.add(value.args[0])
                 else:
                     for operand in value.args:
-                        collect(operand, full_extent or value.op in {"focal", "convolve", "neighborhood", "terrain", "distance", "fast_distance"})
+                        collect(operand, full_extent or value.op in {"focal", "convolve", "neighborhood", "terrain", "distance", "fast_distance", "clip_coverage"})
             elif isinstance(value, tuple):
                 for operand in value: collect(operand, full_extent)
         for _, pixel in image.bands: collect(pixel)

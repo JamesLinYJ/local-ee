@@ -273,11 +273,14 @@ def test_verified_native_tiles_and_sdk_getinfo_reach_csv_and_readback(
     native_probe = _native_probe_or_skip()
     native = native_probe["native_result"]
     assert native_probe["deployment_eligible"] is False
-    assert native_probe["source_count"] == 70
+    from scripts import build_integer_adapter
+
+    assert len(build_integer_adapter.SOURCES) == 75
+    assert native_probe["source_count"] == len(build_integer_adapter.SOURCES)
     assert native_probe["scala_tool_count"] == 3
     assert native_probe["runtime_jar_count"] == 245
     assert native_probe["jar_sha256"] == (
-        "b1f20b0d4e9214b0da1433e4293f0bf2ae9e5b24e6b940ea3c88ab535def6564"
+        "a46778297d684128d9f46389bc8f61bf13a0f2b94412fb369333550448b03b55"
     )
     assert set(native["outputs"]) == set(expected)
     assert native["source_infinity_guard_rejected"] == [True, True]

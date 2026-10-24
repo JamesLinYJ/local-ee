@@ -4,7 +4,7 @@ from __future__ import annotations
 import math
 
 from .geometry_values import decode_geometry
-from .ir import Image, Pixel, SampledFeatures, fail
+from .ir import ClipFootprintIdentity, Image, Pixel, SampledFeatures, fail
 
 
 MAX_TRANSLATOR_WORK = 50_000
@@ -48,6 +48,75 @@ def _band_names(image):
     return names
 
 
+def _charge_clip_gate(translator, amount):
+    steps = getattr(translator, "steps", None)
+    if (type(steps) is not int or amount < 0
+            or steps + amount > MAX_TRANSLATOR_WORK):
+        fail("Image.sample clip-region validation exceeds the 50000-step compilation work budget")
+    translator.steps = steps + amount
+
+
+def _direct_clip_coverage_carrier(translator, image, expected_spec):
+    """Prove zero support for this exact ROI through zero-preserving updates."""
+    if (len(image.bands) != 1 or image.bands[0][1].op != "with_mask"
+            or type(image.bands[0][1].args) is not tuple
+            or len(image.bands[0][1].args) != 2
+            or any(not isinstance(value, Pixel)
+                   for value in image.bands[0][1].args)):
+        return False
+    if type(expected_spec) is not str or not expected_spec:
+        return False
+    weight = image.bands[0][1].args[1]
+    seen, active = {}, set()
+
+    def visit(value, depth):
+        if not isinstance(value, (Pixel, tuple, list)):
+            return 0, False
+        identity = id(value)
+        if depth > 96:
+            fail("Image.sample clip mask graph exceeds depth96")
+        if identity in active:
+            fail("Image.sample clip mask graph has invalid depth or a cycle")
+        cached = seen.get(identity)
+        if cached is not None:
+            _charge_clip_gate(translator, 1)
+            if depth + cached[0] - 1 > 96:
+                fail("Image.sample clip mask graph exceeds depth96")
+            return cached
+        proves_zero = False
+        if isinstance(value, Pixel):
+            if type(value.op) is not str or type(value.args) is not tuple:
+                fail("Image.sample clip mask graph is malformed")
+            _charge_clip_gate(translator, 1 + len(value.op) + len(value.args))
+            children = value.args
+            proves_zero = False
+            if value.op == "clip_coverage":
+                if len(value.args) != 2 or type(value.args[1]) is not str:
+                    fail("Image.sample clip coverage specification is malformed")
+                _charge_clip_gate(translator, len(value.args[1]))
+                proves_zero = value.args[1] == expected_spec
+        else:
+            _charge_clip_gate(translator, 1 + len(value))
+            children = value
+        active.add(identity)
+        child_results = [visit(child, depth + 1) for child in children]
+        active.remove(identity)
+        child_height = max((result[0] for result in child_results), default=0)
+        height = 1 + child_height
+        if depth + height - 1 > 96:
+            fail("Image.sample clip mask graph exceeds depth96")
+        # A nonzero update replaces an old weight, so either zero operand keeps
+        # the result zero. Other operations, including mask_validity and
+        # mask_set_value, are barriers even though their complete subgraphs are
+        # still scanned for cycles, depth and shared request work.
+        if isinstance(value, Pixel) and value.op == "mask_update" and len(children) == 2:
+            proves_zero = child_results[0][1] or child_results[1][1]
+        seen[identity] = (height, proves_zero)
+        return seen[identity]
+
+    return visit(weight, 1)[1]
+
+
 def invoke_image_sample(translator, arguments):
     """Create an opaque sample table; pixels and random choices stay native."""
     from ...image_sampling_spec import prepare_image_sample_spec
@@ -60,20 +129,32 @@ def invoke_image_sample(translator, arguments):
     if image.mapped:
         fail("Image.sample requires a fixed spatial image outside a mapped callback")
 
-    region = arguments.get("region")
-    try:
-        if region is None:
-            region = translator.footprint(image)
-        region = decode_geometry(region)
-    except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
-        fail(f"Image.sample requires a finite image footprint or supported region: {exc}")
-
     geometries = arguments.get("geometries", False)
     drop_nulls = arguments.get("dropNulls", True)
     if type(geometries) is not bool:
         fail("Image.sample geometries must be a boolean")
     if type(drop_nulls) is not bool:
         fail("Image.sample dropNulls must be a boolean")
+
+    region = arguments.get("region")
+    try:
+        if region is None:
+            if image.clip_footprint is not None:
+                if (not drop_nulls
+                        or not isinstance(image.clip_footprint, ClipFootprintIdentity)
+                        or image.clip_footprint.spec is None
+                        or not _direct_clip_coverage_carrier(
+                            translator, image, image.clip_footprint.spec,
+                        )):
+                    fail(
+                        "A pending geodesic clip needs an explicit Image.sample region unless "
+                        "one direct band proves zero support for its exact clip ROI and "
+                        "dropNulls=true"
+                    )
+            region = translator.footprint(image)
+        region = decode_geometry(region)
+    except (TypeError, ValueError, KeyError, OverflowError, RecursionError) as exc:
+        fail(f"Image.sample requires a finite image footprint or supported region: {exc}")
 
     tile_scale = arguments.get("tileScale", 1.0)
     try:

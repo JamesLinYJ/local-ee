@@ -181,7 +181,17 @@ def invoke_mask(translator: Any, name: str, args: dict[str, Any]):
 
     changes = {"bands": output_bands}
     if not same_footprint:
-        changes.update(footprint=logical_footprint, footprint_is_absolute=True)
+        from .compat.earthengine.array_core import charge_array
+        from .compat.earthengine.ir import combine_clip_footprints
+
+        charge_array(translator, 3)
+        changes.update(
+            footprint=logical_footprint,
+            footprint_is_absolute=True,
+            clip_footprint=combine_clip_footprints(
+                image.clip_footprint, replacement.clip_footprint,
+            ),
+        )
     return replace(image, **changes)
 
 

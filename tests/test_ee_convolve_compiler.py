@@ -149,7 +149,7 @@ def test_full_source_bbox_clip_convolve_resample_and_export_region_order(ee):
     clip = ee.Geometry.Rectangle([100.1, 30.1, 100.9, 30.9])
     image = (ee.ImageCollection("sentinel-2-l2a").first()
              .select("nir").clip(clip).convolve(kernel))
-    with pytest.raises(UnsupportedEEError, match="Image.clip spherical geometry edges"):
+    with pytest.raises(UnsupportedEEError, match="Fractional image masks require a mask-aware consumer"):
         compile_sdk(ee, image, options={"region": EXPORT_REGION, "scale": 40})
     planar_clip = ee.Geometry.Rectangle([100.1, 30.1, 100.9, 30.9], geodesic=False)
     image = (ee.ImageCollection("sentinel-2-l2a").first()

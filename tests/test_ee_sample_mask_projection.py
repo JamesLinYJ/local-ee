@@ -238,13 +238,18 @@ def test_nested_weighted_carriers_remain_rejected(ee, local, consumer):
         image = weighted.multiply(ee.Image("training-scene").select("nir"))
     elif consumer == "clip":
         image = weighted.clip(ee.Geometry(EXTENT))
-        with pytest.raises(UnsupportedEEError, match="Image.clip spherical geometry edges"):
+        with pytest.raises(UnsupportedEEError, match="Default geodesic Image.clip rejects repeated clips and existing fractional mask carriers"):
             compile_expression(encode(ee, image.sample()), local[0], local[1])
         image = weighted.clip(ee.Geometry({**EXTENT, "geodesic": False}))
     else:
         image = weighted.where(ee.Image.constant(0), 2)
 
-    with pytest.raises(UnsupportedEEError, match="Fractional image masks require a mask-aware consumer"):
+    expected_error = (
+        "Explicit planar Image.clip rejects an existing fractional mask carrier"
+        if consumer == "clip"
+        else "Fractional image masks require a mask-aware consumer"
+    )
+    with pytest.raises(UnsupportedEEError, match=expected_error):
         compile_expression(encode(ee, image.sample()), local[0], local[1])
 
 

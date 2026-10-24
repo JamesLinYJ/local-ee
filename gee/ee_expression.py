@@ -2,7 +2,10 @@
 import ast
 import re
 
-from .compat.earthengine.ir import Image, Pixel, as_image, binary, const, fail, pairs, unary
+from .compat.earthengine.ir import (
+    Image, Pixel, as_image, binary, clip_footprint_after_first_input,
+    const, fail, pairs, unary,
+)
 
 
 TOKEN = re.compile(r'''\s*(?:(\d+(?:\.\d*)?(?:[eE][+-]?\d+)?|\.\d+(?:[eE][+-]?\d+)?)|([A-Za-z_][A-Za-z_0-9]*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(\*\*|&&|\|\||==|!=|<=|>=|[+*/%<>()\[\].,:?!\-=]))''')
@@ -122,7 +125,11 @@ class Parser:
             bands = [(n, Pixel("if", (condition.bands[0 if len(condition.bands)==1 else i][1], y, nvalue)))
                      for i, (n, y, nvalue) in enumerate(matched)]
             left = Image(bands, dict(yes.props), yes.source or no.source or condition.source,
-                         yes.mapped or no.mapped or condition.mapped)
+                         yes.mapped or no.mapped or condition.mapped,
+                         clip_footprint=clip_footprint_after_first_input(
+                             yes.clip_footprint, no.clip_footprint,
+                             condition.clip_footprint,
+                         ))
         self.depth -= 1
         return left
 

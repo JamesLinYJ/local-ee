@@ -105,7 +105,11 @@ def test_grid_template_does_not_strip_masks_under_unsupported_wrappers(context, 
     else:
         wrapped = weighted.toInt()
     classes = wrapped.addBands(ee.Image.constant(2).rename("class")).select("class")
-    with pytest.raises(UnsupportedEEError, match="mask-aware consumer"):
+    expected = (
+        "Explicit planar Image.clip rejects an existing fractional mask carrier"
+        if wrapper == "clip" else "mask-aware consumer"
+    )
+    with pytest.raises(UnsupportedEEError, match=expected):
         compiled(context, classes)
 
 

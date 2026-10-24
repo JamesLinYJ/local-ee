@@ -1,0 +1,2948 @@
+{
+  "before_implementation_local_baseline": {
+    "compile_outcomes": [
+      {
+        "id": "clip_mask_sample_drop_nulls_false",
+        "reason": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+        "status": "rejected"
+      },
+      {
+        "id": "clip_mask_sample_drop_nulls_true",
+        "reason": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+        "status": "rejected"
+      },
+      {
+        "id": "clip_numeric_mask",
+        "reason": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+        "status": "rejected"
+      },
+      {
+        "id": "clip_sample_drop_nulls_false",
+        "reason": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+        "status": "rejected"
+      },
+      {
+        "id": "clip_sample_drop_nulls_true",
+        "reason": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+        "status": "rejected"
+      },
+      {
+        "id": "clip_science",
+        "reason": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+        "status": "rejected"
+      },
+      {
+        "id": "scalar_math_mask_sample_drop_nulls_false",
+        "reason": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+        "status": "rejected"
+      },
+      {
+        "id": "scalar_math_sample_drop_nulls_false",
+        "reason": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+        "status": "rejected"
+      },
+      {
+        "id": "unary_math_mask_sample_drop_nulls_false",
+        "reason": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+        "status": "rejected"
+      },
+      {
+        "id": "unary_math_sample_drop_nulls_false",
+        "reason": "Image.clip spherical geometry edges require a spherical raster/reprojection adapter",
+        "status": "rejected"
+      }
+    ],
+    "compiler": "gee.ee_translate.compile_expression; local parse/compile only; no engine execution",
+    "engine_execution": "not_run",
+    "network_calls": "none"
+  },
+  "expected_clip_coverage_contract": {
+    "model": "great-circle",
+    "polygons": [
+      [
+        [
+          [
+            100.17,
+            30.21
+          ],
+          [
+            100.83,
+            30.22
+          ],
+          [
+            100.78,
+            30.78
+          ],
+          [
+            100.13,
+            30.79
+          ],
+          [
+            100.17,
+            30.21
+          ]
+        ]
+      ]
+    ],
+    "version": 1
+  },
+  "schema": "local-ee-geodesic-clip-wave70/v1",
+  "scope_boundaries": [
+    "Polygon only for this workflow; no point/line inputs.",
+    "No dateline wrapping, polar crossing/touch, left-inside/evenOdd=false, mixed edge models, repeated clips, existing fractional input masks, mapped callbacks, or default-geodesic gaps are authorized by this probe.",
+    "The canonical coverage spec identifies great-circle geometry; it is not a claim about Google coverage quantization."
+  ],
+  "sdk": {
+    "algorithm_catalog_sha256": "8279bfd5e755f10c291a0d833aed810a5aba2e360e26ecee69f2bacaeecb3d01",
+    "javascript": "1.7.49",
+    "python": "1.7.49",
+    "source_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a"
+  },
+  "sdk_wires": {
+    "javascript": {
+      "clip_mask_sample_drop_nulls_false": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "image": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Image.mask",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "7",
+            {
+              "arguments": {
+                "dropNulls": false,
+                "image": {
+                  "type": "ValueRef",
+                  "value": "6"
+                }
+              },
+              "functionName": "Image.sample",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "7"
+        }
+      },
+      "clip_mask_sample_drop_nulls_true": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "image": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Image.mask",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "7",
+            {
+              "arguments": {
+                "dropNulls": true,
+                "image": {
+                  "type": "ValueRef",
+                  "value": "6"
+                }
+              },
+              "functionName": "Image.sample",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "7"
+        }
+      },
+      "clip_numeric_mask": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "image": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Image.mask",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "6"
+        }
+      },
+      "clip_sample_drop_nulls_false": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "dropNulls": false,
+                "image": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Image.sample",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "6"
+        }
+      },
+      "clip_sample_drop_nulls_true": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "dropNulls": true,
+                "image": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Image.sample",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "6"
+        }
+      },
+      "clip_science": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "5"
+        }
+      },
+      "scalar_math_mask_sample_drop_nulls_false": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "value": 2
+              },
+              "functionName": "Image.constant",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "7",
+            {
+              "arguments": {
+                "image1": {
+                  "type": "ValueRef",
+                  "value": "5"
+                },
+                "image2": {
+                  "type": "ValueRef",
+                  "value": "6"
+                }
+              },
+              "functionName": "Image.multiply",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "8",
+            {
+              "arguments": {
+                "image": {
+                  "type": "ValueRef",
+                  "value": "7"
+                }
+              },
+              "functionName": "Image.mask",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "9",
+            {
+              "arguments": {
+                "dropNulls": false,
+                "image": {
+                  "type": "ValueRef",
+                  "value": "8"
+                }
+              },
+              "functionName": "Image.sample",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "9"
+        }
+      },
+      "scalar_math_sample_drop_nulls_false": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "value": 2
+              },
+              "functionName": "Image.constant",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "7",
+            {
+              "arguments": {
+                "image1": {
+                  "type": "ValueRef",
+                  "value": "5"
+                },
+                "image2": {
+                  "type": "ValueRef",
+                  "value": "6"
+                }
+              },
+              "functionName": "Image.multiply",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "8",
+            {
+              "arguments": {
+                "dropNulls": false,
+                "image": {
+                  "type": "ValueRef",
+                  "value": "7"
+                }
+              },
+              "functionName": "Image.sample",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "8"
+        }
+      },
+      "unary_math_mask_sample_drop_nulls_false": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "value": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Image.sqrt",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "7",
+            {
+              "arguments": {
+                "image": {
+                  "type": "ValueRef",
+                  "value": "6"
+                }
+              },
+              "functionName": "Image.mask",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "8",
+            {
+              "arguments": {
+                "dropNulls": false,
+                "image": {
+                  "type": "ValueRef",
+                  "value": "7"
+                }
+              },
+              "functionName": "Image.sample",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "8"
+        }
+      },
+      "unary_math_sample_drop_nulls_false": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "value": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Image.sqrt",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "7",
+            {
+              "arguments": {
+                "dropNulls": false,
+                "image": {
+                  "type": "ValueRef",
+                  "value": "6"
+                }
+              },
+              "functionName": "Image.sample",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "7"
+        }
+      }
+    },
+    "parity": {
+      "by_expression": {
+        "clip_mask_sample_drop_nulls_false": true,
+        "clip_mask_sample_drop_nulls_true": true,
+        "clip_numeric_mask": true,
+        "clip_sample_drop_nulls_false": true,
+        "clip_sample_drop_nulls_true": true,
+        "clip_science": true,
+        "scalar_math_mask_sample_drop_nulls_false": true,
+        "scalar_math_sample_drop_nulls_false": true,
+        "unary_math_mask_sample_drop_nulls_false": true,
+        "unary_math_sample_drop_nulls_false": true
+      },
+      "matching": 10,
+      "total": 10
+    },
+    "python": {
+      "clip_mask_sample_drop_nulls_false": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "image": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Image.mask",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "7",
+            {
+              "arguments": {
+                "dropNulls": false,
+                "image": {
+                  "type": "ValueRef",
+                  "value": "6"
+                }
+              },
+              "functionName": "Image.sample",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "7"
+        }
+      },
+      "clip_mask_sample_drop_nulls_true": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "image": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Image.mask",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "7",
+            {
+              "arguments": {
+                "dropNulls": true,
+                "image": {
+                  "type": "ValueRef",
+                  "value": "6"
+                }
+              },
+              "functionName": "Image.sample",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "7"
+        }
+      },
+      "clip_numeric_mask": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "image": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Image.mask",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "6"
+        }
+      },
+      "clip_sample_drop_nulls_false": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "dropNulls": false,
+                "image": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Image.sample",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "6"
+        }
+      },
+      "clip_sample_drop_nulls_true": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "dropNulls": true,
+                "image": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Image.sample",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "6"
+        }
+      },
+      "clip_science": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "5"
+        }
+      },
+      "scalar_math_mask_sample_drop_nulls_false": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "value": 2
+              },
+              "functionName": "Image.constant",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "7",
+            {
+              "arguments": {
+                "image1": {
+                  "type": "ValueRef",
+                  "value": "5"
+                },
+                "image2": {
+                  "type": "ValueRef",
+                  "value": "6"
+                }
+              },
+              "functionName": "Image.multiply",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "8",
+            {
+              "arguments": {
+                "image": {
+                  "type": "ValueRef",
+                  "value": "7"
+                }
+              },
+              "functionName": "Image.mask",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "9",
+            {
+              "arguments": {
+                "dropNulls": false,
+                "image": {
+                  "type": "ValueRef",
+                  "value": "8"
+                }
+              },
+              "functionName": "Image.sample",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "9"
+        }
+      },
+      "scalar_math_sample_drop_nulls_false": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "value": 2
+              },
+              "functionName": "Image.constant",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "7",
+            {
+              "arguments": {
+                "image1": {
+                  "type": "ValueRef",
+                  "value": "5"
+                },
+                "image2": {
+                  "type": "ValueRef",
+                  "value": "6"
+                }
+              },
+              "functionName": "Image.multiply",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "8",
+            {
+              "arguments": {
+                "dropNulls": false,
+                "image": {
+                  "type": "ValueRef",
+                  "value": "7"
+                }
+              },
+              "functionName": "Image.sample",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "8"
+        }
+      },
+      "unary_math_mask_sample_drop_nulls_false": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "value": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Image.sqrt",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "7",
+            {
+              "arguments": {
+                "image": {
+                  "type": "ValueRef",
+                  "value": "6"
+                }
+              },
+              "functionName": "Image.mask",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "8",
+            {
+              "arguments": {
+                "dropNulls": false,
+                "image": {
+                  "type": "ValueRef",
+                  "value": "7"
+                }
+              },
+              "functionName": "Image.sample",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "8"
+        }
+      },
+      "unary_math_sample_drop_nulls_false": {
+        "scope": [
+          [
+            "0",
+            {
+              "arguments": {
+                "id": "sentinel-2-l2a"
+              },
+              "functionName": "ImageCollection.load",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "1",
+            {
+              "arguments": {
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Collection.first",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "2",
+            [
+              "nir"
+            ]
+          ],
+          [
+            "3",
+            {
+              "arguments": {
+                "bandSelectors": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Image.select",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "4",
+            {
+              "coordinates": [
+                [
+                  [
+                    100.17,
+                    30.21
+                  ],
+                  [
+                    100.83,
+                    30.22
+                  ],
+                  [
+                    100.78,
+                    30.78
+                  ],
+                  [
+                    100.13,
+                    30.79
+                  ],
+                  [
+                    100.17,
+                    30.21
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "4"
+                },
+                "input": {
+                  "type": "ValueRef",
+                  "value": "3"
+                }
+              },
+              "functionName": "Image.clip",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "value": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Image.sqrt",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "7",
+            {
+              "arguments": {
+                "dropNulls": false,
+                "image": {
+                  "type": "ValueRef",
+                  "value": "6"
+                }
+              },
+              "functionName": "Image.sample",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "7"
+        }
+      }
+    }
+  },
+  "synthetic_local_input": {
+    "catalog": {
+      "bbox": [
+        100,
+        30,
+        101,
+        31
+      ],
+      "cube:dimensions": {
+        "bands": {
+          "values": [
+            "blue",
+            "green",
+            "red",
+            "nir",
+            "SCL"
+          ]
+        }
+      },
+      "extent": {
+        "spatial": {
+          "bbox": [
+            [
+              100,
+              30,
+              101,
+              31
+            ]
+          ]
+        },
+        "temporal": {
+          "interval": [
+            [
+              "2023-11-14T00:00:00Z",
+              "2023-11-17T00:00:00Z"
+            ]
+          ]
+        }
+      },
+      "id": "sentinel-2-l2a",
+      "summaries": {
+        "eo:bands": [
+          {
+            "name": "blue"
+          },
+          {
+            "name": "green"
+          },
+          {
+            "name": "red"
+          },
+          {
+            "name": "nir"
+          },
+          {
+            "name": "SCL"
+          }
+        ]
+      },
+      "type": "Collection"
+    },
+    "items": {
+      "sentinel-2-l2a": [
+        {
+          "bbox": [
+            100,
+            30,
+            101,
+            31
+          ],
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  100,
+                  30
+                ],
+                [
+                  101,
+                  30
+                ],
+                [
+                  101,
+                  31
+                ],
+                [
+                  100,
+                  31
+                ],
+                [
+                  100,
+                  30
+                ]
+              ]
+            ],
+            "type": "Polygon"
+          },
+          "id": "scene-a",
+          "properties": {
+            "cloud": 10,
+            "datetime": "2023-11-14T22:13:20Z",
+            "system:index": "scene-a",
+            "system:time_start": 1700000000000
+          },
+          "type": "Feature"
+        },
+        {
+          "bbox": [
+            100,
+            30,
+            101,
+            31
+          ],
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  100,
+                  30
+                ],
+                [
+                  101,
+                  30
+                ],
+                [
+                  101,
+                  31
+                ],
+                [
+                  100,
+                  31
+                ],
+                [
+                  100,
+                  30
+                ]
+              ]
+            ],
+            "type": "Polygon"
+          },
+          "id": "scene-b",
+          "properties": {
+            "cloud": 20,
+            "datetime": "2023-11-14T22:13:20Z",
+            "system:index": "scene-b",
+            "system:time_start": 1700086400000
+          },
+          "type": "Feature"
+        },
+        {
+          "bbox": [
+            100,
+            30,
+            101,
+            31
+          ],
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  100,
+                  30
+                ],
+                [
+                  101,
+                  30
+                ],
+                [
+                  101,
+                  31
+                ],
+                [
+                  100,
+                  31
+                ],
+                [
+                  100,
+                  30
+                ]
+              ]
+            ],
+            "type": "Polygon"
+          },
+          "id": "scene-c",
+          "properties": {
+            "cloud": 5,
+            "datetime": "2023-11-14T22:13:20Z",
+            "system:index": "scene-c",
+            "system:time_start": 1700172800000
+          },
+          "type": "Feature"
+        }
+      ]
+    },
+    "kind": "metadata-only; no image pixel values or external asset calls"
+  },
+  "verification_state": {
+    "actual_local_kernel_readback": "not_run",
+    "independent_numeric_raster_reference": "not_available_without_a_real_local_raster",
+    "physical_csv": null,
+    "sample_rows": "not_generated"
+  },
+  "workflow": {
+    "collection_alias": "sentinel-2-l2a",
+    "expressions": [
+      "clip_science",
+      "clip_numeric_mask",
+      "clip_sample_drop_nulls_false",
+      "clip_sample_drop_nulls_true",
+      "clip_mask_sample_drop_nulls_false",
+      "clip_mask_sample_drop_nulls_true",
+      "scalar_math_sample_drop_nulls_false",
+      "scalar_math_mask_sample_drop_nulls_false",
+      "unary_math_sample_drop_nulls_false",
+      "unary_math_mask_sample_drop_nulls_false"
+    ],
+    "real_band": "nir",
+    "roi": {
+      "coordinates": [
+        [
+          [
+            100.17,
+            30.21
+          ],
+          [
+            100.83,
+            30.22
+          ],
+          [
+            100.78,
+            30.78
+          ],
+          [
+            100.13,
+            30.79
+          ],
+          [
+            100.17,
+            30.21
+          ]
+        ]
+      ],
+      "type": "Polygon"
+    },
+    "roi_default_model": "great-circle (numeric EPSG:4326 constructor; geodesic omitted)",
+    "sample_drop_nulls_values": [
+      false,
+      true
+    ],
+    "sample_region": "omitted; uses image sample default footprint"
+  }
+}

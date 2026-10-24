@@ -19713,8 +19713,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite default/explicit-geodesic EPSG:4326 Polygon/MultiPolygon with evenOdd interiors. Independent Float64 projected-cell area weights on the actual raster grid; raw NoData yields valid zero, source Infinity rejects even outside ROI, science is never multiplied by coverage. Bounded great-circle tessellation targets1e-6 pixel chord deviation and 0.25 degree maximum arc; this is a local approximation, not a rigorous area-error certificate or Google quantizer. Exact meridian/equator identities preserve zero contacts and positive representable slivers; other curved contact parity remains open. Actual CRS restricted to EPSG:4326/3857/normal-zone UTM; numerical angle/grid/domain guards and existing compiler/graph/native budgets remain. No wraps, poles, left-inside, points/lines, clipToCollection, repeated clips or existing fractional input composition. Explicit planar historical clip stays binary-center based. New weighted science only enters audited mask getter/unary/scalar/sample consumers; weighted regional reduction, display and scientific raster export remain unsupported. Exact clipped footprint is pending; preserve its canonical identity through derived expression/collection Images and reject unaudited collection geometry extraction. Preserve first-image ownership through zero-band selection, copies and merges. Actual tile and trusted CSV evidence is not full Spark/deployment or Google equivalence. See docs/gee-python/geodesic-clip.md."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -21824,8 +21826,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Images with an unresolved geodesic clip footprint reject public geometry extraction, including after zero-band selection/overwrites; the original source envelope is internal scan support only."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -25532,7 +25536,8 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Finite local spatial image with explicit planar WGS84 Point/MultiPoint/Polygon/MultiPolygon ROI or finite source footprint. Fixed source grid,1..64 scalar bands; polygon pixel centers covered including boundary, points half-open containing cell and duplicates once. All pixels by default; factor(0,1] or approximate numPixels0..1000 mutually exclusive, signed32 seed, local splitmix64-grid-v1 Bernoulli choices before dropNulls. Google RNG/selected-row parity unverified. numPixels population includes masked pixels; may exceed1000 rows and fails without truncation/reseeding. dropNulls=false preserves null selected values and missing finite-grid tiles. Optional actual WGS84 center geometries; band_order metadata; omitted/null classifier inputProperties may resolve its exact1..8 ordered names, while explicit inputs override metadata. Native source key/shape/duplicate checks and bounded global row/column ordering. Shared1000rows/256columns/50000cells/1MB JSON+CSV,10000coordinates,67108864 work and finite grid/key budgets. Existing actual-grid EPSG/meter restrictions,tileScale1 only. Full Spark/batch/service/browser/deployment/Google acceptance remains separate."
+          "Finite local spatial image with explicit planar WGS84 Point/MultiPoint/Polygon/MultiPolygon ROI or finite source footprint. Fixed source grid,1..64 scalar bands; polygon pixel centers covered including boundary, points half-open containing cell and duplicates once. All pixels by default; factor(0,1] or approximate numPixels0..1000 mutually exclusive, signed32 seed, local splitmix64-grid-v1 Bernoulli choices before dropNulls. Google RNG/selected-row parity unverified. numPixels population includes masked pixels; may exceed1000 rows and fails without truncation/reseeding. dropNulls=false preserves null selected values and missing finite-grid tiles. Optional actual WGS84 center geometries; band_order metadata; omitted/null classifier inputProperties may resolve its exact1..8 ordered names, while explicit inputs override metadata. Native source key/shape/duplicate checks and bounded global row/column ordering. Shared1000rows/256columns/50000cells/1MB JSON+CSV,10000coordinates,67108864 work and finite grid/key budgets. Existing actual-grid EPSG/meter restrictions,tileScale1 only. Full Spark/batch/service/browser/deployment/Google acceptance remains separate.",
+          "For a pending geodesic clip footprint, omitted/null region currently requires exactly one band, dropNulls=true and a weighted output whose zero-support proof matches the retained canonical footprint clip identity. Mask replacement/validity barriers and a different clipped donor cannot supply that proof. Otherwise provide an explicit supported region. This guard does not change the existing explicit region center rule."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,

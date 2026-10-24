@@ -26,6 +26,7 @@ class TranslatorStub:
         self.items = items or {}
         self.options = options or {}
         self.warnings = []
+        self.steps = 0
 
     @staticmethod
     def allowed(args, names):

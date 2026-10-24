@@ -6,7 +6,10 @@ from dataclasses import replace
 
 from gee.pixel_math_contract import PIXEL_MATH_ARITIES, pixel_math_arity
 
-from .ir import Image, Pixel, UnsupportedEEError, as_image, fail, pairs
+from .ir import (
+    Image, Pixel, UnsupportedEEError, as_image,
+    clip_footprint_after_first_input, fail, pairs,
+)
 
 
 IMAGE_PIXEL_MATH_FUNCTIONS = frozenset(
@@ -91,6 +94,9 @@ def _binary(translator, operation, image1, image2):
         left.copied_props,
         left.footprint,
         left.footprint_is_absolute,
+        clip_footprint_after_first_input(
+            left.clip_footprint, right.clip_footprint,
+        ),
     )
 
 

@@ -2,11 +2,19 @@ import type { ReferenceEntry } from "../types";
 
 export const pythonTypedRasterDocs: ReferenceEntry[] = [
   {
+    id: "gee-python-geodesic-clip",
+    category: "GEE Python",
+    language: "python",
+    title: "球面裁切与部分像元权重",
+    text: "Image.clip 的有限默认 Polygon／MultiPolygon 路径保留大圆弧，并在实际栅格投影下计算像元交面积权重；科学值和 Float64 权重分开保存。mask() 可读取权重，已审查的一元／常量运算及取样保留正权重科学值。默认科学取样要求 dropNulls=True 且仍保留裁切权重；权重影像或保留缺测行的取样需显式研究区。精确裁切足迹、重复裁切、已有小数掩膜组合、日期线／极区、带权统计／地图／科学栅格导出仍有限制。固定细分容差是本地政策，没有 Google 量化或完整部署等价声明。详见 docs/gee-python/geodesic-clip.md。",
+    code: "image = ee.ImageCollection('sentinel-2-l2a').first().select('nir')\nroi = ee.Geometry.Polygon([[[100.17,30.21],[100.83,30.22],[100.78,30.78],[100.13,30.79]]])\nclipped = image.clip(roi)\nweights = clipped.mask()\nscience_rows = clipped.multiply(2).sample(geometries=True)",
+  },
+  {
     id: "gee-python-geometry-bounds",
     category: "GEE Python",
     language: "python",
     title: "几何范围与区域模型",
-    text: "Geometry.bounds／Feature.bounds 支持有限 EPSG:4326 输入及省略／空投影。球面输入通过本地 S2 计算弧和内部范围，平面输入使用坐标极值，返回明确的平面矩形；可用于本地 Image.geometry().bounds() 流程。跨日期线、空／退化结果、混合模型和其他投影仍明确拒绝。字典、Feature 包装不能洗掉球面边或非法坐标系；STAC 足迹保留真实平面规则。球面部分像元裁切和带权区域统计仍未实现。Feature ID／属性与公开标志是本地政策，没有Google等价声明。详见 docs/gee-python/geometry-bounds.md。",
+    text: "Geometry.bounds／Feature.bounds 支持有限 EPSG:4326 输入及省略／空投影。球面输入通过本地 S2 计算弧和内部范围，平面输入使用坐标极值，返回明确的平面矩形；可用于本地 Image.geometry().bounds() 流程。跨日期线、空／退化结果、混合模型和其他投影仍明确拒绝。字典、Feature 包装不能洗掉球面边或非法坐标系；STAC 足迹保留真实平面规则。有限球面裁切另见专节；带权区域统计仍未实现。Feature ID／属性与公开标志是本地政策，没有Google等价声明。详见 docs/gee-python/geometry-bounds.md。",
     code: "outline = ee.Geometry.Polygon([[[-10,70],[10,70],[10,75],[-10,75],[-10,70]]])\nprint(outline.bounds().getInfo())\nimage = ee.ImageCollection('sentinel-2-l2a').first()\nlocal_extent = image.geometry().bounds()\nclipped = image.clip(local_extent)",
   },
   {
@@ -38,7 +46,7 @@ export const pythonTypedRasterDocs: ReferenceEntry[] = [
     category: "GEE Python",
     language: "python",
     title: "带掩膜取样与训练",
-    text: "sample／sampleRegions 可读取直接带小数掩膜的波段：正权重保留原科学值，零权重缺测，不按权重幅度调整随机概率。sample 默认删除含缺测行，dropNulls=False 保留 null；sampleRegions 排除任一所选波段缺测的行。可接已有取样筛选、训练、验证和 CSV。toFloat／toDouble 只转换科学值，掩膜保持独立；双栅格运算、clip、unmask 等包装内的掩膜尚未接通，明确拒绝。本地哈希、合成瓦片与 CSV 验证不代表 Google／完整 Spark／部署验收。详见 docs/gee-python/masked-sampling.md。",
+    text: "sample／sampleRegions 可读取直接带小数掩膜的波段：正权重保留原科学值，零权重缺测，不按权重幅度调整随机概率。sample 默认删除含缺测行，dropNulls=False 保留 null；sampleRegions 排除任一所选波段缺测的行。可接已有取样筛选、训练、验证和 CSV。toFloat／toDouble 只转换科学值，掩膜保持独立；有限球面 clip 已接独立权重；双栅格运算和 unmask 等未经审查的包装仍拒绝。本地哈希、合成瓦片与 CSV 验证不代表 Google／完整 Spark／部署验收。详见 docs/gee-python/masked-sampling.md。",
     code: "source = ee.Image(collection.first()).select(['red','nir']).toDouble()\nweighted = source.updateMask(ee.Image.constant([0.25,0.75]))\nsamples = weighted.sample(dropNulls=False, geometries=True)\ntraining = weighted.addBands(ee.Image.constant(1).rename('class'))\npoints = training.sampleRegions(collection=regions, geometries=True)",
   },
   {
@@ -46,7 +54,7 @@ export const pythonTypedRasterDocs: ReferenceEntry[] = [
     category: "GEE Python",
     language: "python",
     title: "读取小数掩膜权重",
-    text: "updateMask 的小数权重与科学像元值分开保存；mask() 将权重作为普通数值影像返回，源缺测为有效数值0。支持单波段广播、同数量按位置配对，以及 select／rename／addBands 传递。按文档在原掩膜非零处更新新权重，组合精确行为尚无 Google 对照。一元／有限常量运算可保留权重进入取样；双栅格组合、统计、透明度显示和栅格导出尚未接通，会明确报错；mask() 输出的普通权重影像可使用已有数值路径。球面部分像元裁切仍待实现。详见 docs/gee-python/mask-weights.md。",
+    text: "updateMask 的小数权重与科学像元值分开保存；mask() 将权重作为普通数值影像返回，源缺测为有效数值0。支持单波段广播、同数量按位置配对，以及 select／rename／addBands 传递。按文档在原掩膜非零处更新新权重，组合精确行为尚无 Google 对照。一元／有限常量运算可保留权重进入取样；双栅格组合、统计、透明度显示和栅格导出尚未接通，会明确报错；mask() 输出的普通权重影像可使用已有数值路径。有限球面部分像元裁切另见专节，其他消费者仍逐项限制。详见 docs/gee-python/mask-weights.md。",
     code: "source = ee.Image(collection.first()).select(['red','nir']).toDouble()\nweighted = source.updateMask(ee.Image.constant([0.25,0.75]))\nweights = weighted.mask()\nnir_weight = weighted.select('nir').mask()\nupdated_weights = weighted.updateMask(0.5).mask()",
   },
   {
@@ -54,7 +62,7 @@ export const pythonTypedRasterDocs: ReferenceEntry[] = [
     category: "GEE Python",
     language: "python",
     title: "默认球面几何与跨日期变更线",
-    text: "Geometry／内联Feature的八种二元运算在省略或空proj时使用本地S2，保留官方geodesic／evenOdd默认值；支持有限测地线、孔洞、日期变更线和极区。示例66／JS20验证双客户端与合成CSV。S2 binary64输入关联和交点往返仍有3项严格控制不通过；数值容差通过不能替代这些缺口。maxError／其他CRS／平面转球面／完整球面公开编码及球面栅格消费者仍未实现。显式球面结果在旧平面clip／筛选前拒绝，旧未标边类型的栅格路径不代表默认测地线兼容。依赖需显式本地构建，运行时不下载；详见 docs/gee-python/spherical-geometry.md。",
+    text: "Geometry／内联Feature的八种二元运算在省略或空proj时使用本地S2，保留官方geodesic／evenOdd默认值；支持有限测地线、孔洞、日期变更线和极区。示例66／JS20验证双客户端与合成CSV。S2 binary64输入关联和交点往返仍有3项严格控制不通过；数值容差通过不能替代这些缺口。maxError／其他CRS／平面转球面／完整球面公开编码仍未实现，有限球面裁切另见专节。不受支持的球面结果在旧平面裁切／筛选前拒绝，旧未标边类型的栅格路径不代表默认测地线兼容。依赖需显式本地构建，运行时不下载；详见 docs/gee-python/spherical-geometry.md。",
     code: "left = ee.Geometry.Polygon([[[170,-10],[-170,-10],[-170,10],[170,10]]])\nright = ee.Geometry.Polygon([[[175,-5],[-175,-5],[-175,5],[175,5]]])\nroi = left.intersection(right)\ninside = left.contains(ee.Geometry.Point([179,0]))\nfeatures = ee.FeatureCollection([ee.Feature(roi, {'name':'roi'})])",
   },
   {
@@ -62,7 +70,7 @@ export const pythonTypedRasterDocs: ReferenceEntry[] = [
     category: "GEE Python",
     language: "python",
     title: "研究区相交、合并与排除",
-    text: "Geometry／内联Feature支持contains、containedIn、intersects、disjoint、intersection、union、difference和symmetricDifference的有限平面路径，保留官方参数名。此分支要求明确proj=EPSG:4326，且有边组件明确geodesic=False；这是经纬度平面计算。省略proj的有限球面路径另见默认球面几何；非空maxError和其他坐标系仍未实现。Feature结果保留左属性和本地实际ID规则；空／低维几何保持实际类型，旧Image.clip只接收受支持的平面Polygon／MultiPolygon。示例65／JS示例19包含两景NDVI掩膜和CSV读回；详见 docs/gee-python/geometry-binary.md。",
+    text: "Geometry／内联Feature支持contains、containedIn、intersects、disjoint、intersection、union、difference和symmetricDifference的有限平面路径，保留官方参数名。此分支要求明确proj=EPSG:4326，且有边组件明确geodesic=False；这是经纬度平面计算。省略proj的有限球面路径另见默认球面几何；非空maxError和其他坐标系仍未实现。Feature结果保留左属性和本地实际ID规则；空／低维几何保持实际类型，显式平面 Image.clip 与有限默认球面裁切采用不同的已列合同。示例65／JS示例19包含两景NDVI掩膜和CSV读回；详见 docs/gee-python/geometry-binary.md。",
     code: "proj = ee.Projection('EPSG:4326')\nstudy = ee.Geometry.Rectangle([0,0,4,4], proj=proj, geodesic=False)\nexcluded = ee.Geometry.Rectangle([1,1,3,3], proj=proj, geodesic=False)\nroi = study.difference(excluded, proj=proj)\nclipped = image.clip(roi)\nintersects = study.intersects(excluded, proj=proj)",
   },
   {

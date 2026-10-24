@@ -79,10 +79,25 @@ def _copy_plan(translator, value, active, depth=0):
             fail("Element metadata Image representation is malformed")
         if len(value.bands) > MAX_METADATA_ENTRIES:
             fail("Element metadata Image has too many bands")
-        charge_metadata(translator, 2 + len(value.bands))
+        from .ir import valid_clip_footprint_identity
+
+        if (value.clip_footprint is not None
+                and (not valid_clip_footprint_identity(value.clip_footprint)
+                     or value.clip_footprint.spec is not None
+                     and len(value.clip_footprint.spec) > MAX_METADATA_BYTES)):
+            fail("Element metadata Image clip-footprint identity is malformed")
+        clip_spec_work = (
+            len(value.clip_footprint.spec)
+            if value.clip_footprint is not None
+            and value.clip_footprint.spec is not None else 0
+        )
+        if clip_spec_work:
+            charge_metadata(translator, clip_spec_work,
+                            "Element metadata Image clip-footprint identity")
+        charge_metadata(translator, 3 + len(value.bands))
         active.add(identity)
         try:
-            cost = 2 + _copy_plan(translator, value.props, active, depth + 1)
+            cost = 3 + _copy_plan(translator, value.props, active, depth + 1)
             for band in value.bands:
                 if (type(band) is not tuple or len(band) != 2
                         or type(band[0]) is not str or not isinstance(band[1], Pixel)):
@@ -91,7 +106,7 @@ def _copy_plan(translator, value, active, depth=0):
                 cost += 1 + len(band[0])
             if value.footprint is not None:
                 cost += _copy_plan(translator, value.footprint, active, depth + 1)
-            return cost
+            return cost + clip_spec_work
         finally:
             active.remove(identity)
     if not isinstance(value, dict) and kind is not list:
@@ -149,6 +164,7 @@ def _public_form(translator, value, active):
                 _public_form(translator, value.footprint, active)
                 if value.footprint is not None else None,
                 value.footprint_is_absolute,
+                value.clip_footprint,
             )
         finally:
             active.remove(identity)
@@ -182,7 +198,8 @@ def _clone(value, memo):
         return result
     if kind is Image:
         result = Image([], {}, value.source, value.mapped, value.inherit_props,
-                       value.copied_props, None, value.footprint_is_absolute)
+                       value.copied_props, None, value.footprint_is_absolute,
+                       value.clip_footprint)
         memo[identity] = result
         result.props = _clone(value.props, memo)
         result.bands = [(name, pixel) for name, pixel in value.bands]

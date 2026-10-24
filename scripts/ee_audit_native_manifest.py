@@ -10,6 +10,10 @@ from scripts.build_integer_adapter import SERVICE_NAME, SOURCE, SOURCES
 
 ROOT = Path(__file__).resolve().parents[1]
 AUDIT_ROOT = (ROOT / "audit").resolve()
+CURRENT_ADAPTER_MANIFEST = ROOT / (
+    "audit/gee-python-wave70/native/final-4/"
+    "local-ee-clip-coverage-adapter.jar.manifest.json"
+)
 NATIVE_JARS = (ROOT / ".native/jars").resolve()
 SPARK_JARS = (
     ROOT / ".native/engine/lib/python3.11/site-packages/pyspark/jars"

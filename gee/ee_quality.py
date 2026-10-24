@@ -1,5 +1,5 @@
 """Quality composites keep every output band tied to the same winning scene."""
-from .ee_collections import frames
+from .ee_collections import _sequence_clip_footprint, frames
 from .compat.earthengine.ir import Image, ImageSequence, Pixel, const, fail
 
 
@@ -33,4 +33,6 @@ def quality_mosaic(translator, collection, quality_band):
         best = Pixel('if', (take, candidate, best))
     translator.warn('qualityMosaic uses the last image in collection order for equal quality; this tie policy has not been compared against the Google service.')
     return Image(list(output.items()), {}, images[0].source, inherit_props=False,
-                 footprint=translator.footprint(ImageSequence(images)), footprint_is_absolute=True)
+                 footprint=translator.footprint(ImageSequence(images)),
+                 footprint_is_absolute=True,
+                 clip_footprint=_sequence_clip_footprint(translator, images))

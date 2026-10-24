@@ -80,6 +80,13 @@ class _PixelFactsWalker:
         return facts
 
     def inspect(self, value):
+        if isinstance(value, Pixel) and value.op == "clip_coverage":
+            if (type(value.args) is not tuple or len(value.args) != 2
+                    or type(value.args[1]) is not str):
+                fail("Image clip coverage has a malformed canonical specification")
+            # This wire is a bounded immutable payload, but every fresh facts
+            # traversal still pays for scanning its complete canonical text.
+            self.charge(len(value.args[1]))
         if isinstance(value, Source):
             key = id(value)
             cached = self.memo.get(key)

@@ -112,7 +112,11 @@ def test_sdk_dictionary_get_and_set_cannot_hide_default_spherical_region(sdk, mo
         else:
             expression = image.reduceRegion(sdk.Reducer.mean(), region, 100)
         wire = sdk.serializer.encode(expression, for_cloud_api=False)
-        with pytest.raises(UnsupportedEEError, match="spherical geometry edges"):
+        expected_boundary = (
+            "Fractional image masks require a mask-aware consumer"
+            if index == 0 else "spherical geometry edges"
+        )
+        with pytest.raises(UnsupportedEEError, match=expected_boundary):
             compile_expression(wire, [], {})
 
     assert shape_calls == []

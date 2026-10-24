@@ -25,6 +25,7 @@ def _metadata_image(array):
     return Image(
         [], dict(image.props), image.source, image.mapped, image.inherit_props,
         image.copied_props, image.footprint, image.footprint_is_absolute,
+        image.clip_footprint,
     )
 
 

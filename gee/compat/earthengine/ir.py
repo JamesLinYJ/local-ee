@@ -25,6 +25,66 @@ class Pixel:
     boolean: bool = False
 
 
+@dataclass(frozen=True)
+class ClipFootprintIdentity:
+    """Identity of an unresolved geodesic clip footprint.
+
+    ``spec`` is the exact immutable canonical ROI wire when known. ``None``
+    retains the fact that the public footprint is pending but that no single
+    ROI can safely justify implicit sampling.
+    """
+
+    spec: str | None
+    fingerprint: bytes | None = None
+
+
+def valid_clip_footprint_identity(value):
+    """Check the fixed-size immutable identity payload without string scans."""
+    if type(value) is not ClipFootprintIdentity:
+        return False
+    if value.spec is None:
+        return value.fingerprint is None
+    return (
+        type(value.spec) is str and bool(value.spec)
+        and type(value.fingerprint) is bytes and len(value.fingerprint) == 32
+    )
+
+
+def _known_clip_footprint(value):
+    return valid_clip_footprint_identity(value) and value.spec is not None
+
+
+def clip_footprint_after_first_input(first, *others):
+    """Keep first-image ownership unless another pending ROI makes it unclear."""
+    pending = (first, *others)
+    if not any(value is not None for value in pending):
+        return None
+    if not _known_clip_footprint(first):
+        return ClipFootprintIdentity(None)
+    for value in others:
+        if value is None:
+            continue
+        if (not _known_clip_footprint(value)
+                or value.fingerprint != first.fingerprint):
+            return ClipFootprintIdentity(None)
+    return first
+
+
+def combine_clip_footprints(*values):
+    """Retain a single identity only when every combined input agrees."""
+    if not values or all(value is None for value in values):
+        return None
+    first = values[0]
+    if not _known_clip_footprint(first):
+        return ClipFootprintIdentity(None)
+    if any(
+        not _known_clip_footprint(value)
+        or value.fingerprint != first.fingerprint for value in values[1:]
+    ):
+        return ClipFootprintIdentity(None)
+    return first
+
+
 @dataclass
 class Image:
     bands: list[tuple[str, Pixel]]
@@ -35,6 +95,9 @@ class Image:
     copied_props: tuple = ()
     footprint: dict | None = None
     footprint_is_absolute: bool = False
+    # Exact immutable ROI identity while `footprint` remains conservative
+    # source support. An identity with spec=None means pending but ambiguous.
+    clip_footprint: ClipFootprintIdentity | None = None
 
 
 @dataclass(frozen=True)
@@ -260,6 +323,7 @@ def binary(a: Any, b: Any, op: str, translator=None) -> Image:
         a.copied_props,
         a.footprint,
         a.footprint_is_absolute,
+        clip_footprint_after_first_input(a.clip_footprint, b.clip_footprint),
     )
 
 

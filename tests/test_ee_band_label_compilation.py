@@ -140,7 +140,7 @@ def test_mask_clip_and_float_cast_remain_across_delayed_output_label(ee, local):
     base = ee.Image("a").select("x").updateMask(
         ee.Image("a").select("y").gt(0)
     ).toFloat().rename("masked_float")
-    with pytest.raises(UnsupportedEEError, match="Image.clip spherical geometry edges"):
+    with pytest.raises(UnsupportedEEError, match="Fractional image masks require a mask-aware consumer"):
         compile_value(ee, base.clip(region), local)
     result = compile_value(ee, base.clip({**region, "geodesic": False}), local)
     assert_canonical_graph(result)
