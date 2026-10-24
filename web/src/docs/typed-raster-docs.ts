@@ -2,6 +2,14 @@ import type { ReferenceEntry } from "../types";
 
 export const pythonTypedRasterDocs: ReferenceEntry[] = [
   {
+    id: "gee-python-geometry-binary",
+    category: "GEE Python",
+    language: "python",
+    title: "研究区相交、合并与排除",
+    text: "Geometry／内联Feature支持contains、containedIn、intersects、disjoint、intersection、union、difference和symmetricDifference的有限平面路径，保留官方参数名。当前要求明确proj=EPSG:4326，且有边组件明确geodesic=False；这是经纬度平面计算。GEE省略proj时的球面默认行为、非空maxError和其他坐标系仍未实现。Feature结果保留左属性和本地实际ID规则；空／低维几何保持实际类型，Image.clip仍只接收Polygon／MultiPolygon。示例65／JS示例19包含两景NDVI掩膜和CSV读回；详见 docs/gee-python/geometry-binary.md。",
+    code: "proj = ee.Projection('EPSG:4326')\nstudy = ee.Geometry.Rectangle([0,0,4,4], proj=proj, geodesic=False)\nexcluded = ee.Geometry.Rectangle([1,1,3,3], proj=proj, geodesic=False)\nroi = study.difference(excluded, proj=proj)\nclipped = image.clip(roi)\nintersects = study.intersects(excluded, proj=proj)",
+  },
+  {
     id: "gee-python-scalar-composition",
     category: "GEE Python",
     language: "python",

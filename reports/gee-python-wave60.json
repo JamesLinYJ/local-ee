@@ -1,0 +1,170 @@
+{
+  "schema": "local-ee-compatibility-wave/v1",
+  "date": "2026-10-24",
+  "base_commit": "89ad4b9d8b7ee90079948ba853f4803136b3bd69",
+  "title": "Official Geometry and Feature binary methods for an explicit planar WGS84 subset",
+  "priority": "Official GEE names, arguments and default behavior first; explicit-parameter subsets are not default compatibility. Original broader goal remains active.",
+  "entry_inventory": {
+    "pinned_signatures": 991,
+    "declared_same_name_handlers": 709,
+    "names_only_percentage": 71.54,
+    "remaining_same_name_handlers": 282,
+    "new_entry_count": 16,
+    "new_api_names": [
+      "Geometry.contains",
+      "Geometry.containedIn",
+      "Geometry.disjoint",
+      "Geometry.intersects",
+      "Geometry.intersection",
+      "Geometry.union",
+      "Geometry.difference",
+      "Geometry.symmetricDifference",
+      "Feature.contains",
+      "Feature.containedIn",
+      "Feature.disjoint",
+      "Feature.intersects",
+      "Feature.intersection",
+      "Feature.union",
+      "Feature.difference",
+      "Feature.symmetricDifference"
+    ],
+    "new_entries_complete_default_compatibility": false,
+    "interpretation": "Name inventory only, not full parameters, numerical semantics, spherical defaults or project migration success"
+  },
+  "implementation": {
+    "official_contract": "Required left/right and optional maxError/proj names retained; exact decoded explicit EPSG:4326, omitted/null maxError, finite valid2D inline values only. Every edge-bearing component needs explicit geodesic=false. Point/empty geometries have no edges.",
+    "operations": "Actual local predicates and geometry Boolean results, stable unsupported errors; no DSL or dummy calculations. contains uses documented local GEOS interior/boundary semantics, not a Google oracle.",
+    "features": "Actual finite inline Features with non-null geometry. Overlays detach left properties only and preserve actual left ID under the existing local identity policy. Arbitrary Element/Image/runtime overloads remain unsupported.",
+    "output": "Actual output dimensions retained, empties canonicalized as GeometryCollection without NaN. Newly derived public GeoJSON exposes geodesic=false recursively and retains owned internal metadata; no invalid string CRS emitted. Official SDK roundtrip is covered.",
+    "work_and_ownership": "Bounded raw structural scans and conservative closure counts avoid equality on mutable coordinate leaves. Input decode, cross/internal edge/vertex/point candidates, all-overlay children and output materialization admitted before GEOS. Full output reservation remains charged; child/depth bounds enforced before recursive copies. Fresh validation and detached results preserve input ownership.",
+    "unchanged_limits": "Shared50000 work, graph500/1MB,10000 coordinates,1000 geometry children,16 geometry depth; existing collection/array/native work limits unchanged.",
+    "new_modules_LOC": {
+      "geometry_binary.py": 244,
+      "geometry_binary_plan.py": 59,
+      "feature_geometry_binary.py": 92
+    }
+  },
+  "verification": {
+    "full_pytest": {
+      "passed": 5950,
+      "skipped": 27,
+      "warnings": 53,
+      "failures": 0,
+      "seconds": 51.56,
+      "source_files_hashed": 18,
+      "source_stable_during_run": true,
+      "scope": "Complete existing host suite; optional native cases retain their existing skips. No new native build or deployment."
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typecheck": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "original_explicit_probes": {
+      "count": 16,
+      "before_compiled": 0,
+      "after_compiled_and_finite": 16,
+      "serialized_expressions_unchanged": true,
+      "reference": "Hand rectangle areas1/7/3/6 and literal predicate results; no Shapely operation used to generate these expectations"
+    },
+    "spherical_default_and_error_variants": {
+      "count": 48,
+      "after_rejected": 48,
+      "expressions_unchanged": true,
+      "policies": [
+        "omitted projection and error",
+        "explicit EPSG:4326 with maxError=1",
+        "omitted projection with maxError=1"
+      ]
+    },
+    "workflow": {
+      "SDKs": [
+        "pinned official Python1.7.49",
+        "vendored pinned official JavaScript"
+      ],
+      "outputs_per_SDK": 30,
+      "raster_outputs_per_SDK": 10,
+      "scenes": 2,
+      "sample_cells_per_SDK": 160,
+      "finite_cells_per_SDK": 113,
+      "masked_cells_per_SDK": 47,
+      "maximum_absolute_error": 0,
+      "SDK_wires_and_output_graphs_identical": true,
+      "independent_reference": "Raw Float64 band arithmetic and hand-listed rectangle/hole pixel-center indices; synthetic sample graph evaluation, not native raster execution",
+      "CSV": "4 synthetic feature overlay rows actually written and read through existing task/artifact pipeline; actual left IDs, properties and hole rings checked",
+      "instrumented_network_attempts": 0
+    },
+    "old_python_probes": {
+      "count": 50,
+      "serialized": 50,
+      "compiled": 47,
+      "rejected": 3,
+      "fixture_drift": false
+    },
+    "negative_controls": [
+      "spherical/default projection, non4326, non-null maxError reject",
+      "ambiguous/default non-point edges, true geodesic and evenOdd=false reject",
+      "mutated coordinates and sidecar flags freshly validate",
+      "cycles and opaque coordinate leaves reject without premature equality",
+      "point-only and internal/multipart pair costs checked before GEOS",
+      "growth and near-budget admission fail before shape/overlay allocation",
+      "public output roundtrip retains planar flags",
+      "empty and lower-dimensional results remain real; Image.clip emits its exact Polygon/MultiPolygon-only error",
+      "Feature id conflicts/null geometry/unsupported receiver reject; copied left metadata cannot alias inputs",
+      "empty Feature-map callbacks validate names and required/unknown keyword structure without inventing rows"
+    ],
+    "review": {
+      "independent_read_only_contract_review": "No remaining release-blocking contract/budget issue in frozen implementation",
+      "reviewer_ran_tests": false,
+      "receipt_sha256": "66f870a19f68ae901c61a872b49c9fd957d8d0e60303f6e7361939847cd84b6c"
+    }
+  },
+  "investigated_and_fixed": [
+    "Aggregate pair/output admission originally followed input GEOS decode; moved complete admission before first handler GEOS/copy.",
+    "Initial output allowance refund lost actual mapping/materialization work; retain the charged conservative allowance.",
+    "Segment-only cross counts missed point interactions, internal noding and mixed outputs; include all primitive interactions and child bounds.",
+    "Raw ring equality could inspect mutable or cyclic coordinate leaves before validation; use conservative closure counts without equality.",
+    "Sidecar-only planar metadata was lost at public JSON; new output mappings expose false geodesic flags for official SDK roundtrip.",
+    "Feature overlay test expectations initially reused GEOS operations; replaced with literal rings and independent shoelace areas."
+  ],
+  "verification_failures_and_resolution": [
+    "Initial combined target run:98passed1failed because the empty-output assertion lacked the new public geodesic=false flag. Corrected the exact expected metadata; complete frozen regression passes.",
+    "A trusted audit helper mistook the pre-existing point-constructor control for a Boolean predicate. Inspected its unchanged original wire, corrected the audit expectation to the actual Point and retained the failure log; no production change."
+  ],
+  "limits_and_unverified": [
+    "Ordinary GEE Polygon/Rectangle defaults and omitted/null binary proj use spherical semantics and remain unsupported; explicit planar calls are a genuine partial subset.",
+    "Non-null ErrorMargin/maxError, other CRS/transform/reprojection, left-inside interiors, ambiguous edges and general Element/runtime Feature overloads remain open.",
+    "BBox dateline wrapping or coordinates beyond admitted WGS84 bounds can reject; no antimeridian, polar or Google boundary equivalence claim.",
+    "Valid geometry does not guarantee worst-case pair/output bounds fit current compiler limits. New native/Spark/HTTP/browser/deployment/Google/private-data acceptance not performed.",
+    "Existing default256square unmix and larger matrix/workflow resource limits remain unchanged."
+  ],
+  "default_spherical_next_step": {
+    "status": "Feasibility research only, no dependency or adapter installed",
+    "finding": "Existing pinned stack has planar GEOS/JTS and projection tools, no spherical Boolean engine. Official S2 C++ Boolean API is a candidate, but GEE boundaries, loops, ErrorMargin, output rounding, planar-edge conversion and downstream raster consumers need independent implementation and verification. Do not substitute GEOS for default spherical calls.",
+    "source": "https://github.com/google/s2geometry/blob/v0.14.0/src/s2/s2boolean_operation.h"
+  },
+  "preservation": {
+    "dependencies_or_locks_changed": false,
+    "runtime_or_services_deployed": false,
+    "VMs_or_containers_used": false,
+    "user_data_or_credentials_read_or_modified": false,
+    "goal_complete": false
+  },
+  "cleanup": {
+    "owned_frontend_files_removed": 16,
+    "owned_frontend_bytes_removed": 1720394,
+    "no_open_handles": true,
+    "runtime_dependencies_or_user_data_removed": false,
+    "scratch_absent": true
+  },
+  "reproduction": [
+    ".venv/bin/python examples/65_GEE_python_roi_geometry.py",
+    ".venv/bin/python -m pytest -q tests/test_ee_geometry_binary.py tests/test_ee_geometry_binary_budget.py tests/test_ee_geometry_binary_routing.py tests/test_ee_feature_geometry_binary.py tests/test_ee_roi_geometry_workflow.py",
+    ".venv/bin/python -m pytest -q",
+    ".venv/bin/python -m scripts.ee_python_probes --check",
+    ".venv/bin/python scripts/ee_capability_inventory.py",
+    "npm test (web/)",
+    "npm run build -- --outDir <owned-temporary-directory> (web/)"
+  ]
+}

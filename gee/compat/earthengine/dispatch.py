@@ -96,6 +96,22 @@ def invoke(translator, name, arguments):
         return invoke_feature_structure(translator, name, a)
     if name in GEOMETRY_STRUCTURE_FUNCTIONS:
         return invoke_geometry_structure(translator, name, a)
+    if name in {
+        "Geometry.contains", "Geometry.containedIn", "Geometry.disjoint",
+        "Geometry.intersects", "Geometry.intersection", "Geometry.union",
+        "Geometry.difference", "Geometry.symmetricDifference",
+    }:
+        from .geometry_binary import invoke_geometry_binary
+
+        return invoke_geometry_binary(translator, name, a)
+    if name in {
+        "Feature.contains", "Feature.containedIn", "Feature.disjoint",
+        "Feature.intersects", "Feature.intersection", "Feature.union",
+        "Feature.difference", "Feature.symmetricDifference",
+    }:
+        from .feature_geometry_binary import invoke_feature_geometry_binary
+
+        return invoke_feature_geometry_binary(translator, name, a)
     if name in {"Image.linkCollection", "ImageCollection.combine"}:
         from .image_collection_link import invoke_collection_link
 

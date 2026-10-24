@@ -7,6 +7,14 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 # Handler inventory, not a claim that every overload or parameter is supported,
 # nor that Google-service numerical equivalence has been established.
 SUPPORTED_FUNCTIONS = frozenset({
+    *("Geometry." + n for n in (
+        "contains", "containedIn", "disjoint", "intersects", "intersection",
+        "union", "difference", "symmetricDifference",
+    )),
+    *("Feature." + n for n in (
+        "contains", "containedIn", "disjoint", "intersects", "intersection",
+        "union", "difference", "symmetricDifference",
+    )),
     "Image.linkCollection", "ImageCollection.combine",
     *("Image." + n for n in (
         "unmix", "rgbToHsv", "hsvToRgb", "interpolate", "polynomial",

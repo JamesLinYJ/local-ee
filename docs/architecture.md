@@ -49,6 +49,8 @@ flowchart LR
 
 标量流程组合通过 `scalar_work_plan`／`scalar_work_ledger` 减少已付费不可变 DAG 的重复扫描，图内账本最多4096项、强引用保留身份及子树高度；未识别或可变载荷执行原估算。`scalar_image_snapshot` 只在根作用域复用最多64个明确的 RGB／HSV ValueRef，元数据和足迹在存取时各自复制。实际深度、每次节点预检、规格成本和新鲜来源／网格证明不由缓存替代；原50000工作／500节点上限及执行隔离不变。见 [多步颜色组合](gee-python/scalar-composition.md)。
 
+几何二元操作由 `geometry_binary`、独立预算规划器和 `feature_geometry_binary` 处理：官方客户端生成相同名称和参数，有限平面路径要求明确的WGS84坐标平面与直线边，保留左要素属性、真实身份及公开结果的边类型。省略投影的球面默认行为保持未实现，不自动转换为平面计算。当前依赖中没有球面布尔引擎；后续球面适配器需要独立表示、固定依赖、资源边界和上下游验证，不能以同名注册代表完成。见 [几何兼容边界](gee-python/geometry-binary.md)。
+
 ## 3. 模块与接口
 
 前端固定为 **TypeScript + React**，使用 Vite 构建、CodeMirror 6 编辑代码、OpenLayers 渲染地图、React Flow 编辑 openEO 流程图。Motion 统一管理短动效并尊重系统减少动态效果设置；不引入外部资源。旧 Vue 工程已移出交付源码并保留在任务工作区备份。主工作台和流程图页均不加载 Vue。

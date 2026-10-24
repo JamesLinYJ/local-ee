@@ -11899,12 +11899,15 @@
       "description": "Returns true if and only if the geometry of one feature is contained in the geometry of another.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Official left/right/maxError/proj signatures; finite inline geometry calculation only. Requires explicit EPSG:4326 projection and proven planar non-point edges (explicit geodesic=false); point/empty values have no edges. Omitted/null proj has spherical semantics in GEE and remains unsupported, never silently replaced by planar geometry. Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous non-point edges and evenOdd=false reject. Existing mutable Geometry values are freshly validated; structural, GEOS pair/output-growth and owned-copy work are precharged within shared50000 work, 10000-coordinate,1000-child and16-level bounds. Empty results are valid owned geometries; lower-dimensional intersections retain their actual type. Contains uses local GEOS interior/boundary semantics, not a Google oracle. No spherical, native raster, full Spark, deployed service or Google same-data acceptance.",
+          "Only actual finite inline Features with non-null geometry; arbitrary Element/Image/runtime receivers remain unsupported. Overlays retain an owned copy of left properties and actual left identity under the existing explicit local ID policy; right properties are ignored. This is not complete Element overload or default-argument compatibility."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -11949,12 +11952,15 @@
       "description": "Returns true if and only if the geometry of one feature contains the geometry of another.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Official left/right/maxError/proj signatures; finite inline geometry calculation only. Requires explicit EPSG:4326 projection and proven planar non-point edges (explicit geodesic=false); point/empty values have no edges. Omitted/null proj has spherical semantics in GEE and remains unsupported, never silently replaced by planar geometry. Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous non-point edges and evenOdd=false reject. Existing mutable Geometry values are freshly validated; structural, GEOS pair/output-growth and owned-copy work are precharged within shared50000 work, 10000-coordinate,1000-child and16-level bounds. Empty results are valid owned geometries; lower-dimensional intersections retain their actual type. Contains uses local GEOS interior/boundary semantics, not a Google oracle. No spherical, native raster, full Spark, deployed service or Google same-data acceptance.",
+          "Only actual finite inline Features with non-null geometry; arbitrary Element/Image/runtime receivers remain unsupported. Overlays retain an owned copy of left properties and actual left identity under the existing explicit local ID policy; right properties are ignored. This is not complete Element overload or default-argument compatibility."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -12094,12 +12100,15 @@
       "description": "Returns a feature with the properties of the 'left' feature, and the geometry that results from subtracting the 'right' geometry from the 'left' geometry.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Official left/right/maxError/proj signatures; finite inline geometry calculation only. Requires explicit EPSG:4326 projection and proven planar non-point edges (explicit geodesic=false); point/empty values have no edges. Omitted/null proj has spherical semantics in GEE and remains unsupported, never silently replaced by planar geometry. Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous non-point edges and evenOdd=false reject. Existing mutable Geometry values are freshly validated; structural, GEOS pair/output-growth and owned-copy work are precharged within shared50000 work, 10000-coordinate,1000-child and16-level bounds. Empty results are valid owned geometries; lower-dimensional intersections retain their actual type. Contains uses local GEOS interior/boundary semantics, not a Google oracle. No spherical, native raster, full Spark, deployed service or Google same-data acceptance.",
+          "Only actual finite inline Features with non-null geometry; arbitrary Element/Image/runtime receivers remain unsupported. Overlays retain an owned copy of left properties and actual left identity under the existing explicit local ID policy; right properties are ignored. This is not complete Element overload or default-argument compatibility."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -12144,12 +12153,15 @@
       "description": "Returns true if and only if the feature geometries are disjoint.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Official left/right/maxError/proj signatures; finite inline geometry calculation only. Requires explicit EPSG:4326 projection and proven planar non-point edges (explicit geodesic=false); point/empty values have no edges. Omitted/null proj has spherical semantics in GEE and remains unsupported, never silently replaced by planar geometry. Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous non-point edges and evenOdd=false reject. Existing mutable Geometry values are freshly validated; structural, GEOS pair/output-growth and owned-copy work are precharged within shared50000 work, 10000-coordinate,1000-child and16-level bounds. Empty results are valid owned geometries; lower-dimensional intersections retain their actual type. Contains uses local GEOS interior/boundary semantics, not a Google oracle. No spherical, native raster, full Spark, deployed service or Google same-data acceptance.",
+          "Only actual finite inline Features with non-null geometry; arbitrary Element/Image/runtime receivers remain unsupported. Overlays retain an owned copy of left properties and actual left identity under the existing explicit local ID policy; right properties are ignored. This is not complete Element overload or default-argument compatibility."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -12433,12 +12445,15 @@
       "description": "Returns a feature containing the intersection of the geometries of two features, with the properties of the left feature.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Official left/right/maxError/proj signatures; finite inline geometry calculation only. Requires explicit EPSG:4326 projection and proven planar non-point edges (explicit geodesic=false); point/empty values have no edges. Omitted/null proj has spherical semantics in GEE and remains unsupported, never silently replaced by planar geometry. Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous non-point edges and evenOdd=false reject. Existing mutable Geometry values are freshly validated; structural, GEOS pair/output-growth and owned-copy work are precharged within shared50000 work, 10000-coordinate,1000-child and16-level bounds. Empty results are valid owned geometries; lower-dimensional intersections retain their actual type. Contains uses local GEOS interior/boundary semantics, not a Google oracle. No spherical, native raster, full Spark, deployed service or Google same-data acceptance.",
+          "Only actual finite inline Features with non-null geometry; arbitrary Element/Image/runtime receivers remain unsupported. Overlays retain an owned copy of left properties and actual left identity under the existing explicit local ID policy; right properties are ignored. This is not complete Element overload or default-argument compatibility."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -12483,12 +12498,15 @@
       "description": "Returns true if and only if the feature geometries intersect.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Official left/right/maxError/proj signatures; finite inline geometry calculation only. Requires explicit EPSG:4326 projection and proven planar non-point edges (explicit geodesic=false); point/empty values have no edges. Omitted/null proj has spherical semantics in GEE and remains unsupported, never silently replaced by planar geometry. Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous non-point edges and evenOdd=false reject. Existing mutable Geometry values are freshly validated; structural, GEOS pair/output-growth and owned-copy work are precharged within shared50000 work, 10000-coordinate,1000-child and16-level bounds. Empty results are valid owned geometries; lower-dimensional intersections retain their actual type. Contains uses local GEOS interior/boundary semantics, not a Google oracle. No spherical, native raster, full Spark, deployed service or Google same-data acceptance.",
+          "Only actual finite inline Features with non-null geometry; arbitrary Element/Image/runtime receivers remain unsupported. Overlays retain an owned copy of left properties and actual left identity under the existing explicit local ID policy; right properties are ignored. This is not complete Element overload or default-argument compatibility."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -12758,12 +12776,15 @@
       "description": "Returns a feature containing the symmetric difference between geometries of two features.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Official left/right/maxError/proj signatures; finite inline geometry calculation only. Requires explicit EPSG:4326 projection and proven planar non-point edges (explicit geodesic=false); point/empty values have no edges. Omitted/null proj has spherical semantics in GEE and remains unsupported, never silently replaced by planar geometry. Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous non-point edges and evenOdd=false reject. Existing mutable Geometry values are freshly validated; structural, GEOS pair/output-growth and owned-copy work are precharged within shared50000 work, 10000-coordinate,1000-child and16-level bounds. Empty results are valid owned geometries; lower-dimensional intersections retain their actual type. Contains uses local GEOS interior/boundary semantics, not a Google oracle. No spherical, native raster, full Spark, deployed service or Google same-data acceptance.",
+          "Only actual finite inline Features with non-null geometry; arbitrary Element/Image/runtime receivers remain unsupported. Overlays retain an owned copy of left properties and actual left identity under the existing explicit local ID policy; right properties are ignored. This is not complete Element overload or default-argument compatibility."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -12909,12 +12930,15 @@
       "description": "Returns a feature containing the union of the geometries of two features.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Official left/right/maxError/proj signatures; finite inline geometry calculation only. Requires explicit EPSG:4326 projection and proven planar non-point edges (explicit geodesic=false); point/empty values have no edges. Omitted/null proj has spherical semantics in GEE and remains unsupported, never silently replaced by planar geometry. Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous non-point edges and evenOdd=false reject. Existing mutable Geometry values are freshly validated; structural, GEOS pair/output-growth and owned-copy work are precharged within shared50000 work, 10000-coordinate,1000-child and16-level bounds. Empty results are valid owned geometries; lower-dimensional intersections retain their actual type. Contains uses local GEOS interior/boundary semantics, not a Google oracle. No spherical, native raster, full Spark, deployed service or Google same-data acceptance.",
+          "Only actual finite inline Features with non-null geometry; arbitrary Element/Image/runtime receivers remain unsupported. Overlays retain an owned copy of left properties and actual left identity under the existing explicit local ID policy; right properties are ignored. This is not complete Element overload or default-argument compatibility."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -15560,12 +15584,14 @@
       "description": "Returns true if and only if one geometry is contained in the other.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Official left/right/maxError/proj signatures; finite inline geometry calculation only. Requires explicit EPSG:4326 projection and proven planar non-point edges (explicit geodesic=false); point/empty values have no edges. Omitted/null proj has spherical semantics in GEE and remains unsupported, never silently replaced by planar geometry. Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous non-point edges and evenOdd=false reject. Existing mutable Geometry values are freshly validated; structural, GEOS pair/output-growth and owned-copy work are precharged within shared50000 work, 10000-coordinate,1000-child and16-level bounds. Empty results are valid owned geometries; lower-dimensional intersections retain their actual type. Contains uses local GEOS interior/boundary semantics, not a Google oracle. No spherical, native raster, full Spark, deployed service or Google same-data acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -15610,12 +15636,14 @@
       "description": "Returns true if and only if one geometry contains the other.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Official left/right/maxError/proj signatures; finite inline geometry calculation only. Requires explicit EPSG:4326 projection and proven planar non-point edges (explicit geodesic=false); point/empty values have no edges. Omitted/null proj has spherical semantics in GEE and remains unsupported, never silently replaced by planar geometry. Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous non-point edges and evenOdd=false reject. Existing mutable Geometry values are freshly validated; structural, GEOS pair/output-growth and owned-copy work are precharged within shared50000 work, 10000-coordinate,1000-child and16-level bounds. Empty results are valid owned geometries; lower-dimensional intersections retain their actual type. Contains uses local GEOS interior/boundary semantics, not a Google oracle. No spherical, native raster, full Spark, deployed service or Google same-data acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -15830,12 +15858,14 @@
       "description": "Returns the result of subtracting the 'right' geometry from the 'left' geometry.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Official left/right/maxError/proj signatures; finite inline geometry calculation only. Requires explicit EPSG:4326 projection and proven planar non-point edges (explicit geodesic=false); point/empty values have no edges. Omitted/null proj has spherical semantics in GEE and remains unsupported, never silently replaced by planar geometry. Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous non-point edges and evenOdd=false reject. Existing mutable Geometry values are freshly validated; structural, GEOS pair/output-growth and owned-copy work are precharged within shared50000 work, 10000-coordinate,1000-child and16-level bounds. Empty results are valid owned geometries; lower-dimensional intersections retain their actual type. Contains uses local GEOS interior/boundary semantics, not a Google oracle. No spherical, native raster, full Spark, deployed service or Google same-data acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -15880,12 +15910,14 @@
       "description": "Returns true if and only if the geometries are disjoint.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Official left/right/maxError/proj signatures; finite inline geometry calculation only. Requires explicit EPSG:4326 projection and proven planar non-point edges (explicit geodesic=false); point/empty values have no edges. Omitted/null proj has spherical semantics in GEE and remains unsupported, never silently replaced by planar geometry. Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous non-point edges and evenOdd=false reject. Existing mutable Geometry values are freshly validated; structural, GEOS pair/output-growth and owned-copy work are precharged within shared50000 work, 10000-coordinate,1000-child and16-level bounds. Empty results are valid owned geometries; lower-dimensional intersections retain their actual type. Contains uses local GEOS interior/boundary semantics, not a Google oracle. No spherical, native raster, full Spark, deployed service or Google same-data acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -16376,12 +16408,14 @@
       "description": "Returns the intersection of the two geometries.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Official left/right/maxError/proj signatures; finite inline geometry calculation only. Requires explicit EPSG:4326 projection and proven planar non-point edges (explicit geodesic=false); point/empty values have no edges. Omitted/null proj has spherical semantics in GEE and remains unsupported, never silently replaced by planar geometry. Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous non-point edges and evenOdd=false reject. Existing mutable Geometry values are freshly validated; structural, GEOS pair/output-growth and owned-copy work are precharged within shared50000 work, 10000-coordinate,1000-child and16-level bounds. Empty results are valid owned geometries; lower-dimensional intersections retain their actual type. Contains uses local GEOS interior/boundary semantics, not a Google oracle. No spherical, native raster, full Spark, deployed service or Google same-data acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -16426,12 +16460,14 @@
       "description": "Returns true if and only if the geometries intersect.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Official left/right/maxError/proj signatures; finite inline geometry calculation only. Requires explicit EPSG:4326 projection and proven planar non-point edges (explicit geodesic=false); point/empty values have no edges. Omitted/null proj has spherical semantics in GEE and remains unsupported, never silently replaced by planar geometry. Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous non-point edges and evenOdd=false reject. Existing mutable Geometry values are freshly validated; structural, GEOS pair/output-growth and owned-copy work are precharged within shared50000 work, 10000-coordinate,1000-child and16-level bounds. Empty results are valid owned geometries; lower-dimensional intersections retain their actual type. Contains uses local GEOS interior/boundary semantics, not a Google oracle. No spherical, native raster, full Spark, deployed service or Google same-data acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -16702,12 +16738,14 @@
       "description": "Returns the symmetric difference between two geometries.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Official left/right/maxError/proj signatures; finite inline geometry calculation only. Requires explicit EPSG:4326 projection and proven planar non-point edges (explicit geodesic=false); point/empty values have no edges. Omitted/null proj has spherical semantics in GEE and remains unsupported, never silently replaced by planar geometry. Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous non-point edges and evenOdd=false reject. Existing mutable Geometry values are freshly validated; structural, GEOS pair/output-growth and owned-copy work are precharged within shared50000 work, 10000-coordinate,1000-child and16-level bounds. Empty results are valid owned geometries; lower-dimensional intersections retain their actual type. Contains uses local GEOS interior/boundary semantics, not a Google oracle. No spherical, native raster, full Spark, deployed service or Google same-data acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -16847,12 +16885,14 @@
       "description": "Returns the union of the two geometries.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Official left/right/maxError/proj signatures; finite inline geometry calculation only. Requires explicit EPSG:4326 projection and proven planar non-point edges (explicit geodesic=false); point/empty values have no edges. Omitted/null proj has spherical semantics in GEE and remains unsupported, never silently replaced by planar geometry. Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous non-point edges and evenOdd=false reject. Existing mutable Geometry values are freshly validated; structural, GEOS pair/output-growth and owned-copy work are precharged within shared50000 work, 10000-coordinate,1000-child and16-level bounds. Empty results are valid owned geometries; lower-dimensional intersections retain their actual type. Contains uses local GEOS interior/boundary semantics, not a Google oracle. No spherical, native raster, full Spark, deployed service or Google same-data acceptance."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -41757,7 +41797,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 693,
+    "declared_handler_name_count": 709,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41919,7 +41959,7 @@
         "appears_in_rejected_compile_context": 1,
         "appears_in_selected_sdk_serialization": 1,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 6,
+        "declared_handler_count": 14,
         "signature_count": 30
       },
       "FeatureCollection": {
@@ -41940,7 +41980,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 6,
+        "declared_handler_count": 14,
         "signature_count": 40
       },
       "GeometryConstructors": {
@@ -42238,7 +42278,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 693,
+    "pinned_signatures_with_same_name_declared_handler": 709,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"
