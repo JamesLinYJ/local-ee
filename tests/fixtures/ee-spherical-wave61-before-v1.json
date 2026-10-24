@@ -1,0 +1,1809 @@
+{
+  "base": "1318361024db8d1a3560e0f0156e9d416bbe16ae",
+  "description": "Sanitized fixed synthetic pre-change SDK expressions and rejection observations; not Google runtime results. Original local receipt retained separately.",
+  "geometry_wire": {
+    "coordinates": [
+      [
+        [
+          170,
+          -10
+        ],
+        [
+          -170,
+          -10
+        ],
+        [
+          -170,
+          10
+        ],
+        [
+          170,
+          10
+        ]
+      ]
+    ],
+    "evenOdd": true,
+    "type": "Polygon"
+  },
+  "records": [
+    {
+      "error": "Geometry binary operations require explicit proj='EPSG:4326'; omitted/null proj is spherical",
+      "error_type": "UnsupportedEEError",
+      "name": "Geometry.contains",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    10
+                  ],
+                  [
+                    170,
+                    10
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "coordinates": [
+                [
+                  [
+                    175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    5
+                  ],
+                  [
+                    175,
+                    5
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Geometry.contains",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "2"
+        }
+      }
+    },
+    {
+      "error": "Geometry binary operations require explicit proj='EPSG:4326'; omitted/null proj is spherical",
+      "error_type": "UnsupportedEEError",
+      "name": "Geometry.containedIn",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    10
+                  ],
+                  [
+                    170,
+                    10
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "coordinates": [
+                [
+                  [
+                    175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    5
+                  ],
+                  [
+                    175,
+                    5
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Geometry.containedIn",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "2"
+        }
+      }
+    },
+    {
+      "error": "Geometry binary operations require explicit proj='EPSG:4326'; omitted/null proj is spherical",
+      "error_type": "UnsupportedEEError",
+      "name": "Geometry.intersects",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    10
+                  ],
+                  [
+                    170,
+                    10
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "coordinates": [
+                [
+                  [
+                    175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    5
+                  ],
+                  [
+                    175,
+                    5
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Geometry.intersects",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "2"
+        }
+      }
+    },
+    {
+      "error": "Geometry binary operations require explicit proj='EPSG:4326'; omitted/null proj is spherical",
+      "error_type": "UnsupportedEEError",
+      "name": "Geometry.disjoint",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    10
+                  ],
+                  [
+                    170,
+                    10
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "coordinates": [
+                [
+                  [
+                    175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    5
+                  ],
+                  [
+                    175,
+                    5
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Geometry.disjoint",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "2"
+        }
+      }
+    },
+    {
+      "error": "Geometry binary operations require explicit proj='EPSG:4326'; omitted/null proj is spherical",
+      "error_type": "UnsupportedEEError",
+      "name": "Geometry.intersection",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    10
+                  ],
+                  [
+                    170,
+                    10
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "coordinates": [
+                [
+                  [
+                    175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    5
+                  ],
+                  [
+                    175,
+                    5
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Geometry.intersection",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "2"
+        }
+      }
+    },
+    {
+      "error": "Geometry binary operations require explicit proj='EPSG:4326'; omitted/null proj is spherical",
+      "error_type": "UnsupportedEEError",
+      "name": "Geometry.union",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    10
+                  ],
+                  [
+                    170,
+                    10
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "coordinates": [
+                [
+                  [
+                    175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    5
+                  ],
+                  [
+                    175,
+                    5
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Geometry.union",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "2"
+        }
+      }
+    },
+    {
+      "error": "Geometry binary operations require explicit proj='EPSG:4326'; omitted/null proj is spherical",
+      "error_type": "UnsupportedEEError",
+      "name": "Geometry.difference",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    10
+                  ],
+                  [
+                    170,
+                    10
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "coordinates": [
+                [
+                  [
+                    175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    5
+                  ],
+                  [
+                    175,
+                    5
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Geometry.difference",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "2"
+        }
+      }
+    },
+    {
+      "error": "Geometry binary operations require explicit proj='EPSG:4326'; omitted/null proj is spherical",
+      "error_type": "UnsupportedEEError",
+      "name": "Geometry.symmetricDifference",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    10
+                  ],
+                  [
+                    170,
+                    10
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "coordinates": [
+                [
+                  [
+                    175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    5
+                  ],
+                  [
+                    175,
+                    5
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Geometry.symmetricDifference",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "2"
+        }
+      }
+    },
+    {
+      "error": "Geometry binary operations require explicit proj='EPSG:4326'; omitted/null proj is spherical",
+      "error_type": "UnsupportedEEError",
+      "name": "Feature.contains",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    10
+                  ],
+                  [
+                    170,
+                    10
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "name": "study"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "3",
+            {
+              "coordinates": [
+                [
+                  [
+                    175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    5
+                  ],
+                  [
+                    175,
+                    5
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "4",
+            {
+              "type": "Dictionary",
+              "value": {
+                "name": "other"
+              }
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "3"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Feature.contains",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "6"
+        }
+      }
+    },
+    {
+      "error": "Geometry binary operations require explicit proj='EPSG:4326'; omitted/null proj is spherical",
+      "error_type": "UnsupportedEEError",
+      "name": "Feature.containedIn",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    10
+                  ],
+                  [
+                    170,
+                    10
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "name": "study"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "3",
+            {
+              "coordinates": [
+                [
+                  [
+                    175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    5
+                  ],
+                  [
+                    175,
+                    5
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "4",
+            {
+              "type": "Dictionary",
+              "value": {
+                "name": "other"
+              }
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "3"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Feature.containedIn",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "6"
+        }
+      }
+    },
+    {
+      "error": "Geometry binary operations require explicit proj='EPSG:4326'; omitted/null proj is spherical",
+      "error_type": "UnsupportedEEError",
+      "name": "Feature.intersects",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    10
+                  ],
+                  [
+                    170,
+                    10
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "name": "study"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "3",
+            {
+              "coordinates": [
+                [
+                  [
+                    175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    5
+                  ],
+                  [
+                    175,
+                    5
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "4",
+            {
+              "type": "Dictionary",
+              "value": {
+                "name": "other"
+              }
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "3"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Feature.intersects",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "6"
+        }
+      }
+    },
+    {
+      "error": "Geometry binary operations require explicit proj='EPSG:4326'; omitted/null proj is spherical",
+      "error_type": "UnsupportedEEError",
+      "name": "Feature.disjoint",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    10
+                  ],
+                  [
+                    170,
+                    10
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "name": "study"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "3",
+            {
+              "coordinates": [
+                [
+                  [
+                    175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    5
+                  ],
+                  [
+                    175,
+                    5
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "4",
+            {
+              "type": "Dictionary",
+              "value": {
+                "name": "other"
+              }
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "3"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Feature.disjoint",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "6"
+        }
+      }
+    },
+    {
+      "error": "Geometry binary operations require explicit proj='EPSG:4326'; omitted/null proj is spherical",
+      "error_type": "UnsupportedEEError",
+      "name": "Feature.intersection",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    10
+                  ],
+                  [
+                    170,
+                    10
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "name": "study"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "3",
+            {
+              "coordinates": [
+                [
+                  [
+                    175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    5
+                  ],
+                  [
+                    175,
+                    5
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "4",
+            {
+              "type": "Dictionary",
+              "value": {
+                "name": "other"
+              }
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "3"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Feature.intersection",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "6"
+        }
+      }
+    },
+    {
+      "error": "Geometry binary operations require explicit proj='EPSG:4326'; omitted/null proj is spherical",
+      "error_type": "UnsupportedEEError",
+      "name": "Feature.union",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    10
+                  ],
+                  [
+                    170,
+                    10
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "name": "study"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "3",
+            {
+              "coordinates": [
+                [
+                  [
+                    175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    5
+                  ],
+                  [
+                    175,
+                    5
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "4",
+            {
+              "type": "Dictionary",
+              "value": {
+                "name": "other"
+              }
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "3"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Feature.union",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "6"
+        }
+      }
+    },
+    {
+      "error": "Geometry binary operations require explicit proj='EPSG:4326'; omitted/null proj is spherical",
+      "error_type": "UnsupportedEEError",
+      "name": "Feature.difference",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    10
+                  ],
+                  [
+                    170,
+                    10
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "name": "study"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "3",
+            {
+              "coordinates": [
+                [
+                  [
+                    175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    5
+                  ],
+                  [
+                    175,
+                    5
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "4",
+            {
+              "type": "Dictionary",
+              "value": {
+                "name": "other"
+              }
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "3"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Feature.difference",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "6"
+        }
+      }
+    },
+    {
+      "error": "Geometry binary operations require explicit proj='EPSG:4326'; omitted/null proj is spherical",
+      "error_type": "UnsupportedEEError",
+      "name": "Feature.symmetricDifference",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    -10
+                  ],
+                  [
+                    -170,
+                    10
+                  ],
+                  [
+                    170,
+                    10
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "name": "study"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "3",
+            {
+              "coordinates": [
+                [
+                  [
+                    175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    -5
+                  ],
+                  [
+                    -175,
+                    5
+                  ],
+                  [
+                    175,
+                    5
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "4",
+            {
+              "type": "Dictionary",
+              "value": {
+                "name": "other"
+              }
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "3"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "arguments": {
+                "left": {
+                  "type": "ValueRef",
+                  "value": "2"
+                },
+                "right": {
+                  "type": "ValueRef",
+                  "value": "5"
+                }
+              },
+              "functionName": "Feature.symmetricDifference",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "6"
+        }
+      }
+    }
+  ],
+  "schema": "local-ee-spherical-before-synthetic/v1",
+  "source_instrumented_network_attempts": 0,
+  "source_receipt_sha256": "913eeb8527b350550ca680db6569f10b6b5e9ecfbea561a7bcdf7976e6461541"
+}

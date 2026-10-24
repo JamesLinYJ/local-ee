@@ -16,7 +16,7 @@ from scripts.ee_python_api.offline import OfflineGuard
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_PATH = ROOT / "tests/fixtures/ee-spherical-wave61-v1.json"
-BASELINE_PATH = ROOT / "audit/gee-python-wave61/root/before-defaults.json"
+BASELINE_PATH = ROOT / "tests/fixtures/ee-spherical-wave61-before-v1.json"
 PYTHON_EXAMPLE = ROOT / "examples/66_GEE_python_spherical_geometry.py"
 JAVASCRIPT_EXAMPLE = "examples/javascript/20_球面几何.js"
 OPERATIONS = (
@@ -291,7 +291,11 @@ def spherical_contains(geometry, point):
 def verify_baseline_rejects():
     baseline = json.loads(BASELINE_PATH.read_text(encoding="utf-8"))
     assert baseline["base"] == "1318361024db8d1a3560e0f0156e9d416bbe16ae"
-    assert baseline["sdk_attempts"]["attempt_count"] == 0
+    assert baseline["schema"] == "local-ee-spherical-before-synthetic/v1"
+    assert baseline["source_instrumented_network_attempts"] == 0
+    assert baseline["source_receipt_sha256"] == (
+        "913eeb8527b350550ca680db6569f10b6b5e9ecfbea561a7bcdf7976e6461541"
+    )
     assert len(baseline["records"]) == 16
     expected = {f"{family}.{operation}" for family in ("Geometry", "Feature")
                 for operation in OPERATIONS}

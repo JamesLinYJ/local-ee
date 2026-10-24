@@ -57,12 +57,12 @@
   },
   "verification": {
     "full_pytest": {
-      "passed": 6071,
+      "passed": 6072,
       "skipped": 27,
       "warnings": 53,
       "failures": 0,
-      "seconds": 60.82,
-      "source_files_hashed": 62,
+      "seconds": 61.51,
+      "source_files_hashed": 63,
       "source_stable_during_run": true,
       "scope": "Complete existing host suite; optional/native skips preserved. No new Spark/deployment acceptance."
     },
@@ -146,6 +146,13 @@
       "artifact_directory_write": "denied",
       "public_network": "denied",
       "ordinary_script_read_scope": "unchanged"
+    },
+    "portable_synthetic_fixture": {
+      "original_wires_replayed": 16,
+      "independent_overlay_observations": 72,
+      "source_receipt_provenance_retained": true,
+      "raw_local_audit_required_by_tests": false,
+      "snapshot_is_Google_runtime_output": false
     }
   },
   "failures_preserved": [
@@ -153,7 +160,8 @@
     "Strict native55 controls retain3 failures. Separate numeric tolerance passing does not remediate literal/computed incidence; no snapping or fuzzy equality added.",
     "Initial build and exploratory native-policy failures retained locally; no historical receipts overwritten.",
     "Supplementary review found stale-sidecar and inherited-edge wrong-route defects after an earlier complete pass. Fixed and added targeted regression controls. Inherited planar/point-output assertions updated after legitimate behavior changes; original failed logs and independent pre-fix controls retained. Final frozen full suite rerun after all runtime/sandbox changes.",
-    "Independent reviewer sandbox_apply EPERM under the outer execution sandbox and a missing-cwd-read audit harness failure were preserved separately. Privileged-host rerun and corrected trusted audit harness passed; these were not product computation failures."
+    "Independent reviewer sandbox_apply EPERM under the outer execution sandbox and a missing-cwd-read audit harness failure were preserved separately. Privileged-host rerun and corrected trusted audit harness passed; these were not product computation failures.",
+    "First Linux CI40063737025 built the pinned library successfully, then1 test failed because it read an ignored local audit file;6057passed/40skipped. Extracted only fixed synthetic expressions/rejection observations into a sanitized portable fixture and added actual16-expression/72-point independent replay. Production runtime and native sources unchanged by this fix; original failed CI retained."
   ],
   "limits_and_unverified": [
     "Three binary64 input/constructed-result exact incidence/coordinate controls remain unresolved and are not user accepted.",
@@ -187,7 +195,7 @@
   },
   "receipt_sha256": {
     "audit/gee-python-wave61/root/full-1.json": "279135cf1352780757d93dc3b7baab9d3548a4f897002814d38a6dab3ac6e803",
-    "audit/gee-python-wave61/root/full-6.json": "6b7713868244ec399e2395f36650ffcb0578d42b705fb2718326799ed0d43854",
+    "audit/gee-python-wave61/root/full-7.json": "e43a0d2786aafe6e3cfacd0c95723a067287de03646316e0012334bc496c446a",
     "audit/gee-python-wave61/root/after-defaults-final.json": "40c49319d64b1bfd6bf9ff6e39d30ebb12103a877cbc9387bd8a52565a33bab0",
     "audit/gee-python-wave61/root/cleanup.json": "a659c15acb36d669435eb49b71f04a34b88c1a6df85bb6c33ec1f764853d2629",
     "audit/gee-python-wave61/native-review/review-receipt.json": "607e7a707916eb0ba18e3d3e459001218d332277b563fd6586065b10bb06c400",
@@ -196,7 +204,8 @@
     "audit/gee-python-wave61/root/full-3.json": "4df6adfcae65bdf994e3bb91b4b2d96d2ec30cdf3ee7b613d7901bbb10dc9598",
     "audit/gee-python-wave61/root/full-4.json": "4b190a0d9def0bd164da2311d811e9560c3ffa66405f4de56f84ac8de6df5953",
     "audit/gee-python-wave61/native-review/review-addendum-final-runtime-wiring.json": "07c7c14013df7366c4d71e7756d10476fac694fc963a9659dbd3923869c794f4",
-    "audit/gee-python-wave61/root/full-5.json": "1accf0b7c23a63beb5c8d08179d592ff81959b41b031db97a798a23cb11d2945"
+    "audit/gee-python-wave61/root/full-5.json": "1accf0b7c23a63beb5c8d08179d592ff81959b41b031db97a798a23cb11d2945",
+    "audit/gee-python-wave61/root/portable-fixture-extraction.json": "934200a5fc9ab5893809b53af16d2b0073cf3d2ec42f64467659daf8022d4a7a"
   },
   "frozen_tested_source_sha256": {
     ".github/workflows/checks.yml": "e5022c5940904d700938d316c89f6771060e9549ed0578b8cea77a33e6093a8c",
@@ -240,8 +249,9 @@
     "scripts/s2_build/__init__.py": "55277cc057b59a9105c0bead883e62ef48a9c4d79ae700b07bde7dd6ab332d6e",
     "scripts/s2_build/artifact.py": "cf697fe80fab2780ad697e28dfbd15f64c07c0972422690d64caebba853b6817",
     "scripts/s2_build/dependencies.py": "9dfd052524061ba6d0e434eda43fb0ebe7857fa8f88d7780ec64484632b2da41",
-    "tests/ee_spherical_workflow_helpers.py": "2da52b3f995e533a2157735321a8adc155898d4b54be1e849d0ed76d1fabccdd",
+    "tests/ee_spherical_workflow_helpers.py": "30d433ca4b4fe36a8e288791518b21cef9a2c6a6fbaf108b209a89a4177a05f3",
     "tests/fixtures/ee-python-1.7.49.json": "cf37549d1eb34c93d616ce1d0e8c2a1752d3a826ae024b0644cbda1e9aa56720",
+    "tests/fixtures/ee-spherical-wave61-before-v1.json": "c1b05c82c8695309fe13c06481ce9066644d4e3e0e701d4f4d1d2ce9e6122dbe",
     "tests/fixtures/ee-spherical-wave61-v1.json": "e622fdc859dbb68781cf99083856af08f65054d12997264a525fb985229d0498",
     "tests/test_ee_feature_structure.py": "0d8eaa90a1d3be5a0f2f37c5e0341e873d450c52c1718acf54d614e947c93314",
     "tests/test_ee_geometry_binary.py": "54f809289fac6624de9f3c6ba7da6ee3994379aec05d363a5db46a02a27de747",
@@ -256,7 +266,7 @@
     "tests/test_ee_spherical_sdk_geometry.py": "b5515ecbcc687070145cbf88c22403da14b2b165a7876e2b756e1f58e436d2d2",
     "tests/test_ee_spherical_tables.py": "5fdb470c1a12583151de1b05e57d76796e36e8e95db0e80530fb2de9feb1a809",
     "tests/test_ee_spherical_values.py": "d3a9651c18fb25e3c36c0bff6a7bc4a0b0b63044b70ad3ff1efb0f163ebaa9a3",
-    "tests/test_ee_spherical_workflow.py": "37d53fb20657018b36dfad00624540316128249c02c3e330382985f67f07bd17",
+    "tests/test_ee_spherical_workflow.py": "133dfe8d8d9ddec08b55d72d0bbb6a80f2241a6bcf3d4b1b0bb061d031cb2d1f",
     "tests/test_ee_static_dictionary_ops.py": "edecace7ea1a398a5114456133e00116b643679d74fb6a0299371f7ed0b94107",
     "tests/test_ee_static_list_ops.py": "3c3e0bf28e00349e89ec511e42377d3b5a3b86939f9600b66daa0b9671e789bd",
     "tests/test_table_values.py": "25d901974a0c229d29444ed11de216f34015a7c828d1d933e517e7baaad14198",
@@ -266,5 +276,13 @@
     "Stale internal geodesic defaults could route a mutated spherical value or inherited spherical collection into planar GEOS. Public flag, inherited context and stored default now follow the same precedence at preflight and decode; native/GEOS spies verify rejection before planar construction.",
     "Legacy planar Point/MultiPoint output published geodesic=false, which official SDK constructors reject. Public flags now follow geometry type in both planar and S2 outputs; internal planar metadata preserved. Both SDKs roundtrip five geometry dimensions.",
     "API and batch sandbox read paths previously omitted the new native library/source/license attestation inputs. Added only three public read paths in trusted API/batch modes; ordinary script modes unchanged, no new writes or networking. Real Seatbelt computation and file/write/network negative controls passed."
-  ]
+  ],
+  "validation_policy": {
+    "primary": "Local independent references, mathematical invariants, fixed synthetic samples and actual local exports",
+    "automatic_Google_calls": false,
+    "online_GEE_is_development_prerequisite": false,
+    "remote_comparison": "Discuss separately only for exceptionally complex algorithms not reliably resolved by documentation and independent references",
+    "existing_trusted_GEE_outputs": "May be retained and reused offline",
+    "claim_boundary": "SDK serialization, local correctness and actual Google equivalence remain separate; this batch uses no live Google runtime results"
+  }
 }

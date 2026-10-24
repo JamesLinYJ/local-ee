@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 
 from ee_spherical_workflow_helpers import (
+    BASELINE_PATH,
     OPERATIONS,
     OVERLAYS,
     ROOT,
@@ -99,7 +100,7 @@ def _assert_default_polygon_wire(expressions):
 def test_pinned_python_and_javascript_default_workflows_serialize_the_same_16_methods():
     fixture = load_fixture()
     baseline_digest = verify_baseline_rejects()
-    assert baseline_digest == "913eeb8527b350550ca680db6569f10b6b5e9ecfbea561a7bcdf7976e6461541"
+    assert baseline_digest == "c1b05c82c8695309fe13c06481ce9066644d4e3e0e701d4f4d1d2ce9e6122dbe"
     python = python_expressions(fixture)
     javascript = javascript_expressions(fixture)
     for client in (python, javascript):
@@ -127,6 +128,31 @@ def test_omitted_and_null_projection_compile_to_same_16_default_results():
             ("contains", "containedIn", "disjoint", "intersects")} == fixture["expected"]["binary"]
     assert {name: _output(python_outputs, "feature", name) for name in
             ("contains", "containedIn", "disjoint", "intersects")} == fixture["expected"]["feature_binary"]
+
+
+def test_portable_original_default_wires_compute_against_independent_membership():
+    baseline = json.loads(BASELINE_PATH.read_text())
+    literals = dict(baseline["records"][0]["wire"]["scope"])
+    left, right = literals["0"], literals["1"]
+    probes = [[180, 0], [172, 0], [0, 0], [179, 8], [-179, 0],
+              [175.5, -4], [170.5, 9], [90, 89], [-176, 6]]
+    predicates = {"contains": True, "containedIn": False,
+                  "intersects": True, "disjoint": False}
+    for record in baseline["records"]:
+        wire = record["wire"]
+        snapshot = json.dumps(wire, sort_keys=True)
+        result = compile_expression(wire, [], {})
+        assert result["kind"] == "value"
+        assert json.dumps(wire, sort_keys=True) == snapshot
+        method = record["name"].split(".")[1]
+        if method in predicates:
+            assert result["value"] is predicates[method]
+        else:
+            for point in probes:
+                expected = _boolean_algebra(
+                    method, _point(left, point), _point(right, point),
+                )
+                assert _point(result["value"], point) is expected
 
 
 def test_independent_unit_vector_winding_checks_dateline_polar_holes_and_orientation():
