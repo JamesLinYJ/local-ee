@@ -24,6 +24,8 @@ _METADATA_READS = {
     # its input receiver, not from the replacement image.
     "Image.unmask": ("input", "value"),
     "Image.get": ("image", "object"),
+    "Image.id": ("element",),
+    "Image.metadata": ("image",),
     "Element.get": ("object", "image"),
     "Element.getNumber": ("object",),
     "Element.getString": ("object",),
@@ -42,8 +44,16 @@ _IMAGE_RECEIVERS = {
     # writes the receiver image under `value` for both methods.
     "Image.toFloat": ("value",),
     "Image.toDouble": ("value",),
+    "Image.float": ("value",),
+    "Image.double": ("value",),
     "Image.select": ("input",),
     "Image.rename": ("input",),
+    "Image.regexpRename": ("input",),
+    "Image.slice": ("image",),
+    # Image.cat retains metadata from its first input only, matching the
+    # pinned algorithm description. A mapped later input cannot make a
+    # metadata read on the result item-dependent.
+    "Image.cat": ("images",),
     "Image.addBands": ("dstImg",),
     "Image.normalizedDifference": ("input",),
     "Image.expression": ("image", "input"),
@@ -99,10 +109,20 @@ _IMAGE_RECEIVERS.update({
 _IMAGE_RECEIVERS["Image.atan2"] = ("image1",)
 
 
+def _image_receivers(name: Any, arguments: Mapping[str, Any]):
+    """Return only inputs whose metadata lineage the Image algorithm retains."""
+    if name == "Image.cat":
+        images = arguments.get("images")
+        return (images[0],) if isinstance(images, (list, tuple)) and images else ()
+    return tuple(arguments.get(key) for key in _IMAGE_RECEIVERS.get(name, ()))
+
+
 def _flows_from_argument(value: Any, argument: str, scope: Mapping[str, Any],
                          seen: frozenset[str] = frozenset(), memo: dict | None = None) -> bool:
     """Whether an image expression is derived from this map callback argument."""
     memo = {} if memo is None else memo
+    if isinstance(value, (list, tuple)):
+        return any(_flows_from_argument(item, argument, scope, seen, memo) for item in value)
     if not isinstance(value, dict):
         return False
     kind = value.get("type")
@@ -133,9 +153,9 @@ def _flows_from_argument(value: Any, argument: str, scope: Mapping[str, Any],
     if kind != "Invocation":
         return False
     name = value.get("functionName")
-    selected = _IMAGE_RECEIVERS.get(name, ())
     arguments = value.get("arguments", {})
-    return any(_flows_from_argument(arguments.get(key), argument, scope, seen, memo) for key in selected)
+    return any(_flows_from_argument(item, argument, scope, seen, memo)
+               for item in _image_receivers(name, arguments))
 
 
 def _contains_mapped_metadata_read(value: Any, argument: str, scope: Mapping[str, Any],

@@ -191,6 +191,16 @@ def invoke_array_bands(translator, name, arguments):
     if name == "Image":
         translator.allowed(arguments, {"input"})
         return _require_bundle(translator, arguments.get("input"), "Image")
+    if name in {"Image.toFloat", "Image.toDouble"}:
+        translator.allowed(arguments, {"value"})
+        if "value" not in arguments:
+            fail(f"{name} requires value")
+        bundle = _require_bundle(translator, arguments["value"], name)
+        arrays = tuple(
+            translator.invoke(name, {"value": array})
+            for array in bundle.arrays
+        )
+        return wrap_array_bands(translator, bundle.image, arrays)
     if name in METADATA_HANDLERS:
         return _metadata(translator, name, arguments)
     if name == "Image.bandNames":

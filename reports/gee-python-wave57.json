@@ -1,0 +1,203 @@
+{
+  "schema": "local-ee-compatibility-wave/v1",
+  "date": "2026-10-24",
+  "base_commit": "0f8ec1c95d2d7b2784ed676be7fc83893bc03076",
+  "title": "Bounded spectral unmixing, color/calibration and raster preparation",
+  "entry_inventory": {
+    "pinned_signatures": 991,
+    "declared_same_name_handlers": 691,
+    "names_only_percentage": 69.73,
+    "remaining_same_name_handlers": 300,
+    "new_entry_count": 15,
+    "new_api_names": [
+      "Image.arrayDimensions",
+      "Image.arrayDotProduct",
+      "Image.arrayPad",
+      "Image.cat",
+      "Image.double",
+      "Image.float",
+      "Image.hsvToRgb",
+      "Image.id",
+      "Image.interpolate",
+      "Image.metadata",
+      "Image.polynomial",
+      "Image.regexpRename",
+      "Image.rgbToHsv",
+      "Image.slice",
+      "Image.unmix"
+    ],
+    "cast_aliases_included": [
+      "Image.float",
+      "Image.double"
+    ],
+    "interpretation": "Name inventory only; not complete parameter, numerical or project migration compatibility"
+  },
+  "implementation": {
+    "unmix": "One shared bounded native producer per actual source tuple/spec. Four independent constraint combinations; support-face SVD with exact dyadic rank and centered simplex contrasts, whole-spectrum NoData, source Infinity rejection, explicit Double output. Fresh precharged input/clip snapshots and source/grid checks on cache hits.",
+    "numerical_admission": "MC80 arithmetic; retained singular ratio >=2^-48; useful coefficient-error ceiling1e-8, absolute scale1 for simplex+nonnegative and max(1,coefficient infinity norm) otherwise. Guard before feasibility filtering rejects unresolved global faces. Norm-center ordering precedes uncertainty comparison; lex only for indistinguishable coefficients. Local approximate numerical policies, not universal/global minimum-norm or Google claims.",
+    "dry_run": "Actual pinned upstream evaluator proves output component selection/renaming does not prune source operand bands; idempotent band-only propagation blocker.",
+    "color_and_curves": "Closed existing scalar Float64 IR for ordered3-channel RGB/HSV, all4 interpolation behaviors and ascending-degree all-band polynomial. Bounded strong-reference scalar sharing and exact-triplet proven-domain reuse retain masks/staged casts without raising caps.",
+    "bands_and_metadata": "RE2 rename, half-open slice, first-metadata cat, scalar/array/bundle float/double aliases, actual item ID, numeric independently valid on-grid metadata. Public SDK leading-constant cat fixed in existing addBands path. Actual per-item metadata expansion preserves distinct same-day IDs.",
+    "arrays": "Masked rank including scalar0; positional/broadcast rank1 dot with fresh scene/grid checks; append-only fixed padding preserving full-array mask and physical Float32/Double stage. Added pads require a concrete single-scene grid.",
+    "unchanged_limits": {
+      "compiler_work": 50000,
+      "process_nodes": 500,
+      "graph_JSON_bytes": 1000000,
+      "raster_array_cells": 64,
+      "array_rank": 8,
+      "native_tile_work": 100000000,
+      "native_total_work": 1000000000
+    }
+  },
+  "verification": {
+    "full_pytest": {
+      "passed": 5841,
+      "skipped": 26,
+      "warnings": 53,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 49.66,
+      "source_files_hashed": 56,
+      "source_stable_during_run": true
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typecheck": "passed",
+      "temporary_build": "passed",
+      "registry_sha256": "93f188409819695ecc5b7b65736510a6998594c4fe001a28311b369a4206049a",
+      "deployed": false
+    },
+    "original_raw_probes": {
+      "fixed_expressions": 17,
+      "before_compiled": 2,
+      "before_rejected": 15,
+      "after_compiled": 16,
+      "after_rejected": 1,
+      "remaining_rejection": "Raw Image.arrayPad is a typed array and cannot be directly exported. Its explicit arrayGet consumer compiles and computes in exact-entry tests. Original probe expression was retained unchanged.",
+      "network_attempts": 0
+    },
+    "exact_new_entry_probes": {
+      "SDK_serialized_exact_names": 15,
+      "consumable_outputs_compiled": 15,
+      "finite_public_value_or_sample_graph_outputs": 14,
+      "separate_actual_native_unmix_bridge": true,
+      "empty_map_signature_negative_tests": 30,
+      "network_attempts": 0,
+      "scope": "Pinned Python SDK1.7.49; typed arrayPad scalarized; unmix native values separately checked, never replaced by a Python solver"
+    },
+    "original_50_probes": {
+      "serialized": 50,
+      "compiled": 47,
+      "explicitly_rejected": 3,
+      "unchanged_exact_fixture": true
+    },
+    "workflow": {
+      "fixture": "tests/fixtures/ee-spectral-preparation-wave57-v1.json",
+      "fixture_sha256": "ec3ece8c6f2a6c589cb0aa1ffe81b458ba7f52ed0baf6ee79ccd057f40221dbd",
+      "scenes": 2,
+      "grid_shape": [
+        1,
+        6
+      ],
+      "SDKs": [
+        "pinned Python1.7.49",
+        "pinned JavaScript"
+      ],
+      "matching_compiled_outputs": 10,
+      "roundtrip_process_nodes": 172,
+      "roundtrip_graph_bytes": 24076,
+      "roundtrip_compiler_work": 49694,
+      "max_RGB_roundtrip_abs_error": 1.6653345369377348e-16,
+      "max_HSV_abs_error": 1.1102230246251565e-16,
+      "max_LUT_abs_error": 0,
+      "max_polynomial_abs_error": 5.551115123125783e-17,
+      "native_component_cells": 36,
+      "native_finite_cells": 30,
+      "native_NoData_cells": 6,
+      "max_native_fraction_abs_error": 1.3877787807814457e-16,
+      "native_output_sha256": "3e5362bb8db314f824d584b4e36b92e78212003b6858e1f84d117fe74ed3650e",
+      "source_binding": "Compiler positional bands band0..2 and actual selected source arrays checked exactly before consuming real native outputs",
+      "independent_reference": "Exact Fraction mixtures and colorsys/Fraction calibration, independent of compiler output",
+      "network_attempts": 0
+    },
+    "native": {
+      "build_source_files": 67,
+      "JAR_sha256": "9703397ea8bb9c626c8c203c9701680b8fd2f15c3af98d6dd8894616748a087b",
+      "cases": 17,
+      "output_cells": 41,
+      "invalid_wire_controls": 2,
+      "deliberate_rejections": 4,
+      "masked_output_cells": 3,
+      "max_observed_abs_error": 5.551115123125783e-17,
+      "output_sha256": "7271b93f9cf1f8f98f43c5a58747290a66aff03d2738f643ba5a2d652138b067",
+      "actual_Float32_tile_staging_verified": true,
+      "one_input_NaN_masks_all_components": true,
+      "Infinity_next_to_NaN_rejected": true,
+      "unresolved_near_cutoff_faces_rejected": true,
+      "normal_3band_3endmember_simplex_max_tile_pixels": 26,
+      "standard_256x256_refused": true,
+      "scope": "Trusted actual GeoTrellis tile kernels plus bridge/dry-run tests, not full Spark or deployment"
+    },
+    "same_JAR_regressions": {
+      "Float64": {
+        "cases": 25,
+        "pixels": 173,
+        "max_observed_ULP": 1
+      },
+      "integer_values": {
+        "cases": 26,
+        "pixels": 214
+      },
+      "selection": {
+        "cases": 5,
+        "pixels": 40
+      },
+      "matrix_values": {
+        "cases": 19,
+        "output_cells": 150
+      },
+      "matrix_orthogonal": {
+        "cases": 25,
+        "output_cells": 481
+      }
+    },
+    "read_only_numerical_review": {
+      "status": "no remaining blocker in frozen reviewed scope",
+      "receipt_sha256": "6d2904a08f1828228b44fccde356fea0108e0ead33a0eb48ee4a8b9c426bbfb3",
+      "reviewer_did_not_run_builds_or_tests": true
+    },
+    "earlier_validation_and_findings": [
+      "Initial raw baseline17 probes admitted2 controls and rejected15 new names. Exact consumed-output tests distinguish typed-array output boundary from missing implementation.",
+      "Color sector5 formula, source-grid-bound padding, typed-array alias routing and public leading-constant cat corrected before final freeze.",
+      "Initial native build succeeded but a probe exposed exponent-span contrast axis overcharge; corrected and rebuilt. First manifest is explicitly reconstructed, no original first JAR retained.",
+      "Source review corrected rounded OLS KKT tolerance, common-offset simplex contrast scaling, exact rank, active-support rounding, missing quadratic work charge and approximate tie ordering.",
+      "Pre-policy actual near-cutoff edge returned correct coefficients; interior rejected already. No wrong coefficient output was observed in those reproductions. Added conservative pre-feasibility uncertainty guard and norm-center ordering, then tested explicit refusal controls and duplicate-endmember uniform solutions.",
+      "First full suite5841 passed with stable56-file hashes. Further numerical-policy changes justified the second final full suite, also5841 passed with stable hashes.",
+      "An initial default-Python3.9 regression launcher preflight lacked required bit_count/NumPy; definitive same-JAR checks all used the pinned project venv. Failure records retained."
+    ]
+  },
+  "limits_and_remaining": [
+    "Normal3x3 simplex admits only26 pixels per tile; 27 and standard256x256 refuse under unchanged native work cap. This is admission evidence, not throughput; full-sized jobs need future bounded execution work.",
+    "RGB roundtrip uses49694/50000 compiler work; larger compositions can reject despite172 process nodes.",
+    "Finite fixed shapes and literal parameters only; ragged arrayMask, dynamic endmembers/knots and source-free unmix reject.",
+    "Local naming, identity, interpolation endpoint/domain, array shape/dtype and uncertainty policies lack Google same-input verification.",
+    "No new full Spark, HTTP/browser, sandbox deployment, private raster, physical export or production acceptance. Native kernel and synthetic graph evidence are separate.",
+    "Original53 warnings retained; this compatibility batch did not change dependencies or claim a new security audit."
+  ],
+  "scope": {
+    "new_dependencies": false,
+    "runtime_deployed": false,
+    "services_started": false,
+    "VMs_or_containers": false,
+    "user_data_or_accounts_modified": false,
+    "goal_status": "active"
+  },
+  "cleanup": {
+    "removed_native_file_bytes": 859644,
+    "removed_frontend_file_bytes": 1716908,
+    "removed_task_parent": true,
+    "symlinks": 0,
+    "open_handles_before": 0,
+    "audit_evidence_and_runtime_dependencies_preserved": true
+  }
+}

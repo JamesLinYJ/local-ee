@@ -96,6 +96,34 @@ def invoke(translator, name, arguments):
         return invoke_feature_structure(translator, name, a)
     if name in GEOMETRY_STRUCTURE_FUNCTIONS:
         return invoke_geometry_structure(translator, name, a)
+    if name == "Image.unmix":
+        from .image_unmix import invoke_image_unmix
+
+        return invoke_image_unmix(translator, name, a)
+    if name in {"Image.rgbToHsv", "Image.hsvToRgb"}:
+        from .image_color import invoke_image_color
+
+        return invoke_image_color(translator, name, a)
+    if name in {"Image.interpolate", "Image.polynomial"}:
+        from .image_curves import invoke_image_curves
+
+        return invoke_image_curves(translator, name, a)
+    if name in {"Image.arrayDimensions", "Image.arrayPad"}:
+        from .raster_array_preparation import invoke_raster_array_preparation
+
+        return invoke_raster_array_preparation(translator, name, a)
+    if name == "Image.arrayDotProduct":
+        from .raster_array_dot import invoke_raster_array_dot
+
+        return invoke_raster_array_dot(translator, name, a)
+    if name in {"Image.regexpRename", "Image.slice", "Image.cat", "Image.float", "Image.double"}:
+        from .image_band_preparation import invoke_image_band_preparation
+
+        return invoke_image_band_preparation(translator, name, a)
+    if name in {"Image.id", "Image.metadata"}:
+        from .image_metadata_raster import invoke_image_metadata_raster
+
+        return invoke_image_metadata_raster(translator, name, a)
     if name.startswith("AggregateFeatureCollection.") and name != "AggregateFeatureCollection.array":
         from .aggregate_statistics import invoke_aggregate_statistics
 

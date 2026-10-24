@@ -141,6 +141,10 @@ RF 要素分类与矩阵计算保留独立运行时 IR 和生产者合同。真�
 | `geometry_preflight.py`, `geometry_values.py`, `geometry_constructors.py`, `geometry_structure.py` | 有限EPSG:4326平面几何的构造、拓扑校验、结构查询和独立输出，先计费再转换GEOS；保留可接受选项，不隐式支持球面和重投影 |
 | `raster_matrix_decomposition.py`, `raster_matrix_factor_constants.py`, `raster_matrix_orthogonal_constants.py` | Cholesky的L、LU的L／U／P及紧凑QR／SVD命名数组、共享生产者和有限常量折叠；64单元总输出限制保留，选取因子后继续实际数组运算 |
 | `raster_factor_snapshot.py`, `raster_matrix_orthogonal_rank.py` | 根作用域同一SDK因子引用共享不可变数值表达式，元数据存储／读取各自复制；常量SVD以预充的精确整数秩区分真实零方向，不能缓存实际目录／网格事实 |
+| `image_unmix.py`, `unmix_graph.py`, `unmix_input_snapshot.py` | 固定端元光谱解混的类型校验、单一共享原生生产者和逐分量选择；缓存绑定有界输入快照，裁切坐标及几何选项变化使缓存失效，每次重新验证实际来源和网格 |
+| `image_color.py`, `image_color_ir.py`, `image_curves.py` | RGB／HSV、四种外插政策和升幂多项式降为既有封闭Float64标量图；有界局部节点共享，保留显式类型阶段、掩膜和原工作预算 |
+| `image_band_preparation.py`, `image_metadata_raster.py` | RE2波段改名、切片、拼接、类型别名、实际影像ID及数值元数据栅格化；常量只借用实际有限网格，保留独立有效性和首影像属性 |
+| `raster_array_preparation.py`, `raster_array_preparation_precision.py`, `raster_array_dot.py` | 固定数组秩、追加填充和一维点积；保持64总单元、声明精度及整体掩膜，来源／网格冲突在构造跨来源算术前拒绝 |
 | `raster_collection_arrays.py`, `raster_array_reshape.py` | 有限标量集合按波段堆叠定长数组，各波段独立合并所有帧掩膜；常量有效长度向量重解释行主序形状，保留像素、类型和来源，拒绝变长数组及动态／掩膜形状 |
 | `raster_array_concatenation.py` | 单数组按现有轴实际拼接／整块重复，固定行主序单元保持类型，拼接合并整体掩膜；重复次数必须由有效常量标量 Image 证明，动态／掩膜／空间限定次数拒绝，保留形状、工作及图预算 |
 | `raster_array_accumulation.py` | 固定轴上的真实 Float32／Double 前缀 sum／min／max，包含当前位置并保持原行主序及完整数组掩膜；省略 reducer 默认 sum，输出前计费，拒绝未实现 reducer／修饰符 |
@@ -160,6 +164,8 @@ RF 要素分类与矩阵计算保留独立运行时 IR 和生产者合同。真�
 逐像元矩阵使用独立 `local_ee_matrix_values` SPI，六字段规范 JSON 允许固定 solve／inverse／pinverse／cholesky／lu／qr／svd。Python／Scala 独立验证每轴1–8、A+B输入和输出各不超过64单元、连续实际输入波段及行优先结果；一个生产者只分解一次，所有结果单元共享该节点。QR采用Q(m,p)／R(p,n)，SVD采用U(m,p)／S(p,p)／V(n,p)，p=min(m,n)，形状为明确的本地紧凑约定。根作用域的同一SDK因子引用共享已验证的不可变数值IR，元数据存储与读取各自复制；映射环境和含未知／可变信息的结果不复用。上游 dry-run 保留来源和输出结构，不能用其陈旧波段标签证明实际输入；真实立方体和原生适配器再次校验顺序、键、网格、时间和资源。solve／inverse／pinverse 的缩放 Commons Math SVD 采用明确本地秩阈值；求解对原始 RHS 做精确 BigDecimal 累积，避免极小有效信号被大值归一化抹去，只对满列秩且确有常数预测列的系统精确中心化。原生输出 Float64 后显式恢复声明的 Float32／Double 类型。输入缺测、奇异逆及结果溢出整矩阵缺测；不把源无穷值当普通缺测。形状工作估算不是上游 SVD 的严格迭代上限，已有任务墙钟超时仍必需。有限常量可在无虚构网格的情况下折叠；常量无法表达的缺测结果拒绝。见[矩阵语法与边界](gee-python/pixel-matrices.md)，可信独立瓦片验证与完整 Spark／Google 对照分开。
 
 QR／SVD 与求解器的数值政策分开：稳定范数的 Householder QR 使用精确十进制更新；SVD 先校验 Commons 因子，再尝试最多32轮 MC80 Jacobi。精确二进制秩、Gram有效谱系数、正交性及范数重建残差共同校验，不使用求解器近零阈值抹去有效奇异方向。Jacobi有效位数、小数位范围和精确输出乘积的限制分别保持；这些是有限资源政策，不能证明任意输入都可完成。按实际源包络计量，宽矩阵转置后的工作与复制也预充；完整Spark和部署另行验收。见[正交分解语法](gee-python/matrix-orthogonal.md)。
+
+光谱解混使用独立 `local_ee_unmix` SPI 和有界v1端元规范；Python和Scala各自验证1–8个输入波段、1–8个端元、独立的和为1／非负约束及有限binary64系数。每次解混只创建一个生产者，输出分量选择不会向上游传播为输入波段筛选；真实进程求值器单独验证此边界。固定端元的有界支持面分解先预充再构建，像元只使用已构建算子并重新计算残差及可行性。缺测掩盖全部分量，源Infinity明确拒绝，实际键／解码单元和原生工作上限保持。秩、病态条件、并列解及舍入政策详见[光谱处理语法](gee-python/spectral-preparation.md)，可信GeoTrellis组件证据与完整Spark／Google对照分开。
 
 Cholesky在原尺度上计算已舍入Float64因子的精确残差，严格检查对称与正计算主元，再做50位开方／除法。LU全程使用输入binary64值的精确有理数，首个最大绝对值选主元并交换已生成L列，最终一次舍入得到L／U／P；零主元或非有限结果整组缺测。LU先沿实际源瓦片归约一个标量指数／有效位包络，用位宽估算构造、消元及输出成本，再校验每瓦片和全作业原预算；执行时重新扫描并核对同一包络，避免RDD重算后数据变化绕过准入，不收集像元。该成本估算不等于严格CPU证明。逻辑因子布局与标量输出顺序由有界合同固定，单一生产者不因选择多个因子而重复分解；Image.matrixTranspose复用pinned同签名arrayTranspose布局算法。完整LU逆组合仍可能超过原编译预算；可运行的逆U和Cholesky求解与超限路径分别验证，见[分解语法](gee-python/matrix-factors.md)。
 

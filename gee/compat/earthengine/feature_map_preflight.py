@@ -12,14 +12,30 @@ def _contract(name):
     from .filtering import FILTER_PREPARATION_ARGUMENTS
     from .geometry_structure import GEOMETRY_STRUCTURE_ARGUMENTS
     from .geometry_constructors import GEOMETRY_CONSTRUCTOR_ARGUMENTS
+    from .image_band_preparation import BAND_PREPARATION_ARGUMENTS
+    from .image_metadata_raster import IMAGE_METADATA_RASTER_ARGUMENTS
+    from .image_unmix import IMAGE_UNMIX_ARGUMENTS
+    from .raster_array_preparation import RASTER_ARRAY_PREPARATION_ARGUMENTS
+    from .raster_array_dot import RASTER_ARRAY_DOT_ARGUMENTS
+    from .image_color import IMAGE_COLOR_REQUIRED_ARGUMENTS, IMAGE_COLOR_OPTIONAL_ARGUMENTS
+    from .image_curves import IMAGE_CURVE_REQUIRED_ARGUMENTS, IMAGE_CURVE_OPTIONAL_ARGUMENTS
 
     for contracts in (
         ELEMENT_METADATA_VALUE_ARGUMENTS, FEATURE_STRUCTURE_ARGUMENTS,
         FILTER_PREPARATION_ARGUMENTS, GEOMETRY_STRUCTURE_ARGUMENTS,
         GEOMETRY_CONSTRUCTOR_ARGUMENTS,
+        BAND_PREPARATION_ARGUMENTS, IMAGE_METADATA_RASTER_ARGUMENTS,
+        IMAGE_UNMIX_ARGUMENTS, RASTER_ARRAY_PREPARATION_ARGUMENTS,
+        RASTER_ARRAY_DOT_ARGUMENTS,
     ):
         if name in contracts:
             return contracts[name]
+    for required, optional in (
+        (IMAGE_COLOR_REQUIRED_ARGUMENTS, IMAGE_COLOR_OPTIONAL_ARGUMENTS),
+        (IMAGE_CURVE_REQUIRED_ARGUMENTS, IMAGE_CURVE_OPTIONAL_ARGUMENTS),
+    ):
+        if name in required:
+            return required[name], optional[name]
     return None
 
 

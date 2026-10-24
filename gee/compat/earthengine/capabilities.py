@@ -7,6 +7,11 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 # Handler inventory, not a claim that every overload or parameter is supported,
 # nor that Google-service numerical equivalence has been established.
 SUPPORTED_FUNCTIONS = frozenset({
+    *("Image." + n for n in (
+        "unmix", "rgbToHsv", "hsvToRgb", "interpolate", "polynomial",
+        "regexpRename", "slice", "cat", "float", "double", "id", "metadata",
+        "arrayDimensions", "arrayDotProduct", "arrayPad",
+    )),
     *('Element.' + n for n in (
         'getNumber', 'getString', 'getArray', 'toDictionary', 'replaceProperties',
     )),
@@ -173,6 +178,30 @@ def get_capabilities():
         "level": "C",
         "numerical_equivalence_to_google_verified": False,
         "restrictions": [
+            ("Image.unmix accepts1..8 actual aligned scalar source bands and1..8 finite endmembers, "
+             "with independent sumToOne/nonNegative constraints and Float64 unmix_0.. outputs. "
+             "A shared bounded native producer uses explicit local rank/conditioning/tie policies; "
+             "whole-spectrum NoData masks outputs and source Infinity rejects. Original compiler, "
+             "native work/key/cell caps remain; dimensions are not a joint throughput guarantee. "
+             "Source-free constants reject; full Spark and Google numerical equivalence are unverified."),
+            ("RGB/HSV require exactly3 caller-ordered scalar channels in[0,1], mask invalid ranges "
+             "and use documented local hue/zero conventions. interpolate reads the first band, "
+             "literal2..16 increasing x/y knots and extrapolate/clamp/input/mask behavior; "
+             "polynomial applies1..64 ascending finite coefficients to every scalar band. "
+             "Closed Float64 graphs preserve staged casts/masks/metadata; larger compositions "
+             "can exceed unchanged50000 work/500 nodes, with no Google rounding claim."),
+            ("regexpRename uses bounded RE2/$n with unique output names; slice has local "
+             "half-open negative-index/clamping policy. cat preserves first-image metadata "
+             "and binds leading constants only after an actual source supplies a finite grid. "
+             "float/double reuse existing scalar/single-array/bundle casts. Image.id reads "
+             "one actual item ID; metadata uses a finite numeric property within +/-2^53 "
+             "as an independently valid Double constant on the real grid/footprint."),
+            ("arrayDimensions reports actual per-band rank with whole-array validity (scalar0). "
+             "arrayDotProduct requires rank1 vectors, positional pairing or single-band broadcast "
+             "and fresh scene/grid agreement. arrayPad appends finite typed values, preserves "
+             "whole-array masks and requires a finite single-scene source to bind added cells. "
+             "Fixed rank8/64-total-cell/work/graph caps remain; scalarize before raster export. "
+             "Ragged arrayMask and Google dtype/shape parity remain unverified."),
             ("Image QR/SVD accept one explicitly typed fixed rank-2 array with axes1..8. "
              "Compact local QR returns Q(m,p),R(p,n); SVD returns U(m,p),S(p,p),V(n,p), p=min(m,n). "
              "Combined factors fit64 cells and share one native producer; select before ordinary algebra. "

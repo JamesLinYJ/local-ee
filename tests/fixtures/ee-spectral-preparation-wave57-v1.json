@@ -1,0 +1,887 @@
+{
+  "schema": "local-ee-synthetic-spectral-preparation/v1",
+  "stac": {
+    "collection": {
+      "id": "sentinel-2-l2a",
+      "cube:dimensions": {
+        "bands": {
+          "values": [
+            "B02",
+            "B03",
+            "B04"
+          ]
+        }
+      },
+      "license": "CC0-1.0",
+      "description": "Synthetic local spectral workflow collection; no external asset access."
+    },
+    "grid": {
+      "crs": "EPSG:32649",
+      "transform": [
+        10,
+        0,
+        500000,
+        0,
+        -10,
+        10
+      ],
+      "shape": [
+        1,
+        6
+      ],
+      "pixel_centers": [
+        [
+          500005,
+          5
+        ],
+        [
+          500015,
+          5
+        ],
+        [
+          500025,
+          5
+        ],
+        [
+          500035,
+          5
+        ],
+        [
+          500045,
+          5
+        ],
+        [
+          500055,
+          5
+        ]
+      ],
+      "width_m": 10,
+      "height_m": 10
+    },
+    "items": [
+      {
+        "id": "spectral-west-v1",
+        "bbox": [
+          500000,
+          0,
+          500060,
+          10
+        ],
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                500000,
+                0
+              ],
+              [
+                500060,
+                0
+              ],
+              [
+                500060,
+                10
+              ],
+              [
+                500000,
+                10
+              ],
+              [
+                500000,
+                0
+              ]
+            ]
+          ]
+        },
+        "assets": {
+          "reflectance": {
+            "href": "local-synthetic://spectral-west-v1/reflectance",
+            "type": "application/x-numpy-band-arrays",
+            "roles": [
+              "data"
+            ],
+            "bands": [
+              {
+                "name": "B02"
+              },
+              {
+                "name": "B03"
+              },
+              {
+                "name": "B04"
+              }
+            ]
+          }
+        },
+        "properties": {
+          "system:index": "spectral-west-v1",
+          "system:time_start": 1798588800000,
+          "proj:code": "EPSG:32649",
+          "proj:transform": [
+            10,
+            0,
+            500000,
+            0,
+            -10,
+            10
+          ],
+          "proj:shape": [
+            1,
+            6
+          ],
+          "workflow": "local-ee-synthetic-spectral-preparation/v1",
+          "stac:collection": "sentinel-2-l2a",
+          "eo:bands": [
+            {
+              "name": "B02",
+              "common_name": "blue",
+              "center_wavelength": 0.49
+            },
+            {
+              "name": "B03",
+              "common_name": "green",
+              "center_wavelength": 0.56
+            },
+            {
+              "name": "B04",
+              "common_name": "red",
+              "center_wavelength": 0.665
+            }
+          ]
+        }
+      },
+      {
+        "id": "spectral-east-v1",
+        "bbox": [
+          500000,
+          0,
+          500060,
+          10
+        ],
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                500000,
+                0
+              ],
+              [
+                500060,
+                0
+              ],
+              [
+                500060,
+                10
+              ],
+              [
+                500000,
+                10
+              ],
+              [
+                500000,
+                0
+              ]
+            ]
+          ]
+        },
+        "assets": {
+          "reflectance": {
+            "href": "local-synthetic://spectral-east-v1/reflectance",
+            "type": "application/x-numpy-band-arrays",
+            "roles": [
+              "data"
+            ],
+            "bands": [
+              {
+                "name": "B02"
+              },
+              {
+                "name": "B03"
+              },
+              {
+                "name": "B04"
+              }
+            ]
+          }
+        },
+        "properties": {
+          "system:index": "spectral-east-v1",
+          "system:time_start": 1798588810000,
+          "proj:code": "EPSG:32649",
+          "proj:transform": [
+            10,
+            0,
+            500000,
+            0,
+            -10,
+            10
+          ],
+          "proj:shape": [
+            1,
+            6
+          ],
+          "workflow": "local-ee-synthetic-spectral-preparation/v1",
+          "stac:collection": "sentinel-2-l2a",
+          "eo:bands": [
+            {
+              "name": "B02",
+              "common_name": "blue",
+              "center_wavelength": 0.49
+            },
+            {
+              "name": "B03",
+              "common_name": "green",
+              "center_wavelength": 0.56
+            },
+            {
+              "name": "B04",
+              "common_name": "red",
+              "center_wavelength": 0.665
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "source_band_order": [
+    "B02",
+    "B03",
+    "B04"
+  ],
+  "prepared_band_order": [
+    "blue",
+    "green",
+    "red"
+  ],
+  "scenes": [
+    {
+      "id": "spectral-west-v1",
+      "item": {
+        "id": "spectral-west-v1",
+        "bbox": [
+          500000,
+          0,
+          500060,
+          10
+        ],
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                500000,
+                0
+              ],
+              [
+                500060,
+                0
+              ],
+              [
+                500060,
+                10
+              ],
+              [
+                500000,
+                10
+              ],
+              [
+                500000,
+                0
+              ]
+            ]
+          ]
+        },
+        "assets": {
+          "reflectance": {
+            "href": "local-synthetic://spectral-west-v1/reflectance",
+            "type": "application/x-numpy-band-arrays",
+            "roles": [
+              "data"
+            ],
+            "bands": [
+              {
+                "name": "B02"
+              },
+              {
+                "name": "B03"
+              },
+              {
+                "name": "B04"
+              }
+            ]
+          }
+        },
+        "properties": {
+          "system:index": "spectral-west-v1",
+          "system:time_start": 1798588800000,
+          "proj:code": "EPSG:32649",
+          "proj:transform": [
+            10,
+            0,
+            500000,
+            0,
+            -10,
+            10
+          ],
+          "proj:shape": [
+            1,
+            6
+          ],
+          "workflow": "local-ee-synthetic-spectral-preparation/v1",
+          "stac:collection": "sentinel-2-l2a",
+          "eo:bands": [
+            {
+              "name": "B02",
+              "common_name": "blue",
+              "center_wavelength": 0.49
+            },
+            {
+              "name": "B03",
+              "common_name": "green",
+              "center_wavelength": 0.56
+            },
+            {
+              "name": "B04",
+              "common_name": "red",
+              "center_wavelength": 0.665
+            }
+          ]
+        }
+      },
+      "arrays": {
+        "B02": [
+          0.16,
+          0.16,
+          0.58,
+          0.34,
+          0.1,
+          null
+        ],
+        "B03": [
+          0.24,
+          0.59,
+          0.17,
+          0.46,
+          0.45,
+          null
+        ],
+        "B04": [
+          0.6,
+          0.25,
+          0.25,
+          0.2,
+          0.45,
+          null
+        ]
+      },
+      "true_fractions": [
+        [
+          "4/5",
+          "1/10",
+          "1/10"
+        ],
+        [
+          "1/10",
+          "4/5",
+          "1/10"
+        ],
+        [
+          "1/10",
+          "1/10",
+          "4/5"
+        ],
+        [
+          "0",
+          "3/5",
+          "2/5"
+        ],
+        [
+          "1/2",
+          "1/2",
+          "0"
+        ],
+        [
+          null,
+          null,
+          null
+        ]
+      ],
+      "masked_pixel_indices": [
+        5
+      ]
+    },
+    {
+      "id": "spectral-east-v1",
+      "item": {
+        "id": "spectral-east-v1",
+        "bbox": [
+          500000,
+          0,
+          500060,
+          10
+        ],
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                500000,
+                0
+              ],
+              [
+                500060,
+                0
+              ],
+              [
+                500060,
+                10
+              ],
+              [
+                500000,
+                10
+              ],
+              [
+                500000,
+                0
+              ]
+            ]
+          ]
+        },
+        "assets": {
+          "reflectance": {
+            "href": "local-synthetic://spectral-east-v1/reflectance",
+            "type": "application/x-numpy-band-arrays",
+            "roles": [
+              "data"
+            ],
+            "bands": [
+              {
+                "name": "B02"
+              },
+              {
+                "name": "B03"
+              },
+              {
+                "name": "B04"
+              }
+            ]
+          }
+        },
+        "properties": {
+          "system:index": "spectral-east-v1",
+          "system:time_start": 1798588810000,
+          "proj:code": "EPSG:32649",
+          "proj:transform": [
+            10,
+            0,
+            500000,
+            0,
+            -10,
+            10
+          ],
+          "proj:shape": [
+            1,
+            6
+          ],
+          "workflow": "local-ee-synthetic-spectral-preparation/v1",
+          "stac:collection": "sentinel-2-l2a",
+          "eo:bands": [
+            {
+              "name": "B02",
+              "common_name": "blue",
+              "center_wavelength": 0.49
+            },
+            {
+              "name": "B03",
+              "common_name": "green",
+              "center_wavelength": 0.56
+            },
+            {
+              "name": "B04",
+              "common_name": "red",
+              "center_wavelength": 0.665
+            }
+          ]
+        }
+      },
+      "arrays": {
+        "B02": [
+          0.55,
+          null,
+          0.1,
+          0.34,
+          0.4,
+          0.7
+        ],
+        "B03": [
+          0.25,
+          null,
+          0.2,
+          0.16,
+          0.275,
+          0.1
+        ],
+        "B04": [
+          0.2,
+          null,
+          0.7,
+          0.5,
+          0.325,
+          0.2
+        ]
+      },
+      "true_fractions": [
+        [
+          "0",
+          "1/4",
+          "3/4"
+        ],
+        [
+          null,
+          null,
+          null
+        ],
+        [
+          "1",
+          "0",
+          "0"
+        ],
+        [
+          "3/5",
+          "0",
+          "2/5"
+        ],
+        [
+          "1/4",
+          "1/4",
+          "1/2"
+        ],
+        [
+          "0",
+          "0",
+          "1"
+        ]
+      ],
+      "masked_pixel_indices": [
+        1
+      ]
+    }
+  ],
+  "calibration": {
+    "lut_input": [
+      0,
+      0.25,
+      0.5,
+      0.75,
+      1
+    ],
+    "lut_output": [
+      0,
+      0.2,
+      0.5,
+      0.8,
+      1
+    ],
+    "interpolation_behavior": "clamp",
+    "polynomial_coefficients_ascending": [
+      0.01,
+      0.99,
+      0.05
+    ]
+  },
+  "unmix": {
+    "input_band_order": [
+      "blue",
+      "green",
+      "red"
+    ],
+    "endmembers": [
+      [
+        0.1,
+        0.2,
+        0.7
+      ],
+      [
+        0.1,
+        0.7,
+        0.2
+      ],
+      [
+        0.7,
+        0.1,
+        0.2
+      ]
+    ],
+    "flags": {
+      "sumToOne": true,
+      "nonNegative": true
+    },
+    "component_band_order": [
+      "unmix_0",
+      "unmix_1",
+      "unmix_2"
+    ]
+  },
+  "independent_reference": {
+    "endmember_determinant": "-3/10",
+    "endmembers_rational": [
+      [
+        "1/10",
+        "1/5",
+        "7/10"
+      ],
+      [
+        "1/10",
+        "7/10",
+        "1/5"
+      ],
+      [
+        "7/10",
+        "1/10",
+        "1/5"
+      ]
+    ],
+    "endmember_inverse_rational": [
+      [
+        "-2/5",
+        "-1/10",
+        "3/2"
+      ],
+      [
+        "-2/5",
+        "47/30",
+        "-1/6"
+      ],
+      [
+        "8/5",
+        "-13/30",
+        "-1/6"
+      ]
+    ],
+    "scenes": {
+      "spectral-west-v1": {
+        "fractions": [
+          [
+            "4/5",
+            "1/10",
+            "1/10"
+          ],
+          [
+            "1/10",
+            "4/5",
+            "1/10"
+          ],
+          [
+            "1/10",
+            "1/10",
+            "4/5"
+          ],
+          [
+            "0",
+            "3/5",
+            "2/5"
+          ],
+          [
+            "1/2",
+            "1/2",
+            "0"
+          ],
+          [
+            null,
+            null,
+            null
+          ]
+        ]
+      },
+      "spectral-east-v1": {
+        "fractions": [
+          [
+            "0",
+            "1/4",
+            "3/4"
+          ],
+          [
+            null,
+            null,
+            null
+          ],
+          [
+            "1",
+            "0",
+            "0"
+          ],
+          [
+            "3/5",
+            "0",
+            "2/5"
+          ],
+          [
+            "1/4",
+            "1/4",
+            "1/2"
+          ],
+          [
+            "0",
+            "0",
+            "1"
+          ]
+        ]
+      }
+    },
+    "polynomial_rational_coefficients": [
+      "1/100",
+      "99/100",
+      "1/20"
+    ],
+    "lut_input_rational": [
+      "0",
+      "1/4",
+      "1/2",
+      "3/4",
+      "1"
+    ],
+    "lut_output_rational": [
+      "0",
+      "1/5",
+      "1/2",
+      "4/5",
+      "1"
+    ],
+    "color_policy": "Hue uses turns [0,1); achromatic hue=0. HSV roundtrip is checked against the source RGB. A source NaN masks all RGB/HSV output bands."
+  },
+  "native_probe": {
+    "schema": "local-ee-spectral-unmix-native/v1",
+    "cases": [
+      {
+        "label": "spectral-west-v1",
+        "spec": "{\"endmembers\":[[\"3fb999999999999a\",\"3fc999999999999a\",\"3fe6666666666666\"],[\"3fb999999999999a\",\"3fe6666666666666\",\"3fc999999999999a\"],[\"3fe6666666666666\",\"3fb999999999999a\",\"3fc999999999999a\"]],\"nonNegative\":true,\"sumToOne\":true,\"v\":1}",
+        "input_bands": [
+          [
+            "0.16",
+            "0.16",
+            "0.57999999999999996",
+            "0.34000000000000002",
+            "0.10000000000000001",
+            "NaN"
+          ],
+          [
+            "0.23999999999999999",
+            "0.58999999999999997",
+            "0.17000000000000001",
+            "0.46000000000000002",
+            "0.45000000000000001",
+            "NaN"
+          ],
+          [
+            "0.59999999999999998",
+            "0.25",
+            "0.25",
+            "0.20000000000000001",
+            "0.45000000000000001",
+            "NaN"
+          ]
+        ],
+        "absolute_tolerance": 2e-12,
+        "relative_tolerance": 0.0,
+        "expected_bands": [
+          "unmix0",
+          "unmix1",
+          "unmix2"
+        ],
+        "expected_values": [
+          [
+            "0.80000000000000004",
+            "0.10000000000000001",
+            "0.10000000000000001",
+            "0",
+            "0.5",
+            "NaN"
+          ],
+          [
+            "0.10000000000000001",
+            "0.80000000000000004",
+            "0.10000000000000001",
+            "0.59999999999999998",
+            "0.5",
+            "NaN"
+          ],
+          [
+            "0.10000000000000001",
+            "0.10000000000000001",
+            "0.80000000000000004",
+            "0.40000000000000002",
+            "0",
+            "NaN"
+          ]
+        ]
+      },
+      {
+        "label": "spectral-east-v1",
+        "spec": "{\"endmembers\":[[\"3fb999999999999a\",\"3fc999999999999a\",\"3fe6666666666666\"],[\"3fb999999999999a\",\"3fe6666666666666\",\"3fc999999999999a\"],[\"3fe6666666666666\",\"3fb999999999999a\",\"3fc999999999999a\"]],\"nonNegative\":true,\"sumToOne\":true,\"v\":1}",
+        "input_bands": [
+          [
+            "0.55000000000000004",
+            "NaN",
+            "0.10000000000000001",
+            "0.34000000000000002",
+            "0.40000000000000002",
+            "0.69999999999999996"
+          ],
+          [
+            "0.25",
+            "NaN",
+            "0.20000000000000001",
+            "0.16",
+            "0.27500000000000002",
+            "0.10000000000000001"
+          ],
+          [
+            "0.20000000000000001",
+            "NaN",
+            "0.69999999999999996",
+            "0.5",
+            "0.32500000000000001",
+            "0.20000000000000001"
+          ]
+        ],
+        "absolute_tolerance": 2e-12,
+        "relative_tolerance": 0.0,
+        "expected_bands": [
+          "unmix0",
+          "unmix1",
+          "unmix2"
+        ],
+        "expected_values": [
+          [
+            "0",
+            "NaN",
+            "1",
+            "0.59999999999999998",
+            "0.25",
+            "0"
+          ],
+          [
+            "0.25",
+            "NaN",
+            "0",
+            "0",
+            "0.25",
+            "0"
+          ],
+          [
+            "0.75",
+            "NaN",
+            "0",
+            "0.40000000000000002",
+            "0.5",
+            "1"
+          ]
+        ]
+      }
+    ],
+    "invalid_specs": [],
+    "reject_inputs": []
+  }
+}

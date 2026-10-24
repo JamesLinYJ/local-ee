@@ -212,6 +212,18 @@ def invoke_image(translator, name, arguments):
         image, source = as_image(a["dstImg"]), as_image(a["srcImg"])
         if a.get("names") is not None:
             source = translator.select(source, a["names"])
+        if image.source is None and source.source is not None:
+            from .array_core import charge_array
+
+            # The public SDK's Image.cat folds through addBands. A leading
+            # constant can use the later raster's actual finite grid, retaining
+            # first-image properties and its independently valid constant mask.
+            charge_array(translator, 2 * len(image.bands) + len(source.bands) + 8)
+            image = replace(
+                image, bands=bind_source_bands(image, source), source=source.source,
+                footprint=source.footprint,
+                footprint_is_absolute=source.footprint_is_absolute,
+            )
         bands = list(image.bands)
         for band_name, pixel in bind_source_bands(source, image):
             existing = [current for current, _ in bands]

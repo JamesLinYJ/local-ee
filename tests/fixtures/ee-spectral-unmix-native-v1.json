@@ -1,0 +1,518 @@
+{
+  "cases": [
+    {
+      "absolute_tolerance": 1e-12,
+      "expected_bands": [
+        "unmix0",
+        "unmix1"
+      ],
+      "expected_values": [
+        [
+          "0.2"
+        ],
+        [
+          "0.3"
+        ]
+      ],
+      "input_bands": [
+        [
+          "0.2"
+        ],
+        [
+          "0.3"
+        ]
+      ],
+      "label": "unconstrained-full-rank",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"3ff0000000000000\",\"0000000000000000\"],[\"0000000000000000\",\"3ff0000000000000\"]],\"nonNegative\":false,\"sumToOne\":false,\"v\":1}"
+    },
+    {
+      "absolute_tolerance": 1e-12,
+      "expected_bands": [
+        "unmix0",
+        "unmix1"
+      ],
+      "expected_values": [
+        [
+          "0.45"
+        ],
+        [
+          "0.55"
+        ]
+      ],
+      "input_bands": [
+        [
+          "0.2"
+        ],
+        [
+          "0.3"
+        ]
+      ],
+      "label": "sum-to-one-only",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"3ff0000000000000\",\"0000000000000000\"],[\"0000000000000000\",\"3ff0000000000000\"]],\"nonNegative\":false,\"sumToOne\":true,\"v\":1}"
+    },
+    {
+      "absolute_tolerance": 1e-12,
+      "expected_bands": [
+        "unmix0",
+        "unmix1"
+      ],
+      "expected_values": [
+        [
+          "0"
+        ],
+        [
+          "0.6"
+        ]
+      ],
+      "input_bands": [
+        [
+          "-0.2"
+        ],
+        [
+          "0.6"
+        ]
+      ],
+      "label": "nonnegative-only",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"3ff0000000000000\",\"0000000000000000\"],[\"0000000000000000\",\"3ff0000000000000\"]],\"nonNegative\":true,\"sumToOne\":false,\"v\":1}"
+    },
+    {
+      "absolute_tolerance": 1e-12,
+      "expected_bands": [
+        "unmix0",
+        "unmix1",
+        "unmix2"
+      ],
+      "expected_values": [
+        [
+          "0.3"
+        ],
+        [
+          "0.3"
+        ],
+        [
+          "0.4"
+        ]
+      ],
+      "input_bands": [
+        [
+          "0.6"
+        ],
+        [
+          "0.4"
+        ]
+      ],
+      "label": "simplex-rank-deficient-minimum-norm",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"3ff0000000000000\",\"0000000000000000\"],[\"3ff0000000000000\",\"0000000000000000\"],[\"0000000000000000\",\"3ff0000000000000\"]],\"nonNegative\":true,\"sumToOne\":true,\"v\":1}"
+    },
+    {
+      "absolute_tolerance": 1e-12,
+      "expected_bands": [
+        "unmix0",
+        "unmix1"
+      ],
+      "expected_values": [
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ]
+      ],
+      "input_bands": [
+        [
+          "1"
+        ],
+        [
+          "0"
+        ]
+      ],
+      "label": "unconstrained-rank-deficient-minimum-norm",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"3ff0000000000000\",\"0000000000000000\"],[\"3ff0000000000000\",\"0000000000000000\"]],\"nonNegative\":false,\"sumToOne\":false,\"v\":1}"
+    },
+    {
+      "absolute_tolerance": 1e-12,
+      "expected_bands": [
+        "unmix0",
+        "unmix1",
+        "unmix2"
+      ],
+      "expected_values": [
+        [
+          "0"
+        ],
+        [
+          "0"
+        ],
+        [
+          "1"
+        ]
+      ],
+      "input_bands": [
+        [
+          "100"
+        ]
+      ],
+      "label": "simplex-minimum-norm-outside-face-fallback",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"0000000000000000\"],[\"3ff0000000000000\"],[\"4059000000000000\"]],\"nonNegative\":true,\"sumToOne\":true,\"v\":1}"
+    },
+    {
+      "absolute_tolerance": 1e-11,
+      "expected_bands": [
+        "unmix0",
+        "unmix1"
+      ],
+      "expected_values": [
+        [
+          "2"
+        ],
+        [
+          "3"
+        ]
+      ],
+      "input_bands": [
+        [
+          "2e300"
+        ],
+        [
+          "3e300"
+        ]
+      ],
+      "label": "large-common-scale",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"7e37e43c8800759c\",\"0000000000000000\"],[\"0000000000000000\",\"7e37e43c8800759c\"]],\"nonNegative\":false,\"sumToOne\":false,\"v\":1}"
+    },
+    {
+      "absolute_tolerance": 1e-11,
+      "expected_bands": [
+        "unmix0",
+        "unmix1"
+      ],
+      "expected_values": [
+        [
+          "2"
+        ],
+        [
+          "3"
+        ]
+      ],
+      "input_bands": [
+        [
+          "2e-300"
+        ],
+        [
+          "3e-300"
+        ]
+      ],
+      "label": "tiny-common-scale",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"01a56e1fc2f8f359\",\"0000000000000000\"],[\"0000000000000000\",\"01a56e1fc2f8f359\"]],\"nonNegative\":false,\"sumToOne\":false,\"v\":1}"
+    },
+    {
+      "absolute_tolerance": 1e-12,
+      "expected_bands": [
+        "unmix0",
+        "unmix1"
+      ],
+      "expected_values": [
+        [
+          "0.2"
+        ],
+        [
+          "0.4"
+        ]
+      ],
+      "input_bands": [
+        [
+          "1.0"
+        ],
+        [
+          "1.0"
+        ]
+      ],
+      "label": "ordinary-fractional-ols",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"4008000000000000\",\"3ff0000000000000\"],[\"3ff0000000000000\",\"4000000000000000\"]],\"nonNegative\":false,\"sumToOne\":false,\"v\":1}"
+    },
+    {
+      "absolute_tolerance": 1e-12,
+      "expected_bands": [
+        "unmix0",
+        "unmix1",
+        "unmix2"
+      ],
+      "expected_values": [
+        [
+          "0.0"
+        ],
+        [
+          "0.10000000000000009"
+        ],
+        [
+          "0.8999999999999999"
+        ]
+      ],
+      "input_bands": [
+        [
+          "1.9"
+        ]
+      ],
+      "label": "simplex-dyadic-tie-minimum-norm",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"0000000000000000\"],[\"3ff0000000000000\"],[\"4000000000000000\"]],\"nonNegative\":true,\"sumToOne\":true,\"v\":1}"
+    },
+    {
+      "absolute_tolerance": 1e-12,
+      "expected_bands": [
+        "unmix0",
+        "unmix1",
+        "unmix2"
+      ],
+      "expected_values": [
+        [
+          "0.25"
+        ],
+        [
+          "0.75"
+        ],
+        [
+          "0.0"
+        ]
+      ],
+      "input_bands": [
+        [
+          "0.25"
+        ],
+        [
+          "0.75"
+        ]
+      ],
+      "label": "simplex-rounding-keeps-omitted-final-component",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"3ff0000000000000\",\"0000000000000000\"],[\"0000000000000000\",\"3ff0000000000000\"],[\"3ff0000000000000\",\"3ff0000000000000\"]],\"nonNegative\":true,\"sumToOne\":true,\"v\":1}"
+    },
+    {
+      "absolute_tolerance": 1e-12,
+      "expected_bands": [
+        "unmix0",
+        "unmix1"
+      ],
+      "expected_values": [
+        [
+          "0.875"
+        ],
+        [
+          "0.125"
+        ]
+      ],
+      "input_bands": [
+        [
+          "1e+200"
+        ],
+        [
+          "2.37636445786895e-212"
+        ]
+      ],
+      "label": "simplex-huge-common-offset-tiny-contrast",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"6974e718d7d7625a\",\"0000000000000000\"],[\"6974e718d7d7625a\",\"1430000000000000\"]],\"nonNegative\":true,\"sumToOne\":true,\"v\":1}"
+    },
+    {
+      "absolute_tolerance": 1e-12,
+      "expected_bands": [
+        "unmix0",
+        "unmix1",
+        "unmix2"
+      ],
+      "expected_values": [
+        [
+          "0.4375"
+        ],
+        [
+          "0.4375"
+        ],
+        [
+          "0.125"
+        ]
+      ],
+      "input_bands": [
+        [
+          "1e+200"
+        ],
+        [
+          "2.37636445786895e-212"
+        ]
+      ],
+      "label": "simplex-three-way-anchor-huge-common-offset",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"6974e718d7d7625a\",\"0000000000000000\"],[\"6974e718d7d7625a\",\"0000000000000000\"],[\"6974e718d7d7625a\",\"1430000000000000\"]],\"nonNegative\":true,\"sumToOne\":true,\"v\":1}"
+    },
+    {
+      "absolute_tolerance": 1e-15,
+      "expected_bands": [
+        "unmix0",
+        "unmix1",
+        "unmix2"
+      ],
+      "expected_values": [
+        [
+          "0.3333333333333333"
+        ],
+        [
+          "0.3333333333333333"
+        ],
+        [
+          "0.3333333333333333"
+        ]
+      ],
+      "input_bands": [
+        [
+          "1.0000000000000001e+200"
+        ]
+      ],
+      "label": "rank-zero-simplex-minimum-norm-large-rhs",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"6974e718d7d7625a\"],[\"6974e718d7d7625a\"],[\"6974e718d7d7625a\"]],\"nonNegative\":true,\"sumToOne\":true,\"v\":1}"
+    },
+    {
+      "absolute_tolerance": 0.0,
+      "expected_bands": [
+        "unmix0",
+        "unmix1"
+      ],
+      "expected_values": [
+        [
+          "0.5"
+        ],
+        [
+          "0.5"
+        ]
+      ],
+      "input_bands": [
+        [
+          "1.0"
+        ]
+      ],
+      "label": "rank-zero-simplex-two-identical-minimum-norm",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"3ff0000000000000\"],[\"3ff0000000000000\"]],\"nonNegative\":true,\"sumToOne\":true,\"v\":1}"
+    },
+    {
+      "absolute_tolerance": 0.0,
+      "expected_bands": [
+        "unmix0",
+        "unmix1",
+        "unmix2"
+      ],
+      "expected_values": [
+        [
+          "NaN"
+        ],
+        [
+          "NaN"
+        ],
+        [
+          "NaN"
+        ]
+      ],
+      "input_bands": [
+        [
+          "NaN"
+        ],
+        [
+          "0.5"
+        ]
+      ],
+      "label": "single-band-nodata-masks-all-components",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"3ff0000000000000\",\"0000000000000000\"],[\"0000000000000000\",\"3ff0000000000000\"],[\"3ff0000000000000\",\"3ff0000000000000\"]],\"nonNegative\":true,\"sumToOne\":true,\"v\":1}"
+    },
+    {
+      "absolute_tolerance": 0.0,
+      "expected_bands": [
+        "unmix0",
+        "unmix1"
+      ],
+      "expected_values": [
+        [
+          "0.10000000149011612"
+        ],
+        [
+          "0.20000000298023224"
+        ]
+      ],
+      "input_bands": [
+        [
+          "0.1"
+        ],
+        [
+          "0.2"
+        ]
+      ],
+      "input_cell_type": "float32",
+      "label": "float32-source-values-stage-to-float64",
+      "relative_tolerance": 0.0,
+      "spec": "{\"endmembers\":[[\"3ff0000000000000\",\"0000000000000000\"],[\"0000000000000000\",\"3ff0000000000000\"]],\"nonNegative\":false,\"sumToOne\":false,\"v\":1}"
+    }
+  ],
+  "invalid_specs": [
+    "{}",
+    "{\"endmembers\":[[\"3ff0000000000000\"]],\"nonNegative\":false,\"extra\":0,\"sumToOne\":false,\"v\":1}"
+  ],
+  "reject_inputs": [
+    {
+      "input_bands": [
+        [
+          "NaN"
+        ],
+        [
+          "Infinity"
+        ]
+      ],
+      "label": "infinity-next-to-nan",
+      "spec": "{\"endmembers\":[[\"3ff0000000000000\",\"0000000000000000\"],[\"0000000000000000\",\"3ff0000000000000\"]],\"nonNegative\":false,\"sumToOne\":false,\"v\":1}"
+    },
+    {
+      "input_bands": [
+        [
+          "0.25"
+        ],
+        [
+          "9.860761315262648e-32"
+        ]
+      ],
+      "label": "condition-over-local-ceiling",
+      "spec": "{\"endmembers\":[[\"0000000000000000\",\"0000000000000000\"],[\"3ff0000000000000\",\"0000000000000000\"],[\"0000000000000000\",\"39b0000000000000\"]],\"nonNegative\":true,\"sumToOne\":true,\"v\":1}"
+    },
+    {
+      "input_bands": [
+        [
+          "1.0"
+        ],
+        [
+          "3.552713678800501e-15"
+        ]
+      ],
+      "label": "coefficient-uncertainty-edge-target",
+      "spec": "{\"endmembers\":[[\"0000000000000000\",\"0000000000000000\"],[\"3ff0000000000000\",\"0000000000000000\"],[\"3ff0000000000000\",\"3d00000000000000\"]],\"nonNegative\":true,\"sumToOne\":true,\"v\":1}"
+    },
+    {
+      "input_bands": [
+        [
+          "0.5"
+        ],
+        [
+          "1.7763568394002505e-15"
+        ]
+      ],
+      "label": "coefficient-uncertainty-interior-target",
+      "spec": "{\"endmembers\":[[\"0000000000000000\",\"0000000000000000\"],[\"3ff0000000000000\",\"0000000000000000\"],[\"3ff0000000000000\",\"3d00000000000000\"]],\"nonNegative\":true,\"sumToOne\":true,\"v\":1}"
+    }
+  ],
+  "schema": "local-ee-spectral-unmix-native/v1"
+}

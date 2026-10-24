@@ -65,9 +65,23 @@ export const pythonTypedRasterDocs: ReferenceEntry[] = [
     text: "本地合成示例按字符串前后缀、数值闭区间、年积日和空间范围筛选站点；再以字面字段名和一个锚定正则选字段并重命名，用 getNumber/getArray/getString/toArray/toDictionary 读取属性，保留 Feature ID，并由显式经纬度重建点几何。固定目录元数据示例展示影像集合属性筛选。限于内联合成要素和已声明目录元数据，不读取真实像素或请求 Google；动态缺字段和类型检查不能从空集合推断。较大的多正则组合仍会受共享50,000工作预算限制。详见 docs/gee-python/feature-preparation.md。",
     code: "selected = stations.filter(ee.Filter.And(\n    ee.Filter.stringStartsWith('station_code', 'CN-'),\n    ee.Filter.stringEndsWith('station_code', '-QA'),\n    ee.Filter.gte('reading', 5), ee.Filter.lte('reading', 12),\n    ee.Filter.calendarRange(91, 120, field='day_of_year')))\nprepared = selected.filterBounds(region).map(\n    lambda feature: ee.Feature(feature.select(\n        ['station_code', '^station_name$'], ['site_code', 'station_name']))\n        .set('reading_value', feature.getNumber('reading'))\n        .setGeometry(ee.Geometry.Point(\n            [feature.getNumber('longitude'), feature.getNumber('latitude')])))",
   },
+  {
+    id: "gee-python-spectral-preparation",
+    category: "GEE Python",
+    language: "python",
+    title: "光谱准备、RGB/HSV 与端元丰度",
+    text: "示例62使用两个版本化合成 STAC 场景，显式固定 blue/green/red 波段顺序，再执行 RGB→HSV→RGB、首波段分段线性 LUT、升幂排列的多项式校准与三端元混合。HSV/RGB 本地输出名按通道固定；输入越界样本变为缺测，测试还覆盖 red=green 的最大值并列。插值只读首波段，支持 extrapolate/clamp/input/mask，x 必须严格递增；多项式按升幂系数逐波段运算。unmix 输入按端元列顺序选择，结果名为 unmix_0…unmix_2；本地约束求解、Float64 输出、整像元缺测传播和数值秩规则不表示 Google 求解器一致。两个场景使用不同缺测像元；Fraction 参考、原生瓦片值与 RGB/LUT/多项式样本网格分别核对。合成 1×6 EPSG:32649 案例的绝对容差为2e-12；未声明 Google、完整 Spark 或生产数据验收。详见 docs/gee-python/spectral-preparation.md。",
+    code: "source = image.select(['B02','B03','B04'],\n                       ['blue','green','red']).toDouble()\nhsv = ee.Image(source.select(['red','green','blue']).rgbToHsv())\nround_trip = ee.Image(hsv.hsvToRgb())\nred_lut = ee.Image(source.select('red').interpolate(\n    [0,.25,.5,.75,1], [0,.2,.5,.8,1], behavior='clamp'))\ngreen_poly = ee.Image(source.select('green').polynomial([.01,.99,.05]))\nfractions = ee.Image(source.select(['blue','green','red']).unmix(\n    endmembers, sumToOne=True, nonNegative=True))",
+  },
 ];
 
 export const javascriptTypedRasterDocs: ReferenceEntry[] = [
+  {
+    id: "gee-js-spectral-preparation",
+    title: "光谱准备、RGB/HSV 与端元丰度",
+    text: "示例16用两个版本化合成 STAC 场景，显式固定 blue/green/red 波段顺序，再执行 RGB→HSV→RGB、分段线性 LUT、多项式校准和三端元混合。HSV/RGB 通道名固定，本地越界样本变为缺测，且测试覆盖最大通道并列。插值读取首波段并支持 extrapolate/clamp/input/mask；多项式系数按升幂排列并逐波段运算。unmix 按所选端元列顺序读取波段，局部结果名为 unmix_0…unmix_2；约束求解、Float64 输出、整像元缺测传播及秩规则均是本地约定，不表示 Google 求解器一致。1×6 EPSG:32649 案例对原生瓦片、Fraction 与 RGB/LUT/多项式样本参考进行核对，绝对容差2e-12；没有 Google、完整 Spark 或生产数据对照。",
+    code: "var source = image.select(['B02','B03','B04'],\n  ['blue','green','red']).toDouble();\nvar hsv = ee.Image(source.select(['red','green','blue']).rgbToHsv());\nvar roundTrip = ee.Image(hsv.hsvToRgb());\nvar redLut = ee.Image(source.select('red').interpolate(\n  [0,.25,.5,.75,1], [0,.2,.5,.8,1], 'clamp'));\nvar greenPolynomial = ee.Image(source.select('green').polynomial([.01,.99,.05]));\nvar fractions = ee.Image(source.select(['blue','green','red']).unmix(\n  endmembers, true, true));",
+  },
   {
     id: "gee-js-pixel-matrices",
     title: "逐像元矩阵求逆、伪逆与动态求解",

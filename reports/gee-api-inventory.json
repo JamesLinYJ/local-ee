@@ -18160,12 +18160,14 @@
       "description": "Returns the number of dimensions in each array band, and 0 for scalar image bands.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Fixed-shape typed raster arrays within rank8/64-total-cell and unchanged 50000-work/500-node/1MB bounds. dimensions returns actual per-band rank (scalar0) under input validity. dotProduct accepts paired rank1 arrays, equal band counts or one-band broadcast, positional pairing, fresh matching scene/grid evidence, whole-input masks and real staged precision. pad appends finite values up to per-axis minimum lengths, never shrinks; padding preserves declared Float32/Double and whole-array validity and requires a concrete source grid when binding added cells. Same-shape array-band bundles only. Scalarize with arrayGet/arrayFlatten before raster export; direct array output remains unsupported. Dynamic ragged arrayMask, implicit reprojection/time broadcast and Google parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -18196,12 +18198,14 @@
       "description": "Computes the dot product of each pair of 1-D arrays in the bands of the input images.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Fixed-shape typed raster arrays within rank8/64-total-cell and unchanged 50000-work/500-node/1MB bounds. dimensions returns actual per-band rank (scalar0) under input validity. dotProduct accepts paired rank1 arrays, equal band counts or one-band broadcast, positional pairing, fresh matching scene/grid evidence, whole-input masks and real staged precision. pad appends finite values up to per-axis minimum lengths, never shrinks; padding preserves declared Float32/Double and whole-array validity and requires a concrete source grid when binding added cells. Same-shape array-band bundles only. Scalarize with arrayGet/arrayFlatten before raster export; direct array output remains unsupported. Dynamic ragged arrayMask, implicit reprojection/time broadcast and Google parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -18429,12 +18433,14 @@
       "description": "Pads the array values in each pixel to be a fixed length. The pad value will be appended to each array to extend it to given length along each axis. All bands of the image must be array-valued and have the same dimensions.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Fixed-shape typed raster arrays within rank8/64-total-cell and unchanged 50000-work/500-node/1MB bounds. dimensions returns actual per-band rank (scalar0) under input validity. dotProduct accepts paired rank1 arrays, equal band counts or one-band broadcast, positional pairing, fresh matching scene/grid evidence, whole-input masks and real staged precision. pad appends finite values up to per-axis minimum lengths, never shrinks; padding preserves declared Float32/Double and whole-array validity and requires a concrete source grid when binding added cells. Same-shape array-band bundles only. Scalarize with arrayGet/arrayFlatten before raster export; direct array output remains unsupported. Dynamic ragged arrayMask, implicit reprojection/time broadcast and Google parity unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -19418,12 +19424,14 @@
       "description": "Combines a list of images into a single image which contains all bands from all of the  images.  <p>If two or more bands share a name, they are suffixed with an incrementing index.  <p>The resulting image will have the metadata from the first input image, only.  <p>This function will promote constant values into constant images. ",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded scalar/fixed-array band preparation with pinned exact API arguments. regexpRename uses RE2 and $n replacement references, first/all matches with unique valid resulting names; invalid syntax/collisions reject. slice uses finite integer half-open indices with documented local negative index and clamp policy. cat lowers through existing addBands collision suffixing, preserves first-image metadata and binds constants only after an actual source supplies a finite grid. float/double are real staged existing casts, including typed arrays, not new reinterpretation engines. Unchanged shared work/graph limits; precise per-operation scope in spectral-preparation.md. No Google naming/empty-boundary/dtype parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -20490,12 +20498,14 @@
       "description": "Casts the input value to a 64-bit float.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded scalar/fixed-array band preparation with pinned exact API arguments. regexpRename uses RE2 and $n replacement references, first/all matches with unique valid resulting names; invalid syntax/collisions reject. slice uses finite integer half-open indices with documented local negative index and clamp policy. cat lowers through existing addBands collision suffixing, preserves first-image metadata and binds constants only after an actual source supplies a finite grid. float/double are real staged existing casts, including typed arrays, not new reinterpretation engines. Unchanged shared work/graph limits; precise per-operation scope in spectral-preparation.md. No Google naming/empty-boundary/dtype parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -20922,12 +20932,14 @@
       "description": "Casts the input value to a 32-bit float.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded scalar/fixed-array band preparation with pinned exact API arguments. regexpRename uses RE2 and $n replacement references, first/all matches with unique valid resulting names; invalid syntax/collisions reject. slice uses finite integer half-open indices with documented local negative index and clamp policy. cat lowers through existing addBands collision suffixing, preserves first-image metadata and binds constants only after an actual source supplies a finite grid. float/double are real staged existing casts, including typed arrays, not new reinterpretation engines. Unchanged shared work/graph limits; precise per-operation scope in spectral-preparation.md. No Google naming/empty-boundary/dtype parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22096,12 +22108,14 @@
       "description": "Transforms the image from the HSV color space to the RGB color space. Expects a 3-band image in the range [0, 1], and produces 3 bands: red, green and blue with values in the range [0, 1].",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Exactly three ordered scalar HSV channels in[0,1]; hue1 wraps to hue0. Closed Float64 scalar graph returns red,green,blue with staged inputs, shared channel mask and finite source/grid checks. Out-of-domain channels mask. Standard HSV conventions are local policy without a Google oracle."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22165,12 +22179,14 @@
       "description": "Returns the ID of a given element within a collection. Objects outside collections are not guaranteed to have IDs.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Reads exactly one actual local source item identity; no generated positional ID or fallback string. Derived images retain the established source lineage. Source-free or ambiguous source identity rejects; no Google asset path parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -22378,12 +22394,14 @@
       "description": "Interpolates each point in the first band of the input image into the piecewise-linear function specified by the x and y arrays. The x values must be strictly increasing. If an input point is less than the first or greater than the last x value, then the output is specified by the \"behavior\" argument:  <ol>  <li>\"extrapolate\" specifies the output value is extrapolated  from the two nearest points.  <li>\"clamp\" specifies the output value is taken from the nearest point.  <li>\"input\" specifies the output value is copied from the input.  <li>\"mask\" specifies the output value is masked. </ol> ",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "First scalar input band only; equal-length finite literal x/y lists with strictly increasing x and finite positive Float64 interval widths. All four outside behaviors extrapolate,clamp,input,mask; omitted/null defaults to extrapolate. Explicit bounded scalar graph, unchanged50000-work/500-node caps; compound knot counts may exceed them. Preserves first-band name, source masks and metadata. No dynamic knots, arrays or Google rounding proof."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -23554,12 +23572,14 @@
       "description": "Generates a constant image of type double from a metadata property.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual numeric property on a concrete finite local raster source, including per-item ImageCollection map expansion. Double constant borrows real grid/footprint but has independently valid pixels, including source NoData. Default output name is the property name by local policy. Missing/null/nonnumeric/nonfinite metadata or abs(value)>2^53 rejects; integer range checked before conversion. No fabricated grid, provider request or Google parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -24115,12 +24135,14 @@
       "description": "Compute a polynomial at each pixel using the given coefficients.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Every scalar input band, finite literal coefficients in ascending degree (constant first), evaluated by bounded Horner scalar graph. Preserves band order, source mask, staged casts, grid and image metadata. Constant polynomial still retains the real input validity. Unsupported dynamic/array coefficients reject; no Google dtype/rounding equivalence."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -24896,12 +24918,14 @@
       "description": "Renames the bands of an image by applying a regular expression replacement to the current band names. Any bands not matched by the regex will be copied over without renaming.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded scalar/fixed-array band preparation with pinned exact API arguments. regexpRename uses RE2 and $n replacement references, first/all matches with unique valid resulting names; invalid syntax/collisions reject. slice uses finite integer half-open indices with documented local negative index and clamp policy. cat lowers through existing addBands collision suffixing, preserves first-image metadata and binds constants only after an actual source supplies a finite grid. float/double are real staged existing casts, including typed arrays, not new reinterpretation engines. Unchanged shared work/graph limits; precise per-operation scope in spectral-preparation.md. No Google naming/empty-boundary/dtype parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -25199,12 +25223,14 @@
       "description": "Transforms the image from the RGB color space to the HSV color space. Expects a 3-band image in the range [0, 1], and produces 3 bands: hue, saturation and value with values in the range [0, 1].",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Exactly three ordered scalar RGB input bands in[0,1]; bounded closed Float64 scalar graph returns hue,saturation,value. Real staged source precision, metadata, finite grid and whole-three-channel mask retained. Out-of-domain channels mask; grayscale hue and black saturation are0; ties use deterministic red/green/blue precedence. No implicit band-name reordering, unbound global grid or Google endpoint/dtype parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -25918,12 +25944,14 @@
       "description": "Selects a contiguous group of bands from an image by position.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Bounded scalar/fixed-array band preparation with pinned exact API arguments. regexpRename uses RE2 and $n replacement references, first/all matches with unique valid resulting names; invalid syntax/collisions reject. slice uses finite integer half-open indices with documented local negative index and clamp policy. cat lowers through existing addBands collision suffixing, preserves first-image metadata and binds constants only after an actual source supplies a finite grid. float/double are real staged existing casts, including typed arrays, not new reinterpretation engines. Unchanged shared work/graph limits; precise per-operation scope in spectral-preparation.md. No Google naming/empty-boundary/dtype parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -27156,12 +27184,14 @@
       "description": "Unmix each pixel with the given endmembers, by computing the pseudo-inverse and multiplying it through each pixel. Returns an image of doubles with the same number of bands as endmembers.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Actual finite source-bound scalar bands only,1..8 input bands and1..8 component rows of matching width. Canonical bounded v1 binary64 endmember wire; sumToOne and nonNegative are independent boolean constraints. One shared audited native producer returns Float64 components in endmember order, locally named unmix_0..; no source-free constant-fold approximation. Current source grid, per-item asset evidence and temporal dimensions must match. Whole-input NoData masks all components, valid Infinity rejects. Native support-face solver has local rank/conditioning and useful-uncertainty admission: unresolved global faces/ties reject rather than returning a purported optimum. Numerical policies are documented in spectral-preparation.md. Shared50000-work/500-node/1MB and native key, decoded-cell and1e8-per-tile/1e9-total work caps remain; advertised axes are not a joint throughput guarantee. Trusted actual GeoTrellis component evidence is separate from full Spark, production and Google numerical parity."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -41507,9 +41537,9 @@
           "same_name_handler_declared": true
         },
         {
-          "interpretation": "No same-name compiler entry is declared; this alone is not a complete proof that the API form is unsupported.",
+          "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
           "reported_name": "Image.hsvToRgb",
-          "same_name_handler_declared": false
+          "same_name_handler_declared": true
         },
         {
           "interpretation": "A same-name compiler entry exists in the current source, but that does not validate full signature or semantics.",
@@ -41723,7 +41753,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 676,
+    "declared_handler_name_count": 691,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41941,7 +41971,7 @@
         "appears_in_rejected_compile_context": 31,
         "appears_in_selected_sdk_serialization": 35,
         "appears_in_successful_compile_context": 8,
-        "declared_handler_count": 150,
+        "declared_handler_count": 165,
         "signature_count": 232
       },
       "ImageCollection": {
@@ -42204,7 +42234,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 676,
+    "pinned_signatures_with_same_name_declared_handler": 691,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"
