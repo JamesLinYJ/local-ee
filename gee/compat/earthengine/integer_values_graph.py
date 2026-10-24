@@ -7,7 +7,6 @@ from .ir import Image, Pixel, fail
 
 
 _COMPARISONS = frozenset({"eq", "neq", "lt", "lte", "gt", "gte"})
-_MAX_WORK = 50_000
 
 
 def _validate_spec(spec, operands):
@@ -111,7 +110,7 @@ def compile_numeric_values_pixel(graph, pixel):
 
     # Account for copies, spec traversal, possible Double casts and the final
     # native node before materializing either input or merging their cubes.
-    from .sampled_training import image_node_estimate, image_work_estimate
+    from .scalar_work_ledger import reserve_scalar_input_work
 
     input_pixels = tuple(
         operand if graph.has_double_precision(operand) else Pixel("to_double", (operand,))
@@ -119,16 +118,7 @@ def compile_numeric_values_pixel(graph, pixel):
     )
     input_image = Image([(f"operand{index}", value)
                          for index, value in enumerate(input_pixels)], {})
-    try:
-        work = 2 * len(spec) + image_work_estimate(input_image) + 8
-        node_bound = image_node_estimate(input_image, graph.t.options)
-    except (TypeError, ValueError, OverflowError, RecursionError):
-        fail("Integer Image graph exceeds the shared 50000-step work budget")
-    if (type(graph.t.steps) is not int or graph.t.steps + work > _MAX_WORK
-            or type(node_bound) is not int or node_bound < 0):
-        fail("Integer Image graph exceeds the shared 50000-step work budget")
-    graph.t.steps += work
-    graph.reserve_nodes(node_bound, "Integer Image operation")
+    reserve_scalar_input_work(graph, input_image, spec)
 
     refs = []
     timed = None

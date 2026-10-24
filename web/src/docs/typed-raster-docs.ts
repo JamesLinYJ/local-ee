@@ -2,6 +2,14 @@ import type { ReferenceEntry } from "../types";
 
 export const pythonTypedRasterDocs: ReferenceEntry[] = [
   {
+    id: "gee-python-scalar-composition",
+    category: "GEE Python",
+    language: "python",
+    title: "颜色通道重组与多步定标",
+    text: "rgbToHsv／hsvToRgb 各要求按顺序输入三个0–1通道；本地不会自动归一化，缺测／域外输入变为NoData。支持选择HSV通道、调整value并重组，也支持往返后加偏移、显式Float32舍入及截取范围。示例64／JS示例18的两条固定合成流程已在原50000工作／500节点预算内验证，较大组合仍可能超限。共享表达式只在根作用域复用，属性与足迹独立复制，回调和源网格重新验证。合成数值检查不表示完整Spark或Google同数据验收；详见 docs/gee-python/scalar-composition.md。",
+    code: "rgb = image.select(['red', 'green', 'blue']).toDouble()\nhsv = ee.Image(rgb.rgbToHsv())\nhalf_hsv = hsv.select('hue').addBands(hsv.select('saturation'))\\\n    .addBands(hsv.select('value').multiply(0.5).rename('value'))\ndarker = half_hsv.hsvToRgb()\ncalibrated = rgb.rgbToHsv().hsvToRgb().add(0.05)\\\n    .toFloat().toDouble().max(0).min(0.65)",
+  },
+  {
     id: "gee-python-collection-link",
     category: "GEE Python",
     language: "python",
@@ -30,7 +38,7 @@ export const pythonTypedRasterDocs: ReferenceEntry[] = [
     category: "GEE Python",
     language: "python",
     title: "逐像元紧凑 QR 与 SVD",
-    text: "矩形显式 Float32/Double 矩阵支持 Image.matrixQRDecomposition 和 Image.matrixSingularValueDecomposition。令 p=min(m,n)，本地返回紧凑 Q(m,p)/R(p,n) 及 U(m,p)/S(p,p)/V(n,p)，因子按行优先串接；此尺寸约定为本地政策，官方矩形因子形状未明确。秩亏、零矩阵和重奇异值可输入；用重建、正交性及非负降序奇异值验证，不比较不同库的符号或重奇异值基。有限输入不保证因子均能以有限 Float64 表示，极端动态范围仍可能被拒绝。独立 NumPy 参考以精确二进制秩规范真实零值；若它丢失正奇异方向，则报告无参考。每轴1–8、输入及合计输出各至多64单元，仍受50000步和500节点限制。3×2／2×3 的 p=2 SVD全重建可编译，但保留两个奇异值是完整重建，不是降秩近似；3×3 的 U/S/V 因子可编译，从三个奇异值中选两个的真实秩二组合因静态数组工作预算被拒绝。Float32舍入后转Double的矩形SVD重建也逐像元验证；每个通过的组合图只有一个矩阵值生产者。QR正规残差组合仍会触及工作预算。",
+    text: "矩形显式 Float32/Double 矩阵支持 Image.matrixQRDecomposition 和 Image.matrixSingularValueDecomposition。令 p=min(m,n)，本地返回紧凑 Q(m,p)/R(p,n) 及 U(m,p)/S(p,p)/V(n,p)，因子按行优先串接；此尺寸约定为本地政策，官方矩形因子形状未明确。秩亏、零矩阵和重奇异值可输入；用重建、正交性及非负降序奇异值验证，不比较不同库的符号或重奇异值基。有限输入不保证因子均能以有限 Float64 表示，极端动态范围仍可能被拒绝。独立 NumPy 参考以精确二进制秩规范真实零值；若它丢失正奇异方向，则报告无参考。每轴1–8、输入及合计输出各至多64单元，仍受50000步和500节点限制。3×2／2×3 的 p=2 SVD全重建可编译，但保留两个奇异值是完整重建，不是降秩近似；3×3 的 U/S/V 因子可编译；减少重复标量扫描后，固定真实秩二组合也在原预算内通过（45601工作量／347节点），完整3×3重建仍超出工作预算。Float32舍入后转Double的矩形SVD重建也逐像元验证；每个通过的组合图只有一个矩阵值生产者。QR正规残差组合仍被500节点预检拒绝。",
     code: "A = image.select(['a00','a01','a10','a11','a20','a21'])\\\n    .toDouble().toArray()\\\n    .arrayReshape(ee.Image.constant(ee.Array([3,2])), 2)\nqr = A.matrixQRDecomposition()\nQ, R = qr.select('Q'), qr.select('R')\nsvd = A.matrixSingularValueDecomposition()\nU, S, V = svd.select('U'), svd.select('S'), svd.select('V')\nreconstructed = U.matrixMultiply(S).matrixMultiply(V.matrixTranspose())",
   },
   {
@@ -105,7 +113,7 @@ export const javascriptTypedRasterDocs: ReferenceEntry[] = [
   {
     id: "gee-js-matrix-orthogonal",
     title: "逐像元紧凑 QR 与 SVD",
-    text: "矩形显式 Float32/Double 矩阵支持 Image.matrixQRDecomposition 和 Image.matrixSingularValueDecomposition。令 p=min(m,n)，本地返回紧凑 Q(m,p)/R(p,n) 及 U(m,p)/S(p,p)/V(n,p)，因子按行优先串接；官方文档未明确矩形因子形状，此约定只描述本地实现。秩亏、零矩阵和重奇异值允许输入；以重建、正交性及非负降序奇异值验证，不要求不同数值库返回相同符号或基。有限输入不保证因子均能以有限 Float64 表示，极端动态范围仍可能被拒绝。独立 NumPy 参考以精确二进制秩规范真实零值；若它丢失正奇异方向，则报告无参考。每轴1–8，输入及合计输出各至多64单元；50000步和500节点限制保持。3×2／2×3 的 p=2 SVD全重建可编译，但保留两个奇异值是完整重建，不是降秩近似；3×3 的 U/S/V 因子可编译，从三个奇异值中选两个的真实秩二组合因静态数组工作预算被拒绝。Float32舍入后转Double的矩形SVD重建也逐像元验证；每个通过的组合图只有一个矩阵值生产者。QR正规残差组合仍会触及工作预算。",
+    text: "矩形显式 Float32/Double 矩阵支持 Image.matrixQRDecomposition 和 Image.matrixSingularValueDecomposition。令 p=min(m,n)，本地返回紧凑 Q(m,p)/R(p,n) 及 U(m,p)/S(p,p)/V(n,p)，因子按行优先串接；官方文档未明确矩形因子形状，此约定只描述本地实现。秩亏、零矩阵和重奇异值允许输入；以重建、正交性及非负降序奇异值验证，不要求不同数值库返回相同符号或基。有限输入不保证因子均能以有限 Float64 表示，极端动态范围仍可能被拒绝。独立 NumPy 参考以精确二进制秩规范真实零值；若它丢失正奇异方向，则报告无参考。每轴1–8，输入及合计输出各至多64单元；50000步和500节点限制保持。3×2／2×3 的 p=2 SVD全重建可编译，但保留两个奇异值是完整重建，不是降秩近似；3×3 的 U/S/V 因子可编译；减少重复标量扫描后，固定真实秩二组合也在原预算内通过（45601工作量／347节点），完整3×3重建仍超出工作预算。Float32舍入后转Double的矩形SVD重建也逐像元验证；每个通过的组合图只有一个矩阵值生产者。QR正规残差组合仍被500节点预检拒绝。",
     code: "var A = image.select(['a00','a01','a10','a11','a20','a21'])\n  .toDouble().toArray()\n  .arrayReshape(ee.Image.constant(ee.Array([3,2])), 2);\nvar qr = A.matrixQRDecomposition();\nvar Q = qr.select('Q');\nvar R = qr.select('R');\nvar svd = A.matrixSingularValueDecomposition();\nvar U = svd.select('U');\nvar S = svd.select('S');\nvar V = svd.select('V');\nvar reconstructed = U.matrixMultiply(S).matrixMultiply(V.matrixTranspose());",
   },
   {

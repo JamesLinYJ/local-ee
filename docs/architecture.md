@@ -47,6 +47,8 @@ flowchart LR
 
 影像集合链接采用独立的有界匹配、参数／元数据校验和实际来源对齐模块。官方 Python 集合辅助方法仍序列化为逐景 Image.linkCollection，combine 保持 ID 内连接；源身份、属性匹配键与栅格时间轴分别检查。对齐证明沿实际波段 DAG 检查时间、足迹和资产网格，不依赖外层 Image 标签；目录准入、原预算和执行隔离保持不变。见 [集合匹配合同](gee-python/collection-link.md)。
 
+标量流程组合通过 `scalar_work_plan`／`scalar_work_ledger` 减少已付费不可变 DAG 的重复扫描，图内账本最多4096项、强引用保留身份及子树高度；未识别或可变载荷执行原估算。`scalar_image_snapshot` 只在根作用域复用最多64个明确的 RGB／HSV ValueRef，元数据和足迹在存取时各自复制。实际深度、每次节点预检、规格成本和新鲜来源／网格证明不由缓存替代；原50000工作／500节点上限及执行隔离不变。见 [多步颜色组合](gee-python/scalar-composition.md)。
+
 ## 3. 模块与接口
 
 前端固定为 **TypeScript + React**，使用 Vite 构建、CodeMirror 6 编辑代码、OpenLayers 渲染地图、React Flow 编辑 openEO 流程图。Motion 统一管理短动效并尊重系统减少动态效果设置；不引入外部资源。旧 Vue 工程已移出交付源码并保留在任务工作区备份。主工作台和流程图页均不加载 Vue。

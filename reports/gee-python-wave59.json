@@ -1,0 +1,154 @@
+{
+  "schema": "local-ee-compatibility-wave/v1",
+  "date": "2026-10-24",
+  "base_commit": "32956d1b4e10977fb077db2245dd7cbb67a0cf6a",
+  "title": "Reduce duplicate scalar DAG work and enable bounded color and SVD compositions",
+  "entry_inventory": {
+    "pinned_signatures": 991,
+    "declared_same_name_handlers": 693,
+    "names_only_percentage": 69.93,
+    "remaining_same_name_handlers": 298,
+    "new_entry_count": 0,
+    "interpretation": "Name inventory only; not complete parameter, numerical or project migration compatibility"
+  },
+  "implementation": {
+    "work_ledger": "Graph-local strong Pixel identities and complete immutable closure heights, Source value accounting; repeated actual inspection is eliminated only for already admitted closures. Iterative planner stages at most remaining capacity+1 combined entries; all-or-none admission within4096 entries. Every cached occurrence rechecks depth; source hashing, inspection and insertion are charged before admission.",
+    "unsafe_IR": "Mutable, opaque or model descendants retain the complete original estimator plus planner inspection; no ledger admission.",
+    "SDK_snapshots": "Only root-scope Image.rgbToHsv/Image.hsvToRgb ValueRefs receive frozen scalar snapshots. At most64 under the existing500 root-key guard. Preserve every Image field and detach bands/props/footprint at storage and every restore. Function/map environments never reuse root snapshots.",
+    "preserved_checks": "Fresh source/catalog/grid/time proof, original image_node_estimate preflight, per-call spec/band wrapper charges, compiler50000, graph500/1MB, scalar depth96, array64/rank8 and native work limits unchanged.",
+    "new_modules_LOC": {
+      "scalar_image_snapshot.py": 89,
+      "scalar_work_ledger.py": 182,
+      "scalar_work_plan.py": 345
+    }
+  },
+  "verification": {
+    "full_pytest": {
+      "passed": 5891,
+      "skipped": 27,
+      "warnings": 53,
+      "failures": 0,
+      "seconds": 53.99,
+      "source_files_hashed": 15,
+      "source_stable_during_run": true,
+      "scope": "Complete existing suite on this host; optional native cases retain their existing skips. No new native adapter build."
+    },
+    "focused_scalar_and_color_tests_passed": 78,
+    "frontend": {
+      "tests_passed": 11,
+      "typecheck": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "control_replay": {
+      "classification": "Reconstructed published32956d1 decoder/numeric-lowering source replay, not an original before graph capture",
+      "scenes": 2,
+      "SDKs": [
+        "python",
+        "javascript"
+      ],
+      "complete_process_graphs_identical_before_after": true,
+      "steps_before": 49618,
+      "steps_after": 36386,
+      "steps_reduction_percentage": 26.6677,
+      "nodes_unchanged": 172,
+      "receipt_sha256": "3808cc2a962e05e2cdbce3a477b1ef834a97f3214165daa95bb960c5c768e695"
+    },
+    "original_color_workflows": {
+      "expressions_unchanged_from_original_before_capture": true,
+      "before_both_rejected": true,
+      "SDK_graphs_identical": true,
+      "scenes": 2,
+      "outputs_per_scene": 2,
+      "sample_cells_per_SDK": 72,
+      "finite_cells_per_SDK": 60,
+      "masked_cells_per_SDK": 12,
+      "maximum_absolute_error": 9.71445146547012e-17,
+      "HSV_channel_reassembly_half_value": {
+        "steps": 43880,
+        "nodes": 205
+      },
+      "roundtrip_offset_Float32_Double_clamp": {
+        "steps": 40956,
+        "nodes": 196
+      },
+      "independent_reference": "colorsys, Fraction and NumPy Float32 staging against compiled sample graphs, not native execution"
+    },
+    "previously_limited_SVD_rank2": {
+      "steps": 45601,
+      "nodes": 347,
+      "one_SVD_producer": true,
+      "finite_pixels": 11,
+      "finite_cells": 99,
+      "masked_pixels": 1,
+      "masked_cells": 9,
+      "maximum_absolute_error": 4.440892098500626e-16,
+      "nonzero_full_rank_residual": 0.36427362789226114,
+      "scope": "Exact original3x3 rank-two truncation; independent NumPy reference and sample graph evaluation. Source full-rank determinant9 and residual matching third singular value exclude accidental full reconstruction. No new native acceptance.",
+      "third_singular_value": 0.3642736278922618,
+      "python_javascript_graphs_identical": true,
+      "receipt_sha256": "434c10e1c01985c97ef71b6e7283fd550cc8297c2b1daca21aabb12eb616e1e0"
+    },
+    "old_python_probes": {
+      "count": 50,
+      "serialized": 50,
+      "compiled": 47,
+      "rejected": 3,
+      "fixture_drift": false
+    },
+    "instrumented_SDK_network_attempts": 0,
+    "review": {
+      "independent_read_only_contract_review": "No remaining blocking correctness or resource finding",
+      "reviewer_ran_tests": false,
+      "receipt_sha256": "78f50bd3ab89d9a7e1fc61e2915992a45d51c0bf097c8d106524dddc5bc339cd",
+      "after_review_production_change": "decoder explanatory comments only"
+    },
+    "negative_controls": [
+      "cached subtree cannot hide greater actual depth or cycles",
+      "near-budget failures do not insert ledger entries or copy metadata",
+      "strong identity, graph-local reuse and fixed capacity",
+      "mutable and classifier/model fallback retains original estimator",
+      "fresh same-item asset and cross-item grid contradictions reject",
+      "spatial/temporal broadcast rejects",
+      "node preflight remains before operand compilation",
+      "root cache does not cross function environments and stops at64/500",
+      "metadata mutations cannot leak across stored or restored snapshots"
+    ]
+  },
+  "investigated_and_fixed": [
+    "Repeated image_work_estimate subtree scans charged and performed identical immutable work across nested numeric lowering.",
+    "Shared root RGB/HSV SDK ValueRefs rebuilt the same scalar formulas and metadata wrappers.",
+    "Independent initial review found closure depth and staged-capacity/resource-accounting defects; height-aware bounded iterative planning and Source hash/insertion charges were fixed before final freeze."
+  ],
+  "verification_failures_and_resolution": [
+    "Initial full suite:5888passed27skipped3failed. Two old exact budget messages changed because flows progressed further; updated to exact current node/work diagnostics. Third formerly rejected rank2 flow now compiles; replaced rejection assumption with independent99-cell numeric,9-cell mask and genuine rank-truncation control.",
+    "A suspected Python/JS baseline-wire mismatch was retracted: JSON normalization shows tuples/lists have the same wire; original workflow expressions remained unchanged."
+  ],
+  "limits_and_unverified": [
+    "No new native GeoTrellis/full Spark/HTTP/browser/physical-export/deployment/Google or private-data acceptance in this compiler-only batch.",
+    "Larger compositions may still exceed unchanged work, depth, graph or native budgets. Full3x3 SVD reconstruction rejects at compilation work budget; QR normal residual rejects at500-node preflight.",
+    "Ordinary3band3endmember simplex unmix maximum remains26pixels per tile; default256square tile still rejects. No fast kernel implementation or throughput claim.",
+    "Exact color input domain, masks, compact matrix factor shapes and numerical policies retain their documented local limitations; no Google oracle equivalence."
+  ],
+  "preservation": {
+    "dependencies_or_locks_changed": false,
+    "runtime_or_services_deployed": false,
+    "VMs_or_containers_used": false,
+    "user_data_or_credentials_read_or_modified": false,
+    "goal_complete": false
+  },
+  "cleanup": {
+    "owned_frontend_build_files_removed": 32,
+    "owned_frontend_build_bytes_removed": 3438578,
+    "scratch_absent": true,
+    "runtime_dependencies_or_user_data_removed": false
+  },
+  "reproduction": [
+    ".venv/bin/python examples/64_GEE_python_scalar_composition.py",
+    ".venv/bin/python -m pytest -q tests/test_ee_scalar_work_ledger.py tests/test_ee_scalar_work_integration.py tests/test_ee_scalar_image_snapshot.py tests/test_ee_scalar_image_decoder.py tests/test_ee_scalar_composition_workflow.py tests/test_ee_matrix_orthogonal_workflow.py",
+    ".venv/bin/python -m pytest -q",
+    ".venv/bin/python -m scripts.ee_python_probes --check",
+    "npm test (web/)",
+    "npm run build -- --outDir <owned-temporary-directory> (web/)"
+  ]
+}

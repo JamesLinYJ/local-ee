@@ -22,6 +22,7 @@ class Translator(CatalogOperations, FilteringOperations):
         self.steps = 0
         self._root_env = None
         self._root_value_cache = {}
+        self._root_scalar_image_snapshots = 0
         self._runtime_rf_explanation_seen = False
         self._pixel_math_seen = False
         # Reused only inside this compilation. Sample-table schema facts may
@@ -41,6 +42,7 @@ class Translator(CatalogOperations, FilteringOperations):
         if depth == 0:
             self._root_env = env
             self._root_value_cache.clear()
+            self._root_scalar_image_snapshots = 0
         if isinstance(value, list):
             if len(value) > 10000:
                 fail("Inline list exceeds 10000 values")
@@ -60,14 +62,17 @@ class Translator(CatalogOperations, FilteringOperations):
                 fail("Unknown serialized value reference")
             if env is self._root_env and key in self._root_value_cache:
                 from .raster_factor_snapshot import restore_factor
+                from .scalar_image_snapshot import restore_scalar_image
 
-                return restore_factor(self, self._root_value_cache[key])
+                return restore_scalar_image(
+                    self, restore_factor(self, self._root_value_cache[key]),
+                )
             result = self.evaluate(self.scope[key], env, depth + 1)
             # The official serializer uses ValueRef for a shared, immutable
-            # server-side object. Cache only the RF table/model IR that can be
-            # reused across train(features=...) and FeatureCollection.classify.
-            # Root-scope factor results additionally share frozen scalar IR,
-            # with detached owned metadata on storage and every cache hit.
+            # server-side object. Reuse the audited RF table/model IR and
+            # whitelisted factor or RGB/HSV results only in the root scope.
+            # Image snapshots share proven frozen scalar IR, with detached
+            # owned metadata on storage and every cache hit.
             from .ir import SampledFeatures, TrainedSmileRandomForest
 
             if (env is self._root_env
@@ -75,6 +80,11 @@ class Translator(CatalogOperations, FilteringOperations):
                 self._root_value_cache[key] = result
             elif env is self._root_env and len(self._root_value_cache) < 500:
                 from .raster_factor_snapshot import FACTOR_METHODS, snapshot_factor
+                from .scalar_image_snapshot import (
+                    MAX_SCALAR_IMAGE_SNAPSHOTS,
+                    SCALAR_IMAGE_SNAPSHOT_METHODS,
+                    snapshot_scalar_image,
+                )
 
                 scoped = self.scope[key]
                 if (type(scoped) is dict and type(scoped.get("functionName")) is str
@@ -85,6 +95,17 @@ class Translator(CatalogOperations, FilteringOperations):
 
                         charge_array(self, 2)
                         self._root_value_cache[key] = snapshot
+                elif (type(scoped) is dict
+                      and type(scoped.get("functionName")) is str
+                      and scoped.get("functionName") in SCALAR_IMAGE_SNAPSHOT_METHODS
+                      and self._root_scalar_image_snapshots < MAX_SCALAR_IMAGE_SNAPSHOTS):
+                    snapshot = snapshot_scalar_image(self, result)
+                    if snapshot is not None:
+                        from .array_core import charge_array
+
+                        charge_array(self, 2)
+                        self._root_value_cache[key] = snapshot
+                        self._root_scalar_image_snapshots += 1
             return result
         if value_type == "ArgumentRef":
             if value["value"] not in env:
