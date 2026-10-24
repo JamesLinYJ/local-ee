@@ -1,0 +1,104 @@
+{
+  "schema": "local-ee-compatibility-wave/v1",
+  "date": "2026-10-24",
+  "base_commit": "dde2409b87836812113e22f72452e73dc601c406",
+  "title": "Preserve official Feature.geometry defaults and typed models through table export",
+  "entry_inventory": {
+    "pinned_signatures": 991,
+    "declared_same_name_handlers": 709,
+    "names_only_percentage": 71.54,
+    "remaining_same_name_handlers": 282,
+    "new_entry_count": 0,
+    "interpretation": "Names only; not full parameter/default/numerical or Google compatibility."
+  },
+  "implementation": {
+    "feature_geometry": "Omitted/null options preserve actual geometry. Valid bool geodesics is ignored without proj. Explicit EPSG:4326 accepts unchanged edge models only. Fresh coordinate/topology checks and copies; explicit model scan precharged under existing50000 work.",
+    "feature_constructor": "Official metadata=null normalized to empty properties, matching omitted metadata for both SDKs.",
+    "table_json": "Only trusted export_table compilation materializes typed GeometryValue effective geodesic/evenOdd before public JSON drops sidecars. Shared canonical SDK-valid geometry mapping; generic getInfo omissions and raw GeoJSON policy preserved.",
+    "empty_map": "Feature.geometry keyword contract now preflighted on empty collections without invented rows.",
+    "modularity": "Changed compiler modules82..229 readable lines; native sources/build/ABI/dependency locks unchanged."
+  },
+  "verification": {
+    "full_pytest": {
+      "passed": 6090,
+      "skipped": 27,
+      "warnings": 53,
+      "failures": 0,
+      "seconds": 55.97,
+      "source_files_hashed": 16,
+      "source_stable_during_run": true
+    },
+    "official_clients": "Pinned Python and JavaScript default/no-proj flags, default-null Feature metadata, unchanged input wires and equal table-model results. Four independently specified membership predicates per client.",
+    "actual_csv": "Two synthetic rows, one default dateline sphere and one explicit planar square: real trusted dispatch/worker/file/asset readback, JSON flags and official SDK geometry reconstruction. Memory queue/store fixtures, no running service or full sandbox/deployment claim.",
+    "scoped_independent_review": {
+      "model": "gpt-6.1-sol",
+      "findings": 0,
+      "inheritance_cases": 81,
+      "source_files_hashed": 31,
+      "other_controls": "Exact work boundary and rejection before mapping/model scan, owned aliases, stale marker/CRS/cycle/depth/width negatives, raw omission, actual local S2 table validation and closed CSV graph. OfflineGuard attempts0; instrumentation is not packet capture."
+    },
+    "default_measurement_probes": {
+      "count": 6,
+      "before_supported": 0,
+      "after_supported": 0,
+      "scope": "Same official default Geometry/Feature area,length,perimeter expressions remain explicit unsupported gaps. Portable public synthetic baseline, not Google runtime output."
+    },
+    "frontend": "Source unchanged; exact-commit python/frontend GitHub Actions required before publishing.",
+    "Google_runtime": "Not run. Offline independent validation default; discuss remote comparison only for unusually complex unresolved algorithms."
+  },
+  "failures_preserved": [
+    "Initial integration exposed real JS metadata:null and default spherical sidecar loss before CSV task JSON; both fixed.",
+    "Next focused run82passed/1failed: generic Python/JS public omissions differed by explicit evenOdd=true. Table-mode comparison now checks materialized effective models; generic omissions remain unchanged.",
+    "First frozen regression6088passed/2failed/27skipped: newly catalogued existing Feature.geometry needed the exact-family contract and real SDK case added to old preparation tests. Final full suite passes; original log retained."
+  ],
+  "limits_and_unverified": [
+    "Geometry/Feature area,length,perimeter,distance not implemented. Official WGS84 spheroid wording and spherical-edge semantics require local independent model work; do not substitute a guessed S2 Earth radius.",
+    "Non-null maxError, other CRS, actual edge-model transforms, full-sphere public encoding and spherical raster consumers still unsupported.",
+    "Existing three strict S2 binary64 incidence/constructive-roundtrip failures unresolved; local passes are not Google equivalence.",
+    "No service deployment, browser, private real-data, new JVM/full Spark or Google same-data acceptance."
+  ],
+  "primary_sources": [
+    "https://developers.google.com/earth-engine/apidocs/ee-feature-geometry",
+    "https://developers.google.com/earth-engine/guides/geometry_visualization_info",
+    "https://developers.google.com/earth-engine/apidocs/ee-geometry-distance",
+    "https://pyproj4.github.io/pyproj/stable/api/geod.html"
+  ],
+  "preservation": {
+    "accounts_research_data_credentials_read_or_modified": false,
+    "VMs_or_containers_used": false,
+    "system_or_existing_venv_modified": false,
+    "services_started_or_restarted": false,
+    "native_library_sha256": "01a3ef76605dcff33682555246ed3ab88a15c2754b816240f7cfba201e0503e5",
+    "native_14_source_entries_unchanged": true,
+    "goal_complete": false
+  },
+  "cleanup": {
+    "new_native_or_frontend_build_scratch_created": false,
+    "raw_audits": "Small local receipts/failure logs retained and ignored; no raw audit forced into public repository."
+  },
+  "receipt_sha256": {
+    "audit/gee-python-wave62/root/full-1.json": "82519293fd8d9c9c4fb5d8bd3bfc9743cf4136ebd98e7c91bfc1b38e49b6aed8",
+    "audit/gee-python-wave62/root/full-2.json": "4a23d6fc31f9d22f31563af3edc670576179e8fbbeba339acc86decb79a32733",
+    "audit/gee-python-wave62/review/receipt.json": "91db507fa11c50d6296bdd1be7b3140c9799cbd77c647906839b66b23a1d0140",
+    "audit/gee-python-wave62/contract/receipt.md": "e94ee00eb621cdb25a182873799d03a3ef291a35297519ebfa58577260d18845",
+    "audit/gee-python-wave62/feature-geometry/contract.md": "ac60160a399a2b0f695265713390b9370fa76b54523ff1c2d77156f47dce83ae"
+  },
+  "frozen_tested_source_sha256": {
+    "gee/compat/earthengine/compile.py": "7c32fab08a3a889e4282cda244f88eaf3103bb1d5d22e6c9bfa93bfd2b746309",
+    "gee/compat/earthengine/feature_map_preflight.py": "8797ff9a1be9339f376d3151a1975e51711583dc67425048e5967895ebece885",
+    "gee/compat/earthengine/feature_values.py": "bbc1e7b046d833a954c723395faedecd3ba26e33f663b4d98c8daad549b8ded2",
+    "gee/compat/earthengine/geometry_public.py": "4a48fd53ccd10551adc2dc63af16b4fc74b9004eea36ba5a563ce24bbf036eb7",
+    "gee/compat/earthengine/public_values.py": "2e76170cb0f28726d2311f4cd86c79d542d401fd5247974e5e8224628409cf8b",
+    "gee/compat/earthengine/value_ops.py": "c2017bb454aae1130bab88a3eaebd2bd4a7d4a66d02fa5dd1a5477f61a3ab829",
+    "gee/services/ee.py": "0a12b70851360f0fdbd27876db54991e96a1cb8f7a3e794f5acc8b3ac1ea2263",
+    "gee/table_spherical_geometry.py": "d43e0ed3cf13c994ed347accd057c5a3ca4709c52ee88298860a7eb12fb22870",
+    "scripts/ee_inventory/feature_preparation.py": "22d7f0c09d6be2f29ec0c2610566a8e882488e8fdd05745b40eeaeb06c18d7b1",
+    "tests/fixtures/ee-measurement-wave62-before-v1.json": "ffe6fd39fb7db5535697fd7d56f968c09e6c71720535242657833ee9582c7edf",
+    "tests/test_ee_feature_collections.py": "8a933308ee43ccecb02e6d1b63a94103cfadaacab923d99ddce5e1fe078dd920",
+    "tests/test_ee_feature_geometry_defaults.py": "c28ff44eb45496e6fd4db950a22af6d2caafb816123b6bbe88304ce2e0050134",
+    "tests/test_ee_feature_geometry_workflow.py": "49074ae6031e0053106ee082b4fa4815a63db3ebafa662d275c68b1aced662de",
+    "tests/test_ee_geometry_export_models.py": "a2242c42b94804ca3a7c132d9e78a9a0ce48617e8d15948ef1820426242664b2",
+    "tests/test_ee_preparation_capabilities.py": "e12a38ce2d6f88c87897942df006919b6d170b4dcd53fc27c0e49935c573caf5",
+    "tests/test_ee_preparation_sdk_entries.py": "cc2d4dae4697286d2dc085f04e6d813a26de0d1e736e5b712fd02d6671bf6e78"
+  }
+}

@@ -346,7 +346,6 @@ def test_feature_element_updates_and_geometry_preserve_feature_fields(ee_sdk):
 
 
 @pytest.mark.parametrize("kwargs, message", [
-    ({"geodesics": True}, "spherical geodesics"),
     ({"proj": "EPSG:3857"}, "EPSG:4326"),
 ])
 def test_feature_geometry_rejects_unimplemented_projection_options(ee_sdk, kwargs, message):

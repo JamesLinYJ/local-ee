@@ -12314,8 +12314,10 @@
         "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite inline Feature extraction only; omitted/null maxError, proj and geodesics preserve the existing model, geometry omissions and collection inheritance. Without proj, a valid Boolean geodesics is ignored as the pinned SDK specifies. Explicit EPSG:4326 supports unchanged edge models only; non-null maxError, other CRS and actual edge-model transforms reject. Null geometry stays null. Fresh coordinate/topology validation and owned copies, including explicit model-inspection work, use the shared50000 budget; mutable prior validation flags cannot bypass it. Spherical extraction retains S2 semantics, not legacy GEOS raster authorization. Private full sphere, arbitrary Element/runtime receivers and Google service equivalence remain unsupported or unverified."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -15718,7 +15720,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Owned accessors on validated finite planar EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries; explicit spherical edges/projected CRS/left-inside interiors reject. Omitted edge flags retain the historical local planar policy, not a Google geodesic-default claim. Geometry decode and copies are precharged before GEOS/allocation within unchanged50000 work/10000-coordinate/depth limits. No spherical or Google oracle proof."
+          "Owned accessors on validated finite EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries. Effective EE geodesic/evenOdd defaults, oriented spherical interiors and collection inheritance use the pinned S2 validator; explicit planar edges retain GEOS. Other CRS and transforms reject, and mixed edge-model scalar accessors reject. Decode/native work and copies are precharged within unchanged50000 work/10000-coordinate/depth limits. No Google oracle proof."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -16049,7 +16051,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Owned accessors on validated finite planar EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries; explicit spherical edges/projected CRS/left-inside interiors reject. Omitted edge flags retain the historical local planar policy, not a Google geodesic-default claim. Geometry decode and copies are precharged before GEOS/allocation within unchanged50000 work/10000-coordinate/depth limits. No spherical or Google oracle proof."
+          "Owned accessors on validated finite EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries. Effective EE geodesic/evenOdd defaults, oriented spherical interiors and collection inheritance use the pinned S2 validator; explicit planar edges retain GEOS. Other CRS and transforms reject, and mixed edge-model scalar accessors reject. Decode/native work and copies are precharged within unchanged50000 work/10000-coordinate/depth limits. No Google oracle proof."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -16329,7 +16331,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Owned accessors on validated finite planar EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries; explicit spherical edges/projected CRS/left-inside interiors reject. Omitted edge flags retain the historical local planar policy, not a Google geodesic-default claim. Geometry decode and copies are precharged before GEOS/allocation within unchanged50000 work/10000-coordinate/depth limits. No spherical or Google oracle proof."
+          "Owned accessors on validated finite EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries. Effective EE geodesic/evenOdd defaults, oriented spherical interiors and collection inheritance use the pinned S2 validator; explicit planar edges retain GEOS. Other CRS and transforms reject, and mixed edge-model scalar accessors reject. Decode/native work and copies are precharged within unchanged50000 work/10000-coordinate/depth limits. No Google oracle proof."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -16361,7 +16363,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Owned accessors on validated finite planar EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries; explicit spherical edges/projected CRS/left-inside interiors reject. Omitted edge flags retain the historical local planar policy, not a Google geodesic-default claim. Geometry decode and copies are precharged before GEOS/allocation within unchanged50000 work/10000-coordinate/depth limits. No spherical or Google oracle proof."
+          "Owned accessors on validated finite EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries. Effective EE geodesic/evenOdd defaults, oriented spherical interiors and collection inheritance use the pinned S2 validator; explicit planar edges retain GEOS. Other CRS and transforms reject, and mixed edge-model scalar accessors reject. Decode/native work and copies are precharged within unchanged50000 work/10000-coordinate/depth limits. No Google oracle proof."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -16497,7 +16499,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Owned accessors on validated finite planar EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries; explicit spherical edges/projected CRS/left-inside interiors reject. Omitted edge flags retain the historical local planar policy, not a Google geodesic-default claim. Geometry decode and copies are precharged before GEOS/allocation within unchanged50000 work/10000-coordinate/depth limits. No spherical or Google oracle proof."
+          "Owned accessors on validated finite EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries. Effective EE geodesic/evenOdd defaults, oriented spherical interiors and collection inheritance use the pinned S2 validator; explicit planar edges retain GEOS. Other CRS and transforms reject, and mixed edge-model scalar accessors reject. Decode/native work and copies are precharged within unchanged50000 work/10000-coordinate/depth limits. No Google oracle proof."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -16838,7 +16840,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Owned accessors on validated finite planar EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries; explicit spherical edges/projected CRS/left-inside interiors reject. Omitted edge flags retain the historical local planar policy, not a Google geodesic-default claim. Geometry decode and copies are precharged before GEOS/allocation within unchanged50000 work/10000-coordinate/depth limits. No spherical or Google oracle proof."
+          "Owned accessors on validated finite EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries. Effective EE geodesic/evenOdd defaults, oriented spherical interiors and collection inheritance use the pinned S2 validator; explicit planar edges retain GEOS. Other CRS and transforms reject, and mixed edge-model scalar accessors reject. Decode/native work and copies are precharged within unchanged50000 work/10000-coordinate/depth limits. No Google oracle proof."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -16993,7 +16995,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Pinned-signature normalization into actual finite planar geometry values; bounded decode preserves admitted constructor flags and owns coordinates. BBox supports non-wrapping longitude and clipped pole latitude; circular longitude wrapping rejects. MultiGeometry uses GeometryCollection and LinearRing retains its own type. Only EPSG:4326, planar edges and admitted evenOdd=true semantics; non-null maxError/reprojection reject. Existing 50000 work/10000-coordinate/topology limits remain. No Google geometric boundary, winding or projection equivalence claim."
+          "Pinned-signature normalization into actual finite EPSG:4326 geometry values; bounded decode preserves admitted constructor flags and owns coordinates. BBox retains planar edges, non-wrapping longitude and clipped pole latitude; circular longitude wrapping rejects. MultiGeometry uses GeometryCollection and LinearRing retains its own type. Other finite constructors retain EE geodesic/evenOdd defaults through pinned S2, or explicit planar GEOS edges. Other CRS and non-null maxError/reprojection reject. Existing 50000 work/10000-coordinate/topology limits remain. No Google geometric boundary, winding or projection equivalence claim."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -17099,7 +17101,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Pinned-signature normalization into actual finite planar geometry values; bounded decode preserves admitted constructor flags and owns coordinates. BBox supports non-wrapping longitude and clipped pole latitude; circular longitude wrapping rejects. MultiGeometry uses GeometryCollection and LinearRing retains its own type. Only EPSG:4326, planar edges and admitted evenOdd=true semantics; non-null maxError/reprojection reject. Existing 50000 work/10000-coordinate/topology limits remain. No Google geometric boundary, winding or projection equivalence claim."
+          "Pinned-signature normalization into actual finite EPSG:4326 geometry values; bounded decode preserves admitted constructor flags and owns coordinates. BBox retains planar edges, non-wrapping longitude and clipped pole latitude; circular longitude wrapping rejects. MultiGeometry uses GeometryCollection and LinearRing retains its own type. Other finite constructors retain EE geodesic/evenOdd defaults through pinned S2, or explicit planar GEOS edges. Other CRS and non-null maxError/reprojection reject. Existing 50000 work/10000-coordinate/topology limits remain. No Google geometric boundary, winding or projection equivalence claim."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
@@ -17153,7 +17155,7 @@
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
         "known_local_limits": [
-          "Pinned-signature normalization into actual finite planar geometry values; bounded decode preserves admitted constructor flags and owns coordinates. BBox supports non-wrapping longitude and clipped pole latitude; circular longitude wrapping rejects. MultiGeometry uses GeometryCollection and LinearRing retains its own type. Only EPSG:4326, planar edges and admitted evenOdd=true semantics; non-null maxError/reprojection reject. Existing 50000 work/10000-coordinate/topology limits remain. No Google geometric boundary, winding or projection equivalence claim."
+          "Pinned-signature normalization into actual finite EPSG:4326 geometry values; bounded decode preserves admitted constructor flags and owns coordinates. BBox retains planar edges, non-wrapping longitude and clipped pole latitude; circular longitude wrapping rejects. MultiGeometry uses GeometryCollection and LinearRing retains its own type. Other finite constructors retain EE geodesic/evenOdd defaults through pinned S2, or explicit planar GEOS edges. Other CRS and non-null maxError/reprojection reject. Existing 50000 work/10000-coordinate/topology limits remain. No Google geometric boundary, winding or projection equivalence claim."
         ],
         "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,

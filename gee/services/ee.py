@@ -249,7 +249,11 @@ def dispatch(backend,account,payload):
             compile_options['region']=export_region
         for k in ['scale','crs']:
             if options.get(k) is not None:compile_options[k]=options[k]
-    compiled=compile_expression(payload.get('expression'),catalog,items,compile_options)
+    if action=='export_table':
+        compiled=compile_expression(payload.get('expression'),catalog,items,compile_options,
+                                    for_table_export=True)
+    else:
+        compiled=compile_expression(payload.get('expression'),catalog,items,compile_options)
     if any(node['process_id']=='local_ee_sample_regions' for node in compiled.get('process_graph',{}).values()):
         compiled['sample_budget']=sample_input_budget(compiled,items)
     if action=='export_table' and compiled['kind']=='value':

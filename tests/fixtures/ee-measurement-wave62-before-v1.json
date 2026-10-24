@@ -1,0 +1,399 @@
+{
+  "schema": "local-ee-measurement-baseline/v1",
+  "base_commit": "dde2409b87836812113e22f72452e73dc601c406",
+  "source": "official Python 1.7.49 legacy SDK wires, local compiler only; no Google runtime",
+  "records": [
+    {
+      "name": "Geometry.area",
+      "wire": {
+        "type": "CompoundValue",
+        "scope": [
+          [
+            "0",
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    90,
+                    0
+                  ],
+                  [
+                    0,
+                    90
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]
+              ],
+              "evenOdd": true
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Geometry.area"
+            }
+          ]
+        ],
+        "value": {
+          "type": "ValueRef",
+          "value": "1"
+        }
+      },
+      "before": {
+        "supported": false,
+        "error": "Unsupported Earth Engine algorithm: Geometry.area"
+      }
+    },
+    {
+      "name": "Geometry.length",
+      "wire": {
+        "type": "CompoundValue",
+        "scope": [
+          [
+            "0",
+            {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  90,
+                  0
+                ]
+              ]
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Geometry.length"
+            }
+          ]
+        ],
+        "value": {
+          "type": "ValueRef",
+          "value": "1"
+        }
+      },
+      "before": {
+        "supported": false,
+        "error": "Unsupported Earth Engine algorithm: Geometry.length"
+      }
+    },
+    {
+      "name": "Geometry.perimeter",
+      "wire": {
+        "type": "CompoundValue",
+        "scope": [
+          [
+            "0",
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    90,
+                    0
+                  ],
+                  [
+                    0,
+                    90
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]
+              ],
+              "evenOdd": true
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                }
+              },
+              "functionName": "Geometry.perimeter"
+            }
+          ]
+        ],
+        "value": {
+          "type": "ValueRef",
+          "value": "1"
+        }
+      },
+      "before": {
+        "supported": false,
+        "error": "Unsupported Earth Engine algorithm: Geometry.perimeter"
+      }
+    },
+    {
+      "name": "Feature.area",
+      "wire": {
+        "type": "CompoundValue",
+        "scope": [
+          [
+            "0",
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    90,
+                    0
+                  ],
+                  [
+                    0,
+                    90
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]
+              ],
+              "evenOdd": true
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "site": "synthetic-octant"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "3",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "feature": {
+                  "type": "ValueRef",
+                  "value": "2"
+                }
+              },
+              "functionName": "Feature.area"
+            }
+          ]
+        ],
+        "value": {
+          "type": "ValueRef",
+          "value": "3"
+        }
+      },
+      "before": {
+        "supported": false,
+        "error": "Unsupported Earth Engine algorithm: Feature.area"
+      }
+    },
+    {
+      "name": "Feature.length",
+      "wire": {
+        "type": "CompoundValue",
+        "scope": [
+          [
+            "0",
+            {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  90,
+                  0
+                ]
+              ]
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "site": "synthetic-octant"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "3",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "feature": {
+                  "type": "ValueRef",
+                  "value": "2"
+                }
+              },
+              "functionName": "Feature.length"
+            }
+          ]
+        ],
+        "value": {
+          "type": "ValueRef",
+          "value": "3"
+        }
+      },
+      "before": {
+        "supported": false,
+        "error": "Unsupported Earth Engine algorithm: Feature.length"
+      }
+    },
+    {
+      "name": "Feature.perimeter",
+      "wire": {
+        "type": "CompoundValue",
+        "scope": [
+          [
+            "0",
+            {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    90,
+                    0
+                  ],
+                  [
+                    0,
+                    90
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]
+              ],
+              "evenOdd": true
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "site": "synthetic-octant"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature"
+            }
+          ],
+          [
+            "3",
+            {
+              "type": "Invocation",
+              "arguments": {
+                "feature": {
+                  "type": "ValueRef",
+                  "value": "2"
+                }
+              },
+              "functionName": "Feature.perimeter"
+            }
+          ]
+        ],
+        "value": {
+          "type": "ValueRef",
+          "value": "3"
+        }
+      },
+      "before": {
+        "supported": false,
+        "error": "Unsupported Earth Engine algorithm: Feature.perimeter"
+      }
+    }
+  ]
+}

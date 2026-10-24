@@ -103,7 +103,8 @@ def invoke_value(translator, name, arguments):
             if a.get("geometry") is not None:
                 fail("A reduceRegion Feature export wrapper currently requires null geometry")
             return a["metadata"]
-        return {"type": "Feature", "geometry": a.get("geometry"), "properties": a.get("metadata", {})}
+        metadata = {} if a.get("metadata") is None else a["metadata"]
+        return {"type": "Feature", "geometry": a.get("geometry"), "properties": metadata}
     if name in {"Collection", "FeatureCollection"}:
         from .nested_collections import construct_nested_collection, is_collection_value
         from .feature_values import charge

@@ -62,6 +62,7 @@ JavaScript 对应写法为 `left.intersection(right)`；不需要添加自定义
 另有以下接口缺口：
 
 - 非空 `maxError`／`ErrorMargin`、其他 CRS、平面边转球面与一般重投影。
+- `Geometry`／`Feature` 的 area、length、perimeter 和 distance 尚未实现。六条官方默认度量表达式的实际拒绝记录保存在[版本化探针](../../tests/fixtures/ee-measurement-wave62-before-v1.json)。官方指南把默认面积／周长计算描述为 WGS84 椭球；distance 的 `spherical=false` 默认也要求考虑扁率，不能直接以 S2 固定球半径乘角度来宣称默认兼容。后续优先采用本地独立椭球参考，补齐边模型、孔洞／大区域、分量相加及投影合同。[官方几何度量说明](https://developers.google.com/earth-engine/guides/geometry_visualization_info)、[distance 参数](https://developers.google.com/earth-engine/apidocs/ee-geometry-distance)。
 - 跨日期变更线的 BBox 构造；不要把它与已支持的测地线 Polygon 混为一谈。
 - 无边界完整球面的公开 GEE GeoJSON 编码：只保留独立内部值，公开 JSON／CSV
   明确失败，不伪装为空几何。

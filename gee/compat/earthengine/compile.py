@@ -18,7 +18,7 @@ from .runtime_feature_ir import (
 )
 
 
-def compile_expression(expression, catalog, items, options=None):
+def compile_expression(expression, catalog, items, options=None, *, for_table_export=False):
     """Compile one legacy ee.Serializer.encode value; no network or execution.
 
     Internal load_collection._gee_item_ids must be validated and materialized
@@ -105,7 +105,10 @@ def compile_expression(expression, catalog, items, options=None):
         if isinstance(value, (Function, ParsedExpression, Filter, Reducer, Join, InnerJoin, TableReducer)):
             fail("A function/filter/reducer/join is not a computable output value")
         # Ensure no internal class or non-finite number crosses the API boundary.
-        return public_result({"kind": "value", "value": value, "warnings": translator.warnings})
+        return public_result(
+            {"kind": "value", "value": value, "warnings": translator.warnings},
+            geometry_translator=translator if for_table_export else None,
+        )
     except UnsupportedEEError:
         raise
     except (KeyError, IndexError, TypeError, AttributeError, ValueError, RecursionError, OverflowError) as exc:

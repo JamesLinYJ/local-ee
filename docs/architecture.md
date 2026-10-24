@@ -51,6 +51,8 @@ flowchart LR
 
 几何二元操作由 `geometry_binary` 分开路由：显式WGS84平面／直线边仍用GEOS，省略或空投影的有限测地线输入走 `spherical_binary` 与固定S2／Abseil C ABI。`geometry_topology` 保留有效默认值及集合继承规则；`spherical_preflight`、原生计数和独立输出界限共同约束工作，`spherical_native` 校验源码／产物／平台／许可证摘要，运行时不下载。球面CSV使用独立模型校验和全表预充，公开标志按官方客户端接受的几何类型输出。S2 binary64输入关联及构造结果往返仍有3项严格控制不通过；显式球面结果在旧平面栅格／筛选消费者前拒绝，原先未标边类型的栅格路径仍不代表GEE测地线兼容。球面掩膜、投影／误差传播、完整球面公开编码及Google同数据对照继续待实现。见 [球面合同](gee-python/spherical-geometry.md) 与 [平面合同](gee-python/geometry-binary.md)。
 
+`Feature.geometry` 按官方缺省参数提取独立且重新验证的几何；无投影时忽略有效 `geodesics`，实际变换仍拒绝。`geometry_public` 统一 SDK 合法的边／内部标志输出。只有表格导出编译明确启用模型物化：在共享编译预算预充后，将类型化几何的有效标志写入 JSON 任务图，防止 sidecar 丢失后误走平面 CSV 校验。普通 getInfo 保持原公开省略，非类型化原始 GeoJSON 保留既有解释；持久任务仍是封闭的字面表格输入和 CSV sink。
+
 ## 3. 模块与接口
 
 前端固定为 **TypeScript + React**，使用 Vite 构建、CodeMirror 6 编辑代码、OpenLayers 渲染地图、React Flow 编辑 openEO 流程图。Motion 统一管理短动效并尊重系统减少动态效果设置；不引入外部资源。旧 Vue 工程已移出交付源码并保留在任务工作区备份。主工作台和流程图页均不加载 Vue。

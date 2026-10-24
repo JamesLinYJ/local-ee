@@ -6,7 +6,7 @@ import math
 import numpy as np
 
 from .array_values import MAX_ARRAY_CELLS, MAX_ARRAY_RANK, StaticArray
-from .geometry_values import GEOMETRY_TYPES
+from .geometry_values import GEOMETRY_TYPES, own_geometry_bounded
 from .ir import Image, Pixel, fail
 
 
@@ -14,6 +14,11 @@ FEATURE_VALUE_METHODS = frozenset({
     "Feature.geometry", "Element.get", "Element.set", "Element.setMulti",
     "Element.propertyNames", "Element.copyProperties",
 })
+FEATURE_GEOMETRY_ARGUMENTS = {
+    "Feature.geometry": (
+        frozenset({"feature"}), frozenset({"maxError", "proj", "geodesics"}),
+    ),
+}
 MAX_PROPERTY_NAMES = 10000
 
 
@@ -112,6 +117,18 @@ def property_names(value, label):
     return value
 
 
+def _geometry_edge_models(value, inherited=None):
+    """Yield effective models of edge-bearing components without a list."""
+    from .geometry_topology import _edge_model, _has_edges
+
+    model = _edge_model(value, inherited)
+    if value.get("type") == "GeometryCollection":
+        for child in value.get("geometries", []):
+            yield from _geometry_edge_models(child, model)
+    elif _has_edges(value):
+        yield model
+
+
 def _invoke_element(translator, name, arguments):
     a = arguments
     if name in {"Element.get", "Element.set", "Element.setMulti", "Element.propertyNames"}:
@@ -175,13 +192,38 @@ def invoke_feature_value(translator, name, arguments):
     """Evaluate Feature.geometry and Element metadata calls for static Features."""
     a = arguments
     if name == "Feature.geometry":
-        translator.allowed(a, {"feature", "maxError", "proj", "geodesics"})
-        feature = validate_feature(translator, a.get("feature"))
-        if a.get("proj") not in (None, "EPSG:4326"):
-            fail("Feature.geometry supports only the existing EPSG:4326 geometry")
-        if a.get("geodesics") not in (None, False):
-            fail("Feature.geometry does not support spherical geodesics")
-        if a.get("maxError") is not None:
+        required, optional = FEATURE_GEOMETRY_ARGUMENTS[name]
+        translator.allowed(a, required | optional)
+        missing = required - a.keys()
+        if missing:
+            fail(f"{name} requires arguments: {sorted(missing)}")
+        max_error = a.get("maxError")
+        projection = a.get("proj")
+        geodesics = a.get("geodesics")
+        if max_error is not None:
             fail("Feature.geometry maxError reprojection is unsupported")
-        return feature["geometry"]
+        if projection is not None and projection != "EPSG:4326":
+            fail("Feature.geometry supports only the existing EPSG:4326 geometry")
+        if geodesics is not None and type(geodesics) is not bool:
+            fail("Feature.geometry geodesics must be a boolean or null")
+        feature = validate_feature(translator, a.get("feature"))
+        geometry = feature["geometry"]
+        if geometry is None:
+            return None
+        scan_cost = None
+        if projection is not None and geodesics is not None:
+            # The subsequent model walk revisits the copied geometry and the
+            # coordinate-bearing leaves. Reserve that work before the walk.
+            from .geometry_preflight import measure_geometry
+
+            scan_cost = measure_geometry(geometry)
+        owned = own_geometry_bounded(translator, geometry)
+        # Per the pinned SDK, geodesics is ignored unless a projection is
+        # specified. With the only admitted projection (EPSG:4326), changing
+        # an existing edge model would still require a geometry transform.
+        if scan_cost is not None:
+            charge(translator, scan_cost.nodes + scan_cost.positions)
+            if any(model is not geodesics for model in _geometry_edge_models(owned)):
+                fail("Feature.geometry geodesic edge-model conversion is unsupported")
+        return owned
     return _invoke_element(translator, name, a)

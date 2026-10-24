@@ -2,6 +2,20 @@
 
 FEATURE_PREPARATION_LIMITS = {}
 
+FEATURE_PREPARATION_LIMITS["Feature.geometry"] = [
+    "Finite inline Feature extraction only; omitted/null maxError, proj and "
+    "geodesics preserve the existing model, geometry omissions and collection "
+    "inheritance. Without proj, a valid Boolean geodesics is ignored as the "
+    "pinned SDK specifies. Explicit EPSG:4326 supports unchanged edge models "
+    "only; non-null maxError, other CRS and actual edge-model transforms reject. "
+    "Null geometry stays null. Fresh coordinate/topology validation and owned "
+    "copies, including explicit model-inspection work, use the shared50000 "
+    "budget; mutable prior validation flags cannot bypass it. Spherical "
+    "extraction retains S2 semantics, not legacy GEOS raster authorization. "
+    "Private full sphere, arbitrary Element/runtime receivers and Google "
+    "service equivalence remain unsupported or unverified."
+]
+
 for _method in ("getNumber", "getString", "getArray", "toDictionary", "replaceProperties"):
     FEATURE_PREPARATION_LIMITS["Element." + _method] = [
         "Finite inline Feature/FeatureCollection metadata and concrete unmapped Image "
@@ -60,24 +74,26 @@ for _method in (
     "type", "coordinates", "geometries", "isUnbounded", "edgesAreGeodesics", "geodesic",
 ):
     FEATURE_PREPARATION_LIMITS["Geometry." + _method] = [
-        "Owned accessors on validated finite planar EPSG:4326 local geometries. "
+        "Owned accessors on validated finite EPSG:4326 local geometries. "
         "Single geometries return a singleton from geometries(); collections return "
         "their immediate children and do not provide coordinates(). isUnbounded is "
-        "false for admitted finite geometries; explicit spherical edges/projected "
-        "CRS/left-inside interiors reject. Omitted edge flags retain the historical "
-        "local planar policy, not a Google geodesic-default claim. Geometry decode "
-        "and copies are precharged before GEOS/allocation within unchanged50000 "
-        "work/10000-coordinate/depth limits. No spherical or Google oracle proof."
+        "false for admitted finite geometries. Effective EE geodesic/evenOdd "
+        "defaults, oriented spherical interiors and collection inheritance use "
+        "the pinned S2 validator; explicit planar edges retain GEOS. Other CRS "
+        "and transforms reject, and mixed edge-model scalar accessors reject. "
+        "Decode/native work and copies are precharged within unchanged50000 "
+        "work/10000-coordinate/depth limits. No Google oracle proof."
     ]
 
 for _method in ("BBox", "MultiGeometry", "LinearRing"):
     FEATURE_PREPARATION_LIMITS["GeometryConstructors." + _method] = [
-        "Pinned-signature normalization into actual finite planar geometry values; "
+        "Pinned-signature normalization into actual finite EPSG:4326 geometry values; "
         "bounded decode preserves admitted constructor flags and owns coordinates. "
-        "BBox supports non-wrapping longitude and clipped pole latitude; circular "
+        "BBox retains planar edges, non-wrapping longitude and clipped pole latitude; circular "
         "longitude wrapping rejects. MultiGeometry uses GeometryCollection and "
-        "LinearRing retains its own type. Only EPSG:4326, planar edges and admitted "
-        "evenOdd=true semantics; non-null maxError/reprojection reject. Existing "
+        "LinearRing retains its own type. Other finite constructors retain EE "
+        "geodesic/evenOdd defaults through pinned S2, or explicit planar GEOS "
+        "edges. Other CRS and non-null maxError/reprojection reject. Existing "
         "50000 work/10000-coordinate/topology limits remain. No Google geometric "
         "boundary, winding or projection equivalence claim."
     ]

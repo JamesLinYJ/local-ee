@@ -28,7 +28,23 @@
 
 `Element.replaceProperties` 是固定算法表中的隐藏入口，Python 类没有同名绑定，可通过 `ee.ApiFunction.call_("Element.replaceProperties", destination=feature, source=other)` 调用。它替换属性；省略／null 来源清除普通属性。本地实现保留目标的实际身份：要素移到顶层 `id`，影像保留已有 `system:index` 并关闭原属性继承；来源的冲突索引会拒绝。这些身份和缺键政策没有 Google 同数据对照。
 
-几何只接收有限 EPSG:4326 平面值。显式球面边、投影坐标、非空重投影容差及 `evenOdd=false` 仍拒绝；省略边类型沿用本地平面政策。`Geometry.projection` 与 `Filter.hasType` 尚未支持。
+上述 Wave56 的几何限制是历史范围；当前有限 EPSG:4326 默认测地线和球面内部规则见[球面几何](spherical-geometry.md)。`Geometry.projection` 与 `Filter.hasType` 尚未支持。
+
+## 提取 Feature 几何
+
+`feature.geometry()` 与显式空参数保留原有几何、有效边模型及集合继承。没有指定 `proj` 时，官方合同要求忽略有效布尔 `geodesics`；因此 `feature.geometry(geodesics=False)` 不会把测地线转成平面边。返回值经过重新校验并独立复制，修改原坐标或私有元数据不会改变提取结果。
+
+```python
+region = ee.Feature(ee.Geometry.Polygon([[
+    [170, -5], [-170, -5], [-170, 5], [170, 5], [170, -5]
+]]))
+geometry = region.geometry(geodesics=False)  # 未指定 proj，保留原测地线
+inside = geometry.contains(ee.Geometry.Point([180, 0]))
+```
+
+显式 `proj="EPSG:4326"` 仅支持不改变边模型的提取；实际模型变换、其他投影和非空 `maxError` 仍明确拒绝。空几何返回 null，不生成空多边形。坐标、拓扑、复制和额外边模型扫描共享原有 50000 工作预算；私有完整球面值不会借此公开为 GeoJSON。Python／JavaScript 的提取、后续几何计算及真实合成 CSV 读回有专门回归；这些检查没有访问 Google 计算服务，也不是完整部署验收。参数定义见[官方 Feature.geometry](https://developers.google.com/earth-engine/apidocs/ee-feature-geometry)。
+
+JavaScript 客户端构造 Feature 时常显式发送 `metadata:null`，它与省略属性一样归一为空字典。表格导出会在 JSON 任务图丢弃私有元数据前写出 SDK 支持的有效边／内部标志，使默认球面几何不会在 CSV 验证时变成平面。普通 getInfo 仍保留客户端的原公开省略；原始非类型化 GeoJSON 的旧平面政策没有因此扩展为 GEE 球面兼容。
 
 ## 影像目录元数据
 

@@ -70,6 +70,7 @@ def _case(ee, name):
             {"type": "Feature", "geometry": POINT, "properties": {"new": 8}, "id": "a"},
         ),
         "Feature.id": ({"element": feature}, "a"),
+        "Feature.geometry": ({"feature": feature}, POINT),
         "Feature.select": (
             {"input": feature, "propertySelectors": ["v"],
              "newProperties": ["value"], "retainGeometry": False},

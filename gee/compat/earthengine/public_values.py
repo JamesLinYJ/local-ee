@@ -8,7 +8,7 @@ from .array_values import StaticArray
 from .ir import Image, fail
 
 
-def public_value(value):
+def public_value(value, *, geometry_translator=None):
     """Describe nested images without exposing executable IR or physical paths.
 
     Join matches remain actual Image values inside the compiler so they can be
@@ -51,6 +51,22 @@ def public_value(value):
                 "properties": item.props,
                 "bands": [{"id": name} for name, _ in item.bands],
             }
+        if geometry_translator is not None:
+            from .geometry_values import GeometryValue
+
+            if isinstance(item, GeometryValue):
+                from .geometry_preflight import precharge_geometry_copy, _charge
+                from .geometry_public import public_geometry_mapping
+
+                # Table graphs cross a JSON boundary that drops private
+                # constructor metadata. Reserve the whole geometry walk and
+                # extra flag entries before materializing its effective model.
+                cost = precharge_geometry_copy(
+                    geometry_translator, item, "Table geometry model output",
+                )
+                _charge(geometry_translator, 2 * cost.geometries,
+                        "Table geometry model flags")
+                item = public_geometry_mapping(item)
         if isinstance(item, dict):
             if not all(isinstance(key, str) for key in item):
                 fail("Computed dictionary keys must be strings")
@@ -81,6 +97,6 @@ def public_value(value):
     return convert(value)
 
 
-def public_result(result):
+def public_result(result, *, geometry_translator=None):
     """Apply a single budget to the whole output, including joined metadata."""
-    return public_value(result)
+    return public_value(result, geometry_translator=geometry_translator)

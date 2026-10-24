@@ -4,6 +4,9 @@ from __future__ import annotations
 from typing import Any
 
 from gee.compat.earthengine.ir import UnsupportedEEError
+from gee.compat.earthengine.geometry_public import (
+    public_geometry_mapping as _public_geometry_mapping,
+)
 from gee.compat.earthengine import spherical_native
 from gee.compat.earthengine.spherical_preflight import native_work
 from gee.table_geometry import TableGeometryError
@@ -92,48 +95,12 @@ def public_geometry_mapping(
     inherited_geodesic: bool | None = None,
     inherited_even_odd: bool | None = None,
 ) -> Any:
-    """Materialize only constructor-supported EE flags before sidecars drop."""
-    from gee.compat.earthengine.geometry_values import GeometryValue
-
-    if not isinstance(value, dict):
-        return value
-    kind = value.get("type")
-    if type(kind) is not str:
-        return value
-
-    geodesic = _flag(value, "geodesic", inherited_geodesic)
-    even_odd = _flag(value, "evenOdd", inherited_even_odd)
-    result = dict(value)
-    result.pop("geodesic", None)
-    result.pop("evenOdd", None)
-
-    # The pinned SDK's constructors accept geodesic only for line and area
-    # types, and evenOdd only for polygonal types. Point flags have no semantic
-    # effect and become invalid constructor arguments if they are serialized.
-    geodesic_supported = kind in {
-        "LineString", "LinearRing", "MultiLineString", "Polygon",
-        "MultiPolygon", "GeometryCollection",
-    }
-    even_odd_supported = kind in {"Polygon", "MultiPolygon"}
-    if geodesic_supported and geodesic is not None:
-        # An inherited collection flag is already represented by its parent.
-        # Keep an explicit child override, but do not duplicate sidecar defaults.
-        if "geodesic" in value or inherited_geodesic is None:
-            result["geodesic"] = geodesic
-    if even_odd_supported and even_odd is not None:
-        # GeometryCollection has no evenOdd constructor parameter. Carry its
-        # inherited interior rule to supported polygon children instead.
-        result["evenOdd"] = even_odd
-
-    if kind == "GeometryCollection":
-        children = value.get("geometries")
-        if type(children) is list:
-            result["geometries"] = [
-                public_geometry_mapping(
-                    child,
-                    inherited_geodesic=geodesic,
-                    inherited_even_odd=even_odd,
-                )
-                for child in children
-            ]
-    return result
+    """Compatibility wrapper for the shared EE public geometry mapping."""
+    try:
+        return _public_geometry_mapping(
+            value,
+            inherited_geodesic=inherited_geodesic,
+            inherited_even_odd=inherited_even_odd,
+        )
+    except UnsupportedEEError as exc:
+        raise TableGeometryError(str(exc)) from exc
