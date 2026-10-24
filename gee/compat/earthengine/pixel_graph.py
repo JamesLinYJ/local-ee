@@ -37,7 +37,7 @@ class PixelCompiler:
         # than silently narrowing an explicitly requested Float64 raster.
         key = id(p)
         if key not in self.double_precision:
-            if p.op in {"mask_guard", "mask_result_value"}: result = self.has_double_precision(p.args[0])
+            if p.op in {"mask_guard", "mask_result_value", "mask_set_value"}: result = self.has_double_precision(p.args[0])
             elif p.op == "integer_values": result = not p.boolean
             elif p.op == "where": result = any(self.has_double_precision(value) for value in p.args[1:])
             elif p.boolean and p.op in BOOLEAN_OPERATIONS: result = False
@@ -181,7 +181,7 @@ class PixelCompiler:
             self._double_structural_depth = depth
 
     def _expression(self, p):
-        if p.op in {"with_mask", "mask_guard", "mask_validity", "mask_update", "mask_apply", "mask_result_value"}:
+        if p.op in {"with_mask", "mask_guard", "mask_validity", "mask_update", "mask_apply", "mask_result_value", "mask_set_value"}:
             from .mask_weights_graph import compile_mask_pixel
 
             return compile_mask_pixel(self, p)
@@ -381,7 +381,7 @@ class PixelCompiler:
             # The JVM callback requires a non-null accept operand. Invert a
             # null-accept conditional, preserving the same NoData branch.
             if args[1] is None:
-                callback["inverted"] = {"process_id": "not", "arguments": {"x": args[0]}}
+                callback["inverted"] = {"process_id": "eq", "arguments": {"x": args[0], "y": 0}}
                 process, op_args = "if", {"value": {"from_node": "inverted"}, "accept": args[2], "reject": None}
             else: process, op_args = "if", dict(zip(("value", "accept", "reject"), args))
         else: process, op_args = self.scalar_args(p.op, args[0], args[1] if len(args)>1 else None)
@@ -390,6 +390,8 @@ class PixelCompiler:
             callback["valid_count"] = {"process_id": "count", "arguments": {"data": safe_args}}
             callback["has_values"] = {"process_id": "gt", "arguments": {"x": {"from_node": "valid_count"}, "y": 0}}
             process, op_args = "if", {"value": {"from_node": "has_values"}, "accept": {"from_node": "reduced"}, "reject": None}
+        from .callback_masks import preserve_callback_masks
+        process, op_args = preserve_callback_masks(self, p.op, callback, args, rasters, process, op_args)
         callback["result"] = {"process_id": process, "arguments": op_args, "result": True}
         result = self.node("reduce_dimension", data=data, dimension="bands", reducer={"process_graph": callback})
         return self.band_dimension(result, "v"), "v", timed

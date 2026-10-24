@@ -9,12 +9,14 @@ from .pixel_graph import PixelCompiler
 
 
 class Graph(PixelCompiler, BandLabels):
-    def __init__(self, translator):
+    def __init__(self, translator, *, work_owner=None):
         self.t = translator
+        self.work_owner = translator if work_owner is None else work_owner
         self.graph = {}
         self.cache = {}
         self.sources = {}
         self.required_bands = {}
+        self.source_asset_bands = {}
         self.full_extent_sources = set()
         self.expressions = {}
         self.double_precision = {}
@@ -82,6 +84,9 @@ class Graph(PixelCompiler, BandLabels):
     def source(self, source):
         if source not in self.sources:
             if not source.ids: fail("Collection filter has no locally available images")
+            from .callback_grid import validate_source_assets
+
+            validate_source_assets(self, source)
             extent = None if source in self.full_extent_sources else self.t.options.get("region")
             if extent:
                 from shapely.geometry import shape

@@ -186,7 +186,10 @@ def test_official_python_javascript_wires_and_compiler_graphs_match():
         mask_projections = [node for _node_id, node in ancestors
                             if node["process_id"] == "local_ee_mask_weights"]
         if "all_positive" in name:
-            assert mask_projections == []
+            # Binary masks remain ordinary science/NoData; apply projections
+            # guard source Infinity before those masks can erase it.
+            assert {json.loads(node["arguments"]["spec"])["op"]
+                    for node in mask_projections} == {"apply"}
         else:
             operations = {
                 json.loads(node["arguments"]["spec"])["op"]

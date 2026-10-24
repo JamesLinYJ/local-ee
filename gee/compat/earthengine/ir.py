@@ -101,11 +101,11 @@ class Function:
     env: dict
 
 
-@dataclass
+@dataclass(frozen=True)
 class ParsedExpression:
     text: str
     default: str
-    variables: list
+    variables: tuple[str, ...]
 
 
 @dataclass

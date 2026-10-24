@@ -427,6 +427,13 @@ def get_capabilities():
              "and raster export remain unsupported consumers and reject; numeric mask() views use ordinary raster "
              "paths. No spherical fractional clip rasterizer is implemented; legacy planar center-based "
              "raster clipping is not GEE fractional-mask compatibility."),
+            ("Image.mask(mask) replaces weights on the proven input grid, zero-filling newly valid science; "
+             "finite[0,1] weights and masked mask-input becoming zero are explicit local policies. "
+             "The official transparent ee.Image() constructor retains one masked constant band, enabling "
+             "map-only Image.expression with real named image arguments; it is not a zero-band image or "
+             "a global constant grid. Declared expression arguments are validated and scanning is precharged. "
+             "addBands accepts only bool/null overwrite, charges ordered merging and suffix work, and "
+             "an explicit empty names list cannot lend a hidden source. Google parity is unverified."),
             "Geometry/Feature binary defaults use pinned local S2 for geodesic EPSG:4326; planar edges with explicit EPSG:4326 use GEOS. Non-4326 CRS, binary reprojection/maxError and full-sphere public encoding remain gaps. Filter.intersects and inline Collection.geometry preserve homogeneous actual edge models and consume static ErrorMargin only without transformation. Raw STAC catalog footprints retain planar edges; curved polygon ROI requires unsupported reprojection. S2 binary64 boundary/roundtrip differences are measured; explicit spherical results reject at legacy planar raster/join consumers. Unflagged raster inputs retain their earlier planar path without a GEE geodesic parity claim",
             "Filter.notNull tests flat local metadata names with at most 1000 properties and the shared compilation budget; null and missing fail while falsey non-null values pass",
             "Dictionary missing keys require a non-null default; explicit empty value-key lists stay empty; List.sequence count/end spacing and count/step ranges materialize at most 10000 finite values",

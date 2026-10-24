@@ -123,7 +123,7 @@ def compile_sample_table(sampled, translator):
     grid = spec["grid"]
     options = {key: grid[key] for key in ("scale", "crs") if grid[key] is not None}
     child = Translator(list(translator.catalog.values()), translator.items, options)
-    graph = Graph(child)
+    graph = Graph(child, work_owner=translator)
 
     # Bound the preflight estimate before compiling any source or pixel node.
     # Each band may need a filter, a temporal drop, a final band label and one

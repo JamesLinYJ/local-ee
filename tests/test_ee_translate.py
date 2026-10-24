@@ -190,6 +190,9 @@ def evaluate_graph(result, arrays, grid=None, source_geometries=None,
             v = (np.where(inside, data, np.nan), names, timed)
         elif process_handlers is not None and p in process_handlers:
             v = process_handlers[p](a, values)
+        elif p == "local_ee_mask_weights":
+            from ee_mask_weights_graph_reference import mask_weights_handler
+            v = mask_weights_handler(a, values)
         elif p in {"local_ee_reduce_bands", "local_ee_drop_single_time"}:
             from ee_reducer_reference import drop_single_time, reduce_bands
 

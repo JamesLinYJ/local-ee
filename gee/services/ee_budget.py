@@ -4,6 +4,20 @@ import math
 from ..ee_translate import UnsupportedEEError
 
 
+def _top_level_graph_references(value):
+    """Yield process-graph edges without entering nested callback scopes."""
+    if isinstance(value, dict):
+        if set(value) == {'from_node'}:
+            yield value['from_node']
+            return
+        for key, child in value.items():
+            if key != 'process_graph':
+                yield from _top_level_graph_references(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from _top_level_graph_references(child)
+
+
 def _output_raster_loads(compiled):
     """Follow output raster edges; a trained model does not expand its grid.
 
@@ -16,17 +30,6 @@ def _output_raster_loads(compiled):
         raise ValueError('Pixel preflight requires one raster result node')
     pending, seen, loads = list(results), set(), []
 
-    def references(value):
-        if isinstance(value, dict):
-            if set(value) == {'from_node'}:
-                yield value['from_node']
-            elif 'process_graph' not in value:
-                for child in value.values():
-                    yield from references(child)
-        elif isinstance(value, list):
-            for child in value:
-                yield from references(child)
-
     while pending:
         key = pending.pop()
         if key in seen:
@@ -38,7 +41,7 @@ def _output_raster_loads(compiled):
         arguments = node.get('arguments', {})
         if node['process_id'] == 'local_ee_minimum_distance':
             arguments = {'data': arguments['data']}
-        pending.extend(references(arguments))
+        pending.extend(_top_level_graph_references(arguments))
     return loads
 
 
@@ -101,17 +104,6 @@ def sample_input_budget(compiled, items):
         return None
     loads, visited = {}, set()
 
-    def references(value):
-        if isinstance(value, dict):
-            if set(value) == {'from_node'}:
-                yield value['from_node']
-            else:
-                for child in value.values():
-                    yield from references(child)
-        elif isinstance(value, list):
-            for child in value:
-                yield from references(child)
-
     def visit(key):
         if key in visited:
             return
@@ -119,7 +111,7 @@ def sample_input_budget(compiled, items):
         node = process[key]
         if node['process_id'] == 'load_collection':
             loads[key] = node['arguments']
-        for child in references(node.get('arguments', {})):
+        for child in _top_level_graph_references(node.get('arguments', {})):
             visit(child)
 
     for node in samples:

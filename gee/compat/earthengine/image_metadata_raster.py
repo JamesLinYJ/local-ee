@@ -112,7 +112,7 @@ def _metadata(translator, arguments):
     # existing binder can take the real destination footprint from `image`.
     unbound = Image([(band_name, Pixel("constant", (value,)))], {})
     return Image(
-        bind_source_bands(unbound, image), dict(image.props), image.source,
+        bind_source_bands(unbound, image, translator=translator), dict(image.props), image.source,
         image.mapped, image.inherit_props, image.copied_props,
         image.footprint, image.footprint_is_absolute,
     )

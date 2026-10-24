@@ -88,7 +88,7 @@ const entries: ReferenceEntry[] = [
   {
     id: "gee-expression",
     title: "expression 与 updateMask",
-    text: "expression 支持已实现的算术、比较、逻辑、部分数学函数及三元表达式，未知语法明确失败。updateMask 使用非零值保留有效像素，与 openEO mask 的方向相反；首版只接受二值掩膜，分数掩膜不支持。",
+    text: "expression 支持已实现的算术、比较、逻辑、部分数学函数及三元表达式，也支持 ee.Image() 空接收者的命名变量公式；未知语法明确失败。updateMask 保留独立小数权重，mask(newMask) 在已有有限网格上替换权重并将新有效科学值填0。可接已审查的mask读取和取样，通用双栅格权重、带权统计、地图透明度和栅格导出仍未接通；本地合同没有Google等价声明。",
     code: "var ndvi = image.expression('(n-r)/(n+r)', {\n  n:image.select('B8'), r:image.select('B4')\n}).rename('NDVI');\nvar vegetation = ndvi.updateMask(ndvi.gt(0.3));",
   },
   {

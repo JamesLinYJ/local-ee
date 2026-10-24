@@ -57,8 +57,8 @@ floor／ceil保留负零，负小数ceil到零时也保留负号，与现有原�
 相遇时的通用幅值公式。因此本地的一元／未掩膜常量权重传递属于明确标注的实现推断，
 没有Google数值等价声明；双栅格、两侧带权、ND／双影像expression、where／unmask、
 球面部分像元clip、权重统计／透明度和栅格权重编码继续列为缺口。
-`ee.Image().expression(...)` 的空接收者仍会序列化为未支持的mask setter，
-该原始写法也保持为迁移缺口；本页示例使用已有带权影像作为expression接收者。
+`ee.Image().expression(...)` 的透明接收者已通过正常mask setter路径接通命名变量公式，
+详见[空接收者与替换合同](empty-expression.md)；本页示例使用已有带权影像作为expression接收者。
 不猜测这些组合是取最小值或相乘。
 [数学运算](https://developers.google.com/earth-engine/guides/image_math)、
 [掩膜权重](https://developers.google.com/earth-engine/guides/reducers_weighting)。

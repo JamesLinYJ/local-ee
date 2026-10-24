@@ -11,6 +11,13 @@ def require_single_item_grid(translator, cid, item_id, selectors):
     item = _item_lookup(translator, cid).get(item_id)
     if item is None:
         fail("Float64 selection source item is unavailable for grid validation")
+    validate_item_assets(translator, item, selectors)
+
+
+def validate_item_assets(translator, item, selectors):
+    """Check a freshly resolved catalogue item without rebuilding its lookup."""
+    from .numeric_reducer_grid import _charge
+
     _charge(translator, 1 + len(selectors))
     _crs, _transform, item_crs_values, item_transforms = item_projection(item)
     crs_values = list(item_crs_values)

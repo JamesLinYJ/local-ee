@@ -50,9 +50,9 @@ def _add_linked_bands(translator, primary, secondary, selected, label, *, overwr
 
     charge(translator, 1 + len(primary.bands), label + " primary band binding")
     charge(translator, 1 + len(linked), label + " linked band binding")
-    primary_bands = bind_source_bands(primary, primary)
+    primary_bands = bind_source_bands(primary, primary, translator=translator)
     linked_image = replace(secondary, bands=linked)
-    linked_bands = bind_source_bands(linked_image, primary)
+    linked_bands = bind_source_bands(linked_image, primary, translator=translator)
     if overwrite:
         charge(translator, 1 + len(primary_bands), label + " overwrite band index")
         primary_names = {name for name, _ in primary_bands}

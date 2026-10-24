@@ -16,6 +16,9 @@ class Parser:
     def __init__(self, text, variables, default, translator):
         if not isinstance(text, str) or len(text) > 20000:
             fail("Image expression must be a string of at most 20000 characters")
+        from .compat.earthengine.array_core import charge_array
+
+        charge_array(translator, len(text) + len(variables) + 4)
         self.tokens = []
         pos = 0
         text = text.strip()

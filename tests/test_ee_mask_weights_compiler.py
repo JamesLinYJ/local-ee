@@ -173,13 +173,13 @@ def test_mapped_getter_and_per_image_mean_or_tobands_keep_each_real_item_lineage
         assert mask_weight_operations(result).count("update") == 3
 
 
-def test_binary_update_mask_keeps_the_existing_boolean_path():
+def test_binary_update_mask_keeps_boolean_values_with_strict_source_guard():
     result = compile_fixture("binaryUpdateCompatibility")
 
     assert result["bands"] == ["nir"]
-    assert "local_ee_mask_weights" not in [
-        node["process_id"] for node in result["process_graph"].values()
-    ]
+    # The only weight projection guards original science before the legacy
+    # value/NoData conditional. Binary output does not become a carrier.
+    assert mask_weight_operations(result) == ["apply"]
 
 
 @pytest.mark.parametrize(

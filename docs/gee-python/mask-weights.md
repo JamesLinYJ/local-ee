@@ -48,7 +48,8 @@ getter 输出中的有效数值保留。Infinity 拒绝，不能先转成 Float3
 导出会明确拒绝尚未实现的消费者，不能
 静默降为二值掩膜。`weighted.mask()` 返回的是普通数值权重影像，可继续使用已有
 数值影像路径；这不代表权重已被统计或显示为原科学影像的透明度。mask setter
-仍未实现；缺省或显式 null 的 getter 都可用。原二值 updateMask 路径继续保留。
+已接通有限对齐网格上的替换与新有效像元填0，见[空接收者与替换合同](empty-expression.md)；
+缺省或显式 null 的 getter 都可用。原二值 updateMask 路径继续保留。
 
 ## 与裁切、统计的关系
 

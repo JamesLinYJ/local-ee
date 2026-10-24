@@ -128,9 +128,9 @@ class Translator(CatalogOperations, FilteringOperations):
                 return self.invoke(value["functionName"], arguments)
             function = self.evaluate(value.get("function"), env, depth + 1)
             if isinstance(function, ParsedExpression):
-                from ...ee_expression import parse_expression
+                from .image_expression import invoke
 
-                return parse_expression(function.text, arguments, function.default, self)
+                return invoke(self, function, arguments)
             if isinstance(function, Function):
                 if set(arguments) != set(function.names):
                     fail("Function argument names do not match")

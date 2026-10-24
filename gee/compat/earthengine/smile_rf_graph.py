@@ -100,7 +100,7 @@ def _training_model(graph, classifier, inputs):
     child_translator = Translator(
         list(graph.t.catalog.values()), graph.t.items, options,
     )
-    child_graph = Graph(child_translator)
+    child_graph = Graph(child_translator, work_owner=graph.work_owner)
     node_bound = (
         image_node_estimate(projected_image, options)
         + _target_node_bound(graph, inputs)

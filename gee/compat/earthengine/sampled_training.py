@@ -35,6 +35,9 @@ def _pixel_cost(pixel, seen, sources):
         # Validation is a typed identity using apply(value,1), including its
         # implicit Double boundary, constant grid binding, labels and merge.
         return child_cost + 8
+    if pixel.op == "mask_set_value":
+        # Strict apply includes labels/merge/casts; zero and unmask add2nodes.
+        return child_cost + 10
     if pixel.op in {"mask_validity", "mask_result_value"}:
         return child_cost + 4
     if pixel.op in {"mask_apply", "mask_update"}:
@@ -195,7 +198,7 @@ def compile_training_model(graph, classifier, target_inputs):
     child_translator = Translator(
         list(graph.t.catalog.values()), graph.t.items, options,
     )
-    child_graph = Graph(child_translator)
+    child_graph = Graph(child_translator, work_owner=graph.work_owner)
     training_spec = _training_spec(classifier)
 
     # Reserve a conservative graph upper bound for both the fixed training

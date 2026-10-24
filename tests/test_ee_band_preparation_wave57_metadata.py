@@ -45,7 +45,7 @@ def test_metadata_constant_is_double_on_grid_and_does_not_inherit_input_mask(ee,
     assert result["source_item_ids"] == ["a"]
     assert not graph_nodes(result, "local_ee_to_float")
     constants = graph_nodes(result, "local_ee_constant_on_grid")
-    assert [node["arguments"]["value"] for node in constants] == [20]
+    assert [node["arguments"]["value"] for node in constants] == [1.0, 20]
 
     arrays = {"a": {"blue": np.array([1.0, 2.0]), "green": np.array([2.0, 3.0]),
                      "red": np.array([3.0, 4.0]), "nir": np.array([4.0, 5.0])}}

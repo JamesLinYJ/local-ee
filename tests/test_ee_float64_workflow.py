@@ -255,7 +255,7 @@ def test_python_and_javascript_double_raster_workflow_graphs_match_offline():
         assert "local_ee_to_float" not in _processes(python[name]), name
     normalized_ops = {spec["op"] for spec in _specs(python["normalized_ndvi"])}
     assert {"lt", "neq"} <= normalized_ops
-    assert {"or", "not", "and"} <= set(_processes(python["normalized_ndvi"]))
+    assert {"or", "eq", "and"} <= set(_processes(python["normalized_ndvi"]))
     assert "mask" in _processes(python["normalized_ndvi"])
 
     temperature_ops = {spec["op"] for spec in _specs(

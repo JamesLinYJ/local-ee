@@ -1,0 +1,505 @@
+{
+  "schema": "local-ee-gee-python-wave67/v1",
+  "date": "2026-10-25",
+  "status": "bounded local wave verified; full project goal active",
+  "base_commit": "413c49a3e6cd0626b821c06018809de433eae4b9",
+  "focus": [
+    "Official transparent ee.Image()/Image(None) construction through normal mask setter; named-map Image.expression",
+    "Bounded aligned Image.mask replacement, newly valid science filled0, original props/support/type retained",
+    "Finite masked constants bound only to actual science grids; explicit ordered addBands and strict bool/null overwrite",
+    "Float32 Boolean nonzero truth, missingness and conditional-mask preservation",
+    "Actual source-asset conflict checks across aliases; callback-scoped sampling preflight and owner-ledger costs"
+  ],
+  "coverage": {
+    "entry_names_supported": 710,
+    "pinned_entry_names": 991,
+    "entry_name_percentage": 71.64,
+    "semantic_or_google_equivalence_percentage": null,
+    "note": "Existing names gained actual signatures/compositions; entry counts do not measure full signatures, defaults, numerical or Google equivalence."
+  },
+  "local_validation": {
+    "full_regression": {
+      "summary": "6477 passed, 27 skipped, 53 warnings in 89.03s (0:01:29)",
+      "source_files_hashed": 52,
+      "source_stable": true,
+      "seconds_wall": 89.907
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typecheck": "passed",
+      "temporary_build": "passed",
+      "source_stable": true,
+      "temporary_output_removed": true,
+      "deployed": false
+    },
+    "official_clients": {
+      "semantic_graph_digests": 29,
+      "raw_wire_digests": 58,
+      "network_attempts": 0
+    },
+    "native": {
+      "scope": "Actual LocalEeMaskWeightsNumeric.applyTile, one local[1] 4x4 LocalEeMaskCubeProcesses.unmask call, and LocalEeImageSampleKernel. This is a component probe; it does not validate a full compiled Spark graph or batch.",
+      "route_count": 9,
+      "rows_each": 16,
+      "manifest": {
+        "path": "audit/gee-python-wave66/native/final-1-20261024/local-ee-mask-math-adapter.jar.manifest.json",
+        "sha256": "299adcf686c2a337b97c3f90e8af0b328fe514d1986dfb1a803d1a2a5c4d3acf",
+        "adapter_jar": "audit/gee-python-wave66/native/final-1-20261024/local-ee-mask-math-adapter.jar",
+        "adapter_jar_sha256": "b1f20b0d4e9214b0da1433e4293f0bf2ae9e5b24e6b940ea3c88ab535def6564",
+        "java_version": "OpenJDK 25.0.4.1",
+        "scala_source_count": 70,
+        "scala_tool_count": 3,
+        "runtime_jar_count": 245,
+        "deployment_eligible": false
+      },
+      "raw_boolean_missing": [
+        1,
+        0,
+        0
+      ],
+      "corrected_boolean_missing": [
+        1,
+        null,
+        null
+      ],
+      "nonbinary_truth": {
+        "x": [
+          2,
+          -3,
+          0
+        ],
+        "y": [
+          -3,
+          2,
+          2
+        ],
+        "actual_raw_geotrellis": {
+          "and": [
+            0,
+            0,
+            0
+          ],
+          "or": [
+            -1,
+            -1,
+            2
+          ],
+          "not_x": [
+            -3,
+            2,
+            -1
+          ]
+        },
+        "independently_expected_ee_nonzero_truth": {
+          "x_nonzero": [
+            1,
+            1,
+            0
+          ],
+          "y_nonzero": [
+            1,
+            1,
+            1
+          ],
+          "and": [
+            1,
+            1,
+            0
+          ],
+          "or": [
+            1,
+            1,
+            1
+          ],
+          "not_x": [
+            0,
+            0,
+            1
+          ]
+        },
+        "actual_normalized_geotrellis_composition": {
+          "unequal_x_zero": [
+            1,
+            1,
+            0
+          ],
+          "unequal_y_zero": [
+            1,
+            1,
+            1
+          ],
+          "and": [
+            1,
+            1,
+            0
+          ],
+          "or": [
+            1,
+            1,
+            1
+          ],
+          "equal_x_zero_for_logical_not": [
+            0,
+            0,
+            1
+          ]
+        },
+        "raw_and_expected_differ": true
+      }
+    },
+    "csv_worker_result_python_getinfo": {
+      "route_count": 7,
+      "rows_per_route": 16,
+      "total_rows": 112,
+      "routes": [
+        "map_sample",
+        "setter_value_sample",
+        "setter_weight_sample",
+        "update_mask_value_sample",
+        "update_mask_weight_sample",
+        "fractional_hidden_recovery_value_sample",
+        "fractional_hidden_recovery_weight_sample"
+      ],
+      "validation": "Actual native rows flowed through the trusted local sample-table worker, physical CSV, result route, and official Python SDK getInfo readback; values matched bitwise at 0 ULP.",
+      "full_compiled_spark_batch_claim": false
+    }
+  },
+  "independent_review": {
+    "model": "gpt-6.1-sol",
+    "production_files": 25,
+    "original_contract_files_unchanged": 18,
+    "unexpected": [],
+    "counts": {
+      "sdk_corpus": {
+        "original": {
+          "entries": 109,
+          "serialized": 95,
+          "unique_payload_options_catalog_variants": 89,
+          "accepted": 63,
+          "rejected": 32,
+          "expected_serialized": {
+            "accept": 69,
+            "unknown": 7,
+            "reject": 19
+          }
+        },
+        "additional": {
+          "entries": 24,
+          "serialized": 24,
+          "unique_payload_options_catalog_variants": 24,
+          "accepted": 15,
+          "rejected": 9,
+          "expected_serialized": {
+            "accept": 15,
+            "reject": 9
+          }
+        }
+      },
+      "combined_entries": 133,
+      "combined_serialized": 119,
+      "combined_unique_payload_options_catalog_variants": 112,
+      "vector_cases_same_requests": 50,
+      "vector_computed_pass": 45,
+      "vector_compile_rejected": 5,
+      "adversarial_vectors": 14,
+      "resource_and_public_ownership": 17,
+      "unchanged_structural_bounds": 6,
+      "additional_targeted_regression_requests": 2,
+      "additional_alias_grid_controls_outside_original133": 4,
+      "additional_trusted_child_budget_controls_outside_original133_and_resource17": 4
+    },
+    "accepted_serialized_requests": 78,
+    "rejected_serialized_requests": 41,
+    "remaining_positive_gaps": [
+      {
+        "case": "original:constructor_select_empty_bands",
+        "payload_key": "bb21c9d3310fec2c9b3383178efca8ffa7fd75b60657a470f4070ad48b257bd8",
+        "reason": "Zero-band images are not supported"
+      },
+      {
+        "case": "original:constructor_constant_select_empty_bands",
+        "payload_key": "8826ac034a7f450c50cd726b1f2128b735baea5859e88a3bf4db7969075516bf",
+        "reason": "Zero-band images are not supported"
+      },
+      {
+        "case": "original:constructor_noarg_select_empty_bands",
+        "payload_key": "20bc98e5d8a45627b2dc44631e6df662bba03cc745f8e12df2057a8ef49dd014",
+        "reason": "Zero-band images are not supported"
+      },
+      {
+        "case": "original:accumulator_zero_selected_bands",
+        "payload_key": "2b0954d65d85df24e36824817fdb6e4946b3a3c7918b4e36e86d466d9c62ded3",
+        "reason": "Zero-band images are not supported"
+      },
+      {
+        "case": "original:accumulator_zero_selected_sample",
+        "payload_key": "eb9be61b8eecb58ba28f25da76bba601d1634e7bc61def0147c0f68236a95ff9",
+        "reason": "Zero-band images are not supported"
+      },
+      {
+        "case": "original:accumulator_zero_noarg_selected_bands",
+        "payload_key": "9357a62132f3b47e18fcdff9dcb80cbd64cc29cf5bdd686b23561923b0f38516",
+        "reason": "Zero-band images are not supported"
+      },
+      {
+        "case": "original:accumulator_zero_noarg_selected_sample",
+        "payload_key": "285b7be856f69ae20334d06ff2448699ca2087c2dd0d7d0365de196cde356826",
+        "reason": "Zero-band images are not supported"
+      },
+      {
+        "case": "original:accumulator_cat_zero_selected_bands",
+        "payload_key": "2b0954d65d85df24e36824817fdb6e4946b3a3c7918b4e36e86d466d9c62ded3",
+        "reason": "Zero-band images are not supported"
+      },
+      {
+        "case": "original:accumulator_cat_zero_selected_sample",
+        "payload_key": "eb9be61b8eecb58ba28f25da76bba601d1634e7bc61def0147c0f68236a95ff9",
+        "reason": "Zero-band images are not supported"
+      },
+      {
+        "case": "original:accumulator_source_identity",
+        "payload_key": "985fc28b8bfd0863e3cc1b58cf241d085c82dce971aaf40eefbda3ca718d0b65",
+        "reason": "Zero-band images are not supported"
+      },
+      {
+        "case": "additional:zero_source_other_item",
+        "payload_key": "c48ff9b00704d87d938e05b2a48a430de113585f536152381c6656cd4f856d05",
+        "reason": "Zero-band images are not supported"
+      },
+      {
+        "case": "additional:zero_source_cat_middle",
+        "payload_key": "c9d8a6367510b54b8042156e03b5f5d71b0c26184155c462618de30f8141a515",
+        "reason": "Zero-band images are not supported"
+      }
+    ],
+    "unknowns": [
+      {
+        "case": "original:constructor_noarg_public",
+        "status": "reject",
+        "note": "unknown_global_grid"
+      },
+      {
+        "case": "original:constructor_null_public",
+        "status": "reject",
+        "note": "unknown_global_grid"
+      },
+      {
+        "case": "original:constructor_noarg_sample",
+        "status": "reject",
+        "note": "unknown_global_grid"
+      },
+      {
+        "case": "original:expression_empty_receiver_b",
+        "status": "reject",
+        "note": "unknown_global_grid"
+      },
+      {
+        "case": "original:expression_constant_unused_grid",
+        "status": "reject",
+        "note": "unused variable cannot invent global grid"
+      },
+      {
+        "case": "original:mask_fractional_setter",
+        "status": "accept",
+        "note": "fractional setter composition pending explicit contract; no Google parity"
+      },
+      {
+        "case": "original:source_duplicate_identity",
+        "status": "reject",
+        "note": "default b() refers to blank receiver; cannot invent item grid"
+      }
+    ],
+    "sdk_refusal_count": 14,
+    "note": "Original and additional payloads/expectations remain immutable; pre-frozen and measured calibrations are separately retained. Vector/resource/duplicate controls do not inflate API coverage."
+  },
+  "confirmed_fixes": [
+    "Raw GeoTrellis Greater/Less dropped NoData; explicit callback input validity restores missing output while preserving valid0.",
+    "Raw GeoTrellis And/Or/Not are bitwise: normalize And/Or operands with neq0; use eq0 for logical Not and internal inversion.",
+    "Legacy binary updateMask could erase raw Infinity before setter validation; source guard now runs first.",
+    "Same-item asset affine contradiction, including mixed native/Google aliases, can no longer bypass selected-asset checks.",
+    "Source-only masked-grid borrowing remains rejected; true clipped raster and source-free binary revival regressions are fixed.",
+    "sample_input_budget followed callback-local a0 as a global node; scoped walker retains true training/query loads.",
+    "New child asset scans/callback work charged an independent allowance; four child graph routes now inherit request work_owner.",
+    "Truthy overwrite strings, uncharged merging/collisions and over10000 addBands output now reject or pay existing work."
+  ],
+  "preserved_failures_and_corrections": {
+    "full_regressions": [
+      {
+        "run": "full-1",
+        "summary": "70 failed, 6403 passed, 27 skipped, 53 warnings in 74.08s (0:01:14)",
+        "result": "failed; overbroad repeated callback grid checks corrected at actual source-load boundary, without raising caps"
+      },
+      {
+        "run": "full-2",
+        "summary": "6474 passed, 27 skipped, 53 warnings in 163.51s (0:02:43)",
+        "result": "passed but superseded after independent owner-ledger finding"
+      },
+      {
+        "run": "full-3",
+        "summary": "6477 passed, 27 skipped, 53 warnings in 89.03s (0:01:29)",
+        "result": "final source-frozen pass"
+      }
+    ],
+    "fixture_source_id": {
+      "old_source_id": "wave67-empty-expression-source",
+      "old_input_sha256": "cf719362af6c44be262707124463b9df3b9f2e80f5790ef9ab2afef8408e83cb",
+      "original_fixture_sha256": "165150c514005a3afebfb6197438f523fa699993761e2a4b1fbb73a8fe72f023",
+      "original_fixture_preserved_at": "audit/gee-python-wave67/workflow/empty-expression-original-inputs-before-catalog-correction.json",
+      "original_request_result": "failed at the unchanged compatibility catalog gate; not passed",
+      "catalog_error": "Collection has not passed Earth Engine compatibility acceptance: wave67-empty-expression-source",
+      "new_source_id": "sentinel-2-l2a",
+      "new_frozen_input_sha256": "fe02d3be7520d8df1aabe8c3cb27c3e1f71143a8036ab2f4686c79d62cc5fe02",
+      "new_fixture_sha256": "eee79abde60a9e9fa9e380d3c0cdeaf820ab56f5d43d5cb20d1ee320253dcda3",
+      "pixel_grid_masks_unchanged": true,
+      "catalog_changed": false,
+      "correction_record": "audit/gee-python-wave67/workflow/source-id-correction-v1.json",
+      "correction_record_sha256": "17d59d4681b2df8eb40cf49e1ed94be741e06f499fac1ce2d9ba683a9504ef20"
+    },
+    "unsupported_svd_diagnostic": "Same original wire cf9ac2f5672e6d7ab1f2d2017bfad18536e0c41a149ecda430f94bee30b2d1bf remains rejected at50000, now with an earlier grid-validation budget diagnostic; old failures retained.",
+    "known_gaps_not_passed_by_asserting_rejection": [
+      {
+        "workflow_outputs": [
+          "default_value_sample",
+          "default_weight_sample"
+        ],
+        "original_calls": [
+          "b()",
+          "b(0)",
+          "b('constant')",
+          "b(0) + red"
+        ],
+        "result": "Official Python/JavaScript graphs are frozen and parity-checked; local compile rejects a source-free sample graph because no finite bound raster operand is available. No compatibility acceptance claim."
+      },
+      {
+        "workflow": "default_index_plus_red mixed into default_values",
+        "result": "Combines the transparent source-free default carrier with a finite raster; remains unsupported and unaccepted."
+      }
+    ]
+  },
+  "limits_and_unverified": {
+    "compiler_work": 50000,
+    "pixel_depth": 96,
+    "process_nodes": 500,
+    "band_cap": 10000,
+    "new_work_owner": "New asset/callback charges use owning request ledger while child catalogue/grid/cache remain separate. Fixed49125 near-cap control rejects beforeload; 1000-item scan9901 debits owner.",
+    "ordinary_float32_cross_observation_alignment": "legacy behavior; cross-observation reprojection proof not established",
+    "mask_policies": "finite[0,1] weights and own-mask NoData contributing0 are bounded local contracts without Google parity",
+    "remaining": [
+      "general zero-band select([])/accumulators",
+      "global constant/transparent grids and default b()+real-raster compositions",
+      "general independent fractional raster-mask composition",
+      "weighted reductions/map transparency/raster export",
+      "spherical partial-pixel raster masking; three earlier strict S2 binary64 controls remain open",
+      "full compiled Spark batch, browser/native deployment and private real-data acceptance"
+    ],
+    "google_authentication_and_computation": "not run; offline-first policy per user",
+    "dependency_changes": false,
+    "public_runtime_jar_provenance_gap_carried_forward": {
+      "matched": 39,
+      "mismatched": 7,
+      "unlisted": 199,
+      "note": "Existing audit manifest classification, not a fresh provenance/security attestation."
+    },
+    "repository_security_scan": "not performed by this scoped correctness review"
+  },
+  "cleanup": {
+    "temporary_probe_compile_outputs": "removed by TemporaryDirectory/run_bounded; no runtime installation",
+    "temporary_frontend_output_removed": true,
+    "owned_review_baseline_duplicate_removed": {
+      "files": 509,
+      "bytes": 4041158,
+      "rebuild_source_hashes_verified": 336
+    },
+    "preserved": "Raw failures, original inputs/contracts, final nondeployable Wave66 audit JAR and reproducible receipts"
+  },
+  "audit_receipts": {
+    "independent_review_sha256": "2a9234e34aa4309d14dd51def201b638a3eb92c056a79e1e88d334f6a9094b07",
+    "workflow_sha256": "d4f82b908c9f783f3eeffaaa472c0d8519d32fefc46bdffc5330e33321309d4d",
+    "full_regression_sha256": "6a2bc5356f7ee2d3431f8731e9358c690d03f72a8548ee7acb8dbd10ffb06936",
+    "frontend_sha256": "da8f1261eb101fdea40f35bb904a0f524dd6c7bc08e8f8c705ee0b6f59514cf6"
+  },
+  "production_source_sha256": {
+    "gee/compat/earthengine/callback_grid.py": "5cfb01a1624d4567040b491dda86bd430eda831206582eafebebe329f8be1269",
+    "gee/compat/earthengine/callback_masks.py": "101e167488b26dc7df25120395eff86a413ff09f95a72757330edd95af6a0036",
+    "gee/compat/earthengine/capabilities.py": "e3aa3b85c79b6c6b48abc2aba9d872e9df9fa565e3b47c0379a59d7691eb9125",
+    "gee/compat/earthengine/constant_bands.py": "5c5f803a3013b4f177f647905e9509673f988ec29f8e8ee19f2641e01df456ca",
+    "gee/compat/earthengine/constant_mask_binding.py": "6a94cec2e0533945e815d60ddd1a4cb26926a8d1f8a94efbb80ac69e2e7054de",
+    "gee/compat/earthengine/constant_mask_lineage.py": "99e0b079eb65a579d055cace6064cb5dff914e9b67f4280c720682ba08a457c3",
+    "gee/compat/earthengine/decoder.py": "f96d894d93247509effb66e6f287e34c56a6db4a934379499573de155c8ddfcd",
+    "gee/compat/earthengine/graph.py": "8e30de7971b2b05b4dcd4f4eb4fe54fe6e6a4383f364b84944b6f3a3584cf702",
+    "gee/compat/earthengine/image_add_bands.py": "a1267fb3b732ae021abde153b74384b54537534bceb983ca3cc4231c40ae2e38",
+    "gee/compat/earthengine/image_collection_link.py": "96d2337de05e6b6629426aea85cb2be0ead29a5fac40fd4ebb68c1f391bb3913",
+    "gee/compat/earthengine/image_expression.py": "59f76fa1dae906bf2c33dd383ee6924fafcafbdef8700fd26d7388b199136767",
+    "gee/compat/earthengine/image_mask_setter.py": "756d62c1173fe46ec0f383483347bdb0bde23de1500a08719b7a2248c552f038",
+    "gee/compat/earthengine/image_mask_weights.py": "960424b1c07383e2d6d6afe45d1c22eda056f8716f575db39188bbb5817b7622",
+    "gee/compat/earthengine/image_metadata_raster.py": "897b3ad16c47e561eb2c6e5798d8a5a7ab0847e9ce659d0b37ff96d1143f64e4",
+    "gee/compat/earthengine/image_ops.py": "fe3c603be5bded263e9193d498e2fde8b711899b5ef31301ba10ff737d7eacea",
+    "gee/compat/earthengine/ir.py": "7587a3231b3facc9050e36028f171972f53ebbce57e62630ff0f468ecd99340d",
+    "gee/compat/earthengine/mask_weights_graph.py": "f285dc2f0cf7d6ffc7b6c93973cdadb322439b459f1c9dddfba4853f582e07ff",
+    "gee/compat/earthengine/pixel_graph.py": "0fbe3870d6c52db7406791e34f754a2e8152ad6594a2ea113768e6654c1b3858",
+    "gee/compat/earthengine/raster_sampling.py": "bd4c7eecd04bfe847951ee5d81e8b356657fb6ea1050c438ffc0574722277076",
+    "gee/compat/earthengine/runtime_validation_graph.py": "f4555ab568127ad3dfc231cf138a60c579b951cfae6d7df2a38222a0c963e7d4",
+    "gee/compat/earthengine/sampled_training.py": "c0b4d7dfae2f04bd021c2086ccdd5ef82ded840a4c7fe6a6fd43469fd6d50447",
+    "gee/compat/earthengine/selection_grid.py": "87886f92963c9ac3a7aed46a13177d215610d7767047a39e1dc4cd7ef9161350",
+    "gee/compat/earthengine/smile_rf_graph.py": "ecfe4d61656d1cbb1098ab623874b8e90aae01791a10462a75a66248f0046038",
+    "gee/ee_expression.py": "b1dd987b58209cbbdeeef05da532192149a87f2002ac7c286723f500953154b3",
+    "gee/services/ee_budget.py": "6e9bc4a791b5826308d9f868054249b093c548da02502faf1763c1793b5702f1"
+  },
+  "frozen_tested_source_sha256": {
+    "examples/71_GEE_python_empty_expression.py": "8cbbbf75118700f1a32010f2c65d561e8500c48d609219a2c3650ff3e877553e",
+    "examples/javascript/25_空影像表达式.js": "6b694b8aed3544ca539afa2f3e10a8044e8c08e035a1313e649ab3b14d0b7bc0",
+    "gee/compat/earthengine/callback_grid.py": "5cfb01a1624d4567040b491dda86bd430eda831206582eafebebe329f8be1269",
+    "gee/compat/earthengine/callback_masks.py": "101e167488b26dc7df25120395eff86a413ff09f95a72757330edd95af6a0036",
+    "gee/compat/earthengine/capabilities.py": "e3aa3b85c79b6c6b48abc2aba9d872e9df9fa565e3b47c0379a59d7691eb9125",
+    "gee/compat/earthengine/constant_bands.py": "5c5f803a3013b4f177f647905e9509673f988ec29f8e8ee19f2641e01df456ca",
+    "gee/compat/earthengine/constant_mask_binding.py": "6a94cec2e0533945e815d60ddd1a4cb26926a8d1f8a94efbb80ac69e2e7054de",
+    "gee/compat/earthengine/constant_mask_lineage.py": "99e0b079eb65a579d055cace6064cb5dff914e9b67f4280c720682ba08a457c3",
+    "gee/compat/earthengine/decoder.py": "f96d894d93247509effb66e6f287e34c56a6db4a934379499573de155c8ddfcd",
+    "gee/compat/earthengine/graph.py": "8e30de7971b2b05b4dcd4f4eb4fe54fe6e6a4383f364b84944b6f3a3584cf702",
+    "gee/compat/earthengine/image_add_bands.py": "a1267fb3b732ae021abde153b74384b54537534bceb983ca3cc4231c40ae2e38",
+    "gee/compat/earthengine/image_collection_link.py": "96d2337de05e6b6629426aea85cb2be0ead29a5fac40fd4ebb68c1f391bb3913",
+    "gee/compat/earthengine/image_expression.py": "59f76fa1dae906bf2c33dd383ee6924fafcafbdef8700fd26d7388b199136767",
+    "gee/compat/earthengine/image_mask_setter.py": "756d62c1173fe46ec0f383483347bdb0bde23de1500a08719b7a2248c552f038",
+    "gee/compat/earthengine/image_mask_weights.py": "960424b1c07383e2d6d6afe45d1c22eda056f8716f575db39188bbb5817b7622",
+    "gee/compat/earthengine/image_metadata_raster.py": "897b3ad16c47e561eb2c6e5798d8a5a7ab0847e9ce659d0b37ff96d1143f64e4",
+    "gee/compat/earthengine/image_ops.py": "fe3c603be5bded263e9193d498e2fde8b711899b5ef31301ba10ff737d7eacea",
+    "gee/compat/earthengine/ir.py": "7587a3231b3facc9050e36028f171972f53ebbce57e62630ff0f468ecd99340d",
+    "gee/compat/earthengine/mask_weights_graph.py": "f285dc2f0cf7d6ffc7b6c93973cdadb322439b459f1c9dddfba4853f582e07ff",
+    "gee/compat/earthengine/pixel_graph.py": "0fbe3870d6c52db7406791e34f754a2e8152ad6594a2ea113768e6654c1b3858",
+    "gee/compat/earthengine/raster_sampling.py": "bd4c7eecd04bfe847951ee5d81e8b356657fb6ea1050c438ffc0574722277076",
+    "gee/compat/earthengine/runtime_validation_graph.py": "f4555ab568127ad3dfc231cf138a60c579b951cfae6d7df2a38222a0c963e7d4",
+    "gee/compat/earthengine/sampled_training.py": "c0b4d7dfae2f04bd021c2086ccdd5ef82ded840a4c7fe6a6fd43469fd6d50447",
+    "gee/compat/earthengine/selection_grid.py": "87886f92963c9ac3a7aed46a13177d215610d7767047a39e1dc4cd7ef9161350",
+    "gee/compat/earthengine/smile_rf_graph.py": "ecfe4d61656d1cbb1098ab623874b8e90aae01791a10462a75a66248f0046038",
+    "gee/ee_expression.py": "b1dd987b58209cbbdeeef05da532192149a87f2002ac7c286723f500953154b3",
+    "gee/services/ee_budget.py": "6e9bc4a791b5826308d9f868054249b093c548da02502faf1763c1793b5702f1",
+    "scripts/probe_empty_expression_native.py": "7f818c698c3da605a1f20320861a6075031cb057f90212b19c2203d1591075da",
+    "tests/ee_empty_expression_reference.py": "04671ee7a490428ecaa193d8b0e10081f9fb6b6ace29963afbe653d5fa36eec6",
+    "tests/ee_empty_expression_sdk.py": "76872e11523e4ed968fe5a3b3dacb7947bfc3422b2cfab5589125690ba9d20a6",
+    "tests/ee_mask_weights_graph_reference.py": "805100998b26a986a2e62e2e3895580468beb31fa5c6d118d67cbd2ef8fa1c73",
+    "tests/fixtures/ee-empty-expression-kernel-probe.scala": "9669fabf9ecb6f670ecca0d449247f586e2dd7f749c9c6c94cc2e30b1694c6a6",
+    "tests/fixtures/ee-empty-expression-wave67-v1.json": "eee79abde60a9e9fa9e380d3c0cdeaf820ab56f5d43d5cb20d1ee320253dcda3",
+    "tests/test_ee_add_bands_contract.py": "6887db7cfcbeda2b42422ff533f28359e0498ed452835cb8ac58ee8fc2f715b4",
+    "tests/test_ee_band_preparation_wave57_metadata.py": "b9bbeb454b3ef766e20ad46761367cef91ac79d7036af91366d8a7aeb1e6eb60",
+    "tests/test_ee_callback_masks.py": "addc46e33ca8a62ea14a55fd2ef4a045ad4a8c4effb13bb54e8533061807f2bf",
+    "tests/test_ee_constant_bands.py": "99b5da98e2ea86053a5fc2fcd8235019da8c6769cb783a39b040cab17a26b71b",
+    "tests/test_ee_constant_mask_binding.py": "5377c80257abc7c2ab05067ebeaaaf4ce76f275cd9710962d48e1ea84e3ad9c9",
+    "tests/test_ee_constant_mask_lineage.py": "b9d9143c9d7324b44fb888ff18c2397a3791564b8edecbf3d22f3be19c93ce71",
+    "tests/test_ee_distance_workflow.py": "097c26a3bc52d35a3136d4c996470c614993f4a53eaba838e2cbd64ecd915d4f",
+    "tests/test_ee_empty_constructor.py": "529965ad6c06c0ceefe3d2b6c9ab01f5e56bf61811b90a53f6f40342c6ce7e21",
+    "tests/test_ee_empty_expression_workflow.py": "8e01fb3c6201c032a6cf22150aad84203c7011a8a1f03b558440031f621637b3",
+    "tests/test_ee_float64_workflow.py": "31a5af991cd910964485595d68151474bd1056b1f64cda7d73a06f76412d16d6",
+    "tests/test_ee_image_expression_signature.py": "1a13d6e66f83b05c1cd2604ba3e0b7c90cf431bfd579e210f064145f56c1a462",
+    "tests/test_ee_mask_weights_compiler.py": "73abc70d70ec83e7dd4654df14ce4e6c3c33e7856adaf76b29e979f115b94338",
+    "tests/test_ee_matrix_orthogonal_workflow.py": "fdd7c0c99d9f946fd4cc61ecdce8c9c3545e1fdc41884783407d7f135743ba01",
+    "tests/test_ee_sample_budget_scope.py": "936c4516ffe5bca12732ec845b546c14b7fdb86979f8989f8f8db37d15b07cb1",
+    "tests/test_ee_source_budget_owner.py": "c5682ee39172b6a6446728636c95ed5008b04b3f1b7518d25c1805c66a05aa74",
+    "tests/test_ee_translate.py": "3f350eaa4b2f2641d7b09117852ea46b65f62c2ca024ea86930cd289f574c638",
+    "tests/test_ee_weighted_sampling_workflow.py": "0137bd0745d5870fa3a9d091c980596e3bfe87455465230455057e121a236be9",
+    "web/src/docs/gee-docs.ts": "f7919dbbb624d867bbbeafd9e10369ec480be86f2b411a84da9abece45fc6f74",
+    "web/src/docs/typed-raster-docs.ts": "5e5c0315101d8a8a9f81cee1cddee4082e0545bd8a062367b0b53a3eed1992a3"
+  },
+  "publication_policy": "Normal exact-SHA validation branch python/frontend success, protection readback, then fast-forward main; no PR/force/bypass. Publication receipt remains in ignored audit/root/publication.json.",
+  "runtime_services_deployed": false,
+  "goal_status": "active; remaining work required"
+}

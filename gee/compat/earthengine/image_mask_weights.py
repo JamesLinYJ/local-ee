@@ -68,7 +68,9 @@ def invoke_mask_weights(translator, name, arguments):
     image = as_image(arguments["image"])
     if name == "Image.mask":
         if arguments.get("mask") is not None:
-            fail("Image.mask setter is unsupported; use updateMask")
+            from .image_mask_setter import replace_mask
+
+            return replace_mask(translator, image, as_image(arguments["mask"]))
         _charge_bands(translator, image)
         return replace(image, bands=[(band, mask_of(pixel)) for band, pixel in image.bands])
     if name != "Image.updateMask" or "mask" not in arguments:
@@ -86,9 +88,12 @@ def invoke_mask_weights(translator, name, arguments):
         for _band, pixel, mask_pixel in matched
     )
     if binary_only:
-        # Preserve the established binary value/NoData path and its precision.
+        # Validate source science before a binary mask can erase Infinity.
+        # The guard retains nominal precision; output remains value/NoData.
         return replace(image, bands=[
-            (band, Pixel("if", (mask_pixel, pixel, const(None))))
+            (band, Pixel("if", (
+                mask_pixel, Pixel("mask_guard", (pixel,), pixel.boolean), const(None),
+            )))
             for band, pixel, mask_pixel in matched
         ])
     translator.warn(

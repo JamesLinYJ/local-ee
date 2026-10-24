@@ -161,7 +161,7 @@ def test_masked_destination_uses_a_real_grid_without_inheriting_its_mask():
     result = compile_fixture("maskedRasterAddConstant")
     assert result["bands"] == ["valid_constant"]
     assert [node["arguments"]["value"] for node in nodes_for(
-        result, "local_ee_constant_on_grid")] == [7]
+        result, "local_ee_constant_on_grid")] == [1.0, 7]
     assert result["source_item_ids"] == ["a"]
     catalog, items = local_data()
     image = Translator(catalog, items, None).evaluate(SDK["maskedRasterAddConstant"])

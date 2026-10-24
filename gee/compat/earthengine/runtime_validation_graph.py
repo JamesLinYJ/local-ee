@@ -42,7 +42,7 @@ def _sampled_table_ref(graph, sampled, label):
     grid = spec["grid"]
     options = {key: grid[key] for key in ("scale", "crs") if grid[key] is not None}
     child = Translator(list(graph.t.catalog.values()), graph.t.items, options)
-    child_graph = Graph(child)
+    child_graph = Graph(child, work_owner=graph.work_owner)
     estimated_nodes = image_node_estimate(projected_image, options) + 1 + len(operations)
     graph.reserve_nodes(estimated_nodes, label)
     charge_array(

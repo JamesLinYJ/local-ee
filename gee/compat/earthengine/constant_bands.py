@@ -247,14 +247,30 @@ def _bind_pixel(pixel: Pixel, destination: Image, template: Pixel, source: Image
     return bound
 
 
-def bind_source_bands(source: Image, destination: Image) -> list[tuple[str, Pixel]]:
+def bind_source_bands(
+        source: Image, destination: Image, translator=None) -> list[tuple[str, Pixel]]:
     """Bind unbound pure constants only when the destination has a real grid."""
     if destination.source is None:
         return list(source.bands)
+    from .constant_mask_binding import (
+        bind_masked_pixel, is_masked_constant_candidate,
+    )
+
     memo = {}
     template = None
     bound = []
     for name, pixel in source.bands:
+        # A weighted constant needs two independently bound grid branches. Do
+        # this before the generic raster-lineage check: a mask-only source must
+        # not be mistaken for actual science lineage and borrowed as its grid.
+        if is_masked_constant_candidate(pixel):
+            masked = bind_masked_pixel(
+                pixel, source, destination, translator, name,
+            )
+            if masked is None:
+                fail("Internal masked constant binding shape changed")
+            bound.append((name, masked))
+            continue
         if _has_raster(pixel, memo):
             bound.append((name, pixel))
             continue
@@ -266,14 +282,21 @@ def bind_source_bands(source: Image, destination: Image) -> list[tuple[str, Pixe
     return bound
 
 
-def destination_template(destination: Image):
+def destination_template(destination: Image, *, science_only: bool = False):
     """Return a real destination band DAG with its spatial/temporal shape intact."""
     if destination.source is None:
         return None
     if not destination.source.ids:
         return None
+    if science_only:
+        # Masked-constant binding precharges and depth-checks the complete
+        # destination closure before asking for this narrower grid proof.
+        from .constant_mask_binding import has_science_grid
+
     memo = {}
     for _, pixel in destination.bands:
-        if _has_raster(pixel, memo):
+        if not _has_raster(pixel, memo):
+            continue
+        if not science_only or has_science_grid(pixel):
             return pixel
     return None

@@ -4,7 +4,6 @@ from __future__ import annotations
 import math
 from dataclasses import replace
 
-from .constant_bands import bind_source_bands
 from .ir import Image, Pixel, Reducer, Region, as_image, binary, const, fail, pairs, unary
 
 
@@ -150,10 +149,9 @@ def invoke_image(translator, name, arguments):
             footprint=image.footprint, footprint_is_absolute=image.footprint_is_absolute,
         )
     if name == "Image.parseExpression":
-        translator.allowed(a, {"expression", "argName", "vars"})
-        from .ir import ParsedExpression
+        from .image_expression import descriptor
 
-        return ParsedExpression(a["expression"], a["argName"], a["vars"])
+        return descriptor(translator, a)
     if name in {"Image.updateMask", "Image.mask"}:
         from .image_mask_weights import invoke_mask_weights
 
@@ -204,34 +202,9 @@ def invoke_image(translator, name, arguments):
             fail("Geometry extraction currently supports planar EPSG:4326 only")
         return translator.footprint(a.get("feature", a.get("collection")))
     if name == "Image.addBands":
-        translator.allowed(a, {"dstImg", "srcImg", "names", "overwrite"})
-        image, source = as_image(a["dstImg"]), as_image(a["srcImg"])
-        if a.get("names") is not None:
-            source = translator.select(source, a["names"])
-        if image.source is None and source.source is not None:
-            from .array_core import charge_array
+        from .image_add_bands import add_bands
 
-            # The public SDK's Image.cat folds through addBands. A leading
-            # constant can use the later raster's actual finite grid, retaining
-            # first-image properties and its independently valid constant mask.
-            charge_array(translator, 2 * len(image.bands) + len(source.bands) + 8)
-            image = replace(
-                image, bands=bind_source_bands(image, source), source=source.source,
-                footprint=source.footprint,
-                footprint_is_absolute=source.footprint_is_absolute,
-            )
-        bands = list(image.bands)
-        for band_name, pixel in bind_source_bands(source, image):
-            existing = [current for current, _ in bands]
-            if band_name in existing and a.get("overwrite", False):
-                bands[existing.index(band_name)] = (band_name, pixel)
-            else:
-                base, suffix = band_name, 1
-                while band_name in existing:
-                    band_name = f"{base}_{suffix}"
-                    suffix += 1
-                bands.append((band_name, pixel))
-        return replace(image, bands=bands, source=image.source or source.source)
+        return add_bands(translator, a)
     if name == "Image.clip":
         translator.allowed(a, {"input", "geometry"})
         image, geometry = as_image(a["input"]), a["geometry"]

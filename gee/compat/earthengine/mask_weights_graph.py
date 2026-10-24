@@ -8,6 +8,10 @@ from .ir import Image, Pixel, const, fail
 
 
 def compile_mask_pixel(graph, pixel):
+    if pixel.op == "mask_set_value":
+        from .image_mask_setter import compile_set_value
+
+        return compile_set_value(graph, pixel)
     if pixel.op == "with_mask":
         fail("Fractional image masks require a mask-aware consumer; use mask() to read fractional weights or sample supported weighted math. Unaudited weighted raster consumers, statistics, visualization and export are not implemented")
     if pixel.op == "mask_guard":

@@ -233,9 +233,14 @@ def test_python_and_javascript_sdk_1749_build_the_same_distance_graphs():
     mask_id = masked_graph[source_id]["arguments"]["data"]["from_node"]
     assert masked_graph[mask_id]["process_id"] == "mask"
     selected_id = masked_graph[mask_id]["arguments"]["data"]["from_node"]
-    assert masked_graph[selected_id]["process_id"] == "local_ee_drop_single_time"
-    cast_id = masked_graph[selected_id]["arguments"]["data"]["from_node"]
-    assert masked_graph[cast_id]["process_id"] == "local_ee_to_double"
+    # The strict source guard may add a Double projection between the mask
+    # and the original spatialization; preserve their actual dependency order.
+    dropped = [key for key, node in masked_graph.items()
+               if node["process_id"] == "local_ee_drop_single_time"
+               and _depends_on(masked_graph, selected_id, key)]
+    assert dropped
+    assert any(masked_graph[masked_graph[key]["arguments"]["data"]["from_node"]]["process_id"]
+               == "local_ee_to_double" for key in dropped)
 
 
 def test_distance_compiler_rejects_noncanonical_kernels_and_float64_comparison():

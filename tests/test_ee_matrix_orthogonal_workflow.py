@@ -135,7 +135,7 @@ def test_offline_python_and_javascript_serialize_and_compile_same_factor_workflo
     ("qr_tall_normal_residual",
      "Integer Image operation exceeds the 500-node process graph budget"),
     ("svd_truncation_reconstruction",
-     "Float64 Image operation is unsupported: Image.multiply exceeds the shared 50000-step compilation work budget"),
+     "Numeric raster grid validation exceeds the shared 50000-step work budget"),
 ])
 def test_unavailable_factor_compositions_keep_exact_budget_diagnostics(
     name, diagnostic, monkeypatch,
