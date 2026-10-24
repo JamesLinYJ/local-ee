@@ -415,6 +415,10 @@ def get_capabilities():
             "toDouble/toFloat convert physical cells; bounded Float64 mean/median/min/max/sum/count/first/last/sample-SD reductions and closed core arithmetic preserve precision; arbitrary Float64 pixel callbacks still reject",
             ("Binary updateMask retains its existing NoData-only value path. Fractional updateMask preserves "
              "independent weights for mask() numeric readback and band selection/renaming/addBands; "
+             "toFloat/toDouble and float/double cast only science values, preserving independent weights. "
+             "Direct weighted bands can enter Image.sample/sampleRegions, sampled training and validation: "
+             "positive weights preserve raw values, zero weights become NoData under existing null rules, "
+             "and mask magnitudes never reweight sampling probability. Only a direct carrier may be projected; "
              "the documented replacement-at-nonzero-old-mask composition is a local interpretation without "
              "Google numerical comparison. Weighted scientific value arithmetic, statistics, visualization "
              "and export remain unsupported consumers and reject; numeric mask() views use ordinary raster "

@@ -110,12 +110,16 @@ def compile_sample_table(sampled, translator):
         emit_sampled_operations,
         validated_sampled_schema,
     )
+    from .sample_mask_projection import project_sample_mask_image
 
     if not isinstance(sampled, SampledFeatures):
         fail("Internal sample-table IR is malformed")
     spec, columns, operations = validated_sampled_schema(
         sampled, translator, "Image.sampleRegions operation chain",
     )
+    # Keep the producer IR untouched; its independent weight carrier may be
+    # read by a different, explicitly audited consumer later.
+    projected_image = project_sample_mask_image(sampled.image, translator)
     grid = spec["grid"]
     options = {key: grid[key] for key in ("scale", "crs") if grid[key] is not None}
     child = Translator(list(translator.catalog.values()), translator.items, options)
@@ -124,10 +128,10 @@ def compile_sample_table(sampled, translator):
     # Bound the preflight estimate before compiling any source or pixel node.
     # Each band may need a filter, a temporal drop, a final band label and one
     # merge; nested expressions are still checked by the 500-node graph limit.
-    estimated_nodes = image_node_estimate(sampled.image, options) + 1 + len(operations)
+    estimated_nodes = image_node_estimate(projected_image, options) + 1 + len(operations)
     graph.reserve_nodes(estimated_nodes, "Image.sampleRegions")
-    _charge(translator, len(columns) + image_work_estimate(sampled.image) + 1)
-    ref, timed = graph.image(sampled.image)
+    _charge(translator, len(columns) + image_work_estimate(projected_image) + 1)
+    ref, timed = graph.image(projected_image)
     if timed:
         fail("Image.sampleRegions requires a spatial Image without a time dimension")
     result = graph.node("local_ee_sample_regions", data=ref, spec=sampled.spec)

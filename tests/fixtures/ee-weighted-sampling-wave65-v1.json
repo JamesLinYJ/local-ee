@@ -1,0 +1,95 @@
+{
+  "schema": "local-ee-weighted-sampling-wave65/v1",
+  "description": "Four named science bands and their independent numeric mask weights over an 8-cell EPSG:4326 grid.",
+  "source_id": "wave65-synthetic-source",
+  "bands": ["class_id", "red", "wide_float", "nir"],
+  "weight_bands": ["class_weight", "red_weight", "wide_float_weight", "nir_weight"],
+  "mask_bands": ["class_weight", "red_weight", "wide_float_weight", "nir_weight"],
+  "sample_region": {
+    "type": "Polygon",
+    "coordinates": [[[0, 0], [4, 0], [4, 2], [0, 2], [0, 0]]]
+  },
+  "sample_regions": {
+    "type": "FeatureCollection",
+    "features": [
+      {"type": "Feature", "id": "source-feature-p0", "geometry": {"type": "Point", "coordinates": [0.5, 1.5]}, "properties": {"source_id": "plot-p0", "record_number": 40, "source_note": "keep-0"}},
+      {"type": "Feature", "id": "source-feature-p1", "geometry": {"type": "Point", "coordinates": [1.5, 1.5]}, "properties": {"source_id": "plot-p1", "record_number": 41, "source_note": "keep-1"}},
+      {"type": "Feature", "id": "source-feature-p2", "geometry": {"type": "Point", "coordinates": [2.5, 1.5]}, "properties": {"source_id": "plot-p2", "record_number": 42, "source_note": "keep-2"}},
+      {"type": "Feature", "id": "source-feature-p3", "geometry": {"type": "Point", "coordinates": [3.5, 1.5]}, "properties": {"source_id": "plot-p3", "record_number": 43, "source_note": "keep-3"}},
+      {"type": "Feature", "id": "source-feature-p4", "geometry": {"type": "Point", "coordinates": [0.5, 0.5]}, "properties": {"source_id": "plot-p4", "record_number": 44, "source_note": "keep-4"}},
+      {"type": "Feature", "id": "source-feature-p5", "geometry": {"type": "Point", "coordinates": [1.5, 0.5]}, "properties": {"source_id": "plot-p5", "record_number": 45, "source_note": "keep-5"}},
+      {"type": "Feature", "id": "source-feature-p6", "geometry": {"type": "Point", "coordinates": [2.5, 0.5]}, "properties": {"source_id": "plot-p6", "record_number": 46, "source_note": "keep-6"}},
+      {"type": "Feature", "id": "source-feature-p7", "geometry": {"type": "Point", "coordinates": [3.5, 0.5]}, "properties": {"source_id": "plot-p7", "record_number": 47, "source_note": "keep-7"}}
+    ]
+  },
+  "sample_properties": ["source_id", "record_number", "source_note"],
+  "grid": {
+    "xmin": 0.0,
+    "ymin": 0.0,
+    "xmax": 4.0,
+    "ymax": 2.0,
+    "columns": 4,
+    "rows": 2,
+    "tile_cols": 2,
+    "tile_rows": 2,
+    "epsg": 4326
+  },
+  "tiles": [
+    {
+      "col": 0,
+      "row": 0,
+      "cells": ["p0", "p1", "p4", "p5"],
+      "raw_bands": [
+        {"name": "class_id", "cell_type": "float64", "values": [0, 1, 0, 1]},
+        {"name": "red", "cell_type": "float64", "values": [16777219, 12.5, 100, 0]},
+        {"name": "wide_float", "cell_type": "float32-stage", "values": [16777219, 1.25, 100.00000000000001, -4]},
+        {"name": "nir", "cell_type": "float64", "values": [1.0000000000000002, 2, 5, 6]}
+      ],
+      "mask_bands": [
+        {"name": "class_weight", "values": [1, 1, 1, 1]},
+        {"name": "red_weight", "values": [5e-324, 0, 0.75, 1]},
+        {"name": "wide_float_weight", "values": [1, 0.75, 5e-324, 1]},
+        {"name": "nir_weight", "values": [0.75, 0.25, 1, 5e-324]}
+      ]
+    },
+    {
+      "col": 1,
+      "row": 0,
+      "cells": ["p2", "p3", "p6", "p7"],
+      "raw_bands": [
+        {"name": "class_id", "cell_type": "float64", "values": [0, 1, 0, 1]},
+        {"name": "red", "cell_type": "float64", "values": [-2.5, null, 7, 8]},
+        {"name": "wide_float", "cell_type": "float64", "values": [16777219, 2.5, 9, 10]},
+        {"name": "nir", "cell_type": "float64", "values": [3, 4, 7, 8]}
+      ],
+      "mask_bands": [
+        {"name": "class_weight", "values": [1, 1, 1, 1]},
+        {"name": "red_weight", "values": [0.25, 1, 1, 0.9999999999999999]},
+        {"name": "wide_float_weight", "values": [0, 0.25, 0.5, null]},
+        {"name": "nir_weight", "values": [1, 1, 1, 1]}
+      ]
+    }
+  ],
+  "regions_wkt": [
+    "POINT (0.5 1.5)", "POINT (1.5 1.5)", "POINT (2.5 1.5)", "POINT (3.5 1.5)",
+    "POINT (0.5 0.5)", "POINT (1.5 0.5)", "POINT (2.5 0.5)", "POINT (3.5 0.5)"
+  ],
+  "image_sample_cases": [
+    {"name": "fractional-nullable", "mask_mode": "fractional", "options": {"algorithm": "splitmix64-grid-v1", "factor": null, "num_pixels": null, "seed": 0, "drop_nulls": false}},
+    {"name": "fractional-drop-nulls", "mask_mode": "fractional", "options": {"algorithm": "splitmix64-grid-v1", "factor": null, "num_pixels": null, "seed": 0, "drop_nulls": true}},
+    {"name": "all-positive-nullable", "mask_mode": "all_positive", "options": {"algorithm": "splitmix64-grid-v1", "factor": null, "num_pixels": null, "seed": 0, "drop_nulls": false}},
+    {"name": "fractional-factor-control", "mask_mode": "fractional", "options": {"algorithm": "splitmix64-grid-v1", "factor": 0.5, "num_pixels": null, "seed": 77, "drop_nulls": false}},
+    {"name": "all-positive-factor-control", "mask_mode": "all_positive", "options": {"algorithm": "splitmix64-grid-v1", "factor": 0.5, "num_pixels": null, "seed": 77, "drop_nulls": false}},
+    {"name": "all-masked-empty", "mask_mode": "all_zero", "options": {"algorithm": "splitmix64-grid-v1", "factor": null, "num_pixels": null, "seed": 0, "drop_nulls": true}}
+  ],
+  "sample_regions_options": {"mask_mode": "fractional"},
+  "expected": {
+    "sample_population": 8,
+    "complete_fractional_sample_cells": ["p0", "p4", "p5", "p6"],
+    "sample_regions_complete_feature_indexes": [0, 4, 5, 6],
+    "stage32_input": 16777219,
+    "stage32_expected_after_cast": 16777220,
+    "near_one": 0.9999999999999999,
+    "smallest_positive_weight": 5e-324
+  }
+}

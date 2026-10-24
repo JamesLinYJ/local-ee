@@ -33,21 +33,23 @@ _CONFUSION_VALUE = "local_ee_confusion_value"
 def _sampled_table_ref(graph, sampled, label):
     """Compile a fixed-grid sample table into the current graph."""
     from .sampled_training import image_node_estimate, image_work_estimate
+    from .sample_mask_projection import project_sample_mask_image
 
     spec, columns, operations = validated_sampled_schema(sampled, graph.t, label)
+    projected_image = project_sample_mask_image(sampled.image, graph.t)
     charge_array(graph.t, len(sampled.spec) + 2 * sum(map(len, operations)) + 8)
 
     grid = spec["grid"]
     options = {key: grid[key] for key in ("scale", "crs") if grid[key] is not None}
     child = Translator(list(graph.t.catalog.values()), graph.t.items, options)
     child_graph = Graph(child)
-    estimated_nodes = image_node_estimate(sampled.image, options) + 1 + len(operations)
+    estimated_nodes = image_node_estimate(projected_image, options) + 1 + len(operations)
     graph.reserve_nodes(estimated_nodes, label)
     charge_array(
         graph.t,
-        len(columns) + image_work_estimate(sampled.image) + len(sampled.spec) + 1,
+        len(columns) + image_work_estimate(projected_image) + len(sampled.spec) + 1,
     )
-    image_ref, timed = child_graph.image(sampled.image)
+    image_ref, timed = child_graph.image(projected_image)
     if timed:
         fail(f"{label} requires a spatial Image without a time dimension")
     references = graph.import_auxiliary(child_graph)

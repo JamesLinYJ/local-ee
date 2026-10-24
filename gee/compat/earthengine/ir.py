@@ -258,8 +258,17 @@ def binary(a: Any, b: Any, op: str) -> Image:
 
 def unary(image: Any, op: str) -> Image:
     image = as_image(image)
+    def transform(pixel):
+        if op in {"to_float", "to_double"} and pixel.op == "with_mask":
+            from .image_mask_weights import _parts
+
+            value, weight = _parts(pixel)
+            # Changing the science dtype does not round the independent mask.
+            # Leave every earlier cast stage inside the value expression.
+            return Pixel("with_mask", (Pixel(op, (value,)), weight))
+        return Pixel(op, (pixel,), op in {"not", "is_nodata"})
+
     return replace(
         image,
-        bands=[(name, Pixel(op, (pixel,), op in {"not", "is_nodata"}))
-               for name, pixel in image.bands],
+        bands=[(name, transform(pixel)) for name, pixel in image.bands],
     )

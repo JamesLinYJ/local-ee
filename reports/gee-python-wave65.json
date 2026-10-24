@@ -1,0 +1,174 @@
+{
+  "schema": "local-ee-gee-python-wave65/v1",
+  "date": "2026-10-24",
+  "base_commit": "ef7a1723cbd6b93e3f41baa42935daf3c6997b04",
+  "title": "Direct fractional-mask sampling through actual tile kernels and CSV readback",
+  "entry_inventory": {
+    "supported_names": 710,
+    "pinned_signature_names": 991,
+    "entry_percent": 71.64,
+    "new_names": 0,
+    "meaning": "Entry registration only; not full signatures/defaults/numerical compatibility"
+  },
+  "implementation": [
+    "Sampling-only projection at all four actual emitters: standalone, minimum-distance training, Smile training, and runtime sampled validation. Estimate and compile the same freshly charged view, preserve original SampledFeatures identity.",
+    "Positive weights retain scientific values; zero weights become NoData under existing sample/dropNulls/sampleRegions rules. Mask magnitude neither scales values nor changes random sampling probability.",
+    "toFloat/toDouble and float/double aliases cast only science, retaining weight identity and prior Float32 stages. Added constants may use a direct carrier raw finite-grid template without exposing unmasked science.",
+    "Reject source-free raw bands even when mask/outer Image/addBands has raster lineage; require source facts to agree with actual compiled raster labels before merging.",
+    "Keep source/grid/time, original schema/IDs/geometries/order, local hash RNG and existing50000-work/500-node/native limits. Unsupported nested arithmetic/clip/unmask/integer/where carriers still reject.",
+    "Native tests skip only a genuinely absent ignored audit manifest on portable checkouts; invalid files/directories/broken symlinks fail. SDK/compiler parity stays runnable. No runtime dependency rebuild or installation.",
+    "Python69 and JS23 examples, web syntax reference, engineering instructions and architecture documents updated."
+  ],
+  "verification": {
+    "frozen_local_pytest": {
+      "summary": "6293 passed, 27 skipped, 53 warnings in 70.21s (0:01:10)",
+      "seconds_wall": 71.396,
+      "source_files": 21,
+      "source_stable": true
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typecheck": true,
+      "temporary_build": true,
+      "source_stable": true,
+      "browser_or_deployment_acceptance": false
+    },
+    "official_clients": {
+      "python": "1.7.49",
+      "javascript": "1.7.49",
+      "workflow_graph_pairs": 10,
+      "offline_attempts": 0,
+      "scope": "Official SDK serialization and local compiler graphs; no Google computation"
+    },
+    "native_tile_probe": {
+      "fixture_schema": "local-ee-weighted-sampling-wave65/v1",
+      "fixture_sha256": "8a38b3fca3f9ed3f92d3e1a5806ccf02646919a21f4db7dbf398ff3a0ac4f43f",
+      "probe_source_sha256": "01bea3e0f4ade596a971469f849d6b7cd71db13a978572cfc80b9628c6678012",
+      "manifest_format": "local-ee-standalone-audit-v1",
+      "manifest_sha256": "75031b2455149446fc8e7ee12d73a94a7de9b1b189a90975cd23919d8a2ffe04",
+      "jar_sha256": "9c025ec7e7984c90f624c9edf207be97493ab72bba2a203a419f64987d748771",
+      "source_count": 70,
+      "runtime_jar_count": 245,
+      "deployment_eligible": false,
+      "image_sample_row_counts": {
+        "all-masked-empty": 0,
+        "all-positive-factor-control": 4,
+        "all-positive-nullable": 8,
+        "fractional-drop-nulls": 4,
+        "fractional-factor-control": 4,
+        "fractional-nullable": 8
+      },
+      "sample_regions_row_count": 4,
+      "elapsed_seconds": 1.97,
+      "execution_scope": "Actual GeoTrellis Float32/Float64 tiles through LocalEeMaskWeightsNumeric.applyTile, then existing Image.sample and sampleRegions numeric tile kernels. No SparkContext, engine service, sandbox batch task, VM, container, private raster, or Google request."
+    },
+    "physical_csv_readback": {
+      "official_python_getInfo_calls": 2,
+      "image_sample_rows": 8,
+      "sample_regions_rows": 4,
+      "native_rows_used": true,
+      "path": [
+        "local evaluate dispatch",
+        "verified native sampled rows",
+        "assemble_sample_features",
+        "SampledFeatureTable.write_assets",
+        "physical CSV headers and files",
+        "worker.finish",
+        "dispatch(result)",
+        "official SDK getInfo readback"
+      ],
+      "scope": "Trusted synthetic tile/CSV orchestration; batch raster engine execution is not exercised"
+    },
+    "independent_review": {
+      "model": "gpt-6.1-sol",
+      "original_payloads": 41,
+      "original_accept": 28,
+      "original_reject": 13,
+      "newly_accepted_against_base": 24,
+      "sourcefree_control_payloads": 5,
+      "sourcefree_original_negatives": 4,
+      "sourcefree_negatives_now_reject": 4,
+      "edge_controls_passed": 56,
+      "gate_only_checks_passed": 9,
+      "source_stable": true,
+      "offline_attempts": 0,
+      "remaining_confirmed_public_findings": 0,
+      "scope": "Scoped correctness/resource/ownership review, not full repository security audit; repeated sourcefree controls are not added as new unique coverage"
+    }
+  },
+  "failures_preserved": [
+    "Node-bound assertion reproduced33 actual nodes versus32 estimated; possible implicit Float64 conversion now precharged in node and work estimates.",
+    "Four unchanged official SDK source-free raw constant counterexamples initially accepted by borrowing a raster mask grid; direct/mixed explicit sample ROI and sampleRegions now reject. A genuinely on_grid-bound constant remains accepted.",
+    "Forged trusted internal constant/cast arguments could carry unused Source lineage; actual compiled operand label must now match source facts. No normal SDK route to this forged IR was established.",
+    "A transient proposed unbounded cast-shape loop was rejected in static review and removed before final freeze; no actual hang is claimed.",
+    "New root harness assertions initially used wrong sampler header/type and incomplete Source constructor; corrected tests without changing the existing API."
+  ],
+  "limits_and_unverified": [
+    "No automatic Google compute/auth/quota calls. Discuss remote comparison only for unusually complex behavior not reliably determined by local references and documentation.",
+    "Weighted science arithmetic/reductions/display alpha/raster weight export, spherical fractional clip and full global constant-grid semantics remain open; no fallback binary clip claim.",
+    "Local updateMask composition and seeded sampling RNG are explicit local policies, not verified Google equivalence.",
+    "Official Python literal GeoJSON serialization may omit Feature.id; declared source_id properties and raster source metadata are tested, missing wire identities are never fabricated.",
+    "No full Spark batch, service/browser/isolated script, private real-data or deployment acceptance. The CSV tests use native kernel rows with a trusted orchestration harness.",
+    "Existing Wave64 audit JAR is reused unchanged and not deployment eligible. Its245 runtime hashes are checked against that audit manifest, not newly authenticated to public upstream provenance; prior39 matches/7 mismatches/199 unlisted remain unresolved. This is not a vulnerability finding or a clean-security claim.",
+    "Selected malformed IR tests do not constitute a general schema validator for arbitrary forged internal IR. Existing S2/projection and other full compatibility gaps remain.",
+    "The full production-oriented goal remains active; this is a tested sampling consumer slice."
+  ],
+  "primary_sources": [
+    "https://developers.google.com/earth-engine/apidocs/ee-image-sample",
+    "https://developers.google.com/earth-engine/apidocs/ee-image-sampleregions",
+    "https://developers.google.com/earth-engine/apidocs/ee-image-tofloat",
+    "https://developers.google.com/earth-engine/apidocs/ee-image-double"
+  ],
+  "preservation": {
+    "accounts_and_research_data": "untouched",
+    "dependency_locks": "unchanged",
+    "installed_runtime": "unchanged",
+    "native_sources_and_S2_artifacts": "unchanged",
+    "new_native_build": false,
+    "services_deployed": false,
+    "VM_or_container_created": false,
+    "compiler_work_budget": 50000,
+    "process_graph_nodes": 500
+  },
+  "cleanup": {
+    "temporary_frontend_output_removed_bytes": 1723512,
+    "temporary_native_probe_source_and_classes": "automatically removed",
+    "duplicate_agent_receipts": "removed; concise successful receipts retained",
+    "user_data_or_installed_dependencies_removed": false
+  },
+  "receipt_sha256": {
+    "audit/gee-python-wave65/root/full-1.json": "e5132f75d76598cc62e85162bf76aab5b1ac1ae622625b743a93cecf14139921",
+    "audit/gee-python-wave65/root/freeze-1.json": "cf316ee1dd2fa84a5952008192b82739bc31ad9792d3f3ddb0095448f529990e",
+    "audit/gee-python-wave65/root/freeze-2.json": "bbbac5bf6aa2b17080b96d4c694fdc2ca720707e9469077a595db6089a0e0aba",
+    "audit/gee-python-wave65/root/focused-final.json": "7cf9c798b0c77299943777be9b6824ebc36e1ba5af3c24835fa86f9ba1be914b",
+    "audit/gee-python-wave65/root/frontend-1.json": "dd9876a67010bc8c3b8a2692f7b32fa1dd8eabeaaa99a2f595caf58c8451d51c",
+    "audit/gee-python-wave65/review/final-receipt.json": "d22a4a290acbe9dbc7358813e01da12911886a15a63ac907367f62c8b4a85595",
+    "audit/gee-python-wave65/review/addendum-frozen-2.json": "4a0aaba6ea787fd8eecd0dd1a3d09e12029cd3ca6b5be64ba58e49ccfa01572d",
+    "audit/gee-python-wave65/consumer/sample-mask-projection-receipt.md": "15ea4e47baafeef7f6da477d8b223fb5c00cc36bc3335c98e69a3ac323b53ff3",
+    "audit/gee-python-wave65/consumer/sourcefree-raw-lineage-final-addendum.md": "ccbd848a1c59a7f9192da7f2fab2883c911f5722b108448f5660ca34220dea7d",
+    "audit/gee-python-wave65/workflow/native-20261024T081501505222Z-63752-fc60179b17b8.json": "9bc56c4a73c15302e64fe9ac5f85cd87438e0448de39f3bfe61b0548ec0d433d"
+  },
+  "frozen_tested_source_sha256": {
+    "examples/69_GEE_python_masked_samples.py": "f282779b47abe762d558f882144b2d4cfb8e1627697f48dedbe813c9d616bb24",
+    "examples/javascript/23_带权掩膜取样.js": "3dbdeb04898110bf677c2a957af06ca346ea0b96f2a7075fc1341685f4aeffeb",
+    "gee/compat/earthengine/capabilities.py": "22cac80a5ad3c599bf7da240e8d6d1f064e8ad963975470e9e0b82be2d335f35",
+    "gee/compat/earthengine/constant_graph.py": "4a1977f0a31ee0cacbabc78aeea76cdf587ed04b7b2e831bb436ff83c07fd226",
+    "gee/compat/earthengine/ir.py": "4f00b038fa2516a1e8c07bacee08de55f2c9f5db1400a4fb9761ec57d814db3f",
+    "gee/compat/earthengine/mask_weights_graph.py": "e7997921108bdd5c1c118f8f5f41727825d3698a98e6d702d9b6090a29a77776",
+    "gee/compat/earthengine/raster_sampling.py": "98c8c08cc436331bdd5ac9308e459174edf41764ff51849ce1f6aa2d7f23fc00",
+    "gee/compat/earthengine/runtime_validation_graph.py": "9c8aba6ad23c022891fa0349b3569c1d3029ac6b7094a307e2ef6cc2208261ea",
+    "gee/compat/earthengine/sample_mask_projection.py": "6912b35a9e28a2b037937d4908f88e55418bcc0c60dfa25a6be15b9e03f4b071",
+    "gee/compat/earthengine/sampled_training.py": "222a37d2432a255bc854ecdd922b70dc451c3069c525f323523c16f6ad2617c8",
+    "gee/compat/earthengine/smile_rf_graph.py": "3c6c25a642f759eddbe2f0392859465803d791a170ff969a24b63de35ee92d84",
+    "scripts/probe_weighted_sampling_native.py": "fe0b97c54d2c56d967623902a8228a3ac2eed5a17467510d3c827dd56d3ecb71",
+    "tests/ee_weighted_sampling_helpers.py": "835e536b3a41dcf3785c28e31d32ea7f4c9ebeb54a426cf39e8bd4d37f11be17",
+    "tests/ee_weighted_sampling_native.py": "15875368c087c6813cf5390a4326814a5f4d7b1f15378f86c42687a113b66e8f",
+    "tests/fixtures/ee-weighted-sampling-kernel-probe.scala": "01bea3e0f4ade596a971469f849d6b7cd71db13a978572cfc80b9628c6678012",
+    "tests/fixtures/ee-weighted-sampling-wave65-v1.json": "8a38b3fca3f9ed3f92d3e1a5806ccf02646919a21f4db7dbf398ff3a0ac4f43f",
+    "tests/test_ee_mask_cast_consumers.py": "75e156aa8d07cc3b68535505573fae1af91b3bc6a3f8da959d3365dc49ec566a",
+    "tests/test_ee_sample_mask_projection.py": "6b57fa4d2deef71c15609c237d37b637e159863ff512772a3d8b5bc1e43de6e5",
+    "tests/test_ee_weighted_sampling_prerequisites.py": "6112132a89a7e48e23b08ffd39262584f53ffcba10ee53d621cffc97f01b1e63",
+    "tests/test_ee_weighted_sampling_workflow.py": "1b3ac1b09b6f1a1c28026e767f1d75346361d966ff51a10aa19749271c77e68f",
+    "web/src/docs/typed-raster-docs.ts": "670703c942c325a22f29568cfc3fca821885877cc58a8bf570bc2aaa1ebf3c54"
+  }
+}

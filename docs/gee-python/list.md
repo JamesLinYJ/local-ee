@@ -1,5 +1,11 @@
 # GEE Python 兼容清单
 
+## 第六十五批：带小数掩膜的取样与真实CSV读回
+
+第六十五批接通直接带小数掩膜的sample／sampleRegions及训练／验证／CSV消费者，正权重保留科学值、零权重缺测，Float／Double转换保留独立权重。冻结完整回归 **6293 passed／27 skipped**，21个源码／样本摘要稳定；前端11项／类型／临时构建通过。真实GeoTrellis内核的6组sample输出8／4／8／4／4／0行，sampleRegions4行，两个SDK getInfo经物理CSV写出与worker读回8＋4行。双客户端10个流程图一致，6.1-sol复核41项原表达式、5项来源控制、56项边界及9项依赖门控通过；重复控制不叠算覆盖率。修复源科学值借用掩膜网格及节点估计不足，保留原失败。名称仍710／991（71.64%，仅入口），球面部分像元clip和带权算术／统计／显示／栅格导出仍待完成。复用不可部署审计JAR，未修改依赖／用户数据、未部署、未调用Google。整体目标继续，见reports/gee-python-wave65.json、docs/gee-python/masked-sampling.md。
+
+官方语法、支持路径和限制见[带掩膜取样](masked-sampling.md)，完整记录见[本批报告](../../reports/gee-python-wave65.json)。本地独立验证是默认路径，只有极复杂且现有参考不足的行为才另行讨论Google对照。
+
 ## 第六十四批：小数掩膜表示与读取
 
 `updateMask` 新增独立小数权重表示，`mask()` 读回普通数值影像；select／rename／addBands 保留逐波段权重，原二值路径继续可用。科学值不会乘上权重。映射的getter按真实场景展开，嵌套掩膜中的常量NoData在已有网格上保持缺测。名称仍 **710／991（71.64%，仅入口）**，没有增加或虚报算法名称覆盖。

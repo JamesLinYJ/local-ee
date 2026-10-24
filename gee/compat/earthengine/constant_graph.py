@@ -17,6 +17,12 @@ def materialize_constant(graph, pixel):
             or not isinstance(value, (int, float)) or not math.isfinite(value)
             or abs(value) > 2**53):
         fail("Constant bands require a finite exact Float64 scalar within 2^53")
+    if template_pixel.op == "with_mask":
+        from .image_mask_weights import value_of
+
+        # Constants have independent validity inside the original footprint.
+        # This is a grid-only consumer, never a public science-value output.
+        template_pixel = value_of(template_pixel)
     data, label, timed = graph.expression(template_pixel)
     if label is None or source is None or not source.ids:
         fail("Constant bands require a finite local raster template")

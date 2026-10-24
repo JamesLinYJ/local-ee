@@ -62,6 +62,13 @@ select、rename、addBands 可传递权重，其他带权科学值消费者须�
 不可部署的审计产物，记录工具／源码／依赖摘要及未匹配公开清单，不能代替正式运行库
 准入。见[小数掩膜合同](gee-python/mask-weights.md)。
 
+`sample_mask_projection` 在独立取样、MD训练、Smile训练和运行时验证四个取样入口
+生成经过预充的局部视图。只有直接带权波段能进入：正权重保留科学值，零权重变为
+取样缺测；表格不携带或重新解释影像权重，也不按权重大小调整随机概率。
+原始取样IR、实际网格、表格身份、字段和随机算法保持不变。Float／Double转换只作用
+于科学值；新增常量波段可从直接carrier读取有限网格模板，但独立保持自己的有效性。
+任意算术／clip／unmask包装内的carrier仍明确拒绝，见[带掩膜取样](gee-python/masked-sampling.md)。
+
 `Feature.geometry` 按官方缺省参数提取独立且重新验证的几何；无投影时忽略有效 `geodesics`，实际变换仍拒绝。`geometry_public` 统一 SDK 合法的边／内部标志输出。只有表格导出编译明确启用模型物化：在共享编译预算预充后，将类型化几何的有效标志写入 JSON 任务图，防止 sidecar 丢失后误走平面 CSV 校验。普通 getInfo 保持原公开省略，非类型化原始 GeoJSON 保留既有解释；持久任务仍是封闭的字面表格输入和 CSV sink。
 
 ## 3. 模块与接口

@@ -105,6 +105,14 @@ def compile_mask_projection(graph, pixel):
     # Decode all scalar operands before materializing any merge.  Range checks
     # for real raster masks are repeated independently inside the tile kernel.
     results = [graph.expression(value) for value in input_pixels]
+    # A generic lineage scan cannot authorize unused, malformed IR arguments.
+    # Confirm its raster claim against the actual compiled operand before a
+    # scalar could borrow the other operand's grid. Legitimate scalar/null
+    # mask inputs have no source facts and retain their existing binding.
+    facts.charge(len(pixel.args))
+    for operand, result in zip(pixel.args, results):
+        if facts.inspect(operand).sources and result[1] is None:
+            fail("Image mask source lineage must match its actual raster operand")
     template = next(result for result in results if result[1] is not None)
     timed = template[2]
     if timed:

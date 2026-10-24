@@ -2,6 +2,14 @@ import type { ReferenceEntry } from "../types";
 
 export const pythonTypedRasterDocs: ReferenceEntry[] = [
   {
+    id: "gee-python-masked-sampling",
+    category: "GEE Python",
+    language: "python",
+    title: "带掩膜取样与训练",
+    text: "sample／sampleRegions 可读取直接带小数掩膜的波段：正权重保留原科学值，零权重缺测，不按权重幅度调整随机概率。sample 默认删除含缺测行，dropNulls=False 保留 null；sampleRegions 排除任一所选波段缺测的行。可接已有取样筛选、训练、验证和 CSV。toFloat／toDouble 只转换科学值，掩膜保持独立；任意算术、clip、unmask 等包装内的掩膜尚未接通，明确拒绝。本地哈希、合成瓦片与 CSV 验证不代表 Google／完整 Spark／部署验收。详见 docs/gee-python/masked-sampling.md。",
+    code: "source = ee.Image(collection.first()).select(['red','nir']).toDouble()\nweighted = source.updateMask(ee.Image.constant([0.25,0.75]))\nsamples = weighted.sample(dropNulls=False, geometries=True)\ntraining = weighted.addBands(ee.Image.constant(1).rename('class'))\npoints = training.sampleRegions(collection=regions, geometries=True)",
+  },
+  {
     id: "gee-python-mask-weights",
     category: "GEE Python",
     language: "python",

@@ -60,11 +60,13 @@ def _training_model(graph, classifier, inputs):
         emit_sampled_operations,
         validated_sampled_schema,
     )
+    from .sample_mask_projection import project_sample_mask_image
     from .sampled_training import image_node_estimate, image_work_estimate
 
     sample_spec, sample_columns, operations = validated_sampled_schema(
         sampled, graph.t, "Smile RandomForest sample-table operation chain",
     )
+    projected_image = project_sample_mask_image(sampled.image, graph.t)
     operation_work = sum(6 * len(operation) for operation in operations)
     target_image = Image(
         [(str(index), pixel) for index, pixel in enumerate(inputs)], {},
@@ -75,7 +77,7 @@ def _training_model(graph, classifier, inputs):
         + operation_work
         + len(classifier.schema) + sum(map(len, classifier.schema))
         + len(classifier.class_property)
-        + image_work_estimate(sampled.image)
+        + image_work_estimate(projected_image)
         + image_work_estimate(target_image)
         + 16
     )
@@ -100,13 +102,13 @@ def _training_model(graph, classifier, inputs):
     )
     child_graph = Graph(child_translator)
     node_bound = (
-        image_node_estimate(sampled.image, options)
+        image_node_estimate(projected_image, options)
         + _target_node_bound(graph, inputs)
         + 2 + len(operations)
     )
     graph.reserve_nodes(node_bound, "Smile RandomForest sample and prediction graph")
 
-    sample_image_ref, timed = child_graph.image(sampled.image)
+    sample_image_ref, timed = child_graph.image(projected_image)
     if timed:
         fail("Smile RandomForest sampleRegions image must be spatial")
     references = graph.import_auxiliary(child_graph)

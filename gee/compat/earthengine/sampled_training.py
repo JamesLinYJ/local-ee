@@ -31,6 +31,11 @@ def _pixel_cost(pixel, seen, sources):
         return child_cost
     if pixel.op == "reduce_t":
         return child_cost + 1
+    if pixel.op in {"mask_apply", "mask_update"}:
+        # A fractional projection labels both operands, merges them, then
+        # emits its closed native process. Reserve a possible Float64 input
+        # conversion too, even when a scalar happens not to materialize it.
+        return child_cost + 5 + max(0, len(children) - 2)
     if pixel.op in {"clip", "to_double", "to_float", "unmask", "unmask_constant", "on_grid"}:
         return child_cost + 2
     if pixel.op == "reduce_bands":
@@ -79,6 +84,10 @@ def image_work_estimate(image):
                 return
             seen.add(id(value))
             work += 1 + len(value.op)
+            if value.op in {"mask_apply", "mask_update"}:
+                # Projection lowering may insert one Float64 cast that is not
+                # represented as a separate IR node.
+                work += 1
             if value.op == "band":
                 source, band = value.args
                 if source not in sources:
@@ -135,6 +144,7 @@ def compile_training_model(graph, classifier, target_inputs):
         emit_sampled_operations,
         validated_sampled_schema,
     )
+    from .sample_mask_projection import project_sample_mask_image
 
     if not isinstance(classifier, DynamicMinimumDistance):
         fail("Internal dynamic classifier IR is malformed")
@@ -144,6 +154,7 @@ def compile_training_model(graph, classifier, target_inputs):
     sample_spec, columns, operations = validated_sampled_schema(
         sampled, graph.t, "Classifier.train sample-table operation chain",
     )
+    projected_image = project_sample_mask_image(sampled.image, graph.t)
 
     # The shared spec decoder and encoder walk bounded JSON, so reserve their
     # cost before parsing or serializing either wire value. Six bytes per
@@ -155,7 +166,7 @@ def compile_training_model(graph, classifier, target_inputs):
     work = (
         2 * len(sampled.spec.encode("utf-8")) + 2 * training_wire_bound
         + len(classifier.schema) + schema_chars + len(classifier.class_property)
-        + image_work_estimate(sampled.image)
+        + image_work_estimate(projected_image)
         + image_work_estimate(Image([
             (str(index), pixel) for index, pixel in enumerate(target_inputs)
         ], {}))
@@ -184,13 +195,13 @@ def compile_training_model(graph, classifier, target_inputs):
     # Reserve a conservative graph upper bound for both the fixed training
     # branch and target branch before compiling either.
     node_bound = (
-        image_node_estimate(sampled.image, options)
+        image_node_estimate(projected_image, options)
         + pixel_node_estimate(target_inputs, graph.t.options)
         + 4 + len(operations)
     )
     graph.reserve_nodes(node_bound, "Image.classify dynamic training graph")
 
-    sample_image_ref, timed = child_graph.image(sampled.image)
+    sample_image_ref, timed = child_graph.image(projected_image)
     if timed:
         fail("Classifier.train sample image must be spatial and have no time dimension")
     references = graph.import_auxiliary(child_graph)
