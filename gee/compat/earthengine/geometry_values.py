@@ -1,11 +1,10 @@
-"""Bounded planar geometry decoding for official legacy SDK serialization."""
+"""Bounded geometry decoding for official legacy SDK serialization."""
 from __future__ import annotations
 
 import math
 
 from .geometry_preflight import (
     GEOMETRY_TYPES,
-    measure_geometry,
     precharge_geometry_decode,
 )
 from .ir import fail
@@ -15,7 +14,13 @@ _MAX_COORDINATES = 10000
 
 
 class GeometryValue(dict):
-    """Owned normalized GeoJSON plus accepted constructor metadata."""
+    """Owned normalized GeoJSON plus effective geometry metadata.
+
+    Default flags live in the sidecar so the public GeoJSON can retain the
+    exact omissions used by the pinned SDK.  Consumers must use the sidecar
+    when choosing a topology engine; an absent public ``geodesic`` field is
+    not evidence that GEOS is safe.
+    """
 
     def __init__(self, mapping, metadata=None, *, validated=False):
         super().__init__(mapping)
@@ -49,13 +54,26 @@ def _geometry_metadata(value):
                      if key in value})
     if "crs" in metadata:
         metadata["crs"] = _crs(metadata["crs"])
+    # The only admitted CRS is geographic EPSG:4326.  EE treats numeric
+    # coordinates in that CRS as geodesic by default and polygon interiors
+    # as even/odd by default.  Keep those effective defaults out of the
+    # public mapping, but make them explicit to every local consumer.
+    if metadata.get("crs") is None:
+        metadata["crs"] = "EPSG:4326"
     for key in ("geodesic", "evenOdd"):
         if key in metadata and type(metadata[key]) is not bool:
             fail(f"Geometry {key} must be a boolean")
-    if metadata.get("geodesic") is True:
-        fail("Geodesic geometries require spherical geometry support")
-    if metadata.get("evenOdd") is False:
-        fail("Geometry evenOdd=false left-inside interiors are unsupported")
+    if value.get("type") != "GeometryCollection":
+        metadata.setdefault("geodesic", True)
+        metadata.setdefault("evenOdd", True)
+    else:
+        # A collection may contain components with different edge models.
+        # Its children carry their effective state; only preserve a collection
+        # flag when the caller explicitly supplied one.
+        if "geodesic" not in value and "geodesic" not in stored:
+            metadata.pop("geodesic", None)
+        if "evenOdd" not in value and "evenOdd" not in stored:
+            metadata.pop("evenOdd", None)
     return metadata
 
 
@@ -75,7 +93,7 @@ def _normalize_geometry(value):
             fail("Geometry exceeds 10000 coordinate positions")
         return [x, y]
 
-    def coordinates(raw, depth, *, polygon=False):
+    def coordinates(raw, depth, *, polygon=False, linear_ring=False):
         if depth == 0:
             return point(raw)
         if not isinstance(raw, (list, tuple)) or not raw:
@@ -87,6 +105,11 @@ def _normalize_geometry(value):
                     fail("Polygon rings require at least three positions")
                 if ring[0] != ring[-1]:
                     ring.append(ring[0].copy())
+        elif linear_ring:
+            if len(result) < 3:
+                fail("LinearRing requires at least three positions")
+            if result[0] != result[-1]:
+                result.append(result[0].copy())
         return result
 
     def decode(raw, depth=0):
@@ -127,40 +150,48 @@ def _normalize_geometry(value):
                                   for poly in raw_coordinates]
                 else:
                     normalized = coordinates(raw_coordinates, nesting,
-                                             polygon=kind == "Polygon")
+                                             polygon=kind == "Polygon",
+                                             linear_ring=kind == "LinearRing")
             output = {"type": kind, field: normalized}
+        # Preserve flags that were explicitly present in the source wire.
+        # Inferred defaults stay in geometry_metadata and therefore do not
+        # change the pinned SDK's public serialization.
+        for key in ("geodesic", "evenOdd"):
+            if key in raw:
+                output[key] = raw[key]
         return output
 
-    result = decode(value)
-    from shapely.errors import GEOSException
-    from shapely.geometry import shape
-    try:
-        geometry = shape(result)
-    except (TypeError, ValueError, GEOSException) as error:
-        fail(f"Invalid planar GeoJSON geometry: {error}")
-    if not geometry.is_valid:
-        fail("Invalid planar GeoJSON geometry topology")
-    return result
+    return decode(value)
 
 
 def decode_geometry(value):
-    """Normalize without a compiler budget for legacy non-translator callers."""
-    measure_geometry(value)
-    return _normalize_geometry(value)
+    """Decode with an isolated 50000-step budget for non-translator callers."""
+    class _LocalBudget:
+        steps = 0
+
+    return decode_geometry_bounded(_LocalBudget(), value)
 
 
 def decode_geometry_value(value):
     """Normalize and own a geometry while retaining sidecar options."""
-    measure_geometry(value)
-    return _attach_geometry_metadata(value, _normalize_geometry(value))
+    return decode_geometry(value)
 
 
 def decode_geometry_bounded(translator, value):
-    """Precharge one bounded decode, then validate and create owned GeoJSON."""
-    precharge_geometry_decode(translator, value)
+    """Precharge one bounded decode, then validate and own its typed geometry."""
+    cost = precharge_geometry_decode(translator, value)
     normalized = _normalize_geometry(value)
+    owned = _attach_geometry_metadata(value, normalized)
+    from .geometry_topology import (
+        contains_spherical_component,
+        reserve_spherical_validation,
+        validate_geometry_topology,
+    )
 
-    return _attach_geometry_metadata(value, normalized)
+    if contains_spherical_component(owned):
+        reserve_spherical_validation(translator, owned, cost=cost)
+    validate_geometry_topology(translator, owned)
+    return owned
 
 
 def _attach_geometry_metadata(raw, normalized):
@@ -170,6 +201,38 @@ def _attach_geometry_metadata(raw, normalized):
                 child, normalized["geometries"][index]
             )
     return GeometryValue(normalized, _geometry_metadata(raw), validated=True)
+
+
+def reserve_spherical_validation(translator, value, *, cost=None):
+    """Backward-compatible facade for the topology work reserver."""
+    from .geometry_topology import reserve_spherical_validation as reserve
+
+    return reserve(translator, value, cost=cost)
+
+
+def effective_geometry_geodesic(value):
+    """Backward-compatible facade for effective edge-model resolution."""
+    from .geometry_topology import effective_geometry_geodesic as resolve
+
+    return resolve(value)
+
+
+def _component_model(value, inherited=None):
+    from .geometry_topology import component_model
+
+    return component_model(value, inherited)
+
+
+def _contains_spherical_component(value, inherited=None):
+    from .geometry_topology import contains_spherical_component
+
+    return contains_spherical_component(value, inherited)
+
+
+def _validate_geometry_topology(translator, value):
+    from .geometry_topology import validate_geometry_topology
+
+    return validate_geometry_topology(translator, value)
 
 
 def own_geometry_bounded(translator, value):

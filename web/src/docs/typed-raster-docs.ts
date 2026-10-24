@@ -2,11 +2,19 @@ import type { ReferenceEntry } from "../types";
 
 export const pythonTypedRasterDocs: ReferenceEntry[] = [
   {
+    id: "gee-python-spherical-geometry",
+    category: "GEE Python",
+    language: "python",
+    title: "默认球面几何与跨日期变更线",
+    text: "Geometry／内联Feature的八种二元运算在省略或空proj时使用本地S2，保留官方geodesic／evenOdd默认值；支持有限测地线、孔洞、日期变更线和极区。示例66／JS20验证双客户端与合成CSV。S2 binary64输入关联和交点往返仍有3项严格控制不通过；数值容差通过不能替代这些缺口。maxError／其他CRS／平面转球面／完整球面公开编码及球面栅格消费者仍未实现。显式球面结果在旧平面clip／筛选前拒绝，旧未标边类型的栅格路径不代表默认测地线兼容。依赖需显式本地构建，运行时不下载；详见 docs/gee-python/spherical-geometry.md。",
+    code: "left = ee.Geometry.Polygon([[[170,-10],[-170,-10],[-170,10],[170,10]]])\nright = ee.Geometry.Polygon([[[175,-5],[-175,-5],[-175,5],[175,5]]])\nroi = left.intersection(right)\ninside = left.contains(ee.Geometry.Point([179,0]))\nfeatures = ee.FeatureCollection([ee.Feature(roi, {'name':'roi'})])",
+  },
+  {
     id: "gee-python-geometry-binary",
     category: "GEE Python",
     language: "python",
     title: "研究区相交、合并与排除",
-    text: "Geometry／内联Feature支持contains、containedIn、intersects、disjoint、intersection、union、difference和symmetricDifference的有限平面路径，保留官方参数名。当前要求明确proj=EPSG:4326，且有边组件明确geodesic=False；这是经纬度平面计算。GEE省略proj时的球面默认行为、非空maxError和其他坐标系仍未实现。Feature结果保留左属性和本地实际ID规则；空／低维几何保持实际类型，Image.clip仍只接收Polygon／MultiPolygon。示例65／JS示例19包含两景NDVI掩膜和CSV读回；详见 docs/gee-python/geometry-binary.md。",
+    text: "Geometry／内联Feature支持contains、containedIn、intersects、disjoint、intersection、union、difference和symmetricDifference的有限平面路径，保留官方参数名。此分支要求明确proj=EPSG:4326，且有边组件明确geodesic=False；这是经纬度平面计算。省略proj的有限球面路径另见默认球面几何；非空maxError和其他坐标系仍未实现。Feature结果保留左属性和本地实际ID规则；空／低维几何保持实际类型，旧Image.clip只接收受支持的平面Polygon／MultiPolygon。示例65／JS示例19包含两景NDVI掩膜和CSV读回；详见 docs/gee-python/geometry-binary.md。",
     code: "proj = ee.Projection('EPSG:4326')\nstudy = ee.Geometry.Rectangle([0,0,4,4], proj=proj, geodesic=False)\nexcluded = ee.Geometry.Rectangle([1,1,3,3], proj=proj, geodesic=False)\nroi = study.difference(excluded, proj=proj)\nclipped = image.clip(roi)\nintersects = study.intersects(excluded, proj=proj)",
   },
   {

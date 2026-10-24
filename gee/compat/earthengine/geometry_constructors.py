@@ -63,7 +63,7 @@ def _bbox(translator, arguments):
         if east < west:
             east += 360
         if east > 180:
-            fail("Geometry BBox dateline wrapping is unsupported by local planar geometry")
+            fail("Geometry BBox dateline wrapping is not supported by local geometry construction")
     if south > 90 or north < -90:
         fail("Geometry BBox bounds lie entirely beyond a pole")
     south = max(south, -90)

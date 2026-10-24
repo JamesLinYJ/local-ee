@@ -189,7 +189,9 @@ def test_set_geometry_revalidates_and_owns_mutable_geometry_values():
     result = _invoke("Feature.setGeometry", feature=_feature(), geometry=geometry)
     assert result["geometry"] is not geometry
     assert result["geometry"]._geometry_validated is True
-    assert result["geometry"].geometry_metadata == {"geodesic": False}
+    assert result["geometry"].geometry_metadata == {
+        "crs": "EPSG:4326", "geodesic": False, "evenOdd": True,
+    }
     geometry["coordinates"][0] = 12
     assert result["geometry"]["coordinates"] == [1, 2]
 

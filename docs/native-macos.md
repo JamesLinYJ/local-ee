@@ -46,11 +46,12 @@ Seatbelt 和 `sandbox-exec` 依赖当前 macOS，属于本机部署边界。不�
 
 ## 初次构建与依赖
 
-需要原生 arm64 Python 3.11、Homebrew、Xcode Command Line Tools。不要配置 Rosetta 或 Linux VM。项目安装固定的 Node 24.22.1 和 Java 21.0.13.0.2，不修改全局 Node/Java 默认版本；启动和构建核对 profile、归档来源和关键运行文件摘要。完整性失败仍可执行 stop。
+需要原生 arm64 Python 3.11、Homebrew、CMake 3.22+、Xcode Command Line Tools（C++17）。不要配置 Rosetta 或 Linux VM。项目安装固定的 Node 24.22.1 和 Java 21.0.13.0.2，不修改全局 Node/Java 默认版本；启动和构建核对 profile、归档来源和关键运行文件摘要。完整性失败仍可执行 stop。
 
 ```sh
-HOMEBREW_NO_AUTO_UPDATE=1 brew install postgresql@17 gdal udunits freetype giflib harfbuzz jpeg-turbo libpng little-cms2
+HOMEBREW_NO_AUTO_UPDATE=1 brew install postgresql@17 gdal udunits freetype giflib harfbuzz jpeg-turbo libpng little-cms2 cmake
 uv sync --frozen
+.venv/bin/python scripts/build_s2_adapter.py --work-dir work/s2-build --output-dir native/s2/artifacts --jobs 4
 .venv/bin/python scripts/install_native_toolchains.py
 .venv/bin/python scripts/fetch_engine_dependencies.py
 .venv/bin/python scripts/setup_native_engine.py
@@ -60,6 +61,8 @@ npm --prefix web ci
 ```
 
 引擎单独使用 `.native/engine`，不破坏 API 的依赖锁。构建脚本在 `.native/sources` 复制上游源、调整必要的包元数据，编译 JEP 和 Darwin arm64 GDAL/JNI；上游仓库本身不改动。原始 JAR 被复制后移除实际旧版重复类并安装已锁定替代库，保留真实残余风险，不删除漏洞元数据制造“干净”报告。首轮执行会生成 `.native/engine-lock.json`、`.native/engine-requirements.lock`、`.native/jar-hardening.json`；部署摘要见 `deploy/native-lock.json`。
+
+默认球面几何另外使用 `native/s2/artifacts/` 内的固定S2／Abseil适配器和许可证清单；它不安装到系统或Python环境。首次构建需要明确联网下载固定源码，运行时不下载。产物缺失、源码或摘要失配会拒绝加载；更新须在新目录构建验证后再切换。参见[球面几何](gee-python/spherical-geometry.md)。本批完成本地库、可信合成计算及真实Seatbelt组件的只读／拒绝控制检查，未重新部署沙箱服务，不能据此扩大上述运行验收。
 
 本机使用完整 Homebrew GDAL，其编译驱动和原生依赖与原 Linux 最小化 GDAL 不同。输入仍强制 GTiff、限制解码尺寸、隔离网络和路径。2026-10-23 的本机依赖处置、扫描范围及真实计算证据见 [依赖安全说明](dependency-security.md)；历史容器扫描不作为当前证据，完整生产审计仍单独验收。
 

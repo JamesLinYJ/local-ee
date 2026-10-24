@@ -59,13 +59,12 @@ def invoke_geometry_structure(translator, name, arguments):
         return False
     if name in {"Geometry.geodesic", "Geometry.edgesAreGeodesics"}:
         _charge_scalar_inspection(translator, name)
-        metadata = getattr(geometry, "geometry_metadata", {})
-        value = metadata.get("geodesic", geometry.get("geodesic", False))
+        from .geometry_values import effective_geometry_geodesic
+
+        value = effective_geometry_geodesic(geometry)
         if type(value) is not bool:
             fail("Geometry geodesic must be a boolean")
-        if value:
-            fail("Geodesic geometries require spherical geometry support")
-        return False
+        return value
 
     if name == "Geometry.coordinates":
         if kind == "GeometryCollection":

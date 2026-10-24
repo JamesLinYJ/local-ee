@@ -142,11 +142,15 @@ def matches_filter(translator, filt, item):
                 raise ValueError("intersection value must be GeoJSON")
             if geometry.get("type") == "Feature":
                 geometry = geometry.get("geometry")
+            from .geometry_consumers import reject_spherical_edges
+
+            reject_spherical_edges(translator, geometry, "Filter.intersects")
             filter_geometry = shape(geometry)
             # Null or absent source geometry is a valid non-match, after validating
             # the supplied filter geometry and the full intersects signature.
             if item.get("geometry") is None:
                 return False
+            reject_spherical_edges(translator, item["geometry"], "Filter.intersects")
             return shape(item["geometry"]).intersects(filter_geometry)
         except (ValueError, KeyError, TypeError) as exc:
             fail(f"Invalid footprint filter geometry: {exc}")

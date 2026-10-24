@@ -19,6 +19,12 @@ jobs:
         run: |
           python -m pip install uv==0.12.12
           uv sync --frozen
+      - name: Build pinned local spherical geometry adapter
+        run: >-
+          .venv/bin/python scripts/build_s2_adapter.py
+          --work-dir "$RUNNER_TEMP/local-ee-s2-build"
+          --output-dir native/s2/artifacts
+          --jobs 4
       - name: Application tests (native-only cases skip on Linux)
         run: .venv/bin/python -m pytest -q
   frontend:

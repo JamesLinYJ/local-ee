@@ -185,7 +185,8 @@ def test_typed_getters_support_negative_indexes_and_reject_mismatches():
     assert invoke("List.getArray", list=[array_value], index=-1) is array_value
     for name, values in [
         ("List.getNumber", [True]), ("List.getString", [2]),
-        ("List.getArray", [[1, 2]]), ("List.getGeometry", [{"type": "Point", "coordinates": [1, 2], "geodesic": True}]),
+        ("List.getArray", [[1, 2]]),
+        ("List.getGeometry", [{"type": "Point", "coordinates": [1, 2], "geodesic": "true"}]),
     ]:
         with pytest.raises(UnsupportedEEError):
             invoke(name, list=values, index=0)
@@ -202,7 +203,9 @@ def test_geometry_getter_revalidates_and_owns_known_geometry_subclass():
     result = translator.invoke("List.getGeometry", {"list": [source], "index": 0})
     assert type(result) is GeometryValue
     assert result == source
-    assert result.geometry_metadata == {"geodesic": False}
+    assert result.geometry_metadata == {
+        "crs": "EPSG:4326", "geodesic": False, "evenOdd": True,
+    }
     assert result.geometry_metadata is not source.geometry_metadata
     result["coordinates"][0] = 99
     assert source["coordinates"] == [1, 2]
@@ -216,7 +219,15 @@ def test_geometry_getter_revalidates_and_owns_known_geometry_subclass():
         {"type": "Point", "coordinates": [1, 2]}, validated=True,
     )
     flagged["geodesic"] = True
-    with pytest.raises(UnsupportedEEError, match="spherical"):
+    spherical = invoke("List.getGeometry", list=[flagged], index=0)
+    assert spherical.geometry_metadata == {
+        "crs": "EPSG:4326", "geodesic": True, "evenOdd": True,
+    }
+    assert spherical is not flagged
+    spherical["coordinates"][0] = 90
+    assert flagged["coordinates"] == [1, 2]
+    flagged["geodesic"] = "true"
+    with pytest.raises(UnsupportedEEError, match="geodesic"):
         invoke("List.getGeometry", list=[flagged], index=0)
 
     class ForeignGeometry(dict):

@@ -85,19 +85,21 @@ def _case(ee, name):
         "Geometry.coordinates": ({"geometry": point}, [110, 30]),
         "Geometry.geometries": ({"geometry": point}, [POINT]),
         "Geometry.isUnbounded": ({"geometry": point}, False),
-        "Geometry.edgesAreGeodesics": ({"geometry": point}, False),
-        "Geometry.geodesic": ({"geometry": point}, False),
+        "Geometry.edgesAreGeodesics": ({"geometry": point}, True),
+        "Geometry.geodesic": ({"geometry": point}, True),
         "GeometryConstructors.BBox": (
             {"west": 0, "south": 0, "east": 2, "north": 1},
-            {"type": "Polygon", "coordinates": [[[0, 1], [0, 0], [2, 0], [2, 1], [0, 1]]]},
+            {"type": "Polygon", "coordinates": [[[0, 1], [0, 0], [2, 0], [2, 1], [0, 1]]],
+             "geodesic": False},
         ),
         "GeometryConstructors.MultiGeometry": (
             {"geometries": [point], "geodesic": False},
-            {"type": "GeometryCollection", "geometries": [POINT]},
+            {"type": "GeometryCollection", "geometries": [POINT], "geodesic": False},
         ),
         "GeometryConstructors.LinearRing": (
             {"coordinates": [[0, 0], [2, 0], [2, 2]], "geodesic": False},
-            {"type": "LinearRing", "coordinates": [[0, 0], [2, 0], [2, 2], [0, 0]]},
+            {"type": "LinearRing", "coordinates": [[0, 0], [2, 0], [2, 2], [0, 0]],
+             "geodesic": False},
         ),
     }
     arguments, expected = cases[name]

@@ -1,4 +1,4 @@
-"""Projected binary geometry support is distinct from spherical defaults."""
+"""Separate actual S2 defaults, projected subsets, and remaining consumers."""
 
 
 GEOMETRY_BINARY_LIMITS = {}
@@ -10,19 +10,24 @@ for _family in ("Geometry", "Feature"):
     ):
         GEOMETRY_BINARY_LIMITS[_family + "." + _method] = [
             "Official left/right/maxError/proj signatures; finite inline geometry "
-            "calculation only. Requires explicit EPSG:4326 projection and proven "
-            "planar non-point edges (explicit geodesic=false); point/empty values "
-            "have no edges. Omitted/null proj has spherical semantics in GEE and "
-            "remains unsupported, never silently replaced by planar geometry. "
-            "Non-null maxError, non-4326 reprojection, geodesic=true, ambiguous "
-            "non-point edges and evenOdd=false reject. Existing mutable Geometry "
-            "values are freshly validated; structural, GEOS pair/output-growth "
-            "and owned-copy work are precharged within shared50000 work, "
-            "10000-coordinate,1000-child and16-level bounds. Empty results are "
-            "valid owned geometries; lower-dimensional intersections retain "
-            "their actual type. Contains uses local GEOS interior/boundary "
-            "semantics, not a Google oracle. No spherical, native raster, "
-            "full Spark, deployed service or Google same-data acceptance."
+            "calculation only. Omitted/null proj routes geodesic EPSG:4326 input "
+            "through pinned local S2 0.14.0; geodesic and evenOdd defaults are "
+            "retained, including oriented spherical loops, holes, dateline and "
+            "polar geometry. Explicit proj='EPSG:4326' remains a planar subset "
+            "requiring proven geodesic=false edges. Non-null maxError/ErrorMargin, "
+            "other CRS and planar-to-sphere transformations remain unsupported. "
+            "Fresh bounded validation, normalization, pair/output-growth and "
+            "owned-copy work share50000 steps,10000 coordinates,1000 children "
+            "and16 levels. Native S2 tracks up to64MiB of working allocations; "
+            "this is not a total RSS bound. Empty and lower-dimensional outputs "
+            "retain their actual type; full-sphere public encoding rejects. "
+            "S2 CLOSED and GEOS interior-boundary policies are local; binary64 "
+            "input/output conversion has measured exact-incidence and inserted-"
+            "vertex roundtrip gaps. Nearby distinct points are not epsilon-merged. "
+            "Explicit spherical outputs reject at legacy planar raster/filter "
+            "consumers; unflagged raster input retains the earlier planar path "
+            "and has no GEE geodesic parity claim. Trusted synthetic SDK/CSV and "
+            "native component checks are not full Spark/deployment/Google acceptance."
         ]
         if _family == "Feature":
             GEOMETRY_BINARY_LIMITS[_family + "." + _method].append(

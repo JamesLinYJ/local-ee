@@ -1,8 +1,9 @@
-"""Bounded planar implementations of the pinned Geometry binary algorithms.
+"""Bounded model routing for the pinned Geometry binary algorithms.
 
-These operations require an explicit EPSG:4326 projection and explicit planar
-edges. Shapely's OGC ``contains`` policy excludes a point lying only on the
-container boundary; this is a local policy, not a claim of GEE parity.
+The planar branch requires explicit EPSG:4326 and planar edges. Omitted/null
+projection routes to the separate S2 worker. Shapely's OGC ``contains`` policy
+excludes boundary-only points; S2 uses its own closed-model predicates. Neither
+policy is an assertion of numerical equivalence to the Google service.
 """
 from __future__ import annotations
 
@@ -43,11 +44,13 @@ def _line_segments(line):
     return max(0, len(line) - 1)
 
 
-def _stats(geometry, *, name=None):
+def _stats(geometry, *, name=None, inherited=None):
     """Count positions, line segments, atomic components, and dimensions."""
     kind = geometry["type"]
     if kind == "GeometryCollection":
-        children = [_stats(child, name=name) for child in geometry["geometries"]]
+        model = _edge_flag(geometry, inherited)
+        children = [_stats(child, name=name, inherited=model)
+                    for child in geometry["geometries"]]
         return {
             "positions": sum(item["positions"] for item in children),
             "segments": sum(item["segments"] for item in children),
@@ -69,14 +72,14 @@ def _stats(geometry, *, name=None):
         segments = len(coordinates) if kind == "LinearRing" else _line_segments(coordinates)
         stats = {"positions": positions, "segments": max(0, segments), "rings": 0,
                 "components": int(bool(coordinates)), "dimensions": frozenset({1})}
-        _check_edge_flag(geometry, kind, stats, name)
+        _check_edge_flag(geometry, kind, stats, name, inherited)
         return stats
     if kind == "MultiLineString":
         positions = sum(map(len, coordinates))
         segments = sum(_line_segments(line) for line in coordinates)
         stats = {"positions": positions, "segments": segments, "rings": 0,
                 "components": len(coordinates), "dimensions": frozenset({1})}
-        _check_edge_flag(geometry, kind, stats, name)
+        _check_edge_flag(geometry, kind, stats, name, inherited)
         return stats
     rings = coordinates if kind == "Polygon" else [ring for polygon in coordinates for ring in polygon]
     # Every ring may need the decoder's closure insertion; the extra slot is
@@ -93,16 +96,25 @@ def _stats(geometry, *, name=None):
             "segments": segments,
             "rings": rings,
             "components": components, "dimensions": frozenset({2})}
-    _check_edge_flag(geometry, kind, stats, name)
+    _check_edge_flag(geometry, kind, stats, name, inherited)
     return stats
 
 
-def _check_edge_flag(geometry, kind, stats, name):
+def _edge_flag(geometry, inherited):
+    """Match decoding: explicit public flag, inherited context, stored default."""
+    if "geodesic" in geometry:
+        return geometry["geodesic"]
+    if inherited is not None:
+        return inherited
+    return getattr(geometry, "geometry_metadata", {}).get("geodesic")
+
+
+def _check_edge_flag(geometry, kind, stats, name, inherited):
     """Require every nonempty edge-bearing component to declare planar edges."""
     if name is None or kind in {"Point", "MultiPoint"} or stats["segments"] == 0:
         return
-    metadata = getattr(geometry, "geometry_metadata", {})
-    geodesic = metadata.get("geodesic", geometry.get("geodesic"))
+    # A stale planar sidecar must never authorize spherical edges for GEOS.
+    geodesic = _edge_flag(geometry, inherited)
     if geodesic is True:
         fail(f"{name} does not support spherical geometry edges")
     if geodesic is not False:
@@ -168,8 +180,12 @@ def _collection_child_count(geometry):
 
 
 def _expose_planar_flag(geometry):
-    """Keep geodesic=false in public GeoJSON while retaining sidecar metadata."""
-    geometry["geodesic"] = False
+    """Publish SDK-valid edge flags while retaining planar sidecar metadata."""
+    if geometry["type"] in {"Point", "MultiPoint"}:
+        geometry.pop("geodesic", None)
+        geometry.pop("evenOdd", None)
+    else:
+        geometry["geodesic"] = False
     if geometry["type"] == "GeometryCollection":
         for child in geometry["geometries"]:
             _expose_planar_flag(child)
@@ -185,6 +201,10 @@ def invoke_geometry_binary(translator, name, arguments):
     missing = required - arguments.keys()
     if missing:
         fail(f"{name} requires arguments: {sorted(missing)}")
+    if arguments.get("proj") is None:
+        from .spherical_binary import invoke_spherical_binary
+
+        return invoke_spherical_binary(translator, name, arguments)
     if "maxError" in arguments and arguments["maxError"] is not None:
         fail("Geometry binary maxError reprojection is unsupported")
     if type(arguments.get("proj")) is not str or arguments["proj"] != "EPSG:4326":

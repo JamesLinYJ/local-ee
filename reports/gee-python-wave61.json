@@ -1,0 +1,270 @@
+{
+  "schema": "local-ee-compatibility-wave/v1",
+  "date": "2026-10-24",
+  "base_commit": "1318361024db8d1a3560e0f0156e9d416bbe16ae",
+  "title": "Default spherical Geometry and Feature operations through pinned local S2",
+  "priority": "Official GEE syntax, argument names and defaults first; original broader goal remains active.",
+  "entry_inventory": {
+    "pinned_signatures": 991,
+    "declared_same_name_handlers": 709,
+    "names_only_percentage": 71.54,
+    "remaining_same_name_handlers": 282,
+    "new_entry_count": 0,
+    "interpretation": "Name count only, not complete signatures, numerical semantics, all default consumers, migration success or Google equivalence."
+  },
+  "implementation": {
+    "contract": "Geometry and finite inline Feature contains/containedIn/intersects/disjoint/intersection/union/difference/symmetricDifference accept omitted/null proj and maxError with supported spherical inputs. Explicit planar EPSG:4326 remains a separate GEOS branch.",
+    "defaults": "Numeric EE geometries retain effective EPSG:4326, geodesic=true and evenOdd=true. Public omission is preserved; explicit child flags override inherited flags. Points/empty children do not invent mixed edge models.",
+    "native": "Actual pinned S2 C ABI; no runtime fetch. Source/artifact/platform/ABI/license attestation, source-set and physical ancestor checks on initial and cached loads. Closed finite numeric wire, independent native bounds and tracked memory.",
+    "values": "Actual dimensions, empties, holes, dateline/polar and left-inside cases. Full sphere has a distinct internal value and rejects public JSON/CSV. Exact source-vector reuse preserves unchanged input coordinates without epsilon equality.",
+    "public_flags": "Point/MultiPoint omit unsupported edge/interior flags; lines publish edge model; polygons publish edge/interior model; collection context preserved. Explicit planar results expose false geodesic flags instead of silently changing on SDK roundtrip.",
+    "features": "Overlays own left properties and actual existing left ID only. Geometry getters revalidate mutable values and detach coordinates, retaining inferred metadata.",
+    "CSV": "All rows and siblings validate and precharge aggregate native work before any native call. Actual spherical outputs pass CSV-to-official-SDK roundtrip. Curved table bounds use a conservative world envelope, not a fabricated tight bbox.",
+    "consumers": "Explicit spherical edges reject before legacy planar clip/reduceRegion/spatial-filter/footprint-union consumers. Legacy unflagged raster input remains planar and is not default GEE geodesic compatibility.",
+    "unchanged_limits": "Compiler50000work, graph500/1MB, geometry10000positions/1000children/16depth, CSV1000rows/256columns/50000cells/1MB. C ABI65536double wire; S2 tracker64MiB is tracked work memory, not total process RSS."
+  },
+  "dependency_provenance": {
+    "sources": {
+      "s2geometry": {
+        "repository": "https://github.com/google/s2geometry",
+        "version": "0.14.0",
+        "commit": "c24b368c67d0b8a2a109c5a75224e73a856bd8b7",
+        "archive_url": "https://github.com/google/s2geometry/archive/refs/tags/v0.14.0.tar.gz",
+        "archive_format": "tar.gz",
+        "top_level": "s2geometry-0.14.0",
+        "sha256": "8c1f0a4b98472ed9df9807f5ec10ee57928cca388e16c13f430b652790d3ad8b"
+      },
+      "abseil_cpp": {
+        "repository": "https://github.com/abseil/abseil-cpp",
+        "version": "20250814.1",
+        "commit": "d38452e1ee03523a208362186fd42248ff2609f6",
+        "archive_url": "https://github.com/abseil/abseil-cpp/archive/refs/tags/20250814.1.zip",
+        "archive_format": "zip",
+        "top_level": "abseil-cpp-20250814.1",
+        "sha256": "7a56c409044fe02851302fba09fd00c9e06bd8160278f88e51122c76b44b6c00"
+      }
+    },
+    "licenses": "S2 Apache-2.0 LICENSE/NOTICE and Abseil Apache-2.0 LICENSE bundled and hash checked",
+    "ABI": 1,
+    "artifact_platform": "darwin",
+    "artifact_machine": "arm64",
+    "library_sha256": "01a3ef76605dcff33682555246ed3ab88a15c2754b816240f7cfba201e0503e5",
+    "manifest_sha256": "77a77a10ed25e625b5badff38f421664f4993ba495a4d1c3e1a5d76afcd0034a",
+    "manifest_source_count": 14,
+    "manifest_license_count": 3,
+    "existing_Python_JVM_Node_locks_modified": false,
+    "system_install_or_service_deployment": false
+  },
+  "verification": {
+    "full_pytest": {
+      "passed": 6071,
+      "skipped": 27,
+      "warnings": 53,
+      "failures": 0,
+      "seconds": 60.82,
+      "source_files_hashed": 62,
+      "source_stable_during_run": true,
+      "scope": "Complete existing host suite; optional/native skips preserved. No new Spark/deployment acceptance."
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typecheck": "passed",
+      "temporary_build": "passed",
+      "deployed": false,
+      "source_unchanged_since_validation": true
+    },
+    "original_default_probes": {
+      "count": 16,
+      "before_compiled": 0,
+      "after_compiled": 16,
+      "raw_official_wires_unchanged": true,
+      "independent_overlay_observations": 72,
+      "reference": "Unit-vector winding, signed triangle excess and Boolean set algebra; nonboundary probes, no S2/GEOS reference calls."
+    },
+    "workflow": {
+      "SDK_versions": "Pinned Python and JavaScript1.7.49",
+      "default_methods": 16,
+      "null_and_omitted_forms": "Different SDK null encodings compile to identical finite workflow results",
+      "independent_membership_probes": 9,
+      "trusted_synthetic_CSV_rows_written_and_read": 4,
+      "instrumented_SDK_network_attempts": 0,
+      "google_runtime_used": false,
+      "constructive_endpoint_error_degrees": 6.661338147750939e-16,
+      "explicit_numeric_tolerance_degrees": 2e-14,
+      "numeric_pass_is_not_exact_incidence_fix": true
+    },
+    "native_review": {
+      "model": "gpt-6.1-sol",
+      "scope": "Scoped independent correctness/resource/loader/archive review; not a formal full repository security scan",
+      "original_review_source_hashes": 26,
+      "original_review_source_hashes_still_current": 25,
+      "actual_C_ABI_passed": 52,
+      "actual_C_ABI_total": 55,
+      "actual_loader_and_official_Python_SDK_passed": 9,
+      "inert_loader_controls_passed": 16,
+      "inherited_context_controls_passed": 2,
+      "archive_controls_passed": 20,
+      "remaining_strict_failures": [
+        {
+          "name": "original_polygon_edge_clipped_by_line_endpoint_coordinates",
+          "desired_observation": "strict clipped endpoint coordinate [2, 2]",
+          "actual_observation": "[1.9999999999999993, 1.9999999999999993]",
+          "note": "The workflow's constructed crossing passes the separate 2e-14 degree numeric oracle; this raw strict coordinate control remains failing."
+        },
+        {
+          "name": "literal_meridian_point_incidence",
+          "desired_observation": "Point([2, 2]) intersects LineString([[2, -1], [2, 3]])",
+          "actual_observation": "false",
+          "note": "LL-to-binary64-unit-vector construction leaves the literal point off this exact S2 arc; source point incidence remains a reported precision gap."
+        },
+        {
+          "name": "generated_intersection_roundtrip",
+          "desired_observation": "the generated crossing point intersects both source lines after roundtrip",
+          "actual_observation": "intersects_left=false; intersects_right=false",
+          "note": "Generated intersection incidence remains a reported precision gap."
+        }
+      ],
+      "geometry_addendum_receipt_sha256": "d104ff57020ecf8742150de1cf524c7eadb69c73606a17cd23186d0422e66700",
+      "geometry_addendum": "Current geometry_binary implementation independently checked:15 actual edge-model controls,15 directed pytest cases and2 Point/MultiPoint sidecar readbacks passed. Original25 other reviewed source hashes remain current.",
+      "final_runtime_wiring_receipt_sha256": "07c7c14013df7366c4d71e7756d10476fac694fc963a9659dbd3923869c794f4",
+      "final_runtime_wiring": "Independent source review and2 actual privileged-host Seatbelt tests passed.10 assertions include those2 tests and are not added to them as separate test cases. Ordinary-script reads of library/build driver/helper denied; trusted spherical computation passes, foreign reads/artifact writes/public networking denied."
+    },
+    "old_Python_probes": {
+      "count": 50,
+      "serialized": 50,
+      "compiled": 47,
+      "rejected": 3,
+      "all_raw_serializations_unchanged": true,
+      "reviewed_fixture_changes": "Exactly two explicit-planar Polygon output mappings retain geodesic=false. Other content unchanged; generated receipt check passed."
+    },
+    "remote_CI": "Workflow now explicitly builds pinned S2 on Linux before tests. Exact-commit remote checks are authoritative; local ARM64 evidence does not establish Linux runtime/deployment acceptance.",
+    "spherical_Seatbelt": {
+      "focused_passed": 18,
+      "scope": "Actual existing macOS deny-default Seatbelt component plus existing runtime/RF controls; not deployed service, full Spark, UI or production acceptance",
+      "actual_dateline_spherical_compilation": "passed",
+      "foreign_file_read": "denied",
+      "artifact_directory_write": "denied",
+      "public_network": "denied",
+      "ordinary_script_read_scope": "unchanged"
+    }
+  },
+  "failures_preserved": [
+    "First frozen regression:12failed/6036passed/27skipped. Obsolete spherical-rejection, metadata/default, public-flag and diagnostic assertions corrected after inspection, retaining illegal flags/coordinate bounds/revalidation/ownership controls. Focused128pass, second full frozen run6048pass.",
+    "Strict native55 controls retain3 failures. Separate numeric tolerance passing does not remediate literal/computed incidence; no snapping or fuzzy equality added.",
+    "Initial build and exploratory native-policy failures retained locally; no historical receipts overwritten.",
+    "Supplementary review found stale-sidecar and inherited-edge wrong-route defects after an earlier complete pass. Fixed and added targeted regression controls. Inherited planar/point-output assertions updated after legitimate behavior changes; original failed logs and independent pre-fix controls retained. Final frozen full suite rerun after all runtime/sandbox changes.",
+    "Independent reviewer sandbox_apply EPERM under the outer execution sandbox and a missing-cwd-read audit harness failure were preserved separately. Privileged-host rerun and corrected trusted audit harness passed; these were not product computation failures."
+  ],
+  "limits_and_unverified": [
+    "Three binary64 input/constructed-result exact incidence/coordinate controls remain unresolved and are not user accepted.",
+    "Non-null maxError/ErrorMargin, general reprojection, other CRS, planar-to-spherical transforms and wrapped BBox unsupported.",
+    "Full-sphere public GeoJSON/CSV and tight curved bounds unsupported.",
+    "Spherical raster masks/clip/reduceRegion/filter/footprint consumers not implemented; legacy unflagged raster input still planar.",
+    "Local CLOSED boundaries, S2 vectors and synthetic references do not prove Google same-data equivalence.",
+    "No new service, browser, real-user-data, full Spark or deployment acceptance. Existing matrix/unmix resource limits remain."
+  ],
+  "preservation": {
+    "accounts_research_data_credentials_read_or_modified": false,
+    "VMs_or_containers_used": false,
+    "system_or_existing_venv_modified": false,
+    "services_started_or_restarted": false,
+    "new_native_dependency_built_in_project_only": true,
+    "goal_complete": false
+  },
+  "cleanup": {
+    "removed_files": 33403,
+    "removed_bytes": 608176566,
+    "removed_roots": 28,
+    "all_removed": true,
+    "all_no_open_handles": true,
+    "runtime_dependencies_or_user_data_removed": false
+  },
+  "retained_build_inputs": {
+    "verified_source_archives": 2,
+    "archive_bytes": 6069390,
+    "canonical_library_and_license_manifest": "retained intact",
+    "raw_failures_logs_and_reviews": "retained locally, not forced into public repository"
+  },
+  "receipt_sha256": {
+    "audit/gee-python-wave61/root/full-1.json": "279135cf1352780757d93dc3b7baab9d3548a4f897002814d38a6dab3ac6e803",
+    "audit/gee-python-wave61/root/full-6.json": "6b7713868244ec399e2395f36650ffcb0578d42b705fb2718326799ed0d43854",
+    "audit/gee-python-wave61/root/after-defaults-final.json": "40c49319d64b1bfd6bf9ff6e39d30ebb12103a877cbc9387bd8a52565a33bab0",
+    "audit/gee-python-wave61/root/cleanup.json": "a659c15acb36d669435eb49b71f04a34b88c1a6df85bb6c33ec1f764853d2629",
+    "audit/gee-python-wave61/native-review/review-receipt.json": "607e7a707916eb0ba18e3d3e459001218d332277b563fd6586065b10bb06c400",
+    "audit/gee-python-wave61/workflow/acceptance-v2.json": "a1f21ac77c0da283121acbedaa362393cbfcab65587e35efd4e8be0a076e11af",
+    "audit/gee-python-wave61/native-review/review-addendum-geometry-binary-final.json": "d104ff57020ecf8742150de1cf524c7eadb69c73606a17cd23186d0422e66700",
+    "audit/gee-python-wave61/root/full-3.json": "4df6adfcae65bdf994e3bb91b4b2d96d2ec30cdf3ee7b613d7901bbb10dc9598",
+    "audit/gee-python-wave61/root/full-4.json": "4b190a0d9def0bd164da2311d811e9560c3ffa66405f4de56f84ac8de6df5953",
+    "audit/gee-python-wave61/native-review/review-addendum-final-runtime-wiring.json": "07c7c14013df7366c4d71e7756d10476fac694fc963a9659dbd3923869c794f4",
+    "audit/gee-python-wave61/root/full-5.json": "1accf0b7c23a63beb5c8d08179d592ff81959b41b031db97a798a23cb11d2945"
+  },
+  "frozen_tested_source_sha256": {
+    ".github/workflows/checks.yml": "e5022c5940904d700938d316c89f6771060e9549ed0578b8cea77a33e6093a8c",
+    "examples/66_GEE_python_spherical_geometry.py": "3327d426eaae47c12600e60f67a41dd74a90cbb09f098d0e0ca70d829031abb7",
+    "examples/javascript/20_球面几何.js": "ce08affad2e203fb5ede1049e654c9375a69af1cb8e1fb1aca147085ea22adc9",
+    "gee/compat/earthengine/capabilities.py": "d6a0d79ea1cbc978d7f57b69a0a8bc3f911d13774bd74786253e88853d63f462",
+    "gee/compat/earthengine/catalog.py": "9883ffd36148572b99133fff13dd12b385dc6f581f5c23a8e5a51eca379b7652",
+    "gee/compat/earthengine/feature_geometry_binary.py": "f2a3e434443211448397c99e3cc14283f8118bfdca7b3d861a3a60de03c256c2",
+    "gee/compat/earthengine/filter_metadata.py": "18b39ed271be034c4d5f4e734f0223e24f577830299f0ca78f96794571b4a528",
+    "gee/compat/earthengine/filter_structure.py": "a891fa0654d8c349c4ac6073b4af25ccf1f117d4f7432a5c04642aeb73f45fcc",
+    "gee/compat/earthengine/geometry_binary.py": "2f7cb5d5f171f6e423e68cb8494aa0d769ba64c9ad19d72dbebb20797b3842c7",
+    "gee/compat/earthengine/geometry_constructors.py": "74b5932920e97809ca0295228afb65be7d0c466d1a3750c9e721d2579c05deee",
+    "gee/compat/earthengine/geometry_consumers.py": "9b36316a08d3b14ea8fe9e8940a12dd4b9e947a77e37db1fe5daa04815979f33",
+    "gee/compat/earthengine/geometry_structure.py": "795ac71ad1ca54f6af23f8fde30160b27f6cde0bba14dc90d100f56d57c99f6a",
+    "gee/compat/earthengine/geometry_topology.py": "791d0af51aa15994e09f4c1665201e638f86b9e9ffdb9e542f1149b0a3554f31",
+    "gee/compat/earthengine/geometry_values.py": "0a8ce05b0b5975950f55f15658bb32554b8bf42679ec80ee4be0806b67df44e1",
+    "gee/compat/earthengine/image_ops.py": "bb99c6e6967d4f280498bbc325e162660a38482a643a34016d28b944c91049ef",
+    "gee/compat/earthengine/public_values.py": "d560c0506a4aef17bd1168e0d30109368c3c0e4d01f9e35d7cc6bb5d2be0d635",
+    "gee/compat/earthengine/spherical_binary.py": "94ee3b7273ebc9a142c60456d08929065e2f82f665b0c5e831479c411cc54151",
+    "gee/compat/earthengine/spherical_native.py": "b95d6ce4942cb5732588b0f252bfaa7b6ddf6dc3f8e203f268994ef6e0dee55e",
+    "gee/compat/earthengine/spherical_preflight.py": "a96691e59e72839b46c3eff5310fa3cc17441e839d1e82da9e6c50dcdb71e41b",
+    "gee/compat/earthengine/spherical_wire.py": "226b67768d5033f62269990f488e7b240635d34a1ab077e603aa08104672c41d",
+    "gee/native/sandbox.py": "9816a06ce97624c2039f86af1f19bb413add3c6a0a216b8869e7de36372e08cf",
+    "gee/table_geometry.py": "d045bbb0ca996f1e683c0bf6fb0ea0507dadd8b04c34ebb2f8f27d28b5d504af",
+    "gee/table_spherical_geometry.py": "f97bb18d37751fa8a44e89ad85b10e342a516f9f61a393922d95ed4c38ba5165",
+    "gee/table_values.py": "f7fd766fd4a9c96cb97b9300244adb406c0984628ec9ab56982745db8e3bbdfe",
+    "native/s2/CMakeLists.txt": "a589d22b0b0292ebea22d99c609e75cda5dce4dc1ac3ebd5774f00f9a146f06e",
+    "native/s2/dependencies.lock.json": "a48871abda85fa724dde7355e10c41e9d736f102092fe6c133f241f5a8531d38",
+    "native/s2/s2_adapter.cpp": "312ead8bbc12cd64ab5052efe626290c024a8d2a226c97a3bb99f71836275389",
+    "native/s2/s2_adapter.h": "ff128c14c93e3ea19c431928facc46fef88275753336db2497924ee316d72ee0",
+    "native/s2/s2_degeneracies.cpp": "eedad18e127c4fd093ab4cd70d40a1074334607017eeec1e9cbac99e3d70c3c8",
+    "native/s2/s2_input.cpp": "ab8a21d2a1f4e2f2acd672618d12eb3097eca11dea1fff32508fc4dfe3eaee23",
+    "native/s2/s2_internal.h": "dbad1c158ad1f4c3bc03bb4b898c1586bb9712aed4be95a386e4bef918c82318",
+    "native/s2/s2_operation.cpp": "698723b851d03117e340d6e26b808bf5e3b23a65f3c4983ee387e185e4d169e6",
+    "native/s2/s2_output.cpp": "37c252b86f8077234623c4431690adfdeb3e6f16f15386e39c44bca0f140e82e",
+    "native/s2/s2_wire.cpp": "b9429a58ccbd155a04cbc85415678786281cc80d50cf1fce6909f9e8a3f64d01",
+    "scripts/build_s2_adapter.py": "7253e0c30713db20e673f12c5f3600c7410909f80cd6251084ec3f0293910044",
+    "scripts/ee_inventory/catalogue.py": "4e7ff70fdd661c91878e12809e75ced8e16b225e89947aa5def1d19ede7b84ba",
+    "scripts/ee_inventory/geometry_binary.py": "d8573b9bff64bc8711d077b9e8accd58a296b16e39db0eaa605bf1e64ad98e59",
+    "scripts/native.py": "7c0a55a490f6b69b829d2c718d7a4ddc4435ff2d39cd78d112268836643f64cd",
+    "scripts/s2_build/__init__.py": "55277cc057b59a9105c0bead883e62ef48a9c4d79ae700b07bde7dd6ab332d6e",
+    "scripts/s2_build/artifact.py": "cf697fe80fab2780ad697e28dfbd15f64c07c0972422690d64caebba853b6817",
+    "scripts/s2_build/dependencies.py": "9dfd052524061ba6d0e434eda43fb0ebe7857fa8f88d7780ec64484632b2da41",
+    "tests/ee_spherical_workflow_helpers.py": "2da52b3f995e533a2157735321a8adc155898d4b54be1e849d0ed76d1fabccdd",
+    "tests/fixtures/ee-python-1.7.49.json": "cf37549d1eb34c93d616ce1d0e8c2a1752d3a826ae024b0644cbda1e9aa56720",
+    "tests/fixtures/ee-spherical-wave61-v1.json": "e622fdc859dbb68781cf99083856af08f65054d12997264a525fb985229d0498",
+    "tests/test_ee_feature_structure.py": "0d8eaa90a1d3be5a0f2f37c5e0341e873d450c52c1718acf54d614e947c93314",
+    "tests/test_ee_geometry_binary.py": "54f809289fac6624de9f3c6ba7da6ee3994379aec05d363a5db46a02a27de747",
+    "tests/test_ee_geometry_structure.py": "e499cd44393ba16f550f8cfa70015d28fab124e3748bba2ef9c8c110084397d8",
+    "tests/test_ee_preparation_sdk_entries.py": "74186f1aadb4946ea242db58ba3e629d2a3106298f19d4db628ddfcbe3a53455",
+    "tests/test_ee_python_geometry.py": "a58e93015660368f1eab725917e16ccf7b889ffc8994344a4630160bd4ade802",
+    "tests/test_ee_roi_geometry_workflow.py": "4931ceb5f537483a81a097b51c8d297bf6dc042c10ebe40cd5c706fa98c74b8d",
+    "tests/test_ee_spherical_consumers.py": "a6a78302c7935c6cb3139a110dbbd793243063fdf5a7e7f05cb25d478d1b9356",
+    "tests/test_ee_spherical_native_kernel.py": "0eea2c7077f3a374305af22d566e669fdfd9670ea78510c1f13757c1583ec4c6",
+    "tests/test_ee_spherical_native_loader.py": "eec66c7e3e9da982a28f671ec2017cfe2430bd2658a0529808b0fd98c32b75bd",
+    "tests/test_ee_spherical_sandbox.py": "afd1fd86687ae7406a1e473929e04af5d1167645a074c47e736f32c79d9b4a43",
+    "tests/test_ee_spherical_sdk_geometry.py": "b5515ecbcc687070145cbf88c22403da14b2b165a7876e2b756e1f58e436d2d2",
+    "tests/test_ee_spherical_tables.py": "5fdb470c1a12583151de1b05e57d76796e36e8e95db0e80530fb2de9feb1a809",
+    "tests/test_ee_spherical_values.py": "d3a9651c18fb25e3c36c0bff6a7bc4a0b0b63044b70ad3ff1efb0f163ebaa9a3",
+    "tests/test_ee_spherical_workflow.py": "37d53fb20657018b36dfad00624540316128249c02c3e330382985f67f07bd17",
+    "tests/test_ee_static_dictionary_ops.py": "edecace7ea1a398a5114456133e00116b643679d74fb6a0299371f7ed0b94107",
+    "tests/test_ee_static_list_ops.py": "3c3e0bf28e00349e89ec511e42377d3b5a3b86939f9600b66daa0b9671e789bd",
+    "tests/test_table_values.py": "25d901974a0c229d29444ed11de216f34015a7c828d1d933e517e7baaad14198",
+    "web/src/docs/typed-raster-docs.ts": "bc1fafd4c56d2f80090274a49e8d0b0fb74f8bb16c848ebf7bcddaad98f44f2b"
+  },
+  "investigated_and_fixed": [
+    "Stale internal geodesic defaults could route a mutated spherical value or inherited spherical collection into planar GEOS. Public flag, inherited context and stored default now follow the same precedence at preflight and decode; native/GEOS spies verify rejection before planar construction.",
+    "Legacy planar Point/MultiPoint output published geodesic=false, which official SDK constructors reject. Public flags now follow geometry type in both planar and S2 outputs; internal planar metadata preserved. Both SDKs roundtrip five geometry dimensions.",
+    "API and batch sandbox read paths previously omitted the new native library/source/license attestation inputs. Added only three public read paths in trusted API/batch modes; ordinary script modes unchanged, no new writes or networking. Real Seatbelt computation and file/write/network negative controls passed."
+  ]
+}

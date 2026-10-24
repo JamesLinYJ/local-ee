@@ -1,4 +1,4 @@
-"""Bounded planar binary predicates and overlays for inline Features."""
+"""Bounded binary predicates and overlays for actual inline Features."""
 from __future__ import annotations
 
 from .feature_structure import _feature, _identity
@@ -35,7 +35,7 @@ def _arguments(translator, name, arguments):
 def invoke_feature_geometry_binary(translator, name, arguments):
     """Apply a finite Geometry binary operator to actual inline Features.
 
-    The geometry worker owns planar reprojection/overlay validation and the
+    The geometry worker owns edge-model/overlay validation and the
     shared geometry budget. Feature validation and the left properties copy
     happen first, so mutable Feature data is never copied before reservation
     or left aliased while GEOS runs.
@@ -76,6 +76,10 @@ def invoke_feature_geometry_binary(translator, name, arguments):
             fail(f"{name} geometry worker returned a non-Boolean result")
         return result
 
+    from .spherical_wire import FullSphere
+
+    if isinstance(result, FullSphere):
+        fail("Feature full-sphere public GeoJSON encoding is unverified")
     if not isinstance(result, dict) or type(result.get("type")) is not str:
         fail(f"{name} geometry worker returned a malformed geometry")
     feature = {

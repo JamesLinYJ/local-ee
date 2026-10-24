@@ -9,6 +9,7 @@ import json
 import pytest
 
 from gee import table_values
+from gee import table_spherical_geometry
 from gee.compat.earthengine.geometry_values import GeometryValue, decode_geometry_value
 from gee.table_values import (
     MAX_CELLS,
@@ -243,7 +244,7 @@ def test_csv_output_byte_cap_uses_utf8_byte_count(monkeypatch):
         render_csv(data)
 
 
-def test_named_epsg_4326_crs_and_planar_geometry_flags_are_preserved():
+def test_named_epsg_4326_crs_is_preserved_but_point_flags_are_omitted():
     crs = {"type": "name", "properties": {"name": "EPSG:4326"}}
     geometry = {
         "type": "Point", "coordinates": [100, 30], "crs": crs,
@@ -257,7 +258,11 @@ def test_named_epsg_4326_crs_and_planar_geometry_flags_are_preserved():
     row = list(csv.reader(render_csv(data).splitlines()))[1]
     assert row == [
         "",
-        json.dumps(geometry, ensure_ascii=False, separators=(",", ":")),
+        json.dumps(
+            {"type": "Point", "coordinates": [100, 30], "crs": crs},
+            ensure_ascii=False,
+            separators=(",", ":"),
+        ),
     ]
     assert data == original
 
@@ -280,16 +285,22 @@ def test_table_boundary_accepts_only_owned_geometry_values_and_keeps_geojson_sha
     )
     assert dict(geometry) == before
     assert geometry.geometry_metadata == {"evenOdd": True}
-    assert child.geometry_metadata == {"geodesic": False}
+    assert child.geometry_metadata == {
+        "crs": "EPSG:4326", "geodesic": False, "evenOdd": True,
+    }
 
 
-def test_table_boundary_validates_sidecar_options_before_dropping_them():
+def test_table_boundary_validates_typed_spherical_sidecar_with_s2(monkeypatch):
     geometry = GeometryValue(
         {"type": "Point", "coordinates": [1, 2]},
         {"geodesic": True}, validated=True,
     )
-    with pytest.raises(TableValueError, match="Geodesic"):
-        columns(collection([feature({}, geometry=geometry)]))
+    calls = []
+    monkeypatch.setattr(table_spherical_geometry.spherical_native, "validate", calls.append)
+    assert columns(collection([feature({}, geometry=geometry)])) == ["system:index", ".geo"]
+    assert calls == [{
+        "type": "Point", "coordinates": [1, 2], "geodesic": True, "evenOdd": True,
+    }]
 
     class ForeignGeometry(dict):
         pass
@@ -348,7 +359,6 @@ def test_malformed_or_non_epsg4326_crs_is_rejected(bad_crs):
 
 
 @pytest.mark.parametrize("geometry", [
-    {"type": "Point", "coordinates": [1, 2], "geodesic": True},
     {"type": "Polygon", "coordinates": [[[0, 0], [2, 0], [2, 2], [0, 0]]],
      "evenOdd": False},
     {"type": "Point", "coordinates": [1, 2], "geodesic": "true"},

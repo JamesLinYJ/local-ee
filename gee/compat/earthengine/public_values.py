@@ -35,6 +35,10 @@ def public_value(value):
                 charge(5 if code <= 0xffff else 11)
 
     def convert(item, depth=0):
+        from .spherical_wire import FullSphere
+
+        if isinstance(item, FullSphere):
+            fail("Full-sphere public GeoJSON encoding is unverified; use a supported predicate")
         remaining[0] -= 1
         if depth > 96 or remaining[0] < 0:
             fail("Computed metadata exceeds materialization limits")

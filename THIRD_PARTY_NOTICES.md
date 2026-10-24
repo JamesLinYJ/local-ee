@@ -25,6 +25,15 @@ license. Its original `google_re2-*.dist-info/licenses/LICENSE` remains in the
 installed wheel; preserve that notice when redistributing the runtime. Wheel
 versions and SHA-256 hashes are fixed in `uv.lock`.
 
+The local spherical adapter statically links [S2 Geometry 0.14.0](https://github.com/google/s2geometry/tree/v0.14.0)
+and [Abseil 20250814.1](https://github.com/abseil/abseil-cpp/tree/20250814.1),
+both under Apache-2.0. Their exact source commits and archive hashes are in
+`native/s2/dependencies.lock.json`; source downloads and compiled libraries are
+not stored in Git. The explicit builder bundles S2's `LICENSE` and `NOTICE` and
+Abseil's `LICENSE` under the artifact's `licenses/` directory and records their
+hashes in `manifest.json`. Preserve those notices and the manifest when
+redistributing the native adapter; runtime loading requires them.
+
 The large JVM artifacts are not stored in Git. Their versions, source URLs and
 SHA-256 values are tracked in the engine manifests, and their embedded license
 and notice metadata must be preserved when restoring them.

@@ -98,7 +98,9 @@ def test_polygon_overlays_match_hand_calculated_area_and_keep_metadata():
     assert polygon_area(difference) == 3
     assert polygon_area(symmetric) == 6
     for result in (intersection, union, difference, symmetric):
-        assert result.geometry_metadata == {"crs": "EPSG:4326", "geodesic": False}
+        assert result.geometry_metadata == {
+            "crs": "EPSG:4326", "geodesic": False, "evenOdd": True,
+        }
         assert result["geodesic"] is False and "crs" not in result
 
 
@@ -151,8 +153,6 @@ def test_public_binary_geometry_roundtrips_through_pinned_python_sdk_offline():
 
 
 @pytest.mark.parametrize("options, message", [
-    ({}, "spherical"),
-    ({"proj": None}, "spherical"),
     ({"proj": 4326}, "spherical"),
     ({"proj": True}, "spherical"),
     ({"maxError": 0}, "maxError"),
@@ -162,6 +162,13 @@ def test_binary_projection_and_error_margin_are_strict(options, message):
     arguments = {"left": point(0, 0), "right": point(1, 1), **options}
     with pytest.raises(UnsupportedEEError, match=message):
         invoke_geometry_binary(translator(), "Geometry.intersects", arguments)
+
+
+@pytest.mark.parametrize("options", [{}, {"proj": None}])
+def test_omitted_and_null_projection_now_use_the_actual_spherical_backend(options):
+    arguments = {"left": point(0, 0), "right": point(1, 1), **options}
+    assert invoke_geometry_binary(translator(), "Geometry.intersects", arguments) is False
+    assert invoke_geometry_binary(translator(), "Geometry.disjoint", arguments) is True
 
 
 def test_exact_arguments_and_input_geometry_metadata_are_required():
@@ -188,13 +195,12 @@ def test_exact_arguments_and_input_geometry_metadata_are_required():
         })
 
 
-def test_planar_flag_is_checked_per_collection_component_without_inheritance():
+def test_explicit_collection_planar_flag_is_inherited_by_unflagged_children():
     collection = {
         "type": "GeometryCollection", "geodesic": False,
         "geometries": [{"type": "LineString", "coordinates": [[0, 0], [1, 1]]}],
     }
-    with pytest.raises(UnsupportedEEError, match="geodesic=false"):
-        call("Geometry.intersects", collection, point(0, 0))
+    assert call("Geometry.intersects", collection, point(0, 0)) is True
     collection["geometries"][0]["geodesic"] = False
     assert call("Geometry.intersects", collection, point(0, 0)) is True
     assert call("Geometry.intersects", {"type": "MultiLineString", "coordinates": []}, point(0, 0)) is False
@@ -209,7 +215,12 @@ def test_intersection_precharges_possible_mixed_dimension_collection_children():
     result = call("Geometry.intersection", polygon, collection)
     assert result["type"] == "GeometryCollection"
     assert {child["type"] for child in result["geometries"]} == {"LineString", "Point"}
-    assert all(child["geodesic"] is False for child in result["geometries"])
+    for child in result["geometries"]:
+        assert child.geometry_metadata["geodesic"] is False
+        if child["type"] == "Point":
+            assert "geodesic" not in child
+        else:
+            assert child["geodesic"] is False
 
 
 def test_open_polygon_and_linear_ring_closures_are_counted_and_normalized():
@@ -244,9 +255,91 @@ def test_mutated_geometry_value_is_revalidated_before_binary_operation():
         call("Geometry.intersects", value, point(0, 0))
 
     value = decode_geometry_bounded(translator(), rectangle(0, 0, 1, 1))
+    del value["geodesic"]
     value.geometry_metadata["geodesic"] = True
     with pytest.raises(UnsupportedEEError, match="spherical"):
         call("Geometry.intersects", value, point(0, 0))
+
+
+@pytest.mark.parametrize("operation", ["Geometry.intersects", "Geometry.union"])
+@pytest.mark.parametrize("side", ["left", "right"])
+@pytest.mark.parametrize("nested", [False, True])
+def test_mutated_public_spherical_flag_cannot_use_a_stale_planar_sidecar(
+        monkeypatch, operation, side, nested):
+    value = decode_geometry_bounded(translator(), rectangle(0, 0, 1, 1))
+    assert value.geometry_metadata["geodesic"] is False
+    value["geodesic"] = True
+    operand = {"type": "GeometryCollection", "geometries": [value]} if nested else value
+    arguments = {"left": point(0, 0), "right": point(0, 0)}
+    arguments[side] = operand
+
+    def no_planar_geometry(_value):
+        raise AssertionError("Spherical edges must reject before planar GEOS")
+
+    monkeypatch.setattr("gee.compat.earthengine.geometry_binary.shape", no_planar_geometry)
+    with pytest.raises(UnsupportedEEError, match="spherical geometry edges"):
+        call(operation, **arguments)
+    assert value["geodesic"] is True
+    assert value.geometry_metadata["geodesic"] is False
+
+
+def test_explicit_planar_flag_overrides_a_stale_spherical_default():
+    value = decode_geometry_bounded(translator(), rectangle(0, 0, 1, 1))
+    value.geometry_metadata["geodesic"] = True
+    assert value["geodesic"] is False
+    assert call("Geometry.contains", value, point(0.5, 0.5)) is True
+    assert value.geometry_metadata["geodesic"] is True
+
+
+@pytest.mark.parametrize("side", ["left", "right"])
+@pytest.mark.parametrize("levels", [1, 2])
+@pytest.mark.parametrize("parent_sidecar", [False, True])
+def test_inherited_spherical_flag_overrides_child_planar_default_before_geos(
+        monkeypatch, side, levels, parent_sidecar):
+    child = decode_geometry_bounded(translator(), line((-60, 70), (60, 70)))
+    del child["geodesic"]
+    assert child.geometry_metadata["geodesic"] is False
+    value = child
+    for _ in range(levels):
+        value = {"type": "GeometryCollection", "geometries": [value]}
+    value["geodesic"] = True
+    if parent_sidecar:
+        value = decode_geometry_bounded(translator(), value)
+        del value["geodesic"]
+        assert value.geometry_metadata["geodesic"] is True
+    arguments = {"left": point(0, 70), "right": point(0, 70)}
+    arguments[side] = value
+    # The actual spherical arc bulges north; a planar conversion would
+    # incorrectly report this point as lying on the edge.
+    assert invoke_geometry_binary(translator(), "Geometry.intersects", arguments) is False
+
+    def no_planar_geometry(_value):
+        raise AssertionError("Inherited spherical edges must reject before GEOS")
+
+    monkeypatch.setattr("gee.compat.earthengine.geometry_binary.shape", no_planar_geometry)
+    with pytest.raises(UnsupportedEEError, match="spherical geometry edges"):
+        call("Geometry.intersects", **arguments)
+    assert child.geometry_metadata["geodesic"] is False
+
+
+def test_inherited_planar_flag_overrides_child_spherical_default():
+    raw = line((-60, 70), (60, 70))
+    del raw["geodesic"]
+    child = decode_geometry_bounded(translator(), raw)
+    assert child.geometry_metadata["geodesic"] is True
+    value = {"type": "GeometryCollection", "geodesic": False, "geometries": [child]}
+    assert call("Geometry.intersects", value, point(0, 70)) is True
+    assert child.geometry_metadata["geodesic"] is True
+
+
+def test_explicit_child_planar_flag_and_edge_free_points_keep_their_models():
+    child = line((-60, 70), (60, 70))
+    parent = {"type": "GeometryCollection", "geodesic": True, "geometries": [child]}
+    assert call("Geometry.intersects", parent, point(0, 70)) is True
+    parent["geometries"] = [point(0, 70)]
+    assert call("Geometry.intersects", parent, point(0, 70)) is True
+
+
 def test_output_objects_do_not_alias_mutable_operands():
     left, right = rectangle(0, 0, 2, 2), rectangle(1, 1, 3, 3)
     output = call("Geometry.intersection", left, right)

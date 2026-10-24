@@ -47,11 +47,16 @@ def profile(*, reads=(), writes=(), api_port=None, spark=False, fork=True, packa
     return '\n'.join(rules) + '\n'
 
 
-def runtime_reads(root, python, node=None, engine=False):
+def runtime_reads(root, python, node=None, engine=False, spherical=False):
     root = Path(root)
     paths = [root / '.venv', Path(python).resolve().parents[1], root / 'gee']
     if node:
         paths.extend([Path(node).resolve().parents[1], root / '.native/eejs'])
+    if spherical or engine:
+        # Trusted API compilation and batch CSV validation attest these public
+        # sources, licenses and library. User-script profiles do not get them.
+        paths.extend([root / 'native/s2', root / 'scripts/build_s2_adapter.py',
+                      root / 'scripts/s2_build'])
     if engine:
         paths.extend([root / '.native/engine', root / '.native/jars', root / 'engine',
                       Path(os.environ['JAVA_HOME']).resolve(), Path('/opt/homebrew/Cellar')])

@@ -1,0 +1,45 @@
+{
+  "schema": "local-ee-s2-dependency-lock/v1",
+  "sources": {
+    "s2geometry": {
+      "repository": "https://github.com/google/s2geometry",
+      "version": "0.14.0",
+      "commit": "c24b368c67d0b8a2a109c5a75224e73a856bd8b7",
+      "archive_url": "https://github.com/google/s2geometry/archive/refs/tags/v0.14.0.tar.gz",
+      "archive_format": "tar.gz",
+      "top_level": "s2geometry-0.14.0",
+      "sha256": "8c1f0a4b98472ed9df9807f5ec10ee57928cca388e16c13f430b652790d3ad8b"
+    },
+    "abseil_cpp": {
+      "repository": "https://github.com/abseil/abseil-cpp",
+      "version": "20250814.1",
+      "commit": "d38452e1ee03523a208362186fd42248ff2609f6",
+      "archive_url": "https://github.com/abseil/abseil-cpp/archive/refs/tags/20250814.1.zip",
+      "archive_format": "zip",
+      "top_level": "abseil-cpp-20250814.1",
+      "sha256": "7a56c409044fe02851302fba09fd00c9e06bd8160278f88e51122c76b44b6c00"
+    }
+  },
+  "limits": {
+    "max_archive_bytes": 67108864,
+    "max_extracted_bytes": 536870912,
+    "max_archive_members": 100000,
+    "max_build_jobs": 4,
+    "download_timeout_seconds": 300,
+    "build_step_timeout_seconds": 900
+  },
+  "build": {
+    "cmake_minimum_version": "3.22",
+    "cxx_standard": 17,
+    "build_type": "Release",
+    "build_shared_libs": false,
+    "position_independent_code": true,
+    "build_tests": false,
+    "build_examples": false,
+    "fetch_abseil_from_local_source": true,
+    "macos_deployment_target": "11.0",
+    "adapter_target": "local_ee_s2_adapter",
+    "adapter_output_name": "local_ee_s2",
+    "abi_version": 1
+  }
+}

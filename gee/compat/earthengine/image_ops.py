@@ -239,6 +239,9 @@ def invoke_image(translator, name, arguments):
     if name == "Image.clip":
         translator.allowed(a, {"input", "geometry"})
         image, geometry = as_image(a["input"]), a["geometry"]
+        from .geometry_consumers import reject_spherical_edges
+
+        reject_spherical_edges(translator, geometry, name)
         if geometry.get("type") == "Feature":
             geometry = geometry["geometry"]
         if geometry.get("type") not in {"Polygon", "MultiPolygon"}:
@@ -255,6 +258,9 @@ def invoke_image(translator, name, arguments):
         geometry = a.get("geometry") or translator.options.get("region")
         if not geometry:
             fail("reduceRegion requires an explicit geometry")
+        from .geometry_consumers import reject_spherical_edges
+
+        reject_spherical_edges(translator, geometry, name)
         reducer = a["reducer"]
         if not isinstance(reducer, Reducer):
             fail("Expected a supported Reducer")

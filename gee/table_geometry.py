@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import math
-from typing import Any, TypeAlias
+from typing import Any, Callable, TypeAlias
 
 
 Bounds: TypeAlias = tuple[float, float, float, float]
@@ -113,16 +113,16 @@ def _polygon(value: Any) -> None:
         _ring(ring)
 
 
-def _validate_semantics(geometry: dict[str, Any]) -> None:
+def _validate_semantics(geometry: dict[str, Any], *, spherical: bool = False) -> None:
     if "geodesic" in geometry:
         if type(geometry["geodesic"]) is not bool:
             _fail("GeoJSON geometry geodesic must be boolean")
-        if geometry["geodesic"]:
+        if geometry["geodesic"] and not spherical:
             _fail("geodesic=true EE geometry is unsupported; table geometry is planar")
     if "evenOdd" in geometry:
         if type(geometry["evenOdd"]) is not bool:
             _fail("GeoJSON geometry evenOdd must be boolean")
-        if not geometry["evenOdd"]:
+        if not geometry["evenOdd"] and not spherical:
             _fail("evenOdd=false EE geometry is unsupported by planar GeoJSON tables")
 
 
@@ -177,3 +177,123 @@ def validate_geometry(geometry: Any) -> Bounds | None:
     bounds = None if parsed.is_empty else tuple(parsed.bounds)
     validate_bbox(geometry, bounds)
     return bounds  # type: ignore[return-value]
+
+
+def validate_geometry_with_models(
+    geometry: Any,
+    *,
+    spherical_model: Callable[[dict[str, Any], bool | None], bool | None],
+    even_odd_model: Callable[[dict[str, Any], bool | None], bool],
+    spherical_validator: Callable[[dict[str, Any], bool], None],
+    inherited_geodesic: bool | None = None,
+    inherited_even_odd: bool | None = None,
+) -> Bounds | None:
+    """Validate a typed/mixed EE geometry without sending spherical parts to GEOS.
+
+    Raw standalone GeoJSON continues to use :func:`validate_geometry` and its
+    historical planar policy.  This path is selected only when effective EE
+    constructor metadata or an explicit public geodesic flag makes spherical
+    validation necessary.
+    """
+    active: set[int] = set()
+    visits = [0]
+
+    def walk(
+        current: Any,
+        inherited_sphere: bool | None,
+        inherited_parity: bool | None,
+        depth: int,
+    ) -> Bounds | None:
+        if current is None:
+            return None
+        if depth > 16:
+            _fail("GeoJSON GeometryCollection nesting exceeds 16 levels")
+        if not isinstance(current, dict) or type(current.get("type")) is not str:
+            _fail("Feature geometry must be null or a GeoJSON geometry object")
+        identity = id(current)
+        if identity in active:
+            _fail("GeoJSON GeometryCollection contains a cycle")
+        visits[0] += 1
+        if visits[0] > 50_000:
+            _fail("GeoJSON geometry exceeds the bounded table traversal limit")
+        active.add(identity)
+        try:
+            validate_crs(current)
+            model = spherical_model(current, inherited_sphere)
+            even_odd = even_odd_model(current, inherited_parity)
+            _validate_semantics(current, spherical=model is True)
+            kind = current["type"]
+            coordinates = current.get("coordinates")
+            if kind == "Point":
+                _position(coordinates)
+            elif kind == "MultiPoint":
+                if type(coordinates) is not list or not coordinates:
+                    _fail("GeoJSON MultiPoint coordinates must be non-empty")
+                for point in coordinates:
+                    _position(point)
+            elif kind == "LineString":
+                _line(coordinates)
+            elif kind == "MultiLineString":
+                if type(coordinates) is not list or not coordinates:
+                    _fail("GeoJSON MultiLineString coordinates must be non-empty")
+                for line in coordinates:
+                    _line(line)
+            elif kind == "Polygon":
+                _polygon(coordinates)
+            elif kind == "MultiPolygon":
+                if type(coordinates) is not list or not coordinates:
+                    _fail("GeoJSON MultiPolygon coordinates must be non-empty")
+                for polygon in coordinates:
+                    _polygon(polygon)
+            elif kind == "GeometryCollection":
+                children = current.get("geometries")
+                if type(children) is not list:
+                    _fail("GeoJSON GeometryCollection requires a geometries array")
+                if len(children) > 1_000:
+                    _fail("GeoJSON GeometryCollection exceeds 1000 inline geometries")
+                bounds: Bounds | None = None
+                for child in children:
+                    bounds = union_bounds(
+                        bounds, walk(child, model, even_odd, depth + 1),
+                    )
+                if not children and model is True:
+                    spherical_validator(current, even_odd)
+                validate_bbox(current, bounds)
+                return bounds
+            else:
+                _fail(f"Unsupported GeoJSON geometry type: {kind}")
+
+            if model is True:
+                spherical_validator(current, even_odd)
+                # Points have no curved edges. For lines and areas, the
+                # conservative full-world extent avoids claiming that vertex
+                # extrema enclose S2 arcs.
+                if kind == "Point":
+                    x, y = coordinates
+                    bounds = (x, y, x, y)
+                elif kind == "MultiPoint":
+                    west = east = coordinates[0][0]
+                    south = north = coordinates[0][1]
+                    for index in range(1, len(coordinates)):
+                        x, y = coordinates[index]
+                        west, south = min(west, x), min(south, y)
+                        east, north = max(east, x), max(north, y)
+                    bounds = (west, south, east, north)
+                else:
+                    bounds = (-180, -90, 180, 90)
+            else:
+                try:
+                    from shapely.geometry import shape
+
+                    parsed = shape(current)
+                except Exception as exc:
+                    raise TableGeometryError("Invalid GeoJSON geometry") from exc
+                if not parsed.is_valid:
+                    _fail("GeoJSON geometry topology is invalid")
+                bounds = None if parsed.is_empty else tuple(parsed.bounds)
+            validate_bbox(current, bounds)
+            return bounds  # type: ignore[return-value]
+        finally:
+            active.remove(identity)
+
+    return walk(geometry, inherited_geodesic, inherited_even_odd, 0)

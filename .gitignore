@@ -35,6 +35,7 @@ htmlcov/
 # Binary dependencies are restored from checksummed manifests
 /engine/jars/
 /engine/security-jars/
+/native/s2/artifacts/
 /vendor/geopyspark/geopyspark/tests/data_files/test_files.zip
 /vendor/jep/src/test/python/lib/
 

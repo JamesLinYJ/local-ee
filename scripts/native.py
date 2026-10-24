@@ -135,7 +135,7 @@ def start():
     env=environment()
     from gee.native.sandbox import profile,runtime_reads
     scratch=RUN/'api-tmp';scratch.mkdir(exist_ok=True,mode=0o700)
-    rules=profile(reads=[*runtime_reads(ROOT,ROOT/'.venv/bin/python'),ROOT/'web/dist',ROOT/'examples',ROOT/'data',RUN/'pg'],
+    rules=profile(reads=[*runtime_reads(ROOT,ROOT/'.venv/bin/python',spherical=True),ROOT/'web/dist',ROOT/'examples',ROOT/'data',RUN/'pg'],
                   writes=[scratch,ROOT/'data/uploads'])
     rules+='(allow file-read* (literal '+json.dumps(str(ROOT))+'))\n'
     port=config()['port']

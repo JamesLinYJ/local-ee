@@ -101,8 +101,10 @@ def test_structure_accessors_return_real_shape_flags_and_owned_values():
     assert geometry["geometries"][0]["type"] == "LinearRing"
     assert geometry["geometries"][1].geometry_metadata["geodesic"] is False
     assert invoke_geometry_structure(t, "Geometry.type", {"geometry": geometry}) == "GeometryCollection"
-    assert invoke_geometry_structure(t, "Geometry.geodesic", {"geometry": geometry}) is False
-    assert invoke_geometry_structure(t, "Geometry.edgesAreGeodesics", {"geometry": geometry}) is False
+    # The Point has no edges, so its explicit false flag does not make the
+    # collection's edge model mixed with the geodesic LinearRing.
+    assert invoke_geometry_structure(t, "Geometry.geodesic", {"geometry": geometry}) is True
+    assert invoke_geometry_structure(t, "Geometry.edgesAreGeodesics", {"geometry": geometry}) is True
     assert invoke_geometry_structure(t, "Geometry.isUnbounded", {"geometry": geometry}) is False
     children = invoke_geometry_structure(t, "Geometry.geometries", {"geometry": geometry})
     assert [child["type"] for child in children] == ["LinearRing", "Point"]
@@ -166,6 +168,53 @@ def test_geometry_constructors_bbox_multigeometry_and_linearring_keep_types():
     assert collection["type"] == "GeometryCollection"
     assert [child["type"] for child in collection["geometries"]] == ["LinearRing", "Point"]
     assert collection.geometry_metadata["geodesic"] is False
+    assert invoke_geometry_structure(t, "Geometry.edgesAreGeodesics", {"geometry": collection}) is False
+
+
+def test_collection_edge_model_ignores_points_and_rejects_mixed_line_polygon_models(monkeypatch):
+    from gee.compat.earthengine import spherical_native
+
+    native_calls = []
+    monkeypatch.setattr(spherical_native, "validate", lambda value: native_calls.append(value))
+    t = translator()
+    planar = decode_geometry_bounded(t, {
+        "type": "GeometryCollection",
+        "geometries": [
+            {"type": "Polygon", "geodesic": False,
+             "coordinates": [[[0, 0], [2, 0], [2, 2], [0, 2]]]},
+            {"type": "Point", "coordinates": [1, 1]},
+        ],
+    })
+    assert invoke_geometry_structure(
+        t, "Geometry.edgesAreGeodesics", {"geometry": planar},
+    ) is False
+
+    points_only = decode_geometry_bounded(t, {
+        "type": "GeometryCollection",
+        "geometries": [
+            {"type": "Point", "coordinates": [0, 0]},
+            {"type": "Point", "coordinates": [1, 1], "geodesic": False},
+        ],
+    })
+    assert native_calls == [points_only]
+    assert invoke_geometry_structure(
+        t, "Geometry.geodesic", {"geometry": points_only},
+    ) is True
+    assert all(child.geometry_metadata["geodesic"] is value
+               for child, value in zip(points_only["geometries"], (True, False)))
+
+    mixed = {
+        "type": "GeometryCollection",
+        "geometries": [
+            {"type": "LineString", "coordinates": [[0, 0], [2, 2]]},
+            {"type": "Polygon", "geodesic": False,
+             "coordinates": [[[0, 0], [2, 0], [2, 2], [0, 2]]]},
+        ],
+    }
+    with pytest.raises(UnsupportedEEError, match="mixed geodesic"):
+        invoke_geometry_structure(
+            t, "Geometry.edgesAreGeodesics", {"geometry": mixed},
+        )
 
 
 def test_constructor_signatures_reject_unknown_and_missing_args_before_empty_cases():
@@ -188,11 +237,21 @@ def test_constructor_signatures_reject_unknown_and_missing_args_before_empty_cas
 
 
 def test_structure_accessors_validate_untrusted_direct_geometry_ir():
-    with pytest.raises(UnsupportedEEError, match="spherical"):
-        invoke_geometry_structure(
-            translator(), "Geometry.type",
-            {"geometry": {"type": "Point", "coordinates": [0, 0], "geodesic": True}},
-        )
+    spherical_point = {"type": "Point", "coordinates": [0, 0], "geodesic": True}
+    assert invoke_geometry_structure(
+        translator(), "Geometry.type", {"geometry": spherical_point},
+    ) == "Point"
+    assert invoke_geometry_structure(
+        translator(), "Geometry.geodesic", {"geometry": spherical_point},
+    ) is True
+    default_point = decode_geometry_bounded(
+        translator(), {"type": "Point", "coordinates": [0, 0]},
+    )
+    assert "geodesic" not in default_point
+    assert default_point.geometry_metadata["geodesic"] is True
+    assert invoke_geometry_structure(
+        translator(), "Geometry.geodesic", {"geometry": default_point},
+    ) is True
     with pytest.raises(UnsupportedEEError, match="finite"):
         invoke_geometry_structure(
             translator(), "Geometry.isUnbounded",
@@ -216,13 +275,13 @@ def test_mutated_geometry_values_are_revalidated_and_owned_copies_keep_metadata(
 
     flagged = decode_geometry_bounded(t, {"type": "Point", "coordinates": [1, 2]})
     flagged.geometry_metadata["geodesic"] = True
-    with pytest.raises(UnsupportedEEError, match="spherical"):
-        invoke_geometry_structure(t, "Geometry.geodesic", {"geometry": flagged})
+    assert invoke_geometry_structure(t, "Geometry.geodesic", {"geometry": flagged}) is True
 
     flagged = decode_geometry_bounded(t, {"type": "Point", "coordinates": [1, 2]})
     flagged["geodesic"] = True
-    with pytest.raises(UnsupportedEEError, match="spherical"):
-        own_geometry_bounded(t, flagged)
+    owned_flagged = own_geometry_bounded(t, flagged)
+    assert owned_flagged["geodesic"] is True
+    assert owned_flagged.geometry_metadata["geodesic"] is True
 
     collection = decode_geometry_bounded(t, {
         "type": "GeometryCollection",
@@ -237,7 +296,9 @@ def test_mutated_geometry_values_are_revalidated_and_owned_copies_keep_metadata(
     })
     owned = own_geometry_bounded(t, source)
     assert owned is not source
-    assert owned.geometry_metadata == {"geodesic": False}
+    assert owned.geometry_metadata == {
+        "crs": "EPSG:4326", "geodesic": False, "evenOdd": True,
+    }
 
 
 @pytest.mark.parametrize("arguments, message", [

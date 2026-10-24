@@ -193,7 +193,9 @@ def test_dictionary_geometry_values_keep_exact_type_and_sidecars_in_owned_copies
     )
     assert type(result) is GeometryValue
     assert result == geometry
-    assert result.geometry_metadata == {"geodesic": False}
+    assert result.geometry_metadata == {
+        "crs": "EPSG:4326", "geodesic": False, "evenOdd": True,
+    }
     result["coordinates"][0] = 99
     assert geometry["coordinates"] == [1, 2]
 
@@ -224,7 +226,18 @@ def test_dictionary_static_values_reject_unknown_dict_subclasses_and_mutated_geo
         {"type": "Point", "coordinates": [1, 2]}, validated=True,
     )
     flagged.geometry_metadata["geodesic"] = True
-    with pytest.raises(UnsupportedEEError, match="spherical"):
+    result = invoke_dictionary_extra(
+        Translator([], {}, None), "Dictionary.getGeometry",
+        {"dictionary": {"g": flagged}, "key": "g"},
+    )
+    assert result.geometry_metadata == {
+        "crs": "EPSG:4326", "geodesic": True, "evenOdd": True,
+    }
+    assert result is not flagged
+    result["coordinates"][0] = 90
+    assert flagged["coordinates"] == [1, 2]
+    flagged.geometry_metadata["geodesic"] = "true"
+    with pytest.raises(UnsupportedEEError, match="geodesic"):
         invoke_dictionary_extra(
             Translator([], {}, None), "Dictionary.getGeometry",
             {"dictionary": {"g": flagged}, "key": "g"},

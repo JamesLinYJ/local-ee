@@ -393,7 +393,7 @@ def get_capabilities():
              "through the existing isolated batch entry point, without a JVM for pure tables. "
              "Limits include 1000 rows, 256 columns, 50000 default cells, 1 MB UTF-8 input/output "
              "and existing serialized EE/graph caps. Selectors retain order; default index/property/geometry "
-             "columns, null/JSON cell encoding and planar WGS84 validation are explicit local policies "
+             "columns, null/JSON cell encoding and model-aware WGS84 validation are explicit local policies "
              "without Google CSV parity. Other table formats/cloud destinations/maxVertices/priority reject. "
              "Trusted synthetic service/writer tests are not deployed/native-process/browser acceptance"),
             "Array.sort and Image.arraySort use same-rank keys with one selected non-singleton axis and matching axis length; all other key dimensions are singleton. Stable ascending ties are a local policy without Google comparison. Static typed arrays retain dtype within rank8/cells10000/shared50000 work, including unambiguous typed empty arrays and local scalar identity. Raster sorting requires uniform explicit toFloat/toDouble cells independently for values and keys, preserves each declared dtype, coupled slices and full value/key masks; rank1..8/cells64/500 graph cap. No raster-engine or Google acceptance",
@@ -413,8 +413,8 @@ def get_capabilities():
              "finite Float64 values and mask intersection; Float32 comparisons keep their existing callback path. "
              "Closed native Double core arithmetic is supported separately; arbitrary callbacks remain restricted."),
             "toDouble/toFloat convert physical cells; bounded Float64 mean/median/min/max/sum/count/first/last/sample-SD reductions and closed core arithmetic preserve precision; arbitrary Float64 pixel callbacks still reject",
-            "binary updateMask only; planar EPSG:4326 input geometries",
-            "Python named GeoJSON CRS is decoded; explicit spherical edges, non-EPSG:4326 geometry, left-inside interiors and reprojection tolerances reject; omitted edge flags retain the existing local planar policy",
+            "binary updateMask only; raster consumers retain a planar EPSG:4326 geometry subset",
+            "Geometry/Feature binary defaults use pinned local S2 for geodesic EPSG:4326; planar edges with explicit EPSG:4326 use GEOS. Non-4326 CRS, reprojection/ErrorMargin and full-sphere public encoding remain gaps. S2 binary64 boundary/roundtrip differences are measured; explicit spherical results reject at legacy planar raster/filter consumers. Unflagged raster inputs retain their earlier planar path without a GEE geodesic parity claim",
             "Filter.notNull tests flat local metadata names with at most 1000 properties and the shared compilation budget; null and missing fail while falsey non-null values pass",
             "Dictionary missing keys require a non-null default; explicit empty value-key lists stay empty; List.sequence count/end spacing and count/step ranges materialize at most 10000 finite values",
             "List zip/unzip truncate to shortest; flatten traverses Lists only and preserves typed atoms, depth<=96; repeat/reverse/set/swap preserve values without mutating sources, strict negative-index bounds; <=10000 top-level values and shared work/materialization budgets",

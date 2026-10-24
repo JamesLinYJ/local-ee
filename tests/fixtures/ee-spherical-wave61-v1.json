@@ -1,0 +1,94 @@
+{
+  "schema": "gee-spherical-geometry-wave61/v1",
+  "regions": {
+    "dateline_left": {
+      "type": "Polygon",
+      "coordinates": [[[170, -10], [-170, -10], [-170, 10], [170, 10], [170, -10]]]
+    },
+    "dateline_right": {
+      "type": "Polygon",
+      "coordinates": [[[175, -5], [-175, -5], [-175, 5], [175, 5], [175, -5]]]
+    },
+    "polar_cap": {
+      "type": "Polygon",
+      "coordinates": [[[-135, 80], [-45, 80], [45, 80], [135, 80], [-135, 80]]]
+    },
+    "with_hole": {
+      "type": "Polygon",
+      "coordinates": [
+        [[-10, -10], [10, -10], [10, 10], [-10, 10], [-10, -10]],
+        [[-4, -4], [-4, 4], [4, 4], [4, -4], [-4, -4]]
+      ]
+    },
+    "oriented_left": {
+      "type": "Polygon",
+      "coordinates": [[[-5, -5], [5, -5], [5, 5], [-5, 5], [-5, -5]]],
+      "evenOdd": false
+    },
+    "oriented_reversed": {
+      "type": "Polygon",
+      "coordinates": [[[-5, -5], [-5, 5], [5, 5], [5, -5], [-5, -5]]],
+      "evenOdd": false
+    },
+    "touch_polygon": {
+      "type": "Polygon",
+      "coordinates": [[[0, 0], [2, 0], [2, 2], [0, 2], [0, 0]]]
+    },
+    "touch_line": {
+      "type": "LineString",
+      "coordinates": [[2, -1], [2, 3]]
+    },
+    "boundary_point": {
+      "type": "Point",
+      "coordinates": [2, 1]
+    },
+    "empty_other": {
+      "type": "Polygon",
+      "coordinates": [[[10, 0], [12, 0], [12, 2], [10, 2], [10, 0]]]
+    }
+  },
+  "probes": {
+    "dateline_inside": {"point": [179, 0], "expected": true},
+    "dateline_other_side": {"point": [0, 0], "expected": false},
+    "polar_cap_inside": {"point": [0, 90], "expected": true},
+    "polar_cap_outside": {"point": [0, 0], "expected": false},
+    "hole_shell_inside": {"point": [8, 0], "expected": true},
+    "hole_center_outside": {"point": [0, 0], "expected": false},
+    "oriented_left_inside": {"point": [0, 0], "expected": true},
+    "oriented_reversed_outside": {"point": [0, 0], "expected": false},
+    "oriented_reversed_complement": {"point": [180, 0], "expected": true}
+  },
+  "features": {
+    "left_id": "wave61-left-id",
+    "right_id": "wave61-right-id",
+    "left_properties": {"owner": "left", "priority": 7},
+    "right_properties": {"owner": "right", "priority": 99}
+  },
+  "expected": {
+    "binary": {
+      "contains": true,
+      "containedIn": false,
+      "disjoint": false,
+      "intersects": true
+    },
+    "feature_binary": {
+      "contains": true,
+      "containedIn": false,
+      "disjoint": false,
+      "intersects": true
+    },
+    "boundary": {
+      "point_intersects": true,
+      "line_intersects": true,
+      "intersection_line_type": "LineString",
+      "intersection_point_type": "Point",
+      "empty_intersection": {"type": "GeometryCollection", "geometries": []}
+    },
+    "overlay_probes": {
+      "intersection": {"dateline_inner": true, "outside_inner": false, "opposite": false},
+      "union": {"dateline_inner": true, "outside_inner": true, "opposite": false},
+      "difference": {"dateline_inner": false, "outside_inner": true, "opposite": false},
+      "symmetricDifference": {"dateline_inner": false, "outside_inner": true, "opposite": false}
+    }
+  }
+}

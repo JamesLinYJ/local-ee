@@ -23,6 +23,15 @@ from gee.table_geometry import (
     validate_bbox,
     validate_crs,
     validate_geometry,
+    validate_geometry_with_models,
+)
+from gee.table_spherical_geometry import (
+    even_odd_model,
+    needs_model_aware_validation,
+    public_geometry_mapping,
+    reserve_spherical_table_work,
+    spherical_model,
+    validate_spherical_component,
 )
 
 
@@ -47,6 +56,10 @@ def _fail(message: str) -> None:
 def _validate_json(value: Any, *, depth: int = 1) -> None:
     """Accept only finite, built-in JSON values and cap nested metadata depth."""
     kind = type(value)
+    from gee.compat.earthengine.spherical_wire import FullSphere
+
+    if kind is FullSphere:
+        _fail("S2 FullSphere has no supported public GeoJSON CSV encoding")
     from gee.compat.earthengine.geometry_values import GeometryValue
 
     if kind is GeometryValue:
@@ -89,22 +102,8 @@ def _validate_json(value: Any, *, depth: int = 1) -> None:
 
 
 def _geometry_json_mapping(value: Any) -> Any:
-    """Adapt only exact GeometryValue nodes for strict GeoJSON validation."""
-    kind = type(value)
-    from gee.compat.earthengine.geometry_values import GeometryValue
-
-    if kind is GeometryValue:
-        value = dict(value)
-        kind = dict
-    if kind is not dict or value.get("type") != "GeometryCollection":
-        return value
-    children = value.get("geometries")
-    if type(children) is not list:
-        return value
-    return {
-        **value,
-        "geometries": [_geometry_json_mapping(child) for child in children],
-    }
+    """Keep typed geometry sidecars available through topology selection."""
+    return value
 
 
 def _compact_json(value: Any) -> str:
@@ -128,7 +127,10 @@ def _validate_input_size(data: dict[str, Any]) -> None:
         _fail(f"JSON input exceeds {MAX_JSON_BYTES} UTF-8 bytes")
 
 
-def _feature_properties(feature: dict[str, Any]) -> tuple[dict[str, Any], Bounds | None]:
+def _feature_properties(
+    feature: dict[str, Any],
+    spherical_calls: list[tuple[Any, bool]] | None = None,
+) -> tuple[dict[str, Any], Bounds | None]:
     if feature.get("type") != "Feature":
         _fail("FeatureCollection entries must have type 'Feature'")
     if "geometry" not in feature or "properties" not in feature:
@@ -150,7 +152,25 @@ def _feature_properties(feature: dict[str, Any]) -> tuple[dict[str, Any], Bounds
         ):
             _fail("GeoJSON Feature id must be a string or finite number")
     validate_crs(feature)
-    bounds = validate_geometry(_geometry_json_mapping(feature["geometry"]))
+    geometry = _geometry_json_mapping(feature["geometry"])
+    if needs_model_aware_validation(geometry):
+        def collect_spherical(component: dict[str, Any], even_odd: bool) -> None:
+            if spherical_calls is None:
+                validate_spherical_component(component, even_odd)
+            else:
+                spherical_calls.append((component, even_odd))
+
+        bounds = validate_geometry_with_models(
+            geometry,
+            spherical_model=spherical_model,
+            even_odd_model=even_odd_model,
+            spherical_validator=collect_spherical,
+        )
+    else:
+        # Unflagged standalone GeoJSON retains its previous planar validation
+        # policy. Typed EE values and any explicit EE flags take the bounded
+        # spherical-aware route above.
+        bounds = validate_geometry(geometry)
     validate_bbox(feature, bounds)
     return properties, bounds
 
@@ -166,6 +186,7 @@ def _inspect(data: Any) -> tuple[list[dict[str, Any]], list[dict[str, Any]], lis
     _validate_json(data)
     _validate_input_size(data)
     properties_by_row: list[dict[str, Any]] = []
+    spherical_calls: list[tuple[Any, bool]] = []
     names: dict[str, None] = {}
     bounds: Bounds | None = None
     try:
@@ -173,7 +194,7 @@ def _inspect(data: Any) -> tuple[list[dict[str, Any]], list[dict[str, Any]], lis
         for feature in features:
             if type(feature) is not dict:
                 _fail("FeatureCollection entries must be objects")
-            properties, feature_bounds = _feature_properties(feature)
+            properties, feature_bounds = _feature_properties(feature, spherical_calls)
             properties_by_row.append(properties)
             bounds = union_bounds(bounds, feature_bounds)
             for name in properties:
@@ -188,6 +209,12 @@ def _inspect(data: Any) -> tuple[list[dict[str, Any]], list[dict[str, Any]], lis
         _fail(f"FeatureCollection exceeds {MAX_COLUMNS} columns including reserved columns")
     if len(features) * len(headers) > MAX_CELLS:
         _fail(f"FeatureCollection exceeds {MAX_CELLS} row-by-default-column cells")
+    try:
+        reserve_spherical_table_work(spherical_calls)
+        for geometry, even_odd in spherical_calls:
+            validate_spherical_component(geometry, even_odd)
+    except TableGeometryError as exc:
+        raise TableValueError(str(exc)) from exc
     return features, properties_by_row, headers
 
 
@@ -240,7 +267,10 @@ def render_csv(data: Any, selectors: list[str] | None = None) -> str:
                 )
             elif name == ".geo":
                 geometry = feature["geometry"]
-                value = "" if geometry is None else _compact_json(geometry)
+                value = (
+                    "" if geometry is None
+                    else _compact_json(public_geometry_mapping(geometry))
+                )
             else:
                 value = properties.get(name)
             row.append(_cell(value))

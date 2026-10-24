@@ -119,7 +119,7 @@ def test_pinned_sdks_compile_all_roi_methods_and_match_independent_scene_pixels(
             np.testing.assert_allclose(actual, expected, rtol=0, atol=2e-14, equal_nan=True)
 
 
-def test_spherical_default_non4326_and_non_null_max_error_remain_gaps():
+def test_planar_edges_with_spherical_default_non4326_and_non_null_error_remain_gaps():
     fixture = load_fixture()
     example = load_example()
     with OfflineGuard() as guard:
@@ -162,7 +162,7 @@ def test_spherical_default_non4326_and_non_null_max_error_remain_gaps():
         expression = ee.serializer.encode(
             default_polygon.intersects(right, proj=projection), for_cloud_api=False,
         )
-        with pytest.raises(UnsupportedEEError, match="geodesic=false"):
+        with pytest.raises(UnsupportedEEError, match="spherical geometry edges"):
             compile_expression(expression, [], {})
     assert guard.evidence()["attempt_count"] == 0
 

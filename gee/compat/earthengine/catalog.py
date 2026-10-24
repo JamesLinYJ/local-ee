@@ -153,7 +153,9 @@ class CatalogOperations:
         ]
         if collection.image.footprint:
             from shapely.geometry import mapping, shape
+            from .geometry_consumers import reject_spherical_edges
 
+            reject_spherical_edges(self, collection.image.footprint, "Collection footprint")
             clip = shape(collection.image.footprint)
             items = [
                 {**item, "geometry": mapping(shape(item["geometry"]).intersection(clip))}
@@ -164,6 +166,7 @@ class CatalogOperations:
     def footprint(self, value):
         from shapely.geometry import mapping, shape
         from shapely.ops import unary_union
+        from .geometry_consumers import reject_spherical_edges
 
         if isinstance(value, ImageSequence):
             geometries = [self.footprint(image) for image in value.images]
@@ -175,6 +178,10 @@ class CatalogOperations:
             if value.source is None:
                 fail("Image geometry requires a source footprint")
             geometries = [self.member(value.source, iid)["geometry"] for iid in value.source.ids]
+            for geometry in geometries:
+                reject_spherical_edges(self, geometry, "Image.geometry")
+            if value.footprint is not None:
+                reject_spherical_edges(self, value.footprint, "Image.geometry")
             base = unary_union([shape(geometry) for geometry in geometries])
             return mapping(base.intersection(shape(value.footprint)) if value.footprint else base)
         elif isinstance(value, dict) and value.get("type") == "Feature":
@@ -185,6 +192,8 @@ class CatalogOperations:
             fail("Geometry requires an Image, Collection or Feature")
         if not geometries:
             fail("An empty collection has no footprint")
+        for geometry in geometries:
+            reject_spherical_edges(self, geometry, "Collection.geometry")
         return mapping(unary_union([shape(geometry) for geometry in geometries]))
 
     def select(self, image, selectors, names=None):

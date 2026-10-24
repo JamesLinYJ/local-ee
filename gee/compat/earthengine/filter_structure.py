@@ -104,6 +104,9 @@ def _validate_geojson(translator, value):
             fail("Filter geometry must be GeoJSON data")
 
     visit(value, 0)
+    from .geometry_consumers import reject_spherical_edges
+
+    reject_spherical_edges(translator, geometry, "Filter.intersects")
     from shapely.geometry import shape
 
     try:

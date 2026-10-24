@@ -49,7 +49,7 @@ flowchart LR
 
 标量流程组合通过 `scalar_work_plan`／`scalar_work_ledger` 减少已付费不可变 DAG 的重复扫描，图内账本最多4096项、强引用保留身份及子树高度；未识别或可变载荷执行原估算。`scalar_image_snapshot` 只在根作用域复用最多64个明确的 RGB／HSV ValueRef，元数据和足迹在存取时各自复制。实际深度、每次节点预检、规格成本和新鲜来源／网格证明不由缓存替代；原50000工作／500节点上限及执行隔离不变。见 [多步颜色组合](gee-python/scalar-composition.md)。
 
-几何二元操作由 `geometry_binary`、独立预算规划器和 `feature_geometry_binary` 处理：官方客户端生成相同名称和参数，有限平面路径要求明确的WGS84坐标平面与直线边，保留左要素属性、真实身份及公开结果的边类型。省略投影的球面默认行为保持未实现，不自动转换为平面计算。当前依赖中没有球面布尔引擎；后续球面适配器需要独立表示、固定依赖、资源边界和上下游验证，不能以同名注册代表完成。见 [几何兼容边界](gee-python/geometry-binary.md)。
+几何二元操作由 `geometry_binary` 分开路由：显式WGS84平面／直线边仍用GEOS，省略或空投影的有限测地线输入走 `spherical_binary` 与固定S2／Abseil C ABI。`geometry_topology` 保留有效默认值及集合继承规则；`spherical_preflight`、原生计数和独立输出界限共同约束工作，`spherical_native` 校验源码／产物／平台／许可证摘要，运行时不下载。球面CSV使用独立模型校验和全表预充，公开标志按官方客户端接受的几何类型输出。S2 binary64输入关联及构造结果往返仍有3项严格控制不通过；显式球面结果在旧平面栅格／筛选消费者前拒绝，原先未标边类型的栅格路径仍不代表GEE测地线兼容。球面掩膜、投影／误差传播、完整球面公开编码及Google同数据对照继续待实现。见 [球面合同](gee-python/spherical-geometry.md) 与 [平面合同](gee-python/geometry-binary.md)。
 
 ## 3. 模块与接口
 
@@ -144,7 +144,8 @@ RF 要素分类与矩阵计算保留独立运行时 IR 和生产者合同。真�
 | `raster_matrix_native.py`, `matrix_values_graph.py` | 固定逐像元 solve／inverse／pseudoinverse 的 IR、有限常量折叠及单一共享生产者；每个结果单元只选择该生产者的行优先输出，显式转换保留输入／输出舍入，新验证网格和时间轴 |
 | `element_metadata_values.py`, `owned_metadata_values.py`, `feature_structure.py` | 有类型约束的属性读取、字段投影、真实要素ID和几何替换；保留StaticArray／具体Image，扫描与独立副本预充，逐景读取参与实际元数据展开 |
 | `filter_normalization.py`, `filter_structure.py`, `feature_map_preflight.py` | 规范筛选别名、在空集合和全部分支上检查结构；样本表使用较窄的版本化筛选合同，空回调不虚构数据行 |
-| `geometry_preflight.py`, `geometry_values.py`, `geometry_constructors.py`, `geometry_structure.py` | 有限EPSG:4326平面几何的构造、拓扑校验、结构查询和独立输出，先计费再转换GEOS；保留可接受选项，不隐式支持球面和重投影 |
+| `geometry_preflight.py`, `geometry_values.py`, `geometry_constructors.py`, `geometry_structure.py`, `geometry_topology.py` | 有限WGS84几何的构造、有效默认值、集合继承和结构查询；平面拓扑走GEOS，默认球面拓扑走固定S2，转换前预充预算，不隐式支持重投影 |
+| `spherical_binary.py`, `spherical_preflight.py`, `spherical_wire.py`, `spherical_native.py`, `native/s2/` | 省略／空投影的有限球面二元计算、闭合数值协议、双端预算和本地C ABI来源校验；保留3项严格精度缺口，球面栅格消费者未接通 |
 | `raster_matrix_decomposition.py`, `raster_matrix_factor_constants.py`, `raster_matrix_orthogonal_constants.py` | Cholesky的L、LU的L／U／P及紧凑QR／SVD命名数组、共享生产者和有限常量折叠；64单元总输出限制保留，选取因子后继续实际数组运算 |
 | `raster_factor_snapshot.py`, `raster_matrix_orthogonal_rank.py` | 根作用域同一SDK因子引用共享不可变数值表达式，元数据存储／读取各自复制；常量SVD以预充的精确整数秩区分真实零方向，不能缓存实际目录／网格事实 |
 | `image_unmix.py`, `unmix_graph.py`, `unmix_input_snapshot.py` | 固定端元光谱解混的类型校验、单一共享原生生产者和逐分量选择；缓存绑定有界输入快照，裁切坐标及几何选项变化使缓存失效，每次重新验证实际来源和网格 |

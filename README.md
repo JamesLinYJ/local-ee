@@ -17,13 +17,14 @@
 
 ## 从源码安装
 
-需要原生 arm64 Python 3.11、Node.js 24、Homebrew、uv、Xcode Command Line Tools。Java 21 仅用于本项目，不要求修改全局 Java 默认版本。
+需要原生 arm64 Python 3.11、Node.js 24、Homebrew、uv、CMake 3.22+、Xcode Command Line Tools（C++17）。Java 21 仅用于本项目，不要求修改全局 Java 默认版本。
 
 ```sh
 git clone https://github.com/JamesLinYJ/local-ee.git
 cd local-ee
-HOMEBREW_NO_AUTO_UPDATE=1 brew install postgresql@17 openjdk@21 gdal udunits
+HOMEBREW_NO_AUTO_UPDATE=1 brew install postgresql@17 openjdk@21 gdal udunits cmake
 uv sync --frozen
+.venv/bin/python scripts/build_s2_adapter.py --work-dir work/s2-build --output-dir native/s2/artifacts --jobs 4
 .venv/bin/python scripts/fetch_engine_dependencies.py
 .venv/bin/python scripts/setup_native_engine.py
 npm --prefix web ci
@@ -41,6 +42,8 @@ npm --prefix web ci
 也可使用根目录的 `启动工作台.command` / `停止工作台.command`。不会注册开机服务；关闭浏览器不会停止后台服务。API 仅监听回环地址，PostgreSQL 只使用私有 Unix socket。部署和隔离细节见 [原生部署](docs/native-macos.md)。
 
 ## 开发与检查
+
+首次检出先按上面的命令构建固定 S2 本地库；默认球面几何及相关测试需要它。产物不入 Git，运行时不下载；缺失或摘要失配会明确失败。更新时在新目录构建并验证后再切换，见[球面几何](docs/gee-python/spherical-geometry.md)。Linux 开发也先执行相同构建命令，不需要启动服务、容器或虚拟机。
 
 ```sh
 .venv/bin/python -m pytest -q

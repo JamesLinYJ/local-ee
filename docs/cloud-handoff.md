@@ -1,6 +1,18 @@
 # 云端开发交接
 
-## 第三十一批最新起点
+## 第六十一批：默认球面计算的构建前置
+
+继续从远端最新 main 开发，当前状态见 GOAL.md、docs/gee-python/list.md 和 reports/gee-python-wave61.json。旧批次记录保留为历史。固定 S2 原生适配器现在参与默认几何校验和计算，首次检出需 CMake 3.22+ 与 C++17 编译器；完成下方构建再运行测试。Linux CI 执行同一命令，不需要服务、容器或虚拟机。运行时不会下载，缺少库或摘要失配会明确失败。
+
+```sh
+uv sync --frozen
+.venv/bin/python scripts/build_s2_adapter.py --work-dir work/s2-build --output-dir native/s2/artifacts --jobs 4
+.venv/bin/python -m pytest -q
+```
+
+产物目录必须不存在；更新时在新目录构建并验证后再切换。源码包由锁定摘要校验；同一 work-dir 可用 --offline 从已验证下载重新构建。保留必要依赖和失败证据，验收后清理重复编译目录。球面默认方法、公开编码和栅格消费者的限制见[球面合同](gee-python/spherical-geometry.md)，本地组件通过不能代替 Google／完整部署验收。
+
+## 第三十一批历史起点
 
 从最新main继续，不恢复历史handoff；本批基线3486478。已接通RF分类后的filter、无排序limit、randomColumn，再进入errorMatrix／getInfo／CSV；分类规格与后续列分开，取样前置和分类后合计16步／累计50000，RF150000继续独立并继承已有表工作。64项弱身份校验缓存只保存不可变谱系和计数，预充查找／记录／新列复制，不存样本、模型或tracer；突变拒绝，淘汰后全量校验。16步覆盖同列反复覆盖，未提高预算或缩小夹具。
 
@@ -275,6 +287,7 @@ Linux Python **1456 passed／7 skipped**、前端 **11 passed**、TypeScript／�
 ```sh
 python3.11 -m pip install uv==0.12.12
 uv sync --frozen
+.venv/bin/python scripts/build_s2_adapter.py --work-dir work/s2-build --output-dir native/s2/artifacts --jobs 4
 .venv/bin/python -m pytest -q
 cd web
 npm ci
