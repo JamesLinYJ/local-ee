@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from .catalog import CatalogOperations
 from .filtering import FilteringOperations
-from .geometry_values import GEOMETRY_TYPES, decode_geometry
+from .geometry_values import GEOMETRY_TYPES, decode_geometry_bounded
 from .ir import Function, ParsedExpression, fail, static_truth
 
 
@@ -121,7 +121,7 @@ class Translator(CatalogOperations, FilteringOperations):
                 for key, item in value.get("value", {}).items()
             }
         if value_type in GEOMETRY_TYPES:
-            return decode_geometry(value)
+            return decode_geometry_bounded(self, value)
         if value_type:
             fail(f"Unsupported serialized value type: {value_type}")
         return {

@@ -4,7 +4,7 @@ from __future__ import annotations
 import math
 
 from .array_core import MAX_ARRAY_CELLS, MAX_ARRAY_RANK, StaticArray, charge_array
-from .geometry_values import GEOMETRY_TYPES, decode_geometry
+from .geometry_values import GEOMETRY_TYPES, GeometryValue, own_geometry_bounded
 from .ir import fail
 from .static_equality import static_equal
 from .static_list_text import join_values
@@ -144,7 +144,7 @@ def invoke_list_extra(translator, name, args):
             "List.getNumber": lambda item: type(item) is int or (type(item) is float and math.isfinite(item)),
             "List.getString": lambda item: type(item) is str,
             "List.getArray": lambda item: type(item) is StaticArray,
-            "List.getGeometry": lambda item: type(item) is dict and item.get("type") in GEOMETRY_TYPES,
+            "List.getGeometry": lambda item: type(item) in (dict, GeometryValue) and item.get("type") in GEOMETRY_TYPES,
         }[name]
         if not expected(result):
             fail(f"{name} value at index {index} has the wrong type")
@@ -154,7 +154,7 @@ def invoke_list_extra(translator, name, args):
                     or data.dtype.kind not in "iuf"):
                 fail("List.getArray requires a bounded static Array")
         if name == "List.getGeometry":
-            result = decode_geometry(result)
+            result = own_geometry_bounded(translator, result)
         return result
 
     if name == "List.containsAll":

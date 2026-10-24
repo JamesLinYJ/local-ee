@@ -1,5 +1,9 @@
 # GEE API 兼容清单与证据边界
 
+第五十六批新增34个有限元数据、要素、筛选及几何入口，包含9个比较别名。完整回归 **5648 passed／26 skipped**，前端11项／类型检查／临时构建通过；34个名称逐项经真实Python客户端序列化并计算，原17探针由2项通过提升为17项，旧50探针仍为47项通过、3项明确拒绝。Python／JS合成站点流程由12行筛选为3行，18列CSV实际写出并读回；独立字面预期与Fraction分数一致。名称 **676／991（68.21%）** 仅表示入口数量，不是完整兼容率。
+
+类型化读取参与真实逐景元数据展开；字段选择使用有界RE2及经校验的普通字段名直接匹配。空集合先检查筛选／回调结构，不虚构数据行；可变几何重复校验，修复表格、采样、字典和列表的旧类型边界回归。缺键、身份保留和平面边类型是明确的本地政策；Filter.hasType、Geometry.projection、球面／重投影仍未支持，取样／分类表暂不接收日期筛选。原50000工作、500节点及1MB等预算保持；未改依赖或部署运行环境，无新增JVM、完整Spark、浏览器或Google同数据验收。整体目标保持进行中。 见[要素整理语法](gee-python/feature-preparation.md)、[Python示例61](../examples/61_GEE_python_feature_preparation.py)和[报告](../reports/gee-python-wave56.json)。
+
 本页配合 [完整机器可读清单](../reports/gee-api-inventory.json) 使用。清单固定于官方 `@google/earthengine` **1.7.49**、提交 `e189e4b89e785019ea5642ea8e80cb644749cd4a`。当前源文件含 **991 个唯一算法签名、2,451 个参数项**；当前同名处理器声明数量见生成报告。这些记录分别描述上游目录、参数和本地声明，不表示兼容率。
 
 Python 类型、方法、继承方法、参数默认值和命名绑定另见 [Python API 报告](../reports/gee-python-api-inventory.json) 与 [Python 优先清单](gee-python/list.md)。2026-10-22 新增的有限 metadata Join 和静态 Array／矩阵支持，不表示 Image.array*、栅格回归或整个公开工作流已经完成。旧审计计数继续作为历史上下文保留。

@@ -25,6 +25,11 @@ _METADATA_READS = {
     "Image.unmask": ("input", "value"),
     "Image.get": ("image", "object"),
     "Element.get": ("object", "image"),
+    "Element.getNumber": ("object",),
+    "Element.getString": ("object",),
+    "Element.getArray": ("object",),
+    "Element.toDictionary": ("element",),
+    "Element.replaceProperties": ("source",),
     "Element.propertyNames": ("element", "object", "image"),
 }
 
@@ -52,6 +57,7 @@ _IMAGE_RECEIVERS = {
     "Image.clip": ("input",),
     "Image.copyProperties": ("destination", "source"),
     "Element.copyProperties": ("destination", "source"),
+    "Element.replaceProperties": ("destination", "source"),
     "Element.set": ("object",),
     "Element.setMulti": ("object",),
     "Image.add": ("image1",),

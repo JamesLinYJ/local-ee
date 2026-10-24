@@ -86,6 +86,16 @@ def invoke(translator, name, arguments):
         from .date_ranges import invoke_date_range
 
         return invoke_date_range(translator, name, a)
+    from .element_metadata_values import ELEMENT_METADATA_VALUE_METHODS, invoke_element_metadata_values
+    from .feature_structure import FEATURE_STRUCTURE_METHODS, invoke_feature_structure
+    from .geometry_structure import GEOMETRY_STRUCTURE_FUNCTIONS, invoke_geometry_structure
+
+    if name in ELEMENT_METADATA_VALUE_METHODS:
+        return invoke_element_metadata_values(translator, name, a)
+    if name in FEATURE_STRUCTURE_METHODS:
+        return invoke_feature_structure(translator, name, a)
+    if name in GEOMETRY_STRUCTURE_FUNCTIONS:
+        return invoke_geometry_structure(translator, name, a)
     if name.startswith("AggregateFeatureCollection.") and name != "AggregateFeatureCollection.array":
         from .aggregate_statistics import invoke_aggregate_statistics
 

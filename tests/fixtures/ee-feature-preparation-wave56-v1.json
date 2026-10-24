@@ -1,0 +1,300 @@
+{
+  "schema": "local-ee-feature-preparation-wave56/v1",
+  "filter": {
+    "station_prefix": "CN-",
+    "station_suffix": "-QA",
+    "reading_min_inclusive": 5,
+    "reading_max_inclusive": 12,
+    "day_of_year_min_inclusive": 91,
+    "day_of_year_max_inclusive": 120,
+    "bounds": [100, 30, 110, 40],
+    "selectors": ["station_code", "^station_name$"],
+    "renamed_fields": ["site_code", "station_name"]
+  },
+  "rows": [
+    {
+      "id": "sample-CN-ALPHA-QA",
+      "geometry": {"type": "Point", "coordinates": [101, 31]},
+      "properties": {
+        "station_code": "CN-ALPHA-QA",
+        "station_name": "Alpha ridge",
+        "reading": 5,
+        "height_m": 120,
+        "longitude": 101.25,
+        "latitude": 31.5,
+        "quality": "reviewed",
+        "samples": [1, 2, 3],
+        "system:time_start": 1711843200000,
+        "unused_note": "drop-me"
+      }
+    },
+    {
+      "id": "sample-CN-BRAVO-QA",
+      "geometry": {"type": "Point", "coordinates": [107.5, 37.5]},
+      "properties": {
+        "station_code": "CN-BRAVO-QA",
+        "station_name": "Bravo valley",
+        "reading": 12,
+        "height_m": 240,
+        "longitude": 108,
+        "latitude": 38,
+        "quality": "reviewed",
+        "samples": [0.5, 1.25, 2.5],
+        "system:time_start": 1714348800000,
+        "unused_note": "drop-me"
+      }
+    },
+    {
+      "id": "sample-CN-CHARLIE-QA",
+      "geometry": {"type": "Point", "coordinates": [104, 35]},
+      "properties": {
+        "station_code": "CN-CHARLIE-QA",
+        "station_name": "Charlie basin",
+        "reading": 8.25,
+        "height_m": 80,
+        "longitude": 104.5,
+        "latitude": 35.75,
+        "quality": "checked",
+        "samples": [4, -1, 0.125],
+        "system:time_start": 1713139200000,
+        "unused_note": "drop-me"
+      }
+    },
+    {
+      "id": "sample-CN-DELTA-QA",
+      "geometry": null,
+      "properties": {
+        "station_code": "CN-DELTA-QA",
+        "station_name": "Delta null geometry control",
+        "reading": 10.5,
+        "height_m": 96,
+        "longitude": 103.75,
+        "latitude": 34.25,
+        "quality": "checked",
+        "samples": [2, 2, 4],
+        "system:time_start": 1713484800000,
+        "unused_note": "drop-me"
+      }
+    },
+    {
+      "id": "sample-CN-ECHO-QA",
+      "geometry": {"type": "Point", "coordinates": [102, 32]},
+      "properties": {
+        "station_code": "CN-ECHO-QA",
+        "station_name": "Echo above range",
+        "reading": 12.0001,
+        "height_m": 160,
+        "longitude": 102.1,
+        "latitude": 32.1,
+        "quality": "reviewed",
+        "samples": [1, 1, 1],
+        "system:time_start": 1713225600000,
+        "unused_note": "drop-me"
+      }
+    },
+    {
+      "id": "sample-CN-FOXTROT-QA",
+      "geometry": {"type": "Point", "coordinates": [102, 33]},
+      "properties": {
+        "station_code": "CN-FOXTROT-QA",
+        "station_name": "Foxtrot late",
+        "reading": 9,
+        "height_m": 88,
+        "longitude": 102.2,
+        "latitude": 33.2,
+        "quality": "reviewed",
+        "samples": [1, 3, 5],
+        "system:time_start": 1714435200000,
+        "unused_note": "drop-me"
+      }
+    },
+    {
+      "id": "sample-CN-GOLF-NO",
+      "geometry": {"type": "Point", "coordinates": [103, 34]},
+      "properties": {
+        "station_code": "CN-GOLF-NO",
+        "station_name": "Golf wrong suffix",
+        "reading": 8,
+        "height_m": 64,
+        "longitude": 103.1,
+        "latitude": 34.1,
+        "quality": "reviewed",
+        "samples": [1, 4, 7],
+        "system:time_start": 1712793600000,
+        "unused_note": "drop-me"
+      }
+    },
+    {
+      "id": "sample-OTHER-HOTEL-QA",
+      "geometry": {"type": "Point", "coordinates": [105, 35]},
+      "properties": {
+        "station_code": "OTHER-HOTEL-QA",
+        "station_name": "Hotel wrong prefix",
+        "reading": 8,
+        "height_m": 64,
+        "longitude": 105.1,
+        "latitude": 35.1,
+        "quality": "reviewed",
+        "samples": [1, 4, 7],
+        "system:time_start": 1712793600000,
+        "unused_note": "drop-me"
+      }
+    },
+    {
+      "id": "sample-CN-INDIA-QA",
+      "geometry": {"type": "Point", "coordinates": [106, 36]},
+      "properties": {
+        "station_code": "CN-INDIA-QA",
+        "station_name": "India below range",
+        "reading": 4.999,
+        "height_m": 72,
+        "longitude": 106.1,
+        "latitude": 36.1,
+        "quality": "reviewed",
+        "samples": [1, 4, 7],
+        "system:time_start": 1712793600000,
+        "unused_note": "drop-me"
+      }
+    },
+    {
+      "id": "sample-CN-JULIET-QA",
+      "geometry": {"type": "Point", "coordinates": [107, 37]},
+      "properties": {
+        "station_code": "CN-JULIET-QA",
+        "station_name": "Juliet missing reading",
+        "height_m": 72,
+        "longitude": 107.1,
+        "latitude": 37.1,
+        "quality": "reviewed",
+        "samples": [1, 4, 7],
+        "system:time_start": 1712793600000,
+        "unused_note": "drop-me"
+      }
+    },
+    {
+      "id": "sample-CN-KILO-QA",
+      "geometry": {"type": "Point", "coordinates": [115, 43]},
+      "properties": {
+        "station_code": "CN-KILO-QA",
+        "station_name": "Kilo outside bounds",
+        "reading": 7,
+        "height_m": 104,
+        "longitude": 115.2,
+        "latitude": 43.1,
+        "quality": "reviewed",
+        "samples": [1, 4, 7],
+        "system:time_start": 1712793600000,
+        "unused_note": "drop-me"
+      }
+    },
+    {
+      "id": "sample-CN-MIKE-QA",
+      "geometry": {"type": "Point", "coordinates": [106.5, 36.5]},
+      "properties": {
+        "station_code": "CN-MIKE-QA",
+        "station_name": "Mike null reading",
+        "reading": null,
+        "height_m": 72,
+        "longitude": 106.6,
+        "latitude": 36.6,
+        "quality": "reviewed",
+        "samples": [1, 4, 7],
+        "system:time_start": 1712793600000,
+        "unused_note": "drop-me"
+      }
+    }
+  ],
+  "metadata_expected_ids": [
+    "sample-CN-ALPHA-QA",
+    "sample-CN-BRAVO-QA",
+    "sample-CN-CHARLIE-QA",
+    "sample-CN-DELTA-QA",
+    "sample-CN-KILO-QA"
+  ],
+  "expected_ids": [
+    "sample-CN-ALPHA-QA",
+    "sample-CN-BRAVO-QA",
+    "sample-CN-CHARLIE-QA"
+  ],
+  "expected": [
+    {
+      "id": "sample-CN-ALPHA-QA",
+      "site_code": "CN-ALPHA-QA",
+      "station_name": "Alpha ridge",
+      "reading": 5,
+      "height_m": 120,
+      "quality_flag": "reviewed",
+      "longitude": 101.25,
+      "latitude": 31.5,
+      "samples": [1, 2, 3],
+      "source_geometry_type": "Point",
+      "source_geometry_coordinates": [101, 31],
+      "replacement_geometry_coordinates": [101.25, 31.5],
+      "source_fields": {"station_code": "CN-ALPHA-QA", "reading": 5},
+      "score": {"numerator": 20, "denominator": 1}
+    },
+    {
+      "id": "sample-CN-BRAVO-QA",
+      "site_code": "CN-BRAVO-QA",
+      "station_name": "Bravo valley",
+      "reading": 12,
+      "height_m": 240,
+      "quality_flag": "reviewed",
+      "longitude": 108,
+      "latitude": 38,
+      "samples": [0.5, 1.25, 2.5],
+      "source_geometry_type": "Point",
+      "source_geometry_coordinates": [107.5, 37.5],
+      "replacement_geometry_coordinates": [108, 38],
+      "source_fields": {"station_code": "CN-BRAVO-QA", "reading": 12},
+      "score": {"numerator": 42, "denominator": 1}
+    },
+    {
+      "id": "sample-CN-CHARLIE-QA",
+      "site_code": "CN-CHARLIE-QA",
+      "station_name": "Charlie basin",
+      "reading": 8.25,
+      "height_m": 80,
+      "quality_flag": "checked",
+      "longitude": 104.5,
+      "latitude": 35.75,
+      "samples": [4, -1, 0.125],
+      "source_geometry_type": "Point",
+      "source_geometry_coordinates": [104, 35],
+      "replacement_geometry_coordinates": [104.5, 35.75],
+      "source_fields": {"station_code": "CN-CHARLIE-QA", "reading": 8.25},
+      "score": {"numerator": 73, "denominator": 4}
+    }
+  ],
+  "csv_selectors": [
+    "system:index",
+    "source_id",
+    "site_code",
+    "station_name",
+    "reading",
+    "height_m",
+    "quality_flag",
+    "longitude",
+    "latitude",
+    "samples",
+    "typed_reading",
+    "typed_samples",
+    "reading_vector",
+    "source_fields",
+    "score",
+    "source_geometry_type",
+    "source_geometry_coordinates",
+    ".geo"
+  ],
+  "catalog": {
+    "collection_id": "sentinel-2-l2a",
+    "cloud_min_inclusive": 5,
+    "cloud_max_inclusive": 10,
+    "day_of_year_min_inclusive": 318,
+    "day_of_year_max_inclusive": 318,
+    "id_prefix": "scene-",
+    "id_suffix": "a"
+  },
+  "catalog_expected_ids": ["scene-a"],
+  "catalog_expected_clouds": [10]
+}

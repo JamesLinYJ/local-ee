@@ -12,6 +12,7 @@ from gee.ee_translate import Translator, UnsupportedEEError, compile_expression
 from gee.compat.earthengine.static_list_ops import LIST_EXTRA_FUNCTIONS, _ARGUMENTS
 from gee.compat.earthengine.array_values import StaticArray
 from gee.compat.earthengine.ir import Image, Pixel
+from gee.compat.earthengine.geometry_values import GeometryValue
 from gee.compat.earthengine.static_equality import static_equal
 
 
@@ -190,6 +191,41 @@ def test_typed_getters_support_negative_indexes_and_reject_mismatches():
             invoke(name, list=values, index=0)
     with pytest.raises(UnsupportedEEError, match="bounds"):
         invoke("List.getNumber", list=[], index=-1)
+
+
+def test_geometry_getter_revalidates_and_owns_known_geometry_subclass():
+    source = GeometryValue(
+        {"type": "Point", "coordinates": [1, 2]},
+        {"geodesic": False}, validated=True,
+    )
+    translator = Translator([], {}, None)
+    result = translator.invoke("List.getGeometry", {"list": [source], "index": 0})
+    assert type(result) is GeometryValue
+    assert result == source
+    assert result.geometry_metadata == {"geodesic": False}
+    assert result.geometry_metadata is not source.geometry_metadata
+    result["coordinates"][0] = 99
+    assert source["coordinates"] == [1, 2]
+    assert translator.steps > 0
+
+    source["coordinates"][0] = 181
+    with pytest.raises(UnsupportedEEError, match="coordinates"):
+        invoke("List.getGeometry", list=[source], index=0)
+
+    flagged = GeometryValue(
+        {"type": "Point", "coordinates": [1, 2]}, validated=True,
+    )
+    flagged["geodesic"] = True
+    with pytest.raises(UnsupportedEEError, match="spherical"):
+        invoke("List.getGeometry", list=[flagged], index=0)
+
+    class ForeignGeometry(dict):
+        pass
+
+    with pytest.raises(UnsupportedEEError, match="ForeignGeometry"):
+        invoke("List.getGeometry", list=[ForeignGeometry({
+            "type": "Point", "coordinates": [1, 2],
+        })], index=0)
 
 
 @pytest.mark.parametrize("unsupported", [Image([], {}), Pixel("constant", (1,)), object()])

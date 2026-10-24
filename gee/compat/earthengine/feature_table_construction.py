@@ -43,6 +43,25 @@ def _copy_work(value, depth=0, active=None):
                           for name, pixel in value.bands))
         finally:
             active.remove(identity)
+    from .geometry_values import GeometryValue
+
+    if kind is GeometryValue:
+        identity = id(value)
+        if identity in active:
+            fail("FeatureCollection values cannot contain cyclic metadata")
+        if len(value) > _MAX_PROPERTIES:
+            fail("FeatureCollection values support at most 10000 container entries")
+        active.add(identity)
+        try:
+            mapping_work = 1 + sum(
+                1 + len(key) + _copy_work(child, depth + 1, active)
+                for key, child in value.items()
+            )
+            return mapping_work + _copy_work(
+                value.geometry_metadata, depth + 1, active,
+            )
+        finally:
+            active.remove(identity)
     if kind in (dict, list, tuple):
         identity = id(value)
         if identity in active:
@@ -133,6 +152,12 @@ def _public_value_size(translator, value, wire, active=None, depth=0, overrides=
     if active is None:
         active = set()
     kind = type(value)
+    from .geometry_values import GeometryValue
+
+    if kind is GeometryValue:
+        # Geometry flags live in a private sidecar; public GeoJSON contains
+        # only the normalized mapping, matching public_values.public_value.
+        kind = dict
     if value is None:
         charge(translator)
         _wire_add(wire, 4)

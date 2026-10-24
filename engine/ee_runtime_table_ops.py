@@ -179,12 +179,14 @@ def _measure_copy_work(data, work):
 
 def _filter_view(feature, work):
     properties = feature["properties"]
+    geometry = feature.get("geometry")
     if "system:index" in properties or "id" not in feature:
-        return {"properties": properties}
+        return {"geometry": geometry, "properties": properties}
     # Literal FeatureCollection IDs are actual system:index values. Sampler
     # row-key patterns do not apply to classified literal features.
     work.charge(len(properties) + 2)
-    return {"properties": {**properties, "system:index": feature["id"]}}
+    return {"geometry": geometry,
+            "properties": {**properties, "system:index": feature["id"]}}
 
 
 def _filter_features(features, operation, work):

@@ -7,6 +7,7 @@ import pytest
 
 from gee.compat.earthengine.array_core import StaticArray
 from gee.compat.earthengine.decoder import Translator
+from gee.compat.earthengine.geometry_values import GeometryValue
 from gee.compat.earthengine.ir import Function, Image, UnsupportedEEError
 from gee.compat.earthengine.static_dictionary_ops import invoke_dictionary_extra
 from gee.ee_python_client import configure_local_ee
@@ -167,6 +168,67 @@ def test_sdk_typed_getters_preserve_number_string_array_and_geometry(ee):
     assert compile_value(ee, dictionary.getGeometry("g")) == {
         "type": "Point", "coordinates": [1, 2],
     }
+
+
+def test_dictionary_geometry_values_keep_exact_type_and_sidecars_in_owned_copies():
+    geometry = GeometryValue(
+        {"type": "Point", "coordinates": [1, 2]},
+        {"geodesic": False}, validated=True,
+    )
+    source = {"g": geometry, "nested": {"g": geometry}}
+    combined = invoke_dictionary_extra(
+        Translator([], {}, None), "Dictionary.combine",
+        {"first": source, "second": {}},
+    )
+    owned = combined["g"]
+    assert type(owned) is GeometryValue
+    assert owned is not geometry
+    assert owned.geometry_metadata == {"geodesic": False}
+    assert owned.geometry_metadata is not geometry.geometry_metadata
+    assert combined["nested"]["g"] is not geometry
+
+    result = invoke_dictionary_extra(
+        Translator([], {}, None), "Dictionary.getGeometry",
+        {"dictionary": source, "key": "g"},
+    )
+    assert type(result) is GeometryValue
+    assert result == geometry
+    assert result.geometry_metadata == {"geodesic": False}
+    result["coordinates"][0] = 99
+    assert geometry["coordinates"] == [1, 2]
+
+
+def test_dictionary_static_values_reject_unknown_dict_subclasses_and_mutated_geometry():
+    class ForeignGeometry(dict):
+        pass
+
+    with pytest.raises(UnsupportedEEError, match="ForeignGeometry"):
+        invoke_dictionary_extra(
+            Translator([], {}, None), "Dictionary.size",
+            {"dictionary": {"g": ForeignGeometry({
+                "type": "Point", "coordinates": [1, 2],
+            })}},
+        )
+
+    geometry = GeometryValue(
+        {"type": "Point", "coordinates": [1, 2]}, validated=True,
+    )
+    geometry["coordinates"][0] = 181
+    with pytest.raises(UnsupportedEEError, match="coordinates"):
+        invoke_dictionary_extra(
+            Translator([], {}, None), "Dictionary.getGeometry",
+            {"dictionary": {"g": geometry}, "key": "g"},
+        )
+
+    flagged = GeometryValue(
+        {"type": "Point", "coordinates": [1, 2]}, validated=True,
+    )
+    flagged.geometry_metadata["geodesic"] = True
+    with pytest.raises(UnsupportedEEError, match="spherical"):
+        invoke_dictionary_extra(
+            Translator([], {}, None), "Dictionary.getGeometry",
+            {"dictionary": {"g": flagged}, "key": "g"},
+        )
 
 
 @pytest.mark.parametrize("arguments", [

@@ -11,26 +11,12 @@ from __future__ import annotations
 
 from .array_values import StaticArray
 from .feature_values import charge, property_name
+from .filter_structure import FILTER_ARGUMENTS as _ARGUMENTS, validate_filter_structure
+from .filter_normalization import lower_filter_node
 from .ir import Filter, fail
 
 
 _UNKNOWN = object()
-_ARGUMENTS = {
-    "and": {"filters"},
-    "or": {"filters"},
-    "not": {"filter"},
-    "dateRangeContains": {"leftField", "leftValue", "rightField", "rightValue"},
-    "intersects": {"leftField", "leftValue", "rightField", "rightValue", "maxError"},
-    "equals": {"leftField", "leftValue", "rightField", "rightValue"},
-    "lessThan": {"leftField", "leftValue", "rightField", "rightValue"},
-    "greaterThan": {"leftField", "leftValue", "rightField", "rightValue"},
-    "stringContains": {"leftField", "leftValue", "rightField", "rightValue"},
-    "inList": {"leftField", "leftValue", "rightField", "rightValue"},
-    "listContains": {"leftField", "leftValue", "rightField", "rightValue"},
-    "calendarRange": {"start", "end", "field"},
-    "notNull": {"properties"},
-    "maxDifference": {"difference", "leftField", "leftValue", "rightField", "rightValue"},
-}
 
 
 def _operands(translator, arguments, properties):
@@ -96,6 +82,12 @@ def matches_feature_filter(translator, filt, feature, depth=0):
     if not isinstance(filt, Filter) or not isinstance(filt.args, dict):
         fail("Inline FeatureCollection.filter requires a serialized ee.Filter")
     name, arguments = filt.name, filt.args
+    try:
+        lowered = lower_filter_node(name, arguments)
+    except (TypeError, ValueError, KeyError, OverflowError) as exc:
+        fail(str(exc))
+    if lowered.name != name or lowered.args is not arguments:
+        return matches_feature_filter(translator, lowered, feature, depth)
     allowed = _ARGUMENTS.get(name)
     if allowed is None:
         fail(f"Unsupported inline Feature filter: Filter.{name}")
@@ -121,6 +113,8 @@ def matches_feature_filter(translator, filt, feature, depth=0):
         return _UNKNOWN if value is _UNKNOWN else not value
 
     properties = feature["properties"]
+    if name == "hasGeometry":
+        return feature.get("geometry") is not None
     if name == "notNull":
         keys = arguments.get("properties")
         if not isinstance(keys, list) or len(keys) > 1000:
@@ -178,6 +172,13 @@ def matches_feature_filter(translator, filt, feature, depth=0):
             fail("Filter.stringContains requires string operands")
         charge(translator, len(left) + len(right))
         return right in left
+    if name in {"stringStartsWith", "stringEndsWith"}:
+        if left is _UNKNOWN or right is _UNKNOWN or left is None or right is None:
+            return _UNKNOWN
+        if not isinstance(left, str) or not isinstance(right, str):
+            fail(f"Filter.{name} requires string operands")
+        charge(translator, min(len(left), len(right)))
+        return left.startswith(right) if name == "stringStartsWith" else left.endswith(right)
     if name == "inList":
         if left is _UNKNOWN or right is _UNKNOWN or left is None or right is None:
             fail("Filter.inList requires present, non-null operands")

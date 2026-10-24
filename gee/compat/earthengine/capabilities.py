@@ -7,6 +7,19 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 # Handler inventory, not a claim that every overload or parameter is supported,
 # nor that Google-service numerical equivalence has been established.
 SUPPORTED_FUNCTIONS = frozenset({
+    *('Element.' + n for n in (
+        'getNumber', 'getString', 'getArray', 'toDictionary', 'replaceProperties',
+    )),
+    *('Feature.' + n for n in ('id', 'select', 'setGeometry', 'toArray')),
+    *('Geometry.' + n for n in (
+        'type', 'coordinates', 'geometries', 'isUnbounded', 'edgesAreGeodesics', 'geodesic',
+    )),
+    *('GeometryConstructors.' + n for n in ('BBox', 'MultiGeometry', 'LinearRing')),
+    *('Filter.' + n for n in (
+        'eq', 'gt', 'gte', 'lt', 'lte', 'neq', 'notEquals', 'greaterThanOrEquals',
+        'lessThanOrEquals', 'stringStartsWith', 'stringEndsWith', 'rangeContains',
+        'dayOfYear', 'always', 'never', 'hasGeometry',
+    )),
     "Image.matrixCholeskyDecomposition", "Image.matrixLUDecomposition", "Image.matrixTranspose",
     "Image.matrixQRDecomposition", "Image.matrixSingularValueDecomposition",
     "Terrain", "Terrain.products", "Terrain.slope", "Terrain.aspect", "Terrain.hillshade",

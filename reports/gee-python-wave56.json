@@ -1,0 +1,178 @@
+{
+  "schema": "local-ee-compatibility-wave/v1",
+  "date": "2026-10-24",
+  "base_commit": "cea446378fae09333f3573528933459014726bf6",
+  "title": "Finite typed metadata, feature preparation, validated filters and owned planar geometries",
+  "entry_inventory": {
+    "pinned_signatures": 991,
+    "declared_same_name_handlers": 676,
+    "names_only_percentage": 68.21,
+    "remaining_same_name_handlers": 315,
+    "new_api_names": [
+      "Element.getArray",
+      "Element.getNumber",
+      "Element.getString",
+      "Element.replaceProperties",
+      "Element.toDictionary",
+      "Feature.id",
+      "Feature.select",
+      "Feature.setGeometry",
+      "Feature.toArray",
+      "Filter.always",
+      "Filter.dayOfYear",
+      "Filter.eq",
+      "Filter.greaterThanOrEquals",
+      "Filter.gt",
+      "Filter.gte",
+      "Filter.hasGeometry",
+      "Filter.lessThanOrEquals",
+      "Filter.lt",
+      "Filter.lte",
+      "Filter.neq",
+      "Filter.never",
+      "Filter.notEquals",
+      "Filter.rangeContains",
+      "Filter.stringEndsWith",
+      "Filter.stringStartsWith",
+      "Geometry.coordinates",
+      "Geometry.edgesAreGeodesics",
+      "Geometry.geodesic",
+      "Geometry.geometries",
+      "Geometry.isUnbounded",
+      "Geometry.type",
+      "GeometryConstructors.BBox",
+      "GeometryConstructors.LinearRing",
+      "GeometryConstructors.MultiGeometry"
+    ],
+    "new_entry_count": 34,
+    "groups": {
+      "Element": 5,
+      "Feature": 4,
+      "Filter": 16,
+      "Geometry": 6,
+      "GeometryConstructors": 3
+    },
+    "comparison_aliases_included": [
+      "eq",
+      "gt",
+      "gte",
+      "lt",
+      "lte",
+      "neq",
+      "notEquals",
+      "greaterThanOrEquals",
+      "lessThanOrEquals"
+    ],
+    "interpretation": "Name inventory only; no complete parameter, numerical or project migration compatibility percentage"
+  },
+  "implementation": {
+    "metadata": "Typed nullable Number/String/StaticArray reads over finite inline Elements and actual per-image metadata frames. Keep concrete joined Image/array IR and detached nested outputs. Default toDictionary excludes system keys; explicit missing keys omitted by local policy.",
+    "feature_identity": "Use actual supplied id/system:index only. Selection and property replacement preserve the local destination identity separately when dropping index, reject conflicting indices. Image source=null clears ordinary properties but retains actual system:index and disables inherited properties. No Google identity claim.",
+    "selection": "Actual bounded RE2 compilation for every selector. Proven plain ASCII literal names use charged exact dictionary lookup; other patterns reserve complete subject scans. Ordered unique output names, optional null geometry and finite ordered numeric arrays.",
+    "filters": "Nine comparison aliases plus real string prefixes/suffixes, inclusive range, UTC dayOfYear, constants and hasGeometry. Validate every inline branch before rows, including empty input. Actual geometry retained in sampled/classified runtime views.",
+    "runtime_table_filter_boundary": "Aliases, range, constants, string boundaries and hasGeometry admit after canonical lowering; dayOfYear/calendarRange and hasType reject in sampled/classified tables. Original16 operations/64 predicate nodes/16 depth/50000 work retained.",
+    "empty_map": "Validate serialized operator names and new keyword contracts without evaluate(), catalog access or invented rows. Missing-property and data-dependent types cannot be checked on an empty input.",
+    "geometry": "Owned normalized finite EPSG:4326 planar GeometryValue with accepted constructor-option sidecar. Precharge decode/copy before GEOS. Revalidate mutable contents instead of trusting a historical boolean. Explicit adapters retain compatibility at public JSON/table/static-value boundaries.",
+    "constructors": "BBox follows pinned-client longitude normalization/full-world and pole clamping, rejects dateline-wrapped or inverted latitude extents; MultiGeometry retains collection children and LinearRing its own type. Explicit spherical/projected/left-inside/maxError contexts reject.",
+    "unchanged_limits": {
+      "compiler_work": 50000,
+      "process_nodes": 500,
+      "graph_JSON_bytes": 1000000,
+      "raster_array_cells": 64,
+      "array_rank": 8
+    }
+  },
+  "verification": {
+    "full_pytest": {
+      "passed": 5648,
+      "skipped": 26,
+      "warnings": 53,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 46.55,
+      "source_files_hashed": 47,
+      "source_stable_during_run": true
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "TypeScript": "passed",
+      "temporary_build": "passed",
+      "deployed": false,
+      "registry_sha256": "349bf34da6a3dd8e4b3b559fe583a49359a95efad51b4591247a72693247a875"
+    },
+    "before_after_probes": {
+      "fixed_expressions": 17,
+      "before_compiled": 2,
+      "before_rejected": 15,
+      "after_compiled": 17,
+      "network_attempts": 0,
+      "scope": "Pinned Python SDK and trusted local compiler only"
+    },
+    "exact_new_entry_probes": {
+      "pinned_Python_SDK_serialized": 34,
+      "finite_results_verified": 34,
+      "network_attempts": 0,
+      "scope": "Exact named signatures, including raw aliases/hidden entries, consumed by actual finite compiler computations"
+    },
+    "original_50_probes": {
+      "serialized": 50,
+      "compiled": 47,
+      "explicitly_rejected": 3,
+      "scope": "Targeted samples, not API-wide compatibility"
+    },
+    "workflow": {
+      "fixture": "tests/fixtures/ee-feature-preparation-wave56-v1.json",
+      "fixture_sha256": "d7659d0b27976b95ef432692579237e1a31adc9014397c22b3463481b8a77268",
+      "Python_JS_semantic_outputs_match": true,
+      "source_station_rows": 12,
+      "metadata_selected_rows": 5,
+      "spatial_selected_rows": 3,
+      "catalog_selected_items": 1,
+      "independent_reference": "Literal expected IDs/rows/geometry and Fraction scores, not compiler-generated expectations",
+      "network_attempts": 0
+    },
+    "physical_CSV": {
+      "rows": 3,
+      "columns": 18,
+      "bytes": 1018,
+      "sha256": "370f5581981b75ea89b2540856bee17aa4697cdbda6f704d8577f3b8df019e23",
+      "route": "Existing ee_service dispatch, worker preparation, native_run table writer, worker finish and Jobs result readback",
+      "scope": "Synthetic trusted local table path, no HTTP service, user account or new sandbox deployment"
+    },
+    "first_full_failure": {
+      "failed": 60,
+      "passed": 5549,
+      "skipped": 26,
+      "cause": "59 known GeometryValue JSON/static/table consumer regressions plus one legacy omitted-null equality diagnostic",
+      "resolution": "Explicit bounded known-type boundary handling; preserve existing arbitrary-IR rejection and null-equality refusal; repeat frozen full suite",
+      "evidence_preserved": true
+    },
+    "JVM_build_and_new_native_probes": "Not run: Scala/JVM sources unchanged in this finite/static batch"
+  },
+  "limits_and_remaining": [
+    "Original8-selector3-row regex composition exceeded50000 work; revised literal+regex workflow passes. Successful small composition does not establish all maxima compose.",
+    "Finite inline/catalog metadata and admitted table consumers only; opaque/dynamic contexts still reject.",
+    "Filter.hasType and Geometry.projection remain unsupported.",
+    "Spherical/projected geometry, dateline-wrapped extents, non-null reprojection tolerance and left-inside interiors remain unsupported.",
+    "Getter null, missing dictionary keys, identity preservation and planar/default-edge choices are documented local policies without Google same-data oracle evidence.",
+    "No new browser, full Spark, production deployment or real private-data acceptance."
+  ],
+  "scope": {
+    "new_dependencies": false,
+    "runtime_deployed": false,
+    "services_started": false,
+    "VMs_or_containers": false,
+    "user_data_or_accounts_modified": false,
+    "goal_status": "active"
+  },
+  "cleanup": {
+    "removed_frontend_file_bytes": 1714020,
+    "removed_empty_task_parent": true,
+    "preserved_filter_baseline_file_bytes": 25617,
+    "filter_uv_cache_removed_allocated_bytes": 12288,
+    "earlier_workflow_scratch_removed_file_bytes": 3315,
+    "symlinks_before": 0,
+    "open_handles_before": 0,
+    "runtime_dependencies_and_user_data_untouched": true
+  }
+}

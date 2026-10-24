@@ -57,6 +57,14 @@ export const pythonTypedRasterDocs: ReferenceEntry[] = [
     text: "本地整数 casts、位运算和 bitCount 保留 Double 精度标记，可直接继续普通算术，不必插入 toFloat()。位输入／结果限制在 ±2^53，移位数为0–63且不回绕，int64 限于精确 Double 整数域。请定义自己的位布局；它不表示 QA60 或 Landsat QA_PIXEL 等价。",
     code: "scl = image.select('SCL').toUint8()\nqa = scl.eq(8).leftShift(0).bitwiseOr(\n    scl.eq(9).leftShift(1))\nqa_score = qa.toUint8().multiply(2).add(1)",
   },
+  {
+    id: "gee-python-feature-preparation",
+    category: "GEE Python",
+    language: "python",
+    title: "要素属性筛选与几何整理",
+    text: "本地合成示例按字符串前后缀、数值闭区间、年积日和空间范围筛选站点；再以字面字段名和一个锚定正则选字段并重命名，用 getNumber/getArray/getString/toArray/toDictionary 读取属性，保留 Feature ID，并由显式经纬度重建点几何。固定目录元数据示例展示影像集合属性筛选。限于内联合成要素和已声明目录元数据，不读取真实像素或请求 Google；动态缺字段和类型检查不能从空集合推断。较大的多正则组合仍会受共享50,000工作预算限制。详见 docs/gee-python/feature-preparation.md。",
+    code: "selected = stations.filter(ee.Filter.And(\n    ee.Filter.stringStartsWith('station_code', 'CN-'),\n    ee.Filter.stringEndsWith('station_code', '-QA'),\n    ee.Filter.gte('reading', 5), ee.Filter.lte('reading', 12),\n    ee.Filter.calendarRange(91, 120, field='day_of_year')))\nprepared = selected.filterBounds(region).map(\n    lambda feature: ee.Feature(feature.select(\n        ['station_code', '^station_name$'], ['site_code', 'station_name']))\n        .set('reading_value', feature.getNumber('reading'))\n        .setGeometry(ee.Geometry.Point(\n            [feature.getNumber('longitude'), feature.getNumber('latitude')])))",
+  },
 ];
 
 export const javascriptTypedRasterDocs: ReferenceEntry[] = [
@@ -101,5 +109,11 @@ export const javascriptTypedRasterDocs: ReferenceEntry[] = [
     title: "整数 QA 与后续算术",
     text: "整数 casts、位运算和 bitCount 保留 Double 精度标记，后续 QA 算术无需 toFloat()。位输入／结果限制在 ±2^53，移位数为0–63且不回绕。示例位布局是用户定义的合成 QA，不等于任何数据产品的质量波段。",
     code: "var scl = image.select('SCL').toUint8();\nvar qa = scl.eq(8).leftShift(0)\n  .bitwiseOr(scl.eq(9).leftShift(1));\nvar qaScore = qa.toUint8().multiply(2).add(1);",
+  },
+  {
+    id: "gee-js-feature-preparation",
+    title: "要素属性筛选与几何整理",
+    text: "本地合成示例按字符串前后缀、数值闭区间、年积日和空间范围筛选站点；再以字面字段名和一个锚定正则选字段并重命名，用 getNumber/getArray/getString/toArray/toDictionary 读取属性，保留 Feature ID，并由显式经纬度重建点几何。固定目录元数据示例展示影像集合属性筛选。限于内联合成要素和已声明目录元数据，不读取真实像素或请求 Google；动态缺字段和类型检查不能从空集合推断。较大的多正则组合仍会受共享50,000工作预算限制。详见 docs/gee-python/feature-preparation.md。",
+    code: "var selected = stations.filter(ee.Filter.and(\n  ee.Filter.stringStartsWith('station_code', 'CN-'),\n  ee.Filter.stringEndsWith('station_code', '-QA'),\n  ee.Filter.gte('reading', 5), ee.Filter.lte('reading', 12),\n  ee.Filter.calendarRange(91, 120, 'day_of_year')));\nvar prepared = selected.filterBounds(region).map(function (feature) {\n  return ee.Feature(feature.select(['station_code', '^station_name$'],\n    ['site_code', 'station_name'])).set('reading_value',\n      feature.getNumber('reading')).setGeometry(ee.Geometry.Point([\n        feature.getNumber('longitude'), feature.getNumber('latitude')]));\n});",
   },
 ];

@@ -9,6 +9,7 @@ import json
 import pytest
 
 from gee import table_values
+from gee.compat.earthengine.geometry_values import GeometryValue, decode_geometry_value
 from gee.table_values import (
     MAX_CELLS,
     MAX_COLUMNS,
@@ -259,6 +260,48 @@ def test_named_epsg_4326_crs_and_planar_geometry_flags_are_preserved():
         json.dumps(geometry, ensure_ascii=False, separators=(",", ":")),
     ]
     assert data == original
+
+
+def test_table_boundary_accepts_only_owned_geometry_values_and_keeps_geojson_shape():
+    child = decode_geometry_value({
+        "type": "Point", "coordinates": [1, 2], "geodesic": False,
+    })
+    geometry = GeometryValue(
+        {"type": "GeometryCollection", "geometries": [child]},
+        {"evenOdd": True}, validated=True,
+    )
+    before = copy.deepcopy(dict(geometry))
+
+    rendered = render_csv(collection([feature({}, geometry=geometry)]))
+    assert list(csv.reader(rendered.splitlines()))[1][1] == json.dumps(
+        {"type": "GeometryCollection", "geometries": [
+            {"type": "Point", "coordinates": [1, 2]},
+        ]}, separators=(",", ":"),
+    )
+    assert dict(geometry) == before
+    assert geometry.geometry_metadata == {"evenOdd": True}
+    assert child.geometry_metadata == {"geodesic": False}
+
+
+def test_table_boundary_validates_sidecar_options_before_dropping_them():
+    geometry = GeometryValue(
+        {"type": "Point", "coordinates": [1, 2]},
+        {"geodesic": True}, validated=True,
+    )
+    with pytest.raises(TableValueError, match="Geodesic"):
+        columns(collection([feature({}, geometry=geometry)]))
+
+    class ForeignGeometry(dict):
+        pass
+
+    foreign = ForeignGeometry({"type": "Point", "coordinates": [1, 2]})
+    with pytest.raises(TableValueError, match="Unsupported non-JSON value"):
+        columns(collection([feature({}, geometry=foreign)]))
+
+    oversized = GeometryValue({"type": "Point", "coordinates": [1, 2]})
+    oversized.geometry_metadata = {f"unknown-{index}": index for index in range(100)}
+    with pytest.raises(TableValueError, match="metadata is malformed"):
+        columns(collection([feature({}, geometry=oversized)]))
 
 
 def test_null_crs_is_accepted_at_all_geojson_levels():

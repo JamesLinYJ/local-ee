@@ -47,6 +47,26 @@ def _fail(message: str) -> None:
 def _validate_json(value: Any, *, depth: int = 1) -> None:
     """Accept only finite, built-in JSON values and cap nested metadata depth."""
     kind = type(value)
+    from gee.compat.earthengine.geometry_values import GeometryValue
+
+    if kind is GeometryValue:
+        # GeometryValue's public JSON is exactly its mapping. Its private
+        # constructor options still need validation before this boundary drops
+        # the sidecar from compact JSON output.
+        metadata = value.geometry_metadata
+        if (type(metadata) is not dict or len(metadata) > 3
+                or any(type(key) is not str
+                       or key not in {"crs", "geodesic", "evenOdd"}
+                       for key in metadata)):
+            _fail("Geometry constructor metadata is malformed")
+        from gee.compat.earthengine.geometry_values import _geometry_metadata
+        from gee.compat.earthengine.ir import UnsupportedEEError
+
+        try:
+            _geometry_metadata(value)
+        except UnsupportedEEError as exc:
+            _fail(str(exc))
+        kind = dict
     if value is None or kind in (str, bool, int):
         return
     if kind is float:
@@ -66,6 +86,25 @@ def _validate_json(value: Any, *, depth: int = 1) -> None:
                 _validate_json(item, depth=depth + 1)
         return
     _fail(f"Unsupported non-JSON value: {kind.__name__}")
+
+
+def _geometry_json_mapping(value: Any) -> Any:
+    """Adapt only exact GeometryValue nodes for strict GeoJSON validation."""
+    kind = type(value)
+    from gee.compat.earthengine.geometry_values import GeometryValue
+
+    if kind is GeometryValue:
+        value = dict(value)
+        kind = dict
+    if kind is not dict or value.get("type") != "GeometryCollection":
+        return value
+    children = value.get("geometries")
+    if type(children) is not list:
+        return value
+    return {
+        **value,
+        "geometries": [_geometry_json_mapping(child) for child in children],
+    }
 
 
 def _compact_json(value: Any) -> str:
@@ -111,7 +150,7 @@ def _feature_properties(feature: dict[str, Any]) -> tuple[dict[str, Any], Bounds
         ):
             _fail("GeoJSON Feature id must be a string or finite number")
     validate_crs(feature)
-    bounds = validate_geometry(feature["geometry"])
+    bounds = validate_geometry(_geometry_json_mapping(feature["geometry"]))
     validate_bbox(feature, bounds)
     return properties, bounds
 

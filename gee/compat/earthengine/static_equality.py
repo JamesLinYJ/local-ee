@@ -29,6 +29,9 @@ def _validate(translator, value, depth=0, *, exact_integers=False):
     _charge(translator)
     if depth > MAX_COMPARISON_DEPTH:
         fail("Static equality exceeds the nesting limit")
+    from .geometry_values import GeometryValue
+
+    kind = dict if type(value) is GeometryValue else type(value)
     if type(value) is int:
         if exact_integers and abs(value) > 2**53:
             fail("Static equality requires integers in the exact Float64 domain")
@@ -55,14 +58,14 @@ def _validate(translator, value, depth=0, *, exact_integers=False):
         if not np.isfinite(data).all():
             fail("Static equality requires finite Array cells")
         return
-    if type(value) in (list, dict):
+    if kind in (list, dict):
         if len(value) > MAX_STATIC_VALUES:
             fail("Static equality supports at most 10000 container values")
-        if isinstance(value, dict):
+        if kind is dict:
             _charge(translator, len(value))
             if any(type(key) is not str for key in value):
                 fail("Static equality requires Dictionary string keys")
-        for child in value.values() if isinstance(value, dict) else value:
+        for child in value.values() if kind is dict else value:
             _validate(translator, child, depth + 1, exact_integers=exact_integers)
         return
     fail(f"Static equality does not support {type(value).__name__} values")
@@ -74,19 +77,23 @@ def _equal(translator, left, right):
         # Both Python encodings represent EE Numbers. Python compares int/float
         # values without first rounding a large integer to the float's precision.
         return left == right
-    if type(left) is not type(right):
+    from .geometry_values import GeometryValue
+
+    left_kind = dict if type(left) is GeometryValue else type(left)
+    right_kind = dict if type(right) is GeometryValue else type(right)
+    if left_kind is not right_kind:
         return False
-    if type(left) is StaticArray:
+    if left_kind is StaticArray:
         a, b = left.data, right.data
         if a.shape != b.shape or a.dtype != b.dtype:
             return False
         _charge(translator, a.size)
         return bool(np.array_equal(a, b))
-    if type(left) is list:
+    if left_kind is list:
         return len(left) == len(right) and all(
             _equal(translator, a, b) for a, b in zip(left, right)
         )
-    if type(left) is dict:
+    if left_kind is dict:
         _charge(translator, len(left) + len(right))
         return left.keys() == right.keys() and all(
             _equal(translator, left[key], right[key]) for key in left

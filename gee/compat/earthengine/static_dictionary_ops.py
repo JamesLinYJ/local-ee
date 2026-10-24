@@ -13,7 +13,7 @@ import math
 import numpy as np
 
 from .array_core import MAX_ARRAY_CELLS, MAX_ARRAY_RANK, StaticArray
-from .geometry_values import GEOMETRY_TYPES, decode_geometry
+from .geometry_values import GEOMETRY_TYPES, GeometryValue, own_geometry_bounded
 from .ir import Function, fail, integer
 from .static_dictionary_values import (
     MAX_STATIC_BYTES,
@@ -297,16 +297,10 @@ def _typed_get(translator, name, a):
         charge(translator, work)
         return clone_value(value)
     if name == "Dictionary.getGeometry":
-        kind = value.get("type") if type(value) is dict else None
+        kind = value.get("type") if type(value) in (dict, GeometryValue) else None
         if type(kind) is not str or kind not in GEOMETRY_TYPES:
             fail("Dictionary.getGeometry requires a GeoJSON geometry value")
-        work, _ = _measure(translator, value)
-        charge(translator, work)
-        geometry = decode_geometry(value)
-        # The translator already decodes static Geometry values. Rechecking the
-        # owned result catches malformed direct IR fixtures before JSON output.
-        _measure(translator, geometry)
-        return geometry
+        return own_geometry_bounded(translator, value)
     raise AssertionError(name)
 
 

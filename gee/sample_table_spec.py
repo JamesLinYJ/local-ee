@@ -11,7 +11,10 @@ MAX_OPERATIONS = 16
 MAX_PREDICATES = 64
 MAX_DEPTH = 16
 _BINARY = {'equals', 'lessThan', 'greaterThan', 'stringContains', 'inList', 'listContains', 'maxDifference'}
+_BINARY.update({'stringStartsWith', 'stringEndsWith'})
 _OPERANDS = {'leftField', 'leftValue', 'rightField', 'rightValue'}
+_STRING_FILTERS = {'stringContains', 'stringStartsWith', 'stringEndsWith'}
+_ORDERED_FILTERS = {'lessThan', 'greaterThan'}
 
 
 def _field(value):
@@ -47,6 +50,8 @@ def _predicate(value, *, from_ir=False):
     from .compat.earthengine.ir import Filter
 
     budget = [0]
+    if from_ir:
+        from .compat.earthengine.filter_normalization import lower_filter_node
 
     def visit(node, depth):
         budget[0] += 1
@@ -56,6 +61,12 @@ def _predicate(value, *, from_ir=False):
             if not isinstance(node, Filter):
                 raise ValueError('Sample filter requires a serialized ee.Filter')
             name, arguments = node.name, node.args
+            try:
+                lowered = lower_filter_node(name, arguments)
+            except (TypeError, ValueError, KeyError, OverflowError) as exc:
+                raise ValueError(f'Unsupported sample filter: {exc}') from exc
+            if lowered.name != name or lowered.args is not arguments:
+                return visit(lowered, depth)
         else:
             if type(node) is not dict or set(node) != {'name', 'arguments'}:
                 raise ValueError('Sample predicate requires exactly name/arguments')
@@ -80,11 +91,16 @@ def _predicate(value, *, from_ir=False):
             for field in fields:
                 _field(field)
             normalized = {'properties': fields.copy()}
+        elif name == 'hasGeometry':
+            if arguments:
+                raise ValueError('Sample Filter.hasGeometry accepts no arguments')
+            normalized = {}
         elif name in _BINARY:
             allowed = _OPERANDS | ({'difference'} if name == 'maxDifference' else set())
             if set(arguments) - allowed:
                 raise ValueError('Unsupported sample filter operands')
             normalized = dict(arguments)
+            literal_kinds = []
             for side in ('left', 'right'):
                 field, literal = side + 'Field', side + 'Value'
                 if (field in arguments) == (literal in arguments):
@@ -95,6 +111,15 @@ def _predicate(value, *, from_ir=False):
                     _literal(arguments[literal])
                 else:
                     _scalar(arguments[literal])
+                    value = arguments[literal]
+                    if name in _STRING_FILTERS and type(value) is not str:
+                        raise ValueError(f'Sample {name} literal operands must be strings')
+                    if name in _ORDERED_FILTERS:
+                        if type(value) not in (int, float, str):
+                            raise ValueError(f'Sample {name} operands must be numbers or strings')
+                        literal_kinds.append('string' if type(value) is str else 'number')
+            if len(literal_kinds) == 2 and literal_kinds[0] != literal_kinds[1]:
+                raise ValueError('Sample ordered filter operands must have matching types')
             if name == 'maxDifference':
                 difference = arguments.get('difference')
                 _scalar(difference)

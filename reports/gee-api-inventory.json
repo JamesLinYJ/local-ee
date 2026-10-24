@@ -11058,12 +11058,14 @@
       "description": "Extract a property from a feature.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite inline Feature/FeatureCollection metadata and concrete unmapped Image metadata only, with actual per-item ImageCollection map expansion. Typed getters keep Number/String/StaticArray values, reject incompatible non-null types and return null for missing/null properties. toDictionary defaults to non-system properties; explicit missing keys are omitted by documented local policy. replaceProperties replaces rather than merges; omitted/null source removes ordinary properties (Image retains an actual system:index locally), actual destination Feature identity is preserved and conflicting source system:index rejects. Typed arrays, concrete joined Images and owned nested outputs retain their representation under shared50000 work/1MB/depth limits. Dynamic sampled metadata and opaque runtime values reject. No Google missing-key, identity, default-output or numerical equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -11094,12 +11096,14 @@
       "description": "Extract a property from a feature.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite inline Feature/FeatureCollection metadata and concrete unmapped Image metadata only, with actual per-item ImageCollection map expansion. Typed getters keep Number/String/StaticArray values, reject incompatible non-null types and return null for missing/null properties. toDictionary defaults to non-system properties; explicit missing keys are omitted by documented local policy. replaceProperties replaces rather than merges; omitted/null source removes ordinary properties (Image retains an actual system:index locally), actual destination Feature identity is preserved and conflicting source system:index rejects. Typed arrays, concrete joined Images and owned nested outputs retain their representation under shared50000 work/1MB/depth limits. Dynamic sampled metadata and opaque runtime values reject. No Google missing-key, identity, default-output or numerical equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -11130,12 +11134,14 @@
       "description": "Extract a property from a feature.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite inline Feature/FeatureCollection metadata and concrete unmapped Image metadata only, with actual per-item ImageCollection map expansion. Typed getters keep Number/String/StaticArray values, reject incompatible non-null types and return null for missing/null properties. toDictionary defaults to non-system properties; explicit missing keys are omitted by documented local policy. replaceProperties replaces rather than merges; omitted/null source removes ordinary properties (Image retains an actual system:index locally), actual destination Feature identity is preserved and conflicting source system:index rejects. Typed arrays, concrete joined Images and owned nested outputs retain their representation under shared50000 work/1MB/depth limits. Dynamic sampled metadata and opaque runtime values reject. No Google missing-key, identity, default-output or numerical equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -11200,12 +11206,14 @@
       "description": "Replaces metadata properties of one element with those of another.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite inline Feature/FeatureCollection metadata and concrete unmapped Image metadata only, with actual per-item ImageCollection map expansion. Typed getters keep Number/String/StaticArray values, reject incompatible non-null types and return null for missing/null properties. toDictionary defaults to non-system properties; explicit missing keys are omitted by documented local policy. replaceProperties replaces rather than merges; omitted/null source removes ordinary properties (Image retains an actual system:index locally), actual destination Feature identity is preserved and conflicting source system:index rejects. Typed arrays, concrete joined Images and owned nested outputs retain their representation under shared50000 work/1MB/depth limits. Dynamic sampled metadata and opaque runtime values reject. No Google missing-key, identity, default-output or numerical equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -11321,12 +11329,14 @@
       "description": "Extract properties from a feature as a dictionary.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite inline Feature/FeatureCollection metadata and concrete unmapped Image metadata only, with actual per-item ImageCollection map expansion. Typed getters keep Number/String/StaticArray values, reject incompatible non-null types and return null for missing/null properties. toDictionary defaults to non-system properties; explicit missing keys are omitted by documented local policy. replaceProperties replaces rather than merges; omitted/null source removes ordinary properties (Image retains an actual system:index locally), actual destination Feature identity is preserved and conflicting source system:index rejects. Typed arrays, concrete joined Images and owned nested outputs retain their representation under shared50000 work/1MB/depth limits. Dynamic sampled metadata and opaque runtime values reject. No Google missing-key, identity, default-output or numerical equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -12371,12 +12381,14 @@
       "description": "Returns the ID of a given element within a collection. Objects outside collections are not guaranteed to have IDs.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite inline Features only. id reads actual explicit id or system:index, never generates an index. select uses bounded RE2 fullmatch with ordered selectors and optional equal-length unique renames; retainGeometry=false sets null geometry. Actual identity preservation when index is removed or renamed is an explicit local policy. setGeometry accepts null or validated local planar EPSG:4326 geometry. toArray accepts ordered finite numeric properties only; no dynamic feature-table/raster vector engine. Owned outputs and scan/copy/regex work use unchanged50000 work/1MB/rank8/10000-cell limits. No Google identity, dtype, shape or default-property parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -12611,12 +12623,14 @@
       "description": "Selects properties from a feature by name or RE2-compatible regex and optionally renames them.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite inline Features only. id reads actual explicit id or system:index, never generates an index. select uses bounded RE2 fullmatch with ordered selectors and optional equal-length unique renames; retainGeometry=false sets null geometry. Actual identity preservation when index is removed or renamed is an explicit local policy. setGeometry accepts null or validated local planar EPSG:4326 geometry. toArray accepts ordered finite numeric properties only; no dynamic feature-table/raster vector engine. Owned outputs and scan/copy/regex work use unchanged50000 work/1MB/rank8/10000-cell limits. No Google identity, dtype, shape or default-property parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -12649,12 +12663,14 @@
       "description": "Returns the feature with the geometry replaced by the specified geometry.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite inline Features only. id reads actual explicit id or system:index, never generates an index. select uses bounded RE2 fullmatch with ordered selectors and optional equal-length unique renames; retainGeometry=false sets null geometry. Actual identity preservation when index is removed or renamed is an explicit local policy. setGeometry accepts null or validated local planar EPSG:4326 geometry. toArray accepts ordered finite numeric properties only; no dynamic feature-table/raster vector engine. Owned outputs and scan/copy/regex work use unchanged50000 work/1MB/rank8/10000-cell limits. No Google identity, dtype, shape or default-property parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -12778,12 +12794,14 @@
       "description": "Creates an array from the given properties of an object, which must all be numbers.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Finite inline Features only. id reads actual explicit id or system:index, never generates an index. select uses bounded RE2 fullmatch with ordered selectors and optional equal-length unique renames; retainGeometry=false sets null geometry. Actual identity preservation when index is removed or renamed is an explicit local policy. setGeometry accepts null or validated local planar EPSG:4326 geometry. toArray accepts ordered finite numeric properties only; no dynamic feature-table/raster vector engine. Owned outputs and scan/copy/regex work use unchanged50000 work/1MB/rank8/10000-cell limits. No Google identity, dtype, shape or default-property parity claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -13377,12 +13395,14 @@
       "description": "Simple filter ALWAYS.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Validated finite metadata filters. Comparison aliases lower to existing canonical Filter trees; string boundaries evaluate real string operands, rangeContains is inclusive and dayOfYear uses UTC with wrapping ranges. Inline Features/catalog items retain existing missing/null/type policies; sampled/classified tables admit comparison aliases, rangeContains, always/never, string boundaries and hasGeometry, revalidating bounded canonical wire expressions under their unchanged16-operation/50000-work caps. hasGeometry uses actual inline/catalog/sampled/classified row geometry, with missing/null false. Every inline Filter branch is preflighted before rows, including empty inputs and a false earlier branch. Filter.hasType remains explicitly unsupported. No Google string/calendar/null or service-join equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -13658,12 +13678,15 @@
       "description": "Returns a filter that passes if the object's timestamp falls within the given day-of-year range.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Validated finite metadata filters. Comparison aliases lower to existing canonical Filter trees; string boundaries evaluate real string operands, rangeContains is inclusive and dayOfYear uses UTC with wrapping ranges. Inline Features/catalog items retain existing missing/null/type policies; sampled/classified tables admit comparison aliases, rangeContains, always/never, string boundaries and hasGeometry, revalidating bounded canonical wire expressions under their unchanged16-operation/50000-work caps. hasGeometry uses actual inline/catalog/sampled/classified row geometry, with missing/null false. Every inline Filter branch is preflighted before rows, including empty inputs and a false earlier branch. Filter.hasType remains explicitly unsupported. No Google string/calendar/null or service-join equivalence claim.",
+          "Inline Features and local catalog metadata only. Sampled/classified runtime tables reject calendarRange/dayOfYear because their canonical wire grammar does not define temporal filter evaluation."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -13777,12 +13800,14 @@
       "description": "Creates a unary or binary filter that passes if the operands are equal.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Validated finite metadata filters. Comparison aliases lower to existing canonical Filter trees; string boundaries evaluate real string operands, rangeContains is inclusive and dayOfYear uses UTC with wrapping ranges. Inline Features/catalog items retain existing missing/null/type policies; sampled/classified tables admit comparison aliases, rangeContains, always/never, string boundaries and hasGeometry, revalidating bounded canonical wire expressions under their unchanged16-operation/50000-work caps. hasGeometry uses actual inline/catalog/sampled/classified row geometry, with missing/null false. Every inline Filter branch is preflighted before rows, including empty inputs and a false earlier branch. Filter.hasType remains explicitly unsupported. No Google string/calendar/null or service-join equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -13972,12 +13997,14 @@
       "description": "Creates a unary or binary filter that passes unless the left operand is less than the right operand.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Validated finite metadata filters. Comparison aliases lower to existing canonical Filter trees; string boundaries evaluate real string operands, rangeContains is inclusive and dayOfYear uses UTC with wrapping ranges. Inline Features/catalog items retain existing missing/null/type policies; sampled/classified tables admit comparison aliases, rangeContains, always/never, string boundaries and hasGeometry, revalidating bounded canonical wire expressions under their unchanged16-operation/50000-work caps. hasGeometry uses actual inline/catalog/sampled/classified row geometry, with missing/null false. Every inline Filter branch is preflighted before rows, including empty inputs and a false earlier branch. Filter.hasType remains explicitly unsupported. No Google string/calendar/null or service-join equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -14026,12 +14053,14 @@
       "description": "Creates a unary or binary filter that passes if the left operand is greater than the right operand.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Validated finite metadata filters. Comparison aliases lower to existing canonical Filter trees; string boundaries evaluate real string operands, rangeContains is inclusive and dayOfYear uses UTC with wrapping ranges. Inline Features/catalog items retain existing missing/null/type policies; sampled/classified tables admit comparison aliases, rangeContains, always/never, string boundaries and hasGeometry, revalidating bounded canonical wire expressions under their unchanged16-operation/50000-work caps. hasGeometry uses actual inline/catalog/sampled/classified row geometry, with missing/null false. Every inline Filter branch is preflighted before rows, including empty inputs and a false earlier branch. Filter.hasType remains explicitly unsupported. No Google string/calendar/null or service-join equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -14080,12 +14109,14 @@
       "description": "Creates a unary or binary filter that passes unless the left operand is less than the right operand.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Validated finite metadata filters. Comparison aliases lower to existing canonical Filter trees; string boundaries evaluate real string operands, rangeContains is inclusive and dayOfYear uses UTC with wrapping ranges. Inline Features/catalog items retain existing missing/null/type policies; sampled/classified tables admit comparison aliases, rangeContains, always/never, string boundaries and hasGeometry, revalidating bounded canonical wire expressions under their unchanged16-operation/50000-work caps. hasGeometry uses actual inline/catalog/sampled/classified row geometry, with missing/null false. Every inline Filter branch is preflighted before rows, including empty inputs and a false earlier branch. Filter.hasType remains explicitly unsupported. No Google string/calendar/null or service-join equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -14105,12 +14136,14 @@
       "description": "Simple filter HAS_GEOMETRY.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Validated finite metadata filters. Comparison aliases lower to existing canonical Filter trees; string boundaries evaluate real string operands, rangeContains is inclusive and dayOfYear uses UTC with wrapping ranges. Inline Features/catalog items retain existing missing/null/type policies; sampled/classified tables admit comparison aliases, rangeContains, always/never, string boundaries and hasGeometry, revalidating bounded canonical wire expressions under their unchanged16-operation/50000-work caps. hasGeometry uses actual inline/catalog/sampled/classified row geometry, with missing/null false. Every inline Filter branch is preflighted before rows, including empty inputs and a false earlier branch. Filter.hasType remains explicitly unsupported. No Google string/calendar/null or service-join equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -14451,12 +14484,14 @@
       "description": "Creates a unary or binary filter that passes unless the left operand is greater than the right operand.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Validated finite metadata filters. Comparison aliases lower to existing canonical Filter trees; string boundaries evaluate real string operands, rangeContains is inclusive and dayOfYear uses UTC with wrapping ranges. Inline Features/catalog items retain existing missing/null/type policies; sampled/classified tables admit comparison aliases, rangeContains, always/never, string boundaries and hasGeometry, revalidating bounded canonical wire expressions under their unchanged16-operation/50000-work caps. hasGeometry uses actual inline/catalog/sampled/classified row geometry, with missing/null false. Every inline Filter branch is preflighted before rows, including empty inputs and a false earlier branch. Filter.hasType remains explicitly unsupported. No Google string/calendar/null or service-join equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -14559,12 +14594,14 @@
       "description": "Creates a unary or binary filter that passes if the left operand is less than the right operand.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Validated finite metadata filters. Comparison aliases lower to existing canonical Filter trees; string boundaries evaluate real string operands, rangeContains is inclusive and dayOfYear uses UTC with wrapping ranges. Inline Features/catalog items retain existing missing/null/type policies; sampled/classified tables admit comparison aliases, rangeContains, always/never, string boundaries and hasGeometry, revalidating bounded canonical wire expressions under their unchanged16-operation/50000-work caps. hasGeometry uses actual inline/catalog/sampled/classified row geometry, with missing/null false. Every inline Filter branch is preflighted before rows, including empty inputs and a false earlier branch. Filter.hasType remains explicitly unsupported. No Google string/calendar/null or service-join equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -14613,12 +14650,14 @@
       "description": "Creates a unary or binary filter that passes unless the left operand is greater than the right operand.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Validated finite metadata filters. Comparison aliases lower to existing canonical Filter trees; string boundaries evaluate real string operands, rangeContains is inclusive and dayOfYear uses UTC with wrapping ranges. Inline Features/catalog items retain existing missing/null/type policies; sampled/classified tables admit comparison aliases, rangeContains, always/never, string boundaries and hasGeometry, revalidating bounded canonical wire expressions under their unchanged16-operation/50000-work caps. hasGeometry uses actual inline/catalog/sampled/classified row geometry, with missing/null false. Every inline Filter branch is preflighted before rows, including empty inputs and a false earlier branch. Filter.hasType remains explicitly unsupported. No Google string/calendar/null or service-join equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -14728,12 +14767,14 @@
       "description": "Creates a unary or binary filter that passes unless the operands are equal.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Validated finite metadata filters. Comparison aliases lower to existing canonical Filter trees; string boundaries evaluate real string operands, rangeContains is inclusive and dayOfYear uses UTC with wrapping ranges. Inline Features/catalog items retain existing missing/null/type policies; sampled/classified tables admit comparison aliases, rangeContains, always/never, string boundaries and hasGeometry, revalidating bounded canonical wire expressions under their unchanged16-operation/50000-work caps. hasGeometry uses actual inline/catalog/sampled/classified row geometry, with missing/null false. Every inline Filter branch is preflighted before rows, including empty inputs and a false earlier branch. Filter.hasType remains explicitly unsupported. No Google string/calendar/null or service-join equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -14753,12 +14794,14 @@
       "description": "Simple filter NEVER.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Validated finite metadata filters. Comparison aliases lower to existing canonical Filter trees; string boundaries evaluate real string operands, rangeContains is inclusive and dayOfYear uses UTC with wrapping ranges. Inline Features/catalog items retain existing missing/null/type policies; sampled/classified tables admit comparison aliases, rangeContains, always/never, string boundaries and hasGeometry, revalidating bounded canonical wire expressions under their unchanged16-operation/50000-work caps. hasGeometry uses actual inline/catalog/sampled/classified row geometry, with missing/null false. Every inline Filter branch is preflighted before rows, including empty inputs and a false earlier branch. Filter.hasType remains explicitly unsupported. No Google string/calendar/null or service-join equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -14838,12 +14881,14 @@
       "description": "Creates a unary or binary filter that passes unless the operands are equal.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Validated finite metadata filters. Comparison aliases lower to existing canonical Filter trees; string boundaries evaluate real string operands, rangeContains is inclusive and dayOfYear uses UTC with wrapping ranges. Inline Features/catalog items retain existing missing/null/type policies; sampled/classified tables admit comparison aliases, rangeContains, always/never, string boundaries and hasGeometry, revalidating bounded canonical wire expressions under their unchanged16-operation/50000-work caps. hasGeometry uses actual inline/catalog/sampled/classified row geometry, with missing/null false. Every inline Filter branch is preflighted before rows, including empty inputs and a false earlier branch. Filter.hasType remains explicitly unsupported. No Google string/calendar/null or service-join equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -14942,12 +14987,14 @@
       "description": "Returns a filter that passes if the value of the selected field is in the specified range (inclusive).",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Validated finite metadata filters. Comparison aliases lower to existing canonical Filter trees; string boundaries evaluate real string operands, rangeContains is inclusive and dayOfYear uses UTC with wrapping ranges. Inline Features/catalog items retain existing missing/null/type policies; sampled/classified tables admit comparison aliases, rangeContains, always/never, string boundaries and hasGeometry, revalidating bounded canonical wire expressions under their unchanged16-operation/50000-work caps. hasGeometry uses actual inline/catalog/sampled/classified row geometry, with missing/null false. Every inline Filter branch is preflighted before rows, including empty inputs and a false earlier branch. Filter.hasType remains explicitly unsupported. No Google string/calendar/null or service-join equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -15050,12 +15097,14 @@
       "description": "Creates a unary or binary filter that passes if the left operand, a string, ends with the right operand, also a string.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Validated finite metadata filters. Comparison aliases lower to existing canonical Filter trees; string boundaries evaluate real string operands, rangeContains is inclusive and dayOfYear uses UTC with wrapping ranges. Inline Features/catalog items retain existing missing/null/type policies; sampled/classified tables admit comparison aliases, rangeContains, always/never, string boundaries and hasGeometry, revalidating bounded canonical wire expressions under their unchanged16-operation/50000-work caps. hasGeometry uses actual inline/catalog/sampled/classified row geometry, with missing/null false. Every inline Filter branch is preflighted before rows, including empty inputs and a false earlier branch. Filter.hasType remains explicitly unsupported. No Google string/calendar/null or service-join equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -15104,12 +15153,14 @@
       "description": "Creates a unary or binary filter that passes if the left operand, a string, starts with the right operand, also a string.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Validated finite metadata filters. Comparison aliases lower to existing canonical Filter trees; string boundaries evaluate real string operands, rangeContains is inclusive and dayOfYear uses UTC with wrapping ranges. Inline Features/catalog items retain existing missing/null/type policies; sampled/classified tables admit comparison aliases, rangeContains, always/never, string boundaries and hasGeometry, revalidating bounded canonical wire expressions under their unchanged16-operation/50000-work caps. hasGeometry uses actual inline/catalog/sampled/classified row geometry, with missing/null false. Every inline Filter branch is preflighted before rows, including empty inputs and a false earlier branch. Filter.hasType remains explicitly unsupported. No Google string/calendar/null or service-join equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -15634,12 +15685,14 @@
       "description": "Returns a GeoJSON-style list of the geometry's coordinates.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Owned accessors on validated finite planar EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries; explicit spherical edges/projected CRS/left-inside interiors reject. Omitted edge flags retain the historical local planar policy, not a Google geodesic-default claim. Geometry decode and copies are precharged before GEOS/allocation within unchanged50000 work/10000-coordinate/depth limits. No spherical or Google oracle proof."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -15959,12 +16012,14 @@
       "description": "Returns true if the geometry edges, if any, are geodesics along a spherical model of the earth; if false, any edges are straight lines in the projection.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Owned accessors on validated finite planar EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries; explicit spherical edges/projected CRS/left-inside interiors reject. Omitted edge flags retain the historical local planar policy, not a Google geodesic-default claim. Geometry decode and copies are precharged before GEOS/allocation within unchanged50000 work/10000-coordinate/depth limits. No spherical or Google oracle proof."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -16237,12 +16292,14 @@
       "description": "If false, edges are straight in the projection. If true, edges are curved to follow the shortest path on the surface of the Earth.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Owned accessors on validated finite planar EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries; explicit spherical edges/projected CRS/left-inside interiors reject. Omitted edge flags retain the historical local planar policy, not a Google geodesic-default claim. Geometry decode and copies are precharged before GEOS/allocation within unchanged50000 work/10000-coordinate/depth limits. No spherical or Google oracle proof."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -16267,12 +16324,14 @@
       "description": "Returns the list of geometries in a GeometryCollection, or a singleton list of the geometry for single geometries.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Owned accessors on validated finite planar EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries; explicit spherical edges/projected CRS/left-inside interiors reject. Omitted edge flags retain the historical local planar policy, not a Google geodesic-default claim. Geometry decode and copies are precharged before GEOS/allocation within unchanged50000 work/10000-coordinate/depth limits. No spherical or Google oracle proof."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -16397,12 +16456,14 @@
       "description": "Returns whether the geometry is unbounded.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Owned accessors on validated finite planar EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries; explicit spherical edges/projected CRS/left-inside interiors reject. Omitted edge flags retain the historical local planar policy, not a Google geodesic-default claim. Geometry decode and copies are precharged before GEOS/allocation within unchanged50000 work/10000-coordinate/depth limits. No spherical or Google oracle proof."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -16734,12 +16795,14 @@
       "description": "Returns the GeoJSON type of the geometry.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Owned accessors on validated finite planar EPSG:4326 local geometries. Single geometries return a singleton from geometries(); collections return their immediate children and do not provide coordinates(). isUnbounded is false for admitted finite geometries; explicit spherical edges/projected CRS/left-inside interiors reject. Omitted edge flags retain the historical local planar policy, not a Google geodesic-default claim. Geometry decode and copies are precharged before GEOS/allocation within unchanged50000 work/10000-coordinate/depth limits. No spherical or Google oracle proof."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -16885,12 +16948,14 @@
       "description": "Constructs a rectangle whose edges are lines of latitude and longitude. <p>The result is a planar WGS84 rectangle. <p>If (east - west) ≥ 360 then the longitude range will be normalized to -180 to +180; otherwise they will be treated as designating points on a circle (e.g., east may be numerically less than west).",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Pinned-signature normalization into actual finite planar geometry values; bounded decode preserves admitted constructor flags and owns coordinates. BBox supports non-wrapping longitude and clipped pole latitude; circular longitude wrapping rejects. MultiGeometry uses GeometryCollection and LinearRing retains its own type. Only EPSG:4326, planar edges and admitted evenOdd=true semantics; non-null maxError/reprojection reject. Existing 50000 work/10000-coordinate/topology limits remain. No Google geometric boundary, winding or projection equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -16989,12 +17054,14 @@
       "description": "Constructs a LinearRing from the given coordinates, automatically adding the first point at the end if the ring is not explicitly closed.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Pinned-signature normalization into actual finite planar geometry values; bounded decode preserves admitted constructor flags and owns coordinates. BBox supports non-wrapping longitude and clipped pole latitude; circular longitude wrapping rejects. MultiGeometry uses GeometryCollection and LinearRing retains its own type. Only EPSG:4326, planar edges and admitted evenOdd=true semantics; non-null maxError/reprojection reject. Existing 50000 work/10000-coordinate/topology limits remain. No Google geometric boundary, winding or projection equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -17041,12 +17108,14 @@
       "description": "Constructs a MultiGeometry from the given list of geometry elements.",
       "evidence": {
         "argument_coverage_complete": false,
-        "declared_compiler_handler": false,
-        "declared_handler_interpretation": "The name is absent from gee.ee_translate.SUPPORTED_FUNCTIONS. This says only that no same-name handler is declared; it does not establish that all forms are impossible or unsupported.",
+        "declared_compiler_handler": true,
+        "declared_handler_interpretation": "The name appears in gee.ee_translate.SUPPORTED_FUNCTIONS; this is dispatch inventory only, not proof that all overloads/arguments or GEE semantics work.",
         "google_same_data_comparison_verified_per_signature": false,
         "independent_numerical_equivalence_verified_per_signature": false,
-        "known_local_limits": [],
-        "limit_catalogue_status": "no_limit_entry_recorded_not_evidence_of_full_support",
+        "known_local_limits": [
+          "Pinned-signature normalization into actual finite planar geometry values; bounded decode preserves admitted constructor flags and owns coordinates. BBox supports non-wrapping longitude and clipped pole latitude; circular longitude wrapping rejects. MultiGeometry uses GeometryCollection and LinearRing retains its own type. Only EPSG:4326, planar edges and admitted evenOdd=true semantics; non-null maxError/reprojection reject. Existing 50000 work/10000-coordinate/topology limits remain. No Google geometric boundary, winding or projection equivalence claim."
+        ],
+        "limit_catalogue_status": "known_local_limitations_listed",
         "pinned_sdk_signature_present": true,
         "runtime_execution_verified_per_signature": false,
         "selected_audit_context_counts": {
@@ -41654,7 +41723,7 @@
   "summary": {
     "algorithm_signature_count": 991,
     "argument_count_total": 2451,
-    "declared_handler_name_count": 642,
+    "declared_handler_name_count": 676,
     "declared_handler_names_without_exact_signature_name": [],
     "duplicate_or_overloaded_signature_names": 0,
     "families": {
@@ -41788,7 +41857,7 @@
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 1,
         "appears_in_successful_compile_context": 1,
-        "declared_handler_count": 5,
+        "declared_handler_count": 10,
         "signature_count": 11
       },
       "ErrorMargin": {
@@ -41816,7 +41885,7 @@
         "appears_in_rejected_compile_context": 1,
         "appears_in_selected_sdk_serialization": 1,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 2,
+        "declared_handler_count": 6,
         "signature_count": 30
       },
       "FeatureCollection": {
@@ -41830,21 +41899,21 @@
         "appears_in_rejected_compile_context": 2,
         "appears_in_selected_sdk_serialization": 2,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 15,
+        "declared_handler_count": 31,
         "signature_count": 37
       },
       "Geometry": {
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 0,
+        "declared_handler_count": 6,
         "signature_count": 40
       },
       "GeometryConstructors": {
         "appears_in_rejected_compile_context": 0,
         "appears_in_selected_sdk_serialization": 0,
         "appears_in_successful_compile_context": 0,
-        "declared_handler_count": 7,
+        "declared_handler_count": 10,
         "signature_count": 10
       },
       "HillShadow": {
@@ -42135,7 +42204,7 @@
         "signature_count": 10
       }
     },
-    "pinned_signatures_with_same_name_declared_handler": 642,
+    "pinned_signatures_with_same_name_declared_handler": 676,
     "unique_function_name_count": 991
   },
   "title": "Pinned Earth Engine API signature and local compatibility evidence inventory"

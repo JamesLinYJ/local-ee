@@ -65,6 +65,10 @@ def _measure(translator, value, *, active=None, depth=0, byte_limit=MAX_STATIC_B
     active = set() if active is None else active
     if depth > MAX_STATIC_DEPTH:
         fail("Static Dictionary value exceeds the nesting limit")
+    from .geometry_values import GeometryValue
+
+    geometry_value = type(value) is GeometryValue
+    kind = dict if geometry_value else type(value)
     charge(translator)
     work = 1
 
@@ -97,7 +101,7 @@ def _measure(translator, value, *, active=None, depth=0, byte_limit=MAX_STATIC_B
             if numeric_bytes > byte_limit:
                 fail("Static Dictionary value exceeds 1 MB")
         payload = _array_list_bytes(data.shape) + numeric_bytes
-    elif type(value) in (list, dict):
+    elif kind in (list, dict):
         identity = id(value)
         if identity in active:
             fail("Static Dictionary values cannot contain cycles")
@@ -105,7 +109,7 @@ def _measure(translator, value, *, active=None, depth=0, byte_limit=MAX_STATIC_B
             fail("Static Dictionary containers support at most 10000 entries")
         active.add(identity)
         try:
-            if type(value) is list:
+            if kind is list:
                 payload = 2 + 2 * max(0, len(value) - 1)
                 for item in value:
                     child_work, child_bytes = _measure(
@@ -135,6 +139,16 @@ def _measure(translator, value, *, active=None, depth=0, byte_limit=MAX_STATIC_B
                     payload += child_bytes
                     if payload > byte_limit:
                         fail("Static Dictionary value exceeds 1 MB")
+            if geometry_value:
+                metadata = value.geometry_metadata
+                if (type(metadata) is not dict or len(metadata) > 3
+                        or set(metadata) - {"crs", "geodesic", "evenOdd"}):
+                    fail("Geometry constructor metadata is malformed")
+                metadata_work, _ = _measure(
+                    translator, metadata, active=active, depth=depth + 1,
+                    byte_limit=MAX_STATIC_BYTES,
+                )
+                work += metadata_work
         finally:
             active.remove(identity)
     else:
@@ -199,6 +213,15 @@ def clone_value(value):
         return result
     if type(value) is list:
         return [clone_value(item) for item in value]
+    from .geometry_values import GeometryValue
+
+    if type(value) is GeometryValue:
+        result = GeometryValue(
+            {}, clone_value(value.geometry_metadata),
+            validated=value._geometry_validated,
+        )
+        result.update((key, clone_value(item)) for key, item in value.items())
+        return result
     if type(value) is dict:
         return {key: clone_value(item) for key, item in value.items()}
     return value

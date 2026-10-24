@@ -65,6 +65,16 @@ def _scan_json(translator, state, value, depth, active):
     if depth > _MAX_DEPTH:
         fail("Nested FeatureCollection exceeds depth 96")
     kind = type(value)
+    from .geometry_values import GeometryValue
+
+    geometry_value = kind is GeometryValue
+    if geometry_value:
+        # GeometryValue is mutable, so its historical decode marker cannot
+        # authorize the current coordinates or option sidecar.
+        from .geometry_values import decode_geometry_bounded
+
+        decode_geometry_bounded(translator, value)
+        kind = dict
     if value is None or kind is bool:
         charge(translator)
         _node(state)
@@ -116,6 +126,10 @@ def _scan_json(translator, state, value, depth, active):
             for key, child in value.items():
                 _string(translator, state, key)
                 _scan_json(translator, state, child, depth + 1, active)
+            if geometry_value:
+                _scan_json(
+                    translator, state, value.geometry_metadata, depth + 1, active,
+                )
         else:
             for child in value:
                 _scan_json(translator, state, child, depth + 1, active)
@@ -160,11 +174,20 @@ def _scan_feature(translator, state, feature, depth, active):
     if set(feature) - {"type", "geometry", "properties", "id"}:
         fail("Nested FeatureCollection Feature has unsupported fields")
     geometry = feature.get("geometry")
+    from .geometry_values import GeometryValue
+
     properties = feature.get("properties")
     if geometry is not None and (
-        type(geometry) is not dict or geometry.get("type") not in GEOMETRY_TYPES
+        type(geometry) not in (dict, GeometryValue)
+        or geometry.get("type") not in GEOMETRY_TYPES
     ):
         fail("Nested FeatureCollection geometry must be decoded GeoJSON or null")
+    if geometry is not None and type(geometry) is dict:
+        # Raw direct IR geometry needs the same bounded validation; typed
+        # GeometryValue instances are checked by _scan_json below.
+        from .geometry_values import decode_geometry_bounded
+
+        decode_geometry_bounded(translator, geometry)
     if type(properties) is not dict:
         fail("Nested FeatureCollection Feature properties must be a JSON object")
     if "id" in feature and type(feature["id"]) is not str:

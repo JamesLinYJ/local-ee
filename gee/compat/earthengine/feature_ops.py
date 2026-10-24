@@ -14,7 +14,7 @@ from .feature_values import (
     validate_json_value,
     with_properties,
 )
-from .feature_filters import matches_feature_filter
+from .feature_filters import matches_feature_filter, validate_filter_structure
 from .collection_metadata import copy_collection_metadata, collection_with_metadata
 from .ir import Filter, Function, Image, ImageSequence, SampledFeatures, fail, integer
 from .nested_collections import construct_nested_collection, is_collection_value
@@ -183,6 +183,10 @@ def _invoke_collection(translator, name, a):
         drop_nulls = a.get("dropNulls", False)
         if drop_nulls is not None and type(drop_nulls) is not bool:
             fail("Collection.map dropNulls must be a boolean")
+        if not features:
+            from .feature_map_preflight import preflight_empty_feature_map
+
+            preflight_empty_feature_map(translator, function)
         output = []
         metadata = None
         for feature in features:
@@ -233,6 +237,7 @@ def _invoke_collection(translator, name, a):
         filt = a.get("filter")
         if not isinstance(filt, Filter):
             fail("Inline FeatureCollection.filter requires a serialized ee.Filter")
+        validate_filter_structure(translator, filt)
         output = []
         for feature in features:
             charge(translator)

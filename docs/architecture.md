@@ -130,12 +130,15 @@ RF 要素分类与矩阵计算保留独立运行时 IR 和生产者合同。真�
 | `array_selection`, `feature_table_*`, `string_regex`, `regex_values` | 静态数组选择、内联表整理、固定 RE2 的有界正则；保留已有所有权和输出边界 |
 | `number_math.py` | 有限静态正余弦、稳定范数与方向角，先校验／计费再运行 Float64 内核；显式记录 pinned SDK 轴约定和未做 Google 对照的数值政策 |
 | `array_core.py`, `array_values.py`, `array_layout.py`, `array_arithmetic.py`, `array_reductions.py`, `array_matrix_extra.py` | 有限静态数组类型、形状／资源校验及分组数值内核 |
-| `array_decompositions.py` | 静态方阵 QR／LU／SVD 的真实分解、有限输出与立方工作预充；通过既有 typed Array／Dictionary 接口组合，不另建前端计算层 |
+| `array_decompositions.py` | 静态矩形 QR／SVD 与方阵 LU 的真实分解、有限输出与立方工作预充；通过既有 typed Array／Dictionary 接口组合，不另建前端计算层 |
 | `array_argmax.py` | 有限静态数组与固定 Float32／Double 栅格数组的首个行主序最大值坐标；保留输入声明精度，栅格坐标为有界 Float32 整数，整体掩膜保留，扫描及构图前预充预算 |
 | `raster_array_sort.py`, `pixel_selection_graph.py`, `selection_grid.py` | 值／键分别显式声明 Float32／Double，稳定排序整片移动；Double 载荷由两个封闭的原生三元算子选择，普通选择和 where 各有独立缺测政策；来源／网格新验证，同条目资产冲突拒绝，不用普通掩膜的缺键回退；组件证据与完整 Spark 验收分开 |
 | `raster_array_core.py`, `raster_array_values.py`, `raster_array_layout.py`, `raster_array_coordinates.py`, `raster_array_reductions.py`, `raster_array_dispatch.py` | 单数组波段固定形状 IR、整体掩膜、常量坐标与分组操作；降为既有标量像素图，公开输出前必须转换为标量波段 |
 | `raster_matrix_solve.py` | 保留静态满列秩设计的有限栅格最小二乘，双方显式 Float32／Double（任一Double则提升）；常量 cast 链按对象缓存，大基线中心化有幅度保护，宽／欠定／秩亏与动态设计转入共享原生矩阵路径 |
 | `raster_matrix_native.py`, `matrix_values_graph.py` | 固定逐像元 solve／inverse／pseudoinverse 的 IR、有限常量折叠及单一共享生产者；每个结果单元只选择该生产者的行优先输出，显式转换保留输入／输出舍入，新验证网格和时间轴 |
+| `element_metadata_values.py`, `owned_metadata_values.py`, `feature_structure.py` | 有类型约束的属性读取、字段投影、真实要素ID和几何替换；保留StaticArray／具体Image，扫描与独立副本预充，逐景读取参与实际元数据展开 |
+| `filter_normalization.py`, `filter_structure.py`, `feature_map_preflight.py` | 规范筛选别名、在空集合和全部分支上检查结构；样本表使用较窄的版本化筛选合同，空回调不虚构数据行 |
+| `geometry_preflight.py`, `geometry_values.py`, `geometry_constructors.py`, `geometry_structure.py` | 有限EPSG:4326平面几何的构造、拓扑校验、结构查询和独立输出，先计费再转换GEOS；保留可接受选项，不隐式支持球面和重投影 |
 | `raster_matrix_decomposition.py`, `raster_matrix_factor_constants.py`, `raster_matrix_orthogonal_constants.py` | Cholesky的L、LU的L／U／P及紧凑QR／SVD命名数组、共享生产者和有限常量折叠；64单元总输出限制保留，选取因子后继续实际数组运算 |
 | `raster_factor_snapshot.py`, `raster_matrix_orthogonal_rank.py` | 根作用域同一SDK因子引用共享不可变数值表达式，元数据存储／读取各自复制；常量SVD以预充的精确整数秩区分真实零方向，不能缓存实际目录／网格事实 |
 | `raster_collection_arrays.py`, `raster_array_reshape.py` | 有限标量集合按波段堆叠定长数组，各波段独立合并所有帧掩膜；常量有效长度向量重解释行主序形状，保留像素、类型和来源，拒绝变长数组及动态／掩膜形状 |
