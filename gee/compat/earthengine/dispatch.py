@@ -96,6 +96,10 @@ def invoke(translator, name, arguments):
         return invoke_feature_structure(translator, name, a)
     if name in GEOMETRY_STRUCTURE_FUNCTIONS:
         return invoke_geometry_structure(translator, name, a)
+    if name in {"Image.linkCollection", "ImageCollection.combine"}:
+        from .image_collection_link import invoke_collection_link
+
+        return invoke_collection_link(translator, name, a)
     if name == "Image.unmix":
         from .image_unmix import invoke_image_unmix
 

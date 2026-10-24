@@ -1,0 +1,830 @@
+{
+  "schema": "local-ee-synthetic-collection-link/v1",
+  "description": "CC0 synthetic data; no provider, credentials, user assets or physical raster downloads.",
+  "catalog": [
+    {
+      "id": "sentinel-2-l2a",
+      "cube:dimensions": {
+        "bands": {
+          "values": [
+            "red",
+            "nir",
+            "qa"
+          ]
+        }
+      }
+    }
+  ],
+  "grid": {
+    "crs": "EPSG:4326",
+    "transform": [
+      1,
+      0,
+      0,
+      0,
+      -1,
+      1
+    ],
+    "shape": [
+      1,
+      4
+    ],
+    "centers": [
+      [
+        0.5,
+        0.5
+      ],
+      [
+        1.5,
+        0.5
+      ],
+      [
+        2.5,
+        0.5
+      ],
+      [
+        3.5,
+        0.5
+      ]
+    ]
+  },
+  "scenes": [
+    {
+      "id": "p-a",
+      "item": {
+        "id": "p-a",
+        "bbox": [
+          0,
+          0,
+          4,
+          1
+        ],
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                4,
+                0
+              ],
+              [
+                4,
+                1
+              ],
+              [
+                0,
+                1
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          ]
+        },
+        "properties": {
+          "proj:code": "EPSG:4326",
+          "proj:transform": [
+            1,
+            0,
+            0,
+            0,
+            -1,
+            1
+          ],
+          "proj:shape": [
+            1,
+            4
+          ],
+          "system:index": "a",
+          "scene": "a",
+          "side": "primary",
+          "system:time_start": 1704067200000,
+          "datetime": "2024-01-01T00:00:00Z"
+        },
+        "assets": {
+          "red": {
+            "href": "local-synthetic://p-a/red",
+            "roles": [
+              "data"
+            ],
+            "proj:code": "EPSG:4326",
+            "proj:transform": [
+              1,
+              0,
+              0,
+              0,
+              -1,
+              1
+            ],
+            "proj:shape": [
+              1,
+              4
+            ],
+            "bands": [
+              {
+                "name": "red"
+              }
+            ]
+          },
+          "nir": {
+            "href": "local-synthetic://p-a/nir",
+            "roles": [
+              "data"
+            ],
+            "proj:code": "EPSG:4326",
+            "proj:transform": [
+              1,
+              0,
+              0,
+              0,
+              -1,
+              1
+            ],
+            "proj:shape": [
+              1,
+              4
+            ],
+            "bands": [
+              {
+                "name": "nir"
+              }
+            ]
+          },
+          "qa": {
+            "href": "local-synthetic://p-a/qa",
+            "roles": [
+              "data"
+            ],
+            "proj:code": "EPSG:4326",
+            "proj:transform": [
+              1,
+              0,
+              0,
+              0,
+              -1,
+              1
+            ],
+            "proj:shape": [
+              1,
+              4
+            ],
+            "bands": [
+              {
+                "name": "qa"
+              }
+            ]
+          }
+        }
+      },
+      "arrays": {
+        "red": [
+          1,
+          2,
+          null,
+          4
+        ],
+        "nir": [
+          2,
+          6,
+          5,
+          8
+        ],
+        "qa": [
+          null,
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "id": "p-b",
+      "item": {
+        "id": "p-b",
+        "bbox": [
+          0,
+          0,
+          4,
+          1
+        ],
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                4,
+                0
+              ],
+              [
+                4,
+                1
+              ],
+              [
+                0,
+                1
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          ]
+        },
+        "properties": {
+          "proj:code": "EPSG:4326",
+          "proj:transform": [
+            1,
+            0,
+            0,
+            0,
+            -1,
+            1
+          ],
+          "proj:shape": [
+            1,
+            4
+          ],
+          "system:index": "b",
+          "scene": "b",
+          "side": "primary",
+          "system:time_start": 1704153600000,
+          "datetime": "2024-01-02T00:00:00Z"
+        },
+        "assets": {
+          "red": {
+            "href": "local-synthetic://p-b/red",
+            "roles": [
+              "data"
+            ],
+            "proj:code": "EPSG:4326",
+            "proj:transform": [
+              1,
+              0,
+              0,
+              0,
+              -1,
+              1
+            ],
+            "proj:shape": [
+              1,
+              4
+            ],
+            "bands": [
+              {
+                "name": "red"
+              }
+            ]
+          },
+          "nir": {
+            "href": "local-synthetic://p-b/nir",
+            "roles": [
+              "data"
+            ],
+            "proj:code": "EPSG:4326",
+            "proj:transform": [
+              1,
+              0,
+              0,
+              0,
+              -1,
+              1
+            ],
+            "proj:shape": [
+              1,
+              4
+            ],
+            "bands": [
+              {
+                "name": "nir"
+              }
+            ]
+          },
+          "qa": {
+            "href": "local-synthetic://p-b/qa",
+            "roles": [
+              "data"
+            ],
+            "proj:code": "EPSG:4326",
+            "proj:transform": [
+              1,
+              0,
+              0,
+              0,
+              -1,
+              1
+            ],
+            "proj:shape": [
+              1,
+              4
+            ],
+            "bands": [
+              {
+                "name": "qa"
+              }
+            ]
+          }
+        }
+      },
+      "arrays": {
+        "red": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "nir": [
+          6,
+          9,
+          8,
+          null
+        ],
+        "qa": [
+          null,
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "id": "p-c",
+      "item": {
+        "id": "p-c",
+        "bbox": [
+          0,
+          0,
+          4,
+          1
+        ],
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                4,
+                0
+              ],
+              [
+                4,
+                1
+              ],
+              [
+                0,
+                1
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          ]
+        },
+        "properties": {
+          "proj:code": "EPSG:4326",
+          "proj:transform": [
+            1,
+            0,
+            0,
+            0,
+            -1,
+            1
+          ],
+          "proj:shape": [
+            1,
+            4
+          ],
+          "system:index": "c",
+          "scene": "c",
+          "side": "primary",
+          "system:time_start": 1704240000000,
+          "datetime": "2024-01-03T00:00:00Z"
+        },
+        "assets": {
+          "red": {
+            "href": "local-synthetic://p-c/red",
+            "roles": [
+              "data"
+            ],
+            "proj:code": "EPSG:4326",
+            "proj:transform": [
+              1,
+              0,
+              0,
+              0,
+              -1,
+              1
+            ],
+            "proj:shape": [
+              1,
+              4
+            ],
+            "bands": [
+              {
+                "name": "red"
+              }
+            ]
+          },
+          "nir": {
+            "href": "local-synthetic://p-c/nir",
+            "roles": [
+              "data"
+            ],
+            "proj:code": "EPSG:4326",
+            "proj:transform": [
+              1,
+              0,
+              0,
+              0,
+              -1,
+              1
+            ],
+            "proj:shape": [
+              1,
+              4
+            ],
+            "bands": [
+              {
+                "name": "nir"
+              }
+            ]
+          },
+          "qa": {
+            "href": "local-synthetic://p-c/qa",
+            "roles": [
+              "data"
+            ],
+            "proj:code": "EPSG:4326",
+            "proj:transform": [
+              1,
+              0,
+              0,
+              0,
+              -1,
+              1
+            ],
+            "proj:shape": [
+              1,
+              4
+            ],
+            "bands": [
+              {
+                "name": "qa"
+              }
+            ]
+          }
+        }
+      },
+      "arrays": {
+        "red": [
+          4,
+          2,
+          1,
+          3
+        ],
+        "nir": [
+          8,
+          8,
+          3,
+          9
+        ],
+        "qa": [
+          null,
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "id": "q-a",
+      "item": {
+        "id": "q-a",
+        "bbox": [
+          0,
+          0,
+          4,
+          1
+        ],
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                4,
+                0
+              ],
+              [
+                4,
+                1
+              ],
+              [
+                0,
+                1
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          ]
+        },
+        "properties": {
+          "proj:code": "EPSG:4326",
+          "proj:transform": [
+            1,
+            0,
+            0,
+            0,
+            -1,
+            1
+          ],
+          "proj:shape": [
+            1,
+            4
+          ],
+          "system:index": "a",
+          "scene": "a",
+          "side": "qa",
+          "system:time_start": 1704067200000,
+          "datetime": "2024-01-01T00:00:00Z",
+          "qa_version": {
+            "major": 1,
+            "tags": [
+              "synthetic"
+            ]
+          }
+        },
+        "assets": {
+          "red": {
+            "href": "local-synthetic://q-a/red",
+            "roles": [
+              "data"
+            ],
+            "proj:code": "EPSG:4326",
+            "proj:transform": [
+              1,
+              0,
+              0,
+              0,
+              -1,
+              1
+            ],
+            "proj:shape": [
+              1,
+              4
+            ],
+            "bands": [
+              {
+                "name": "red"
+              }
+            ]
+          },
+          "nir": {
+            "href": "local-synthetic://q-a/nir",
+            "roles": [
+              "data"
+            ],
+            "proj:code": "EPSG:4326",
+            "proj:transform": [
+              1,
+              0,
+              0,
+              0,
+              -1,
+              1
+            ],
+            "proj:shape": [
+              1,
+              4
+            ],
+            "bands": [
+              {
+                "name": "nir"
+              }
+            ]
+          },
+          "qa": {
+            "href": "local-synthetic://q-a/qa",
+            "roles": [
+              "data"
+            ],
+            "proj:code": "EPSG:4326",
+            "proj:transform": [
+              1,
+              0,
+              0,
+              0,
+              -1,
+              1
+            ],
+            "proj:shape": [
+              1,
+              4
+            ],
+            "bands": [
+              {
+                "name": "qa"
+              }
+            ]
+          }
+        }
+      },
+      "arrays": {
+        "red": [
+          90,
+          90,
+          90,
+          90
+        ],
+        "nir": [
+          20,
+          60,
+          50,
+          80
+        ],
+        "qa": [
+          0,
+          80,
+          null,
+          10
+        ]
+      }
+    },
+    {
+      "id": "q-c",
+      "item": {
+        "id": "q-c",
+        "bbox": [
+          0,
+          0,
+          4,
+          1
+        ],
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                4,
+                0
+              ],
+              [
+                4,
+                1
+              ],
+              [
+                0,
+                1
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          ]
+        },
+        "properties": {
+          "proj:code": "EPSG:4326",
+          "proj:transform": [
+            1,
+            0,
+            0,
+            0,
+            -1,
+            1
+          ],
+          "proj:shape": [
+            1,
+            4
+          ],
+          "system:index": "c",
+          "scene": "c",
+          "side": "qa",
+          "system:time_start": 1704240000000,
+          "datetime": "2024-01-03T00:00:00Z",
+          "qa_version": {
+            "major": 1,
+            "tags": [
+              "synthetic"
+            ]
+          }
+        },
+        "assets": {
+          "red": {
+            "href": "local-synthetic://q-c/red",
+            "roles": [
+              "data"
+            ],
+            "proj:code": "EPSG:4326",
+            "proj:transform": [
+              1,
+              0,
+              0,
+              0,
+              -1,
+              1
+            ],
+            "proj:shape": [
+              1,
+              4
+            ],
+            "bands": [
+              {
+                "name": "red"
+              }
+            ]
+          },
+          "nir": {
+            "href": "local-synthetic://q-c/nir",
+            "roles": [
+              "data"
+            ],
+            "proj:code": "EPSG:4326",
+            "proj:transform": [
+              1,
+              0,
+              0,
+              0,
+              -1,
+              1
+            ],
+            "proj:shape": [
+              1,
+              4
+            ],
+            "bands": [
+              {
+                "name": "nir"
+              }
+            ]
+          },
+          "qa": {
+            "href": "local-synthetic://q-c/qa",
+            "roles": [
+              "data"
+            ],
+            "proj:code": "EPSG:4326",
+            "proj:transform": [
+              1,
+              0,
+              0,
+              0,
+              -1,
+              1
+            ],
+            "proj:shape": [
+              1,
+              4
+            ],
+            "bands": [
+              {
+                "name": "qa"
+              }
+            ]
+          }
+        }
+      },
+      "arrays": {
+        "red": [
+          90,
+          90,
+          90,
+          90
+        ],
+        "nir": [
+          80,
+          80,
+          30,
+          90
+        ],
+        "qa": [
+          90,
+          0,
+          10,
+          null
+        ]
+      }
+    }
+  ]
+}

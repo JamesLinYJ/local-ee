@@ -16,6 +16,9 @@ from typing import Any, Mapping
 # These methods obtain per-image metadata, geometry, or property names. The
 # argument names are those emitted by the pinned Earth Engine serializer.
 _METADATA_READS = {
+    # Linking reads the receiver's match property, including when the SDK's
+    # ImageCollection helper lowers it through a per-image map.
+    "Image.linkCollection": ("input",),
     "Image.date": ("image",),
     # The official serializer calls the Image.geometry receiver `feature`.
     "Image.geometry": ("feature", "image"),
@@ -39,6 +42,7 @@ _METADATA_READS = {
 # intentionally drop image properties. This avoids treating an unrelated
 # captured image's static get()/date() call as varying with the mapped item.
 _IMAGE_RECEIVERS = {
+    "Image.linkCollection": ("input",),
     "Image": ("value", "image", "input"),
     # Numeric casts retain image-level properties. The pinned serializer
     # writes the receiver image under `value` for both methods.

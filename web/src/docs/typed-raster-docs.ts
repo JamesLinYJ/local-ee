@@ -2,6 +2,14 @@ import type { ReferenceEntry } from "../types";
 
 export const pythonTypedRasterDocs: ReferenceEntry[] = [
   {
+    id: "gee-python-collection-link",
+    category: "GEE Python",
+    language: "python",
+    title: "匹配本地 QA 波段与合并集合",
+    text: "ImageCollection.linkCollection 是官方 Python 客户端的 map 辅助方法，调用 Image.linkCollection；默认按 system:index 匹配，可指定其他平面属性。选中波段／属性覆盖同名字段；无匹配时仅选中波段变为全缺测、选中属性变为 None，其他主波段保留。combine 是 ID 内连接，默认给同名波段添加后缀，overwrite=True 原位替换。两侧最多1000景且仍受50000步／500节点限制。重复匹配明确拒绝；栅格来源、资产网格、时间和足迹必须能证明对齐，这些是本地限制。示例63／JS示例17使用三景主影像、两景QA合成样本，不自动读取 Google 云概率产品；合成图检查不代表完整 Spark 或 Google 同数据验收。详见 docs/gee-python/collection-link.md。",
+    code: "linked = primary.linkCollection(quality, ['qa'], ['qa_version'])\nimage = ee.Image(linked.first())\nclear = image.select(['red', 'nir']).updateMask(image.select('qa').lt(50))\nkept = primary.combine(quality.select(['nir', 'qa']), overwrite=False)\nreplaced = primary.combine(quality.select(['nir', 'qa']), overwrite=True)",
+  },
+  {
     id: "gee-python-pixel-matrices",
     category: "GEE Python",
     language: "python",

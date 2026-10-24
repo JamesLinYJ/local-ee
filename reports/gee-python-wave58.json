@@ -1,0 +1,128 @@
+{
+  "schema": "local-ee-compatibility-wave/v1",
+  "date": "2026-10-24",
+  "base_commit": "072040013d72733c0f67dc4fc33be72b66a793e1",
+  "title": "Bounded local image linking, QA masks and ID-based collection combination",
+  "entry_inventory": {
+    "pinned_signatures": 991,
+    "declared_same_name_handlers": 693,
+    "names_only_percentage": 69.93,
+    "remaining_same_name_handlers": 298,
+    "new_entry_count": 2,
+    "new_api_names": [
+      "Image.linkCollection",
+      "ImageCollection.combine"
+    ],
+    "client_helper_not_a_separate_algorithm": "ImageCollection.linkCollection lowers through Collection.map + Image.linkCollection",
+    "interpretation": "Name inventory only; not complete parameter, numerical or project migration compatibility"
+  },
+  "implementation": {
+    "link": "Finite unique-key matching, named-band/property overwrite, unmatched selected bands fully NoData and selected properties null; primary actual source ID, footprint and unselected metadata retained. Explicit selected system metadata follows overwrite semantics separately from actual source identity.",
+    "combine": "Inner by actual system:index metadata, primary order and source identity retained; secondary collision suffix or overwrite in primary position. Empty intersection stays empty.",
+    "source_proofs": "Fresh indexed actual-item lookup, exact selected pixel-DAG lineage, one observation per source, matching actual timestamps, equal raw/effective footprints, compatible CRS/affine lattices and asset projection evidence. Hidden addBands sources cannot use wrapper metadata as alignment proof.",
+    "metadata_and_budget": "Detached selected metadata; string-or-list selectors; no-selection for omitted/null/[] lists is an explicit local policy. Set/dict indexes avoid repeated quadratic name scans. Indexed frame materialization precharges source/property/rebind/output work before copies. Existing compiler50000, graph500/1MB and collection1000 limits remain.",
+    "modules": {
+      "image_collection_link.py": 219,
+      "image_collection_link_common.py": 171,
+      "image_collection_link_frames.py": 236,
+      "image_collection_link_grid.py": 234
+    },
+    "data_admission": "Different-CID pair-proof component is supported, but existing catalog acceptance remains unchanged. Unaccepted dataset IDs reject; no automatic Google cloud-probability dataset admission."
+  },
+  "verification": {
+    "full_pytest": {
+      "passed": 5861,
+      "skipped": 27,
+      "warnings": 53,
+      "failures": 0,
+      "seconds": 48.56,
+      "source_files_hashed": 16,
+      "source_stable_during_run": true,
+      "scope": "Complete existing suite on this host. Native unmix workflow is skipped without its cleaned-up temporary adapter; unchanged JVM components were not rebuilt in this compiler-only batch."
+    },
+    "focused_new_tests": 21,
+    "frontend": {
+      "tests_passed": 11,
+      "typecheck": "passed",
+      "temporary_build": "passed",
+      "deployed": false
+    },
+    "original_raw_probes": {
+      "count": 2,
+      "before_compiled": 0,
+      "after_compiled": 2,
+      "expressions_unchanged": true
+    },
+    "old_python_probes": {
+      "count": 50,
+      "serialized": 50,
+      "compiled": 47,
+      "rejected": 3,
+      "fixture_drift": false
+    },
+    "workflow": {
+      "output_count": 13,
+      "raster_output_count": 7,
+      "sample_cells_per_SDK": 84,
+      "finite_cells_per_SDK": 66,
+      "masked_cells_per_SDK": 18,
+      "SDK_graphs_identical": true,
+      "instrumented_network_attempts": 0
+    },
+    "independent_sample_graph_maximum_absolute_error": 0,
+    "independent_sample_scope": "7 raster outputs per SDK, 84 cells each (66 finite and18 NoData). Hand-authored expected arrays, primary/QA masks, both overwrite policies and cloud threshold; not a native engine execution.",
+    "negative_controls": [
+      "missing match keeps primary pixels and masks only requested QA",
+      "missing requested band on actual match rejects",
+      "ambiguous duplicate keys and invalid match values reject",
+      "item/asset grid contradiction, time and footprint drift reject",
+      "hidden selected source time/footprint mismatch through nested addBands rejects",
+      "fresh compilation rechecks mutable catalog evidence",
+      "near-budget frame/time validation rejects before _base_properties copies",
+      "normal pinned SDK None defaults are omitted in wire and compile using declared defaults",
+      "unaccepted datasets remain rejected"
+    ],
+    "review": {
+      "read_only_independent_contract_review": "no remaining concrete semantic or pre-allocation-budget blocker",
+      "receipt_sha256": "3e05efe00bca6a36aadf433362596b833568b10275429972192ba8912e0b0495",
+      "reviewer_ran_tests": false
+    }
+  },
+  "investigated_and_fixed": [
+    "all-masked unmatched band must not enter finite pure-constant binder",
+    "wrapper Image.source is insufficient to prove actual selected raster source alignment",
+    "duplicate/name lookups and frame/property copies require precharged bounded work"
+  ],
+  "investigated_and_retracted": [
+    "A suspected optional-None SDK bug was disproven by actual pinned serialization: None args are omitted; regression added without changing normal defaults."
+  ],
+  "limits_and_unverified": [
+    "Strict local duplicate, same-time and equal-footprint rules are narrower than Google arbitrary matching behavior.",
+    "Null/empty selector equivalence is a documented local policy; no Google same-data oracle.",
+    "Raster-array bands, implicit reprojection/time broadcast and general collection metadata changes are not introduced.",
+    "No new native GeoTrellis/full Spark/HTTP/browser/physical-export/deployment/Google or private-data acceptance in this batch.",
+    "Unmix default256x256 execution still rejects under existing budget; current3x3 simplex maximum remains26 pixels. Fast-kernel design was reviewed but not implemented or claimed proven.",
+    "RGB roundtrip remains close to the shared compiler budget; this batch does not solve larger graph composability."
+  ],
+  "preservation": {
+    "dependencies_or_locks_changed": false,
+    "runtime_or_services_deployed": false,
+    "VMs_or_containers_used": false,
+    "user_data_or_credentials_read_or_modified": false,
+    "goal_complete": false
+  },
+  "cleanup": {
+    "owned_frontend_build_files_removed": 16,
+    "owned_frontend_build_bytes_removed": 1718159,
+    "scratch_absent": true,
+    "runtime_dependencies_or_user_data_removed": false
+  },
+  "reproduction": [
+    ".venv/bin/python examples/63_GEE_python_collection_link.py",
+    ".venv/bin/python -m pytest -q tests/test_ee_image_collection_link.py tests/test_ee_collection_link_workflow.py",
+    ".venv/bin/python -m pytest -q",
+    ".venv/bin/python -m scripts.ee_python_probes --check",
+    "npm test (web/)",
+    "npm run build -- --outDir <owned-temporary-directory> (web/)"
+  ]
+}

@@ -7,6 +7,7 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 # Handler inventory, not a claim that every overload or parameter is supported,
 # nor that Google-service numerical equivalence has been established.
 SUPPORTED_FUNCTIONS = frozenset({
+    "Image.linkCollection", "ImageCollection.combine",
     *("Image." + n for n in (
         "unmix", "rgbToHsv", "hsvToRgb", "interpolate", "polynomial",
         "regexpRename", "slice", "cat", "float", "double", "id", "metadata",
