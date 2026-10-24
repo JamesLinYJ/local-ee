@@ -161,6 +161,12 @@ def local_ee_remap(args, env):
     return handler(args, env)
 
 
+def local_ee_mask_weights(args, env):
+    from .ee_mask_weights import local_ee_mask_weights as handler
+
+    return handler(args, env)
+
+
 def local_ee_sample_table_op(args, env):
     from .ee_sample_table_ops import local_ee_sample_table_op as handler
 
@@ -299,6 +305,7 @@ _HANDLERS = {
     "local_ee_sample_regions": local_ee_sample_regions,
     "local_ee_train_minimum_distance": local_ee_train_minimum_distance,
     "local_ee_remap": local_ee_remap,
+    "local_ee_mask_weights": local_ee_mask_weights,
     "local_ee_sample_table_op": local_ee_sample_table_op,
     "local_ee_runtime_table_op": local_ee_runtime_table_op,
     "local_ee_train_smile_rf_rows": local_ee_train_smile_rf_rows,
@@ -324,6 +331,7 @@ def register_local_ee_processes() -> None:
     from .ee_distance import register_distance_pushdown_boundary
     from .ee_fast_distance import register_fast_distance_pushdown_boundary
     from .ee_unmix import register_unmix_pushdown_boundary
+    from .ee_mask_weights import register_mask_weights_pushdown_boundary
 
     register_focal_pushdown_boundary()
     register_convolve_pushdown_boundary()
@@ -332,6 +340,7 @@ def register_local_ee_processes() -> None:
     register_distance_pushdown_boundary()
     register_fast_distance_pushdown_boundary()
     register_unmix_pushdown_boundary()
+    register_mask_weights_pushdown_boundary()
     for registry in (process_registry_100, process_registry_2xx):
         for process_id, handler in _HANDLERS.items():
             if registry.contains(process_id):

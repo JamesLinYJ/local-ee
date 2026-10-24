@@ -1,0 +1,3512 @@
+{
+  "schema": "local-ee-mask-weights-wave64/v1",
+  "sdk": "1.7.49",
+  "source_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a",
+  "operations": [
+    "validity",
+    "update",
+    "apply"
+  ],
+  "cases": [
+    {
+      "name": "validity-finite-values-and-no-data",
+      "spec": "{\"op\":\"validity\",\"v\":1}",
+      "bands": [
+        [
+          -1.25,
+          0,
+          "-0.0",
+          1e+300,
+          1.7976931348623157e+308,
+          5e-324,
+          "NaN"
+        ]
+      ],
+      "expected": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "name": "update-replaces-and-no-data-clears-weight",
+      "spec": "{\"op\":\"update\",\"v\":1}",
+      "bands": [
+        [
+          0,
+          0.25,
+          1,
+          0.5,
+          0.75,
+          1,
+          1,
+          1
+        ],
+        [
+          "NaN",
+          0.75,
+          0.25,
+          "NaN",
+          0,
+          0.5,
+          0.9999999990686774,
+          5e-324
+        ]
+      ],
+      "expected": [
+        0,
+        0.75,
+        0.25,
+        0,
+        0,
+        0.5,
+        0.9999999990686774,
+        5e-324
+      ]
+    },
+    {
+      "name": "apply-preserves-raw-values-without-weight-multiplication",
+      "spec": "{\"op\":\"apply\",\"v\":1}",
+      "bands": [
+        [
+          1e+300,
+          -7.5,
+          "NaN",
+          3.141592653589793,
+          "-0.0",
+          5e-324,
+          1.7976931348623157e+308,
+          1.7976931348623157e+308
+        ],
+        [
+          0.25,
+          1,
+          0.5,
+          0,
+          0.75,
+          5e-324,
+          5e-324,
+          0
+        ]
+      ],
+      "expected": [
+        1e+300,
+        -7.5,
+        "NaN",
+        "NaN",
+        "-0.0",
+        5e-324,
+        1.7976931348623157e+308,
+        "NaN"
+      ]
+    }
+  ],
+  "composite": {
+    "name": "two-replacement-updates-then-raw-value-apply",
+    "initial_weights": [
+      1,
+      0.5,
+      0,
+      0.25,
+      1,
+      0.75
+    ],
+    "new_masks": [
+      [
+        0.25,
+        0.75,
+        1,
+        "NaN",
+        0,
+        0.5
+      ],
+      [
+        0.9999999990686774,
+        0.125,
+        0.4,
+        0.6,
+        1,
+        "NaN"
+      ]
+    ],
+    "raw_values": [
+      100,
+      -32,
+      9,
+      1e+300,
+      "-0.0",
+      5e-324
+    ],
+    "expected_weights": [
+      0.9999999990686774,
+      0.125,
+      0,
+      0,
+      0,
+      0
+    ],
+    "expected_values": [
+      100,
+      -32,
+      "NaN",
+      "NaN",
+      "NaN",
+      "NaN"
+    ]
+  },
+  "invalid_specs": [
+    "",
+    "{\"op\":\"validity\",\"op\":\"apply\",\"v\":1}",
+    "{\"op\":\"validity\",\"v\":1 }",
+    "{\"op\":\"validity\",\"v\":1,\"extra\":0}",
+    "{\"op\":\"unknown\",\"v\":1}",
+    "{\"op\":\"validity\",\"v\":2}",
+    "{\"op\":1,\"v\":1}",
+    "{\"v\":1,\"op\":\"validity\"}"
+  ],
+  "invalid_tile_cases": [
+    {
+      "name": "validity-positive-infinity",
+      "spec": "{\"op\":\"validity\",\"v\":1}",
+      "bands": [
+        [
+          "Infinity"
+        ]
+      ]
+    },
+    {
+      "name": "validity-negative-infinity",
+      "spec": "{\"op\":\"validity\",\"v\":1}",
+      "bands": [
+        [
+          "-Infinity"
+        ]
+      ]
+    },
+    {
+      "name": "update-old-weight-no-data",
+      "spec": "{\"op\":\"update\",\"v\":1}",
+      "bands": [
+        [
+          "NaN"
+        ],
+        [
+          0.5
+        ]
+      ]
+    },
+    {
+      "name": "update-old-weight-negative",
+      "spec": "{\"op\":\"update\",\"v\":1}",
+      "bands": [
+        [
+          -0.0001
+        ],
+        [
+          0.5
+        ]
+      ]
+    },
+    {
+      "name": "update-old-weight-above-one",
+      "spec": "{\"op\":\"update\",\"v\":1}",
+      "bands": [
+        [
+          1.0001
+        ],
+        [
+          0.5
+        ]
+      ]
+    },
+    {
+      "name": "update-mask-negative",
+      "spec": "{\"op\":\"update\",\"v\":1}",
+      "bands": [
+        [
+          0.5
+        ],
+        [
+          -0.0001
+        ]
+      ]
+    },
+    {
+      "name": "update-mask-above-one",
+      "spec": "{\"op\":\"update\",\"v\":1}",
+      "bands": [
+        [
+          0.5
+        ],
+        [
+          1.0001
+        ]
+      ]
+    },
+    {
+      "name": "update-mask-infinity",
+      "spec": "{\"op\":\"update\",\"v\":1}",
+      "bands": [
+        [
+          0
+        ],
+        [
+          "Infinity"
+        ]
+      ]
+    },
+    {
+      "name": "update-zero-old-weight-negative-infinity",
+      "spec": "{\"op\":\"update\",\"v\":1}",
+      "bands": [
+        [
+          0
+        ],
+        [
+          "-Infinity"
+        ]
+      ]
+    },
+    {
+      "name": "update-wrong-band-count",
+      "spec": "{\"op\":\"update\",\"v\":1}",
+      "bands": [
+        [
+          1
+        ]
+      ]
+    },
+    {
+      "name": "apply-weight-no-data",
+      "spec": "{\"op\":\"apply\",\"v\":1}",
+      "bands": [
+        [
+          7
+        ],
+        [
+          "NaN"
+        ]
+      ]
+    },
+    {
+      "name": "apply-weight-negative",
+      "spec": "{\"op\":\"apply\",\"v\":1}",
+      "bands": [
+        [
+          7
+        ],
+        [
+          -0.0001
+        ]
+      ]
+    },
+    {
+      "name": "apply-weight-above-one",
+      "spec": "{\"op\":\"apply\",\"v\":1}",
+      "bands": [
+        [
+          7
+        ],
+        [
+          1.0001
+        ]
+      ]
+    },
+    {
+      "name": "apply-weight-infinity",
+      "spec": "{\"op\":\"apply\",\"v\":1}",
+      "bands": [
+        [
+          7
+        ],
+        [
+          "Infinity"
+        ]
+      ]
+    },
+    {
+      "name": "apply-hidden-raw-infinity-at-zero-weight",
+      "spec": "{\"op\":\"apply\",\"v\":1}",
+      "bands": [
+        [
+          "Infinity"
+        ],
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "name": "apply-hidden-raw-negative-infinity-at-zero-weight",
+      "spec": "{\"op\":\"apply\",\"v\":1}",
+      "bands": [
+        [
+          "-Infinity"
+        ],
+        [
+          0
+        ]
+      ]
+    },
+    {
+      "name": "apply-wrong-band-count",
+      "spec": "{\"op\":\"apply\",\"v\":1}",
+      "bands": [
+        [
+          7
+        ]
+      ]
+    },
+    {
+      "name": "empty-input",
+      "spec": "{\"op\":\"validity\",\"v\":1}",
+      "bands": []
+    },
+    {
+      "name": "mismatched-band-width",
+      "spec": "{\"op\":\"update\",\"v\":1}",
+      "bands": [
+        [
+          1,
+          1
+        ],
+        [
+          0.5
+        ]
+      ]
+    }
+  ],
+  "case_count": 4,
+  "pixel_count": 29,
+  "sdk_expressions": {
+    "updateFractionalBroadcast": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "6",
+          [
+            "weight"
+          ]
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "8"
+      }
+    },
+    "updateFractionalByOrder": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ],
+        [
+          "5",
+          [
+            0.25,
+            0.75
+          ]
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "7",
+          [
+            "nir",
+            "red"
+          ]
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "9"
+      }
+    },
+    "stackedReplacementUpdate": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "6",
+          [
+            "weight"
+          ]
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "9",
+          [
+            0.75,
+            0.5
+          ]
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "11",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "10"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "12",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "11"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "12"
+      }
+    },
+    "maskGetter": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "6",
+          [
+            "weight"
+          ]
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Image.mask"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "9"
+      }
+    },
+    "maskGetterNullDefault": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "6",
+          [
+            "weight"
+          ]
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              "mask": null
+            },
+            "functionName": "Image.mask"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "9"
+      }
+    },
+    "weightedMaskInput": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ],
+        [
+          "5",
+          [
+            "red"
+          ]
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "7",
+          [
+            "SCL"
+          ]
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 4
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image1": {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              "image2": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.eq"
+          }
+        ],
+        [
+          "11",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "12",
+          [
+            "weight"
+          ]
+        ],
+        [
+          "13",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "11"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "12"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "14",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "10"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "13"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "15",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "14"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "16",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "15"
+              }
+            },
+            "functionName": "Image.mask"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "16"
+      }
+    },
+    "maskGetterByOrder": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ],
+        [
+          "5",
+          [
+            0.25,
+            0.75
+          ]
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "7",
+          [
+            "nir",
+            "red"
+          ]
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.mask"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "10"
+      }
+    },
+    "stackedMaskGetter": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "6",
+          [
+            "weight"
+          ]
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "9",
+          [
+            0.75,
+            0.5
+          ]
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "11",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "10"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "12",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "11"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "13",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "12"
+              }
+            },
+            "functionName": "Image.mask"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "13"
+      }
+    },
+    "selectCarriesWeights": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "6",
+          [
+            "weight"
+          ]
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "9",
+          [
+            "nir"
+          ]
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "10"
+      }
+    },
+    "selectMaskGetter": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "6",
+          [
+            "weight"
+          ]
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "9",
+          [
+            "nir"
+          ]
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "11",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "10"
+              }
+            },
+            "functionName": "Image.mask"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "11"
+      }
+    },
+    "renameCarriesWeights": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "6",
+          [
+            "weight"
+          ]
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "9",
+          [
+            "R",
+            "N"
+          ]
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "10"
+      }
+    },
+    "renameMaskGetter": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "6",
+          [
+            "weight"
+          ]
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "9",
+          [
+            "R",
+            "N"
+          ]
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "11",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "10"
+              }
+            },
+            "functionName": "Image.mask"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "11"
+      }
+    },
+    "addBandsCarriesWeights": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "blue"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "8",
+          [
+            "weight"
+          ]
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "7"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "11",
+          [
+            "R",
+            "N"
+          ]
+        ],
+        [
+          "12",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "10"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "11"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "13",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "3"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "12"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "13"
+      }
+    },
+    "addBandsMaskGetter": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "blue"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "8",
+          [
+            "weight"
+          ]
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "7"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "8"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "11",
+          [
+            "R",
+            "N"
+          ]
+        ],
+        [
+          "12",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "10"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "11"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "13",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "dstImg": {
+                "type": "ValueRef",
+                "value": "3"
+              },
+              "srcImg": {
+                "type": "ValueRef",
+                "value": "12"
+              }
+            },
+            "functionName": "Image.addBands"
+          }
+        ],
+        [
+          "14",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "13"
+              }
+            },
+            "functionName": "Image.mask"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "14"
+      }
+    },
+    "binaryUpdateCompatibility": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          [
+            "SCL"
+          ]
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 9
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image1": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "image2": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Image.neq"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "3"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "8"
+      }
+    },
+    "weightedArithmetic": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "6",
+          [
+            "weight"
+          ]
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "9",
+          [
+            "red"
+          ]
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "11",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 2
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "12",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image1": {
+                "type": "ValueRef",
+                "value": "10"
+              },
+              "image2": {
+                "type": "ValueRef",
+                "value": "11"
+              }
+            },
+            "functionName": "Image.multiply"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "12"
+      }
+    },
+    "weightedUnmask": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              }
+            },
+            "functionName": "Collection.first"
+          }
+        ],
+        [
+          "2",
+          [
+            "red",
+            "nir"
+          ]
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "1"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "2"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.toDouble"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "6",
+          [
+            "weight"
+          ]
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              "names": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Image.rename"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "4"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "9",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              "value": {
+                "type": "ValueRef",
+                "value": "9"
+              }
+            },
+            "functionName": "Image.unmask"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "10"
+      }
+    },
+    "weightedMapMaskGetter": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          [
+            "nir"
+          ]
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "2"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.mask"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Function",
+            "argumentNames": [
+              "_MAPPING_VAR_0_0"
+            ],
+            "body": {
+              "type": "ValueRef",
+              "value": "5"
+            }
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "baseAlgorithm": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Collection.map"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "7"
+      }
+    },
+    "mappedMaskGetterMean": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          [
+            "nir"
+          ]
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "2"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.mask"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Function",
+            "argumentNames": [
+              "_MAPPING_VAR_0_0"
+            ],
+            "body": {
+              "type": "ValueRef",
+              "value": "5"
+            }
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "baseAlgorithm": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Collection.map"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "reduce.mean"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "8"
+      }
+    },
+    "mappedMaskGetterToBands": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          [
+            "nir"
+          ]
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "2"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Image.mask"
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Function",
+            "argumentNames": [
+              "_MAPPING_VAR_0_0"
+            ],
+            "body": {
+              "type": "ValueRef",
+              "value": "5"
+            }
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "baseAlgorithm": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "Collection.map"
+          }
+        ],
+        [
+          "8",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "ImageCollection.toBands"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "8"
+      }
+    },
+    "weightedCollectionMean": {
+      "type": "CompoundValue",
+      "scope": [
+        [
+          "0",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "id": "sentinel-2-l2a"
+            },
+            "functionName": "ImageCollection.load"
+          }
+        ],
+        [
+          "1",
+          [
+            "nir"
+          ]
+        ],
+        [
+          "2",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "input": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              },
+              "bandSelectors": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Image.select"
+          }
+        ],
+        [
+          "3",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "value": 0.25
+            },
+            "functionName": "Image.constant"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "image": {
+                "type": "ValueRef",
+                "value": "2"
+              },
+              "mask": {
+                "type": "ValueRef",
+                "value": "3"
+              }
+            },
+            "functionName": "Image.updateMask"
+          }
+        ],
+        [
+          "5",
+          {
+            "type": "Function",
+            "argumentNames": [
+              "_MAPPING_VAR_0_0"
+            ],
+            "body": {
+              "type": "ValueRef",
+              "value": "4"
+            }
+          }
+        ],
+        [
+          "6",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "baseAlgorithm": {
+                "type": "ValueRef",
+                "value": "5"
+              }
+            },
+            "functionName": "Collection.map"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Invocation",
+            "arguments": {
+              "collection": {
+                "type": "ValueRef",
+                "value": "6"
+              }
+            },
+            "functionName": "reduce.mean"
+          }
+        ]
+      ],
+      "value": {
+        "type": "ValueRef",
+        "value": "7"
+      }
+    }
+  },
+  "tripwire_attempts": 0
+}

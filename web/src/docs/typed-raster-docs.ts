@@ -2,6 +2,14 @@ import type { ReferenceEntry } from "../types";
 
 export const pythonTypedRasterDocs: ReferenceEntry[] = [
   {
+    id: "gee-python-mask-weights",
+    category: "GEE Python",
+    language: "python",
+    title: "读取小数掩膜权重",
+    text: "updateMask 的小数权重与科学像元值分开保存；mask() 将权重作为普通数值影像返回，源缺测为有效数值0。支持单波段广播、同数量按位置配对，以及 select／rename／addBands 传递。按文档在原掩膜非零处更新新权重，组合精确行为尚无 Google 对照。带权科学影像的算术、统计、透明度显示和导出尚未接通，会明确报错；mask() 输出的普通权重影像可使用已有数值路径。球面部分像元裁切仍待实现。详见 docs/gee-python/mask-weights.md。",
+    code: "source = ee.Image(collection.first()).select(['red','nir']).toDouble()\nweighted = source.updateMask(ee.Image.constant([0.25,0.75]))\nweights = weighted.mask()\nnir_weight = weighted.select('nir').mask()\nupdated_weights = weighted.updateMask(0.5).mask()",
+  },
+  {
     id: "gee-python-spherical-geometry",
     category: "GEE Python",
     language: "python",

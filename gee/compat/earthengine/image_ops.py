@@ -154,21 +154,10 @@ def invoke_image(translator, name, arguments):
         from .ir import ParsedExpression
 
         return ParsedExpression(a["expression"], a["argName"], a["vars"])
-    if name == "Image.updateMask":
-        translator.allowed(a, {"image", "mask"})
-        image_input, mask_input = as_image(a["image"]), as_image(a["mask"])
-        if len(mask_input.bands) not in {1, len(image_input.bands)}:
-            fail("updateMask needs one broadcast mask band or the same number of bands as the Image")
-        image, _, matched = pairs(a["image"], a["mask"])
-        for _, _, mask in matched:
-            if not mask.boolean and not (mask.op == "constant" and mask.args[0] in (0, 1)):
-                fail("updateMask currently supports binary masks only; fractional masks and opacity are unsupported")
-        return replace(image, bands=[(name, Pixel("if", (mask, pixel, const(None)))) for name, pixel, mask in matched])
-    if name == "Image.mask":
-        translator.allowed(a, {"image", "mask"})
-        if "mask" in a:
-            fail("Image.mask setter is unsupported; use updateMask")
-        return unary(unary(a["image"], "is_nodata"), "not")
+    if name in {"Image.updateMask", "Image.mask"}:
+        from .image_mask_weights import invoke_mask_weights
+
+        return invoke_mask_weights(translator, name, a)
     if name == "Image.where":
         translator.allowed(a, {"input", "test", "value"})
         image, test, value = as_image(a["input"]), as_image(a["test"]), as_image(a["value"])

@@ -1,8 +1,9 @@
-"""Build the independent Local EE GeoTrellis SPI adapter.
+"""Build the Local EE GeoTrellis SPI adapter.
 
-The adapter is deliberately excluded from the upstream engine JAR lock. Build
-to an explicit path, normally `.native/jars/local-ee-integer-adapter.jar`, and
-retain the adjacent JSON manifest as the local source/artifact digest record.
+The normal locked build writes `.native/jars/local-ee-integer-adapter.jar` and
+uses the active engine lock. `--standalone` instead uses only caller-supplied
+JDK/JAR paths and emits an audit-only artifact and manifest that the deployed
+adapter validator must reject.
 """
 from __future__ import annotations
 
@@ -14,6 +15,11 @@ import platform
 import subprocess
 import tempfile
 from pathlib import Path
+
+if __package__:
+    from .ee_adapter_build_inputs import build_standalone as build_standalone_from_inputs
+else:
+    from ee_adapter_build_inputs import build_standalone as build_standalone_from_inputs
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,6 +53,8 @@ SOURCES += [ROOT / "engine/ee_convolve_spec.scala", ROOT / "engine/ee_convolve_n
 SOURCES += [ROOT / "engine/ee_terrain_spec.scala", ROOT / "engine/ee_terrain_budget.scala",
             ROOT / "engine/ee_terrain_metric.scala", ROOT / "engine/ee_terrain_numeric.scala",
             ROOT / "engine/ee_terrain_adapter.scala"]
+SOURCES += [ROOT / "engine/ee_mask_weights_spec.scala", ROOT / "engine/ee_mask_weights_numeric.scala",
+            ROOT / "engine/ee_mask_weights_adapter.scala"]
 SOURCES += [ROOT / "engine/ee_neighborhood_spec.scala", ROOT / "engine/ee_neighborhood_budget.scala",
             ROOT / "engine/ee_neighborhood_exact.scala", ROOT / "engine/ee_neighborhood_statistics.scala",
             ROOT / "engine/ee_neighborhood_numeric.scala", ROOT / "engine/ee_neighborhood_adapter.scala"]
@@ -76,6 +84,7 @@ SERVICE_ENTRY += "local.ee.reduce.LocalEeTerrainCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeDistanceCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeFastDistanceCubeProcessProvider\n"
 SERVICE_ENTRY += "local.ee.reduce.LocalEeNeighborhoodCubeProcessProvider\n"
+SERVICE_ENTRY += "local.ee.reduce.LocalEeMaskWeightsCubeProcessProvider\n"
 
 
 def sha256(path: Path) -> str:
@@ -124,6 +133,19 @@ def _engine_paths() -> tuple[Path, Path, list[Path], list[Path], dict[str, str]]
 
 def _run(args: list[str], *, env: dict[str, str] | None = None) -> None:
     subprocess.run([str(arg) for arg in args], check=True, cwd=ROOT, env=env)
+
+
+def build_standalone(
+    output: Path, *, java_home: Path, spark_jars_dir: Path,
+    engine_jars_dir: Path, provenance: str,
+) -> dict:
+    """Build from explicit JDK/JAR dirs; use only public engine provenance files."""
+    return build_standalone_from_inputs(
+        output, project_root=ROOT, sources=SOURCES, primary_source=SOURCE,
+        build_script=Path(__file__), service_name=SERVICE_NAME, service_entry=SERVICE_ENTRY,
+        java_home=java_home, spark_jars_dir=spark_jars_dir,
+        engine_jars_dir=engine_jars_dir, provenance=provenance,
+    )
 
 
 def build(output: Path) -> dict:
@@ -193,8 +215,30 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path,
                         help="destination for the independently locked adapter JAR")
+    parser.add_argument("--standalone", action="store_true",
+                        help="build from explicit JDK and existing JAR directories without reading locks")
+    parser.add_argument("--java-home", type=Path,
+                        help="actual JDK home required by --standalone")
+    parser.add_argument("--spark-jars-dir", type=Path,
+                        help="existing Spark JAR directory required by --standalone")
+    parser.add_argument("--engine-jars-dir", type=Path,
+                        help="existing GeoTrellis engine JAR directory required by --standalone")
+    parser.add_argument("--provenance", type=str,
+                        help="unverified provenance note; public JAR hash attestation is recorded separately")
     args = parser.parse_args()
-    print(json.dumps(build(args.output), indent=2))
+    standalone_inputs = (args.java_home, args.spark_jars_dir, args.engine_jars_dir, args.provenance)
+    if args.standalone:
+        if any(value is None for value in standalone_inputs):
+            parser.error("--standalone requires --java-home, --spark-jars-dir, --engine-jars-dir, and --provenance")
+        result = build_standalone(
+            args.output, java_home=args.java_home, spark_jars_dir=args.spark_jars_dir,
+            engine_jars_dir=args.engine_jars_dir, provenance=args.provenance,
+        )
+    else:
+        if any(value is not None for value in standalone_inputs):
+            parser.error("standalone input flags require --standalone")
+        result = build(args.output)
+    print(json.dumps(result, indent=2))
 
 
 if __name__ == "__main__":

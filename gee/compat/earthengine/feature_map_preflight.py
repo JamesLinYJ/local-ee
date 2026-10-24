@@ -20,6 +20,7 @@ def _contract(name):
     from .spatial_filters import SPATIAL_FILTER_ARGUMENTS
     from .image_band_preparation import BAND_PREPARATION_ARGUMENTS
     from .image_metadata_raster import IMAGE_METADATA_RASTER_ARGUMENTS
+    from .image_mask_weights import MASK_WEIGHT_ARGUMENTS
     from .image_unmix import IMAGE_UNMIX_ARGUMENTS
     from .raster_array_preparation import RASTER_ARRAY_PREPARATION_ARGUMENTS
     from .raster_array_dot import RASTER_ARRAY_DOT_ARGUMENTS
@@ -34,7 +35,7 @@ def _contract(name):
         FEATURE_GEOMETRY_ARGUMENTS,
         COLLECTION_GEOMETRY_ARGUMENTS, ERROR_MARGIN_ARGUMENTS,
         SPATIAL_FILTER_ARGUMENTS,
-        BAND_PREPARATION_ARGUMENTS, IMAGE_METADATA_RASTER_ARGUMENTS,
+        BAND_PREPARATION_ARGUMENTS, IMAGE_METADATA_RASTER_ARGUMENTS, MASK_WEIGHT_ARGUMENTS,
         IMAGE_UNMIX_ARGUMENTS, RASTER_ARRAY_PREPARATION_ARGUMENTS,
         RASTER_ARRAY_DOT_ARGUMENTS,
     ):

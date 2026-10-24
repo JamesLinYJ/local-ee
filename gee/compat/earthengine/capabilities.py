@@ -413,7 +413,13 @@ def get_capabilities():
              "finite Float64 values and mask intersection; Float32 comparisons keep their existing callback path. "
              "Closed native Double core arithmetic is supported separately; arbitrary callbacks remain restricted."),
             "toDouble/toFloat convert physical cells; bounded Float64 mean/median/min/max/sum/count/first/last/sample-SD reductions and closed core arithmetic preserve precision; arbitrary Float64 pixel callbacks still reject",
-            "binary updateMask only; raster consumers retain a planar EPSG:4326 geometry subset",
+            ("Binary updateMask retains its existing NoData-only value path. Fractional updateMask preserves "
+             "independent weights for mask() numeric readback and band selection/renaming/addBands; "
+             "the documented replacement-at-nonzero-old-mask composition is a local interpretation without "
+             "Google numerical comparison. Weighted scientific value arithmetic, statistics, visualization "
+             "and export remain unsupported consumers and reject; numeric mask() views use ordinary raster "
+             "paths. No spherical fractional clip rasterizer is implemented; legacy planar center-based "
+             "raster clipping is not GEE fractional-mask compatibility."),
             "Geometry/Feature binary defaults use pinned local S2 for geodesic EPSG:4326; planar edges with explicit EPSG:4326 use GEOS. Non-4326 CRS, binary reprojection/maxError and full-sphere public encoding remain gaps. Filter.intersects and inline Collection.geometry preserve homogeneous actual edge models and consume static ErrorMargin only without transformation. Raw STAC catalog footprints retain planar edges; curved polygon ROI requires unsupported reprojection. S2 binary64 boundary/roundtrip differences are measured; explicit spherical results reject at legacy planar raster/join consumers. Unflagged raster inputs retain their earlier planar path without a GEE geodesic parity claim",
             "Filter.notNull tests flat local metadata names with at most 1000 properties and the shared compilation budget; null and missing fail while falsey non-null values pass",
             "Dictionary missing keys require a non-null default; explicit empty value-key lists stay empty; List.sequence count/end spacing and count/step ranges materialize at most 10000 finite values",

@@ -1,0 +1,181 @@
+{
+  "schema": "local-ee-gee-python-wave64/v1",
+  "date": "2026-10-24",
+  "base_commit": "4767c9a3c1e2a470d57c7a709504419bba2a7042",
+  "title": "Independent fractional image-mask weight representation and numeric getter",
+  "entry_inventory": {
+    "supported_names": 710,
+    "pinned_signature_names": 991,
+    "entry_percent": 71.64,
+    "new_names": 0,
+    "meaning": "Entry registration only; not full parameter/default/numerical/backend coverage"
+  },
+  "implementation": [
+    "Keep scientific Pixel values and independent fractional weights in immutable with_mask IR; never multiply weights into science values.",
+    "Official updateMask single-band broadcast or equal-count positional masks, finite[0,1] validation, separate source validity/new mask NoData, documented replacement-at-nonzero-old-mask local interpretation.",
+    "mask() omitted/null getters produce ordinary Float64 weight bands; valid zero at NoData, original band names/properties/grid retained. Selection, rename and addBands preserve the carrier.",
+    "Closed top-level local_ee_mask_weights validity/update/apply process with Python/Scala canonical parsers, strict input arities, trusted SPI provider and67108864 work cap plus unchanged existing limits.",
+    "Mapped mask getters frame actual immutable observations before upstream same-day coalescing; grid/time proof remains fresh and constants bind only to actual finite grids.",
+    "Explicit Float64 projection boundary preserves prior explicit Float32/arithmetic stages. This is hardening, not a reproduced temporal-first precision bug.",
+    "A source-free masked null used as a raster mask operand binds as actual NoData on the other operand grid, never a fabricated zero scientific value.",
+    "Dry-run handler records a real process boundary and blocks output band pushdown to source operands; real pinned evaluator tested.",
+    "Builder works as imported Python package and direct CLI; standalone explicit classpath mode never reads native deployment configs and emits non-deployable audit manifest with source/helper/tool/runtime hashes.",
+    "Python example68, JavaScript example22, local web syntax reference and architecture/engineering guidance updated."
+  ],
+  "verification": {
+    "frozen_local_pytest": {
+      "summary": "6256 passed, 27 skipped, 53 warnings in 71.59s (0:01:11)",
+      "seconds_wall": 72.499,
+      "source_files": 31,
+      "source_stable": true
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typecheck": true,
+      "temporary_build": true,
+      "source_stable": true,
+      "deployed_or_browser_acceptance": false
+    },
+    "official_clients": {
+      "python": "1.7.49",
+      "javascript": "1.7.49",
+      "pinned_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a",
+      "offline_serialization_and_compilation": true,
+      "published_examples_same_compiled_graphs": true,
+      "reported_network_attempts": 0
+    },
+    "native_tile_probe": {
+      "case_count": 3,
+      "composite_update_count": 2,
+      "deployment_eligible": false,
+      "elapsed_seconds": 0.653,
+      "fixture_schema": "local-ee-mask-weights-wave64/v1",
+      "fixture_sha256": "8e44c8e3b7429ac59a6f1a58d23a33df277fc01a3857bcb00800c0a6e14d5727",
+      "invalid_spec_count": 8,
+      "invalid_tile_count": 19,
+      "manifest_format": "local-ee-standalone-audit-v1",
+      "manifest_jar_sha256": "9c025ec7e7984c90f624c9edf207be97493ab72bba2a203a419f64987d748771",
+      "pixel_count": 29,
+      "probe_source_sha256": "3c833bc21886502c45a8e88c47f5af8acd22c4d4264bfa987e80b2996f2092ca",
+      "scope": "Actual GeoTrellis DoubleArrayTile inputs through LocalEeMaskWeightsNumeric.applyTile; no SparkContext, service, sandbox task, VM, container, or private raster data.",
+      "summary": "MASK_WEIGHTS_KERNEL_OK cases=3 pixels=29 invalid_specs=8 invalid_tiles=19 composite_updates=2"
+    },
+    "independent_review": {
+      "model": "gpt-6.1-sol",
+      "independent_controls_passed": 102,
+      "existing_builder_entrypoint_checks_passed": 2,
+      "post_wording_change_original_and_subset_checks_passed": 32,
+      "subset_is_not_32_additional_unique_controls": true,
+      "reported_network_attempts": 0,
+      "remaining_confirmed_correctness_resource_findings": 0,
+      "scope": "Scoped carrier/getter/grid/time/NoData/budget correctness review, not repository-wide security audit"
+    },
+    "source_and_fixture_hashes_unchanged": true
+  },
+  "failures_preserved": [
+    "First full run:16 collection errors from standalone builder helper bare import; package/direct-script import fixed and two clean subprocess regressions added.",
+    "Second full run:6255 passed and one old lowercase fractional-message regex failure; original test preserved unchanged, error wording clarified. Final full run passed.",
+    "Same-day multi-observation direct mask projection identity gap fixed via per-item framing and all timed inputs checked.",
+    "Nested masked-constant NoData binding rejection fixed without converting missing raw data to zero.",
+    "Initial temporal-first narrowing hypothesis withdrawn after pinned JVM bytecode showed preserve-datatype first behavior; no observed numeric failure claimed.",
+    "Concurrent SDK fixture synchronization and independent reference missing NaN-to-zero assignment were test-harness issues, corrected without changing the intended fixture contract."
+  ],
+  "limits_and_unverified": [
+    "Default spherical fractional clip, Point/Line clip and clipToCollection remain unimplemented; planar center masks are not a replacement.",
+    "Weighted science-value arithmetic, reductions, visualization alpha and artifact weight encoding are not enabled consumers; unsupported carrier compilation rejects. Numeric mask() images are ordinary data views.",
+    "Fractional updateMask composition follows an explicit reading of official documentation; exact Google behavior/precision is unverified.",
+    "No full Spark batch, service/browser/native deployment or private real-data acceptance. No Google EE runtime/auth/quota request.",
+    "Audit JAR is not deployment eligible and was not installed. Existing dependency bytes were recorded, not fully publicly attested; do not infer production provenance or vulnerability absence.",
+    "Prior S2 strict binary64 incidence/roundtrip differences, mixed-model transforms, projection/measurement and work-budget gaps remain unchanged.",
+    "Full production-oriented goal remains active; this batch provides a weight carrier and getter foundation, not full GEE mask compatibility."
+  ],
+  "runtime_public_attestation": {
+    "runtime_jars": 245,
+    "matching_public_hash_records": 39,
+    "mismatching_public_hash_records": 7,
+    "unlisted_in_public_hash_records": 199,
+    "mismatching_filenames": [
+      "hadoop-client-runtime-3.5.0.jar",
+      "hive-storage-api-2.8.1.jar",
+      "parquet-jackson-1.17.0.jar",
+      "spark-core_2.13-4.2.0.jar",
+      "geotrellis-dependencies-2.6.4_2.13-SNAPSHOT.jar",
+      "geotrellis-extensions-2.6.4_2.13-SNAPSHOT.jar",
+      "openeo-logging-2.6.4_2.13-SNAPSHOT.jar"
+    ],
+    "not_a_vulnerability_finding": true,
+    "audit_manifest_format": "local-ee-standalone-audit-v1",
+    "deployment_eligible": false,
+    "installed_runtime_modified": false,
+    "native_adapter_source_files_compiled": 70
+  },
+  "primary_sources": [
+    "https://developers.google.com/earth-engine/apidocs/ee-image-updatemask",
+    "https://developers.google.com/earth-engine/apidocs/ee-image-mask",
+    "https://developers.google.com/earth-engine/apidocs/ee-image-clip",
+    "https://developers.google.com/earth-engine/guides/reducers_weighting",
+    "https://developers.google.com/earth-engine/guides/reducers_reduce_region"
+  ],
+  "preservation": {
+    "user_accounts_and_research_data": "untouched",
+    "dependency_locks": "unchanged",
+    "installed_environment": "unchanged",
+    "native_s2_artifacts": "unchanged",
+    "runtime_services_deployed": false,
+    "virtual_machines_or_containers_created": false,
+    "compiler_work_budget": 50000,
+    "process_graph_nodes": 500
+  },
+  "cleanup": {
+    "superseded_audit_jars_removed": 2,
+    "superseded_jar_bytes_removed": 1741868,
+    "temporary_frontend_output_removed_bytes": 1722466,
+    "one_final_audit_jar_and_all_manifests_retained": true,
+    "no_user_data_or_installed_dependencies_removed": true
+  },
+  "receipt_sha256": {
+    "audit/gee-python-wave64/root/full-1.json": "3d287064a535d1479495256b4b72df84b636b006c18289c527ba19541fbeb874",
+    "audit/gee-python-wave64/root/full-2.json": "35c28aa51fcac9cd736efb30cfcaf240d08666c5246890fbda6274f6f862046e",
+    "audit/gee-python-wave64/root/full-3.json": "ec02d007bca38e994772ea8960a4a3b26658b5e148066dd857dcdf826fe80f40",
+    "audit/gee-python-wave64/root/freeze-3.json": "3ccd4c25dffda5b76d600a12ecefccabe25bcb0cfd8df0a8ace932743b8532cf",
+    "audit/gee-python-wave64/root/frontend-1.json": "1e19d71f89ea04b94b3aec167fc6546b75c3155b147346e36fa0ab7ba4f6c870",
+    "audit/gee-python-wave64/root/native-probe-2.json": "d31672f2790ad647683a6a6e0105fa4a6b86ba1d8d67a75080292e5b3d37bcc7",
+    "audit/gee-python-wave64/root/cleanup.json": "f95b712b6e658b1d6d58928cd67a4a1047dfb232ad5e451788d6e85b781149d6",
+    "audit/gee-python-wave64/review/final-receipt.json": "446e0673c9f84cf343606acf6e2c13fc86f8ecfb26496df4413ba6b3f19ba6c1",
+    "audit/gee-python-wave64/review/addendum-frozen-3.json": "6f94eaab6734f2a3211a163e3bdd2e51d8cc1c42b0631408c24ea0854af4e704",
+    "audit/gee-python-wave64/native/final-2-20261024/local-ee-mask-weights-adapter.jar.manifest.json": "75031b2455149446fc8e7ee12d73a94a7de9b1b189a90975cd23919d8a2ffe04"
+  },
+  "frozen_tested_source_sha256": {
+    "engine/ee_mask_weights.py": "8de3772131a67b1a3f09fb2ae545252026dbd44d76dbb7bbdb6e294bc411fa59",
+    "engine/ee_mask_weights_adapter.scala": "75162765986830ea01f1f17d46b390f3ed9a1e6c3c3957c4196855d0c33ba938",
+    "engine/ee_mask_weights_numeric.scala": "d428d27985441ecb1155e60035d6ebe3c8ccbe11d3e1b3d86cd585f7ec81026f",
+    "engine/ee_mask_weights_spec.scala": "3d0101c4234b0f0d5647deb5380fa4f0b2227af1fd1b78f7d16ab05a3e98901d",
+    "engine/ee_process_adapters.py": "ec6d107e6c7fd0115cade6e30bbf1986047ab795388fa95879ea9b5db99dd9df",
+    "examples/68_GEE_python_mask_weights.py": "ce8931d26f21401ab640fab75385eef29d14df57122a6184abdc723d3773c225",
+    "examples/javascript/22_小数掩膜权重.js": "2255396b394c6911152c9ee7a57176031771e854c5bee4cfafa7b2fd9baaef1b",
+    "gee/compat/earthengine/capabilities.py": "b11ee181a4136d056d1e0e3f81fc851eefa7435609f9e1c273096dc4a19da2e8",
+    "gee/compat/earthengine/feature_map_preflight.py": "7c31e3d3e2426ae928bf14efe34317664ff19991c9b869fcf2f1457b5e165f64",
+    "gee/compat/earthengine/image_mask_weights.py": "8ab8c3d6c4bc803182d8dc2cf5543fb8a445613f072ede94dab838450292c53d",
+    "gee/compat/earthengine/image_ops.py": "c91428a0ae818967b0fa3d4c58b50742b09a2c1310f2175c0c126ec552cd7481",
+    "gee/compat/earthengine/mask_weights_graph.py": "28b9d72ce4d181a5d1a21c6a9636301096d06e0dc6394988bf44a4083e5c0378",
+    "gee/compat/earthengine/pixel_graph.py": "d3273557141f8724d581af546b440be19de65e384677125f64529ea078570897",
+    "gee/ee_metadata.py": "a45b13d77b15db81e2b1b583e6bacee235f35456a72c7166f1ec760bf1eaf28f",
+    "gee/local_processes.py": "afb1c2aa5637f230d40e3b7553f832081164de8bb5b51d9d22c463f03d2e50f5",
+    "gee/mask_weights_spec.py": "4b9e13f80414370a1bef4c27f25446fead37797b8e89d9b4fcf6acf0b943e352",
+    "scripts/build_integer_adapter.py": "c96eda180c5eddaf5aea6c054ba7e42799271f7f44619e2fe902758b38f04e70",
+    "scripts/ee_adapter_build_inputs.py": "ea54bddb8a7d3a061a30d3fa6f1a95c1f2e9ec03d46bb66b67880680faf062e1",
+    "scripts/ee_mask_weights_fixtures.cjs": "2e92102575a59ebdc3556d475ae9f63ccf3ad21d3462894edac9941cc46b11e7",
+    "scripts/probe_mask_weights_native.py": "32c087e9afd6fde4a24bcf84dd829b7677dddb7fa8df0617be23dd4ab65db4bc",
+    "tests/fixtures/ee-mask-weights-kernel-probe.scala": "3c833bc21886502c45a8e88c47f5af8acd22c4d4264bfa987e80b2996f2092ca",
+    "tests/fixtures/ee-mask-weights-wave64-v1.json": "8e44c8e3b7429ac59a6f1a58d23a33df277fc01a3857bcb00800c0a6e14d5727",
+    "tests/test_ee_mask_weights_binding.py": "f8bb069e3402b6c1fa6be671b2f2ec58d4b8a7574718c15104f81022135a7752",
+    "tests/test_ee_mask_weights_builder_entrypoints.py": "ac5c36523b92fd20f7db37600a20131dab9a5abf263f5f9b2f71d2886e787fa3",
+    "tests/test_ee_mask_weights_compiler.py": "50c5daa85c0dd433bd1cdeb0730457a314e979196527d2e069b2d71d9a8193df",
+    "tests/test_ee_mask_weights_engine.py": "fe62f5a89f974e098a8313ec8a76e2183ed429a8fda923cc977cda91d079cfff",
+    "tests/test_ee_mask_weights_examples.py": "4eba90961f904fd9392bc9be2e95536d963fd203599232d77784f578fad63444",
+    "tests/test_ee_mask_weights_native_sources.py": "8457811a47caca57f4ae4088487b1b52fe0df4f53bbf4177011661544197d7e3",
+    "tests/test_ee_mask_weights_sdk.py": "fd37e722af541a35a5f20d38d92dab9620962aeba66e2d62b1a468d8de5ba783",
+    "tests/test_ee_mask_weights_spec.py": "a3eb540f22eef4e3d2f2ed411bf16013b520ea939e6ba96e4ab75833b400cacf",
+    "web/src/docs/typed-raster-docs.ts": "3e3c8b176cf812b20f2919cd83e90a1e69c55b9eaa30c4a41cf7cdd64d24b98d"
+  }
+}

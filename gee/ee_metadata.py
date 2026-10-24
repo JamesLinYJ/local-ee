@@ -26,6 +26,9 @@ _METADATA_READS = {
     # output property lineage separate: Image.unmask inherits properties from
     # its input receiver, not from the replacement image.
     "Image.unmask": ("input", "value"),
+    # Mask getters read each observation's actual validity/weights. Frame them
+    # before the upstream STAC loader can coalesce distinct same-day scenes.
+    "Image.mask": ("image",),
     "Image.get": ("image", "object"),
     "Image.id": ("element",),
     "Image.metadata": ("image",),

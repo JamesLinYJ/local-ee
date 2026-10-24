@@ -53,6 +53,15 @@ flowchart LR
 
 有限要素筛选由 `spatial_filters` 预检全部官方字段／字面操作数组合并按实际边模型路由；`collection_geometry` 在同一CRS／边模型下合并内联集合，保留真实分量并归一化。`error_margin` 仅在这两种已证明没有变换的路径中消费，不能冒充重投影。原始STAC GeoJSON保留平面线段，因此与默认球面多边形ROI混用目前明确拒绝；Point无边情形仍可运算。重复验证、模型扫描及输出继续计入原50000预算，空目录也先验证全部筛选分支。目录足迹合并、球面栅格掩膜和混合模型转换继续待实现，见[空间筛选合同](gee-python/spatial-selection.md)。
 
+栅格小数掩膜由 `image_mask_weights` 把科学值与权重保存在独立不可变IR中；
+`mask_weights_graph` 和闭合的 `local_ee_mask_weights` 只物化已审查的权重读取／组合。
+select、rename、addBands 可传递权重，其他带权科学值消费者须逐项接通，不能把权重
+压成NoData或乘进科学值。映射中的mask getter按真实场景展开，避免同日观测被上游合并；
+网格、时间、Float64边界和原预算分别验证。普通权重影像可进入已有数值路径；
+默认球面部分像元裁切、带权统计、透明度与结果编码仍未完成。独立classpath构建只生成
+不可部署的审计产物，记录工具／源码／依赖摘要及未匹配公开清单，不能代替正式运行库
+准入。见[小数掩膜合同](gee-python/mask-weights.md)。
+
 `Feature.geometry` 按官方缺省参数提取独立且重新验证的几何；无投影时忽略有效 `geodesics`，实际变换仍拒绝。`geometry_public` 统一 SDK 合法的边／内部标志输出。只有表格导出编译明确启用模型物化：在共享编译预算预充后，将类型化几何的有效标志写入 JSON 任务图，防止 sidecar 丢失后误走平面 CSV 校验。普通 getInfo 保持原公开省略，非类型化原始 GeoJSON 保留既有解释；持久任务仍是封闭的字面表格输入和 CSV sink。
 
 ## 3. 模块与接口
