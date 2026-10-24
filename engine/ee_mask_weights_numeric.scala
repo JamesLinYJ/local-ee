@@ -23,6 +23,7 @@ private[reduce] object LocalEeMaskWeightsNumeric {
         val index = row * cols + col
         output(index) = spec.op match {
           case "validity" => validityWeight(bands(0).getDouble(col, row))
+          case "result_value" => finiteResultValue(bands(0).getDouble(col, row))
           case "update" =>
             val oldWeight = requiredWeight(bands(0).getDouble(col, row), "old mask weight")
             val maskValue = maskWeight(bands(1).getDouble(col, row))
@@ -46,6 +47,9 @@ private[reduce] object LocalEeMaskWeightsNumeric {
       "mask weights validity source values must be finite or NoData")
     if (value.isNaN) 0d else 1d
   }
+
+  private def finiteResultValue(value: Double): Double =
+    if (value.isFinite) value else Double.NaN
 
   private def maskWeight(value: Double): Double =
     if (value.isNaN) 0d else requiredWeight(value, "new mask value")

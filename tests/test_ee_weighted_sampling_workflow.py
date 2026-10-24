@@ -64,9 +64,8 @@ def test_actual_mask_apply_then_existing_sampling_kernels(native_probe):
     assert native_probe["deployment_eligible"] is False
     assert native_probe["source_count"] == 70
     assert native_probe["runtime_jar_count"] == 245
-    assert native_probe["jar_sha256"] == (
-        "9c025ec7e7984c90f624c9edf207be97493ab72bba2a203a419f64987d748771"
-    )
+    from scripts.probe_weighted_sampling_native import EXPECTED_MANIFEST
+    assert native_probe["manifest_path"] == str(EXPECTED_MANIFEST.resolve())
     assert set(("local_ee_mask_weights", "local_ee_image_sample", "local_ee_sample_regions")) <= set(
         native["loaded_spi_ids"]
     )

@@ -18,7 +18,7 @@ def test_mask_weights_sources_are_in_the_atomic_service_adapter():
     assert "os.replace(staged_jar, output)" in builder
 
 
-def test_mask_weights_spec_and_kernel_keep_validity_update_and_apply_closed():
+def test_mask_weights_spec_and_kernel_keep_source_validity_and_result_values_distinct():
     spec = (ROOT / "engine/ee_mask_weights_spec.scala").read_text(encoding="utf-8")
     numeric = (ROOT / "engine/ee_mask_weights_numeric.scala").read_text(encoding="utf-8")
     adapter = (ROOT / "engine/ee_mask_weights_adapter.scala").read_text(encoding="utf-8")
@@ -26,10 +26,12 @@ def test_mask_weights_spec_and_kernel_keep_validity_update_and_apply_closed():
     assert "STRICT_DUPLICATE_DETECTION" in spec
     assert "MaxSpecBytes = 128" in spec
     assert 'Set("op", "v")' in spec
-    assert 'Set("validity", "update", "apply")' in spec
+    assert 'Set("validity", "result_value", "update", "apply")' in spec
     assert "text == canonicalJson(result)" in spec
     assert "def applyTile(input: MultibandTile, spec: LocalEeMaskWeightsSpec.Value): Tile" in numeric
     assert "validityWeight" in numeric and "value.isNaN" in numeric
+    assert 'case "result_value" => finiteResultValue' in numeric
+    assert "if (value.isFinite) value else Double.NaN" in numeric
     assert "oldWeight == 0d" in numeric and "maskWeight" in numeric
     assert "weight > 0d" in numeric and "rawValue.isNaN || rawValue.isFinite" in numeric
     assert "DoubleConstantNoDataCellType" in numeric

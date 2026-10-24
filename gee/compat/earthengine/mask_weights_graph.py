@@ -4,7 +4,18 @@ from __future__ import annotations
 import math
 
 from gee.mask_weights_spec import MASK_WEIGHT_ARITIES, mask_weights_spec
-from .ir import Image, Pixel, fail
+from .ir import Image, Pixel, const, fail
+
+
+def compile_mask_pixel(graph, pixel):
+    if pixel.op == "with_mask":
+        fail("Fractional image masks require a mask-aware consumer; use mask() to read fractional weights or sample supported weighted math. Unaudited weighted raster consumers, statistics, visualization and export are not implemented")
+    if pixel.op == "mask_guard":
+        if (type(pixel.args) is not tuple or len(pixel.args) != 1
+                or not isinstance(pixel.args[0], Pixel)):
+            fail("Malformed masked math input guard")
+        return compile_mask_projection(graph, Pixel("mask_apply", (pixel.args[0], const(1))))
+    return compile_mask_projection(graph, pixel)
 
 
 def _weight(value, *, missing=False):
@@ -17,6 +28,13 @@ def _weight(value, *, missing=False):
 
 
 def _fold(operation, values):
+    if operation == "result_value":
+        value = values[0]
+        if value is None:
+            return None
+        if type(value) not in (int, float, bool):
+            fail("Image math results require numeric values or NoData")
+        return value if math.isfinite(value) else None
     if operation == "validity":
         value = values[0]
         if value is None:

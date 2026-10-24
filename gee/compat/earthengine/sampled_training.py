@@ -31,6 +31,12 @@ def _pixel_cost(pixel, seen, sources):
         return child_cost
     if pixel.op == "reduce_t":
         return child_cost + 1
+    if pixel.op == "mask_guard":
+        # Validation is a typed identity using apply(value,1), including its
+        # implicit Double boundary, constant grid binding, labels and merge.
+        return child_cost + 8
+    if pixel.op in {"mask_validity", "mask_result_value"}:
+        return child_cost + 4
     if pixel.op in {"mask_apply", "mask_update"}:
         # A fractional projection labels both operands, merges them, then
         # emits its closed native process. Reserve a possible Float64 input

@@ -1,0 +1,264 @@
+{
+  "schema": "local-ee-gee-python-wave66/v1",
+  "date": "2026-10-24",
+  "base_commit": "203dee46c9229b3c85dd777abeeed897b1e59cfa",
+  "title": "Fractional-mask unary and finite-scalar math through actual tile kernels and CSV readback",
+  "entry_inventory": {
+    "supported_names": 710,
+    "pinned_signature_names": 991,
+    "entry_percent": 71.64,
+    "new_names": 0,
+    "meaning": "Entry names only; not full signatures, defaults or numerical equivalence"
+  },
+  "implementation": [
+    "Lift only direct weighted unary or exactly one weighted image plus a source-free finite scalar. Preserve official operand order, band pairing/broadcast, source lineage, observations and ownership.",
+    "Validate original science through strict apply(raw,1) before computation. Preserve nominal Float32/Double stages despite physical Double mask projections. result_value keeps finite bits and maps arithmetic/cast NaN and Infinity to NoData; result validity gates the original weight, never replaces it with1.",
+    "Reuse existing arithmetic, comparisons, Boolean logic, casts, clamp/unitScale, expression and Float32 scientific callbacks. Boolean zero remains valid independently of mask weights. Special Double callbacks still require explicit toFloat.",
+    "Fold finite compound scalars only after a freshly charged full immutable DAG plan, with cached-occurrence subtree heights and unchanged depth96/work50000/node500 bounds. Reuse the declared round policy in both constant folders so already integral large Double values and signed zero survive. Both finite constant folders also reuse floor/ceil with signed-zero preservation; ceil of a negative fraction now agrees with the existing native IEEE policy.",
+    "Keep unsupported two-raster/conditional/nested mask consumers intact for explicit rejection. Bare weighted raster map/statistics/export are not unlocked by sampling support.",
+    "Add one closed native result_value operation with unchanged source Infinity checks, arities, canonical spec and cell/key/work budgets. Build all70 current adapter sources into a separate non-deployment audit JAR; verify source/helper/tool/classpath hashes before both new and existing weighted-sampling native tests.",
+    "Update Python70/JS24 examples, syntax reference, architecture and engineering instructions; keep shared manifest verification modular."
+  ],
+  "verification": {
+    "frozen_local_pytest": {
+      "summary": "6387 passed, 27 skipped, 53 warnings in 81.51s (0:01:21)",
+      "seconds_wall": 82.163,
+      "source_files": 33,
+      "source_stable": true
+    },
+    "focused_round_and_scalar_regression": {
+      "passed": 119,
+      "scope": "Official scalar operand wire bits including signed zero, shared constant folds and existing constant/scalar-work suites"
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typecheck": true,
+      "temporary_build": true,
+      "source_stable": true,
+      "files": 16,
+      "bytes": 1724413,
+      "temporary_output_removed": true,
+      "browser_or_deployment_acceptance": false
+    },
+    "official_clients": {
+      "python": "1.7.49",
+      "javascript": "1.7.49",
+      "operation_graph_pairs": 93,
+      "workflow_graphs_equal": true,
+      "google_compute_or_auth_requests": 0,
+      "scope": "Offline official SDK serialization and local compilation of mask getters plus representative sampling consumers"
+    },
+    "native_tile_probe": {
+      "fixture_schema": "local-ee-mask-math-wave66/v1",
+      "fixture_sha256": "ea5d86d6b8167a9399ae69dc646c6e1dda0c32825d90150d42bc415d4698145c",
+      "probe_source_sha256": "5db54bec36c32a13dc8b7a8cf1860348d93434a24025a63121325fcc36e098c8",
+      "manifest_sha256": "299adcf686c2a337b97c3f90e8af0b328fe514d1986dfb1a803d1a2a5c4d3acf",
+      "jar_sha256": "b1f20b0d4e9214b0da1433e4293f0bf2ae9e5b24e6b940ea3c88ab535def6564",
+      "source_count": 70,
+      "scala_tool_count": 3,
+      "runtime_jar_count": 245,
+      "deployment_eligible": false,
+      "native_output_count": 93,
+      "sample_value_row_count": 8,
+      "sample_weight_row_count": 8,
+      "elapsed_seconds": 0.637,
+      "science_cell_checks": 744,
+      "independent_weight_cell_checks": 744,
+      "comparison_policy": {
+        "basic_double_and_casts": "bit-exact, including16777219.25 wide_add_right; a Float32-narrowed result is an explicit failing control",
+        "double_libm": "at most4 ULP; exact zero/tiny controls",
+        "float32_special_callbacks": "only named existing Float32 functions use3e-5 relative/3e-6 absolute, calibrated separately"
+      },
+      "finite_result_bit_controls": [
+        "finite1.25",
+        "negative_zero",
+        "positive_zero",
+        "smallest_positive_subnormal",
+        "smallest_negative_subnormal"
+      ],
+      "nonfinite_result_controls": [
+        "NaN",
+        "positive_Infinity",
+        "negative_Infinity"
+      ],
+      "source_infinity_with_zero_mask_rejected": [
+        true,
+        true
+      ],
+      "execution_scope": "Actual local GeoTrellis Float64/Float32 tile kernels, mask apply/result_value/validity/update, and existing Image.sample kernel. The Scala probe is compiled in a temporary directory; no SparkContext, engine service, VM, container, private data, or Google request is used.",
+      "atan2_signed_zero_native_control": {
+        "input_dtype": "Float32",
+        "x_bits": [
+          "bf800000",
+          "bf800000"
+        ],
+        "y_bits": [
+          "80000000",
+          "00000000"
+        ],
+        "output_bits": [
+          "c0490fdb",
+          "40490fdb"
+        ],
+        "meaning": "Actual existing kernel outputs negative/positive Float32 pi; no JAR rebuild"
+      }
+    },
+    "physical_csv_readback": {
+      "official_python_getInfo_calls": 2,
+      "scientific_value_rows": 8,
+      "mask_weight_rows": 8,
+      "sampled_columns_each": 7,
+      "native_rows_used": true,
+      "path": [
+        "local evaluate dispatch",
+        "verified native sampled rows",
+        "assemble_sample_features",
+        "SampledFeatureTable.write_assets",
+        "physical CSV headers/files",
+        "worker.finish",
+        "dispatch(result)",
+        "official SDK getInfo readback"
+      ],
+      "scope": "Trusted synthetic orchestration using real native rows, not full batch-engine execution"
+    },
+    "independent_review": {
+      "model": "gpt-6.1-sol",
+      "sdk_appearances": 240,
+      "exact_unique_payloads": 232,
+      "exact_unique_compile_inputs": 232,
+      "deduplication_rule": "Canonical sorted-key exact JSON, with metadata/options/variants included for compile-input identities; this is not semantic equivalence deduplication.",
+      "accepted_appearances": 179,
+      "explicitly_rejected_appearances": 61,
+      "original_broad_positive_expectations_still_open": 22,
+      "open_original_cases": [
+        "main/binary_masked_pair_add_getter",
+        "main/binary_masked_pair_subtract_getter",
+        "main/binary_masked_pair_multiply_getter",
+        "main/binary_masked_pair_divide_getter",
+        "main/binary_masked_pair_pow_getter",
+        "main/binary_masked_pair_mod_getter",
+        "main/binary_masked_pair_eq_getter",
+        "main/binary_masked_pair_neq_getter",
+        "main/binary_masked_pair_gt_getter",
+        "main/binary_masked_pair_gte_getter",
+        "main/binary_masked_pair_lt_getter",
+        "main/binary_masked_pair_lte_getter",
+        "main/binary_masked_pair_And_getter",
+        "main/binary_masked_pair_Or_getter",
+        "main/binary_masked_pair_min_getter",
+        "main/binary_masked_pair_max_getter",
+        "main/default_sample_expression",
+        "main/expression_bands_getter",
+        "main/expression_vars_getter",
+        "main/expression_boolean_getter",
+        "main/pixel_math_atan2",
+        "scalar_empty_receiver/shared_depth_40_10"
+      ],
+      "original_wires_and_expectations_preserved": true,
+      "resource_controls_passed": 42,
+      "independent_graph_vector_cases": 56,
+      "independent_graph_value_cells": 448,
+      "adversarial_vectors_passed": 6,
+      "source_stable": true,
+      "offline_attempts": 0,
+      "remaining_unexpected_within_declared_slice": 0,
+      "scope": "Scoped correctness/resource/ownership review, not full repository security audit. The22 unsupported broad positive cases remain open; rejected cases and repeated inputs are not compatibility coverage. Numerical graph interpretation is separate from the actual native workflow.",
+      "signed_zero_extra_cases": 10,
+      "signed_zero_accepted_cases": 6,
+      "original_double_atan2_guards_rejected": 4,
+      "old_ceil_value_policy_changes_preserved": [
+        "zero_sign/ceil_negative_fraction_float_plain",
+        "zero_sign/ceil_negative_fraction_float_weighted"
+      ],
+      "signed_zero_policy_note": "The original fixture retains its measured pre-fix Python +0 expectation for ceil(-.2). Two accepted cases now intentionally differ from that old policy and match the separately frozen independent NumPy/existing native -0 rule. Floor/ceil(-0) weighted regressions recover the original plain-path -0. The4 explicit Double atan2 guards remain rejected."
+    },
+    "superseded_frozen_local_pytest": {
+      "summary": "6379 passed, 27 skipped, 53 warnings in 65.07s (0:01:05)",
+      "seconds_wall": 65.71,
+      "source_files": 32,
+      "source_stable": true
+    }
+  },
+  "failures_preserved": [
+    "Shared subtree revisit could hide a longest scalar path before folding: original official payloads with actual depths109/106 were accepted. The full planner now rejects them at depth96; the original within-limit case remains accepted.",
+    "Source-free rounded Double operands at +/-(2^52+1) were each changed by1 before emitting subtract wire constants. Both original payloads now preserve the exact operand; boundary/tie/signed-zero tests also cover both common folders.",
+    "New weighted scalar folding lost negative zero after floor/ceil, unlike the accepted plain path: emitted atan2 y changed from-0 to+0 and actual native x=-1 output changes from negative to positive Float32 pi. Original SDK payloads now retain-0 in both paths. Separately, the pre-existing Python ceil(-.2)=+0 policy is intentionally aligned to NumPy/existing native-0; both old policy expectations remain recorded, not rewritten.",
+    "Compound source-free constant math initially reached a typed raster compiler that required a raster operand; complete finite scalar folding now retains cast stages and Double promotion.",
+    "Old scalar-arithmetic-negative and cast-IR-shape assertions failed after intentional support expansion; actual same-source raster negatives remain and new positive matrices cover the newly supported behavior.",
+    "The initial broad value comparator could accept Float32 narrowing of16777219.25. Final tests select precision by output operation/dtype and reject that narrowed counterexample.",
+    "A full-package baseline overlay relocated S2 resources and caused a harness-only resource failure; baseline comparison now overlays only changed modules. Original default sample wires were not replaced.",
+    "One forged internal Boolean-carrier rejection expectation was not justified; its original failure remains, and the final check enforces actual Double truth precision instead.",
+    "Empty ee.Image receiver failures remain open, including the original shallow shared-expression positive. Separately frozen constant(0)-receiver controls isolate the depth defect without rewriting those originals."
+  ],
+  "limits_and_unverified": [
+    "No automatic Google compute/auth/quota calls. Remote comparison is discussed only for exceptionally complex behavior not reliably resolved by documentation and independent local references.",
+    "Unary/finite-unmasked-scalar fractional-weight propagation is an explicitly labeled local inference. Official docs establish shared valid support but do not specify a general fractional magnitude combination for two independent raster masks; no min/product rule or Google equivalence is claimed.",
+    "Two-raster fractional math, ND/multiband expression, empty ee.Image() receiver, where/unmask/integer casts, spherical partial-pixel clip, weighted reductions, alpha display and raster weight export remain open.",
+    "Source-free compound constants must stay finite under the existing bounded scalar contract. This does not introduce global constant grids, arbitrary dynamic scalar expressions or source borrowing from masks.",
+    "No full Spark batch, service/browser/isolated script, private real-data or deployment acceptance. Sampling null/default/schema/seed policies remain unchanged and are not Google RNG parity.",
+    "Current70-source audit JAR is non-deployable and not installed. Its245 runtime hashes match the explicit audit classpath, but public provenance remains39 matches/7 mismatches/199 unlisted. This is not a vulnerability finding or clean-security claim.",
+    "Existing three strict S2 binary64 incidence/roundtrip differences and other full geometry/projection/default gaps remain unresolved.",
+    "Portable CI skips only the absent ignored audit artifact; malformed present manifests, directories or broken symlinks fail closed. A CI skip is not native acceptance.",
+    "No dependency/lock/user-data/environment or runtime-service changes. Full production and compatibility goals remain active."
+  ],
+  "primary_sources": [
+    "https://developers.google.com/earth-engine/guides/image_math",
+    "https://developers.google.com/earth-engine/guides/reducers_weighting",
+    "https://developers.google.com/earth-engine/apidocs/ee-image-updatemask",
+    "https://developers.google.com/earth-engine/apidocs/ee-image-expression",
+    "https://developers.google.com/earth-engine/apidocs/ee-image-normalizeddifference",
+    "https://github.com/google/earthengine-api/blob/e189e4b89e785019ea5642ea8e80cb644749cd4a/python/ee/image.py"
+  ],
+  "audit_receipts": {
+    "source_freeze_sha256": "ea40271f0b3d12fd804d1719da62f68304fdc645dbc465b4ef6257734a581f4f",
+    "full_regression_sha256": "fa6718d4ef82e078645efb6d0beac392361ba3ae94ea25ed57a118b987d0f9f3",
+    "independent_review_sha256": "0e24314e93c483414901b03a8a019a75dfb7c6ca76034b534d7124ecb22fcc4d",
+    "native_summary_sha256": "dbbcf2cdf0b1d059b31a661ac38174ed4ba7e6b9ead8882752269aa8c237260d",
+    "original_payload_hashes": {
+      "original-payloads.json": "ccfe63b89f257c091b9fa40d2e6b278c9b1ab5c1f675b30ce98ec7cf2ff2ce11",
+      "original-numeric-payloads.json": "826cc6631a316486885abb78166f6632303c6e411abf24c69fda85ec42baa482",
+      "original-addendum-payloads.json": "7b8940fff751f289a9bfde208cd0b17f4c4e39b68674700897a076e1eb47a6b1",
+      "original-scalar-fold-payloads.json": "d86fce02acb0fb3f3caa7dc98011e179a743925bf683ab84d3dda65d5f3a7e6a",
+      "original-scalar-fold-depth-payloads.json": "39b0179eae6f2c0837a5fd69a7f4c0672ee4896ab56f149c2e3d2f698db34530",
+      "original-round-constant-payloads.json": "c9f8d0c500ffc093f467f50028d3843bde5626fe4167610e219011501d3443a6",
+      "original-zero-sign-payloads.json": "7136018b6c126b91df9c0d308caa77279ac4888323b2998430bee2bc7e6db6d7"
+    },
+    "independent_review_final_addendum_sha256": "b79fc8469c0669bea67c75751df21cc63c8acb23735310996025e4a8c79761d4"
+  },
+  "publication_policy": "Exact frozen commit must pass python/frontend on its owned validation branch before a normal fast-forward to protected main; no PR, bypass or protection change.",
+  "frozen_tested_source_sha256": {
+    "engine/ee_mask_weights_numeric.scala": "7a94172cb2e3cb7132071e7f7fbdc70274658fef2baf335503633b237f405e90",
+    "engine/ee_mask_weights_spec.scala": "701bbade8f2ed32f628cb670e15b30a4cb733641063383886a9e5c585d38bd50",
+    "examples/70_GEE_python_masked_math.py": "1dd4aecd6d5d8d03e799e10e814aa5c91fa4be7d16e01294be96511a0dbd4322",
+    "examples/javascript/24_带权影像运算.js": "3d2291f8bc358783d4a253af35c786f83cb058e8d2e56163dec67738513eadb4",
+    "gee/compat/earthengine/capabilities.py": "5488948fef9de7b56a4d3a72c138175b29d1a9486aaea8926ca6953262066d68",
+    "gee/compat/earthengine/constant_bands.py": "f0bfe1cfb65d2b727f7a589ed37e2cfc1803cfa22083b95d3e0188d0fa4a9328",
+    "gee/compat/earthengine/image_mask_math.py": "24dd40257bd5fbc5a0a71e3a347cc77bdfd2cc313e3d180550c267aa76ae6d0a",
+    "gee/compat/earthengine/image_mask_weights.py": "34296805e519bcb8c5e1e8dc20cc4390072e9fe64d2f42a1cdf7208a0b739cb0",
+    "gee/compat/earthengine/image_ops.py": "a6d724427163c7710568ceda5865078c8389c1a8bba9da508022eed657aed2d3",
+    "gee/compat/earthengine/image_pixel_math.py": "4408911bd030d07d71699af2c63f929d5e4158953cebdb0fc05df1845da4e2ab",
+    "gee/compat/earthengine/ir.py": "9c69d7a5a46cd104dd3ffdaf26b6e62ce5c7a6c440e7927b21cfa71554f16299",
+    "gee/compat/earthengine/mask_weights_graph.py": "ef13fa015668ce094d2279c996a789a0cc5f5705b69cc37179cac7dc374bebd5",
+    "gee/compat/earthengine/pixel_graph.py": "4bb25d18b55a965ce20654986f74fe523747a887337e156743c1f9644212f31b",
+    "gee/compat/earthengine/sampled_training.py": "b0ca5a1ae628444a899974e25445e2d7b38ea47f25db4a8165b0179cf9b604d4",
+    "gee/ee_expression.py": "0a59098f4c0a11f4b3cd027eb6feb3cdd6a5fb1b2fdbf03bc5306516ea94764d",
+    "gee/float64_values_contract.py": "5f78bdb218beb24bc140868660da5d3018f47fb5312b0543d29396ef69448a42",
+    "gee/mask_weights_spec.py": "c37f82a1e6381e073976253943d96a2130b078fc6a94c6e869a2f018d2c83ec4",
+    "scripts/ee_audit_native_manifest.py": "b2a310ee06f1a43451e5dbd6788403053c39ee8751b91d6543910428085b6027",
+    "scripts/probe_mask_math_native.py": "5c27661c78156573f7f19e7940441da460c726bdde10b18805fa1f0eee8caa76",
+    "scripts/probe_weighted_sampling_native.py": "e8bcacebfadd8505a3bb7408feb3485b233b2bf6ed33681689911258fb45e1c9",
+    "tests/ee_mask_math_reference.py": "0e1e4e56e5b5f49b577dbef64953abc58ee8a0488c3acba132cb19ebafa7ee70",
+    "tests/ee_weighted_sampling_native.py": "ab22e8f5d1f47a3d6c59d06c8923d15f2419aa822015e6c52906effaad6c6f43",
+    "tests/fixtures/ee-mask-math-kernel-probe.scala": "5db54bec36c32a13dc8b7a8cf1860348d93434a24025a63121325fcc36e098c8",
+    "tests/fixtures/ee-mask-math-wave66-v1.json": "ea5d86d6b8167a9399ae69dc646c6e1dda0c32825d90150d42bc415d4698145c",
+    "tests/test_ee_mask_cast_consumers.py": "8870af3567606d85d7c04d9d887c32c6bf67d2e057727f98aa402dfa70528aae",
+    "tests/test_ee_mask_math_compiler.py": "a150b7f6c8daee59d21cf1e1f66ce9d1fe772d52712e42b283f78cb4de93336e",
+    "tests/test_ee_mask_math_workflow.py": "5b209a488044382f5437739264cf0306adbdbe16ccc2a818ce6ecf2680d203c1",
+    "tests/test_ee_mask_result_validity.py": "a5856bfe467d314a58e80c6213fa8689f813ad147c7cd07bf57d8385c70cd9c8",
+    "tests/test_ee_mask_weights_native_sources.py": "8d5f6a1de27eaeb95c3361bbfb9f7c73d67712ac75e844c6af4bc3efdafa31cd",
+    "tests/test_ee_mask_weights_spec.py": "013272211560a3911800ab8261890dd6b0bd40bf4dc1a7f2fed0504328f30a38",
+    "tests/test_ee_sample_mask_projection.py": "8bc65bf1bf9000c598e86e4c7bd8130cb378f50ed23c91fa8d57eb25c27a4a30",
+    "tests/test_ee_weighted_sampling_workflow.py": "b2447fbfb007666a5ce8f5c1f65c0f49b34cb371ce8ad7fe76af5d650b564c33",
+    "web/src/docs/typed-raster-docs.ts": "56c73bb1208e299dae4f220e14f5f4034141a4d9d9998987fdec81c787b1a8f2"
+  }
+}

@@ -1,7 +1,8 @@
 """Compile shared pixel IR into bounded native cube and callback processes."""
 import math
 
-from gee.float64_values_contract import FLOAT64_ARITIES
+from gee.float64_values_contract import FLOAT64_ARITIES, _round as round_scalar
+from gee.float64_values_contract import _ceil as ceil_scalar, _floor as floor_scalar
 from gee.integer_values_contract import BOOLEAN_OPERATIONS
 
 from .ir import Pixel, UnsupportedEEError, fail
@@ -36,7 +37,8 @@ class PixelCompiler:
         # than silently narrowing an explicitly requested Float64 raster.
         key = id(p)
         if key not in self.double_precision:
-            if p.op == "integer_values": result = not p.boolean
+            if p.op in {"mask_guard", "mask_result_value"}: result = self.has_double_precision(p.args[0])
+            elif p.op == "integer_values": result = not p.boolean
             elif p.op == "where": result = any(self.has_double_precision(value) for value in p.args[1:])
             elif p.boolean and p.op in BOOLEAN_OPERATIONS: result = False
             elif p.op in {"classify", "trained_classify", "smile_rf_classify", "fast_distance"}: result = False
@@ -179,12 +181,10 @@ class PixelCompiler:
             self._double_structural_depth = depth
 
     def _expression(self, p):
-        if p.op == "with_mask":
-            fail("Fractional image masks require a mask-aware consumer; use mask() to read fractional weights. Weighted value arithmetic, statistics, visualization and export are not implemented")
-        if p.op in {"mask_validity", "mask_update", "mask_apply"}:
-            from .mask_weights_graph import compile_mask_projection
+        if p.op in {"with_mask", "mask_guard", "mask_validity", "mask_update", "mask_apply", "mask_result_value"}:
+            from .mask_weights_graph import compile_mask_pixel
 
-            return compile_mask_projection(self, p)
+            return compile_mask_pixel(self, p)
         if p.op == "unmix_component":
             from .unmix_graph import compile_unmix_component
 
@@ -335,8 +335,8 @@ class PixelCompiler:
                      "is_nodata": lambda: values[0] is None or not math.isfinite(values[0]),
                      "min2": lambda: min(values), "max2": lambda: max(values), "mod": lambda: math.fmod(*values),
                      "sqrt": lambda: math.sqrt(values[0]), "log": lambda: math.log(values[0]), "log10": lambda: math.log10(values[0]),
-                     "exp": lambda: math.exp(values[0]), "round": lambda: math.floor(values[0]+.5),
-                     "floor": lambda: math.floor(values[0]), "ceil": lambda: math.ceil(values[0]),
+                     "exp": lambda: math.exp(values[0]), "round": lambda: round_scalar(values[0]),
+                     "floor": lambda: floor_scalar(values[0]), "ceil": lambda: ceil_scalar(values[0]),
                      "sin": lambda: math.sin(values[0]), "cos": lambda: math.cos(values[0]), "tan": lambda: math.tan(values[0])}
             if p.op == "divide" and values[1] == 0: return 0, None, True
             if p.op not in funcs: fail("Unsupported unbound constant image expression")

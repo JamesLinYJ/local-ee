@@ -241,11 +241,14 @@ def pairs(a: Any, b: Any):
     return a, b, [(name, pixel, other) for (name, pixel), (_, other) in zip(a.bands, b.bands)]
 
 
-def binary(a: Any, b: Any, op: str) -> Image:
+def binary(a: Any, b: Any, op: str, translator=None) -> Image:
     a, b, matched = pairs(a, b)
     boolean = op in {"eq", "neq", "gt", "gte", "lt", "lte", "and", "or"}
+    from .image_mask_math import binary_pixel
+
     return Image(
-        [(name, Pixel(op, (left, right), boolean)) for name, left, right in matched],
+        [(name, binary_pixel(translator, op, left, right, boolean=boolean))
+         for name, left, right in matched],
         dict(a.props),
         a.source or b.source,
         a.mapped or b.mapped,
@@ -256,19 +259,12 @@ def binary(a: Any, b: Any, op: str) -> Image:
     )
 
 
-def unary(image: Any, op: str) -> Image:
+def unary(image: Any, op: str, translator=None) -> Image:
     image = as_image(image)
-    def transform(pixel):
-        if op in {"to_float", "to_double"} and pixel.op == "with_mask":
-            from .image_mask_weights import _parts
-
-            value, weight = _parts(pixel)
-            # Changing the science dtype does not round the independent mask.
-            # Leave every earlier cast stage inside the value expression.
-            return Pixel("with_mask", (Pixel(op, (value,)), weight))
-        return Pixel(op, (pixel,), op in {"not", "is_nodata"})
+    from .image_mask_math import unary_pixel
 
     return replace(
         image,
-        bands=[(name, transform(pixel)) for name, pixel in image.bands],
+        bands=[(name, unary_pixel(translator, op, pixel, boolean=op in {"not", "is_nodata"}))
+               for name, pixel in image.bands],
     )

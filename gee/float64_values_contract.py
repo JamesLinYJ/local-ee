@@ -39,6 +39,15 @@ def _round(value):
     return float(lower + (1 if value - lower >= 0.5 else 0))
 
 
+def _floor(value):
+    return value if value == 0.0 else float(math.floor(value))
+
+
+def _ceil(value):
+    # Native IEEE ceil retains negative zero for every negative value in(-1,0].
+    return math.copysign(0.0, value) if -1.0 < value <= 0.0 else float(math.ceil(value))
+
+
 def evaluate_float64_values(operation, values):
     """Fold fixed scalar inputs; None is a masked result, never a wire constant."""
     if type(operation) is not str or operation not in FLOAT64_ARITIES:
@@ -84,9 +93,9 @@ def evaluate_float64_values(operation, values):
         elif operation == "round":
             result = _round(left)
         elif operation == "floor":
-            result = left if left == 0.0 else float(math.floor(left))
+            result = _floor(left)
         elif operation == "ceil":
-            result = left if left == 0.0 else float(math.ceil(left))
+            result = _ceil(left)
         else:
             function = {"sqrt": math.sqrt, "log": math.log, "log10": math.log10,
                         "exp": math.exp, "sin": math.sin, "cos": math.cos, "tan": math.tan}[operation]

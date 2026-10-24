@@ -64,21 +64,25 @@ def _charge(translator, work, name):
     translator.steps += work
 
 
-def _unary(operation, value):
+def _unary(translator, operation, value):
     image = as_image(value)
+    from .image_mask_math import unary_pixel
+
     return replace(
         image,
-        bands=[(name, Pixel("math_" + operation, (pixel,)))
+        bands=[(name, unary_pixel(translator, "math_" + operation, pixel))
                for name, pixel in image.bands],
     )
 
 
-def _binary(operation, image1, image2):
+def _binary(translator, operation, image1, image2):
+    from .image_mask_math import binary_pixel
+
     left = as_image(image1)
     right = as_image(image2)
     left, right, matched = pairs(left, right)
     return Image(
-        [(name, Pixel("math_" + operation, (x, y)))
+        [(name, binary_pixel(translator, "math_" + operation, x, y))
          for name, x, y in matched],
         dict(left.props),
         left.source or right.source,
@@ -117,9 +121,9 @@ def invoke_image_pixel_math(translator, name, arguments):
 
     try:
         if arity == 1:
-            return _unary(operation, arguments["value"])
+            return _unary(translator, operation, arguments["value"])
         return _binary(
-            operation, arguments["image1"], arguments["image2"],
+            translator, operation, arguments["image1"], arguments["image2"],
         )
     except OverflowError:
         raise UnsupportedEEError(f"{name} operands must be finite numeric values") from None

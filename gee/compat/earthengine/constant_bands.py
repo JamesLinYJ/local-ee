@@ -6,6 +6,7 @@ import struct
 from dataclasses import replace
 
 from gee.pixel_math_contract import PIXEL_MATH_ARITIES
+from gee.float64_values_contract import _ceil as ceil_scalar, _floor as floor_scalar, _round as round_scalar
 
 from .ir import Image, Pixel, Source, UnsupportedEEError, fail
 from .static_values import scalar_power
@@ -37,9 +38,9 @@ _UNARY = {
     "log": math.log,
     "log10": math.log10,
     "exp": math.exp,
-    "round": lambda x: math.floor(x + 0.5),
-    "floor": math.floor,
-    "ceil": math.ceil,
+    "round": round_scalar,
+    "floor": floor_scalar,
+    "ceil": ceil_scalar,
     "sin": math.sin,
     "cos": math.cos,
     "tan": math.tan,

@@ -93,8 +93,9 @@ def invoke_mask_weights(translator, name, arguments):
         ])
     translator.warn(
         "Fractional updateMask weights are retained independently. Their numeric mask() "
-        "view is supported; weighted value arithmetic, statistics, visualization and "
-        "export require separate consumers. Composition follows the documented "
+        "view and sampling are supported, including audited unary/image-scalar math. "
+        "Independent raster-mask combinations, statistics, visualization and export "
+        "require separate consumers. Composition follows the documented "
         "replacement at nonzero old masks; Google numerical equivalence is unverified."
     )
     return replace(image, bands=[

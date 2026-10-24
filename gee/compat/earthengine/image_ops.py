@@ -125,10 +125,10 @@ def invoke_image(translator, name, arguments):
         return [band for band, _ in a["image"].bands]
     if name == "Image.toFloat":
         translator.allowed(a, {"value"})
-        return unary(a["value"], "to_float")
+        return unary(a["value"], "to_float", translator)
     if name == "Image.toDouble":
         translator.allowed(a, {"value"})
-        return unary(a["value"], "to_double")
+        return unary(a["value"], "to_double", translator)
     if name == "Image.normalizedDifference":
         translator.allowed(a, {"input", "bandNames"})
         image = as_image(a["input"])
@@ -176,8 +176,8 @@ def invoke_image(translator, name, arguments):
             fail("clamp/unitScale requires finite low < high")
         image = as_image(a["input"])
         if name.endswith("unitScale"):
-            return binary(binary(image, low, "subtract"), high - low, "divide")
-        return binary(binary(image, low, "max2"), high, "min2")
+            return binary(binary(image, low, "subtract", translator), high - low, "divide", translator)
+        return binary(binary(image, low, "max2", translator), high, "min2", translator)
     if name == "Image.reduce":
         translator.allowed(a, {"image", "reducer"})
         image, reducer = as_image(a["image"]), a["reducer"]
@@ -276,8 +276,8 @@ def invoke_image(translator, name, arguments):
         return Reducer("sd" if operation == "sampleStdDev" else operation)
     if name.startswith("Image.") and name[6:] in _IMAGE_BINARY:
         translator.allowed(a, {"image1", "image2"})
-        return binary(a["image1"], a["image2"], _IMAGE_BINARY[name[6:]])
+        return binary(a["image1"], a["image2"], _IMAGE_BINARY[name[6:]], translator)
     if name.startswith("Image.") and name[6:] in _IMAGE_UNARY:
         translator.allowed(a, {"value", "image"})
-        return unary(a.get("value", a.get("image")), _IMAGE_UNARY[name[6:]])
+        return unary(a.get("value", a.get("image")), _IMAGE_UNARY[name[6:]], translator)
     fail(f"Unsupported Earth Engine algorithm: {name}")

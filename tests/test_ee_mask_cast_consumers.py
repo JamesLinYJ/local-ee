@@ -47,9 +47,16 @@ def test_cast_changes_only_the_science_branch_and_keeps_prior_stages(op):
     assert original.bands[0][1] is carrier
     result = cast.bands[0][1]
     assert result.op == "with_mask"
-    assert result.args[0].op == op
-    assert result.args[0].args == (raw,)
-    assert result.args[1] is weight
+    clean, result_weight = result.args
+    assert clean.op == "mask_result_value"
+    converted = clean.args[0]
+    assert converted.op == op
+    assert converted.args[0].op == "mask_guard"
+    assert converted.args[0].args == (raw,)
+    assert result_weight.op == "mask_update"
+    assert result_weight.args[0].op == "mask_validity"
+    assert result_weight.args[0].args == (clean,)
+    assert result_weight.args[1] is weight
 
 
 @pytest.mark.parametrize("method", ["toFloat", "toDouble", "float", "double"])
@@ -88,7 +95,9 @@ def test_grid_template_does_not_strip_masks_under_unsupported_wrappers(context, 
     ee, _, _ = context
     weighted = scene(ee).updateMask(0.25)
     if wrapper == "arithmetic":
-        wrapped = weighted.add(1)
+        # Scalar math is now audited; an independent raster operand still
+        # cannot authorize an unimplemented fractional-mask combination.
+        wrapped = weighted.add(scene(ee))
     elif wrapper == "clip":
         wrapped = weighted.clip(ee.Geometry.Rectangle([0, 0, 1, 1], None, False))
     elif wrapper == "unmask":

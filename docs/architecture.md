@@ -67,7 +67,14 @@ select、rename、addBands 可传递权重，其他带权科学值消费者须�
 取样缺测；表格不携带或重新解释影像权重，也不按权重大小调整随机概率。
 原始取样IR、实际网格、表格身份、字段和随机算法保持不变。Float／Double转换只作用
 于科学值；新增常量波段可从直接carrier读取有限网格模板，但独立保持自己的有效性。
-任意算术／clip／unmask包装内的carrier仍明确拒绝，见[带掩膜取样](gee-python/masked-sampling.md)。
+未审查的双栅格运算／clip／unmask包装内的carrier仍明确拒绝，见[带掩膜取样](gee-python/masked-sampling.md)。
+
+`image_mask_math` 将直接carrier的一元／未掩膜常量运算拆为源值校验、原精度数学、
+结果非有限清理与权重更新。源Infinity仍在计算前拒绝；数学溢出变为逐像元NoData，
+原权重只在结果有效时保留。Float32和Double声明不会因中间物理Double投影改变。
+无栅格来源的常量表达式在完整扫描与求值前预充工作预算；两个独立栅格的权重合成未凭有效区交集推断幅值。
+输出可进入权重getter与既有取样表消费者，其他带权栅格消费者继续逐项接通，见
+[带掩膜运算](gee-python/masked-math.md)。
 
 `Feature.geometry` 按官方缺省参数提取独立且重新验证的几何；无投影时忽略有效 `geodesics`，实际变换仍拒绝。`geometry_public` 统一 SDK 合法的边／内部标志输出。只有表格导出编译明确启用模型物化：在共享编译预算预充后，将类型化几何的有效标志写入 JSON 任务图，防止 sidecar 丢失后误走平面 CSV 校验。普通 getInfo 保持原公开省略，非类型化原始 GeoJSON 保留既有解释；持久任务仍是封闭的字面表格输入和 CSV sink。
 

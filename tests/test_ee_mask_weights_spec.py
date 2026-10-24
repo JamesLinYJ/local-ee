@@ -27,8 +27,10 @@ FIXTURE = ROOT / "tests/fixtures/ee-mask-weights-wave64-v1.json"
 
 
 def test_v1_wire_is_exact_canonical_json_and_closed():
-    assert MASK_WEIGHT_ARITIES == {"validity": 1, "update": 2, "apply": 2}
-    for operation in ("validity", "update", "apply"):
+    assert MASK_WEIGHT_ARITIES == {
+        "validity": 1, "result_value": 1, "update": 2, "apply": 2,
+    }
+    for operation in ("validity", "result_value", "update", "apply"):
         wire = mask_weights_spec(operation)
         assert wire == f'{{"op":"{operation}","v":1}}'
         assert decode_mask_weights_spec(wire) == {"op": operation, "v": 1}
@@ -97,6 +99,7 @@ def test_wave64_fixture_declares_valid_cases_and_invalid_wire_controls():
     fixture = json.loads(FIXTURE.read_text(encoding="utf-8"))
     assert fixture["schema"] == "local-ee-mask-weights-wave64/v1"
     assert fixture["sdk"] == "1.7.49"
+    # Wave64 is retained as historical evidence; Wave66 adds a separate result projection.
     assert fixture["operations"] == ["validity", "update", "apply"]
     assert fixture["case_count"] == len(fixture["cases"]) + 1
     for row in fixture["cases"]:

@@ -235,7 +235,7 @@ def test_sampled_error_matrix_lowering_projects_the_same_direct_carrier(ee, loca
 def test_nested_weighted_carriers_remain_rejected(ee, local, consumer):
     weighted = ee.Image("training-scene").select("red").updateMask(0.5)
     if consumer == "arithmetic":
-        image = weighted.multiply(2)
+        image = weighted.multiply(ee.Image("training-scene").select("nir"))
     elif consumer == "clip":
         image = weighted.clip(ee.Geometry(EXTENT))
     else:

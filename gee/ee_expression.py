@@ -64,7 +64,8 @@ class Parser:
         token = self.take()
         if token[1] in {"-", "+", "!"} and token[0] == "symbol":
             operand = self.expression(7)
-            left = binary(0, operand, "subtract") if token[1] == "-" else unary(operand, "not") if token[1] == "!" else operand
+            left = (binary(0, operand, "subtract", self.t) if token[1] == "-"
+                    else unary(operand, "not", self.t) if token[1] == "!" else operand)
         elif token[1] == "(":
             left = self.expression(); self.take(")")
         elif token[0] == "number": left = token[1]
@@ -109,7 +110,7 @@ class Parser:
             if prec < minimum: break
             self.take()
             right = self.expression(prec if symbol == "**" else prec+1)
-            left = binary(left, right, OPS[symbol])
+            left = binary(left, right, OPS[symbol], self.t)
         if minimum == 0 and self.peek() == "?":
             self.take("?"); yes = self.expression(); self.take(":"); no = self.expression()
             yes, no, matched = pairs(yes, no)
@@ -134,9 +135,9 @@ class Parser:
                 selectors.append(value)
             return self.t.select(image, selectors)
         unary_functions = {"abs": "absolute", "sqrt": "sqrt", "log": "log", "log10": "log10", "exp": "exp", "round": "round", "floor": "floor", "ceil": "ceil", "sin": "sin", "cos": "cos", "tan": "tan"}
-        if name in unary_functions and len(args) == 1: return unary(args[0], unary_functions[name])
+        if name in unary_functions and len(args) == 1: return unary(args[0], unary_functions[name], self.t)
         if name in {"pow", "min", "max"} and len(args) == 2:
-            return binary(args[0], args[1], {"pow": "power", "min": "min2", "max": "max2"}[name])
+            return binary(args[0], args[1], {"pow": "power", "min": "min2", "max": "max2"}[name], self.t)
         fail(f"Unsupported Image.expression function or arity: {name}")
 
 

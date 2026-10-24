@@ -420,8 +420,11 @@ def get_capabilities():
              "positive weights preserve raw values, zero weights become NoData under existing null rules, "
              "and mask magnitudes never reweight sampling probability. Only a direct carrier may be projected; "
              "the documented replacement-at-nonzero-old-mask composition is a local interpretation without "
-             "Google numerical comparison. Weighted scientific value arithmetic, statistics, visualization "
-             "and export remain unsupported consumers and reject; numeric mask() views use ordinary raster "
+             "Google numerical comparison. Audited unary/image-scalar math preserves the original fractional "
+             "weight, validates science before calculation and cleans nonfinite results to NoData. "
+             "Finite compound constants retain prior casts and type promotion. These math results enter "
+             "mask getters or sampling consumers; independent raster-mask combinations, statistics, visualization "
+             "and raster export remain unsupported consumers and reject; numeric mask() views use ordinary raster "
              "paths. No spherical fractional clip rasterizer is implemented; legacy planar center-based "
              "raster clipping is not GEE fractional-mask compatibility."),
             "Geometry/Feature binary defaults use pinned local S2 for geodesic EPSG:4326; planar edges with explicit EPSG:4326 use GEOS. Non-4326 CRS, binary reprojection/maxError and full-sphere public encoding remain gaps. Filter.intersects and inline Collection.geometry preserve homogeneous actual edge models and consume static ErrorMargin only without transformation. Raw STAC catalog footprints retain planar edges; curved polygon ROI requires unsupported reprojection. S2 binary64 boundary/roundtrip differences are measured; explicit spherical results reject at legacy planar raster/join consumers. Unflagged raster inputs retain their earlier planar path without a GEE geodesic parity claim",

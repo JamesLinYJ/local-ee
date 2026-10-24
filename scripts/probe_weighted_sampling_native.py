@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the fractional-mask-to-sampling tile probe from a verified Wave64 audit JAR."""
+"""Run the fractional-mask-to-sampling tile probe from a verified current audit JAR."""
 from __future__ import annotations
 
 import argparse
@@ -17,27 +17,17 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tests"))
 
-from scripts.build_integer_adapter import SOURCES as ADAPTER_SOURCES
+from scripts.ee_audit_native_manifest import validate_native_manifest
 from ee_kernel_subprocess import run_bounded
 
 
 PROBE_SOURCE = ROOT / "tests/fixtures/ee-weighted-sampling-kernel-probe.scala"
 DEFAULT_FIXTURE = ROOT / "tests/fixtures/ee-weighted-sampling-wave65-v1.json"
 EXPECTED_MANIFEST = ROOT / (
-    "audit/gee-python-wave64/native/final-2-20261024/"
-    "local-ee-mask-weights-adapter.jar.manifest.json"
+    "audit/gee-python-wave66/native/final-1-20261024/"
+    "local-ee-mask-math-adapter.jar.manifest.json"
 )
 SERVICE_NAME = "org.openeo.geotrelliscommon.CubeProcessProvider"
-REQUIRED_SOURCES = {
-    "engine/ee_mask_weights_spec.scala",
-    "engine/ee_mask_weights_numeric.scala",
-    "engine/ee_mask_weights_adapter.scala",
-    "engine/ee_sample_kernel.scala",
-    "engine/ee_sample_adapter.scala",
-    "engine/ee_image_sample_options.scala",
-    "engine/ee_image_sample_kernel.scala",
-    "engine/ee_image_sample_adapter.scala",
-}
 MAX_FIXTURE_BYTES = 1_000_000
 
 
@@ -49,89 +39,20 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _is_child(path: Path, directory: Path) -> bool:
-    try:
-        path.relative_to(directory)
-        return True
-    except ValueError:
-        return False
-
-
 def _manifest_paths(manifest_path: Path) -> tuple[dict, Path, list[Path], list[Path], Path, Path]:
-    manifest_path = manifest_path.expanduser().resolve(strict=True)
-    if manifest_path != EXPECTED_MANIFEST.resolve(strict=True):
-        raise ValueError("Wave65 sampling must use the designated read-only Wave64 audit manifest")
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    if (manifest.get("format") != "local-ee-standalone-audit-v1"
-            or manifest.get("adapter") != "local-ee-mask-weights-audit-adapter"
-            or manifest.get("deployment_eligible") is not False):
-        raise ValueError("manifest is not the non-deployment Wave64 mask-weight audit artifact")
-
-    source_hashes = manifest.get("sources")
-    expected_sources = {str(source.relative_to(ROOT)): source for source in ADAPTER_SOURCES}
-    if (type(source_hashes) is not dict or set(source_hashes) != set(expected_sources)
-            or not REQUIRED_SOURCES.issubset(source_hashes)):
-        raise ValueError("audit manifest source set differs from the current native adapter")
-    for relative, source in expected_sources.items():
-        if not source.is_file() or source_hashes.get(relative) != sha256(source):
-            raise ValueError(f"audit manifest does not match current native source: {relative}")
-
-    builder = ROOT / "scripts/build_integer_adapter.py"
-    helper = ROOT / "scripts/ee_adapter_build_inputs.py"
-    if manifest.get("build_script_sha256") != sha256(builder):
-        raise ValueError("audit manifest does not match the current native builder")
-    if manifest.get("build_helpers", {}).get(
-            "scripts/ee_adapter_build_inputs.py") != sha256(helper):
-        raise ValueError("audit manifest does not match the current build helper")
-
-    jar = Path(manifest.get("jar", "")).resolve(strict=True)
-    audit_root = (ROOT / "audit/gee-python-wave64/native").resolve(strict=True)
-    if (manifest.get("jar_sha256") != sha256(jar) or not _is_child(jar, audit_root)
-            or manifest_path != Path(str(jar) + ".manifest.json")):
-        raise ValueError("manifest JAR identity or digest is invalid")
-    service_entry = manifest.get("services", {}).get(SERVICE_NAME, "")
-    required_providers = (
-        "local.ee.reduce.LocalEeMaskWeightsCubeProcessProvider",
-        "local.ee.sample.LocalEeSampleCubeProcessProvider",
-        "local.ee.image.sample.LocalEeImageSampleCubeProcessProvider",
+    if manifest_path.expanduser().resolve(strict=True) != EXPECTED_MANIFEST.resolve(strict=True):
+        raise ValueError("Weighted sampling must use the designated current audit manifest")
+    checked = validate_native_manifest(
+        manifest_path, expected_adapter="local-ee-mask-weights-audit-adapter",
     )
-    if any(provider not in service_entry.splitlines() for provider in required_providers):
-        raise ValueError("audit manifest omits a required mask or sampling SPI provider")
-
-    def checked_runtime(row: object, label: str, *, jar_only: bool = False) -> Path:
-        if type(row) is not dict or type(row.get("path")) is not str:
-            raise ValueError(f"audit manifest has an invalid {label} record")
-        path = Path(row["path"]).resolve(strict=True)
-        if row.get("sha256") != sha256(path):
-            raise ValueError(f"audit manifest hash mismatch for {label}: {path}")
-        if jar_only:
-            permitted = (
-                ROOT / ".native/jars",
-                ROOT / ".native/engine/lib/python3.11/site-packages/pyspark/jars",
-            )
-            if not any(_is_child(path, directory.resolve()) for directory in permitted):
-                raise ValueError(f"{label} is outside the existing native JAR directories")
-            if path.suffix != ".jar":
-                raise ValueError(f"{label} is not a JAR")
-        return path
-
-    java = Path(manifest.get("java", "")).resolve(strict=True)
-    jar_tool = Path(manifest.get("jar_tool", "")).resolve(strict=True)
-    if (manifest.get("java_sha256") != sha256(java)
-            or manifest.get("jar_tool_sha256") != sha256(jar_tool)):
-        raise ValueError("audit manifest Java runtime or jar-tool hash differs")
-    scala_rows = manifest.get("scala_tools")
-    if type(scala_rows) is not list or len(scala_rows) != 3:
-        raise ValueError("audit manifest must name Scala compiler, library and reflect JARs")
-    scala_tools = [checked_runtime(row, "Scala tool JAR", jar_only=True) for row in scala_rows]
-    tool_kinds = {path.name.split("-")[1] for path in scala_tools}
-    if tool_kinds != {"compiler", "library", "reflect"}:
-        raise ValueError("audit manifest Scala tool names are malformed")
-    runtime_rows = manifest.get("runtime_jars")
-    if type(runtime_rows) is not list or not runtime_rows:
-        raise ValueError("audit manifest has no runtime JAR list")
-    runtime_jars = [checked_runtime(row, "runtime JAR", jar_only=True) for row in runtime_rows]
-    return manifest, jar, scala_tools, runtime_jars, java, jar_tool
+    manifest = checked["manifest"]
+    providers = manifest.get("services", {}).get(SERVICE_NAME, "").splitlines()
+    for name in ("local.ee.sample.LocalEeSampleCubeProcessProvider",
+                 "local.ee.image.sample.LocalEeImageSampleCubeProcessProvider"):
+        if name not in providers:
+            raise ValueError("audit manifest omits a required sampling SPI provider")
+    return (manifest, checked["jar"], checked["scala_tools"], checked["runtime_jars"],
+            checked["java"], checked["jar_tool"])
 
 
 def run_probe(manifest_path: Path = EXPECTED_MANIFEST, fixture_path: Path = DEFAULT_FIXTURE,
@@ -232,7 +153,7 @@ def run_probe(manifest_path: Path = EXPECTED_MANIFEST, fixture_path: Path = DEFA
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, default=EXPECTED_MANIFEST,
-                        help="read-only Wave64 audit manifest; never uses the deployment lock")
+                        help="read-only current audit manifest; never uses the deployment lock")
     parser.add_argument("--fixture", type=Path, default=DEFAULT_FIXTURE)
     parser.add_argument("--receipt-dir", type=Path,
                         help="optional ignored directory for a unique concise audit receipt")

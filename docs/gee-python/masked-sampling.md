@@ -41,7 +41,8 @@ classifier = ee.Classifier.minimumDistance().train(
 
 ## 限制与验证范围
 
-带权影像经过尚未接通的算术、整数转换、where、unmask或clip后，取样仍明确拒绝，
+带权影像的一元函数、有限未掩膜常量定标、比较、clamp／unitScale与受限expression可进入取样，
+详见[带掩膜运算](masked-math.md)。经过尚未接通的双栅格运算、整数转换、where、unmask或clip后，取样仍明确拒绝，
 不会递归剥去隐藏掩膜。带权科学影像的普通统计、透明度显示和栅格导出尚未接通；
 `mask()` 返回的普通数值权重影像可进入已有数值路径。默认球面部分像元裁切仍待实现。
 

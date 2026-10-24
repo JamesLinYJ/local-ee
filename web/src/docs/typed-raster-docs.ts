@@ -2,11 +2,19 @@ import type { ReferenceEntry } from "../types";
 
 export const pythonTypedRasterDocs: ReferenceEntry[] = [
   {
+    id: "gee-python-masked-math",
+    category: "GEE Python",
+    language: "python",
+    title: "保留掩膜的定标与一元运算",
+    text: "一元函数、与有限未掩膜常量的算术／比较、clamp／unitScale可保留小数权重，之后用 mask() 或 sample／sampleRegions 消费。科学值不乘权重；域错误和结果溢出变缺测，原始Infinity仍拒绝。Float32转换保留舍入阶段，权重独立。该权重传递是本地实现推断，双栅格小数权重组合的通用规则尚未确认；带权统计、地图透明度和栅格导出仍未接通。详见 docs/gee-python/masked-math.md。",
+    code: "weighted = image.select('red').toDouble().updateMask(0.25)\ncalibrated = weighted.multiply(0.0001).add(-0.1)\nclamped = calibrated.clamp(0, 1)\nweights = clamped.sqrt().mask()\nsamples = clamped.sample(dropNulls=False, geometries=True)",
+  },
+  {
     id: "gee-python-masked-sampling",
     category: "GEE Python",
     language: "python",
     title: "带掩膜取样与训练",
-    text: "sample／sampleRegions 可读取直接带小数掩膜的波段：正权重保留原科学值，零权重缺测，不按权重幅度调整随机概率。sample 默认删除含缺测行，dropNulls=False 保留 null；sampleRegions 排除任一所选波段缺测的行。可接已有取样筛选、训练、验证和 CSV。toFloat／toDouble 只转换科学值，掩膜保持独立；任意算术、clip、unmask 等包装内的掩膜尚未接通，明确拒绝。本地哈希、合成瓦片与 CSV 验证不代表 Google／完整 Spark／部署验收。详见 docs/gee-python/masked-sampling.md。",
+    text: "sample／sampleRegions 可读取直接带小数掩膜的波段：正权重保留原科学值，零权重缺测，不按权重幅度调整随机概率。sample 默认删除含缺测行，dropNulls=False 保留 null；sampleRegions 排除任一所选波段缺测的行。可接已有取样筛选、训练、验证和 CSV。toFloat／toDouble 只转换科学值，掩膜保持独立；双栅格运算、clip、unmask 等包装内的掩膜尚未接通，明确拒绝。本地哈希、合成瓦片与 CSV 验证不代表 Google／完整 Spark／部署验收。详见 docs/gee-python/masked-sampling.md。",
     code: "source = ee.Image(collection.first()).select(['red','nir']).toDouble()\nweighted = source.updateMask(ee.Image.constant([0.25,0.75]))\nsamples = weighted.sample(dropNulls=False, geometries=True)\ntraining = weighted.addBands(ee.Image.constant(1).rename('class'))\npoints = training.sampleRegions(collection=regions, geometries=True)",
   },
   {
@@ -14,7 +22,7 @@ export const pythonTypedRasterDocs: ReferenceEntry[] = [
     category: "GEE Python",
     language: "python",
     title: "读取小数掩膜权重",
-    text: "updateMask 的小数权重与科学像元值分开保存；mask() 将权重作为普通数值影像返回，源缺测为有效数值0。支持单波段广播、同数量按位置配对，以及 select／rename／addBands 传递。按文档在原掩膜非零处更新新权重，组合精确行为尚无 Google 对照。带权科学影像的算术、统计、透明度显示和导出尚未接通，会明确报错；mask() 输出的普通权重影像可使用已有数值路径。球面部分像元裁切仍待实现。详见 docs/gee-python/mask-weights.md。",
+    text: "updateMask 的小数权重与科学像元值分开保存；mask() 将权重作为普通数值影像返回，源缺测为有效数值0。支持单波段广播、同数量按位置配对，以及 select／rename／addBands 传递。按文档在原掩膜非零处更新新权重，组合精确行为尚无 Google 对照。一元／有限常量运算可保留权重进入取样；双栅格组合、统计、透明度显示和栅格导出尚未接通，会明确报错；mask() 输出的普通权重影像可使用已有数值路径。球面部分像元裁切仍待实现。详见 docs/gee-python/mask-weights.md。",
     code: "source = ee.Image(collection.first()).select(['red','nir']).toDouble()\nweighted = source.updateMask(ee.Image.constant([0.25,0.75]))\nweights = weighted.mask()\nnir_weight = weighted.select('nir').mask()\nupdated_weights = weighted.updateMask(0.5).mask()",
   },
   {

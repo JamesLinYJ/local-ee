@@ -28,7 +28,7 @@ def native_probe_or_skip(manifest_path: Path | None = None,
         payload = {
             "format": "local-ee-weighted-sampling-prerequisite-v1",
             "status": "skipped",
-            "reason": "designated Wave64 audit manifest is absent",
+            "reason": "designated current audit manifest is absent",
             "missing_prerequisite": str(manifest_path.resolve()),
             "skipped_scope": [
                 "native mask apply through existing Image.sample/sampleRegions tile kernels",
@@ -48,7 +48,7 @@ def native_probe_or_skip(manifest_path: Path | None = None,
             json.dump(payload, stream, ensure_ascii=False, indent=2, sort_keys=True)
             stream.write("\n")
         pytest.skip(
-            "native weighted-sampling acceptance skipped: designated Wave64 audit manifest "
+            "native weighted-sampling acceptance skipped: designated current audit manifest "
             f"is absent at {manifest_path}"
         )
 

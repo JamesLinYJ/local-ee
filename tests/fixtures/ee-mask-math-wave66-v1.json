@@ -1,0 +1,55 @@
+{
+  "schema": "local-ee-mask-math-wave66/v1",
+  "source_id": "sentinel-2-l2a",
+  "bands": ["red", "green", "wide"],
+  "weight_bands": ["red_weight", "green_weight", "wide_weight"],
+  "grid": {
+    "xmin": 0,
+    "ymin": 0,
+    "xmax": 4,
+    "ymax": 2,
+    "columns": 4,
+    "rows": 2,
+    "tile_cols": 4,
+    "tile_rows": 2
+  },
+  "sample_region": {
+    "type": "Polygon",
+    "coordinates": [[[0, 0], [4, 0], [4, 2], [0, 2], [0, 0]]]
+  },
+  "operations": {
+    "unary": ["abs", "sqrt", "log", "log10", "exp", "round", "floor", "ceil", "sin", "cos", "tan", "Not"],
+    "binary": ["add", "subtract", "multiply", "divide", "pow", "mod", "eq", "neq", "gt", "gte", "lt", "lte", "And", "Or", "min", "max"],
+    "pixel_math_unary": ["asin", "acos", "atan", "sinh", "cosh", "tanh", "cbrt", "signum", "gamma", "digamma", "trigamma", "erf", "erfc", "erfInv", "erfcInv"],
+    "pixel_math_binary": ["atan2"],
+    "binary_constant": 0.25,
+    "atan2_constant": 0.25,
+    "logic_zero": 0.0,
+    "clamp": [0.25, 0.75],
+    "unit_scale": [0.0, 1.0],
+    "float32_band": "wide",
+    "float32_function": "asin"
+  },
+  "sample_outputs": ["red_sqrt", "red_log", "wide_add_right", "red_clamp", "red_unit_scale", "wide_to_float", "wide_float32_asin"],
+  "result_value_controls": ["1.25", "-0.0", "0.0", "5e-324", "-5e-324", "NaN", "Infinity", "-Infinity"],
+  "tiles": [
+    {
+      "col": 0,
+      "row": 0,
+      "raw_bands": [
+        {"name": "red", "cell_type": "float64", "values": [0.0, 0.25, 0.75, 5e-324, 0.9999999999999999, 16777219.0, -1.0, null]},
+        {"name": "green", "cell_type": "float64", "values": [0.5, -0.5, 2.0, 0.0, 0.75, 1.25, 5e-324, 2.0]},
+        {"name": "wide", "cell_type": "float64", "values": [16777219.0, 3.5e38, 0.25, 0.75, 0.9999999999999999, -0.5, 1.5, 2.0]}
+      ],
+      "mask_bands": [
+        {"name": "red_weight", "cell_type": "float64", "values": [1.0, 0.25, 0.75, 5e-324, 0.9999999999999999, 0.0, 0.75, 0.5]},
+        {"name": "green_weight", "cell_type": "float64", "values": [0.25, 0.75, 0.0, 0.9999999999999999, 0.5, 1.0, 5e-324, null]},
+        {"name": "wide_weight", "cell_type": "float64", "values": [0.5, 0.25, 0.75, 5e-324, 0.9999999999999999, 0.5, 0.25, 0.75]}
+      ]
+    }
+  ],
+  "source_infinity_guard_controls": [
+    {"value": "Infinity", "weight": 0.0},
+    {"value": "-Infinity", "weight": 0.0}
+  ]
+}

@@ -8,7 +8,7 @@ private[reduce] object LocalEeMaskWeightsSpec {
 
   private val MaxSpecBytes = 128
   private val Fields = Set("op", "v")
-  private val Operations = Set("validity", "update", "apply")
+  private val Operations = Set("validity", "result_value", "update", "apply")
 
   def parse(text: String): Value = {
     require(text != null, "mask weights spec must be a JSON string")
@@ -51,7 +51,7 @@ private[reduce] object LocalEeMaskWeightsSpec {
       require(version.contains(1), "unsupported mask weights spec version")
       val op = operation.get
       require(Operations(op), s"unsupported mask weights operation: $op")
-      val result = Value(op, if (op == "validity") 1 else 2)
+      val result = Value(op, if (op == "validity" || op == "result_value") 1 else 2)
       require(text == canonicalJson(result),
         "mask weights spec must use canonical compact sorted-key JSON")
       result

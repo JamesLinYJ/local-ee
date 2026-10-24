@@ -26,13 +26,14 @@ getter 输出中的有效数值保留。Infinity 拒绝，不能先转成 Float3
 ## 当前可用路径
 
 编译器以不可变 `with_mask(value, weight)` 保存独立权重；select、rename 和 addBands
-可传递它，getter 才物化普通数值波段。三个闭合的本地投影处理真实栅格：
+可传递它，getter 才物化普通数值波段。闭合的本地投影处理真实栅格：
 
 | 投影 | 输入 | 输出 |
 | --- | --- | --- |
 | validity | 原科学值 | 有效值1、NoData0 |
 | update | 旧权重、新掩膜值 | 旧权重非零处的新权重 |
 | apply | 原值、独立权重 | 权重非零处原值，否则NoData；供受控掩膜输入和取样入口使用 |
+| result_value | 数学结果 | 保留有限位值，NaN／±Infinity变NoData；不放宽源validity的Infinity拒绝 |
 
 底层返回单波段 Float64，保留实际网格、空间／时间键与源属性。组合前重新检查
 真实来源、资产网格和时间维；不能用导出的 CRS／scale 作为输入已经对齐的证据。
@@ -42,8 +43,9 @@ getter 输出中的有效数值保留。Infinity 拒绝，不能先转成 Float3
 **权重读取与直接带权波段的取样已接通，下游尚未全部接通。**
 `weighted.sample()`／`sampleRegions()` 保留正权重处的原科学值，零权重按原取样缺测规则
 处理，可接已有训练／验证／CSV；不按权重幅度调整取样概率。Float／Double转换只转换科学值。
-详见[带掩膜取样](masked-sampling.md)。直接对 `weighted`
-做算术、区域／时间统计、unmask、地图或导出会明确拒绝尚未实现的消费者，不能
+详见[带掩膜取样](masked-sampling.md)和[带掩膜运算](masked-math.md)。一元函数和有限未掩膜
+常量定标可保留权重进入这些消费者；双栅格权重组合、区域／时间统计、unmask、地图或
+导出会明确拒绝尚未实现的消费者，不能
 静默降为二值掩膜。`weighted.mask()` 返回的是普通数值权重影像，可继续使用已有
 数值影像路径；这不代表权重已被统计或显示为原科学影像的透明度。mask setter
 仍未实现；缺省或显式 null 的 getter 都可用。原二值 updateMask 路径继续保留。

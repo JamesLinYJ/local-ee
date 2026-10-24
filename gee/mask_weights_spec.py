@@ -8,7 +8,12 @@ from __future__ import annotations
 import json
 
 
-MASK_WEIGHT_ARITIES = {"validity": 1, "update": 2, "apply": 2}
+MASK_WEIGHT_ARITIES = {
+    "validity": 1,
+    "result_value": 1,
+    "update": 2,
+    "apply": 2,
+}
 MAX_SPEC_CHARS = 128
 
 
@@ -39,13 +44,15 @@ def mask_weights_process_spec():
         "id": "local_ee_mask_weights", "experimental": True,
         "summary": "Read and compose independent finite mask weights",
         "description": (
-            "Closed validity, update and apply projections on the actual aligned raster grid. "
-            "validity reads one data band as finite=1, NoData=0; update reads old weight "
-            "and new mask value, replacing only at nonzero old weights; apply reads a "
-            "value and independent weight and masks only zero weights. Weights must be "
-            "finite in [0,1]; new-mask NoData is zero. Scientific values are never "
-            "multiplied by weights. Output is one Float64 v band; grid, observation keys "
-            "and all existing key/cell limits remain, with67108864 cell-operation work. "
+            "Closed validity, finite-result, update and apply projections on the actual "
+            "aligned raster grid. validity reads one source band as finite=1, NoData=0 "
+            "and rejects Infinity; result_value preserves a finite arithmetic result and "
+            "maps NaN or either Infinity to NoData. update reads old weight and new mask value, replacing "
+            "only at nonzero old weights; apply reads a value and independent weight and "
+            "masks only zero weights. Weights must be finite in [0,1]; new-mask NoData is "
+            "zero. Scientific values are never multiplied by weights. Output is one Float64 "
+            "v band; grid, observation keys and all existing key/cell limits remain, with "
+            "67108864 cell-operation work. "
             "This is not a spherical rasterizer or Google numerical-equivalence claim."
         ),
         "categories": ["cubes"],
