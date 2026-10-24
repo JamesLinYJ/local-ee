@@ -28,12 +28,17 @@ extern "C" {
  * their first coordinate. An empty geometry is [1, 0].
  *
  * Operation codes are 0 contains, 1 containedIn, 2 intersects, 3 disjoint,
- * 4 intersection, 5 union, 6 difference, 7 symmetric difference, and 8
- * validate-left-only. Return value 0 means success; nonzero values indicate
- * an invalid call, invalid wire, invalid spherical topology, exhausted
- * budget, or output overflow. Predicates and validation return one scalar;
- * overlay operations return wire v1. Error text is NUL-terminated when
- * error_capacity is nonzero.
+ * 4 intersection, 5 union, 6 difference, 7 symmetric difference, 8
+ * validate-left-only, and 9 bounds-left-only. Return value 0 means success;
+ * nonzero values indicate an invalid call, invalid wire, invalid spherical
+ * topology, exhausted budget, or output overflow. Predicates and validation
+ * return one scalar; overlay operations return wire v1; bounds returns the
+ * fixed eight-double record [1, empty, full_longitude, wrapped, west, south,
+ * east, north]. Error text is NUL-terminated when error_capacity is nonzero.
+ * Bounds flags are exactly 0 or 1. Empty bounds use empty=1, the other flags
+ * and all coordinates zero. Nonempty coordinates are degrees in EPSG:4326;
+ * wrapped intervals have west > east. Full-longitude bounds use west=-180 and
+ * east=180 and are never marked wrapped.
  */
 LOCAL_EE_S2_EXPORT int local_ee_s2_run(
     int op,

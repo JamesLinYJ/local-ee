@@ -2,6 +2,14 @@ import type { ReferenceEntry } from "../types";
 
 export const pythonTypedRasterDocs: ReferenceEntry[] = [
   {
+    id: "gee-python-geometry-bounds",
+    category: "GEE Python",
+    language: "python",
+    title: "几何范围与区域模型",
+    text: "Geometry.bounds／Feature.bounds 支持有限 EPSG:4326 输入及省略／空投影。球面输入通过本地 S2 计算弧和内部范围，平面输入使用坐标极值，返回明确的平面矩形；可用于本地 Image.geometry().bounds() 流程。跨日期线、空／退化结果、混合模型和其他投影仍明确拒绝。字典、Feature 包装不能洗掉球面边或非法坐标系；STAC 足迹保留真实平面规则。球面部分像元裁切和带权区域统计仍未实现。Feature ID／属性与公开标志是本地政策，没有Google等价声明。详见 docs/gee-python/geometry-bounds.md。",
+    code: "outline = ee.Geometry.Polygon([[[-10,70],[10,70],[10,75],[-10,75],[-10,70]]])\nprint(outline.bounds().getInfo())\nimage = ee.ImageCollection('sentinel-2-l2a').first()\nlocal_extent = image.geometry().bounds()\nclipped = image.clip(local_extent)",
+  },
+  {
     id: "gee-python-bandless-accumulators",
     category: "GEE Python",
     language: "python",

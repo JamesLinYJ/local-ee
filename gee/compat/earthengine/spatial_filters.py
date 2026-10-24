@@ -152,8 +152,27 @@ def _own_catalog_geometry(translator, geometry):
         # SDK default lets a Point follow a curved operand without GEOS
         # validation of the point itself.
         return own_geometry_bounded(translator, geometry)
-    planar = dict(geometry)
-    planar["geodesic"] = False
+
+    def normalize_catalog_leaves(value):
+        # Catalog root containers can include typed children supplied by a
+        # caller. Do not stamp a planar root flag over those sidecars; give the
+        # legacy catalog default only to unflagged raw edge leaves.
+        if isinstance(value, GeometryValue):
+            return value
+        if value["type"] == "GeometryCollection":
+            if "geodesic" in value:
+                return value
+            copied = dict(value)
+            copied["geometries"] = [
+                normalize_catalog_leaves(child)
+                for child in value["geometries"]
+            ]
+            return copied
+        if "geodesic" not in value and _has_edges(value):
+            return {**value, "geodesic": False}
+        return value
+
+    planar = normalize_catalog_leaves(geometry)
     return own_geometry_bounded(translator, planar)
 
 

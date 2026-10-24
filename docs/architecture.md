@@ -53,6 +53,14 @@ flowchart LR
 
 有限要素筛选由 `spatial_filters` 预检全部官方字段／字面操作数组合并按实际边模型路由；`collection_geometry` 在同一CRS／边模型下合并内联集合，保留真实分量并归一化。`error_margin` 仅在这两种已证明没有变换的路径中消费，不能冒充重投影。原始STAC GeoJSON保留平面线段，因此与默认球面多边形ROI混用目前明确拒绝；Point无边情形仍可运算。重复验证、模型扫描及输出继续计入原50000预算，空目录也先验证全部筛选分支。目录足迹合并、球面栅格掩膜和混合模型转换继续待实现，见[空间筛选合同](gee-python/spatial-selection.md)。
 
+`geometry_bounds` 独立实现有限 Geometry／Feature 范围，保留官方省略／空投影写法，
+平面坐标极值与本地 S2 弧／内部包络分别计算，输出明确的平面矩形。
+原生固定记录、矩形解码和公开映射在调用前预充，不能用临时账本运行未计费模板。
+`ee_geometry_regions` 分离服务的区域验证；公开 EE 几何与已知 STAC 足迹按真实来源
+分别保留球面默认和平面规则，字典取值与嵌套模型须新鲜校验。
+空／退化／跨日期线公开编码、一般 CRS 和球面部分像元栅格化仍未完成。
+见[几何范围合同](gee-python/geometry-bounds.md)。
+
 栅格小数掩膜由 `image_mask_weights` 把科学值与权重保存在独立不可变IR中；
 `mask_weights_graph` 和闭合的 `local_ee_mask_weights` 只物化已审查的权重读取／组合。
 select、rename、addBands 可传递权重，其他带权科学值消费者须逐项接通，不能把权重

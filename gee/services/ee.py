@@ -12,6 +12,7 @@ from openeo_driver.users import User
 from .. import db, graph
 from ..artifacts import artifact_path
 from ..ee_translate import compile_expression, UnsupportedEEError
+from .ee_geometry_regions import geometry
 from .ee_exports import export_options
 from .ee_budget import pixel_budget, sample_input_budget
 from . import ee_sample_results
@@ -50,21 +51,6 @@ def catalog_snapshot():
             props['eo:cloud_cover']=cloud;props['CLOUDY_PIXEL_PERCENTAGE']=cloud
         items.setdefault(row['collection_id'],[]).append(item)
     return catalog,items
-
-
-def geometry(value,catalog,items):
-    if isinstance(value,dict) and value.get('type') in {'Point','Polygon','MultiPolygon','Feature'}:
-        result=value.get('geometry',value)
-    else:
-        decoded=compile_expression(value,catalog,items)
-        if decoded['kind']!='value':raise UnsupportedEEError('An explicit geometry is required')
-        result=decoded['value']
-    from shapely.geometry import shape,mapping
-    geo=shape(result)
-    if geo.is_empty or not geo.is_valid or any(not math.isfinite(x) for x in geo.bounds):raise ValueError('Invalid geometry')
-    w,s,e,n=geo.bounds
-    if w < -180 or e > 180 or s < -90 or n >90:raise ValueError('Only WGS84 lon/lat geometry is supported')
-    return mapping(geo)
 
 
 def _script_parent(account):
@@ -226,9 +212,8 @@ def dispatch(backend,account,payload):
             if not isinstance(center,list) or len(center)!=2 or not -180<=float(center[0])<=180 or not -90<=float(center[1])<=90:raise ValueError('Invalid map center')
             event={'type':'map_view','center':center}
         elif 'geometry' in options:
-            geo=geometry(options['geometry'],catalog,items)
-            from shapely.geometry import shape
-            event={'type':'map_view','bounds':list(shape(geo).bounds)}
+            _,bounds=geometry(options['geometry'],catalog,items,include_bounds=True)
+            event={'type':'map_view','bounds':list(bounds)}
         else:raise ValueError('Map view needs center or geometry')
         if options.get('zoom') is not None:
             zoom=float(options['zoom'])

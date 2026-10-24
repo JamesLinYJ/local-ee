@@ -208,17 +208,28 @@ def invoke_image(translator, name, arguments):
     if name == "Image.clip":
         translator.allowed(a, {"input", "geometry"})
         image, geometry = as_image(a["input"]), a["geometry"]
-        from .geometry_consumers import reject_spherical_edges
+        from .geometry_regions import own_ee_region
 
-        reject_spherical_edges(translator, geometry, name)
-        if geometry.get("type") == "Feature":
-            geometry = geometry["geometry"]
-        if geometry.get("type") not in {"Polygon", "MultiPolygon"}:
+        geometry, geometry_mapping = own_ee_region(
+            translator, geometry, name, strip_inferred_even_odd=True,
+        )
+        if geometry_mapping.get("type") not in {"Polygon", "MultiPolygon"}:
             fail("clip supports Polygon/MultiPolygon only")
         from shapely.geometry import mapping, shape
 
-        footprint = mapping(shape(image.footprint).intersection(shape(geometry))) if image.footprint else geometry
-        return replace(image, bands=[(name, Pixel("clip", (pixel, geometry))) for name, pixel in image.bands], footprint=footprint)
+        if image.footprint:
+            _, base = own_ee_region(
+                translator, image.footprint, name,
+                strip_inferred_even_odd=True,
+            )
+            footprint = mapping(shape(base).intersection(shape(geometry_mapping)))
+            from .geometry_topology import _has_edges
+
+            if _has_edges(footprint):
+                footprint["geodesic"] = False
+        else:
+            footprint = geometry_mapping
+        return replace(image, bands=[(name, Pixel("clip", (pixel, geometry_mapping))) for name, pixel in image.bands], footprint=footprint)
     if name == "Image.reduceRegion":
         translator.allowed(a, {"image", "reducer", "geometry", "scale", "crs", "crsTransform", "bestEffort", "maxPixels", "tileScale"})
         if a.get("crsTransform") is not None or a.get("bestEffort") or a.get("tileScale", 1) != 1:
@@ -227,9 +238,11 @@ def invoke_image(translator, name, arguments):
         geometry = a.get("geometry") or translator.options.get("region")
         if not geometry:
             fail("reduceRegion requires an explicit geometry")
-        from .geometry_consumers import reject_spherical_edges
+        from .geometry_regions import own_ee_region
 
-        reject_spherical_edges(translator, geometry, name)
+        _, geometry = own_ee_region(
+            translator, geometry, name, strip_inferred_even_odd=True,
+        )
         reducer = a["reducer"]
         if not isinstance(reducer, Reducer):
             fail("Expected a supported Reducer")

@@ -25,8 +25,9 @@ for _family in ("Geometry", "Feature"):
             "input/output conversion has measured exact-incidence and inserted-"
             "vertex roundtrip gaps. Nearby distinct points are not epsilon-merged. "
             "Explicit spherical outputs reject at legacy planar raster/join "
-            "consumers; unflagged raster input retains the earlier planar path "
-            "and has no GEE geodesic parity claim. Trusted synthetic SDK/CSV and "
+            "consumers. Public EE raster regions retain default spherical "
+            "semantics, including Dictionary.get values; known raw catalog "
+            "footprints retain their planar provenance. Trusted synthetic SDK/CSV and "
             "native component checks are not full Spark/deployment/Google acceptance."
         ]
         if _family == "Feature":
@@ -38,3 +39,20 @@ for _family in ("Geometry", "Feature"):
                 "right properties are ignored. This is not complete Element "
                 "overload or default-argument compatibility."
             )
+
+for _family in ("Geometry", "Feature"):
+    GEOMETRY_BINARY_LIMITS[_family + ".bounds"] = [
+        "Finite EPSG:4326 only; omitted/null proj and explicit EPSG:4326 share "
+        "the no-transform path with validated optional maxError/ErrorMargin. "
+        "Planar inputs use actual coordinate extrema; homogeneous geodesic "
+        "edges use pinned local S2 arc/interior envelopes and polar closure. "
+        "Positive-area nonwrapped envelopes return explicitly planar Polygon "
+        "rectangles; positive-area full-longitude envelopes use [-180,180]. "
+        "Empty/degenerate/wrapped public encoding, mixed edge models and other "
+        "CRS transforms reject. Fixed output decode/copy/mapping work is prepaid "
+        "before native bounds; existing50000/10000-coordinate/1000-child/16-depth "
+        "limits remain. Public flags and left Feature ID/properties are local "
+        "policies, not Google field parity. Offline dual SDK, independent math, "
+        "native components and physical synthetic Feature CSV checks do not "
+        "establish full Spark, browser, deployment or Google equivalence."
+    ]

@@ -1,0 +1,355 @@
+{
+  "schema": "local-ee-gee-python-wave69/v1",
+  "date": "2026-10-25",
+  "status": "Bounded offline wave verified; broader project goal remains active",
+  "base_commit": "42764d2646f8a3d53689aa5aedeeda3c2b53180e",
+  "focus": [
+    "Actual finite Geometry.bounds and Feature.bounds with omitted/null or explicit EPSG:4326 projections",
+    "Independent planar coordinate extrema and pinned native S2 arc/interior bounds; explicit planar output rectangles",
+    "Default local Image.geometry().bounds through filtering, clip, sampleRegions and physical Feature CSV",
+    "Fresh EE region ownership and validation across Dictionary/Feature wrappers, clip/reduceRegion and service export/query",
+    "Contextual raw-STAC planar leaves without overriding typed spherical collection children",
+    "Complete output/copy/model reservations and deterministic raw-angle circular interval union"
+  ],
+  "coverage": {
+    "entry_names_supported": 712,
+    "pinned_entry_names": 991,
+    "entry_name_percentage": 71.85,
+    "new_entry_names": [
+      "Geometry.bounds",
+      "Feature.bounds"
+    ],
+    "semantic_or_google_equivalence_percentage": null,
+    "note": "Name declarations only; no full parameter/default/runtime/numerical coverage percentage is inferred.",
+    "inventory_sha256": "1ed1c7e228bd99e9b14bb9d22043ae0bc8b03f6be3a4bec2cac3cb30a74c63fc"
+  },
+  "local_validation": {
+    "full_regression": {
+      "summary": "6668 passed, 27 skipped, 53 warnings in 76.77s (0:01:16)",
+      "source_files_hashed": 38,
+      "source_stable": true,
+      "seconds_wall": 77.504
+    },
+    "frontend": {
+      "tests_passed": 11,
+      "typecheck": "passed",
+      "temporary_build": "passed",
+      "source_stable": true,
+      "temporary_output_removed": true,
+      "deployed": false
+    },
+    "focused_native_bounds_and_workflow": {
+      "tests_passed": 100,
+      "warnings": 1,
+      "includes_old_native_kernel_regression": true,
+      "new_direct_bounds_tests": 28,
+      "not_additive_to_full_suite": true
+    },
+    "official_clients": {
+      "wire_count_per_sdk": 21,
+      "input_outcome_evaluations_per_sdk": {
+        "python": 25,
+        "javascript": 25
+      },
+      "compiled_rejected_counts_per_sdk": {
+        "python": {
+          "compiled": 16,
+          "rejected": 9
+        },
+        "javascript": {
+          "compiled": 16,
+          "rejected": 9
+        }
+      },
+      "sdk_wire_parity_counts": {
+        "same": 13,
+        "different": 8
+      }
+    },
+    "workflow": {
+      "tests_passed": 6,
+      "both_client_compiled_outputs_equal": true,
+      "canonical_component_rerun_after_catalog_fix": true,
+      "physical_csv_rows": 2,
+      "physical_csv_names": [
+        "image-geometry-bounds",
+        "feature-bounds"
+      ],
+      "actual_components": "Local compiler, existing trusted table job worker, physical CSV writer and parsed file readback",
+      "raster_samples_executed": false,
+      "injected_reference_raster_rows": false,
+      "numeric_reference": {
+        "high_latitude_line_north_degrees": 82.36925978756994,
+        "line_north_exceeds_vertex_max_by_degrees": "more than 7",
+        "reference_method": "Manual planar bbox and analytic great-circle latitude-extremum equations; expected bounds are not derived from S2 output or vertex min/max."
+      }
+    },
+    "independent_review": {
+      "model": "gpt-6.1-sol",
+      "scope": "Scoped correctness review, not repository-wide security audit",
+      "scoped_checks_passed": true,
+      "control_groups": {
+        "frozen_routes": {
+          "sdk_wire_requests": 14,
+          "sdk_clients": 2,
+          "additional_raw_parameter_wires": 6,
+          "original_service_negatives": 3,
+          "service_planar_positive": 1
+        },
+        "feature_wrapper_cases": {
+          "original_inputs": 8,
+          "routes_per_input": 3,
+          "service_sdk_feature_route_remains_preexisting_rejection": true
+        },
+        "original_mapping_budget_traces": {
+          "inputs": 2,
+          "starting_budgets_per_input": 2
+        },
+        "model_guard_controls": 25,
+        "envelope_decoder_consumer_and_budget_controls": {
+          "decoder_records": 5,
+          "consumer_records": 3,
+          "budget_traces": 2,
+          "native_mock_only_for_budget_order": true
+        },
+        "native_bounds": {
+          "analytic_arcs": 24,
+          "independent_slerp_samples": 6168,
+          "other_envelope_observations": 8,
+          "abi_work_capacity_controls": 12,
+          "original_position_sets": 10,
+          "original_line_collection_orders": 192,
+          "additional_point_orders_same_sets": 96,
+          "tiny_longitude_controls": 6
+        },
+        "preexisting_precision_controls_rerun": {
+          "strict_passed": 0,
+          "strict_failed_open": 3
+        }
+      },
+      "native_analytic_arcs": 24,
+      "native_slerp_samples": 6168,
+      "native_component_permutations": 288,
+      "native_tiny_longitude_controls": 6,
+      "native_abi_capacity_work_controls": 12,
+      "seam_literal_failure_preserved": true,
+      "seam_adjudication": "Exact +180/-180 degree periodic point identity, without epsilon or changed containment rules",
+      "three_old_binary64_precision_failures": "Reproduced unchanged and remain open; not repaired by tolerance-based passes"
+    },
+    "google": {
+      "authentication_or_compute_calls": 0,
+      "offline_sdk_guard_network_attempts": 0,
+      "policy": "Independent local references by default; discuss scarce Google comparison only for genuinely unresolved complex algorithms"
+    }
+  },
+  "native_component": {
+    "s2geometry": "0.14.0",
+    "abseil_cpp": "20250814.1",
+    "build": "Offline from verified existing public archives, jobs=4; no system/deployment-JAR install",
+    "abi_version": 1,
+    "new_unary_opcode": 9,
+    "result_doubles": 8,
+    "result_fields": [
+      "version",
+      "empty",
+      "full_longitude",
+      "wrapped",
+      "west",
+      "south",
+      "east",
+      "north"
+    ],
+    "library_sha256": "523b98ccc9a48f165e8f8c24cea9adfef832d2c5840777999d7a1b05ecf5443a",
+    "sources": {
+      "native/s2/CMakeLists.txt": "fb0dc19f929a74e71984fb5b47d4eb44166d6e36f1dae1554a46c7748072846b",
+      "native/s2/dependencies.lock.json": "a48871abda85fa724dde7355e10c41e9d736f102092fe6c133f241f5a8531d38",
+      "native/s2/s2_adapter.cpp": "63d7b11e748fbe06351955eb015ed345721b616a20a15e1e51eb1d4a775d08f2",
+      "native/s2/s2_adapter.h": "059ca5a37093cb11ecb167ee768b84efde10d15d27150cb6024838aac2754c89",
+      "native/s2/s2_bounds.cpp": "86592b0000c4eb6f5ad921a7d7979b61e9823d5bc0051a6be4fb1bfd2cc12e1e",
+      "native/s2/s2_degeneracies.cpp": "eedad18e127c4fd093ab4cd70d40a1074334607017eeec1e9cbac99e3d70c3c8",
+      "native/s2/s2_input.cpp": "6516d824b5ff3048b2e80420618532a0b5d74eaf55d979dec2037ba1d7d02a49",
+      "native/s2/s2_internal.h": "a3fe8892d5c9bd1db15559105885d0952b01ac4d3e0b990cf4c10e551c83d406",
+      "native/s2/s2_operation.cpp": "698723b851d03117e340d6e26b808bf5e3b23a65f3c4983ee387e185e4d169e6",
+      "native/s2/s2_output.cpp": "37c252b86f8077234623c4431690adfdeb3e6f16f15386e39c44bca0f140e82e",
+      "native/s2/s2_wire.cpp": "b9429a58ccbd155a04cbc85415678786281cc80d50cf1fce6909f9e8a3f64d01",
+      "scripts/build_s2_adapter.py": "7253e0c30713db20e673f12c5f3600c7410909f80cd6251084ec3f0293910044",
+      "scripts/s2_build/__init__.py": "55277cc057b59a9105c0bead883e62ef48a9c4d79ae700b07bde7dd6ab332d6e",
+      "scripts/s2_build/artifact.py": "cf697fe80fab2780ad697e28dfbd15f64c07c0972422690d64caebba853b6817",
+      "scripts/s2_build/dependencies.py": "9dfd052524061ba6d0e434eda43fb0ebe7857fa8f88d7780ec64484632b2da41"
+    },
+    "project_component_promoted": true,
+    "previous_component_rollback_preserved": true,
+    "services_restarted_or_deployed": false,
+    "interval_scratch_payload_upper_bound_bytes": 192000,
+    "memory_note": "Existing64MiB S2 tracked working memory is not a total RSS bound; interval scratch is separately bounded by existing wire/output caps."
+  },
+  "fixed_issues": [
+    "Missing bounds methods and vertex-only extrema missing actual curved-edge latitude extrema",
+    "Greedy component longitude envelopes changed bounds/acceptance when input order changed",
+    "Offset angle normalization could collapse tiny distinct longitudes before sorting; raw-angle intervals preserve them",
+    "Service GEOS shape/mapping erased spherical/evenOdd metadata before export and map bounds",
+    "Raw Dictionary.get or nested collection values bypassed edge-model, interior and CRS checks",
+    "Feature wrapper fields could silently override or discard child semantics; now explicitly unsupported local fields",
+    "Native output and public mapping/model walks had no complete parent reservation",
+    "Known catalog-plane default applied at containers could wash out typed spherical children",
+    "Two existing sampling tests exposed an accidentally removed evenOdd=True catalog footprint flag; restored source with original tests unchanged"
+  ],
+  "unchanged_limits": {
+    "shared_work": 50000,
+    "graph_depth": 96,
+    "graph_nodes": 500,
+    "geometry_depth": 16,
+    "geometry_positions": 10000,
+    "geometry_children": 1000
+  },
+  "explicit_local_policies": [
+    "Supported bounds return positive-area planar EPSG:4326 Polygon rectangles with geodesic=false/evenOdd=true",
+    "Feature bounds retains owned left properties and actual identity; Google ID/property/public-flag parity is unknown",
+    "Feature wrapper geodesic/evenOdd/CRS fields reject rather than inventing inheritance; ordinary child geometry models remain authoritative",
+    "Known raw STAC leaves stay planar while public unflagged EE edge geometry retains spherical defaults"
+  ],
+  "preserved_failures_and_calibrations": [
+    "First complete frozen run:2 failed,6666 passed,27 skipped; source regression fixed, original sampling expectations unchanged,19 focused tests pass",
+    "Original internal raw FeatureCollection footprint wrongly accepted as planar; original source/test/value retained and negative expectation corrected with a separate explicit-planar positive",
+    "Old invalid-opcode9 test moved to10 because9 is the new real unary ABI operation; original test bytes retained",
+    "Workflow v1 used an unaccepted custom catalog ID; exact fixture/wires/failure retained, separate v2 uses existing synthetic sentinel-2-l2a alias with no admission change",
+    "Workflow test scalar-metadata iteration defect corrected on inspection before executing that numeric path, not an observed numeric failure",
+    "Original malformed-envelope probe had a valid inverted-longitude record; expectation corrected separately, original retained",
+    "Precommit whitespace check caught extra EOF blank lines in three new test files; removed only blank lines, ASTs identical, and ran a fresh full frozen regression",
+    "Original consistent Feature-wrapper acceptance expectation explicitly calibrated to unsupported local-wrapper policy; no Google behavior inferred",
+    "All original bypass, budget, interval-order, offset-cancellation, literal seam and three strict precision failure receipts retained"
+  ],
+  "remaining_gaps": [
+    "Wrapped-longitude, empty and degenerate public bounds encodings; other CRS and mixed-model transforms",
+    "Spherical partial-pixel polygon clipping, anti-aliased line masks and weighted regional statistics; center tests are insufficient",
+    "Three existing strict binary64 input-incidence/constructed-coordinate/roundtrip failures remain open",
+    "General binary geometry maxError/reprojection and full-sphere public encoding remain separate gaps",
+    "Full parameter/default/algorithm parity, global constant grid and other previously documented API gaps",
+    "Google same-data equivalence, full Spark batch, browser, private real-data and production acceptance remain unverified",
+    "Existing runtime-JAR public provenance limitations remain; this is not a new dependency/security attestation"
+  ],
+  "preservation": {
+    "dependency_version_or_lock_changes": false,
+    "user_data_or_credentials_read": false,
+    "system_or_venv_install_modified": false,
+    "containers_or_vms_used": false,
+    "runtime_services_started_stopped_restarted": false,
+    "goal_complete": false
+  },
+  "cleanup": {
+    "owned_s2_build_files_removed": 9554,
+    "owned_s2_build_logical_bytes_removed": 167175850,
+    "frontend_temporary_output": {
+      "files": 16,
+      "bytes": 1727514
+    },
+    "pinned_archives_component_rollback_and_original_failures_preserved": true,
+    "note": "Logical file sizes, not a measured APFS free-space gain"
+  },
+  "audit_receipts": {
+    "initial_full": {
+      "path": "audit/gee-python-wave69/root/full-1.json",
+      "sha256": "d0df99ac48157105dc8a8d43e2760da7a5ad62a83a5e24f810d12ce5e5445792"
+    },
+    "post_catalog_fix_full": {
+      "path": "audit/gee-python-wave69/root/full-2.json",
+      "sha256": "ab33231d2fa9e8ace292ad23e5afebd77820e82aa31004f88034b274ed0e7ccf"
+    },
+    "final_full": {
+      "path": "audit/gee-python-wave69/root/full-3.json",
+      "sha256": "9561dcf5b0400311a8874d962a7247683dcee8a318ca53443a9413738a960bb1"
+    },
+    "frontend": {
+      "path": "audit/gee-python-wave69/root/frontend.json",
+      "sha256": "9d86c0a3d42c00e46d756f3fb6f7c7fdce1cf982a2c0bd08f51bff8d19f0ab5a"
+    },
+    "independent_review": {
+      "path": "audit/gee-python-wave69/review/final-review.json",
+      "sha256": "f808d0fa910298b7290feefcfa6e4c090b9b53e1e960d1f4c129368e4ce16cf0"
+    },
+    "current_source_review_addendum": {
+      "path": "audit/gee-python-wave69/review/final-catalog-addendum.json",
+      "sha256": "8aaf7de54a7ea352d830651dae91c3208fe4b0f3951438363b261ec7c3b2fdca"
+    },
+    "workflow": {
+      "path": "audit/gee-python-wave69/workflow/final-receipt.json",
+      "sha256": "629c3599b6193e8c1e1a81cad0c9446c966c29024ac431da136e64df7884457d"
+    },
+    "workflow_catalog_addendum": {
+      "path": "audit/gee-python-wave69/workflow/source-stable2-addendum.json",
+      "sha256": "f00b5737a4c893aeee5fce2eb39846c0b9e39003667a7ec0df8c1d0449c61bc0"
+    },
+    "seam_adjudication": {
+      "path": "audit/gee-python-wave69/review/native-bounds-final-adjudication-523b98ccc9a4.json",
+      "sha256": "9c0b86ccc60511f23a070cfc52562f7c50b881b3c663f68e40724f86a223091e"
+    },
+    "open_precision_failures": {
+      "path": "audit/gee-python-wave69/review/existing-precision-gaps-523b98ccc9a4.json",
+      "sha256": "f013b58643f4793cde599ca23c1b90fe42b3ba4872f8979043755aced9f4b035"
+    },
+    "project_component_promotion": {
+      "path": "audit/gee-python-wave69/root/native-promotion.json",
+      "sha256": "f643f4add00274908e08a05a811472ef588fc616786233a999ea7575200b0e41"
+    },
+    "cleanup": {
+      "path": "audit/gee-python-wave69/root/cleanup.json",
+      "sha256": "bea474706509b9c6a13d2e165d3a5617263ae70dd557f7dbe1d3577129185441"
+    },
+    "original_internal_footprint": {
+      "path": "audit/gee-python-wave69/root/legacy-footprint/receipt.json",
+      "sha256": "02d20647106697c213883ecfdb08f2ac07733ac9a021fa4acaa9b8afe7e7415f"
+    },
+    "formatting_only_proof": {
+      "path": "audit/gee-python-wave69/root/formatting-check/receipt.json",
+      "sha256": "95ab4000db4bd3e06253ceb153de4b951e6ced384cad98ab8f8844d50ee3452f"
+    }
+  },
+  "frozen_tested_source_sha256": {
+    "examples/73_GEE_python_geometry_bounds.py": "8b99e7926e14f369844138b6f0797a55cd810b52090a78b316721ed27dcc80d3",
+    "examples/javascript/27_几何范围.js": "008f8e6c328ce58bb73b3f8c44241bb3ddf08fd527b65533f8571d7de2ab212b",
+    "gee/compat/earthengine/capabilities.py": "d5f6d4ee6cea61be2b53c79bb6040656ab45f418f01177bced097f461a54d146",
+    "gee/compat/earthengine/catalog.py": "f8a2e3ab4c261a762e5e4177e16d6c50d086225b10628993a255f32de3c53bdb",
+    "gee/compat/earthengine/dispatch.py": "f36de789358913d4e1076c3be3f2d43769b9eca1769ee187b922702e5aef45a6",
+    "gee/compat/earthengine/feature_map_preflight.py": "d3ad25ed147d46305f8c9f13b668f3cc8137873f309f624d33b5bb1a715696aa",
+    "gee/compat/earthengine/geometry_bounds.py": "4dad8c445b43ec4b097d5524107934deff2cd1234bdddfb389f62c918891a94a",
+    "gee/compat/earthengine/geometry_consumers.py": "ccb0c6fecf012900154eaa1319844ab46745d19a5318621194d576cf12d2d0c0",
+    "gee/compat/earthengine/geometry_preflight.py": "97bf375e4b8adfab2fc6bea377a8acf775a0d58e6fd6eca48d137ecd7a8b0b9e",
+    "gee/compat/earthengine/geometry_regions.py": "6c18abe1641cd11b105465b41d12cd6de8eddea82b05d5ff5b22457e1c69f8ca",
+    "gee/compat/earthengine/image_add_bands.py": "c7280d511f569361b071ad4ced6ac3c0e257f0c346f2fbd72fb2b679feeca563",
+    "gee/compat/earthengine/image_ops.py": "68b666ba113330c6c3a8588465ca662a4790a411a761752b01149bd840acb3f7",
+    "gee/compat/earthengine/spatial_filters.py": "c6a38c90440b980c00b9f18457fa791599009fb0293a30d3433f94ab05efb61c",
+    "gee/compat/earthengine/spherical_envelope.py": "55e0e5ab5473ec222fc7472782fcf5d61945d6a2b8c34192cef5361ec13f4cc9",
+    "gee/compat/earthengine/spherical_native.py": "ac8b503b535b2a62b004308c596ea7f24f2d62742517ec2fd6b7eaafa9d7af70",
+    "gee/services/ee.py": "442529c635b87216683d8fbb788f2818c9d1a92886e104ac8b63c8d8899d6df7",
+    "gee/services/ee_geometry_regions.py": "bf85e295ad057ba8d478c26b3008357359ea02983f7ef32de977f8a7e7457529",
+    "native/s2/CMakeLists.txt": "fb0dc19f929a74e71984fb5b47d4eb44166d6e36f1dae1554a46c7748072846b",
+    "native/s2/s2_adapter.cpp": "63d7b11e748fbe06351955eb015ed345721b616a20a15e1e51eb1d4a775d08f2",
+    "native/s2/s2_adapter.h": "059ca5a37093cb11ecb167ee768b84efde10d15d27150cb6024838aac2754c89",
+    "native/s2/s2_bounds.cpp": "86592b0000c4eb6f5ad921a7d7979b61e9823d5bc0051a6be4fb1bfd2cc12e1e",
+    "native/s2/s2_input.cpp": "6516d824b5ff3048b2e80420618532a0b5d74eaf55d979dec2037ba1d7d02a49",
+    "native/s2/s2_internal.h": "a3fe8892d5c9bd1db15559105885d0952b01ac4d3e0b990cf4c10e551c83d406",
+    "scripts/ee_inventory/geometry_binary.py": "4395fa49fbc7e0d24475cff98c11988746adb58ab1e71b154ec57d324808c69f",
+    "tests/ee_bounds_workflow.py": "c0e85a41e3a5c5e5884f08e1f8a35b20a1c4b52a7cf653a7b177a9cc854b1405",
+    "tests/ee_region_support.py": "32ec37b8194b23970a69262db90c06e8f09fc59fc6c69c14d9158d5563cc29e9",
+    "tests/fixtures/ee-bounds-wave69-v1.json": "ef5a2a9d7cde732793b4cdd966556ca2c73558fa70c9d6f8ba92a0df1d34116b",
+    "tests/fixtures/ee-bounds-wave69-v2.json": "8b6d17bd7870bbdb9c85d8ee730d14259daec707ab89197b0918dbcce9c0d3f3",
+    "tests/test_ee_bounds_workflow.py": "570ff2ae4bde2f0188de0b3a0249a7ff9a88cceec99b2d352023fbd468dbfeb0",
+    "tests/test_ee_feature_bounds.py": "15b0182bb65bbba4374edfae27a3eb6aa33ecd78ba11b4188d12e0d9a160b8b8",
+    "tests/test_ee_geometry_bounds.py": "c8ad2a49fe94a210287440a05bf0b66ac4183ce346234a05f2d2cf61b30f41f5",
+    "tests/test_ee_region_boundary_wave69.py": "ad5eddd507980b915cfe5a6d9f0d7b36df8b9c6240963dca3166cf7f8bc649b3",
+    "tests/test_ee_region_service_wave69.py": "807d53eef33290ad2719c25bd3db3c5edd72f4c6524b346789e2b298acd4a14d",
+    "tests/test_ee_region_wrappers_budget_wave69.py": "f15da760c5930f273a86e4632943df1fa554c55d8b6cb25278c4225911d8162a",
+    "tests/test_ee_spherical_consumers.py": "2392f0f45a1d5229ab9242567717873499963d29d5b2fb28a87b2dcbf5872cca",
+    "tests/test_ee_spherical_native_bounds.py": "fe43ef608d7a203d18618b1d229f7f1ddfdc71bee7618d6123eb902f22284950",
+    "tests/test_ee_spherical_native_kernel.py": "dfee3c4105699e0aaf237d52d8914ed9f59a4e24016ad65a120b9395075fda98",
+    "web/src/docs/typed-raster-docs.ts": "e4ac6214872f8450cb35de3251489d3b762166dca2b3eedec05bf26fba81ef98"
+  },
+  "documentation_sha256": {
+    "AGENTS.md": "5f3dd001ca892096a6385c1f2c5bd4485a2736352481716abd3b5022c5cc2a87",
+    "GOAL.md": "fa0db973e875f113d964f020fe1a7b78620b6d6aada8c526ace3527cea5ad9b1",
+    "docs/architecture.md": "bd48a2de1f5b0ce58042e4efa3276b0844eb67cddfd718e868dfe7577c47a0c3",
+    "docs/gee-python/list.md": "ac2d47de6208b123780920c8d61228411d461263a7f091e5591738593a4595c1",
+    "docs/gee-python/geometry-bounds.md": "ce9ed0996dc1e19129b4d92333395e5af3934b970bc0be43edb35048180761e4"
+  },
+  "publication": "Exact commit and protected remote CI are recorded separately after commit; no PR or protection bypass."
+}

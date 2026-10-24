@@ -1,9 +1,10 @@
-"""Keep explicitly spherical values out of legacy planar raster consumers.
+"""Keep spherical values out of legacy planar raster and bounds consumers.
 
-S2 results expose geodesic=true, as do explicitly geodesic constructors. The
-legacy unflagged raster/filter input path still has its earlier planar model;
-it is not evidence of GEE default-geodesic raster compatibility. Extending
-those consumers needs a bounded spherical mask/reprojection adapter.
+Callers handling an Earth Engine geometry pass ``default_geodesic=True``.
+Catalog GeoJSON retains its documented planar policy by being explicitly
+normalized at the catalog boundary before this guard is called. The default
+here remains planar for legacy internal callers that have not established
+their input's provenance.
 """
 from __future__ import annotations
 
@@ -12,15 +13,17 @@ from .ir import fail
 from .spherical_wire import FullSphere
 
 
-def reject_spherical_edges(translator, value, label):
+def reject_spherical_edges(translator, value, label, *, default_geodesic=False):
     """Reject effective spherical edge models before any legacy planar call.
 
-    Untyped legacy GeoJSON keeps the former planar default. Typed geometry
-    values carry the SDK's effective defaults in their metadata sidecar, so
-    they must be inspected through ``geometry_edge_models`` rather than by
-    looking only for a public ``geodesic`` key.
+    ``default_geodesic`` is the caller's provenance policy for untyped leaf
+    geometries. A collection does not apply that fallback as an inherited
+    parent flag: typed child sidecars and explicit child models remain intact.
+    This keeps legacy raw catalog values planar when callers normalize them at
+    the catalog boundary, while SDK-decoded inputs use Earth Engine defaults.
     """
-    from .geometry_topology import geometry_edge_models
+    if type(default_geodesic) is not bool:
+        fail("Geometry consumer default edge model must be a boolean")
 
     active = set()
     charged = 0
@@ -60,16 +63,13 @@ def reject_spherical_edges(translator, value, label):
     root = value
     inherited = None
     # Feature wrappers are accepted by existing consumers, but the topology
-    # walker operates on GeoJSON geometries. Preserve an explicit Feature
-    # flag; otherwise keep raw values on the legacy planar route while letting
-    # a typed child supply its sidecar default.
+    # walker operates on GeoJSON geometries. An absent Feature flag contributes
+    # no inherited model; each child keeps its explicit flag or typed default.
     while isinstance(root, dict) and root.get("type") == "Feature":
         child = root.get("geometry")
         feature_model = root.get("geodesic")
         if feature_model is not None:
             inherited = feature_model
-        elif inherited is None and not isinstance(child, GeometryValue):
-            inherited = False
         root = child
         if root is None:
             return
@@ -95,9 +95,37 @@ def reject_spherical_edges(translator, value, label):
             fail(f"{label} exceeds the shared 50000-step compilation work budget")
         translator.steps += extra
 
-    if inherited is None and not isinstance(root, GeometryValue):
-        inherited = False
-    for model in geometry_edge_models(root, inherited):
+    from .geometry_topology import _has_edges
+
+    def edge_models(geometry, inherited_model=None):
+        if isinstance(geometry, FullSphere):
+            yield True
+            return
+        kind = geometry.get("type")
+        stored = (geometry.geometry_metadata
+                  if isinstance(geometry, GeometryValue) else {})
+        if kind == "GeometryCollection":
+            if "geodesic" in geometry:
+                model = geometry["geodesic"]
+            elif inherited_model is not None:
+                model = inherited_model
+            else:
+                model = stored.get("geodesic")
+            for child in geometry["geometries"]:
+                yield from edge_models(child, model)
+            return
+        if _has_edges(geometry):
+            if "geodesic" in geometry:
+                model = geometry["geodesic"]
+            elif inherited_model is not None:
+                model = inherited_model
+            elif "geodesic" in stored:
+                model = stored["geodesic"]
+            else:
+                model = default_geodesic
+            yield model
+
+    for model in edge_models(root, inherited):
         if model is True:
             fail(f"{label} spherical geometry edges require a spherical raster/reprojection adapter")
         if model is not False:

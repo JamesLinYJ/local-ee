@@ -11,6 +11,7 @@ import sys
 import threading
 
 from .ir import fail
+from .spherical_envelope import decode_envelope
 from .spherical_wire import MAX_WIRE_DOUBLES, decode_geometry, encode_geometry
 
 
@@ -21,7 +22,7 @@ _LOADED = None
 _OPERATIONS = {
     "contains": 0, "containedIn": 1, "intersects": 2, "disjoint": 3,
     "intersection": 4, "union": 5, "difference": 6, "symmetricDifference": 7,
-    "validate": 8,
+    "validate": 8, "bounds": 9,
 }
 
 
@@ -146,19 +147,24 @@ def run(operation, left, right=None, *, output_positions=0, output_children=0):
     """Call the trusted native kernel after the caller reserves all work."""
     if operation not in _OPERATIONS:
         fail("Unsupported S2 native operation")
+    if operation == "bounds" and right is not None:
+        fail("S2 bounds accepts exactly one geometry")
     function = _load()
     left_wire = encode_geometry(left)
     right_wire = encode_geometry(right) if right is not None else [1, 0]
     left_array = (ctypes.c_double * len(left_wire))(*left_wire)
     right_array = (ctypes.c_double * len(right_wire))(*right_wire)
+    bounds = operation == "bounds"
     predicate = _OPERATIONS[operation] < 4 or operation == "validate"
-    if not predicate and (type(output_positions) is not int or type(output_children) is not int
-                          or not 0 <= output_positions <= 10_000
-                          or not 1 <= output_children <= 1_000):
+    if (not bounds and not predicate
+            and (type(output_positions) is not int
+                 or type(output_children) is not int
+                 or not 0 <= output_positions <= 10_000
+                 or not 1 <= output_children <= 1_000)):
         fail("S2 output requires a finite precharged reservation")
-    capacity = 1 if predicate else min(
+    capacity = 8 if bounds else (1 if predicate else min(
         MAX_WIRE_DOUBLES, 2 + 6 * output_children + 3 * output_positions,
-    )
+    ))
     output = (ctypes.c_double * capacity)()
     size = ctypes.c_size_t()
     error = ctypes.create_string_buffer(1024)
@@ -169,6 +175,10 @@ def run(operation, left, right=None, *, output_positions=0, output_children=0):
         fail("S2 spherical operation failed: " + error.value.decode("utf-8", errors="replace"))
     if size.value > capacity:
         fail("S2 native output exceeded its allocation")
+    if bounds:
+        if size.value != 8:
+            fail("S2 returned a malformed envelope size")
+        return decode_envelope(output[:size.value])
     if predicate:
         if size.value != 1 or output[0] not in (0, 1):
             fail("S2 returned a malformed Boolean output")

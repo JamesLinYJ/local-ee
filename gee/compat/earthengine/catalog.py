@@ -156,10 +156,13 @@ class CatalogOperations:
             from .geometry_binary import invoke_geometry_binary
             from .geometry_preflight import _charge, measure_geometry
             from .geometry_topology import geometry_edge_models
+            from .geometry_values import own_geometry_bounded
             from .spatial_filters import _own_catalog_geometry
 
-            reject_spherical_edges(self, collection.image.footprint, "Collection footprint")
-            clip = _own_catalog_geometry(self, collection.image.footprint)
+            clip = own_geometry_bounded(self, collection.image.footprint)
+            reject_spherical_edges(
+                self, clip, "Collection footprint", default_geodesic=True,
+            )
             cost = measure_geometry(clip)
             _charge(self, cost.nodes + cost.positions, "Collection footprint model inspection")
             if any(model is not False for model in geometry_edge_models(clip)):
@@ -179,8 +182,18 @@ class CatalogOperations:
 
         if isinstance(value, ImageSequence):
             geometries = [self.footprint(image) for image in value.images]
+            default_geodesic = True
         elif isinstance(value, Collection):
-            geometries = [item["geometry"] for item in self.collection_items(value)]
+            from .spatial_filters import _own_catalog_geometry
+
+            # These rows are catalog-owned STAC footprints. Apply the legacy
+            # planar default to raw catalog leaves before the shared consumer
+            # guard, while retaining any typed child model sidecars.
+            geometries = [
+                _own_catalog_geometry(self, item["geometry"])
+                for item in self.collection_items(value)
+            ]
+            default_geodesic = False
         elif isinstance(value, Image):
             if value.footprint is not None and value.footprint_is_absolute:
                 return value.footprint
@@ -188,6 +201,7 @@ class CatalogOperations:
                 fail("Image geometry requires a source footprint")
             from .geometry_preflight import _charge, measure_geometry
             from .geometry_topology import geometry_edge_models
+            from .geometry_values import own_geometry_bounded
             from .spatial_filters import _own_catalog_geometry
 
             geometries = [
@@ -203,7 +217,12 @@ class CatalogOperations:
                     fail("Image.geometry spherical geometry edges require a spherical raster/reprojection adapter")
             clip = None
             if value.footprint is not None:
-                clip = _own_catalog_geometry(self, value.footprint)
+                clip = own_geometry_bounded(self, value.footprint)
+                from .geometry_consumers import reject_spherical_edges
+
+                reject_spherical_edges(
+                    self, clip, "Image.geometry clip", default_geodesic=True,
+                )
                 cost = measure_geometry(clip)
                 _charge(self, cost.nodes + cost.positions, "Image.geometry clip model scan")
                 if any(model is True for model in geometry_edge_models(clip)):
@@ -224,6 +243,7 @@ class CatalogOperations:
             return value["geometry"]
         elif isinstance(value, dict) and value.get("type") == "FeatureCollection":
             geometries = [feature["geometry"] for feature in value["features"] if feature.get("geometry")]
+            default_geodesic = True
         else:
             fail("Geometry requires an Image, Collection or Feature")
         if not geometries:
@@ -231,8 +251,16 @@ class CatalogOperations:
         from .geometry_consumers import reject_spherical_edges
 
         for geometry in geometries:
-            reject_spherical_edges(self, geometry, "Collection.geometry")
-        return mapping(unary_union([shape(geometry) for geometry in geometries]))
+            reject_spherical_edges(
+                self, geometry, "Collection.geometry",
+                default_geodesic=default_geodesic,
+            )
+        result = mapping(unary_union([shape(geometry) for geometry in geometries]))
+        from .geometry_topology import _has_edges
+
+        if _has_edges(result):
+            result["geodesic"] = False
+        return result
 
     def select(self, image, selectors, names=None):
         if isinstance(image, ImageSequence):

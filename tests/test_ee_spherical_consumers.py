@@ -104,11 +104,25 @@ def test_untyped_unflagged_geojson_keeps_the_legacy_planar_default():
 
 def test_feature_collection_geometry_route_imports_and_uses_shared_guard():
     translator = Translator([], {}, {})
-    result = translator.footprint({
+    original = {
         "type": "FeatureCollection",
         "features": [{"type": "Feature", "geometry": {
             key: value for key, value in geometry(False).items()
             if key != "geodesic"
         }}],
+    }
+    # This original predecoded EE value used to take the catalog's planar
+    # default. It has no catalog provenance, so its default edges are spherical.
+    with pytest.raises(UnsupportedEEError, match="spherical geometry edges"):
+        translator.footprint(original)
+    assert "geodesic" not in original["features"][0]["geometry"]
+
+
+def test_feature_collection_explicit_planar_footprint_uses_shared_guard():
+    translator = Translator([], {}, {})
+    result = translator.footprint({
+        "type": "FeatureCollection",
+        "features": [{"type": "Feature", "geometry": geometry(False)}],
     })
     assert result["type"] == "Polygon"
+    assert result["geodesic"] is False

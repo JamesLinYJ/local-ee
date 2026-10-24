@@ -9,11 +9,11 @@ from ...ee_integer import SUPPORTED_INTEGER_FUNCTIONS
 SUPPORTED_FUNCTIONS = frozenset({
     *("Geometry." + n for n in (
         "contains", "containedIn", "disjoint", "intersects", "intersection",
-        "union", "difference", "symmetricDifference",
+        "union", "difference", "symmetricDifference", "bounds",
     )),
     *("Feature." + n for n in (
         "contains", "containedIn", "disjoint", "intersects", "intersection",
-        "union", "difference", "symmetricDifference",
+        "union", "difference", "symmetricDifference", "bounds",
     )),
     "Image.linkCollection", "ImageCollection.combine",
     *("Image." + n for n in (
@@ -435,6 +435,7 @@ def get_capabilities():
              "addBands accepts only bool/null overwrite, charges ordered merging and suffix work, and "
              "an explicit empty names list cannot lend a hidden source. Google parity is unverified."),
             "Geometry/Feature binary defaults use pinned local S2 for geodesic EPSG:4326; planar edges with explicit EPSG:4326 use GEOS. Non-4326 CRS, binary reprojection/maxError and full-sphere public encoding remain gaps. Filter.intersects and inline Collection.geometry preserve homogeneous actual edge models and consume static ErrorMargin only without transformation. Raw STAC catalog footprints retain planar edges; curved polygon ROI requires unsupported reprojection. S2 binary64 boundary/roundtrip differences are measured; explicit spherical results reject at legacy planar raster/join consumers. Unflagged raster inputs retain their earlier planar path without a GEE geodesic parity claim",
+            "Geometry.bounds and Feature.bounds accept omitted/null or explicit EPSG:4326 projections and validate static maxError values only on this no-transform path. Planar inputs use exact coordinate extrema; actual geodesic inputs use S2 component bounds, including polar closure. Positive-area finite envelopes become explicit planar EPSG:4326 rectangles. Empty, degenerate and wrapped public encodings reject; full-longitude envelopes use [-180,180] when the latitude span is positive. Other CRS transforms and Google parity remain unverified",
             "Filter.notNull tests flat local metadata names with at most 1000 properties and the shared compilation budget; null and missing fail while falsey non-null values pass",
             "Dictionary missing keys require a non-null default; explicit empty value-key lists stay empty; List.sequence count/end spacing and count/step ranges materialize at most 10000 finite values",
             "List zip/unzip truncate to shortest; flatten traverses Lists only and preserves typed atoms, depth<=96; repeat/reverse/set/swap preserve values without mutating sources, strict negative-index bounds; <=10000 top-level values and shared work/materialization budgets",

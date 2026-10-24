@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "s2/mutable_s2shape_index.h"
+#include "s2/s2latlng_rect.h"
 #include "s2/s2memory_tracker.h"
 #include "s2/s2point.h"
 #include "s2/s2lax_polygon_shape.h"
@@ -85,7 +86,12 @@ bool CheckCallBudget(const ParsedGeometry& left, const ParsedGeometry* right,
                      std::string* error);
 
 bool BuildShapeIndex(const ParsedGeometry& parsed, S2MemoryTracker* tracker,
-                     MutableS2ShapeIndex* index, std::string* error);
+                     MutableS2ShapeIndex* index, S2LatLngRect* bounds,
+                     std::string* error);
+S2LatLngRect BoundsForPoints(const std::vector<S2Point>& points);
+S2LatLngRect BoundsForOutput(const GeometryOutput& output);
+bool PackBounds(const S2LatLngRect& bounds, double* output,
+                std::string* error);
 bool AddOutputToIndex(GeometryOutput* output, S2MemoryTracker* tracker,
                       MutableS2ShapeIndex* index, std::string* error);
 bool ExtractLaxPolygon(const S2LaxPolygonShape& lax_polygon,

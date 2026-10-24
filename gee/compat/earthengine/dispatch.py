@@ -100,6 +100,10 @@ def invoke(translator, name, arguments):
         return invoke_feature_structure(translator, name, a)
     if name in GEOMETRY_STRUCTURE_FUNCTIONS:
         return invoke_geometry_structure(translator, name, a)
+    if name in {"Geometry.bounds", "Feature.bounds"}:
+        from .geometry_bounds import invoke_geometry_bounds
+
+        return invoke_geometry_bounds(translator, name, a)
     if name in {
         "Geometry.contains", "Geometry.containedIn", "Geometry.disjoint",
         "Geometry.intersects", "Geometry.intersection", "Geometry.union",

@@ -222,9 +222,16 @@ def precharge_geometry_decode(translator, value) -> GeometryCost:
     return cost
 
 
-def precharge_geometry_copy(translator, value, label="Geometry output") -> GeometryCost:
-    """Reserve a measured owned copy before materializing the result."""
+def precharge_geometry_copy(
+        translator, value, label="Geometry output", *,
+        additional_geometry_walks=0) -> GeometryCost:
+    """Reserve a measured owned copy and any complete geometry-tree passes."""
+    if type(additional_geometry_walks) is not int or additional_geometry_walks < 0:
+        fail("Geometry copy walk count must be a non-negative integer")
     cost = measure_geometry(value)
-    amount = cost.nodes + cost.geometries + cost.positions
+    amount = (
+        cost.nodes + cost.geometries + cost.positions
+        + additional_geometry_walks * cost.geometries
+    )
     _charge(translator, amount, label)
     return cost

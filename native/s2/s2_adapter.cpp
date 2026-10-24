@@ -65,8 +65,9 @@ bool EvaluatePredicate(int op, const S2ShapeIndex& left,
 }
 
 bool MakeIndex(const ParsedGeometry& parsed, S2MemoryTracker* tracker,
-               MutableS2ShapeIndex* index, std::string* error) {
-  if (BuildShapeIndex(parsed, tracker, index, error)) return true;
+               MutableS2ShapeIndex* index, S2LatLngRect* bounds,
+               std::string* error) {
+  if (BuildShapeIndex(parsed, tracker, index, bounds, error)) return true;
   if (HasMemoryError(*tracker)) {
     *error = "S2 memory tracker exceeded the 64 MiB limit";
   }
@@ -76,8 +77,8 @@ bool MakeIndex(const ParsedGeometry& parsed, S2MemoryTracker* tracker,
 int Run(int op, const double* left_data, size_t left_size,
         const double* right_data, size_t right_size, double* output,
         size_t output_capacity, size_t* output_size, std::string* error) {
-  if (op < 0 || op > 8) {
-    *error = "operation code must be in the range 0 through 8";
+  if (op < 0 || op > 9) {
+    *error = "operation code must be in the range 0 through 9";
     return kInvalidCall;
   }
   if (output_size == nullptr) {
@@ -94,7 +95,13 @@ int Run(int op, const double* left_data, size_t left_size,
     return kInvalidCall;
   }
   const bool validate_only = op == 8;
-  if (!validate_only && (right_data == nullptr || right_size < 2)) {
+  const bool bounds_only = op == 9;
+  const bool unary = validate_only || bounds_only;
+  if (bounds_only && (output_capacity < 8 || output == nullptr)) {
+    *error = "bounds result requires eight output doubles";
+    return kOutputLimit;
+  }
+  if (!unary && (right_data == nullptr || right_size < 2)) {
     *error = "right geometry is required for this operation";
     return kInvalidCall;
   }
@@ -104,17 +111,19 @@ int Run(int op, const double* left_data, size_t left_size,
     return kInvalidWire;
   }
   ParsedGeometry right_wire;
-  if (!validate_only && !ParseWire(right_data, right_size, &right_wire, error)) {
+  if (!unary && !ParseWire(right_data, right_size, &right_wire, error)) {
     return kInvalidWire;
   }
-  if (!CheckCallBudget(left_wire, validate_only ? nullptr : &right_wire, error)) {
+  if (!CheckCallBudget(left_wire, unary ? nullptr : &right_wire, error)) {
     return kResourceLimit;
   }
 
   S2MemoryTracker tracker;
   tracker.set_limit_bytes(kMaxTrackedBytes);
   MutableS2ShapeIndex left_index;
-  if (!MakeIndex(left_wire, &tracker, &left_index, error)) {
+  S2LatLngRect left_bounds;
+  if (!MakeIndex(left_wire, &tracker, &left_index,
+                 bounds_only ? &left_bounds : nullptr, error)) {
     return HasMemoryError(tracker) ? kResourceLimit : kInvalidGeometry;
   }
   if (validate_only) {
@@ -126,9 +135,18 @@ int Run(int op, const double* left_data, size_t left_size,
     *output_size = 1;
     return kOk;
   }
+  if (bounds_only) {
+    if (HasMemoryError(tracker)) {
+      *error = "S2 memory tracker exceeded the 64 MiB limit";
+      return kResourceLimit;
+    }
+    if (!PackBounds(left_bounds, output, error)) return kInvalidGeometry;
+    *output_size = 8;
+    return kOk;
+  }
 
   MutableS2ShapeIndex right_index;
-  if (!MakeIndex(right_wire, &tracker, &right_index, error)) {
+  if (!MakeIndex(right_wire, &tracker, &right_index, nullptr, error)) {
     return HasMemoryError(tracker) ? kResourceLimit : kInvalidGeometry;
   }
   GeometryOutput result;

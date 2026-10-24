@@ -36,12 +36,11 @@ def _owned_result(translator, image, bands):
     if image.footprint is None:
         footprint = None
     else:
-        # Preserve the source edge model while accepting tuple coordinates
-        # emitted by Shapely. Raw catalog mappings use the existing local
-        # planar policy; typed GeometryValue sidecars remain authoritative.
-        from .spatial_filters import _own_catalog_geometry
+        # Image envelopes are EE values here. Catalog source footprints are
+        # normalized separately when they are fetched from translator.items.
+        from .geometry_values import own_geometry_bounded
 
-        footprint = _own_catalog_geometry(translator, image.footprint)
+        footprint = own_geometry_bounded(translator, image.footprint)
     return replace(image, bands=bands, props=props, footprint=footprint)
 
 
@@ -132,7 +131,14 @@ def _first_footprint(translator, image):
     if image.footprint is not None:
         if not isinstance(image.footprint, dict):
             fail("Image.addBands first footprint must be a GeoJSON geometry")
-        footprint = _own_catalog_geometry(translator, image.footprint)
+        from .geometry_consumers import reject_spherical_edges
+        from .geometry_values import own_geometry_bounded
+
+        footprint = own_geometry_bounded(translator, image.footprint)
+        reject_spherical_edges(
+            translator, footprint, "Image.addBands first footprint",
+            default_geodesic=True,
+        )
         cost = measure_geometry(footprint)
         _charge(
             translator, cost.nodes + cost.positions,
@@ -156,11 +162,11 @@ def _first_footprint(translator, image):
 def _clip_to_first_footprint(translator, bands, footprint, science_raster):
     if footprint is None:
         return bands
-    from .spatial_filters import _own_catalog_geometry
+    from .geometry_public import public_geometry_mapping
 
     output = []
     for (name, pixel), has_science_raster in zip(bands, science_raster):
-        mask = _own_catalog_geometry(translator, footprint) if has_science_raster else None
+        mask = public_geometry_mapping(footprint) if has_science_raster else None
         output.append((name, Pixel("clip", (pixel, mask)) if mask is not None else pixel))
     return output
 

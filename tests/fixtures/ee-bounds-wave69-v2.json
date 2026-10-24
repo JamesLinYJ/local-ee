@@ -1,0 +1,222 @@
+{
+  "schema": "local-ee-geometry-bounds-wave69/v2",
+  "sdk": {
+    "python": "1.7.49",
+    "javascript": "1.7.49",
+    "source_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a"
+  },
+  "scope": {
+    "input_crs": "EPSG:4326",
+    "catalog_edge_model": "planar",
+    "local_output_edge_policy": "Planar EPSG:4326 rectangles for the explicitly supported finite cases in this fixture; this is a local policy, not an asserted Google result.",
+    "feature_bounds_properties": "Retain source user properties locally; no Google parity claim is made for property or ID retention.",
+    "unsupported_or_unresolved": [
+      "Other input or output CRSs",
+      "Antimeridian wrapping and full-longitude output encoding",
+      "Pole-containing geometry output encoding",
+      "Empty and degenerate bounds output encoding",
+      "Google bounds-result edge flags",
+      "Feature.bounds property and ID behavior on Google"
+    ],
+    "fixture_calibration": "Version 1 used custom ID wave69-bounds-catalog and was preserved as an original baseline; local compilation rejected it under strict catalog admission. Version 2 uses the existing sentinel-2-l2a alias only for this synthetic fixture."
+  },
+  "catalog": {
+    "id": "sentinel-2-l2a",
+    "description": "Hand-authored synthetic planar footprint under the existing local sentinel-2-l2a compatibility alias; no dataset admission or external catalog access.",
+    "license": "CC0-1.0",
+    "cube:dimensions": {
+      "bands": {
+        "values": [
+          "B1",
+          "B2"
+        ]
+      }
+    }
+  },
+  "image": {
+    "id": "wave69-bounds-scene",
+    "bbox": [
+      0,
+      0,
+      8,
+      8
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            8,
+            0
+          ],
+          [
+            7,
+            8
+          ],
+          [
+            1,
+            8
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      ],
+      "geodesic": false,
+      "evenOdd": true
+    },
+    "properties": {
+      "system:index": "wave69-bounds-scene",
+      "system:time_start": 1792800000000
+    },
+    "expected_bounds": [
+      0,
+      0,
+      8,
+      8
+    ]
+  },
+  "feature": {
+    "id": "wave69-bounds-input-feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            2,
+            3
+          ],
+          [
+            6,
+            3
+          ],
+          [
+            5,
+            7
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            2,
+            3
+          ]
+        ]
+      ],
+      "geodesic": false,
+      "evenOdd": true
+    },
+    "properties": {
+      "name": "feature-bounds",
+      "rank": 7
+    },
+    "expected_bounds": [
+      2,
+      3,
+      6,
+      7
+    ]
+  },
+  "numeric_references": {
+    "coordinate_units": "degrees",
+    "roundoff_tolerance_degrees": 2e-12,
+    "planar_rectangle": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            1,
+            2
+          ],
+          [
+            7,
+            2
+          ],
+          [
+            7,
+            8
+          ],
+          [
+            1,
+            8
+          ],
+          [
+            1,
+            2
+          ]
+        ]
+      ],
+      "edge_model": "planar",
+      "expected_bounds": [
+        1,
+        2,
+        7,
+        8
+      ],
+      "method": "Manual coordinate extrema; all four straight edges are axis-aligned."
+    },
+    "high_latitude_line": {
+      "type": "LineString",
+      "coordinates": [
+        [
+          -60,
+          75
+        ],
+        [
+          60,
+          75
+        ]
+      ],
+      "edge_model": "shortest great-circle arc",
+      "expected_bounds": [
+        -60,
+        75,
+        60,
+        82.36925978756994
+      ],
+      "maximum_latitude_formula": "atan(tan(phi)/cos(deltaLongitude/2))",
+      "method": "The arc is symmetric around longitude 0. Its latitude extremum is where the great-circle tangent is east-west; use phi=75 degrees and deltaLongitude=120 degrees."
+    },
+    "high_latitude_polygon": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            -60,
+            75
+          ],
+          [
+            0,
+            50
+          ],
+          [
+            60,
+            75
+          ],
+          [
+            -60,
+            75
+          ]
+        ]
+      ],
+      "edge_model": "shortest great-circle arcs",
+      "expected_bounds": [
+        -60,
+        50,
+        60,
+        82.36925978756994
+      ],
+      "method": "Analytically evaluate each minor great-circle edge's interior latitude extrema and endpoints; the closing edge has the same northern extremum as the line reference. The small polygon contains no pole and does not cross the antimeridian."
+    }
+  },
+  "tolerances": {
+    "coordinate_absolute_degrees": 2e-12,
+    "wire_json": "Exact byte hashes are recorded in the audit manifest; explicit-null controls retain each SDK's native serialization."
+  }
+}
