@@ -1,0 +1,313 @@
+{
+  "schema": "local-ee-gee-python-wave72/v1",
+  "date": "2026-10-25",
+  "base_commit": "51bc7cd4c40a636560549d28118ad7905b7ab2d2",
+  "scope": "Official EE component-preserving planar MultiPolygon decoding, geometry metadata transport and closed literal CSV export; Python-first offline compatibility.",
+  "goal_status": "active; broader compatibility and production acceptance remain incomplete",
+  "models": {
+    "implementation_and_contract": "temporary gpt-6-astra subagents as requested",
+    "independent_scoped_review": "gpt-6.1-sol"
+  },
+  "coverage": {
+    "entry_names_supported": 720,
+    "pinned_signature_names": 991,
+    "entry_name_percentage": 72.65,
+    "new_entry_names": 0,
+    "remaining_entry_names": 271,
+    "argument_or_semantic_completeness_percentage": null,
+    "google_same_data_equivalence_measured": false,
+    "interpretation": "Name inventory only. Existing-name behavior repaired; no registration-only coverage gain."
+  },
+  "changes": [
+    "Fresh owned component decoding preserves original overlapping/duplicate explicitly planar MultiPolygon polygons, coordinates, order and multiplicity. Atomic Polygon shells and all holes are checked together; no union, normalization or repair.",
+    "Geometry/Feature structural and metadata accessors use explicit component ownership without changing GeometryValue type or trusting mutable validation markers.",
+    "Strict aggregate decoder remains at set/raster/region/catalog union consumers. Geometry-only catalog rows remain accepted; ignored Feature metadata does not become a new prerequisite.",
+    "Only closed local_ee_table compilation/validation/execution selects the internal component profile. Shared table columns/render_csv defaults stay strict, including table-backed sampling/RF consumers. Pure numeric minimumDistance may carry unused valid component geometry as data.",
+    "After JSON transport, whole-table preflight combines structure, coordinate/copy costs and actual inherited-model S2 leaf/empty-collection validation costs in one50000 ledger before GEOS/S2."
+  ],
+  "verification": {
+    "full_regression": {
+      "command": ".venv/bin/python -m pytest -q",
+      "exit_code": 0,
+      "seconds": 100.335,
+      "source_files": 1227,
+      "source_stable": true,
+      "changed_files": []
+    },
+    "full_regression_result": "7083 passed, 27 skipped, 53 warnings in 99.43s (0:01:39)",
+    "post_full_change": {
+      "schema": "wave72-post-full-documentation/v1",
+      "changed_files": {
+        "scripts/ee_inventory/geometry_measures.py": {
+          "tested": "c7cbeaebe4d84e8167372b76e9455eb191fc9c6d41cad48e9e19534ee185fe62",
+          "current": "9b7009a53eed3dccafd558318baa2c6e38e3033e83054308fe2d89dca8c008d9"
+        }
+      },
+      "change": "Informational limit string narrowed from all classifier consumers to table-backed classifier consumers; no runtime or test change.",
+      "focused_result": "9 passed in 2.36s",
+      "all_other_1226_frozen_files_unchanged": true
+    },
+    "root_table_focus": "123 passed, 1 warning in 1.95s; overlapping with full suite",
+    "owner_workflow": "137 passed, 1 warning in 2.28s",
+    "compiler_focus": "160 passed, 1 warning in1.28s at freeze3; overlapping controls",
+    "independent_scoped_controls": [
+      {
+        "failed": 0,
+        "passed": 65,
+        "path": "audit/gee-python-wave72/review/boundaries-freeze3.json",
+        "sha256": "9d6f6bbf6f203cb8253e6856a7ca9e67578cbf66a7aae4df8c2cdd0fea16ecea",
+        "sources_stable": true
+      },
+      {
+        "failed": 0,
+        "passed": 13,
+        "path": "audit/gee-python-wave72/review/exact-ledger-freeze3.json",
+        "sha256": "f7ef820e8a6cecdcbe1512419e2fc83e088d236ece06a7c61587693a751eb56a",
+        "sources_stable": true
+      },
+      {
+        "failed": 0,
+        "passed": 16,
+        "path": "audit/gee-python-wave72/review/original16-freeze3.json",
+        "sha256": "ac22097c4b2776f687324503bebf718abc079e250e3753f078ccc8735fe939ed",
+        "sources_stable": true
+      },
+      {
+        "failed": 0,
+        "passed": 22,
+        "path": "audit/gee-python-wave72/review/metadata-freeze3.json",
+        "sha256": "50950701f53177d2120d0e69e40c5598fbabc4b551043c9630bfd124ef5e2242",
+        "sources_stable": true
+      }
+    ],
+    "independent_review_result": "No unresolved blocker found in the reviewed Wave72 component-value and fixed CSV transfer changes at compiler freeze3 and final root table sources.",
+    "count_policy": "The65 consumer gates and13 ledger controls overlap with each other and owners' tests. Original16 cover2 MultiPolygon inputs x8 existing API names; metadata22 are regressions. Do not sum these as unique API support or combine with owner suite totals. Wave72 adds0 API names.",
+    "frontend": "No frontend changes. Required same-commit frontend CI must pass before protected main publication; publication recorded separately.",
+    "full_suite_failures_preserved": {
+      "first_run": "2 failed,7075 passed,27 skipped; unrelated Feature metadata requirement regressed geometry-only catalog inputs",
+      "fixed_in_source": true,
+      "original_two_tests_and_inputs_unchanged": true,
+      "second_run": "7083 passed, 27 skipped, 53 warnings in 99.43s (0:01:39)"
+    }
+  },
+  "original_16": {
+    "baseline_accepted": 0,
+    "baseline_receipt": "audit/gee-python-wave72/workflow/original-16-baseline.json",
+    "baseline_rejected": 16,
+    "expectations_and_wires_unchanged": true,
+    "final_passed": 16
+  },
+  "targeted_physical_workflow": {
+    "columns": 10,
+    "csv_bytes": 636,
+    "csv_copy": "audit/gee-python-wave72/workflow/final-frozen/targeted-worker.csv",
+    "csv_sha256": "47116127f34ee19415435f0adfbdb84816a088c31535e235fc8654fe29f7a5c3",
+    "effective_evenOdd_materialized_as_true": "Existing unchanged geometry_public.py rule; exact coordinates/type/geodesic and multiplicity preserved.",
+    "offline_guard": {
+      "attempt_count": 0,
+      "attempts_by_operation": {},
+      "instrumented_operations": [
+        "local_transport.request",
+        "socket.create_connection",
+        "socket.getaddrinfo",
+        "socket.gethostbyaddr",
+        "socket.gethostbyname",
+        "socket.gethostbyname_ex",
+        "socket.socket.connect",
+        "socket.socket.connect_ex",
+        "socket.socket.sendmsg",
+        "socket.socket.sendto"
+      ],
+      "mode": "deny_and_count_python_network_and_local_transport_entry_points",
+      "scope": "Trusted in-process SDK probes only; not packet capture or kernel isolation"
+    },
+    "original_multipolygon_geometry_retained": true,
+    "readback_receipt": "audit/gee-python-wave72/workflow/integrated-run2/wave72-multipolygon-targeted-worker-readback.json",
+    "rows": 2,
+    "numeric_reference": {
+      "areas": [
+        16,
+        20
+      ],
+      "perimeters": [
+        24,
+        26
+      ],
+      "centroids": [
+        [
+          2,
+          1
+        ],
+        [
+          2.6,
+          1.9
+        ]
+      ],
+      "method": "Independent Fraction shoelace/axis lengths and Decimal controls"
+    },
+    "scope": "Actual local dispatch, worker prepare/finish, pure table execution and physical CSV readback with synthetic in-memory database/queue and substituted NativeTask launcher. No HTTP, native service, sandbox launch, Spark, private data or Google acceptance."
+  },
+  "original_sixrow_planar": {
+    "accepted": false,
+    "error": "UnsupportedEEError: Geometry decoding exceeds the shared 50000-step compilation work budget",
+    "formula_unchanged": true,
+    "offline_guard": {
+      "attempt_count": 0,
+      "attempts_by_operation": {},
+      "instrumented_operations": [
+        "local_transport.request",
+        "socket.create_connection",
+        "socket.getaddrinfo",
+        "socket.gethostbyaddr",
+        "socket.gethostbyname",
+        "socket.gethostbyname_ex",
+        "socket.socket.connect",
+        "socket.socket.connect_ex",
+        "socket.socket.sendmsg",
+        "socket.socket.sendto"
+      ],
+      "mode": "deny_and_count_python_network_and_local_transport_entry_points",
+      "scope": "Trusted in-process SDK probes only; not packet capture or kernel isolation"
+    },
+    "original_error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+    "rows": 6,
+    "wire_sha256": "2867f0264ec499d3f8a040dbbd114f317c7aefa5bedf88c97a300310a70b7d4e"
+  },
+  "test_maintenance": {
+    "root": {
+      "old_test_sha256": "583212b7b8f4c2ed735449c83b31381cbe38190e9ed47a0ddf96bed3bca311dc",
+      "new_test_sha256": "e1411bb1cae102020852b93898c0a253e873b060e55e06a888bb1d10da101a79",
+      "original_inputs_and_formula_unchanged": true,
+      "changes": [
+        "Original scalar rejection becomes independently computed area32 equality. Same fullwire hash and bytecount retained. Fullformula still50000 rejection.",
+        "Initial new assertion used a nonexistent reference key; KeyError preserved in after-pytest.txt and source snapshot, corrected to existing area_square_degrees without numeric or tolerance changes."
+      ],
+      "final_result": "6 passed, 1 warning in 0.76s"
+    },
+    "contract": [
+      {
+        "reason": "Pinned SDK converts original GeoJSON id to system:index; new identity-location assertions corrected and separate source/centroid Feature.id checks added.",
+        "receipt": "audit/gee-python-wave72/workflow/identity-contract-correction/receipt.json"
+      },
+      {
+        "reason": "Existing CSV mapping materializes effective evenOdd:true; new exact geometry assertion includes only this preexisting output flag.",
+        "receipt": "audit/gee-python-wave72/workflow/export-flag-contract-correction/receipt.json"
+      }
+    ],
+    "old_fixture_and_wire_bytes_preserved": true,
+    "numerical_tolerance_relaxed": false
+  },
+  "resource_and_consumer_repairs": [
+    {
+      "final": "Exact original wire rejects; typed component gate proves union unreached",
+      "original": "Wrong-receiver legacy Image.geometry->FeatureCollection silently unions duplicate MP",
+      "path": "audit/gee-python-wave72/review/catalog-union-original.json",
+      "sha256": "1f7598fb602426cf5ca834e47946bc1cbdd37496a332e96bc57d2c49cb508740"
+    },
+    {
+      "final": "Both row orders reject before GEOS/mockS2; exact50000 accepts and50001 rejects before either kernel",
+      "original": "Separate48175 structural+3681 S2 ledgers accepted51856 combinedwork",
+      "path": "audit/gee-python-wave72/review/combined-ledgers-original.json",
+      "sha256": "46010ebb45cd877cf1d71011e02891cbac4e998475a43b0f580e8fb408a3b8a4"
+    },
+    {
+      "final": "Freeze3 restores geometry-only policy; original test file byte-identical to base; owner focused160passed and our2 legacy-row controls pass",
+      "original_owner_reported": "7075passed27skip2fail; original geometry-only rows rejected by unrelated metadata schema",
+      "path": "audit/gee-python-wave72/root/full-1.json",
+      "sha256": "d608f6e77416de1bffbd00b1dbc4eedce00766ffcf1433958937a56599bae393",
+      "source_stable": true
+    }
+  ],
+  "native": {
+    "schema": "wave72-unchanged-component/v1",
+    "manifest_sha256": "fe8ea4830f93a07428f7d4da5a579d90868c960fe088dd485c67d1ba136d8ec1",
+    "dylib_sha256": "69d5da02e25881826af4fae6f33ce96f6b4cd345b21da88bdbab9e17b86b79d0",
+    "expected_manifest_sha256": "fe8ea4830f93a07428f7d4da5a579d90868c960fe088dd485c67d1ba136d8ec1",
+    "expected_dylib_sha256": "69d5da02e25881826af4fae6f33ce96f6b4cd345b21da88bdbab9e17b86b79d0",
+    "build_or_deploy_performed": false
+  },
+  "remaining_gaps": [
+    "Original full6row pairedplanar formula still exceeds50000 unchanged; targeted2row physical workflow is separately named",
+    "Existing Wave71 four-row fullWGS combinedformula budget gap remains; this input-transport patch adds no default-unit/native numerical behavior",
+    "Existing three strictS2 binary64 incidence/constructive-roundtrip gaps remain carried forward and unmodified",
+    "Aggregate-invalid MP remains unsupported at strict set/raster/region/bounds/collection.geometry and default table-backed sampling/RF boundaries",
+    "Resource work counter is an explicit bounded policy, not proof of GEOS CPU time or kernel isolation",
+    "General projection/edge-model conversion, distance/buffer and remaining API families are incomplete.",
+    "Native service deployment, complete Spark/batch/browser/private-data and production acceptance remain deferred/unverified."
+  ],
+  "privacy_and_scope": {
+    "google_compute_auth_discovery_calls": 0,
+    "workflow_offline_guard_attempts": 0,
+    "network_evidence_limit": "OfflineGuard denies/counts instrumented Python network and local transport calls; JS additionally intercepts HTTP/HTTPS/TCP/DNS/fetch. This is not kernel isolation.",
+    "dependency_locks_modified": false,
+    "native_library_modified": false,
+    "services_started_restarted_deployed": false,
+    "private_data_or_credentials_accessed": false,
+    "new_vm_or_container": false,
+    "security_review_scope": "Read-only scoped consumer/correctness/resource audit. Reviewer writes only ignored Wave72 review artifacts; no source/test/fixture/native edits, native builds/dependencies/services, Google compute/auth, private data/config/.env reads or _engine_paths() invocation. S2 is mocked only for model/accounting/default-model gates; original scalarSDK/metadata controls are planar/edgeless. No fullsecurity/product/Google/Spark/native-service acceptance claim."
+  },
+  "cleanup": {
+    "new_build_scratch_created": false,
+    "inactive_owned_wave72_audit_pycache_found": 0,
+    "retained": "Concise reports, original failures, frozen fixtures, actual CSV and reproducibility scripts. Existing runtime/dependency artifacts untouched."
+  },
+  "source_file_policy": {
+    "new_production_module_lines": {
+      "gee/planar_geometry_validation.py": 63,
+      "gee/compat/earthengine/geometry_components.py": 66,
+      "gee/table_component_validation.py": 107
+    },
+    "catalog_lines_after_cohesive_helper_extraction": 396
+  },
+  "sources_sha256": {
+    "gee/compat/earthengine/catalog.py": "56b48239cedd4b4fc2637fd30c0a0fbbda6482313e8617a1faec6c4c16017f5a",
+    "gee/compat/earthengine/decoder.py": "032d28a883bcee4833788764d226c2d3cc9f466c381d30cedd78d9e0e95e734d",
+    "gee/compat/earthengine/feature_structure.py": "ae5b0df3b145a354a6dc2710be607acffe2e7697ce963e54d8afe7b0c91c5ffa",
+    "gee/compat/earthengine/feature_values.py": "e0c63d304c8ba59fa6a41198359195341039b23ee6a790a6f5cb0a4b2368d92e",
+    "gee/compat/earthengine/geometry_components.py": "1eab9d7ac4aaf7d8eb99b426005f8d493c5a3863d3539479fe0a90e0c66a3cd0",
+    "gee/compat/earthengine/geometry_constructors.py": "2792a87bb92762ec0a83573c3992c179083b6df36440493439fbbc9f24e68ebc",
+    "gee/compat/earthengine/geometry_consumers.py": "cc0eefcaa9333b90982179a20381ec62f9d4eeb8f50f9bad671439cc2f33d0a3",
+    "gee/compat/earthengine/geometry_structure.py": "8a9b58e01753cb5390ace11f69bfb8592d347951af855dded4366c18cd836e4d",
+    "gee/compat/earthengine/geometry_values.py": "87d21fc942a780ef8a184be6872fef12aac554e10d1bcc8111b6cc87affb2d04",
+    "gee/compat/earthengine/nested_collection_values.py": "b1127c12212cb6fdd273d4663734a07f969711f806c9fb9013b786d26a41a0ed",
+    "gee/compat/earthengine/static_dictionary_ops.py": "fa600ccd997911f606dedbbda12ebf898f27ef2fa3cd9274788b08ab9285c8f2",
+    "gee/compat/earthengine/static_list_ops.py": "a71209049f5bdcd0d29a84784870a9c7e579f0fbdf2b77e51cdfe75765ad828f",
+    "gee/planar_geometry_validation.py": "31c4bc01317db544c664eb4a67031142f8c750a9a41e6e206bc874292a29df15",
+    "gee/services/ee.py": "7df3c1858d37adfaa4102c87869797e2de70b2a632385fa3d45a357c62a49138",
+    "gee/table_component_validation.py": "71fcdab4ecf6518552acbf3f4001267af0023c6ecae7d6a21877765f64319428",
+    "gee/table_geometry.py": "d9e3d308f07478ca3c54da7cc0079c68f8a6b0c4c85bc6c3e390b7d37c3cae60",
+    "gee/table_graph.py": "e2fd0344e1e036e34d4c2c5eb5a8e079cc5f75fa8df5d0f79327a4638a61f72a",
+    "gee/table_values.py": "aa7d0f7995b5a33f070ab5c036c6fee0af8ce1781eeccd641cd5fe2aa3608b77",
+    "scripts/ee_inventory/geometry_measures.py": "9b7009a53eed3dccafd558318baa2c6e38e3033e83054308fe2d89dca8c008d9",
+    "tests/ee_multipolygon_reference.py": "9cd18fa3fac1629a597ab0f09899b27b9bb6c3c48b796bae8caf00adaab6cf14",
+    "tests/ee_multipolygon_sdk.py": "32661c2e07f2b8108d7e03c9c4b083ab981275c4c8389c98f90b8b37d0e2a527",
+    "tests/ee_multipolygon_workflow.py": "6ce80c1335ab786e0e8134c1bddd5bd55dca2bae006b10cf47d1c16bc9e32537",
+    "tests/fixtures/ee-planar-multipolygon-wave72-v1.json": "5ef1b53a5f783ccc8b2cc58013c2fd22421252de56649bc917d0e240821d2051",
+    "tests/test_ee_geometry_component_ownership.py": "c11c135bb21536c44ae31061a0d16ba1446459993c348cefec4add0a44b57028",
+    "tests/test_ee_measures_static.py": "e1411bb1cae102020852b93898c0a253e873b060e55e06a888bb1d10da101a79",
+    "tests/test_ee_planar_multipolygon_sdk.py": "78c8e0df676ece2757a681cb6e0c4b01cebd9d374a710aded82dee48ba9d6e86",
+    "tests/test_ee_planar_multipolygon_values.py": "951d95f1578d577cda21e53595b23df0bb89879bfd13e46c25fdca1c9a7cbd2e",
+    "tests/test_ee_planar_multipolygon_workflow.py": "4eb299e9e506be7484c1a667dbef39a0ce8686358852a5a3f8998e62552c99d7",
+    "tests/test_ee_table_component_profile.py": "7644c6ed9f29298c5999a13da21cd6c11f6489592cd725f18d380af64f461278"
+  },
+  "evidence_sha256": {
+    "audit/gee-python-wave72/root/full-1.json": "d608f6e77416de1bffbd00b1dbc4eedce00766ffcf1433958937a56599bae393",
+    "audit/gee-python-wave72/root/full-2.json": "7b2c06d0c0f40152cf90517ebc5b103a3264211405ddb53529e9dd9d5a384c74",
+    "audit/gee-python-wave72/root/full1-triage.json": "2a289d4cf5132d59217cf6562e10c5974faad758d971db4214a15dd31c78a024",
+    "audit/gee-python-wave72/root/post-full-documentation.json": "a164b607dcb4f333cbaa92016ef06dd244b57ae09678721a4ecc7b9f31c32dda",
+    "audit/gee-python-wave72/root/test-maintenance-v1/final.json": "a1ca449c19714b281dd6fa19bdbe43bc89b5b5552a6cee691d66635f9a7eb194",
+    "audit/gee-python-wave72/root/table-profile-run3.txt": "ba54181f4e2b28507dc5daed98bd418a5e2036ceb430d5264dfecadda92016c8",
+    "audit/gee-python-wave72/root/inventory-final.txt": "94e4c22b0cb676710f309ce987fafa03f0071605169e04a83e7ed6c22e686b54",
+    "audit/gee-python-wave72/root/native-unchanged.json": "b0120569208d216b768f22613daf10c4c21dcf116e47f55ada15e1b55b50ea12",
+    "audit/gee-python-wave72/root/preserved-input-readback.json": "64e303a61857ab4967c60ea3bb046d20b25f6d033d148dbf70dd2b8a9a5bff3a",
+    "audit/gee-python-wave72/compiler/source-freeze-3.json": "f13add72b63b901fe9c70739acbce886e8cba54c24f83b924e20176199180a64",
+    "audit/gee-python-wave72/review/scoped-review-final.json": "5b3fd57b55e67767571f4b13d61d6e388124ddf3d6ccd902d233a9cbe29b136e",
+    "audit/gee-python-wave72/review/catalog-union-original.json": "1f7598fb602426cf5ca834e47946bc1cbdd37496a332e96bc57d2c49cb508740",
+    "audit/gee-python-wave72/review/combined-ledgers-original.json": "46010ebb45cd877cf1d71011e02891cbac4e998475a43b0f580e8fb408a3b8a4",
+    "audit/gee-python-wave72/review/physical-csv-artifact-readback.json": "9bc001f4208ef625fb8ae0c33da1ff5bc8af406c966bcbb1e991880e9c9641ca",
+    "audit/gee-python-wave72/workflow/final-frozen/receipt.json": "662d5b0ef804af8ff96bf05b1b91d4ff34390a7c2657d4a60ae66274c69d2626",
+    "audit/gee-python-wave72/workflow/original-16-baseline.json": "1b9d9e9863d2bcb82e8289a08fc9942abaddfe9f78d4e9f7a6a9608cbf90092c",
+    "audit/gee-python-wave72/workflow/original-sixrow-planar-baseline.json": "73ec068976cb7bc55816d8700aa52907a6e2e082a56ae143b258209ddd0741b4"
+  },
+  "publication": "Direct protected-main publication only after python and frontend checks succeed on the exact commit; no PR, force push or protection bypass. Final commit/CI/branch readback is stored in the local publication receipt."
+}

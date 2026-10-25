@@ -73,9 +73,9 @@ def _bbox(translator, arguments):
     geojson = {"type": "Polygon", "geodesic": False, "coordinates": [[
         [west, north], [west, south], [east, south], [east, north],
     ]]}
-    from .geometry_values import decode_geometry_bounded
+    from .geometry_components import decode_component_geometry_bounded
 
-    return decode_geometry_bounded(translator, geojson)
+    return decode_component_geometry_bounded(translator, geojson)
 
 
 def _canonicalize_longitude(value):
@@ -110,9 +110,9 @@ def construct_geometry_value(translator, operation, arguments):
     for key in ("crs", "geodesic", "evenOdd"):
         if key in arguments:
             value[key] = arguments[key]
-    from .geometry_values import decode_geometry_bounded
+    from .geometry_components import decode_component_geometry_bounded
 
-    result = decode_geometry_bounded(translator, value)
+    result = decode_component_geometry_bounded(translator, value)
     if operation == "LinearRing":
         ring = result["coordinates"]
         if ring[0] != ring[-1]:

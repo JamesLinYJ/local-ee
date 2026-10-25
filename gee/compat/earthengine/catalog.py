@@ -242,7 +242,9 @@ class CatalogOperations:
         elif isinstance(value, dict) and value.get("type") == "Feature":
             return value["geometry"]
         elif isinstance(value, dict) and value.get("type") == "FeatureCollection":
-            geometries = [feature["geometry"] for feature in value["features"] if feature.get("geometry")]
+            from .geometry_consumers import own_feature_collection_geometries
+
+            geometries = own_feature_collection_geometries(self, value, "Collection.geometry")
             default_geodesic = True
         else:
             fail("Geometry requires an Image, Collection or Feature")

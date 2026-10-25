@@ -7,6 +7,7 @@ from pathlib import Path
 
 from .artifacts import artifact_path, output_dir
 from .table_values import render_csv
+from .table_component_validation import EE_COMPONENTS
 
 
 TABLE_PROCESS = "local_ee_table"
@@ -22,7 +23,7 @@ def has_table_node(graph):
 
 def table_input_graph(data, selected):
     """Return the typed input; make_job adds the ordinary save_result node."""
-    render_csv(data, selected)  # Preflight schema and output bytes before queuing.
+    render_csv(data, selected, geometry_profile=EE_COMPONENTS)
     return {"gee_table": {
         "process_id": TABLE_PROCESS,
         "arguments": {"data": copy.deepcopy(data), "columns": list(selected)},
@@ -66,7 +67,7 @@ def validate_table_graph(graph):
             or sink["data"] != {"from_node": load_id}
             or sink["format"] != "CSV"):
         raise ValueError("Inline table sink must directly save its input as CSV")
-    render_csv(args["data"], args["columns"])
+    render_csv(args["data"], args["columns"], geometry_profile=EE_COMPONENTS)
     return args["data"], args["columns"]
 
 
@@ -80,7 +81,7 @@ def execute_table_graph(graph, job):
     if not has_table_node(graph):
         return False
     data, selected = validate_table_graph(graph)
-    text = render_csv(data, selected)
+    text = render_csv(data, selected, geometry_profile=EE_COMPONENTS)
     job = Path(job).absolute()
     if job.parent.name != "jobs":
         raise ValueError("Inline table output must belong to its physical job")
@@ -102,7 +103,10 @@ def table_process_spec():
         "summary": "Export bounded literal local features as CSV",
         "description": (
             "Data-only input for a two-node CSV export graph. No paths, URLs, callbacks "
-            "or raster combinations. Limits: 1000 rows, 256 columns, 50000 cells and "
+            "or raster combinations. Individually valid planar MultiPolygon parts "
+            "are preserved, including overlaps; no union or topology repair. "
+            "Whole-table geometry preflight is bounded to 50000 work steps. "
+            "Limits: 1000 rows, 256 columns, 50000 cells and "
             "1 MB UTF-8 input/output. Existing serialized EE expression/graph caps also "
             "apply; envelopes and Unicode escaping can reject smaller tables."),
         "experimental": True,

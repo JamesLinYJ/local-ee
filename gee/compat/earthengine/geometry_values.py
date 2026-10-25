@@ -19,7 +19,9 @@ class GeometryValue(dict):
     Default flags live in the sidecar so the public GeoJSON can retain the
     exact omissions used by the pinned SDK.  Consumers must use the sidecar
     when choosing a topology engine; an absent public ``geodesic`` field is
-    not evidence that GEOS is safe.
+    not evidence that GEOS is safe. EE component values may retain overlapping
+    MultiPolygon parts. Aggregate consumers must freshly validate their own
+    stricter topology contract rather than trusting this mutable value's type.
     """
 
     def __init__(self, mapping, metadata=None, *, validated=False):
@@ -178,7 +180,7 @@ def decode_geometry_value(value):
 
 
 def decode_geometry_bounded(translator, value):
-    """Precharge one bounded decode, then validate and own its typed geometry."""
+    """Precharge a strict aggregate-topology decode and own its typed geometry."""
     cost = precharge_geometry_decode(translator, value)
     normalized = _normalize_geometry(value)
     owned = _attach_geometry_metadata(value, normalized)

@@ -62,6 +62,12 @@ flowchart LR
 质心数值不确定时明确拒绝，原始向量不吸附；有界收敛政策不等于严格误差证书或
 Google 数值等价。见[几何度量合同](gee-python/geometry-measures.md)。
 
+官方 EE 几何值通过 `geometry_components` 保留分别有效但相互重叠／重复的
+平面 MultiPolygon；共享 `planar_geometry_validation` 校验完整 Polygon 与孔洞，
+不做 union 或修复。需要整体拓扑的集合、目录、栅格与采样消费者重新严格校验。
+只有封闭 `local_ee_table` 路径内部选择分量保留，工作进程在 JSON 解码后再次
+做整表预算预检和几何验证；共享表格函数默认仍严格，数据不能携带授权标记。
+
 `geometry_bounds` 独立实现有限 Geometry／Feature 范围，保留官方省略／空投影写法，
 平面坐标极值与本地 S2 弧／内部包络分别计算，输出明确的平面矩形。
 原生固定记录、矩形解码和公开映射在调用前预充，不能用临时账本运行未计费模板。

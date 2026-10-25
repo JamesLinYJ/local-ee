@@ -207,7 +207,7 @@ def test_physical_workflow_v2_wires_and_v3_v4_formulas_serialize_offline():
     assert guard.evidence()["attempt_count"] == 0
 
 
-def test_preserved_v2_overlapping_multipolygon_wire_remains_a_compile_rejection():
+def test_preserved_v2_multipolygon_scalar_passes_but_full_formula_exceeds_budget():
     fixture = load_fixture()
     addendum = load_geometrycollection_workflow_fixture(fixture)[
         "geometrycollection_addendum"
@@ -235,8 +235,14 @@ def test_preserved_v2_overlapping_multipolygon_wire_remains_a_compile_rejection(
         )
         projection = ee.Projection("EPSG:4326")
         expression = _encoded(ee, geometry.area(proj=projection))
-        with pytest.raises(UnsupportedEEError, match="Invalid planar GeoJSON geometry topology"):
-            compile_expression(expression, [], {})
+        # Wave72 preserves overlapping components through the official decoder.
+        # The original six-row paired formula still exceeds the unchanged cap.
+        expected = planar_reference(
+            fixture["cases"]["planar_overlapping_multipolygon"]["geometry"]
+        )["area_square_degrees"]
+        assert compile_expression(expression, [], {})["value"] == expected == 32
+        with pytest.raises(UnsupportedEEError, match="shared 50000"):
+            compile_expression(wire, [], {})
     assert guard.evidence()["attempt_count"] == 0
 
 

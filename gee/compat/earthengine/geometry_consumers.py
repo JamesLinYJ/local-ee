@@ -13,6 +13,32 @@ from .ir import fail
 from .spherical_wire import FullSphere
 
 
+def own_feature_collection_geometries(translator, value, label):
+    """Own strict aggregate inputs without inspecting unused Feature metadata.
+
+    Footprint extraction accepts geometry-only Feature rows. Reserve the bounded
+    row scan before walking it, then freshly validate every actual geometry;
+    EE component values alone do not prove readiness for a GEOS union.
+    """
+    from .geometry_preflight import _charge
+    from .geometry_values import own_geometry_bounded
+
+    if not isinstance(value, dict) or value.get("type") != "FeatureCollection":
+        fail(f"{label} requires an inline FeatureCollection")
+    features = value.get("features")
+    if not isinstance(features, list) or len(features) > 1000:
+        fail(f"{label} requires at most 1000 Feature rows")
+    _charge(translator, 1 + len(features), f"{label} Feature geometry scan")
+    geometries = []
+    for feature in features:
+        if not isinstance(feature, dict) or feature.get("type") != "Feature":
+            fail(f"{label} requires Feature rows")
+        geometry = feature.get("geometry")
+        if geometry is not None:
+            geometries.append(own_geometry_bounded(translator, geometry))
+    return geometries
+
+
 def reject_spherical_edges(translator, value, label, *, default_geodesic=False):
     """Reject effective spherical edge models before any legacy planar call.
 

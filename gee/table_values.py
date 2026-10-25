@@ -33,6 +33,9 @@ from gee.table_spherical_geometry import (
     spherical_model,
     validate_spherical_component,
 )
+from gee.table_component_validation import (
+    EE_COMPONENTS, STRICT_OGC, reserve_component_table_work, validate_geometry_profile,
+)
 
 
 MAX_ROWS = 1_000
@@ -130,6 +133,7 @@ def _validate_input_size(data: dict[str, Any]) -> None:
 def _feature_properties(
     feature: dict[str, Any],
     spherical_calls: list[tuple[Any, bool]] | None = None,
+    *, planar_components: bool = False,
 ) -> tuple[dict[str, Any], Bounds | None]:
     if feature.get("type") != "Feature":
         _fail("FeatureCollection entries must have type 'Feature'")
@@ -165,17 +169,19 @@ def _feature_properties(
             spherical_model=spherical_model,
             even_odd_model=even_odd_model,
             spherical_validator=collect_spherical,
+            planar_components=planar_components,
         )
     else:
         # Unflagged standalone GeoJSON retains its previous planar validation
         # policy. Typed EE values and any explicit EE flags take the bounded
         # spherical-aware route above.
-        bounds = validate_geometry(geometry)
+        bounds = validate_geometry(geometry, planar_components=planar_components)
     validate_bbox(feature, bounds)
     return properties, bounds
 
 
-def _inspect(data: Any) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[str]]:
+def _inspect(data: Any, *, geometry_profile=STRICT_OGC
+             ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[str]]:
     if type(data) is not dict or data.get("type") != "FeatureCollection":
         _fail("Expected an inline GeoJSON FeatureCollection object")
     features = data.get("features")
@@ -190,11 +196,18 @@ def _inspect(data: Any) -> tuple[list[dict[str, Any]], list[dict[str, Any]], lis
     names: dict[str, None] = {}
     bounds: Bounds | None = None
     try:
+        validate_geometry_profile(geometry_profile)
+        if geometry_profile == EE_COMPONENTS:
+            # Reserve all row geometry work before constructing even the
+            # first GEOS component; worker JSON has no trusted IR marker.
+            reserve_component_table_work(features)
         validate_crs(data)
         for feature in features:
             if type(feature) is not dict:
                 _fail("FeatureCollection entries must be objects")
-            properties, feature_bounds = _feature_properties(feature, spherical_calls)
+            properties, feature_bounds = _feature_properties(
+                feature, spherical_calls, planar_components=geometry_profile == EE_COMPONENTS,
+            )
             properties_by_row.append(properties)
             bounds = union_bounds(bounds, feature_bounds)
             for name in properties:
@@ -218,9 +231,9 @@ def _inspect(data: Any) -> tuple[list[dict[str, Any]], list[dict[str, Any]], lis
     return features, properties_by_row, headers
 
 
-def columns(data: Any) -> list[str]:
+def columns(data: Any, *, geometry_profile=STRICT_OGC) -> list[str]:
     """Validate a bounded inline FeatureCollection and return its default columns."""
-    return _inspect(data)[2]
+    return _inspect(data, geometry_profile=geometry_profile)[2]
 
 
 def _cell(value: Any) -> str:
@@ -235,9 +248,12 @@ def _cell(value: Any) -> str:
     _fail("Unsupported table cell value")
 
 
-def render_csv(data: Any, selectors: list[str] | None = None) -> str:
+def render_csv(data: Any, selectors: list[str] | None = None, *,
+               geometry_profile=STRICT_OGC) -> str:
     """Validate and render a bounded FeatureCollection using the local CSV policy."""
-    features, properties_by_row, default_headers = _inspect(data)
+    features, properties_by_row, default_headers = _inspect(
+        data, geometry_profile=geometry_profile,
+    )
     if selectors is None:
         selected = default_headers
     else:

@@ -4,7 +4,8 @@ from __future__ import annotations
 import math
 
 from .array_core import MAX_ARRAY_CELLS, MAX_ARRAY_RANK, StaticArray, charge_array
-from .geometry_values import GEOMETRY_TYPES, GeometryValue, own_geometry_bounded
+from .geometry_components import own_component_geometry_bounded
+from .geometry_values import GEOMETRY_TYPES, GeometryValue
 from .ir import fail
 from .static_equality import static_equal
 from .static_list_text import join_values
@@ -154,7 +155,7 @@ def invoke_list_extra(translator, name, args):
                     or data.dtype.kind not in "iuf"):
                 fail("List.getArray requires a bounded static Array")
         if name == "List.getGeometry":
-            result = own_geometry_bounded(translator, result)
+            result = own_component_geometry_bounded(translator, result)
         return result
 
     if name == "List.containsAll":

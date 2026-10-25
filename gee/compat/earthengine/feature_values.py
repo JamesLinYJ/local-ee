@@ -6,7 +6,8 @@ import math
 import numpy as np
 
 from .array_values import MAX_ARRAY_CELLS, MAX_ARRAY_RANK, StaticArray
-from .geometry_values import GEOMETRY_TYPES, own_geometry_bounded
+from .geometry_components import own_component_geometry_bounded
+from .geometry_values import GEOMETRY_TYPES
 from .geometry_topology import geometry_edge_models as _geometry_edge_models
 from .ir import Image, Pixel, fail
 
@@ -206,7 +207,7 @@ def invoke_feature_value(translator, name, arguments):
             from .geometry_preflight import measure_geometry
 
             scan_cost = measure_geometry(geometry)
-        owned = own_geometry_bounded(translator, geometry)
+        owned = own_component_geometry_bounded(translator, geometry)
         # Per the pinned SDK, geodesics is ignored unless a projection is
         # specified. With the only admitted projection (EPSG:4326), changing
         # an existing edge model would still require a geometry transform.

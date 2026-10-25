@@ -212,9 +212,9 @@ def _set_geometry(translator, arguments):
     feature = _feature(translator, arguments["feature"], name)
     geometry = arguments.get("geometry")
     if geometry is not None:
-        from .geometry_values import own_geometry_bounded
+        from .geometry_components import own_component_geometry_bounded
 
-        geometry = own_geometry_bounded(translator, geometry)
+        geometry = own_component_geometry_bounded(translator, geometry)
     output = {key: value for key, value in feature.items() if key != "geometry"}
     output["geometry"] = geometry
     return owned_metadata_copy(translator, output, name)

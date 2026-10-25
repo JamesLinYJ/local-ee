@@ -27,12 +27,12 @@ def _geometry_kind(translator, name, arguments):
     geometry = arguments["geometry"]
     if not isinstance(geometry, dict):
         fail(f"{name} requires a finite local Geometry value")
-    from .geometry_values import decode_geometry_bounded
+    from .geometry_components import decode_component_geometry_bounded
 
     # GeometryValue is mutable (including its nested coordinate lists), so a
     # previous decode marker cannot prove that a later direct-IR value remains
     # valid. Revalidate and detach each accessor input under the shared budget.
-    geometry = decode_geometry_bounded(translator, geometry)
+    geometry = decode_component_geometry_bounded(translator, geometry)
     kind = geometry.get("type")
     if type(kind) is not str or kind not in GEOMETRY_TYPES:
         fail(f"{name} requires a supported GeoJSON geometry")

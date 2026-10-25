@@ -126,7 +126,7 @@ def _validate_semantics(geometry: dict[str, Any], *, spherical: bool = False) ->
             _fail("evenOdd=false EE geometry is unsupported by planar GeoJSON tables")
 
 
-def validate_geometry(geometry: Any) -> Bounds | None:
+def validate_geometry(geometry: Any, *, planar_components: bool = False) -> Bounds | None:
     """Validate a GeoJSON geometry, including nested collections and its bbox."""
     if geometry is None:
         return None
@@ -153,7 +153,7 @@ def validate_geometry(geometry: Any) -> Bounds | None:
     elif kind == "Polygon":
         _polygon(coordinates)
     elif kind == "MultiPolygon":
-        if type(coordinates) is not list or not coordinates:
+        if type(coordinates) is not list or (not coordinates and not planar_components):
             _fail("GeoJSON MultiPolygon coordinates must be non-empty")
         for polygon in coordinates:
             _polygon(polygon)
@@ -161,10 +161,20 @@ def validate_geometry(geometry: Any) -> Bounds | None:
         geometries = geometry.get("geometries")
         if type(geometries) is not list:
             _fail("GeoJSON GeometryCollection requires a geometries array")
+        bounds = None
         for child in geometries:
-            validate_geometry(child)
+            child_bounds = validate_geometry(child, planar_components=planar_components)
+            bounds = union_bounds(bounds, child_bounds)
+        if planar_components:
+            validate_bbox(geometry, bounds)
+            return bounds
     else:
         _fail(f"Unsupported GeoJSON geometry type: {kind}")
+
+    if planar_components:
+        bounds = _planar_component_bounds(geometry)
+        validate_bbox(geometry, bounds)
+        return bounds
 
     try:
         from shapely.geometry import shape
@@ -179,6 +189,15 @@ def validate_geometry(geometry: Any) -> Bounds | None:
     return bounds  # type: ignore[return-value]
 
 
+def _planar_component_bounds(geometry):
+    from .planar_geometry_validation import PlanarGeometryError, planar_component_bounds
+
+    try:
+        return planar_component_bounds(geometry)
+    except PlanarGeometryError as error:
+        raise TableGeometryError(str(error)) from error
+
+
 def validate_geometry_with_models(
     geometry: Any,
     *,
@@ -187,6 +206,7 @@ def validate_geometry_with_models(
     spherical_validator: Callable[[dict[str, Any], bool], None],
     inherited_geodesic: bool | None = None,
     inherited_even_odd: bool | None = None,
+    planar_components: bool = False,
 ) -> Bounds | None:
     """Validate a typed/mixed EE geometry without sending spherical parts to GEOS.
 
@@ -241,7 +261,7 @@ def validate_geometry_with_models(
             elif kind == "Polygon":
                 _polygon(coordinates)
             elif kind == "MultiPolygon":
-                if type(coordinates) is not list or not coordinates:
+                if type(coordinates) is not list or (not coordinates and not planar_components):
                     _fail("GeoJSON MultiPolygon coordinates must be non-empty")
                 for polygon in coordinates:
                     _polygon(polygon)
@@ -281,6 +301,8 @@ def validate_geometry_with_models(
                     bounds = (west, south, east, north)
                 else:
                     bounds = (-180, -90, 180, 90)
+            elif planar_components:
+                bounds = _planar_component_bounds(current)
             else:
                 try:
                     from shapely.geometry import shape

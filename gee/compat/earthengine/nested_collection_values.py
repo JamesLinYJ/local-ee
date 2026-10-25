@@ -71,9 +71,9 @@ def _scan_json(translator, state, value, depth, active):
     if geometry_value:
         # GeometryValue is mutable, so its historical decode marker cannot
         # authorize the current coordinates or option sidecar.
-        from .geometry_values import decode_geometry_bounded
+        from .geometry_components import decode_component_geometry_bounded
 
-        decode_geometry_bounded(translator, value)
+        decode_component_geometry_bounded(translator, value)
         kind = dict
     if value is None or kind is bool:
         charge(translator)
@@ -185,9 +185,9 @@ def _scan_feature(translator, state, feature, depth, active):
     if geometry is not None and type(geometry) is dict:
         # Raw direct IR geometry needs the same bounded validation; typed
         # GeometryValue instances are checked by _scan_json below.
-        from .geometry_values import decode_geometry_bounded
+        from .geometry_components import decode_component_geometry_bounded
 
-        decode_geometry_bounded(translator, geometry)
+        decode_component_geometry_bounded(translator, geometry)
     if type(properties) is not dict:
         fail("Nested FeatureCollection Feature properties must be a JSON object")
     if "id" in feature and type(feature["id"]) is not str:

@@ -245,7 +245,8 @@ def dispatch(backend,account,payload):
     if any(node['process_id']=='local_ee_sample_regions' for node in compiled.get('process_graph',{}).values()):
         compiled['sample_budget']=sample_input_budget(compiled,items)
     if action=='export_table' and compiled['kind']=='value':
-        header=table_columns(compiled['value'])
+        from ..table_component_validation import EE_COMPONENTS
+        header=table_columns(compiled['value'], geometry_profile=EE_COMPONENTS)
         selected=export_options(action,options,header)['selectors'] or header
         compiled={'kind':'table','bands':header,'warnings':compiled.get('warnings',[]),
                   'process_graph':table_input_graph(compiled['value'],selected)}

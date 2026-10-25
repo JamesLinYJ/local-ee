@@ -1,0 +1,3686 @@
+{
+  "cases": {
+    "diagonal_duplicate": {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                2,
+                0
+              ],
+              [
+                0,
+                1
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                2,
+                0
+              ],
+              [
+                0,
+                1
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          ]
+        ],
+        "geodesic": false,
+        "type": "MultiPolygon"
+      },
+      "reference": {
+        "area": "2",
+        "centroid": [
+          "0.6666666666666666666666666666666666666666666666666666666666666666666667",
+          "0.3333333333333333333333333333333333333333333333333333333333333333333333"
+        ],
+        "highest_dimension": 2,
+        "length": "0",
+        "perimeter": "10.47213595499957939281834733746255247088123671922305144854179449082104"
+      }
+    },
+    "duplicate": {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                4,
+                0
+              ],
+              [
+                4,
+                2
+              ],
+              [
+                0,
+                2
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                4,
+                0
+              ],
+              [
+                4,
+                2
+              ],
+              [
+                0,
+                2
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          ]
+        ],
+        "geodesic": false,
+        "type": "MultiPolygon"
+      },
+      "reference": {
+        "area": "16",
+        "centroid": [
+          "2",
+          "1"
+        ],
+        "highest_dimension": 2,
+        "length": "0",
+        "perimeter": "24"
+      }
+    },
+    "duplicate_holes": {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                6,
+                0
+              ],
+              [
+                6,
+                4
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                2
+              ],
+              [
+                3,
+                2
+              ],
+              [
+                3,
+                1
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                6,
+                0
+              ],
+              [
+                6,
+                4
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                2
+              ],
+              [
+                3,
+                2
+              ],
+              [
+                3,
+                1
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          ]
+        ],
+        "evenOdd": true,
+        "geodesic": false,
+        "type": "MultiPolygon"
+      },
+      "reference": {
+        "area": "44",
+        "centroid": [
+          "3.090909090909090909090909090909090909090909090909090909090909090909091",
+          "2.045454545454545454545454545454545454545454545454545454545454545454545"
+        ],
+        "highest_dimension": 2,
+        "length": "0",
+        "perimeter": "52"
+      }
+    },
+    "empty": {
+      "geometry": {
+        "coordinates": [],
+        "geodesic": false,
+        "type": "MultiPolygon"
+      },
+      "reference": {
+        "area": "0",
+        "centroid": null,
+        "highest_dimension": -1,
+        "length": "0",
+        "perimeter": "0"
+      }
+    },
+    "empty_plus_line": {
+      "geometry": {
+        "geodesic": false,
+        "geometries": [
+          {
+            "coordinates": [],
+            "geodesic": false,
+            "type": "MultiPolygon"
+          },
+          {
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                3,
+                0
+              ],
+              [
+                3,
+                4
+              ]
+            ],
+            "type": "LineString"
+          },
+          {
+            "coordinates": [
+              -80,
+              45
+            ],
+            "type": "Point"
+          }
+        ],
+        "type": "GeometryCollection"
+      },
+      "reference": {
+        "area": "0",
+        "centroid": [
+          "2.357142857142857142857142857142857142857142857142857142857142857142857",
+          "1.142857142857142857142857142857142857142857142857142857142857142857143"
+        ],
+        "highest_dimension": 1,
+        "length": "7",
+        "perimeter": "0"
+      }
+    },
+    "empty_plus_points": {
+      "geometry": {
+        "geodesic": false,
+        "geometries": [
+          {
+            "coordinates": [],
+            "geodesic": false,
+            "type": "MultiPolygon"
+          },
+          {
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                4,
+                0
+              ],
+              [
+                4,
+                0
+              ]
+            ],
+            "type": "MultiPoint"
+          }
+        ],
+        "type": "GeometryCollection"
+      },
+      "reference": {
+        "area": "0",
+        "centroid": [
+          "2.666666666666666666666666666666666666666666666666666666666666666666667",
+          "0"
+        ],
+        "highest_dimension": 0,
+        "length": "0",
+        "perimeter": "0"
+      }
+    },
+    "mixed_highest_dimension": {
+      "geometry": {
+        "geodesic": false,
+        "geometries": [
+          {
+            "coordinates": [
+              [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    0
+                  ],
+                  [
+                    4,
+                    2
+                  ],
+                  [
+                    0,
+                    2
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]
+              ],
+              [
+                [
+                  [
+                    1,
+                    1
+                  ],
+                  [
+                    5,
+                    1
+                  ],
+                  [
+                    5,
+                    4
+                  ],
+                  [
+                    1,
+                    4
+                  ],
+                  [
+                    1,
+                    1
+                  ]
+                ]
+              ]
+            ],
+            "geodesic": false,
+            "type": "MultiPolygon"
+          },
+          {
+            "coordinates": [
+              [
+                10,
+                10
+              ],
+              [
+                13,
+                14
+              ]
+            ],
+            "type": "LineString"
+          },
+          {
+            "coordinates": [
+              [
+                -80,
+                45
+              ],
+              [
+                80,
+                -45
+              ],
+              [
+                80,
+                -45
+              ]
+            ],
+            "type": "MultiPoint"
+          }
+        ],
+        "type": "GeometryCollection"
+      },
+      "reference": {
+        "area": "20",
+        "centroid": [
+          "2.6",
+          "1.9"
+        ],
+        "highest_dimension": 2,
+        "length": "5",
+        "perimeter": "26"
+      }
+    },
+    "nested_collection": {
+      "geometry": {
+        "geodesic": false,
+        "geometries": [
+          {
+            "coordinates": [
+              [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    0
+                  ],
+                  [
+                    4,
+                    2
+                  ],
+                  [
+                    0,
+                    2
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]
+              ],
+              [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    0
+                  ],
+                  [
+                    4,
+                    2
+                  ],
+                  [
+                    0,
+                    2
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]
+              ]
+            ],
+            "geodesic": false,
+            "type": "MultiPolygon"
+          },
+          {
+            "geometries": [
+              {
+                "coordinates": [
+                  [
+                    [
+                      0,
+                      0
+                    ],
+                    [
+                      6,
+                      0
+                    ],
+                    [
+                      6,
+                      4
+                    ],
+                    [
+                      0,
+                      4
+                    ],
+                    [
+                      0,
+                      0
+                    ]
+                  ],
+                  [
+                    [
+                      1,
+                      1
+                    ],
+                    [
+                      1,
+                      2
+                    ],
+                    [
+                      3,
+                      2
+                    ],
+                    [
+                      3,
+                      1
+                    ],
+                    [
+                      1,
+                      1
+                    ]
+                  ]
+                ],
+                "evenOdd": true,
+                "geodesic": false,
+                "type": "Polygon"
+              },
+              {
+                "coordinates": [
+                  [
+                    10,
+                    10
+                  ],
+                  [
+                    13,
+                    14
+                  ]
+                ],
+                "type": "LineString"
+              },
+              {
+                "coordinates": [
+                  -80,
+                  45
+                ],
+                "type": "Point"
+              }
+            ],
+            "type": "GeometryCollection"
+          }
+        ],
+        "type": "GeometryCollection"
+      },
+      "reference": {
+        "area": "38",
+        "centroid": [
+          "2.631578947368421052631578947368421052631578947368421052631578947368421",
+          "1.605263157894736842105263157894736842105263157894736842105263157894737"
+        ],
+        "highest_dimension": 2,
+        "length": "5",
+        "perimeter": "50"
+      }
+    },
+    "overlap": {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                4,
+                0
+              ],
+              [
+                4,
+                2
+              ],
+              [
+                0,
+                2
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                1,
+                1
+              ],
+              [
+                5,
+                1
+              ],
+              [
+                5,
+                4
+              ],
+              [
+                1,
+                4
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          ]
+        ],
+        "geodesic": false,
+        "type": "MultiPolygon"
+      },
+      "reference": {
+        "area": "20",
+        "centroid": [
+          "2.6",
+          "1.9"
+        ],
+        "highest_dimension": 2,
+        "length": "0",
+        "perimeter": "26"
+      }
+    }
+  },
+  "evidence_limits": {
+    "network": "OfflineGuard denies/counts instrumented Python network and local transport calls; JS additionally intercepts HTTP/HTTPS/TCP/DNS/fetch. This is not kernel isolation.",
+    "workflow": "Actual local dispatch, worker prepare/finish, pure table execution and physical CSV readback with synthetic in-memory database/queue and substituted NativeTask launcher. No HTTP, native service, sandbox launch, Spark, private data or Google acceptance."
+  },
+  "invalid_atoms": {
+    "bow_tie_atom": {
+      "coordinates": [
+        [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              4,
+              0
+            ],
+            [
+              4,
+              2
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              4,
+              4
+            ],
+            [
+              0,
+              4
+            ],
+            [
+              4,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        ]
+      ],
+      "geodesic": false,
+      "type": "MultiPolygon"
+    },
+    "crossing_hole_atom": {
+      "coordinates": [
+        [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              4,
+              0
+            ],
+            [
+              4,
+              2
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              4,
+              0
+            ],
+            [
+              4,
+              4
+            ],
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              2,
+              2
+            ],
+            [
+              5,
+              2
+            ],
+            [
+              5,
+              3
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              2
+            ]
+          ]
+        ]
+      ],
+      "geodesic": false,
+      "type": "MultiPolygon"
+    },
+    "outside_hole_atom": {
+      "coordinates": [
+        [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              4,
+              0
+            ],
+            [
+              4,
+              2
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              4,
+              0
+            ],
+            [
+              4,
+              4
+            ],
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              5,
+              5
+            ],
+            [
+              6,
+              5
+            ],
+            [
+              6,
+              6
+            ],
+            [
+              5,
+              6
+            ],
+            [
+              5,
+              5
+            ]
+          ]
+        ]
+      ],
+      "geodesic": false,
+      "type": "MultiPolygon"
+    },
+    "zero_area_atom": {
+      "coordinates": [
+        [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              4,
+              0
+            ],
+            [
+              4,
+              2
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        ]
+      ],
+      "geodesic": false,
+      "type": "MultiPolygon"
+    }
+  },
+  "official_api": {
+    "javascript_bundle_sha256": "a8bc9bac202c16f351811b1f69c3b690d064f47ecff64cfefb47c82e514e5e03",
+    "javascript_sdk": "@google/earthengine 1.7.49",
+    "official_docs": {
+      "Feature.area": "https://developers.google.com/earth-engine/apidocs/ee-feature-area",
+      "Feature.centroid": "https://developers.google.com/earth-engine/apidocs/ee-feature-centroid",
+      "Feature.length": "https://developers.google.com/earth-engine/apidocs/ee-feature-length",
+      "Feature.perimeter": "https://developers.google.com/earth-engine/apidocs/ee-feature-perimeter",
+      "Geometry.area": "https://developers.google.com/earth-engine/apidocs/ee-geometry-area",
+      "Geometry.centroid": "https://developers.google.com/earth-engine/apidocs/ee-geometry-centroid",
+      "Geometry.length": "https://developers.google.com/earth-engine/apidocs/ee-geometry-length",
+      "Geometry.perimeter": "https://developers.google.com/earth-engine/apidocs/ee-geometry-perimeter"
+    },
+    "pinned_algorithm_file": "vendor/earthengine-js/algorithms.json",
+    "pinned_algorithm_sha256": "8279bfd5e755f10c291a0d833aed810a5aba2e360e26ecee69f2bacaeecb3d01",
+    "python_sdk": "earthengine-api 1.7.49",
+    "recorded_in": "audit/gee-python-wave71/workflow/pinned_algorithm_records.json",
+    "source_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a"
+  },
+  "old_fixture_sha256": {
+    "tests/fixtures/ee-geometry-measures-wave71-feature-only-workflows-v1.json": "ab3fcf50676753b4abc5a0c5fbcabf2042dbe9b484485717094240beccd14f3f",
+    "tests/fixtures/ee-geometry-measures-wave71-planar-geometrycollection-v1.json": "8e781b44bad23dc9b930890229f9a07868c70b6b47ac1f42f32aa2c839ad02d9",
+    "tests/fixtures/ee-geometry-measures-wave71-v1.json": "6ac1ab58c496eb4108efa4ce12cf0683d1cc152acf9bf6592c88a5956e71edd0"
+  },
+  "original_evidence": {
+    "path": "audit/gee-python-wave71/review/sdk-multiplicity-original.json",
+    "records": [
+      {
+        "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+        "expected": 16.0,
+        "feature": false,
+        "id": "planar-duplicate-polygon/Geometry.area",
+        "method": "area",
+        "passed": false,
+        "wire": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ]
+                ],
+                "geodesic": false,
+                "type": "MultiPolygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "proj": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Geometry.area",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "2"
+          }
+        }
+      },
+      {
+        "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+        "expected": 0.0,
+        "feature": false,
+        "id": "planar-duplicate-polygon/Geometry.length",
+        "method": "length",
+        "passed": false,
+        "wire": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ]
+                ],
+                "geodesic": false,
+                "type": "MultiPolygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "proj": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Geometry.length",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "2"
+          }
+        }
+      },
+      {
+        "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+        "expected": 24.0,
+        "feature": false,
+        "id": "planar-duplicate-polygon/Geometry.perimeter",
+        "method": "perimeter",
+        "passed": false,
+        "wire": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ]
+                ],
+                "geodesic": false,
+                "type": "MultiPolygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "proj": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Geometry.perimeter",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "2"
+          }
+        }
+      },
+      {
+        "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+        "expected": [
+          2.0,
+          1.0
+        ],
+        "feature": false,
+        "id": "planar-duplicate-polygon/Geometry.centroid",
+        "method": "centroid",
+        "passed": false,
+        "wire": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ]
+                ],
+                "geodesic": false,
+                "type": "MultiPolygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "proj": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Geometry.centroid",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "2"
+          }
+        }
+      },
+      {
+        "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+        "expected": 16.0,
+        "feature": true,
+        "id": "planar-duplicate-polygon/Feature.area",
+        "method": "area",
+        "passed": false,
+        "wire": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ]
+                ],
+                "geodesic": false,
+                "type": "MultiPolygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "type": "Dictionary",
+                "value": {
+                  "label": "planar-duplicate-polygon"
+                }
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "metadata": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Feature",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "feature": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "proj": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Feature.area",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "4"
+          }
+        }
+      },
+      {
+        "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+        "expected": 0.0,
+        "feature": true,
+        "id": "planar-duplicate-polygon/Feature.length",
+        "method": "length",
+        "passed": false,
+        "wire": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ]
+                ],
+                "geodesic": false,
+                "type": "MultiPolygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "type": "Dictionary",
+                "value": {
+                  "label": "planar-duplicate-polygon"
+                }
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "metadata": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Feature",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "feature": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "proj": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Feature.length",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "4"
+          }
+        }
+      },
+      {
+        "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+        "expected": 24.0,
+        "feature": true,
+        "id": "planar-duplicate-polygon/Feature.perimeter",
+        "method": "perimeter",
+        "passed": false,
+        "wire": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ]
+                ],
+                "geodesic": false,
+                "type": "MultiPolygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "type": "Dictionary",
+                "value": {
+                  "label": "planar-duplicate-polygon"
+                }
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "metadata": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Feature",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "feature": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "proj": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Feature.perimeter",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "4"
+          }
+        }
+      },
+      {
+        "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+        "expected": [
+          2.0,
+          1.0
+        ],
+        "feature": true,
+        "id": "planar-duplicate-polygon/Feature.centroid",
+        "method": "centroid",
+        "passed": false,
+        "wire": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ]
+                ],
+                "geodesic": false,
+                "type": "MultiPolygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "type": "Dictionary",
+                "value": {
+                  "label": "planar-duplicate-polygon"
+                }
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "metadata": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Feature",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "feature": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "proj": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Feature.centroid",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "4"
+          }
+        }
+      },
+      {
+        "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+        "expected": 20.0,
+        "feature": false,
+        "id": "planar-overlap-polygon/Geometry.area",
+        "method": "area",
+        "passed": false,
+        "wire": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      [
+                        1,
+                        1
+                      ],
+                      [
+                        5,
+                        1
+                      ],
+                      [
+                        5,
+                        4
+                      ],
+                      [
+                        1,
+                        4
+                      ],
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  ]
+                ],
+                "geodesic": false,
+                "type": "MultiPolygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "proj": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Geometry.area",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "2"
+          }
+        }
+      },
+      {
+        "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+        "expected": 0.0,
+        "feature": false,
+        "id": "planar-overlap-polygon/Geometry.length",
+        "method": "length",
+        "passed": false,
+        "wire": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      [
+                        1,
+                        1
+                      ],
+                      [
+                        5,
+                        1
+                      ],
+                      [
+                        5,
+                        4
+                      ],
+                      [
+                        1,
+                        4
+                      ],
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  ]
+                ],
+                "geodesic": false,
+                "type": "MultiPolygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "proj": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Geometry.length",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "2"
+          }
+        }
+      },
+      {
+        "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+        "expected": 26.0,
+        "feature": false,
+        "id": "planar-overlap-polygon/Geometry.perimeter",
+        "method": "perimeter",
+        "passed": false,
+        "wire": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      [
+                        1,
+                        1
+                      ],
+                      [
+                        5,
+                        1
+                      ],
+                      [
+                        5,
+                        4
+                      ],
+                      [
+                        1,
+                        4
+                      ],
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  ]
+                ],
+                "geodesic": false,
+                "type": "MultiPolygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "proj": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Geometry.perimeter",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "2"
+          }
+        }
+      },
+      {
+        "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+        "expected": [
+          2.6,
+          1.9
+        ],
+        "feature": false,
+        "id": "planar-overlap-polygon/Geometry.centroid",
+        "method": "centroid",
+        "passed": false,
+        "wire": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      [
+                        1,
+                        1
+                      ],
+                      [
+                        5,
+                        1
+                      ],
+                      [
+                        5,
+                        4
+                      ],
+                      [
+                        1,
+                        4
+                      ],
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  ]
+                ],
+                "geodesic": false,
+                "type": "MultiPolygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "proj": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Geometry.centroid",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "2"
+          }
+        }
+      },
+      {
+        "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+        "expected": 20.0,
+        "feature": true,
+        "id": "planar-overlap-polygon/Feature.area",
+        "method": "area",
+        "passed": false,
+        "wire": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      [
+                        1,
+                        1
+                      ],
+                      [
+                        5,
+                        1
+                      ],
+                      [
+                        5,
+                        4
+                      ],
+                      [
+                        1,
+                        4
+                      ],
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  ]
+                ],
+                "geodesic": false,
+                "type": "MultiPolygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "type": "Dictionary",
+                "value": {
+                  "label": "planar-overlap-polygon"
+                }
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "metadata": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Feature",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "feature": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "proj": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Feature.area",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "4"
+          }
+        }
+      },
+      {
+        "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+        "expected": 0.0,
+        "feature": true,
+        "id": "planar-overlap-polygon/Feature.length",
+        "method": "length",
+        "passed": false,
+        "wire": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      [
+                        1,
+                        1
+                      ],
+                      [
+                        5,
+                        1
+                      ],
+                      [
+                        5,
+                        4
+                      ],
+                      [
+                        1,
+                        4
+                      ],
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  ]
+                ],
+                "geodesic": false,
+                "type": "MultiPolygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "type": "Dictionary",
+                "value": {
+                  "label": "planar-overlap-polygon"
+                }
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "metadata": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Feature",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "feature": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "proj": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Feature.length",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "4"
+          }
+        }
+      },
+      {
+        "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+        "expected": 26.0,
+        "feature": true,
+        "id": "planar-overlap-polygon/Feature.perimeter",
+        "method": "perimeter",
+        "passed": false,
+        "wire": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      [
+                        1,
+                        1
+                      ],
+                      [
+                        5,
+                        1
+                      ],
+                      [
+                        5,
+                        4
+                      ],
+                      [
+                        1,
+                        4
+                      ],
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  ]
+                ],
+                "geodesic": false,
+                "type": "MultiPolygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "type": "Dictionary",
+                "value": {
+                  "label": "planar-overlap-polygon"
+                }
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "metadata": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Feature",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "feature": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "proj": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Feature.perimeter",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "4"
+          }
+        }
+      },
+      {
+        "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+        "expected": [
+          2.6,
+          1.9
+        ],
+        "feature": true,
+        "id": "planar-overlap-polygon/Feature.centroid",
+        "method": "centroid",
+        "passed": false,
+        "wire": {
+          "scope": [
+            [
+              "0",
+              {
+                "coordinates": [
+                  [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        2
+                      ],
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      [
+                        1,
+                        1
+                      ],
+                      [
+                        5,
+                        1
+                      ],
+                      [
+                        5,
+                        4
+                      ],
+                      [
+                        1,
+                        4
+                      ],
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  ]
+                ],
+                "geodesic": false,
+                "type": "MultiPolygon"
+              }
+            ],
+            [
+              "1",
+              {
+                "type": "Dictionary",
+                "value": {
+                  "label": "planar-overlap-polygon"
+                }
+              }
+            ],
+            [
+              "2",
+              {
+                "arguments": {
+                  "geometry": {
+                    "type": "ValueRef",
+                    "value": "0"
+                  },
+                  "metadata": {
+                    "type": "ValueRef",
+                    "value": "1"
+                  }
+                },
+                "functionName": "Feature",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "3",
+              {
+                "arguments": {
+                  "crs": "EPSG:4326"
+                },
+                "functionName": "Projection",
+                "type": "Invocation"
+              }
+            ],
+            [
+              "4",
+              {
+                "arguments": {
+                  "feature": {
+                    "type": "ValueRef",
+                    "value": "2"
+                  },
+                  "proj": {
+                    "type": "ValueRef",
+                    "value": "3"
+                  }
+                },
+                "functionName": "Feature.centroid",
+                "type": "Invocation"
+              }
+            ]
+          ],
+          "type": "CompoundValue",
+          "value": {
+            "type": "ValueRef",
+            "value": "4"
+          }
+        }
+      }
+    ],
+    "sha256": "fd2a59f187262d56d8dcab9c67694c80ff820218a057dc62d5d4d5530b8d2931"
+  },
+  "original_sixrow_planar_formula": {
+    "canonical_wire_bytes": 6958,
+    "canonical_wire_sha256": "2867f0264ec499d3f8a040dbbd114f317c7aefa5bedf88c97a300310a70b7d4e",
+    "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+    "route": "explicit_epsg4326_planar",
+    "rows": 6,
+    "wire": {
+      "scope": [
+        [
+          "0",
+          {
+            "coordinates": [
+              [
+                [
+                  0,
+                  0
+                ],
+                [
+                  90,
+                  0
+                ],
+                [
+                  0,
+                  90
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            ],
+            "geodesic": false,
+            "type": "Polygon"
+          }
+        ],
+        [
+          "1",
+          {
+            "type": "Dictionary",
+            "value": {
+              "label": "octant_triangle",
+              "source_rank": 0,
+              "system:index": "wave71-octant_triangle"
+            }
+          }
+        ],
+        [
+          "2",
+          {
+            "arguments": {
+              "geometry": {
+                "type": "ValueRef",
+                "value": "0"
+              },
+              "metadata": {
+                "type": "ValueRef",
+                "value": "1"
+              }
+            },
+            "functionName": "Feature",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "3",
+          {
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                90,
+                0
+              ]
+            ],
+            "geodesic": false,
+            "type": "LineString"
+          }
+        ],
+        [
+          "4",
+          {
+            "type": "Dictionary",
+            "value": {
+              "label": "equatorial_arc",
+              "source_rank": 1,
+              "system:index": "wave71-equatorial_arc"
+            }
+          }
+        ],
+        [
+          "5",
+          {
+            "arguments": {
+              "geometry": {
+                "type": "ValueRef",
+                "value": "3"
+              },
+              "metadata": {
+                "type": "ValueRef",
+                "value": "4"
+              }
+            },
+            "functionName": "Feature",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "6",
+          {
+            "coordinates": [
+              30,
+              0
+            ],
+            "type": "Point"
+          }
+        ],
+        [
+          "7",
+          {
+            "type": "Dictionary",
+            "value": {
+              "label": "point",
+              "source_rank": 2,
+              "system:index": "wave71-point"
+            }
+          }
+        ],
+        [
+          "8",
+          {
+            "arguments": {
+              "geometry": {
+                "type": "ValueRef",
+                "value": "6"
+              },
+              "metadata": {
+                "type": "ValueRef",
+                "value": "7"
+              }
+            },
+            "functionName": "Feature",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "9",
+          {
+            "geodesic": false,
+            "geometries": [
+              {
+                "coordinates": [
+                  30,
+                  0
+                ],
+                "type": "Point"
+              },
+              {
+                "coordinates": [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    90,
+                    0
+                  ]
+                ],
+                "type": "LineString"
+              },
+              {
+                "coordinates": [
+                  [
+                    [
+                      0,
+                      0
+                    ],
+                    [
+                      90,
+                      0
+                    ],
+                    [
+                      0,
+                      90
+                    ],
+                    [
+                      0,
+                      0
+                    ]
+                  ]
+                ],
+                "type": "Polygon"
+              }
+            ],
+            "type": "GeometryCollection"
+          }
+        ],
+        [
+          "10",
+          {
+            "type": "Dictionary",
+            "value": {
+              "label": "mixed_highest_dimension",
+              "source_rank": 3,
+              "system:index": "wave71-mixed_highest_dimension"
+            }
+          }
+        ],
+        [
+          "11",
+          {
+            "arguments": {
+              "geometry": {
+                "type": "ValueRef",
+                "value": "9"
+              },
+              "metadata": {
+                "type": "ValueRef",
+                "value": "10"
+              }
+            },
+            "functionName": "Feature",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "12",
+          {
+            "coordinates": [
+              [
+                [
+                  0,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ],
+                [
+                  6,
+                  4
+                ],
+                [
+                  0,
+                  4
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  3,
+                  2
+                ],
+                [
+                  3,
+                  1
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "geodesic": false,
+            "type": "Polygon"
+          }
+        ],
+        [
+          "13",
+          {
+            "type": "Dictionary",
+            "value": {
+              "label": "planar_hole",
+              "source_rank": 4,
+              "system:index": "wave71-planar_hole"
+            }
+          }
+        ],
+        [
+          "14",
+          {
+            "arguments": {
+              "geometry": {
+                "type": "ValueRef",
+                "value": "12"
+              },
+              "metadata": {
+                "type": "ValueRef",
+                "value": "13"
+              }
+            },
+            "functionName": "Feature",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "15",
+          {
+            "coordinates": [
+              [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    0
+                  ],
+                  [
+                    4,
+                    4
+                  ],
+                  [
+                    0,
+                    4
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]
+              ],
+              [
+                [
+                  [
+                    2,
+                    0
+                  ],
+                  [
+                    6,
+                    0
+                  ],
+                  [
+                    6,
+                    4
+                  ],
+                  [
+                    2,
+                    4
+                  ],
+                  [
+                    2,
+                    0
+                  ]
+                ]
+              ]
+            ],
+            "geodesic": false,
+            "type": "MultiPolygon"
+          }
+        ],
+        [
+          "16",
+          {
+            "type": "Dictionary",
+            "value": {
+              "label": "planar_overlapping_multipolygon",
+              "source_rank": 5,
+              "system:index": "wave71-planar_overlapping_multipolygon"
+            }
+          }
+        ],
+        [
+          "17",
+          {
+            "arguments": {
+              "geometry": {
+                "type": "ValueRef",
+                "value": "15"
+              },
+              "metadata": {
+                "type": "ValueRef",
+                "value": "16"
+              }
+            },
+            "functionName": "Feature",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "18",
+          [
+            {
+              "type": "ValueRef",
+              "value": "2"
+            },
+            {
+              "type": "ValueRef",
+              "value": "5"
+            },
+            {
+              "type": "ValueRef",
+              "value": "8"
+            },
+            {
+              "type": "ValueRef",
+              "value": "11"
+            },
+            {
+              "type": "ValueRef",
+              "value": "14"
+            },
+            {
+              "type": "ValueRef",
+              "value": "17"
+            }
+          ]
+        ],
+        [
+          "19",
+          {
+            "arguments": {
+              "features": {
+                "type": "ValueRef",
+                "value": "18"
+              }
+            },
+            "functionName": "Collection",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "20",
+          {
+            "arguments": {
+              "crs": "EPSG:4326"
+            },
+            "functionName": "Projection",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "21",
+          {
+            "arguments": {
+              "feature": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              },
+              "proj": {
+                "type": "ValueRef",
+                "value": "20"
+              }
+            },
+            "functionName": "Feature.centroid",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "22",
+          {
+            "arguments": {
+              "element": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              }
+            },
+            "functionName": "Feature.id",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "23",
+          {
+            "arguments": {
+              "key": "system:index",
+              "object": {
+                "type": "ValueRef",
+                "value": "21"
+              },
+              "value": {
+                "type": "ValueRef",
+                "value": "22"
+              }
+            },
+            "functionName": "Element.set",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "24",
+          {
+            "arguments": {
+              "key": "feature_id",
+              "object": {
+                "type": "ValueRef",
+                "value": "23"
+              },
+              "value": {
+                "type": "ValueRef",
+                "value": "22"
+              }
+            },
+            "functionName": "Element.set",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "25",
+          {
+            "arguments": {
+              "feature": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              }
+            },
+            "functionName": "Feature.geometry",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "26",
+          {
+            "arguments": {
+              "geometry": {
+                "type": "ValueRef",
+                "value": "25"
+              },
+              "proj": {
+                "type": "ValueRef",
+                "value": "20"
+              }
+            },
+            "functionName": "Geometry.area",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "27",
+          {
+            "arguments": {
+              "key": "geometry_area_epsg4326",
+              "object": {
+                "type": "ValueRef",
+                "value": "24"
+              },
+              "value": {
+                "type": "ValueRef",
+                "value": "26"
+              }
+            },
+            "functionName": "Element.set",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "28",
+          {
+            "arguments": {
+              "feature": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              },
+              "proj": {
+                "type": "ValueRef",
+                "value": "20"
+              }
+            },
+            "functionName": "Feature.area",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "29",
+          {
+            "arguments": {
+              "key": "feature_area_epsg4326",
+              "object": {
+                "type": "ValueRef",
+                "value": "27"
+              },
+              "value": {
+                "type": "ValueRef",
+                "value": "28"
+              }
+            },
+            "functionName": "Element.set",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "30",
+          {
+            "arguments": {
+              "geometry": {
+                "type": "ValueRef",
+                "value": "25"
+              },
+              "proj": {
+                "type": "ValueRef",
+                "value": "20"
+              }
+            },
+            "functionName": "Geometry.length",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "31",
+          {
+            "arguments": {
+              "key": "geometry_length_epsg4326",
+              "object": {
+                "type": "ValueRef",
+                "value": "29"
+              },
+              "value": {
+                "type": "ValueRef",
+                "value": "30"
+              }
+            },
+            "functionName": "Element.set",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "32",
+          {
+            "arguments": {
+              "feature": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              },
+              "proj": {
+                "type": "ValueRef",
+                "value": "20"
+              }
+            },
+            "functionName": "Feature.length",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "33",
+          {
+            "arguments": {
+              "key": "feature_length_epsg4326",
+              "object": {
+                "type": "ValueRef",
+                "value": "31"
+              },
+              "value": {
+                "type": "ValueRef",
+                "value": "32"
+              }
+            },
+            "functionName": "Element.set",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "34",
+          {
+            "arguments": {
+              "geometry": {
+                "type": "ValueRef",
+                "value": "25"
+              },
+              "proj": {
+                "type": "ValueRef",
+                "value": "20"
+              }
+            },
+            "functionName": "Geometry.perimeter",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "35",
+          {
+            "arguments": {
+              "key": "geometry_perimeter_epsg4326",
+              "object": {
+                "type": "ValueRef",
+                "value": "33"
+              },
+              "value": {
+                "type": "ValueRef",
+                "value": "34"
+              }
+            },
+            "functionName": "Element.set",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "36",
+          {
+            "arguments": {
+              "feature": {
+                "type": "ArgumentRef",
+                "value": "_MAPPING_VAR_0_0"
+              },
+              "proj": {
+                "type": "ValueRef",
+                "value": "20"
+              }
+            },
+            "functionName": "Feature.perimeter",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "37",
+          {
+            "arguments": {
+              "key": "feature_perimeter_epsg4326",
+              "object": {
+                "type": "ValueRef",
+                "value": "35"
+              },
+              "value": {
+                "type": "ValueRef",
+                "value": "36"
+              }
+            },
+            "functionName": "Element.set",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "38",
+          {
+            "arguments": {
+              "geometry": {
+                "type": "ValueRef",
+                "value": "25"
+              },
+              "proj": {
+                "type": "ValueRef",
+                "value": "20"
+              }
+            },
+            "functionName": "Geometry.centroid",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "39",
+          {
+            "arguments": {
+              "geometry": {
+                "type": "ValueRef",
+                "value": "38"
+              }
+            },
+            "functionName": "Geometry.coordinates",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "40",
+          {
+            "arguments": {
+              "key": "geometry_centroid_epsg4326",
+              "object": {
+                "type": "ValueRef",
+                "value": "37"
+              },
+              "value": {
+                "type": "ValueRef",
+                "value": "39"
+              }
+            },
+            "functionName": "Element.set",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "41",
+          {
+            "arguments": {
+              "feature": {
+                "type": "ValueRef",
+                "value": "21"
+              }
+            },
+            "functionName": "Feature.geometry",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "42",
+          {
+            "arguments": {
+              "geometry": {
+                "type": "ValueRef",
+                "value": "41"
+              }
+            },
+            "functionName": "Geometry.coordinates",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "43",
+          {
+            "arguments": {
+              "key": "feature_centroid_epsg4326",
+              "object": {
+                "type": "ValueRef",
+                "value": "40"
+              },
+              "value": {
+                "type": "ValueRef",
+                "value": "42"
+              }
+            },
+            "functionName": "Element.set",
+            "type": "Invocation"
+          }
+        ],
+        [
+          "44",
+          {
+            "argumentNames": [
+              "_MAPPING_VAR_0_0"
+            ],
+            "body": {
+              "type": "ValueRef",
+              "value": "43"
+            },
+            "type": "Function"
+          }
+        ],
+        [
+          "45",
+          {
+            "arguments": {
+              "baseAlgorithm": {
+                "type": "ValueRef",
+                "value": "44"
+              },
+              "collection": {
+                "type": "ValueRef",
+                "value": "19"
+              }
+            },
+            "functionName": "Collection.map",
+            "type": "Invocation"
+          }
+        ]
+      ],
+      "type": "CompoundValue",
+      "value": {
+        "type": "ValueRef",
+        "value": "45"
+      }
+    }
+  },
+  "purpose": "Original MultiPolygon multiplicity, independent planar controls and separately targeted physical CSV workflow. No Google computation.",
+  "reference_policy": {
+    "area": "Exact Fraction shoelace signed first moments; holes subtracted inside each Polygon; overlapping/duplicate atoms counted independently.",
+    "centroid": "Only highest nonempty dimension contributes. Empty centroid undefined.",
+    "google_equivalence": "Not tested.",
+    "segments": "70-digit Decimal square roots of exact rational squared distances.",
+    "tolerance": {
+      "absolute": 2e-12,
+      "relative": 2e-12
+    }
+  },
+  "schema": "ee-planar-multipolygon-wave72-v1",
+  "targeted_workflow": {
+    "description": "Wave72 original planar MultiPolygon measures",
+    "input_features": [
+      "duplicate",
+      "overlap"
+    ],
+    "map_behavior": "Separate targeted FeatureCollection.map formula calculates four Feature measures with explicit EPSG:4326, sets metrics on the original Feature, and retains its original MultiPolygon geometry. It is not the unchanged historical sixrow paired-Geometry/Feature formula.",
+    "properties_to_preserve": [
+      "label",
+      "source_rank",
+      "nested"
+    ],
+    "rows": 2,
+    "selectors": [
+      "system:index",
+      "feature_id",
+      "label",
+      "source_rank",
+      "nested",
+      "area",
+      "length",
+      "perimeter",
+      "centroid",
+      ".geo"
+    ]
+  }
+}

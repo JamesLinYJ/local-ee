@@ -13,7 +13,8 @@ import math
 import numpy as np
 
 from .array_core import MAX_ARRAY_CELLS, MAX_ARRAY_RANK, StaticArray
-from .geometry_values import GEOMETRY_TYPES, GeometryValue, own_geometry_bounded
+from .geometry_components import own_component_geometry_bounded
+from .geometry_values import GEOMETRY_TYPES, GeometryValue
 from .ir import Function, fail, integer
 from .static_dictionary_values import (
     MAX_STATIC_BYTES,
@@ -300,7 +301,7 @@ def _typed_get(translator, name, a):
         kind = value.get("type") if type(value) in (dict, GeometryValue) else None
         if type(kind) is not str or kind not in GEOMETRY_TYPES:
             fail("Dictionary.getGeometry requires a GeoJSON geometry value")
-        return own_geometry_bounded(translator, value)
+        return own_component_geometry_bounded(translator, value)
     raise AssertionError(name)
 
 
