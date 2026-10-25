@@ -130,14 +130,25 @@ def test_extracted_models_reach_actual_synthetic_csv_and_official_sdk_roundtrip(
     assert guard.evidence()["attempt_count"] == 0
 
 
-def test_measurement_probe_fixture_records_gaps_without_inventing_spherical_defaults():
+def test_measurement_probe_fixture_preserves_before_and_computes_default_wgs84():
     fixture = json.loads((ROOT / "tests/fixtures/ee-measurement-wave62-before-v1.json").read_text())
     assert len(fixture["records"]) == 6
+    # Independently frozen WGS84 controls: one octant's area/perimeter and
+    # one quarter-equator's line length. The original requests stay unchanged.
+    expected = {
+        "area": (63758202715511.06, 0.05),
+        "length": (10018754.171394622, 0.005),
+        "perimeter": (30022685.630020067, 0.005),
+    }
     for record in fixture["records"]:
         assert record["before"]["supported"] is False
-        with pytest.raises(UnsupportedEEError) as error:
-            compile_expression(record["wire"], [], {})
-        assert str(error.value) == record["before"]["error"]
+        assert record["before"]["error"] == (
+            "Unsupported Earth Engine algorithm: " + record["name"]
+        )
+        result = compile_expression(record["wire"], [], {})
+        assert result["kind"] == "value"
+        value, absolute = expected[record["name"].split(".", 1)[1]]
+        assert result["value"] == pytest.approx(value, rel=2e-12, abs=absolute)
 
 
 def test_empty_feature_map_validates_geometry_argument_names_without_inventing_rows():

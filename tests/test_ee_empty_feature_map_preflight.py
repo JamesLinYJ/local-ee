@@ -11,10 +11,77 @@ def function(body):
 
 
 def test_unknown_algorithm_in_empty_callback_rejects_instead_of_fake_success():
-    body = {"type": "Invocation", "functionName": "Feature.area",
-            "arguments": {"feature": {"type": "ArgumentRef", "value": "row"}}}
+    body = {"type": "Invocation", "functionName": "Feature.buffer",
+            "arguments": {"feature": {"type": "ArgumentRef", "value": "row"},
+                          "distance": 1}}
     with pytest.raises(UnsupportedEEError, match="Unsupported.*empty Feature map"):
         preflight_empty_feature_map(Translator([], {}, {}), function(body))
+
+
+def test_supported_area_empty_callback_validates_without_inventing_a_row(monkeypatch):
+    body = {"type": "Invocation", "functionName": "Feature.area",
+            "arguments": {"feature": {"type": "ArgumentRef", "value": "row"}}}
+    translator = Translator([], {}, {})
+
+    def unexpected(*_args, **_kwargs):
+        raise AssertionError("empty callback invented or evaluated a row")
+
+    monkeypatch.setattr(translator, "evaluate", unexpected)
+    preflight_empty_feature_map(translator, function(body))
+
+
+_MEASURE_METHODS = [
+    owner + "." + method
+    for owner in ("Geometry", "Feature")
+    for method in ("area", "length", "perimeter", "centroid")
+]
+
+
+def _measure_arguments(name):
+    row = {"type": "ArgumentRef", "value": "row"}
+    if name.startswith("Feature."):
+        return {"feature": row}
+    return {"geometry": {
+        "type": "Invocation", "functionName": "Feature.geometry",
+        "arguments": {"feature": row},
+    }}
+
+
+@pytest.mark.parametrize("name", _MEASURE_METHODS)
+@pytest.mark.parametrize("invalid", ["missing_required", "unknown_argument"])
+def test_measure_signatures_reject_invalid_empty_callbacks(monkeypatch, name, invalid):
+    arguments = {} if invalid == "missing_required" else {
+        **_measure_arguments(name), "unexpected": True,
+    }
+    body = {"type": "Invocation", "functionName": name, "arguments": arguments}
+    translator = Translator([], {}, {})
+
+    def unexpected(*_args, **_kwargs):
+        raise AssertionError("empty callback invented or evaluated a row")
+
+    monkeypatch.setattr(translator, "evaluate", unexpected)
+    monkeypatch.setattr(translator, "invoke", unexpected)
+    message = ("missing required arguments" if invalid == "missing_required"
+               else "Unsupported algorithm arguments")
+    with pytest.raises(UnsupportedEEError, match=message):
+        preflight_empty_feature_map(translator, function(body))
+
+
+@pytest.mark.parametrize("name", _MEASURE_METHODS)
+def test_measure_empty_callbacks_validate_optional_names_without_row_execution(
+        monkeypatch, name):
+    body = {
+        "type": "Invocation", "functionName": name,
+        "arguments": {**_measure_arguments(name), "maxError": None, "proj": None},
+    }
+    translator = Translator([], {}, {})
+
+    def unexpected(*_args, **_kwargs):
+        raise AssertionError("empty callback invented or evaluated a row")
+
+    monkeypatch.setattr(translator, "evaluate", unexpected)
+    monkeypatch.setattr(translator, "invoke", unexpected)
+    preflight_empty_feature_map(translator, function(body))
 
 
 def test_preparation_argument_schema_rejects_unknown_keys_without_evaluating_row():

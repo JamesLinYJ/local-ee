@@ -1,0 +1,504 @@
+{
+  "schema": "local-ee-gee-python-wave71/v1",
+  "date": "2026-10-25",
+  "status": "Bounded offline wave verified; broader compatibility objective remains unfinished",
+  "base_commit": "e7780d9df62bffaa7ce8337b0984b4331f44c15b",
+  "focus": "Geometry/Feature area, length, perimeter and centroid; actual great-circle edge WGS84 metrics and explicit planar EPSG:4326",
+  "coverage": {
+    "entry_names_supported": 720,
+    "pinned_entry_names": 991,
+    "entry_name_percentage": 72.65,
+    "new_entry_names": 8,
+    "semantic_or_google_equivalence_percentage": null,
+    "note": "Declared-name inventory only; individual methods and combined workflows retain documented restrictions",
+    "inventory_sha256": "e48fb9808285f76c3267f704652280e6f0640f497e9221b4a9a32f91d0752d9e"
+  },
+  "local_validation": {
+    "full_regression": {
+      "result": "6889 passed, 27 skipped, 53 warnings in 103.96s (0:01:43)",
+      "exit_code": 0,
+      "source_stable": true,
+      "files": 49
+    },
+    "frontend": {
+      "tests": {
+        "exit_code": 0,
+        "passed": 11
+      },
+      "typecheck_exit_code": 0,
+      "temporary_build_exit_code": 0,
+      "source_sha256": "d9d92ecc8c13f07d103d193563954c69a4a3a650c928ccd74ec083379edb7d4b",
+      "deployment_performed": false
+    },
+    "independent_review_groups": [
+      {
+        "boundary": "rawop10 ABI",
+        "failed": 0,
+        "meaning": "17 original independent numeric records plus private full-sphere, malformed/parser/capacity/canary and exact work-bound controls",
+        "passed": 51
+      },
+      {
+        "boundary": "WGS84 scalar ABI",
+        "failed": 0,
+        "meaning": "23 original Decimal references +3 complements +1 seam +6 chart-boundary areas; selected-only behavior/full-sphere/capacity/work checks",
+        "passed": 65
+      },
+      {
+        "boundary": "individual compiler, SDK baseline, ownership and prepaid work",
+        "failed": 0,
+        "groups": {
+          "Feature": 4,
+          "WGS84-compiler": 33,
+          "budget": 8,
+          "centroid-nonzero": 2,
+          "centroid-zero": 5,
+          "malformed-native-centroid": 8,
+          "malformed-native-scalar": 8,
+          "original-wire": 16,
+          "parser": 3,
+          "planar": 36
+        },
+        "passed": 123
+      },
+      {
+        "boundary": "metadata repair",
+        "failed": 0,
+        "meaning": "18 negative Feature.id/area/centroid validations +one two-way ownership +three exact50000/oneover controls",
+        "passed": 22
+      },
+      {
+        "boundary": "separately named official SDK planar GeometryCollection inputs",
+        "failed": 0,
+        "offline_guard_attempts": 0,
+        "passed": 16
+      },
+      {
+        "boundary": "six unchanged historical official scalar wires",
+        "failed": 0,
+        "fixture_sha256": "ffe6fd39fb7db5535697fd7d56f968c09e6c71720535242657833ee9582c7edf",
+        "offline_guard_attempts": 0,
+        "passed": 6
+      }
+    ],
+    "counts_policy": "These are boundary/check counts. The same mathematical examples recur at ABI, compiler and SDK boundaries. They do not add to public API coverage;8 unique Geometry/Feature names only, with explicit partial-route limitations.",
+    "last_empty_map_fix": {
+      "focused_tests": {
+        "files": [
+          "tests/test_ee_empty_feature_map_preflight.py",
+          "tests/test_ee_feature_geometry_workflow.py",
+          "tests/test_ee_feature_measures.py",
+          "tests/test_ee_geometry_measures.py",
+          "tests/test_ee_measures_sdk.py",
+          "tests/test_ee_measures_static.py",
+          "tests/test_ee_measures_workflow.py",
+          "tests/test_ee_measures_chart_boundaries.py",
+          "tests/test_ee_spherical_native_measures.py"
+        ],
+        "result": "161 passed, 1 warning in 2.75s"
+      },
+      "original_invalid_wires_now_rejected": 16,
+      "new_controls": "16 negative argument controls and 8 valid callbacks with evaluate/invoke forbidden; structural only",
+      "source_snapshot_sha256": "61b239abd69b7247e8d8aaa321cafb2ccda725ecbef734c0599ac36a5e1d4abe"
+    },
+    "examples": {
+      "official_clients": [
+        "Python",
+        "JavaScript"
+      ],
+      "outputs_each": 6,
+      "computed_values_equal": true,
+      "network_attempts": 0
+    },
+    "physical_workflows": [
+      {
+        "route_key": "default_wgs84_feature_only",
+        "rows": 4,
+        "columns": [
+          "system:index",
+          "feature_id",
+          "label",
+          "source_rank",
+          "feature_area_default",
+          "feature_length_default",
+          "feature_perimeter_default",
+          "feature_centroid_default",
+          ".geo"
+        ]
+      },
+      {
+        "route_key": "explicit_epsg4326_planar_geometrycollection_feature_only",
+        "rows": 6,
+        "columns": [
+          "system:index",
+          "feature_id",
+          "label",
+          "source_rank",
+          "feature_area_epsg4326",
+          "feature_length_epsg4326",
+          "feature_perimeter_epsg4326",
+          "feature_centroid_epsg4326",
+          ".geo"
+        ]
+      }
+    ],
+    "physical_scope": "The workflow suite has 6 cases: 2 frozen reference/centroid checks, 2 expected full-formula shared-budget rejection checks, and 2 actual Feature-only worker CSV routes. The positive routes are separately named lower-cost workflows over the same input rows; they are not compatibility gains for the preserved full formulas.",
+    "google_compute_calls": 0,
+    "not_run": [
+      "Google same-data comparison",
+      "full Spark batch",
+      "browser end-to-end",
+      "private datasets",
+      "service deployment",
+      "production acceptance"
+    ]
+  },
+  "native_component": {
+    "platform": "darwin-arm64",
+    "abi_version": 1,
+    "single_export_preserved": true,
+    "previous_ops": "0-9 unchanged",
+    "new_records": "op10 fixed8 unit-sphere measures/raw centroid; op11/12/13 fixed2 WGS84 area/length/perimeter",
+    "artifact_manifest_sha256": "fe8ea4830f93a07428f7d4da5a579d90868c960fe088dd485c67d1ba136d8ec1",
+    "artifact_library_sha256": "69d5da02e25881826af4fae6f33ce96f6b4cd345b21da88bdbab9e17b86b79d0",
+    "source_sha256": {
+      "native/s2/CMakeLists.txt": "585cee750bead858aed192e37ff1c9a20e635eadd9ac696ab01d37ed2d36dd99",
+      "native/s2/dependencies.lock.json": "a48871abda85fa724dde7355e10c41e9d736f102092fe6c133f241f5a8531d38",
+      "native/s2/s2_adapter.cpp": "f9fec2f14d9508433be1dd10e12c66bf664766b1d3e52630cf641b39a06aa51e",
+      "native/s2/s2_adapter.h": "06c58e0f00a7034a907a0d22ede9739635426755f73c9fe1a78fb9b99777e697",
+      "native/s2/s2_bounds.cpp": "86592b0000c4eb6f5ad921a7d7979b61e9823d5bc0051a6be4fb1bfd2cc12e1e",
+      "native/s2/s2_degeneracies.cpp": "eedad18e127c4fd093ab4cd70d40a1074334607017eeec1e9cbac99e3d70c3c8",
+      "native/s2/s2_ellipsoid_area.cpp": "619a8d672acbf70f3bfa6caceb5d6a405986ffe54919a81ad81dc3f17e7d1430",
+      "native/s2/s2_ellipsoid_math.cpp": "74de242bc64ec05102c9e1c4e6e270649aa47caac5eca6c44d6463ced3c73126",
+      "native/s2/s2_ellipsoid_math.h": "238c06fb3254ddbb70d53c9781e9d5f9997fa2ff790895fef3e1c216bdb27f88",
+      "native/s2/s2_ellipsoid_math_internal.h": "6e6c3eb880edfc4b4546048df518f048cecceb13c3b962697f331214fe90d359",
+      "native/s2/s2_ellipsoid_measures.cpp": "15821c84f26d5e6266cfc819cb4d722348d6a5f1cc3254b7072d5cf19f5be35c",
+      "native/s2/s2_ellipsoid_measures.h": "8167a4549b35f235874484669a77876afaccd8cdbde693e41201da7fcd51de54",
+      "native/s2/s2_ellipsoid_sphere_area.cpp": "08e32262657957eb746b432fa97551b0909e54ba31282384b9b990bfe4b59562",
+      "native/s2/s2_input.cpp": "7087715660452eb1e5b89ccd3877103da02ce29b6c423b0023901cdc658b8382",
+      "native/s2/s2_internal.h": "3fa754e8f6eb8855e3f5ed7ef40ca1929efa3e6991a8ce8a8078cebff9fe8cd4",
+      "native/s2/s2_measures.cpp": "233b2fbbcd4c43a9cb76fd14d78691c0c74562942941b490b03138700bed89ba",
+      "native/s2/s2_operation.cpp": "698723b851d03117e340d6e26b808bf5e3b23a65f3c4983ee387e185e4d169e6",
+      "native/s2/s2_output.cpp": "37c252b86f8077234623c4431690adfdeb3e6f16f15386e39c44bca0f140e82e",
+      "native/s2/s2_wire.cpp": "9dd7be296ee2b839d0df380934cfa436f91b487ebd0be443f23f227d4e871903",
+      "scripts/build_s2_adapter.py": "7253e0c30713db20e673f12c5f3600c7410909f80cd6251084ec3f0293910044",
+      "scripts/s2_build/__init__.py": "55277cc057b59a9105c0bead883e62ef48a9c4d79ae700b07bde7dd6ab332d6e",
+      "scripts/s2_build/artifact.py": "cf697fe80fab2780ad697e28dfbd15f64c07c0972422690d64caebba853b6817",
+      "scripts/s2_build/dependencies.py": "9dfd052524061ba6d0e434eda43fb0ebe7857fa8f88d7780ec64484632b2da41"
+    },
+    "promotion": "Project native/s2/artifacts only; installed service runtime not changed; previous component retained for rollback"
+  },
+  "fixed_issues": [
+    {
+      "finding": "Prepaid native-work count traversals originally ran before charge",
+      "status": "fixed; original precharge failure immutable; final pre-native boundary checks pass"
+    },
+    {
+      "finding": "Centroid output template omitted two expanded sidecar keys, undercharging19 visits",
+      "status": "fixed; complete Point reservation115 verified; record/coordinate/public-copy work reserved before native"
+    },
+    {
+      "finding": "Exact/symmetric centroid cancellation produced misleading tiny resultant direction",
+      "status": "raw vector retained; op10-only antipode conversion plus local scale-aware indeterminate-direction rejection; no certified S2 error bound or epsilon snapping claimed"
+    },
+    {
+      "finding": "Artifact1 area integration rejected9 independent scalar cases and70-edge accepted-budget control",
+      "status": "artifact2 stable16-term area identities and localized chart pass all original references unchanged plus6 independent chart-switch controls"
+    },
+    {
+      "finding": "Proposed Feature.id scalar metadata optimization weakened5 validations",
+      "status": "fixed before final freeze; full cycle/depth/entry/finiteness/typedIR/size checks retained; non-materializing size scan and actual clone accounting verified"
+    },
+    {
+      "finding": "Native-focused dateline op10 perimeter assertion used ill-conditioned acos(dot) reference",
+      "status": "independent90digit atan2 reference confirms .112956911471157196321302251809878...; helper corrected only, target/tolerances unchanged"
+    },
+    {
+      "finding": "Empty Feature map omitted the new methods from argument contracts",
+      "status": "Registered existing Geometry/Feature measure contracts; exact original 16 malformed wires now reject and 8 valid callbacks remain unevaluated"
+    }
+  ],
+  "unchanged_limits": {
+    "compiler_work": 50000,
+    "compiler_depth": 96,
+    "graph_nodes": 500,
+    "native_work": 50000,
+    "native_tracked_memory_bytes": 67108864,
+    "memory_note": "Tracked S2 allocation budget, not an operating-system RSS guarantee"
+  },
+  "explicit_local_policies": {
+    "area_model_sources": [
+      "https://developers.google.com/earth-engine/guides/geometry_visualization_info",
+      "https://developers.google.com/earth-engine/guides/geometries_planar_geodesic"
+    ],
+    "centroid_guard": "Local conservative operation-count/scale policy, not certified from S2 docs; raw vector not snapped",
+    "constants": "a6378137m,f1/298.257223563; S2Earth6371010m verified only as S2 constant, not an EE radius",
+    "default_scalars": "Doc-led WGS84 metric integration along the declared spherical great-circle arcs, not a verified Google backend algorithm",
+    "native_work": "W0=(positions+edges+1)^2*(active_shapes+1)+positions^2+4edges+4active_shapes+parts; W0+56selected_edges<=50000 before S2 construction/quadrature",
+    "preserved_caps": "50000 shared compiler/native work,10000 positions,1000 children/shapes,depth16,64MiB tracked S2 allocations (not process RSS)",
+    "protocol": "op10 fixed8 unit-sphere measures+raw centroid; op11area/op12linear_length/op13polygon_perimeter fixed2[1,value];14unsupported",
+    "quadrature": "56 evaluations per selected actual edge (GL8 at1,2,4 panels), unchanged convergence policy; numerical rule is not a formal quadrature certificate"
+  },
+  "remaining_gaps": {
+    "preserved_full_formula_failures": [
+      {
+        "route": "default_wgs84",
+        "wire_sha256": "663b9d0c9d551975136dfc91b073e2a065e7226acbfaee60247ccaf1f5691422",
+        "wire_bytes": 6679,
+        "input_rows": 4,
+        "budget_steps_before_failure": 49190,
+        "requested_work": 928,
+        "attempted_total": 50118,
+        "limit": 50000,
+        "error": "Feature.area WGS84 native measure operation exceeds the shared 50000-step compilation work budget",
+        "diagnostics": "/Users/james/Documents/Codex/2026-10-21/wo/outputs/private-gee/audit/gee-python-wave71/compiler-astra/workflow-prefix-costs.json"
+      },
+      {
+        "route": "explicit_epsg4326_planar_geometrycollection_v3",
+        "wire_sha256": "c85c56de461bf9b89fdf9c39dd5aff9f54e4e74b70e5f0ac1582302d76766ffb",
+        "wire_bytes": 7075,
+        "input_rows": 6,
+        "budget_steps_before_failure": 49893,
+        "requested_work": 166,
+        "attempted_total": 50059,
+        "limit": 50000,
+        "error": "Geometry.area edge-model/component scan exceeds the shared 50000-step compilation work budget",
+        "diagnostics": "/Users/james/Documents/Codex/2026-10-21/wo/outputs/private-gee/audit/gee-python-wave71/compiler-astra/workflow-prefix-costs.json"
+      }
+    ],
+    "sdk_planar_multipolygon": {
+      "error": "UnsupportedEEError: Invalid planar GeoJSON geometry topology",
+      "failed": 16,
+      "final_report": "sdk-multiplicity-final.json",
+      "wire_expected_and_error_unchanged": true
+    },
+    "strict_s2_historical": {
+      "count": 3,
+      "pointer": "reports/gee-python-wave69.json",
+      "pointer_sha256": "ddcae5d748ecde70a058777ad617932dcb8249c3246700a4baaa1f5853db11bb",
+      "status": "carry-forward only; not repaired, loosened or reclassified by this review"
+    },
+    "other": [
+      "distance",
+      "buffer",
+      "general CRS or edge-model transformations",
+      "public full-sphere geometry encoding",
+      "certified quadrature error bound",
+      "Google numerical/field parity"
+    ]
+  },
+  "preservation": {
+    "original_refs_wires_tolerances": "Preserved; lower-cost and GeometryCollection workflows have distinct fixtures and are not repairs of rejected originals",
+    "dependencies_and_locks_changed": false,
+    "private_data_or_accounts_changed": false,
+    "services_restarted_or_deployed": false,
+    "containers_or_vms_used": false
+  },
+  "preserved_failures_and_calibrations": {
+    "artifact1": "9 frozen area controls and a 70-edge within-budget case rejected; retained. Artifact2 resolves numerical cancellation with 16-term identities/local chart without changing references or convergence threshold.",
+    "angle_reference": "Ill-conditioned acos(dot) reference changed to independently confirmed atan2(cross,dot); tolerance unchanged; original failure retained; not a production numerical gain.",
+    "full1": "7 failed, 6857 passed: old unsupported Feature.area assertion and six new tests using a different session URL. Original copies retained; negative now uses unsupported Feature.buffer, original area is an added positive; chart uses shared session URL.",
+    "full2": "6865 passed, 27 skipped; independent Astra review subsequently found missing empty-map contracts. Full3 includes the genuine fix plus 24 new structural controls.",
+    "metadata": "Rejected intermediate optimization weakened finite/string/list/extra-field validation. Final non-materializing size checks preserve complete validation and actual copy charges."
+  },
+  "cleanup": {
+    "removed": [
+      {
+        "path": "work/gee-python-wave71-s2-dependency/s2-a48871abda85-ppo4usp8",
+        "regular_file_bytes": 84513452,
+        "build_log_sha256": {
+          "adapter-build.log": "fb9c83c2d935911822f618bdc45714824d2de96b3c87654e22d03a980042fee7",
+          "s2-install.log": "e7e5bc9d0f6e369c048bb2672418c98f52966067dc6c43d06afc43db1995212c",
+          "s2-configure.log": "44e5fc5d36eca1432e2a8be4d47e0d48c1515d22e3250e6491f4b1f2916ca2ed",
+          "adapter-configure.log": "fb5c3a42a80f35b0ada13fd97c1f9cd9911c22be63f7efa272db55a7e439b6cc",
+          "s2-build.log": "c7e7170cf0272ea5b9c2c904619fa2b8677dd067598989484f9fc6f10cab0f50"
+        }
+      },
+      {
+        "path": "work/gee-python-wave71-s2-dependency/s2-a48871abda85-5l2z_itx",
+        "regular_file_bytes": 84513492,
+        "build_log_sha256": {
+          "adapter-build.log": "69e03bd9edb36aa316ca415db9c74617e3295115b11f19d9853471413fda97d2",
+          "s2-install.log": "a64371323e23118c3a1c1e59455de0b9bc9ae62343e8c5e600918d93b660c554",
+          "s2-configure.log": "121e9fc0a32802010e722c4c72a719fdb5672fde5af6737815593889bab28cdc",
+          "adapter-configure.log": "9971991294a3c1e17e599019b93abd308fdc8f0f41fcc35c55541fc3f743b98a",
+          "s2-build.log": "2bc08a0686642707929aeebc9edf6bb3b6cf294b9855cd8c48554d173aed7a2f"
+        }
+      },
+      {
+        "path": "audit/gee-python-wave71/root/s2-canonical-replaced",
+        "regular_file_bytes": 1977306,
+        "identical_rollback_retained": "audit/gee-python-wave71/root/s2-rollback-before"
+      }
+    ],
+    "total_regular_file_bytes": 171004250,
+    "archives_retained": "work/gee-python-wave71-s2-dependency/downloads",
+    "failed_artifact1_retained": true,
+    "artifact2_retained": true,
+    "rollback_retained": true
+  },
+  "frozen_tested_source_sha256": {
+    "examples/75_GEE_python_geometry_measures.py": "12e75b8deda1019bb1f9ba9fb3b1c36f292dcce06a36a5e0f8676b15a2d1fc2c",
+    "examples/javascript/29_几何度量.js": "97a3e5f8b3392eb59cb72a9e8d3f9ce324fe4b90ba2edd15ba0a9446c42b5a03",
+    "gee/compat/earthengine/capabilities.py": "6f02340b7828b52419a833950835d5aa7b2dec022d905840577f00b7e6d0454a",
+    "gee/compat/earthengine/dispatch.py": "94d687c6c8714101d58e5e837e90d5e48e73ea2a87f5ca8d47af1bb703a55697",
+    "gee/compat/earthengine/ellipsoid_preflight.py": "127c8434605039ec40c216cb17730fa59ff35638703e95a0757ed348014c291d",
+    "gee/compat/earthengine/feature_geometry_measures.py": "3c8c88cc4dadf2986b5da204e3f78f51bd4190ab6c8dabdfbda2e0809ee9b47d",
+    "gee/compat/earthengine/feature_map_preflight.py": "fb02ddb48801dad703b9f392186120ed5771a47a13081f38289a6ab086e687f4",
+    "gee/compat/earthengine/feature_structure.py": "cb0389e2fd5950ab2e840af8118d9314d386e1dbcf5d3e00cec4fd04a9dd87d7",
+    "gee/compat/earthengine/geometry_measures.py": "c6c1e3933b028902ec9bfb89dac236d6f7e1abf69603d7d83303d700942214d6",
+    "gee/compat/earthengine/geometry_planar_measures.py": "73b0a37874faa171efd5dd14108fcdc2f826b8079a4033da027f582506181237",
+    "gee/compat/earthengine/owned_metadata_values.py": "03b6254132728353a5fbdcff9abc61ac7b0cf5307e8d627a3e4ae625af333625",
+    "gee/compat/earthengine/spherical_measures.py": "a712b3958be78e4171d73fc56be41bedf214baff96401f68551c62ffdf903748",
+    "gee/compat/earthengine/spherical_native.py": "2d1e7161802c7dd10dedf644b5c826aa76a07a3e943b0466646c8819978b2c05",
+    "native/s2/CMakeLists.txt": "585cee750bead858aed192e37ff1c9a20e635eadd9ac696ab01d37ed2d36dd99",
+    "native/s2/artifacts/liblocal_ee_s2.dylib": "69d5da02e25881826af4fae6f33ce96f6b4cd345b21da88bdbab9e17b86b79d0",
+    "native/s2/artifacts/manifest.json": "fe8ea4830f93a07428f7d4da5a579d90868c960fe088dd485c67d1ba136d8ec1",
+    "native/s2/s2_adapter.cpp": "f9fec2f14d9508433be1dd10e12c66bf664766b1d3e52630cf641b39a06aa51e",
+    "native/s2/s2_adapter.h": "06c58e0f00a7034a907a0d22ede9739635426755f73c9fe1a78fb9b99777e697",
+    "native/s2/s2_ellipsoid_area.cpp": "619a8d672acbf70f3bfa6caceb5d6a405986ffe54919a81ad81dc3f17e7d1430",
+    "native/s2/s2_ellipsoid_math.cpp": "74de242bc64ec05102c9e1c4e6e270649aa47caac5eca6c44d6463ced3c73126",
+    "native/s2/s2_ellipsoid_math.h": "238c06fb3254ddbb70d53c9781e9d5f9997fa2ff790895fef3e1c216bdb27f88",
+    "native/s2/s2_ellipsoid_math_internal.h": "6e6c3eb880edfc4b4546048df518f048cecceb13c3b962697f331214fe90d359",
+    "native/s2/s2_ellipsoid_measures.cpp": "15821c84f26d5e6266cfc819cb4d722348d6a5f1cc3254b7072d5cf19f5be35c",
+    "native/s2/s2_ellipsoid_measures.h": "8167a4549b35f235874484669a77876afaccd8cdbde693e41201da7fcd51de54",
+    "native/s2/s2_ellipsoid_sphere_area.cpp": "08e32262657957eb746b432fa97551b0909e54ba31282384b9b990bfe4b59562",
+    "native/s2/s2_input.cpp": "7087715660452eb1e5b89ccd3877103da02ce29b6c423b0023901cdc658b8382",
+    "native/s2/s2_internal.h": "3fa754e8f6eb8855e3f5ed7ef40ca1929efa3e6991a8ce8a8078cebff9fe8cd4",
+    "native/s2/s2_measures.cpp": "233b2fbbcd4c43a9cb76fd14d78691c0c74562942941b490b03138700bed89ba",
+    "native/s2/s2_wire.cpp": "9dd7be296ee2b839d0df380934cfa436f91b487ebd0be443f23f227d4e871903",
+    "scripts/ee_inventory/catalogue.py": "376ecda097393aab7fa091e25d364a7679da6ecd60c6f436524b47f3fe565b1b",
+    "scripts/ee_inventory/geometry_measures.py": "ed986d52b594dd736f279d0e2c732249fbb6dc97c2fa9cd2b5104769a9eeffcf",
+    "tests/ee_measures_references.py": "cafba5d56173ba31dccc9c7515f536a85f6d8f0dc4c6db1192c7da22a751c70c",
+    "tests/ee_measures_workflow.py": "10dfb5c1ce7c9ac210f5f3303f75980d66559fb2c7f196836e9ea4bf99225a9b",
+    "tests/fixtures/ee-geometry-measures-chart-boundaries-v1.json": "acc95efa167023eee686bc7d48872f8e11b5693effe610ee3d3304f95d39fc1b",
+    "tests/fixtures/ee-geometry-measures-wave71-feature-only-workflows-v1.json": "ab3fcf50676753b4abc5a0c5fbcabf2042dbe9b484485717094240beccd14f3f",
+    "tests/fixtures/ee-geometry-measures-wave71-planar-geometrycollection-v1.json": "8e781b44bad23dc9b930890229f9a07868c70b6b47ac1f42f32aa2c839ad02d9",
+    "tests/fixtures/ee-geometry-measures-wave71-v1.json": "6ac1ab58c496eb4108efa4ce12cf0683d1cc152acf9bf6592c88a5956e71edd0",
+    "tests/fixtures/ee-measurement-wave62-before-v1.json": "ffe6fd39fb7db5535697fd7d56f968c09e6c71720535242657833ee9582c7edf",
+    "tests/test_ee_empty_feature_map_preflight.py": "6fb21b6a314e4152d01d6dd9fcc6ad38fd3f0fb1c76297885b0272f0ab6fced3",
+    "tests/test_ee_feature_geometry_workflow.py": "7ea2ea81a5e866f967c9968e3502f40e11778a3e1c7ba449828b916fadd272f8",
+    "tests/test_ee_feature_measures.py": "81e0e753d5aa00dbace46471e6c26016be471dc13e0ed5d9bff2a0939b94912c",
+    "tests/test_ee_geometry_measures.py": "cdd6b1a8fde5144537515822805e0badbd6a2d7adab828b11c4c3fd9752f2604",
+    "tests/test_ee_measures_chart_boundaries.py": "3e473d5089a12d08b3b9e36673fdbca453f5a5237957cefd0121e384bcfe1144",
+    "tests/test_ee_measures_sdk.py": "aef7ce77ac2f157ff53a90c800d71be45c7a49b837e2fe07cb0d9e1865fbac52",
+    "tests/test_ee_measures_static.py": "f29224b7778ae9ac44bf082936348905da92aac93e3f5cc8ebc672322cad10ae",
+    "tests/test_ee_measures_workflow.py": "6d768baea336d08d9ad76aaeffde35aa4bd4476ec57d3ea32f0272dd0fd7322b",
+    "tests/test_ee_spherical_native_kernel.py": "e2eccadcb7570c02db466a5c81ccb1c72365c427909a52fa481796402ea53232",
+    "tests/test_ee_spherical_native_measures.py": "bfa2f3fbef8c2e609bbb8a8945a5746d563b1625226377bbcc1dfcab553e0bbe",
+    "web/src/docs/typed-raster-docs.ts": "d9d92ecc8c13f07d103d193563954c69a4a3a650c928ccd74ec083379edb7d4b"
+  },
+  "audit_receipts": {
+    "audit/gee-python-wave71/root/full-1.json": "c25db9a79c90b56176f730731b01f4e65fd31ca59255857dd30447c1e2a80690",
+    "audit/gee-python-wave71/root/full-2.json": "f4830e71979f6b328f6ec7ec1c7eb234fcbac967b71d51db634c470e151eeb99",
+    "audit/gee-python-wave71/root/full-3.json": "3d0d0a086c0b324229fe0e508db3abd48715ab45549c48bbe2e1b6bbfb8d2506",
+    "audit/gee-python-wave71/root/test-maintenance-v1.json": "8da8c7c198c17f121e81789efe39eb23ade7d74f6843748a8ae069421e50462d",
+    "audit/gee-python-wave71/root/frontend-verification.json": "2df6297ad7627e6a8ffc082243023a51da4f1c6e9fa27197d98c57f7f05ddcdf",
+    "audit/gee-python-wave71/root/frontend-cleanup.json": "a31af9c7f95f980d5030ff4bcf5d21ee82b2327461d8518da2f316ab37d6fefc",
+    "audit/gee-python-wave71/root/native-freeze-2.json": "087356963b5c5ba2cfbb03e8d31a66923dd590f368101cb1801bfad36e70ed86",
+    "audit/gee-python-wave71/root/native-build-2.json": "22c75810184064262fe24b185941d057a764230c5dc8662111b49ab7124429e4",
+    "audit/gee-python-wave71/root/canonical-promotion-2.json": "99364355c352342eb01b29eeab61c99c1323ce759e3330b3b6b637c5092ef725",
+    "audit/gee-python-wave71/root/build-cleanup.json": "eb5ed9595b9d1ed00bb6446bc8eabe6c946e2e634c415546b7866399df090ff7",
+    "audit/gee-python-wave71/root/examples-artifact-2.json": "ac9e5a0dda95b326b133a9d3fa399f1e2c9858aa108ca5677e36742971681702",
+    "audit/gee-python-wave71/review/scoped-review-final.json": "7b34a4001c6b361d54658d0c0a7164545c0719d8724e344b5f0f1f7585230f70",
+    "audit/gee-python-wave71/review/feature-id-validation-original.json": "fa6caafc399d92a7182126e3a3385b66f60fa9d84133b332f201edf75d2b2dda",
+    "audit/gee-python-wave71/review/sdk-multiplicity-original.json": "fd2a59f187262d56d8dcab9c67694c80ff820218a057dc62d5d4d5530b8d2931",
+    "audit/gee-python-wave71/review/sdk-multiplicity-final.json": "7430a396a805a845bb280f4ede57f3fd9852bffc344f1488b56fca533019506a",
+    "audit/gee-python-wave71/review/frozen-chart-boundary-controls.json": "acc95efa167023eee686bc7d48872f8e11b5693effe610ee3d3304f95d39fc1b",
+    "audit/gee-python-wave71/review/ellipsoid-artifact-1.json": "21d1a45eba31d93fad918e8b477e8b4d882b1b169b13c1aaff226570ee294456",
+    "audit/gee-python-wave71/review/reference-binary64-calibration.json": "852f9f3fb1287bc9cc29708ab28bf90cc8713814b356f8caee4e9af111d72e63",
+    "audit/gee-python-wave71/compiler-astra/source-freeze.json": "a10b73f1dc0de26741085b77303031d8316d0e835db63b163995aa5687d55d1e",
+    "audit/gee-python-wave71/compiler-astra/workflow-prefix-costs.json": "3ee10535ffbbc80c94a53cd23fe6cee15014aedc8cf1c9a6ea693b8d22c6558b",
+    "audit/gee-python-wave71/compiler-astra/empty-map-signature-original.json": "f5495dba6334e27c373af1972dd470f1e4a62f86a8e59b4aba5b75ec74bd9c03",
+    "audit/gee-python-wave71/compiler-astra/empty-map-source-freeze.json": "2a2530f9986f250b8f391691dea250b6f176b34726f831a7ec3c8cad87f6960b",
+    "audit/gee-python-wave71/workflow/baseline-manifest.json": "743bd318348bbab2d9336a5991f4ef92523060e3cfa942ff01553b71de87d3f6",
+    "audit/gee-python-wave71/workflow-run1/artifact1-runtime-failure-receipt.json": "4ce519a6a0573fbab517a0797e98aca4daf5ef58d278da006100020e5dd5050d",
+    "audit/gee-python-wave71/workflow-run2/feature-only-readback.json": "9657ea5ec706427f98e2b0eb4ed8201267aeec3ce1d08683faaaa2724703618c",
+    "audit/gee-python-wave71/root/eof-cleanup.json": "75b3738aad58a46ab10ef076710f5a4a3cdaf0b886e54615e1228bc38a625c23",
+    "audit/gee-python-wave71/root/eof-focused.txt": "0da0fbf24dd3ba1136743092d3d24decfc28972eb4417411f1c7f42df5c220a0"
+  },
+  "documentation_sha256": {
+    "AGENTS.md": "53f8b88cb4a331a639d6dc342ec356d4482b89c4fc2dce4dc5e58be8e39cb50d",
+    "GOAL.md": "c15038d5a107a32a963fd13dea0aa61cca75084b2a3beda63745341e2b6f0e3e",
+    "docs/architecture.md": "a4bfc81f87dd5a16a9dc7c5a2153ae5e8447a4a4c9258911275ce22002b9f2ad",
+    "docs/gee-compatibility.md": "a48add94fd263ac166651b7e4f61e2b44f2f823451e15e69b6bac621e0612917",
+    "docs/gee-python/list.md": "9e3022850fb67049046a4b77fc905ec7611c5c917e232015713c01f0ff75403e",
+    "docs/gee-python/geometry-measures.md": "5afd9ad17a8a404f03b3152a9e6cab4c5715937caa46f2210fdf73d0d7d17791",
+    "docs/gee-python/spherical-geometry.md": "bb491e41c5166c94d776bb99e9759808843af92c37d6fe48ba921659d6841971"
+  },
+  "publication": "Exact commit and protected CI recorded separately after commit; no PR, force push or branch-protection bypass.",
+  "finalized_source_sha256": {
+    "examples/75_GEE_python_geometry_measures.py": "12e75b8deda1019bb1f9ba9fb3b1c36f292dcce06a36a5e0f8676b15a2d1fc2c",
+    "examples/javascript/29_几何度量.js": "97a3e5f8b3392eb59cb72a9e8d3f9ce324fe4b90ba2edd15ba0a9446c42b5a03",
+    "gee/compat/earthengine/capabilities.py": "6f02340b7828b52419a833950835d5aa7b2dec022d905840577f00b7e6d0454a",
+    "gee/compat/earthengine/dispatch.py": "94d687c6c8714101d58e5e837e90d5e48e73ea2a87f5ca8d47af1bb703a55697",
+    "gee/compat/earthengine/ellipsoid_preflight.py": "127c8434605039ec40c216cb17730fa59ff35638703e95a0757ed348014c291d",
+    "gee/compat/earthengine/feature_geometry_measures.py": "3c8c88cc4dadf2986b5da204e3f78f51bd4190ab6c8dabdfbda2e0809ee9b47d",
+    "gee/compat/earthengine/feature_map_preflight.py": "fb02ddb48801dad703b9f392186120ed5771a47a13081f38289a6ab086e687f4",
+    "gee/compat/earthengine/feature_structure.py": "cb0389e2fd5950ab2e840af8118d9314d386e1dbcf5d3e00cec4fd04a9dd87d7",
+    "gee/compat/earthengine/geometry_measures.py": "c6c1e3933b028902ec9bfb89dac236d6f7e1abf69603d7d83303d700942214d6",
+    "gee/compat/earthengine/geometry_planar_measures.py": "73b0a37874faa171efd5dd14108fcdc2f826b8079a4033da027f582506181237",
+    "gee/compat/earthengine/owned_metadata_values.py": "03b6254132728353a5fbdcff9abc61ac7b0cf5307e8d627a3e4ae625af333625",
+    "gee/compat/earthengine/spherical_measures.py": "a712b3958be78e4171d73fc56be41bedf214baff96401f68551c62ffdf903748",
+    "gee/compat/earthengine/spherical_native.py": "2d1e7161802c7dd10dedf644b5c826aa76a07a3e943b0466646c8819978b2c05",
+    "native/s2/CMakeLists.txt": "585cee750bead858aed192e37ff1c9a20e635eadd9ac696ab01d37ed2d36dd99",
+    "native/s2/artifacts/liblocal_ee_s2.dylib": "69d5da02e25881826af4fae6f33ce96f6b4cd345b21da88bdbab9e17b86b79d0",
+    "native/s2/artifacts/manifest.json": "fe8ea4830f93a07428f7d4da5a579d90868c960fe088dd485c67d1ba136d8ec1",
+    "native/s2/s2_adapter.cpp": "f9fec2f14d9508433be1dd10e12c66bf664766b1d3e52630cf641b39a06aa51e",
+    "native/s2/s2_adapter.h": "06c58e0f00a7034a907a0d22ede9739635426755f73c9fe1a78fb9b99777e697",
+    "native/s2/s2_ellipsoid_area.cpp": "619a8d672acbf70f3bfa6caceb5d6a405986ffe54919a81ad81dc3f17e7d1430",
+    "native/s2/s2_ellipsoid_math.cpp": "74de242bc64ec05102c9e1c4e6e270649aa47caac5eca6c44d6463ced3c73126",
+    "native/s2/s2_ellipsoid_math.h": "238c06fb3254ddbb70d53c9781e9d5f9997fa2ff790895fef3e1c216bdb27f88",
+    "native/s2/s2_ellipsoid_math_internal.h": "6e6c3eb880edfc4b4546048df518f048cecceb13c3b962697f331214fe90d359",
+    "native/s2/s2_ellipsoid_measures.cpp": "15821c84f26d5e6266cfc819cb4d722348d6a5f1cc3254b7072d5cf19f5be35c",
+    "native/s2/s2_ellipsoid_measures.h": "8167a4549b35f235874484669a77876afaccd8cdbde693e41201da7fcd51de54",
+    "native/s2/s2_ellipsoid_sphere_area.cpp": "08e32262657957eb746b432fa97551b0909e54ba31282384b9b990bfe4b59562",
+    "native/s2/s2_input.cpp": "7087715660452eb1e5b89ccd3877103da02ce29b6c423b0023901cdc658b8382",
+    "native/s2/s2_internal.h": "3fa754e8f6eb8855e3f5ed7ef40ca1929efa3e6991a8ce8a8078cebff9fe8cd4",
+    "native/s2/s2_measures.cpp": "233b2fbbcd4c43a9cb76fd14d78691c0c74562942941b490b03138700bed89ba",
+    "native/s2/s2_wire.cpp": "9dd7be296ee2b839d0df380934cfa436f91b487ebd0be443f23f227d4e871903",
+    "scripts/ee_inventory/catalogue.py": "376ecda097393aab7fa091e25d364a7679da6ecd60c6f436524b47f3fe565b1b",
+    "scripts/ee_inventory/geometry_measures.py": "ed986d52b594dd736f279d0e2c732249fbb6dc97c2fa9cd2b5104769a9eeffcf",
+    "tests/ee_measures_references.py": "cafba5d56173ba31dccc9c7515f536a85f6d8f0dc4c6db1192c7da22a751c70c",
+    "tests/ee_measures_workflow.py": "7a5a923c5e1efda2af0f6cdaca36e594145cdffc7928dd66675f11fb3f472390",
+    "tests/fixtures/ee-geometry-measures-chart-boundaries-v1.json": "acc95efa167023eee686bc7d48872f8e11b5693effe610ee3d3304f95d39fc1b",
+    "tests/fixtures/ee-geometry-measures-wave71-feature-only-workflows-v1.json": "ab3fcf50676753b4abc5a0c5fbcabf2042dbe9b484485717094240beccd14f3f",
+    "tests/fixtures/ee-geometry-measures-wave71-planar-geometrycollection-v1.json": "8e781b44bad23dc9b930890229f9a07868c70b6b47ac1f42f32aa2c839ad02d9",
+    "tests/fixtures/ee-geometry-measures-wave71-v1.json": "6ac1ab58c496eb4108efa4ce12cf0683d1cc152acf9bf6592c88a5956e71edd0",
+    "tests/fixtures/ee-measurement-wave62-before-v1.json": "ffe6fd39fb7db5535697fd7d56f968c09e6c71720535242657833ee9582c7edf",
+    "tests/test_ee_empty_feature_map_preflight.py": "6fb21b6a314e4152d01d6dd9fcc6ad38fd3f0fb1c76297885b0272f0ab6fced3",
+    "tests/test_ee_feature_geometry_workflow.py": "7ea2ea81a5e866f967c9968e3502f40e11778a3e1c7ba449828b916fadd272f8",
+    "tests/test_ee_feature_measures.py": "81e0e753d5aa00dbace46471e6c26016be471dc13e0ed5d9bff2a0939b94912c",
+    "tests/test_ee_geometry_measures.py": "cdd6b1a8fde5144537515822805e0badbd6a2d7adab828b11c4c3fd9752f2604",
+    "tests/test_ee_measures_chart_boundaries.py": "3e473d5089a12d08b3b9e36673fdbca453f5a5237957cefd0121e384bcfe1144",
+    "tests/test_ee_measures_sdk.py": "aef7ce77ac2f157ff53a90c800d71be45c7a49b837e2fe07cb0d9e1865fbac52",
+    "tests/test_ee_measures_static.py": "583212b7b8f4c2ed735449c83b31381cbe38190e9ed47a0ddf96bed3bca311dc",
+    "tests/test_ee_measures_workflow.py": "a2e7a7a3c1a1fd2b4e8108d03fc26d00ebc06af2f86fa7ec7b934f686f520ff2",
+    "tests/test_ee_spherical_native_kernel.py": "e2eccadcb7570c02db466a5c81ccb1c72365c427909a52fa481796402ea53232",
+    "tests/test_ee_spherical_native_measures.py": "bfa2f3fbef8c2e609bbb8a8945a5746d563b1625226377bbcc1dfcab553e0bbe",
+    "web/src/docs/typed-raster-docs.ts": "d9d92ecc8c13f07d103d193563954c69a4a3a650c928ccd74ec083379edb7d4b"
+  },
+  "post_regression_maintenance": {
+    "changes": {
+      "tests/ee_measures_workflow.py": {
+        "before_sha256": "10dfb5c1ce7c9ac210f5f3303f75980d66559fb2c7f196836e9ea4bf99225a9b",
+        "after_sha256": "7a5a923c5e1efda2af0f6cdaca36e594145cdffc7928dd66675f11fb3f472390",
+        "ast_unchanged": true,
+        "change": "Remove blank line at EOF only"
+      },
+      "tests/test_ee_measures_static.py": {
+        "before_sha256": "f29224b7778ae9ac44bf082936348905da92aac93e3f5cc8ebc672322cad10ae",
+        "after_sha256": "583212b7b8f4c2ed735449c83b31381cbe38190e9ed47a0ddf96bed3bca311dc",
+        "ast_unchanged": true,
+        "change": "Remove blank line at EOF only"
+      },
+      "tests/test_ee_measures_workflow.py": {
+        "before_sha256": "6d768baea336d08d9ad76aaeffde35aa4bd4476ec57d3ea32f0272dd0fd7322b",
+        "after_sha256": "a2e7a7a3c1a1fd2b4e8108d03fc26d00ebc06af2f86fa7ec7b934f686f520ff2",
+        "ast_unchanged": true,
+        "change": "Remove blank line at EOF only"
+      }
+    },
+    "scope": "EOF blank lines only; Python AST unchanged, final three workflow/SDK/static files rechecked",
+    "focused_result": "14 passed, 1 warning in 2.28s"
+  }
+}

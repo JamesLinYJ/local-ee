@@ -52,7 +52,8 @@ def _arguments(translator, name, arguments):
         fail(f"{name} requires {', '.join(sorted(missing))}")
 
 
-def _feature(translator, value, label):
+def _feature_header(value, label):
+    """Validate the Feature envelope without reserving a detached copy."""
     if type(value) is not dict or value.get("type") != "Feature":
         fail(f"{label} requires an actual inline Feature")
     properties = value.get("properties")
@@ -64,7 +65,14 @@ def _feature(translator, value, label):
         not isinstance(geometry, dict) or geometry.get("type") not in GEOMETRY_TYPES
     ):
         fail(f"{label} Feature geometry must be decoded GeoJSON or null")
-    preflight_owned_metadata_value(translator, value, label)
+    return value
+
+
+def _feature(translator, value, label, *, reserve_copy=True):
+    value = _feature_header(value, label)
+    preflight_owned_metadata_value(
+        translator, value, label, reserve_copy=reserve_copy,
+    )
     return value
 
 
@@ -102,7 +110,11 @@ def _is_literal_selector(value):
 def _feature_id(translator, arguments):
     name = "Feature.id"
     _arguments(translator, name, arguments)
-    feature = _feature(translator, arguments["element"], name)
+    # Keep full metadata, finite-content, cycle, and public-size checks, but do
+    # not reserve the detached copy work that Feature.id never performs.
+    feature = _feature(
+        translator, arguments["element"], name, reserve_copy=False,
+    )
     identity = _identity(feature)
     preflight_public_value(translator, identity, name)
     return identity

@@ -1,0 +1,225 @@
+{
+  "generation_seconds": 0.22616333299083635,
+  "purpose": "Below/above0.01rad chart boundary; cyclically rotated same physical triangles force a different chart. New controls supplement original23+3+seam without changing them.",
+  "records": [
+    {
+      "absolute_tolerance": 0.05,
+      "expected": 1225699316.8818061,
+      "expected_decimal": "1225699316.8818061544423985500614548440668704828086260663120578628853367915403455",
+      "expected_localization": true,
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              40.0,
+              30.0
+            ],
+            [
+              40.4,
+              30.0
+            ],
+            [
+              40.0,
+              30.572957222173027
+            ],
+            [
+              40.0,
+              30.0
+            ]
+          ]
+        ],
+        "evenOdd": true,
+        "type": "Polygon"
+      },
+      "id": "north-offset-below",
+      "max_anchor_distance_radians_decimal": "0.0099999899999999855048881295491595361973998485875857253020680852329296439163272878",
+      "operation": 11,
+      "quadrature_order_difference": "7.3E-69",
+      "reference": "Independent80-digit Decimal direct Q strip integral; GL16/32 four panels; exact binary64 input coordinates",
+      "relative_tolerance": 2e-12
+    },
+    {
+      "absolute_tolerance": 0.05,
+      "expected": 1225699316.8818061,
+      "expected_decimal": "1225699316.8818061544423985500614548440668704828086260663120578628853367915403455",
+      "expected_localization": false,
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              40.4,
+              30.0
+            ],
+            [
+              40.0,
+              30.572957222173027
+            ],
+            [
+              40.0,
+              30.0
+            ],
+            [
+              40.4,
+              30.0
+            ]
+          ]
+        ],
+        "evenOdd": true,
+        "type": "Polygon"
+      },
+      "id": "north-offset-below-rotated",
+      "max_anchor_distance_radians_decimal": "0.011676540130860914052314762521735422343661476956537659388316497029504486747012014",
+      "operation": 11,
+      "quadrature_order_difference": "7.3E-69",
+      "reference": "Independent80-digit Decimal direct Q strip integral; GL16/32 four panels; exact binary64 input coordinates",
+      "relative_tolerance": 2e-12
+    },
+    {
+      "absolute_tolerance": 0.05,
+      "expected": 1225701768.4191365,
+      "expected_decimal": "1225701768.4191366061358146330580663048065713326268235769192773571522269628036492",
+      "expected_localization": false,
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              40.0,
+              30.0
+            ],
+            [
+              40.4,
+              30.0
+            ],
+            [
+              40.0,
+              30.572958368088617
+            ],
+            [
+              40.0,
+              30.0
+            ]
+          ]
+        ],
+        "evenOdd": true,
+        "type": "Polygon"
+      },
+      "id": "north-offset-above",
+      "max_anchor_distance_radians_decimal": "0.010000009999999980465333667643782524725668322235503254583643315798691780159526984",
+      "operation": 11,
+      "quadrature_order_difference": "2.0E-69",
+      "reference": "Independent80-digit Decimal direct Q strip integral; GL16/32 four panels; exact binary64 input coordinates",
+      "relative_tolerance": 2e-12
+    },
+    {
+      "absolute_tolerance": 0.05,
+      "expected": 1225604481.1482382,
+      "expected_decimal": "1225604481.1482382655664129082828977496062109553392653723246071628009125333217592",
+      "expected_localization": true,
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -70.0,
+              -30.0
+            ],
+            [
+              -69.6,
+              -30.0
+            ],
+            [
+              -70.0,
+              -29.427042777826973
+            ],
+            [
+              -70.0,
+              -30.0
+            ]
+          ]
+        ],
+        "evenOdd": true,
+        "type": "Polygon"
+      },
+      "id": "south-offset-below",
+      "max_anchor_distance_radians_decimal": "0.0099999899999999855048881295491595361973998485875857253020680852329296439163272458",
+      "operation": 11,
+      "quadrature_order_difference": "7E-70",
+      "reference": "Independent80-digit Decimal direct Q strip integral; GL16/32 four panels; exact binary64 input coordinates",
+      "relative_tolerance": 2e-12
+    },
+    {
+      "absolute_tolerance": 0.05,
+      "expected": 1225604481.1482382,
+      "expected_decimal": "1225604481.1482382655664129082828977496062109553392653723246071628009125333217592",
+      "expected_localization": false,
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -69.6,
+              -30.0
+            ],
+            [
+              -70.0,
+              -29.427042777826973
+            ],
+            [
+              -70.0,
+              -30.0
+            ],
+            [
+              -69.6,
+              -30.0
+            ]
+          ]
+        ],
+        "evenOdd": true,
+        "type": "Polygon"
+      },
+      "id": "south-offset-below-rotated",
+      "max_anchor_distance_radians_decimal": "0.011694600469489082551202399838506489702091693752280792066748600066228564105285222",
+      "operation": 11,
+      "quadrature_order_difference": "7E-70",
+      "reference": "Independent80-digit Decimal direct Q strip integral; GL16/32 four panels; exact binary64 input coordinates",
+      "relative_tolerance": 2e-12
+    },
+    {
+      "absolute_tolerance": 0.05,
+      "expected": 1225606932.3062282,
+      "expected_decimal": "1225606932.3062280768375036491150501914494696315664114088701848808238121252917358",
+      "expected_localization": false,
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -70.0,
+              -30.0
+            ],
+            [
+              -69.6,
+              -30.0
+            ],
+            [
+              -70.0,
+              -29.427041631911383
+            ],
+            [
+              -70.0,
+              -30.0
+            ]
+          ]
+        ],
+        "evenOdd": true,
+        "type": "Polygon"
+      },
+      "id": "south-offset-above",
+      "max_anchor_distance_radians_decimal": "0.010000009999999980465333667643782524725668322235503254583643315798691780159526967",
+      "operation": 11,
+      "quadrature_order_difference": "5E-70",
+      "reference": "Independent80-digit Decimal direct Q strip integral; GL16/32 four panels; exact binary64 input coordinates",
+      "relative_tolerance": 2e-12
+    }
+  ],
+  "reference_generator_sha256": "77f03cac62d11e2663ddf43fd5240c3463d346570c63d1f1ba421d3b25ab46dc",
+  "schema": "wave71-independent-chart-boundary-controls/v1",
+  "scope": "Local mathematical reference only, not Google runtime equivalence; observed quadrature agreement is not a formal certificate."
+}

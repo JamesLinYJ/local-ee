@@ -1,0 +1,88 @@
+# Geometry／Feature 度量
+
+使用固定官方 Python／JavaScript 客户端的 `area`、`length`、`perimeter` 和
+`centroid`，参数继续为 `geometry`／`feature`、`maxError`、`proj`。
+实现范围是有限内联 EPSG:4326 几何；数据源与栅格区域消费者保留各自限制。
+
+```python
+polygon = ee.Geometry.Polygon([[[0, 0], [90, 0], [0, 90], [0, 0]]])
+area_m2 = polygon.area()
+perimeter_m = polygon.perimeter()
+center = polygon.centroid()
+
+feature = ee.Feature(polygon, {'name': 'octant'})
+measured = feature.set({'area_m2': feature.area(),
+                        'perimeter_m': feature.perimeter()})
+centroid_feature = measured.centroid()
+```
+
+示例：[Python](../../examples/75_GEE_python_geometry_measures.py)、
+[JavaScript](../../examples/javascript/29_几何度量.js)。
+
+## 边、投影和单位
+
+| 调用 | 接受的实际边模型 | 数值含义 |
+|---|---|---|
+| 省略或空 `proj` | 默认／显式测地线，点无边模型 | WGS84 上的 m、m²；球面最高维加权质心 |
+| 显式 `ee.Projection('EPSG:4326')` | 显式 `geodesic=False`，点无边模型 | 直线坐标的度、平方度及平面质心 |
+
+测地线边保留球面大圆弧，在该曲线上按 WGS84 线元／面积元积分。
+不能用固定球半径把 S2 角度直接转成米，也不能只把两个端点交给椭球最短路径算法，
+后者会改变斜向边的实际曲线。此处是根据官方边模型和度量说明选择的本地实现；
+Google 内部数值实现与容差尚未对照。
+[官方边模型](https://developers.google.com/earth-engine/guides/geometries_planar_geodesic)、
+[官方默认度量说明](https://developers.google.com/earth-engine/guides/geometry_visualization_info)。
+
+WGS84 常量为 `a=6378137 m`、`f=1/298.257223563`。
+每条实际选中边采用有界 Gauss–Legendre 积分及收敛检查；未收敛明确失败。
+这是本地数值政策，不能作为严格误差证书。
+面积修正使用 16 项偏心率级数，先解析消去相等的大项，避免相消放大舍入误差。
+只有全部顶点距首顶点不超过 0.01 弧度、且不触及极区保护条件的局部环使用中心化积分；
+其余使用光滑的直接积分。两条路径仍按每边 56 次采样预充，阈值是本地数值选择，
+不会修改顶点、拓扑或独立参考的容差。
+近对跖边、无法确定的球面扇分支及在 S2 中丢失身份的不同坐标也明确失败，
+不会通过放宽相等规则来生成度量。
+有效 `maxError`／`ErrorMargin` 仅在没有重投影的路径上校验；不会被解释为积分精度承诺。
+平面转球面、球面转平面和其他 CRS 的变换继续明确拒绝。
+
+## 分量、空值和质心
+
+- `area` 只累加多边形面积；`length` 只累加线分量；`perimeter` 只累加多边形边界。
+  多边形的 `length()` 为零。没有先求并集，重复或重叠分量分别计入。
+  显式平面重叠／重复 `MultiPolygon` 目前仍被通用构造校验拒绝；
+  同样的独立 Polygon 可放入 `GeometryCollection` 做分量度量。
+  这条替代写法单独验证，不表示原始 `MultiPolygon` 公式已兼容。
+- 孔洞与实际内部规则保留；不会为通过验证而擅自反转定向多边形。
+  显式平面 `evenOdd=False` 仍不支持。
+- 空几何及空 Feature 几何的三个标量为零，质心明确失败。
+- 质心只使用最高维分量；混合集合里的点不会拉偏多边形质心。
+  球面使用未归一化的 S2 加权向量，平面分量按实际面积／长度／点数加权。
+- 精确抵消或数值上无法可靠确定方向的向量不产生假坐标；保留原始向量，报明确错误。
+  数值不确定与数学上的零分开记录，不做吸附或 epsilon 合并。
+- 单点质心返回新持有的原坐标；Feature 质心保留深复制的属性和已有身份。
+  字段／ID 的本地政策不构成 Google 公共字段完全一致声明。
+
+## 实现和验证边界
+
+`geometry_measures` 负责路由和预充，`geometry_planar_measures` 负责原子平面分量，
+`feature_geometry_measures` 保留 Feature 身份。`spherical_measures` 校验固定记录与质心。
+原生 op10 返回八字段角度／向量记录；op11／12／13 分别返回面积、线长、周长的
+`[1,value]`，避免未请求的面积积分失败阻塞线长或周长。
+原有 op0–9 与单一 C ABI 导出保留。
+
+输入扫描、S2 构造、选中边积分和输出复制都计入原共享 50000 步，
+几何坐标／子项／深度和原生 64 MiB 跟踪内存限制保持。
+跟踪内存不是进程 RSS 上限；依赖仍需预先本地构建，运行时不下载。
+共享预算还限制组合规模：同一 map 中重复计算 Geometry／Feature 两套度量，
+再提取质心与身份的原四行 WGS84 公式仍超限；六行平面组合也超限。
+已保留原公式和失败，不能用拆分、删列或替代输入的通过结果宣称它们已修复。
+
+原始 Python／JavaScript 请求、实现前失败、高精度独立参考和物理 CSV 验证分别保存。
+本地数值通过、SDK 序列化通过和 Google 同数据等价分别报告；本批不调用 GEE。
+既有三项 S2 binary64 关联／交点往返缺口继续保留，不能用度量容差掩盖。
+`distance`、`buffer`、一般投影、无边界完整球面的公共编码及完整生产验收继续待完成。
+
+空 FeatureCollection 的 map 仍只校验回调结构；上述8个方法的必填与未知参数也要验证，
+不会为了验证空集合而执行回调。
+
+本批验证与保留失败见[第七十一批报告](../../reports/gee-python-wave71.json)。

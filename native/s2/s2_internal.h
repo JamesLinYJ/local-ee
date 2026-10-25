@@ -52,6 +52,7 @@ struct Coordinate {
 
 Coordinate CanonicalizeCoordinate(Coordinate value);
 S2Point ToPoint(Coordinate value);
+S2Point MeasureCentroidPoint(Coordinate value);
 
 struct PartView {
   const double* coordinates = nullptr;
@@ -83,11 +84,25 @@ struct GeometryOutput {
 bool ParseWire(const double* data, size_t size, ParsedGeometry* parsed,
                std::string* error);
 bool CheckCallBudget(const ParsedGeometry& left, const ParsedGeometry* right,
-                     std::string* error);
+                     size_t* work_out, std::string* error);
 
 bool BuildShapeIndex(const ParsedGeometry& parsed, S2MemoryTracker* tracker,
                      MutableS2ShapeIndex* index, S2LatLngRect* bounds,
                      std::string* error);
+bool BuildLineComponent(const PartView& part,
+                        std::unique_ptr<S2Polyline>* polyline,
+                        std::string* error);
+bool BuildPolygonComponent(const ShapeView& shape, S2MemoryTracker* tracker,
+                           std::unique_ptr<S2Polygon>* polygon,
+                           std::string* error);
+bool BuildLineComponentForCentroid(const PartView& part,
+                                   std::unique_ptr<S2Polyline>* polyline,
+                                   std::string* error);
+bool BuildPolygonComponentForCentroid(
+    const ShapeView& shape, S2MemoryTracker* tracker,
+    std::unique_ptr<S2Polygon>* polygon, std::string* error);
+bool RunMeasures(const ParsedGeometry& parsed, S2MemoryTracker* tracker,
+                 double output[8], std::string* error);
 S2LatLngRect BoundsForPoints(const std::vector<S2Point>& points);
 S2LatLngRect BoundsForOutput(const GeometryOutput& output);
 bool PackBounds(const S2LatLngRect& bounds, double* output,

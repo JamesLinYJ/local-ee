@@ -1,0 +1,1461 @@
+{
+  "schema": "ee-geometry-measures-wave71-v1",
+  "purpose": "Offline independent references for Geometry/Feature area, length, perimeter, and centroid.",
+  "official_api": {
+    "python_sdk": "earthengine-api 1.7.49",
+    "javascript_sdk": "@google/earthengine 1.7.49",
+    "source_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a",
+    "pinned_algorithm_file": "vendor/earthengine-js/algorithms.json",
+    "pinned_algorithm_sha256": "8279bfd5e755f10c291a0d833aed810a5aba2e360e26ecee69f2bacaeecb3d01",
+    "official_docs": {
+      "Geometry.area": "https://developers.google.com/earth-engine/apidocs/ee-geometry-area",
+      "Geometry.length": "https://developers.google.com/earth-engine/apidocs/ee-geometry-length",
+      "Geometry.perimeter": "https://developers.google.com/earth-engine/apidocs/ee-geometry-perimeter",
+      "Geometry.centroid": "https://developers.google.com/earth-engine/apidocs/ee-geometry-centroid",
+      "Feature.area": "https://developers.google.com/earth-engine/apidocs/ee-feature-area",
+      "Feature.length": "https://developers.google.com/earth-engine/apidocs/ee-feature-length",
+      "Feature.perimeter": "https://developers.google.com/earth-engine/apidocs/ee-feature-perimeter",
+      "Feature.centroid": "https://developers.google.com/earth-engine/apidocs/ee-feature-centroid"
+    },
+    "recorded_in": "audit/gee-python-wave71/workflow/pinned_algorithm_records.json",
+    "javascript_bundle_sha256": "a8bc9bac202c16f351811b1f69c3b690d064f47ecff64cfefb47c82e514e5e03"
+  },
+  "semantic_contract": {
+    "omitted_projection": "WGS84 ellipsoid area/length/perimeter in square meters/meters, evaluated along each geometry segment’s spherical great-circle path; centroid remains a spherical highest-dimension centroid.",
+    "explicit_null_projection": "Uses the same default WGS84 metric model as an omitted projection.",
+    "explicit_epsg4326_projection": "Planar measurement in longitude/latitude coordinates; units are degrees, square degrees, or coordinates as appropriate.",
+    "dimension_rules": "Area uses polygonal components; length uses linear components and ignores polygon boundaries; perimeter uses polygon boundaries; multi-component measures sum components, including overlaps more than once.",
+    "centroid_dimension_rule": "Only components of the highest dimension contribute to a centroid.",
+    "empty_centroid_policy": "Undefined; reject explicitly instead of inventing a coordinate.",
+    "zero_resultant_centroid_policy": "Undefined when the exact weighted centroid vector is zero; reject explicitly. Do not classify a small nonzero vector as mathematically zero.",
+    "google_radius_parity": "No single-radius scaling is used. The local public default is the versioned WGS84 ellipsoid edge model below; numeric Google Earth Engine parity is unverified."
+  },
+  "native_record": {
+    "abi_operation": 10,
+    "record_length": 8,
+    "fields": [
+      "status",
+      "highest_dimension_minus_one_for_empty",
+      "area_steradians",
+      "linear_length_radians",
+      "polygon_perimeter_radians",
+      "centroid_x_unnormalized",
+      "centroid_y_unnormalized",
+      "centroid_z_unnormalized"
+    ],
+    "spherical_units": "unit sphere; no Earth-radius assumption"
+  },
+  "reference_tolerances": {
+    "unit_sphere_binary64": {
+      "relative": 1e-12,
+      "absolute": 1e-12,
+      "basis": "Analytic unit-sphere integrals with binary64 roundoff allowance; selected before observing local outputs."
+    },
+    "planar_decimal": "Exact Decimal/Fraction arithmetic for the integer and rational coordinates below; no floating tolerance is needed for input reference values.",
+    "wgs84_ellipsoid_edge_v1": {
+      "policy": "Use each preregistered control record’s relative_tolerance and absolute_tolerance. Compare against max(absolute_tolerance, relative_tolerance*abs(expected)).",
+      "large_area_and_length": "Relative 2e-12 plus stated absolute tolerance.",
+      "small_tiny_area": "Relative 2e-6 with per-record absolute tolerance down to 1e-18 m²; no global small-area floor.",
+      "small_tiny_perimeter": "Relative 2e-6 with per-record absolute tolerance down to 1e-12 m.",
+      "basis": "Frozen independent 70-digit Decimal quadrature and analytic controls in the hashed review artifact; 16/32 Gauss-Legendre convergence is not a formal quadrature certificate."
+    }
+  },
+  "cases": {
+    "empty": {
+      "geometry": {
+        "type": "GeometryCollection",
+        "geometries": []
+      },
+      "highest_dimension": -1,
+      "area_steradians": 0,
+      "linear_length_radians": 0,
+      "polygon_perimeter_radians": 0,
+      "centroid": null,
+      "centroid_error": "empty geometry has no highest-dimension component"
+    },
+    "point": {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          30,
+          0
+        ]
+      },
+      "highest_dimension": 0,
+      "area_steradians": 0,
+      "linear_length_radians": 0,
+      "polygon_perimeter_radians": 0,
+      "centroid_vector_unnormalized": [
+        "sqrt(3)/2",
+        "1/2",
+        "0"
+      ],
+      "centroid_lon_lat_degrees": [
+        30,
+        0
+      ]
+    },
+    "equatorial_arc": {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            0,
+            0
+          ],
+          [
+            90,
+            0
+          ]
+        ]
+      },
+      "highest_dimension": 1,
+      "area_steradians": 0,
+      "linear_length_radians": "pi/2",
+      "polygon_perimeter_radians": 0,
+      "centroid_vector_unnormalized": [
+        1,
+        1,
+        0
+      ],
+      "centroid_lon_lat_degrees": [
+        45,
+        0
+      ]
+    },
+    "octant_triangle": {
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              90,
+              0
+            ],
+            [
+              0,
+              90
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        ]
+      },
+      "highest_dimension": 2,
+      "area_steradians": "pi/2",
+      "linear_length_radians": 0,
+      "polygon_perimeter_radians": "3*pi/2",
+      "centroid_vector_unnormalized": [
+        "pi/4",
+        "pi/4",
+        "pi/4"
+      ],
+      "centroid_lon_lat_degrees": [
+        45,
+        "degrees(asin(1/sqrt(3)))"
+      ],
+      "epsg4326_planar": {
+        "area_square_degrees": 4050,
+        "linear_length_degrees": 0,
+        "polygon_perimeter_degrees": "180+90*sqrt(2)",
+        "centroid_lon_lat_degrees": [
+          30,
+          30
+        ]
+      },
+      "unit_sphere_meter_formulas": {
+        "area_square_meters": "local_radius_m^2*pi/2",
+        "perimeter_meters": "local_radius_m*3*pi/2",
+        "status": "Dimensional illustration only; op10 is unit sphere and no radius is selected by this fixture."
+      },
+      "wgs84_default_model": "metric_models.public_default_wgs84_ellipsoid_edge_v1.analytic_controls"
+    },
+    "mixed_highest_dimension": {
+      "geometry": {
+        "type": "GeometryCollection",
+        "geometries": [
+          {
+            "type": "Point",
+            "coordinates": [
+              30,
+              0
+            ]
+          },
+          {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                90,
+                0
+              ]
+            ]
+          },
+          {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  0,
+                  0
+                ],
+                [
+                  90,
+                  0
+                ],
+                [
+                  0,
+                  90
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            ]
+          }
+        ]
+      },
+      "area_steradians": "pi/2",
+      "linear_length_radians": "pi/2",
+      "polygon_perimeter_radians": "3*pi/2",
+      "centroid_vector_unnormalized": [
+        "pi/4",
+        "pi/4",
+        "pi/4"
+      ],
+      "centroid_lon_lat_degrees": [
+        45,
+        "degrees(asin(1/sqrt(3)))"
+      ],
+      "centroid_ignores": [
+        "Point",
+        "LineString"
+      ]
+    },
+    "planar_hole": {
+      "geometry": {
+        "type": "Polygon",
+        "geodesic": false,
+        "evenOdd": true,
+        "coordinates": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              6,
+              0
+            ],
+            [
+              6,
+              4
+            ],
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              3,
+              2
+            ],
+            [
+              3,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ]
+        ]
+      },
+      "projection": "EPSG:4326",
+      "area_square_degrees": 22,
+      "linear_length_degrees": 0,
+      "polygon_perimeter_degrees": 26,
+      "centroid_lon_lat_degrees": [
+        "34/11",
+        "45/22"
+      ],
+      "shoelace_components": {
+        "outer_area": 24,
+        "outer_centroid": [
+          3,
+          2
+        ],
+        "hole_area": 2,
+        "hole_centroid": [
+          2,
+          "3/2"
+        ],
+        "net_area": 22
+      }
+    },
+    "planar_overlapping_multipolygon": {
+      "geometry": {
+        "type": "MultiPolygon",
+        "geodesic": false,
+        "coordinates": [
+          [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                4,
+                0
+              ],
+              [
+                4,
+                4
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                2,
+                0
+              ],
+              [
+                6,
+                0
+              ],
+              [
+                6,
+                4
+              ],
+              [
+                2,
+                4
+              ],
+              [
+                2,
+                0
+              ]
+            ]
+          ]
+        ]
+      },
+      "projection": "EPSG:4326",
+      "area_square_degrees": 32,
+      "linear_length_degrees": 0,
+      "polygon_perimeter_degrees": 32,
+      "centroid_lon_lat_degrees": [
+        3,
+        2
+      ],
+      "component_sum_rule": "Each 4x4 component contributes independently; the overlap is counted twice."
+    },
+    "antipodal_points_zero_centroid": {
+      "geometry": {
+        "type": "MultiPoint",
+        "coordinates": [
+          [
+            0,
+            0
+          ],
+          [
+            180,
+            0
+          ]
+        ]
+      },
+      "highest_dimension": 0,
+      "centroid_vector_unnormalized": [
+        0,
+        0,
+        0
+      ],
+      "centroid": null,
+      "centroid_error": "weighted centroid vector cancels exactly"
+    },
+    "near_antipodal_points_nonzero_centroid": {
+      "geometry": {
+        "type": "MultiPoint",
+        "coordinates": [
+          [
+            0,
+            0
+          ],
+          [
+            179.999999,
+            0
+          ]
+        ]
+      },
+      "highest_dimension": 0,
+      "centroid_vector_unnormalized": [
+        "1+cos(179.999999 degrees)",
+        "sin(179.999999 degrees)",
+        0
+      ],
+      "vector_norm_positive": true,
+      "policy": "Do not call this mathematically undefined. A separately documented numerical-resolution guard may reject it without changing that classification."
+    }
+  },
+  "workflow": {
+    "input_features": [
+      "octant_triangle",
+      "equatorial_arc",
+      "point",
+      "mixed_highest_dimension",
+      "planar_hole",
+      "planar_overlapping_multipolygon"
+    ],
+    "feature_ids_are_explicit_geojson_ids": true,
+    "properties_to_preserve": [
+      "label",
+      "source_rank"
+    ],
+    "map_behavior": "FeatureCollection.map computes Geometry and Feature scalar metrics with omitted, explicit-null, and explicit EPSG:4326 forms; records Geometry.centroid and Feature.centroid coordinates; returns Feature.centroid(proj=EPSG:4326).set(metrics) so CSV .geo is the actual computed centroid Feature and the input Feature ID/properties can be checked.",
+    "historical_python_sdk_map_wire_sha256": "8e5d8c3680ea0695fe7e1935926b4c4554d6ed522224303374ae05fb066a9e45",
+    "historical_python_sdk_map_wire_bytes": 10904,
+    "historical_wire_scope": "Canonical JSON from the pinned Python SDK serializer for the preserved v1 mixed-route FeatureCollection.map expression; this is SDK serialization evidence only and does not claim compiler support.",
+    "csv_selectors": [
+      "system:index",
+      "feature_id",
+      "label",
+      "source_rank",
+      "geometry_area_default",
+      "feature_area_default",
+      "geometry_area_null",
+      "feature_area_null",
+      "geometry_area_epsg4326",
+      "feature_area_epsg4326",
+      "geometry_length_default",
+      "feature_length_default",
+      "geometry_length_null",
+      "feature_length_null",
+      "geometry_length_epsg4326",
+      "feature_length_epsg4326",
+      "geometry_perimeter_default",
+      "feature_perimeter_default",
+      "geometry_perimeter_null",
+      "feature_perimeter_null",
+      "geometry_perimeter_epsg4326",
+      "feature_perimeter_epsg4326",
+      "geometry_centroid_default",
+      "feature_centroid_default",
+      "geometry_centroid_epsg4326",
+      "feature_centroid_epsg4326",
+      ".geo"
+    ],
+    "rows": 6
+  },
+  "physical_workflow_v2": {
+    "version": "wave71-physical-workflow-v2",
+    "purpose": "Exercise each implemented edge-model route in a real local map-to-CSV worker workflow without transforming or relabeling geometry.",
+    "change_from_v1": "The preserved v1 single-map formula asks each edge-bearing feature for both default WGS84 and explicit planar EPSG:4326 results. Those calls require different input edge models, and the compiler correctly rejects either transformation. V2 keeps the v1 wire and gap record unchanged, then exports separate collections whose input edge models match each route. This workflow restructuring is test-fixture maintenance, not a new API compatibility result.",
+    "default_wgs84": {
+      "description": "Wave71 measures default WGS84 v2",
+      "input_features": [
+        "octant_triangle",
+        "equatorial_arc",
+        "point",
+        "mixed_highest_dimension"
+      ],
+      "geometry_edge_model": "default geodesic spherical great-circle edges; no coordinate transform",
+      "map_behavior": "FeatureCollection.map computes Geometry and Feature area/length/perimeter with omitted and explicit-null projection forms, plus default Geometry/Feature centroid coordinates. It returns the actual Feature centroid with computed properties so the physical CSV .geo and original identity/properties are read back.",
+      "csv_selectors": [
+        "system:index",
+        "feature_id",
+        "label",
+        "source_rank",
+        "geometry_area_default",
+        "feature_area_default",
+        "geometry_area_null",
+        "feature_area_null",
+        "geometry_length_default",
+        "feature_length_default",
+        "geometry_length_null",
+        "feature_length_null",
+        "geometry_perimeter_default",
+        "feature_perimeter_default",
+        "geometry_perimeter_null",
+        "feature_perimeter_null",
+        "geometry_centroid_default",
+        "feature_centroid_default",
+        ".geo"
+      ],
+      "rows": 4
+    },
+    "explicit_epsg4326_planar": {
+      "description": "Wave71 measures planar EPSG4326 v2",
+      "input_features": [
+        "octant_triangle",
+        "equatorial_arc",
+        "point",
+        "mixed_highest_dimension",
+        "planar_hole",
+        "planar_overlapping_multipolygon"
+      ],
+      "geometry_edge_model": "Every edge-bearing input receives an explicit geodesic:false flag; this preserves the coordinate path and does not relabel a default spherical edge.",
+      "map_behavior": "FeatureCollection.map computes only explicit EPSG:4326 Geometry/Feature area, length, perimeter and centroid. It returns the actual projected Feature centroid with computed properties so the physical CSV .geo and original identity/properties are read back.",
+      "csv_selectors": [
+        "system:index",
+        "feature_id",
+        "label",
+        "source_rank",
+        "geometry_area_epsg4326",
+        "feature_area_epsg4326",
+        "geometry_length_epsg4326",
+        "feature_length_epsg4326",
+        "geometry_perimeter_epsg4326",
+        "feature_perimeter_epsg4326",
+        "geometry_centroid_epsg4326",
+        "feature_centroid_epsg4326",
+        ".geo"
+      ],
+      "rows": 6
+    }
+  },
+  "evidence_limits": {
+    "local_math": "The unit-sphere and Decimal/Fraction references are independent mathematical expectations.",
+    "local_engine": "A successful offline in-process worker and physical CSV readback demonstrate computed local SDK/compiler values through this synthetic export route; the queue/database and NativeTask launcher are test doubles.",
+    "google_equivalence": "No Google computation was requested or performed; WGS84 metric and API numeric parity remain unverified."
+  },
+  "metric_models": {
+    "op10_unit_sphere_reference_v1": {
+      "abi_operation": 10,
+      "status": "Unit-sphere mathematical reference and unnormalized centroid vector; not the public default meter metric.",
+      "units": {
+        "area": "steradians",
+        "length": "radians",
+        "perimeter": "radians"
+      },
+      "fields": [
+        "status",
+        "highest_dimension_minus_one_for_empty",
+        "area_steradians",
+        "linear_length_radians",
+        "polygon_perimeter_radians",
+        "centroid_x_unnormalized",
+        "centroid_y_unnormalized",
+        "centroid_z_unnormalized"
+      ],
+      "public_centroid_reference": "Centroid direction is derived from the highest-dimension unnormalized vector; scalar centroid coordinates are in EPSG:4326 degrees."
+    },
+    "public_default_wgs84_ellipsoid_edge_v1": {
+      "version": "wgs84-ellipsoid-great-circle-edges-v1",
+      "status": "Selected local public default; numeric Google Earth Engine parity is unverified.",
+      "record_layout": "Each scalar metric has its own fixed two-double record [status, value]. Area value is m²; linear length and polygon perimeter are m. Centroid remains on unchanged op10 eight-field unit-sphere record.",
+      "semi_major_axis_m": 6378137,
+      "inverse_flattening": 298.257223563,
+      "edge_path": "Each input lon/lat segment follows its spherical great-circle arc between endpoints; the WGS84 ellipsoid metric is integrated along that path.",
+      "units": {
+        "area": "square meters",
+        "length": "meters",
+        "perimeter": "meters"
+      },
+      "dimension_rules": "Area sums polygon components; length sums linear components and ignores polygons; perimeter sums polygon boundaries. Overlapping polygon components count independently. Centroid uses only the highest dimension.",
+      "not_used": [
+        "S2 unit-sphere radius scaling",
+        "ellipsoidal inverse geodesic between endpoints",
+        "ellipsoidal geodesic polygon edges"
+      ],
+      "analytic_controls": {
+        "equator_quarter_length_m": 10018754.171394622,
+        "quarter_meridian_length_m": 10001965.729312724,
+        "octant_triangle_area_m2": 63758202715511.06,
+        "octant_triangle_perimeter_m": 30022685.630020067,
+        "derivations": {
+          "equator_quarter_length_m": "a*pi/2",
+          "quarter_meridian_length_m": "a*E(e^2), where E is the complete elliptic integral of the second kind and e^2=f*(2-f)",
+          "octant_triangle_area_m2": "One eighth of the WGS84 ellipsoid surface area: S/8 where S=2*pi*a^2*(1+(1-e^2)*atanh(e)/e).",
+          "octant_triangle_perimeter_m": "One quarter equator plus two quarter meridians; these equator/meridian paths coincide under the stated edge models."
+        },
+        "reference_provenance": "Independent analytic/Decimal quadrature controls frozen by the Wave71 review agent; no local implementation output is used as expected data."
+      },
+      "oblique_path_control": "Pending independent high-precision reference; do not substitute an ellipsoidal inverse-geodesic endpoint solution.",
+      "abi_operations": {
+        "area": 11,
+        "linear_length": 12,
+        "polygon_perimeter": 13
+      },
+      "operation_record_fields": [
+        "status",
+        "metric_value"
+      ],
+      "operation_status_version": 1.0,
+      "centroid_abi_operation": 10,
+      "independent_control_source": {
+        "audit_file": "audit/gee-python-wave71/review/frozen-ellipsoid-controls-v2.json",
+        "sha256": "1e8389b24a20f78f5a3768574b94913020539bdee9704ccfbe15315ef615b46b",
+        "precision_digits": 70,
+        "quad_rules": "independently generated Decimal Gauss-Legendre16 and32,4 panels per edge; observed convergence is not a formal quadrature certificate",
+        "control_scope": "Independent local mathematical reference, not Google runtime equivalence or full default/projection coverage",
+        "records_sha256": "f2f9734ed58c9b3f5b8390629a963084147a6e39ccf76018b0127da32bd67d56"
+      },
+      "numeric_controls": [
+        {
+          "absolute_tolerance": 0.005,
+          "expected": 10018754.171394622,
+          "expected_decimal": "10018754.17139462153829420444035008934365234072071106965783783508857420",
+          "geometry": {
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                90,
+                0
+              ]
+            ],
+            "type": "LineString"
+          },
+          "id": "equator-quarter",
+          "operation": 12,
+          "quadrature_order_difference": "0",
+          "reference": "exact a*pi/2",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.005,
+          "expected": 10001965.729312724,
+          "expected_decimal": "10001965.72931272281173961611124605476062714943044270401264012941655656",
+          "geometry": {
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                90
+              ]
+            ],
+            "type": "LineString"
+          },
+          "id": "meridian-quarter",
+          "operation": 12,
+          "quadrature_order_difference": "4.357204769933782333E-44",
+          "reference": "Decimal meridional-radius integration; pyproj special-edge cross-check",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.05,
+          "expected": 63758202715511.06,
+          "expected_decimal": "63758202715511.06366186421729147827931675307960048098736054046590039461",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  0,
+                  0
+                ],
+                [
+                  90,
+                  0
+                ],
+                [
+                  0,
+                  90
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "Polygon"
+          },
+          "id": "octant-area",
+          "operation": 11,
+          "quadrature_order_difference": "0",
+          "reference": "exact ellipsoid surface area /8",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.005,
+          "expected": 30022685.630020067,
+          "expected_decimal": "30022685.63002006716177343666284219886490663958159647768311809392168732",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  0,
+                  0
+                ],
+                [
+                  90,
+                  0
+                ],
+                [
+                  0,
+                  90
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "Polygon"
+          },
+          "id": "octant-perimeter",
+          "operation": 13,
+          "quadrature_order_difference": "0",
+          "reference": "a*pi/2 + 2*quarter-meridian",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.05,
+          "expected": 446307419008577.44,
+          "expected_decimal": "446307419008577.4456330495210403479552172715572033669115237832613027623",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  90
+                ],
+                [
+                  90,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            ],
+            "evenOdd": false,
+            "type": "Polygon"
+          },
+          "id": "octant-complement-area",
+          "operation": 11,
+          "quadrature_order_difference": "0",
+          "reference": "whole ellipsoid minus octant",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.005,
+          "expected": 30022685.630020067,
+          "expected_decimal": "30022685.63002006716177343666284219886490663958159647768311809392168732",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  90
+                ],
+                [
+                  90,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            ],
+            "evenOdd": false,
+            "type": "Polygon"
+          },
+          "id": "octant-complement-perimeter",
+          "operation": 13,
+          "quadrature_order_difference": "0",
+          "reference": "complement retains same boundary",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.05,
+          "expected": 127516405431022.12,
+          "expected_decimal": "127516405431022.1273237284345829565586335061592009619747210809318007892",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    90,
+                    0
+                  ],
+                  [
+                    0,
+                    90
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]
+              ],
+              [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    90,
+                    0
+                  ],
+                  [
+                    0,
+                    90
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "MultiPolygon"
+          },
+          "id": "octant-duplicate-area",
+          "operation": 11,
+          "quadrature_order_difference": "0",
+          "reference": "component areas add; no union",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.005,
+          "expected": 60045371.260040134,
+          "expected_decimal": "60045371.26004013432354687332568439772981327916319295536623618784337464",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    90,
+                    0
+                  ],
+                  [
+                    0,
+                    90
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]
+              ],
+              [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    90,
+                    0
+                  ],
+                  [
+                    0,
+                    90
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "MultiPolygon"
+          },
+          "id": "octant-duplicate-perimeter",
+          "operation": 13,
+          "quadrature_order_difference": "0",
+          "reference": "component perimeters add; no union",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.005,
+          "expected": 15697375.25483357,
+          "expected_decimal": "15697375.25483357050603075960044145397598831156772177224982623733629907",
+          "geometry": {
+            "coordinates": [
+              [
+                -143,
+                -27
+              ],
+              [
+                -79,
+                17
+              ],
+              [
+                -8,
+                53
+              ]
+            ],
+            "type": "LineString"
+          },
+          "id": "oblique-line",
+          "operation": 12,
+          "quadrature_order_difference": "4.67603379612993E-48",
+          "reference": "Decimal WGS84 metric integral along original unit-sphere minor arcs",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.05,
+          "expected": 21239582677586.383,
+          "expected_decimal": "21239582677586.38144256695281750149907883259667990968874770197597216578",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  -30.0,
+                  12.0
+                ],
+                [
+                  35.0,
+                  8.0
+                ],
+                [
+                  8.0,
+                  61.0
+                ],
+                [
+                  -30.0,
+                  12.0
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "Polygon"
+          },
+          "id": "oblique-area",
+          "operation": 11,
+          "quadrature_order_difference": "2.4793970801962866261255126503767582127E-19",
+          "reference": "70-digit Decimal centered strip integral along spherical arcs; winding zero",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.005,
+          "expected": 19666239.931349102,
+          "expected_decimal": "19666239.93134910204266030366017222887566499070464854872276213264805882",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  -30.0,
+                  12.0
+                ],
+                [
+                  35.0,
+                  8.0
+                ],
+                [
+                  8.0,
+                  61.0
+                ],
+                [
+                  -30.0,
+                  12.0
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "Polygon"
+          },
+          "id": "oblique-perimeter",
+          "operation": 13,
+          "quadrature_order_difference": "1.1503583306118E-49",
+          "reference": "70-digit Decimal WGS84 line element along original spherical boundary",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.05,
+          "expected": 9806056014565.18,
+          "expected_decimal": "9806056014565.178774824040773906703048613148860903350752653235605450637",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  165.0,
+                  -20.0
+                ],
+                [
+                  -165.0,
+                  -10.0
+                ],
+                [
+                  178.0,
+                  35.0
+                ],
+                [
+                  165.0,
+                  -20.0
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "Polygon"
+          },
+          "id": "dateline-area",
+          "operation": 11,
+          "quadrature_order_difference": "4.79101243303201570710545813617E-28",
+          "reference": "70-digit Decimal centered strip integral along spherical arcs; winding zero",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.005,
+          "expected": 14936954.80661888,
+          "expected_decimal": "14936954.80661888098503459857918115625170460735966521284858818288609663",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  165.0,
+                  -20.0
+                ],
+                [
+                  -165.0,
+                  -10.0
+                ],
+                [
+                  178.0,
+                  35.0
+                ],
+                [
+                  165.0,
+                  -20.0
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "Polygon"
+          },
+          "id": "dateline-perimeter",
+          "operation": 13,
+          "quadrature_order_difference": "6.26279089727E-51",
+          "reference": "70-digit Decimal WGS84 line element along original spherical boundary",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.05,
+          "expected": 4720545406442.249,
+          "expected_decimal": "4720545406442.248959918386857553896115511706238272088716068394354063803",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  -140.0,
+                  70.0
+                ],
+                [
+                  -20.0,
+                  72.0
+                ],
+                [
+                  95.0,
+                  77.0
+                ],
+                [
+                  -140.0,
+                  70.0
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "Polygon"
+          },
+          "id": "north-polar-area",
+          "operation": 11,
+          "quadrature_order_difference": "8.82612651E-49",
+          "reference": "70-digit Decimal strip integral along spherical arcs; pole-gauge correction",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.005,
+          "expected": 9863084.857156804,
+          "expected_decimal": "9863084.857156804507805993617727339045273998195392900736490510202424882",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  -140.0,
+                  70.0
+                ],
+                [
+                  -20.0,
+                  72.0
+                ],
+                [
+                  95.0,
+                  77.0
+                ],
+                [
+                  -140.0,
+                  70.0
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "Polygon"
+          },
+          "id": "north-polar-perimeter",
+          "operation": 13,
+          "quadrature_order_difference": "1.271420E-57",
+          "reference": "70-digit Decimal WGS84 line element along original spherical boundary",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.05,
+          "expected": 4720545406442.249,
+          "expected_decimal": "4720545406442.248959918386857553896115511706238272088716068394354063558",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  140.0,
+                  -70.0
+                ],
+                [
+                  20.0,
+                  -72.0
+                ],
+                [
+                  -95.0,
+                  -77.0
+                ],
+                [
+                  140.0,
+                  -70.0
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "Polygon"
+          },
+          "id": "south-polar-area",
+          "operation": 11,
+          "quadrature_order_difference": "8.82612637E-49",
+          "reference": "70-digit Decimal strip integral along spherical arcs; pole-gauge correction",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.005,
+          "expected": 9863084.857156804,
+          "expected_decimal": "9863084.857156804507805993617727339045273998195392900736490510202424882",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  140.0,
+                  -70.0
+                ],
+                [
+                  20.0,
+                  -72.0
+                ],
+                [
+                  -95.0,
+                  -77.0
+                ],
+                [
+                  140.0,
+                  -70.0
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "Polygon"
+          },
+          "id": "south-polar-perimeter",
+          "operation": 13,
+          "quadrature_order_difference": "1.271420E-57",
+          "reference": "70-digit Decimal WGS84 line element along original spherical boundary",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 1e-18,
+          "expected": 0.5347869921672858,
+          "expected_decimal": "0.5347869921672857580873867856392824859447367368393307639862480935525536",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  40.0,
+                  30.0
+                ],
+                [
+                  40.00001,
+                  30.0
+                ],
+                [
+                  40.0,
+                  30.00001
+                ],
+                [
+                  40.0,
+                  30.0
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "Polygon"
+          },
+          "id": "small-offset-area",
+          "operation": 11,
+          "quadrature_order_difference": "3.2435629E-63",
+          "reference": "70-digit Decimal centered strip integral along spherical arcs; winding zero",
+          "relative_tolerance": 2e-06
+        },
+        {
+          "absolute_tolerance": 1e-12,
+          "expected": 3.5430084510025814,
+          "expected_decimal": "3.543008451002581574310119984443031072134535931065524288660636460617352",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  40.0,
+                  30.0
+                ],
+                [
+                  40.00001,
+                  30.0
+                ],
+                [
+                  40.0,
+                  30.00001
+                ],
+                [
+                  40.0,
+                  30.0
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "Polygon"
+          },
+          "id": "small-offset-perimeter",
+          "operation": 13,
+          "quadrature_order_difference": "3E-69",
+          "reference": "70-digit Decimal WGS84 line element along original spherical boundary",
+          "relative_tolerance": 2e-06
+        },
+        {
+          "absolute_tolerance": 1e-18,
+          "expected": 5.347870801537383e-07,
+          "expected_decimal": "5.347870801537382772635230058904580195595975754902231274886822187323232E-7",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  40.0,
+                  30.0
+                ],
+                [
+                  40.00000001,
+                  30.0
+                ],
+                [
+                  40.0,
+                  30.00000001
+                ],
+                [
+                  40.0,
+                  30.0
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "Polygon"
+          },
+          "id": "tiny-offset-area",
+          "operation": 11,
+          "quadrature_order_difference": "4.7103324881E-66",
+          "reference": "70-digit Decimal centered strip integral along spherical arcs; winding zero",
+          "relative_tolerance": 2e-06
+        },
+        {
+          "absolute_tolerance": 1e-12,
+          "expected": 0.0035430087739659407,
+          "expected_decimal": "0.003543008773965940536277283739130043371681555962710257957099849990338624",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  40.0,
+                  30.0
+                ],
+                [
+                  40.00000001,
+                  30.0
+                ],
+                [
+                  40.0,
+                  30.00000001
+                ],
+                [
+                  40.0,
+                  30.0
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "Polygon"
+          },
+          "id": "tiny-offset-perimeter",
+          "operation": 13,
+          "quadrature_order_difference": "3E-72",
+          "reference": "70-digit Decimal WGS84 line element along original spherical boundary",
+          "relative_tolerance": 2e-06
+        },
+        {
+          "absolute_tolerance": 0.05,
+          "expected": 53373622737575.62,
+          "expected_decimal": "53373622737575.61575989642453128363632026581092855909828872122433594477",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  0,
+                  0
+                ],
+                [
+                  90,
+                  0
+                ],
+                [
+                  0,
+                  90
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              [
+                [
+                  10,
+                  10
+                ],
+                [
+                  50,
+                  10
+                ],
+                [
+                  10,
+                  50
+                ],
+                [
+                  10,
+                  10
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "Polygon"
+          },
+          "id": "octant-hole-area",
+          "operation": 11,
+          "quadrature_order_difference": "1.06790573626767014714551162946003E-24",
+          "reference": "exact octant area minus independent oblique hole strip integral",
+          "relative_tolerance": 2e-12
+        },
+        {
+          "absolute_tolerance": 0.005,
+          "expected": 44598765.13225637,
+          "expected_decimal": "44598765.13225636412551005745073944057691519847559958110180289867919854",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  0,
+                  0
+                ],
+                [
+                  90,
+                  0
+                ],
+                [
+                  0,
+                  90
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              [
+                [
+                  10,
+                  10
+                ],
+                [
+                  50,
+                  10
+                ],
+                [
+                  10,
+                  50
+                ],
+                [
+                  10,
+                  10
+                ]
+              ]
+            ],
+            "evenOdd": true,
+            "type": "Polygon"
+          },
+          "id": "octant-hole-perimeter",
+          "operation": 13,
+          "quadrature_order_difference": "1.35189118512E-51",
+          "reference": "outer plus hole WGS84 curve boundary length",
+          "relative_tolerance": 2e-12
+        }
+      ]
+    }
+  }
+}

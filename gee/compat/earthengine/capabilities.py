@@ -10,10 +10,12 @@ SUPPORTED_FUNCTIONS = frozenset({
     *("Geometry." + n for n in (
         "contains", "containedIn", "disjoint", "intersects", "intersection",
         "union", "difference", "symmetricDifference", "bounds",
+        "area", "length", "perimeter", "centroid",
     )),
     *("Feature." + n for n in (
         "contains", "containedIn", "disjoint", "intersects", "intersection",
         "union", "difference", "symmetricDifference", "bounds",
+        "area", "length", "perimeter", "centroid",
     )),
     "Image.linkCollection", "ImageCollection.combine",
     *("Image." + n for n in (
@@ -441,6 +443,18 @@ def get_capabilities():
              "an explicit empty names list cannot lend a hidden source. Google parity is unverified."),
             "Geometry/Feature binary defaults use pinned local S2 for geodesic EPSG:4326; planar edges with explicit EPSG:4326 use GEOS. Non-4326 CRS, binary reprojection/maxError and full-sphere public encoding remain gaps. Filter.intersects and inline Collection.geometry preserve homogeneous actual edge models and consume static ErrorMargin only without transformation. Raw STAC catalog footprints retain planar edges; curved polygon ROI requires unsupported reprojection. S2 binary64 boundary/roundtrip differences are measured; explicit spherical results reject at legacy planar raster/join consumers. Unflagged raster inputs retain their earlier planar path without a GEE geodesic parity claim",
             "Geometry.bounds and Feature.bounds accept omitted/null or explicit EPSG:4326 projections and validate static maxError values only on this no-transform path. Planar inputs use exact coordinate extrema; actual geodesic inputs use S2 component bounds, including polar closure. Positive-area finite envelopes become explicit planar EPSG:4326 rectangles. Empty, degenerate and wrapped public encodings reject; full-longitude envelopes use [-180,180] when the latitude span is positive. Other CRS transforms and Google parity remain unverified",
+            ("Geometry/Feature area, length, perimeter and centroid accept inline EPSG:4326 inputs, "
+             "omitted/null projection, or explicit EPSG:4326 only when the declared edge model "
+             "does not change; static maxError is validated only without reprojection. Default "
+             "geodesic scalars integrate WGS84 metrics along the declared spherical great-circle "
+             "edges in metres/metres²; explicit planar EPSG:4326 uses GEOS coordinate units and "
+             "square coordinate units. Area and perimeter sum original polygon components and "
+             "holes, including overlap multiplicity; length sums only linear components. "
+             "Centroid selects the highest dimension and Feature.centroid preserves source id and "
+             "properties. Spherical centroid projection rejects numerically indeterminate vectors "
+             "under a local binary64 resolution guard; this is not a formal S2 error certificate. "
+             "Unproved edge-model changes and other CRS transformations reject; Google numerical "
+             "parity is unverified."),
             "Filter.notNull tests flat local metadata names with at most 1000 properties and the shared compilation budget; null and missing fail while falsey non-null values pass",
             "Dictionary missing keys require a non-null default; explicit empty value-key lists stay empty; List.sequence count/end spacing and count/step ranges materialize at most 10000 finite values",
             "List zip/unzip truncate to shortest; flatten traverses Lists only and preserves typed atoms, depth<=96; repeat/reverse/set/swap preserve values without mutating sources, strict negative-index bounds; <=10000 top-level values and shared work/materialization budgets",

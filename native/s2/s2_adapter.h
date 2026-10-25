@@ -29,7 +29,10 @@ extern "C" {
  *
  * Operation codes are 0 contains, 1 containedIn, 2 intersects, 3 disjoint,
  * 4 intersection, 5 union, 6 difference, 7 symmetric difference, 8
- * validate-left-only, and 9 bounds-left-only. Return value 0 means success;
+ * validate-left-only, 9 bounds-left-only, 10 measures-left-only, 11
+ * ellipsoid-area-left-only, 12 ellipsoid-length-left-only, and 13
+ * ellipsoid-perimeter-left-only. Return
+ * value 0 means success;
  * nonzero values indicate an invalid call, invalid wire, invalid spherical
  * topology, exhausted budget, or output overflow. Predicates and validation
  * return one scalar; overlay operations return wire v1; bounds returns the
@@ -38,7 +41,19 @@ extern "C" {
  * Bounds flags are exactly 0 or 1. Empty bounds use empty=1, the other flags
  * and all coordinates zero. Nonempty coordinates are degrees in EPSG:4326;
  * wrapped intervals have west > east. Full-longitude bounds use west=-180 and
- * east=180 and are never marked wrapped.
+ * east=180 and are never marked wrapped. Measures returns the fixed
+ * eight-double record [1, highest_dimension, area_steradians,
+ * linear_length_radians, polygon_perimeter_radians, centroid_x, centroid_y,
+ * centroid_z]. highest_dimension is -1 for empty and otherwise 0, 1, or 2;
+ * all measures are sums over original component records, with no component
+ * union or point deduplication. The centroid vector is the unnormalized
+ * measure-weighted vector of components at the highest dimension. The native
+ * adapter does not apply an Earth radius or project/normalize this vector.
+ * Ellipsoid area, length, and perimeter each return [1, value] in square
+ * meters or meters. Area sums polygon components, length sums linear
+ * components, and perimeter sums polygon boundaries, all with multiplicity.
+ * These scalar measures follow WGS84 ellipsoid lengths along the input's
+ * spherical great-circle edges.
  */
 LOCAL_EE_S2_EXPORT int local_ee_s2_run(
     int op,

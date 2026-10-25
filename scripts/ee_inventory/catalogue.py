@@ -427,3 +427,7 @@ from .geodesic_clip import CLIP_CONTEXT_LIMITS
 
 for operation, limits in CLIP_CONTEXT_LIMITS.items():
     KNOWN_PARTIAL_LIMITS.setdefault(operation, []).extend(limits)
+
+from .geometry_measures import GEOMETRY_MEASURE_LIMITS
+
+KNOWN_PARTIAL_LIMITS.update(GEOMETRY_MEASURE_LIMITS)

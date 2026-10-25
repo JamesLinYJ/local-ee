@@ -25,6 +25,8 @@ S2Point ToPoint(Coordinate value) {
 
 namespace {
 
+using PointConverter = S2Point (*)(Coordinate);
+
 Coordinate ReadCoordinate(const PartView& part, size_t index) {
   return {part.coordinates[index * 2], part.coordinates[index * 2 + 1]};
 }
@@ -45,7 +47,7 @@ bool Antipodal(Coordinate left, Coordinate right) {
 }
 
 bool ValidateLine(const PartView& part, std::vector<S2Point>* points,
-                  std::string* error) {
+                  std::string* error, PointConverter convert_point) {
   points->reserve(part.vertex_count);
   for (size_t i = 0; i < part.vertex_count; ++i) {
     const Coordinate coordinate = ReadCoordinate(part, i);
@@ -60,13 +62,14 @@ bool ValidateLine(const PartView& part, std::vector<S2Point>* points,
         return false;
       }
     }
-    points->push_back(ToPoint(coordinate));
+    points->push_back(convert_point(coordinate));
   }
   return true;
 }
 
 bool BuildPolygon(const ShapeView& shape, S2MemoryTracker* tracker,
-                  std::unique_ptr<S2Polygon>* polygon, std::string* error) {
+                  std::unique_ptr<S2Polygon>* polygon, std::string* error,
+                  PointConverter convert_point) {
   const bool full_sentinel = shape.parts.size() == 1 &&
                              shape.parts[0].vertex_count == 0 &&
                              !shape.even_odd;
@@ -103,7 +106,7 @@ bool BuildPolygon(const ShapeView& shape, S2MemoryTracker* tracker,
         *error = "polygon loop has an antipodal edge";
         return false;
       }
-      vertices.push_back(ToPoint(coordinate));
+      vertices.push_back(convert_point(coordinate));
     }
     auto loop = std::make_unique<S2Loop>(vertices, S2Debug::DISABLE);
     S2Error loop_error;
@@ -134,6 +137,21 @@ bool BuildPolygon(const ShapeView& shape, S2MemoryTracker* tracker,
   return true;
 }
 
+bool BuildLine(const PartView& part, std::unique_ptr<S2Polyline>* polyline,
+               std::string* error, PointConverter convert_point) {
+  std::vector<S2Point> points;
+  if (!ValidateLine(part, &points, error, convert_point)) return false;
+  auto line = std::make_unique<S2Polyline>(points, S2Debug::DISABLE);
+  S2Error line_error;
+  if (line->FindValidationError(&line_error)) {
+    *error = std::string("invalid line: ") +
+             std::string(line_error.message());
+    return false;
+  }
+  *polyline = std::move(line);
+  return true;
+}
+
 bool BuildSingleShape(const ShapeView& shape, S2MemoryTracker* tracker,
                       MutableS2ShapeIndex* index, S2LatLngRect* bounds,
                       std::string* error) {
@@ -153,15 +171,8 @@ bool BuildSingleShape(const ShapeView& shape, S2MemoryTracker* tracker,
   if (shape.kind == ShapeKind::kLine) {
     const PartView& part = shape.parts[0];
     if (part.vertex_count < 2) return true;
-    std::vector<S2Point> points;
-    if (!ValidateLine(part, &points, error)) return false;
-    auto line = std::make_unique<S2Polyline>(points, S2Debug::DISABLE);
-    S2Error line_error;
-    if (line->FindValidationError(&line_error)) {
-      *error = std::string("invalid line: ") +
-               std::string(line_error.message());
-      return false;
-    }
+    std::unique_ptr<S2Polyline> line;
+    if (!BuildLine(part, &line, error, ToPoint)) return false;
     if (bounds != nullptr) *bounds = line->GetRectBound().PolarClosure();
     std::unique_ptr<const S2Polyline> owned_line = std::move(line);
     index->Add(std::make_unique<S2Polyline::OwningShape>(std::move(owned_line)));
@@ -169,7 +180,7 @@ bool BuildSingleShape(const ShapeView& shape, S2MemoryTracker* tracker,
   }
 
   std::unique_ptr<S2Polygon> polygon;
-  if (!BuildPolygon(shape, tracker, &polygon, error)) return false;
+  if (!BuildPolygon(shape, tracker, &polygon, error, ToPoint)) return false;
   if (polygon == nullptr || polygon->is_empty()) return true;
   if (bounds != nullptr) *bounds = polygon->GetRectBound().PolarClosure();
   std::unique_ptr<const S2Polygon> owned_polygon = std::move(polygon);
@@ -178,6 +189,34 @@ bool BuildSingleShape(const ShapeView& shape, S2MemoryTracker* tracker,
 }
 
 }  // namespace
+
+bool BuildLineComponent(const PartView& part,
+                        std::unique_ptr<S2Polyline>* polyline,
+                        std::string* error) {
+  if (polyline == nullptr || error == nullptr) return false;
+  return BuildLine(part, polyline, error, ToPoint);
+}
+
+bool BuildPolygonComponent(const ShapeView& shape, S2MemoryTracker* tracker,
+                           std::unique_ptr<S2Polygon>* polygon,
+                           std::string* error) {
+  if (polygon == nullptr || error == nullptr) return false;
+  return BuildPolygon(shape, tracker, polygon, error, ToPoint);
+}
+
+bool BuildLineComponentForCentroid(
+    const PartView& part, std::unique_ptr<S2Polyline>* polyline,
+    std::string* error) {
+  if (polyline == nullptr || error == nullptr) return false;
+  return BuildLine(part, polyline, error, MeasureCentroidPoint);
+}
+
+bool BuildPolygonComponentForCentroid(
+    const ShapeView& shape, S2MemoryTracker* tracker,
+    std::unique_ptr<S2Polygon>* polygon, std::string* error) {
+  if (polygon == nullptr || error == nullptr) return false;
+  return BuildPolygon(shape, tracker, polygon, error, MeasureCentroidPoint);
+}
 
 bool BuildShapeIndex(const ParsedGeometry& parsed, S2MemoryTracker* tracker,
                      MutableS2ShapeIndex* index, S2LatLngRect* bounds,

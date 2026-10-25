@@ -1,6 +1,7 @@
 #include "s2_adapter.h"
 
 #include "s2_internal.h"
+#include "s2_ellipsoid_measures.h"
 
 #include <cstdio>
 #include <exception>
@@ -77,8 +78,8 @@ bool MakeIndex(const ParsedGeometry& parsed, S2MemoryTracker* tracker,
 int Run(int op, const double* left_data, size_t left_size,
         const double* right_data, size_t right_size, double* output,
         size_t output_capacity, size_t* output_size, std::string* error) {
-  if (op < 0 || op > 9) {
-    *error = "operation code must be in the range 0 through 9";
+  if (op < 0 || op > 13) {
+    *error = "operation code must be in the range 0 through 13";
     return kInvalidCall;
   }
   if (output_size == nullptr) {
@@ -96,9 +97,21 @@ int Run(int op, const double* left_data, size_t left_size,
   }
   const bool validate_only = op == 8;
   const bool bounds_only = op == 9;
-  const bool unary = validate_only || bounds_only;
+  const bool measures_only = op == 10;
+  const bool ellipsoid_measures_only =
+      op >= kWgs84AreaOperation && op <= kWgs84PolygonPerimeterOperation;
+  const bool unary = validate_only || bounds_only || measures_only ||
+                     ellipsoid_measures_only;
   if (bounds_only && (output_capacity < 8 || output == nullptr)) {
     *error = "bounds result requires eight output doubles";
+    return kOutputLimit;
+  }
+  if (measures_only && (output_capacity < 8 || output == nullptr)) {
+    *error = "measurement result requires eight output doubles";
+    return kOutputLimit;
+  }
+  if (ellipsoid_measures_only && (output_capacity < 2 || output == nullptr)) {
+    *error = "ellipsoid measurement result requires two output doubles";
     return kOutputLimit;
   }
   if (!unary && (right_data == nullptr || right_size < 2)) {
@@ -114,12 +127,58 @@ int Run(int op, const double* left_data, size_t left_size,
   if (!unary && !ParseWire(right_data, right_size, &right_wire, error)) {
     return kInvalidWire;
   }
-  if (!CheckCallBudget(left_wire, unary ? nullptr : &right_wire, error)) {
+  size_t base_work = 0;
+  if (!CheckCallBudget(left_wire, unary ? nullptr : &right_wire, &base_work,
+                       error)) {
     return kResourceLimit;
+  }
+  if (ellipsoid_measures_only) {
+    bool overflow = false;
+    const size_t quadrature_work =
+        EstimateWgs84MeasureWork(op, left_wire, &overflow);
+    if (overflow || quadrature_work > kMaxWork - base_work) {
+      *error = "geometry operation exceeds the 50000-work limit";
+      return kResourceLimit;
+    }
   }
 
   S2MemoryTracker tracker;
   tracker.set_limit_bytes(kMaxTrackedBytes);
+  if (measures_only) {
+    double record[8] = {};
+    if (!RunMeasures(left_wire, &tracker, record, error)) {
+      if (HasMemoryError(tracker)) {
+        *error = "S2 memory tracker exceeded the 64 MiB limit";
+        return kResourceLimit;
+      }
+      return kInvalidGeometry;
+    }
+    if (HasMemoryError(tracker)) {
+      *error = "S2 memory tracker exceeded the 64 MiB limit";
+      return kResourceLimit;
+    }
+    std::memcpy(output, record, sizeof(record));
+    *output_size = 8;
+    return kOk;
+  }
+  if (ellipsoid_measures_only) {
+    double record[2] = {};
+    if (!RunEllipsoidMeasure(op, left_wire, &tracker, record, error)) {
+      if (HasMemoryError(tracker)) {
+        *error = "S2 memory tracker exceeded the 64 MiB limit";
+        return kResourceLimit;
+      }
+      return kInvalidGeometry;
+    }
+    if (HasMemoryError(tracker)) {
+      *error = "S2 memory tracker exceeded the 64 MiB limit";
+      return kResourceLimit;
+    }
+    std::memcpy(output, record, sizeof(record));
+    *output_size = 2;
+    return kOk;
+  }
+
   MutableS2ShapeIndex left_index;
   S2LatLngRect left_bounds;
   if (!MakeIndex(left_wire, &tracker, &left_index,

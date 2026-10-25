@@ -61,7 +61,7 @@ def test_malformed_numeric_input_fails_with_no_output_or_buffer_overwrite(wire):
     assert code != 0 and size == 0 and error
 
 
-@pytest.mark.parametrize("operation,capacity", [(-1, 64), (10, 64), (8, 0), (8, 65537)])
+@pytest.mark.parametrize("operation,capacity", [(-1, 64), (14, 64), (8, 0), (8, 65537)])
 def test_invalid_abi_call_is_rejected(operation, capacity):
     code, size, error = call_raw([1, 0], operation=operation, capacity=capacity)
     assert code != 0 and size == 0 and error

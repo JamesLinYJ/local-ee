@@ -7,7 +7,12 @@ add_library(local_ee_s2_adapter SHARED
   s2_adapter.cpp
   s2_bounds.cpp
   s2_degeneracies.cpp
+  s2_ellipsoid_area.cpp
+  s2_ellipsoid_math.cpp
+  s2_ellipsoid_measures.cpp
+  s2_ellipsoid_sphere_area.cpp
   s2_input.cpp
+  s2_measures.cpp
   s2_operation.cpp
   s2_output.cpp
   s2_wire.cpp)

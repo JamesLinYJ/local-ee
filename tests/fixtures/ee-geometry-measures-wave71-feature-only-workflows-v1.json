@@ -1,0 +1,68 @@
+{
+  "schema": "wave71-feature-only-workflows-v1",
+  "source_fixtures": [
+    {
+      "path": "tests/fixtures/ee-geometry-measures-wave71-v1.json",
+      "sha256": "6ac1ab58c496eb4108efa4ce12cf0683d1cc152acf9bf6592c88a5956e71edd0"
+    },
+    {
+      "path": "tests/fixtures/ee-geometry-measures-wave71-planar-geometrycollection-v1.json",
+      "sha256": "8e781b44bad23dc9b930890229f9a07868c70b6b47ac1f42f32aa2c839ad02d9"
+    }
+  ],
+  "scope": "These are separately named lower-cost physical workflows over the same rows. They omit paired Geometry methods and duplicate omitted/null forms; they do not make the preserved full formulas fit the shared budget and are not new API compatibility results.",
+  "physical_workflows_v4": {
+    "default_wgs84_feature_only": {
+      "route": "default_wgs84_feature_only_v4",
+      "description": "Wave71 WGS84 Feature-only physical CSV v4",
+      "metric_model": "default_wgs84",
+      "metric_owner": "Feature",
+      "input_features": [
+        "octant_triangle",
+        "equatorial_arc",
+        "point",
+        "mixed_highest_dimension"
+      ],
+      "map_behavior": "FeatureCollection.map calls Feature.area/length/perimeter once each with omitted projection and Feature.centroid once, then returns that actual centroid Feature with source identity and computed properties. This is a separately named lean workflow; the original v2 Geometry+Feature omitted/null formula remains a preserved budget rejection.",
+      "csv_selectors": [
+        "system:index",
+        "feature_id",
+        "label",
+        "source_rank",
+        "feature_area_default",
+        "feature_length_default",
+        "feature_perimeter_default",
+        "feature_centroid_default",
+        ".geo"
+      ],
+      "rows": 4
+    },
+    "explicit_epsg4326_planar_geometrycollection_feature_only": {
+      "route": "explicit_epsg4326_planar_geometrycollection_feature_only_v4",
+      "description": "Wave71 planar GeometryCollection Feature-only physical CSV v4",
+      "metric_model": "explicit_epsg4326_planar",
+      "metric_owner": "Feature",
+      "input_features": [
+        "octant_triangle",
+        "equatorial_arc",
+        "point",
+        "mixed_highest_dimension",
+        "planar_hole",
+        "planar_overlapping_geometrycollection"
+      ],
+      "map_behavior": "FeatureCollection.map calls Feature.area/length/perimeter once each with explicit EPSG:4326 and Feature.centroid once, then returns that actual centroid Feature with source identity and computed properties. The last row is the separately documented GeometryCollection of the same two atomic polygons; the original full Geometry+Feature route remains a preserved budget rejection.",
+      "csv_selectors": [
+        "system:index",
+        "feature_id",
+        "label",
+        "source_rank",
+        "feature_area_epsg4326",
+        "feature_length_epsg4326",
+        "feature_perimeter_epsg4326",
+        "feature_centroid_epsg4326",
+        ".geo"
+      ],
+      "rows": 6
+    }
+  }
+}

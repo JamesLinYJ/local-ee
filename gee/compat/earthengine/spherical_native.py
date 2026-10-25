@@ -187,6 +187,59 @@ def run(operation, left, right=None, *, output_positions=0, output_children=0):
                            output_children=output_children)
 
 
+def _run_measure_record(operation_number, geometry, label):
+    """Return one fixed native measure record after caller-owned precharge."""
+    if operation_number != 10:
+        fail("Unsupported fixed S2 measure operation")
+    function = _load()
+    left_wire = encode_geometry(geometry)
+    right_wire = [1, 0]
+    left_array = (ctypes.c_double * len(left_wire))(*left_wire)
+    right_array = (ctypes.c_double * len(right_wire))(*right_wire)
+    output = (ctypes.c_double * 8)()
+    size = ctypes.c_size_t()
+    error = ctypes.create_string_buffer(1024)
+    code = function(operation_number, left_array, len(left_wire),
+                    right_array, len(right_wire), output, 8,
+                    ctypes.byref(size), error, len(error))
+    if code != 0:
+        fail(f"{label} failed: " + error.value.decode("utf-8", errors="replace"))
+    if size.value != 8:
+        fail(f"{label} returned a malformed fixed record size")
+    return tuple(float(output[index]) for index in range(8))
+
+
+def run_measures(geometry):
+    """Call S2 op10; caller reserves its work and record-validation budget."""
+    return _run_measure_record(10, geometry, "S2 geometry measures")
+
+
+_ELLIPSOID_OPERATIONS = {"area": 11, "length": 12, "perimeter": 13}
+
+
+def run_ellipsoid_measure(geometry, metric):
+    """Call one WGS84 great-circle scalar op after caller reserves all work."""
+    if metric not in _ELLIPSOID_OPERATIONS:
+        fail("Unsupported WGS84 geometry measure")
+    function = _load()
+    left_wire = encode_geometry(geometry)
+    right_wire = [1, 0]
+    left_array = (ctypes.c_double * len(left_wire))(*left_wire)
+    right_array = (ctypes.c_double * len(right_wire))(*right_wire)
+    output = (ctypes.c_double * 2)()
+    size = ctypes.c_size_t()
+    error = ctypes.create_string_buffer(1024)
+    code = function(_ELLIPSOID_OPERATIONS[metric], left_array, len(left_wire),
+                    right_array, len(right_wire), output, 2,
+                    ctypes.byref(size), error, len(error))
+    if code != 0:
+        fail("WGS84 geometry measure failed: "
+             + error.value.decode("utf-8", errors="replace"))
+    if size.value != 2:
+        fail("WGS84 geometry measure returned a malformed fixed record size")
+    return float(output[0]), float(output[1])
+
+
 def validate(geometry):
     """Validate after an explicit input/validation reservation by the caller."""
     if run("validate", geometry) is not True:

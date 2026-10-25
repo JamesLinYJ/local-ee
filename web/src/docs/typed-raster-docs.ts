@@ -2,6 +2,14 @@ import type { ReferenceEntry } from "../types";
 
 export const pythonTypedRasterDocs: ReferenceEntry[] = [
   {
+    id: "gee-python-geometry-measures",
+    category: "GEE Python",
+    language: "python",
+    title: "面积、线长、周长与质心",
+    text: "Geometry／内联 Feature 支持有限 area、length、perimeter、centroid。默认测地线沿大圆弧按 WGS84 计算 m／m²；显式平面边加 EPSG:4326 投影返回度／平方度。length 只计线，perimeter 只计多边形边界；重复和重叠分量分别相加。质心只使用最高维分量，空值、抵消及数值无法确定的方向明确拒绝。Feature 质心保留深复制的原属性和身份。一般投影、边模型变换、distance／buffer 仍未完成；本地有界收敛检查不代表 Google 数值等价。详见 docs/gee-python/geometry-measures.md。",
+    code: "polygon = ee.Geometry.Polygon([[[0,0],[90,0],[0,90],[0,0]]])\narea_m2 = polygon.area()\nperimeter_m = polygon.perimeter()\ncenter = polygon.centroid()\nfeature = ee.Feature(polygon, {'name':'octant'})\nmeasured = feature.set({'area_m2': feature.area()})",
+  },
+  {
     id: "gee-python-geodesic-clip",
     category: "GEE Python",
     language: "python",

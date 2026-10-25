@@ -1,0 +1,80 @@
+{
+  "schema": "wave71-planar-geometrycollection-workflow-v1",
+  "source_fixture": {
+    "path": "tests/fixtures/ee-geometry-measures-wave71-v1.json",
+    "sha256": "6ac1ab58c496eb4108efa4ce12cf0683d1cc152acf9bf6592c88a5956e71edd0"
+  },
+  "scope": "This additive route changes the wrapper to GeometryCollection while retaining the same two atomic Polygon components. It does not make the original overlapping MultiPolygon valid and is not a MultiPolygon compatibility gain.",
+  "case": {
+    "name": "planar_overlapping_geometrycollection",
+    "source_case": "planar_overlapping_multipolygon",
+    "geometry": {
+      "type": "GeometryCollection",
+      "geodesic": false,
+      "geometries": [
+        {
+          "type": "Polygon",
+          "geodesic": false,
+          "coordinates": [
+            [[0, 0], [4, 0], [4, 4], [0, 4], [0, 0]]
+          ]
+        },
+        {
+          "type": "Polygon",
+          "geodesic": false,
+          "coordinates": [
+            [[2, 0], [6, 0], [6, 4], [2, 4], [2, 0]]
+          ]
+        }
+      ]
+    },
+    "projection": "EPSG:4326",
+    "area_square_degrees": 32,
+    "linear_length_degrees": 0,
+    "polygon_perimeter_degrees": 32,
+    "centroid_lon_lat_degrees": [3, 2],
+    "component_sum_rule": "Each 4x4 component contributes independently; the overlap is counted twice."
+  },
+  "physical_workflow_v3": {
+    "version": "wave71-planar-geometrycollection-workflow-v1",
+    "route": "explicit_epsg4326_planar_geometrycollection_v3",
+    "description": "Wave71 planar EPSG4326 GeometryCollection composition v3",
+    "input_features": [
+      "octant_triangle",
+      "equatorial_arc",
+      "point",
+      "mixed_highest_dimension",
+      "planar_hole",
+      "planar_overlapping_geometrycollection"
+    ],
+    "geometry_edge_model": "Every edge-bearing input and both Polygon children are explicitly planar (geodesic:false); no coordinates or components are transformed.",
+    "change_from_v2": "The sixth row wraps the same two atomic Polygon components as the rejected v2 overlapping MultiPolygon in a GeometryCollection. This separate input shape is a positive composition test, not a compatibility gain for MultiPolygon.",
+    "map_behavior": "FeatureCollection.map computes only explicit EPSG:4326 Geometry/Feature area, length, perimeter and centroid. It returns the actual projected Feature centroid with computed properties so the physical CSV .geo and original identity/properties are read back.",
+    "csv_selectors": [
+      "system:index",
+      "feature_id",
+      "label",
+      "source_rank",
+      "geometry_area_epsg4326",
+      "feature_area_epsg4326",
+      "geometry_length_epsg4326",
+      "feature_length_epsg4326",
+      "geometry_perimeter_epsg4326",
+      "feature_perimeter_epsg4326",
+      "geometry_centroid_epsg4326",
+      "feature_centroid_epsg4326",
+      ".geo"
+    ],
+    "rows": 6
+  },
+  "preserved_v2_wires": {
+    "default_wgs84": {
+      "sha256": "663b9d0c9d551975136dfc91b073e2a065e7226acbfaee60247ccaf1f5691422",
+      "bytes": 6679
+    },
+    "explicit_epsg4326_planar": {
+      "sha256": "2867f0264ec499d3f8a040dbbd114f317c7aefa5bedf88c97a300310a70b7d4e",
+      "bytes": 6958
+    }
+  }
+}

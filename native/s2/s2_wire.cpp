@@ -168,7 +168,7 @@ bool ParseWire(const double* data, size_t size, ParsedGeometry* parsed,
 }
 
 bool CheckCallBudget(const ParsedGeometry& left, const ParsedGeometry* right,
-                     std::string* error) {
+                     size_t* work_out, std::string* error) {
   const size_t positions = left.position_count +
                            (right == nullptr ? 0 : right->position_count);
   const size_t shapes = left.shapes.size() +
@@ -212,6 +212,7 @@ bool CheckCallBudget(const ParsedGeometry& left, const ParsedGeometry* right,
   if (work > kMaxWork) {
     return Fail(error, "geometry operation exceeds the 50000-work limit");
   }
+  if (work_out != nullptr) *work_out = work;
   return true;
 }
 

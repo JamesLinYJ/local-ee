@@ -229,19 +229,29 @@ def _clone(value, memo):
 
 def owned_metadata_copy(translator, value, label="Element metadata"):
     """Preflight JSON size, cycles and copy work, then return an owned value."""
-    copy_cost = preflight_owned_metadata_value(translator, value, label)
+    # The public-size pass below is non-materializing, so the only detached
+    # copy still to charge is the one returned by this function.
+    copy_cost = preflight_owned_metadata_value(
+        translator, value, label, reserve_copy=False,
+    )
     charge_metadata(translator, copy_cost, label + " copy")
     return _clone(value, {})
 
 
-def preflight_owned_metadata_value(translator, value, label="Element metadata"):
-    """Preflight public size and mutable-copy safety without materializing."""
+def preflight_owned_metadata_value(
+        translator, value, label="Element metadata", *, reserve_copy=True):
+    """Validate public size and copy safety without making a JSON-size view.
+
+    Callers that will return a detached copy reserve that allocation before
+    subsequent work. Scalar/identity consumers can omit the reservation while
+    retaining the complete bounded structure, cycle, and public-size checks.
+    """
     copy_cost = _copy_plan(translator, value, set())
-    charge_metadata(translator, copy_cost, label + " JSON preflight")
-    public_form = _public_form(translator, value, set())
+    if reserve_copy:
+        charge_metadata(translator, copy_cost, label + " JSON preflight")
     wire = [0]
     try:
-        _public_value_size(translator, public_form, wire)
+        _public_value_size(translator, value, wire)
     except RecursionError:
         fail(f"{label} exceeds the metadata nesting limit")
     if wire[0] > MAX_METADATA_BYTES:

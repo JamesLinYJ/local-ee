@@ -100,6 +100,18 @@ def invoke(translator, name, arguments):
         return invoke_feature_structure(translator, name, a)
     if name in GEOMETRY_STRUCTURE_FUNCTIONS:
         return invoke_geometry_structure(translator, name, a)
+    from .geometry_measures import (
+        FEATURE_MEASURE_METHODS,
+        GEOMETRY_MEASURE_METHODS,
+        invoke_geometry_measures,
+    )
+
+    if name in GEOMETRY_MEASURE_METHODS:
+        return invoke_geometry_measures(translator, name, a)
+    if name in FEATURE_MEASURE_METHODS:
+        from .feature_geometry_measures import invoke_feature_geometry_measures
+
+        return invoke_feature_geometry_measures(translator, name, a)
     if name in {"Geometry.bounds", "Feature.bounds"}:
         from .geometry_bounds import invoke_geometry_bounds
 
