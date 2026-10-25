@@ -24,6 +24,8 @@ from ee_measures_workflow import (
 from gee.ee_translate import UnsupportedEEError, compile_expression
 from scripts.ee_python_api.offline import OfflineGuard
 from table_export_support import USER, install, run_batch
+from ee_measure_reuse_reference import assert_full_value
+from ee_measure_reuse_sdk import fixture as reuse_fixture
 
 
 def _encoded(ee, value):
@@ -171,7 +173,7 @@ def test_empty_scalars_and_centroid_undefined_cases_are_independent(monkeypatch)
     ],
     ids=("original-wgs84-full-formula", "planar-geometrycollection-full-formula"),
 )
-def test_preserved_full_metric_formulas_reject_the_shared_compilation_budget(
+def test_preserved_full_metric_formulas_match_all_original_references(
         route, fixture_variant, monkeypatch):
     require_exact_measure_artifact(monkeypatch)
     fixture = load_feature_only_workflows_fixture(load_fixture())
@@ -193,10 +195,12 @@ def test_preserved_full_metric_formulas_reject_the_shared_compilation_budget(
             ee, fixture, route,
         )
         wire = _encoded(ee, collection)
-        with pytest.raises(
-                UnsupportedEEError,
-                match=r"shared 50000-step compilation work budget"):
-            compile_expression(wire, [], {})
+        frozen = reuse_fixture()
+        original = next(record for record in frozen["workflows"].values()
+                        if record["route"] == route)
+        assert wire == original["wire"]
+        assert config["rows"] == original["config"]["rows"]
+        assert_full_value(frozen, original, compile_expression(wire, [], {})["value"])
 
     assert guard.evidence()["attempt_count"] == 0
 

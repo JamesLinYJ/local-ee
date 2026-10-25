@@ -62,6 +62,8 @@ flowchart LR
 质心数值不确定时明确拒绝，原始向量不吸附；有界收敛政策不等于严格误差证书或
 Google 数值等价。见[几何度量合同](gee-python/geometry-measures.md)。
 
+重复度量通过请求内的有限快照减少重复遍历与内核调用。`geometry_snapshot` 每次重新检查完整几何内容，`geometry_measure_cache` 分开保存成功的分量校验和数值结果；严格整体拓扑消费者不复用分量证明。`feature_preflight_cache` 只对指定要素读取方法复用已通过的公开大小／复制成本事实，ID 仅定位候选，全部内容仍须逐项匹配，输出属性继续独立复制。两个缓存合计最多64项、保守存储计数1MB；实际工作仍计入原50000预算，原生摘要检查和回调环境不被缓存替代。
+
 官方 EE 几何值通过 `geometry_components` 保留分别有效但相互重叠／重复的
 平面 MultiPolygon；共享 `planar_geometry_validation` 校验完整 Polygon 与孔洞，
 不做 union 或修复。需要整体拓扑的集合、目录、栅格与采样消费者重新严格校验。

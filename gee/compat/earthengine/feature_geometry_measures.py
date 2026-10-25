@@ -10,7 +10,7 @@ from .geometry_measures import (
 )
 from .geometry_preflight import MAX_GEOMETRY_WORK
 from .ir import fail
-from .owned_metadata_values import owned_metadata_copy
+from .feature_preflight_cache import owned_feature_copy
 
 
 _FEATURE_CENTROID_OUTPUT_WORK = 6
@@ -36,7 +36,7 @@ def invoke_feature_geometry_measures(translator, name, arguments):
         # Make the one returned snapshot after complete validation, before
         # comparing identity strings or inspecting any retained metadata.
         source = _feature_header(arguments["feature"], name)
-        feature = owned_metadata_copy(translator, source, name + " source Feature")
+        feature = owned_feature_copy(translator, source, name)
     else:
         # Scalar methods still receive the full cycle/public-size/metadata
         # validation, without reserving an unused detached Feature copy.

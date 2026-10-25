@@ -15,6 +15,7 @@ from .owned_metadata_values import (
     preflight_public_value,
 )
 from .regex_values import compile_pattern
+from .feature_preflight_cache import preflight as preflight_feature_metadata
 
 
 FEATURE_STRUCTURE_METHODS = frozenset({
@@ -70,7 +71,7 @@ def _feature_header(value, label):
 
 def _feature(translator, value, label, *, reserve_copy=True):
     value = _feature_header(value, label)
-    preflight_owned_metadata_value(
+    preflight_feature_metadata(
         translator, value, label, reserve_copy=reserve_copy,
     )
     return value

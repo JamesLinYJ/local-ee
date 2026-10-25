@@ -6,7 +6,6 @@ from types import SimpleNamespace
 
 from .geometry_preflight import (
     MAX_GEOMETRY_WORK,
-    measure_geometry as measure_geometry_cost,
     precharge_geometry_decode,
 )
 from .geometry_topology import geometry_edge_models
@@ -18,9 +17,14 @@ from .geometry_planar_measures import (
     planar_components,
     planar_result,
 )
-from .geometry_values import GeometryValue, _attach_geometry_metadata, _normalize_geometry
+from .geometry_values import _attach_geometry_metadata, _normalize_geometry
 from .ir import fail
 from .spherical_measures import centroid_lon_lat, decode_measure_record
+from .geometry_measure_outputs import (
+    _CENTROID_COMPUTE_WORK, _CENTROID_OUTPUT_WORK,
+    _exact_point_centroid, _make_centroid_point,
+)
+from . import geometry_measure_cache as cache
 
 
 GEOMETRY_MEASURE_METHODS = frozenset({
@@ -44,7 +48,6 @@ FEATURE_MEASURE_ARGUMENTS = {
 _MEASURE_RECORD_VALIDATION_WORK = 8 + 8 + 6 + 3 + 4
 _ELLIPSOID_RECORD_VALIDATION_WORK = 2 + 2 + 1 + 1
 _SCALAR_OUTPUT_WORK = 4
-_CENTROID_COMPUTE_WORK = 32
 
 
 def _charge(translator, amount, label):
@@ -95,60 +98,6 @@ def _route(translator, name, projection, max_error, models):
 
     validate_no_reprojection_margin(translator, max_error, name + " maxError")
     return route
-
-
-def _centroid_output_work():
-    # Charge the ordinary bounded geometry decode and public-mapping pass for
-    # the one supported output shape before any native operation can run.
-    template = GeometryValue(
-        {"type": "Point", "coordinates": [0.0, 0.0]},
-        {"crs": "EPSG:4326", "geodesic": True, "evenOdd": True},
-    )
-    cost = measure_geometry_cost(template)
-    return (cost.nodes + cost.positions + 3 * cost.ring_closures
-            + cost.nodes + cost.geometries + cost.positions
-            + _CENTROID_COMPUTE_WORK)
-
-
-_CENTROID_OUTPUT_WORK = _centroid_output_work()
-
-
-def _make_centroid_point(lon, lat, label, output_budget, *,
-                         compute_precharged=False, preserve_source_values=False):
-    if (not math.isfinite(lon) or not math.isfinite(lat)
-            or not -180.0 <= lon <= 180.0 or not -90.0 <= lat <= 90.0):
-        fail(f"{label} returned an invalid centroid coordinate")
-    raw = GeometryValue(
-        {"type": "Point", "coordinates": (
-            [lon, lat] if preserve_source_values else [float(lon), float(lat)]
-        )},
-        {"crs": "EPSG:4326", "geodesic": True, "evenOdd": True},
-    )
-    cost = precharge_geometry_decode(output_budget, raw)
-    point = _attach_geometry_metadata(raw, _normalize_geometry(raw))
-    _charge(output_budget, cost.nodes + cost.geometries + cost.positions,
-            label + " centroid public geometry copy")
-    if not compute_precharged:
-        _charge(output_budget, _CENTROID_COMPUTE_WORK, label + " centroid result")
-    if output_budget.steps != MAX_GEOMETRY_WORK:
-        fail(f"{label} centroid did not consume its complete prepaid output bound")
-    return point
-
-
-def _exact_point_centroid(translator, coordinates, label):
-    """Return an exact owned copy when point identity is provable without math."""
-    _charge(translator, _CENTROID_OUTPUT_WORK,
-            label + " exact point centroid output reservation")
-    output_budget = SimpleNamespace(
-        steps=MAX_GEOMETRY_WORK - _CENTROID_OUTPUT_WORK,
-    )
-    _charge(output_budget, _CENTROID_COMPUTE_WORK,
-            label + " exact point identity result")
-    point = _make_centroid_point(
-        coordinates[0], coordinates[1], label, output_budget,
-        compute_precharged=True, preserve_source_values=True,
-    )
-    return point
 
 
 def _spherical_centroid(translator, geometry, cost, label, summary):
@@ -229,8 +178,37 @@ def _evaluate(translator, name, method, raw, *, projection=None, max_error=None,
         _charge(translator, _SCALAR_OUTPUT_WORK, name + " empty scalar result")
         return 0.0
 
-    geometry, cost, models = _prepare_geometry(translator, raw, name)
-    route = _route(translator, name, projection, max_error, models)
+    ticket = cache.lookup(translator, raw, create=True)
+    models = ticket.entry.models if ticket else None
+    route = None
+    if models is not None:
+        route = _route(translator, name, projection, max_error, models)
+        saved = cache.cached_result(translator, ticket, route, method)
+        if saved is not cache.ABSENT:
+            value, native = saved
+            _charge(translator, _CENTROID_OUTPUT_WORK if method == "centroid"
+                    else _SCALAR_OUTPUT_WORK, name + " cached result output reservation")
+            if native:
+                from .spherical_native import _load
+
+                _load()
+            if method == "centroid":
+                return _exact_point_centroid(translator, value, name, output_precharged=True)
+            return value
+    prepared = cache.restore_component(translator, ticket) if ticket else None
+    if prepared is None:
+        prepared = _prepare_geometry(translator, raw, name)
+    if route is None:
+        route = _route(translator, name, projection, max_error, prepared[2])
+    ticket = cache.reserve_result(translator, ticket)
+    native = [False]
+    result = _evaluate_prepared(translator, name, method, prepared, route, native)
+    cache.store_result(translator, ticket, route, method, result, prepared[2], native[0])
+    return result
+
+
+def _evaluate_prepared(translator, name, method, prepared, route, native):
+    geometry, cost, models = prepared
     centroid_summary = None
     if method == "centroid":
         _charge(translator, cost.nodes + cost.positions + cost.geometries,
@@ -261,15 +239,18 @@ def _evaluate(translator, name, method, raw, *, projection=None, max_error=None,
         if not models:
             if method == "centroid":
                 # Point-only geometries still use the S2 weighted centroid.
+                native[0] = True
                 return _spherical_centroid(
                     translator, geometry, cost, name, centroid_summary,
                 )
             _charge(translator, output_work, name + " empty-measure result")
             return 0.0
         if method == "centroid":
+            native[0] = True
             return _spherical_centroid(
                 translator, geometry, cost, name, centroid_summary,
             )
+        native[0] = True
         return _ellipsoid_metric(translator, geometry, method, cost, name)
 
     _charge(translator, planar_extra + output_work,

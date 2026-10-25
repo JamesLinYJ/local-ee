@@ -1,0 +1,3392 @@
+{
+  "base_commit": "e224ab45486cac9a7ed899d80cdfdc77163b0eb7",
+  "cases": {
+    "equatorial_arc": {
+      "area_steradians": 0,
+      "centroid_lon_lat_degrees": [
+        45,
+        0
+      ],
+      "centroid_vector_unnormalized": [
+        1,
+        1,
+        0
+      ],
+      "geometry": {
+        "coordinates": [
+          [
+            0,
+            0
+          ],
+          [
+            90,
+            0
+          ]
+        ],
+        "type": "LineString"
+      },
+      "highest_dimension": 1,
+      "linear_length_radians": "pi/2",
+      "polygon_perimeter_radians": 0
+    },
+    "mixed_highest_dimension": {
+      "area_steradians": "pi/2",
+      "centroid_ignores": [
+        "Point",
+        "LineString"
+      ],
+      "centroid_lon_lat_degrees": [
+        45,
+        "degrees(asin(1/sqrt(3)))"
+      ],
+      "centroid_vector_unnormalized": [
+        "pi/4",
+        "pi/4",
+        "pi/4"
+      ],
+      "geometry": {
+        "geometries": [
+          {
+            "coordinates": [
+              30,
+              0
+            ],
+            "type": "Point"
+          },
+          {
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                90,
+                0
+              ]
+            ],
+            "type": "LineString"
+          },
+          {
+            "coordinates": [
+              [
+                [
+                  0,
+                  0
+                ],
+                [
+                  90,
+                  0
+                ],
+                [
+                  0,
+                  90
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            ],
+            "type": "Polygon"
+          }
+        ],
+        "type": "GeometryCollection"
+      },
+      "linear_length_radians": "pi/2",
+      "polygon_perimeter_radians": "3*pi/2"
+    },
+    "octant_triangle": {
+      "area_steradians": "pi/2",
+      "centroid_lon_lat_degrees": [
+        45,
+        "degrees(asin(1/sqrt(3)))"
+      ],
+      "centroid_vector_unnormalized": [
+        "pi/4",
+        "pi/4",
+        "pi/4"
+      ],
+      "epsg4326_planar": {
+        "area_square_degrees": 4050,
+        "centroid_lon_lat_degrees": [
+          30,
+          30
+        ],
+        "linear_length_degrees": 0,
+        "polygon_perimeter_degrees": "180+90*sqrt(2)"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              90,
+              0
+            ],
+            [
+              0,
+              90
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "highest_dimension": 2,
+      "linear_length_radians": 0,
+      "polygon_perimeter_radians": "3*pi/2",
+      "unit_sphere_meter_formulas": {
+        "area_square_meters": "local_radius_m^2*pi/2",
+        "perimeter_meters": "local_radius_m*3*pi/2",
+        "status": "Dimensional illustration only; op10 is unit sphere and no radius is selected by this fixture."
+      },
+      "wgs84_default_model": "metric_models.public_default_wgs84_ellipsoid_edge_v1.analytic_controls"
+    },
+    "planar_hole": {
+      "area_square_degrees": 22,
+      "centroid_lon_lat_degrees": [
+        "34/11",
+        "45/22"
+      ],
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              6,
+              0
+            ],
+            [
+              6,
+              4
+            ],
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              3,
+              2
+            ],
+            [
+              3,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ]
+        ],
+        "evenOdd": true,
+        "geodesic": false,
+        "type": "Polygon"
+      },
+      "linear_length_degrees": 0,
+      "polygon_perimeter_degrees": 26,
+      "projection": "EPSG:4326",
+      "shoelace_components": {
+        "hole_area": 2,
+        "hole_centroid": [
+          2,
+          "3/2"
+        ],
+        "net_area": 22,
+        "outer_area": 24,
+        "outer_centroid": [
+          3,
+          2
+        ]
+      }
+    },
+    "planar_overlapping_geometrycollection": {
+      "area_square_degrees": 32,
+      "centroid_lon_lat_degrees": [
+        3,
+        2
+      ],
+      "component_sum_rule": "Each 4x4 component contributes independently; the overlap is counted twice.",
+      "geometry": {
+        "geodesic": false,
+        "geometries": [
+          {
+            "coordinates": [
+              [
+                [
+                  0,
+                  0
+                ],
+                [
+                  4,
+                  0
+                ],
+                [
+                  4,
+                  4
+                ],
+                [
+                  0,
+                  4
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            ],
+            "geodesic": false,
+            "type": "Polygon"
+          },
+          {
+            "coordinates": [
+              [
+                [
+                  2,
+                  0
+                ],
+                [
+                  6,
+                  0
+                ],
+                [
+                  6,
+                  4
+                ],
+                [
+                  2,
+                  4
+                ],
+                [
+                  2,
+                  0
+                ]
+              ]
+            ],
+            "geodesic": false,
+            "type": "Polygon"
+          }
+        ],
+        "type": "GeometryCollection"
+      },
+      "linear_length_degrees": 0,
+      "polygon_perimeter_degrees": 32,
+      "projection": "EPSG:4326"
+    },
+    "planar_overlapping_multipolygon": {
+      "area_square_degrees": 32,
+      "centroid_lon_lat_degrees": [
+        3,
+        2
+      ],
+      "component_sum_rule": "Each 4x4 component contributes independently; the overlap is counted twice.",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                4,
+                0
+              ],
+              [
+                4,
+                4
+              ],
+              [
+                0,
+                4
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                2,
+                0
+              ],
+              [
+                6,
+                0
+              ],
+              [
+                6,
+                4
+              ],
+              [
+                2,
+                4
+              ],
+              [
+                2,
+                0
+              ]
+            ]
+          ]
+        ],
+        "geodesic": false,
+        "type": "MultiPolygon"
+      },
+      "linear_length_degrees": 0,
+      "polygon_perimeter_degrees": 32,
+      "projection": "EPSG:4326"
+    },
+    "point": {
+      "area_steradians": 0,
+      "centroid_lon_lat_degrees": [
+        30,
+        0
+      ],
+      "centroid_vector_unnormalized": [
+        "sqrt(3)/2",
+        "1/2",
+        "0"
+      ],
+      "geometry": {
+        "coordinates": [
+          30,
+          0
+        ],
+        "type": "Point"
+      },
+      "highest_dimension": 0,
+      "linear_length_radians": 0,
+      "polygon_perimeter_radians": 0
+    }
+  },
+  "frozen_wgs84_controls": {
+    "equator-quarter": {
+      "absolute_tolerance": 0.005,
+      "expected": 10018754.171394622,
+      "expected_decimal": "10018754.17139462153829420444035008934365234072071106965783783508857420",
+      "geometry": {
+        "coordinates": [
+          [
+            0,
+            0
+          ],
+          [
+            90,
+            0
+          ]
+        ],
+        "type": "LineString"
+      },
+      "id": "equator-quarter",
+      "operation": 12,
+      "quadrature_order_difference": "0",
+      "reference": "exact a*pi/2",
+      "relative_tolerance": 2e-12
+    },
+    "octant-area": {
+      "absolute_tolerance": 0.05,
+      "expected": 63758202715511.06,
+      "expected_decimal": "63758202715511.06366186421729147827931675307960048098736054046590039461",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              90,
+              0
+            ],
+            [
+              0,
+              90
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        ],
+        "evenOdd": true,
+        "type": "Polygon"
+      },
+      "id": "octant-area",
+      "operation": 11,
+      "quadrature_order_difference": "0",
+      "reference": "exact ellipsoid surface area /8",
+      "relative_tolerance": 2e-12
+    },
+    "octant-perimeter": {
+      "absolute_tolerance": 0.005,
+      "expected": 30022685.630020067,
+      "expected_decimal": "30022685.63002006716177343666284219886490663958159647768311809392168732",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              90,
+              0
+            ],
+            [
+              0,
+              90
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        ],
+        "evenOdd": true,
+        "type": "Polygon"
+      },
+      "id": "octant-perimeter",
+      "operation": 13,
+      "quadrature_order_difference": "0",
+      "reference": "a*pi/2 + 2*quarter-meridian",
+      "relative_tolerance": 2e-12
+    }
+  },
+  "identity_contract": "Pinned SDK converts input GeoJSON id to system:index. Preserve Feature.id(), label, source_rank and all original scalar/centroid output properties. Original inputs have no nested property; any nested-property check is separately labeled supplemental.",
+  "official_api": {
+    "javascript_bundle_sha256": "a8bc9bac202c16f351811b1f69c3b690d064f47ecff64cfefb47c82e514e5e03",
+    "javascript_sdk": "@google/earthengine 1.7.49",
+    "official_docs": {
+      "Feature.area": "https://developers.google.com/earth-engine/apidocs/ee-feature-area",
+      "Feature.centroid": "https://developers.google.com/earth-engine/apidocs/ee-feature-centroid",
+      "Feature.length": "https://developers.google.com/earth-engine/apidocs/ee-feature-length",
+      "Feature.perimeter": "https://developers.google.com/earth-engine/apidocs/ee-feature-perimeter",
+      "Geometry.area": "https://developers.google.com/earth-engine/apidocs/ee-geometry-area",
+      "Geometry.centroid": "https://developers.google.com/earth-engine/apidocs/ee-geometry-centroid",
+      "Geometry.length": "https://developers.google.com/earth-engine/apidocs/ee-geometry-length",
+      "Geometry.perimeter": "https://developers.google.com/earth-engine/apidocs/ee-geometry-perimeter"
+    },
+    "pinned_algorithm_file": "vendor/earthengine-js/algorithms.json",
+    "pinned_algorithm_sha256": "8279bfd5e755f10c291a0d833aed810a5aba2e360e26ecee69f2bacaeecb3d01",
+    "python_sdk": "earthengine-api 1.7.49",
+    "recorded_in": "audit/gee-python-wave71/workflow/pinned_algorithm_records.json",
+    "source_commit": "e189e4b89e785019ea5642ea8e80cb644749cd4a"
+  },
+  "offline_scope": "Pinned Python and JavaScript SDK serialization and actual trusted synthetic local dispatch/worker physical CSV. Queue/database/NativeTask launch are substituted; no Google, HTTP, live service, native supervisor, Spark, private data or deployment acceptance.",
+  "preserved_sources": [
+    {
+      "copy": "audit/gee-python-wave73/workflow/original-ee_measures_workflow.py",
+      "path": "tests/ee_measures_workflow.py",
+      "sha256": "7a5a923c5e1efda2af0f6cdaca36e594145cdffc7928dd66675f11fb3f472390"
+    },
+    {
+      "copy": "audit/gee-python-wave73/workflow/original-ee_measures_references.py",
+      "path": "tests/ee_measures_references.py",
+      "sha256": "cafba5d56173ba31dccc9c7515f536a85f6d8f0dc4c6db1192c7da22a751c70c"
+    },
+    {
+      "copy": "audit/gee-python-wave73/workflow/original-ee-geometry-measures-wave71-v1.json",
+      "path": "tests/fixtures/ee-geometry-measures-wave71-v1.json",
+      "sha256": "6ac1ab58c496eb4108efa4ce12cf0683d1cc152acf9bf6592c88a5956e71edd0"
+    },
+    {
+      "copy": "audit/gee-python-wave73/workflow/original-ee-geometry-measures-wave71-planar-geometrycollection-v1.json",
+      "path": "tests/fixtures/ee-geometry-measures-wave71-planar-geometrycollection-v1.json",
+      "sha256": "8e781b44bad23dc9b930890229f9a07868c70b6b47ac1f42f32aa2c839ad02d9"
+    },
+    {
+      "copy": "audit/gee-python-wave73/workflow/original-ee-geometry-measures-wave71-feature-only-workflows-v1.json",
+      "path": "tests/fixtures/ee-geometry-measures-wave71-feature-only-workflows-v1.json",
+      "sha256": "ab3fcf50676753b4abc5a0c5fbcabf2042dbe9b484485717094240beccd14f3f"
+    },
+    {
+      "copy": "audit/gee-python-wave73/workflow/original-ee-planar-multipolygon-wave72-v1.json",
+      "path": "tests/fixtures/ee-planar-multipolygon-wave72-v1.json",
+      "sha256": "5ef1b53a5f783ccc8b2cc58013c2fd22421252de56649bc917d0e240821d2051"
+    }
+  ],
+  "purpose": "Unchanged full historical paired Geometry/Feature map workflows, each with every original row and selector. No lean substitute, split, input rewrite, changed reference or raised budget.",
+  "schema": "ee-measure-reuse-wave73-v1",
+  "tolerances": {
+    "centroid_output_geometry": {
+      "absolute": 1e-11,
+      "relative": 0
+    },
+    "centroid_property": {
+      "absolute": 2e-10,
+      "relative": 0
+    },
+    "planar_and_zero_scalars": {
+      "absolute": 1e-12,
+      "relative": 1e-12
+    },
+    "provenance": "Existing tests/test_ee_measures_workflow.py positive numerical assertions and independently frozen Wave71 controls. No observed backend value supplies an expectation.",
+    "wgs84_nonzero_scalars": "Use each unchanged frozen reference record relative_tolerance and absolute_tolerance."
+  },
+  "workflows": {
+    "planar_geometrycollection_full6": {
+      "accepted": false,
+      "canonical_wire_bytes": 7075,
+      "canonical_wire_sha256": "c85c56de461bf9b89fdf9c39dd5aff9f54e4e74b70e5f0ac1582302d76766ffb",
+      "config": {
+        "change_from_v2": "The sixth row wraps the same two atomic Polygon components as the rejected v2 overlapping MultiPolygon in a GeometryCollection. This separate input shape is a positive composition test, not a compatibility gain for MultiPolygon.",
+        "csv_selectors": [
+          "system:index",
+          "feature_id",
+          "label",
+          "source_rank",
+          "geometry_area_epsg4326",
+          "feature_area_epsg4326",
+          "geometry_length_epsg4326",
+          "feature_length_epsg4326",
+          "geometry_perimeter_epsg4326",
+          "feature_perimeter_epsg4326",
+          "geometry_centroid_epsg4326",
+          "feature_centroid_epsg4326",
+          ".geo"
+        ],
+        "description": "Wave71 planar EPSG4326 GeometryCollection composition v3",
+        "geometry_edge_model": "Every edge-bearing input and both Polygon children are explicitly planar (geodesic:false); no coordinates or components are transformed.",
+        "input_features": [
+          "octant_triangle",
+          "equatorial_arc",
+          "point",
+          "mixed_highest_dimension",
+          "planar_hole",
+          "planar_overlapping_geometrycollection"
+        ],
+        "map_behavior": "FeatureCollection.map computes only explicit EPSG:4326 Geometry/Feature area, length, perimeter and centroid. It returns the actual projected Feature centroid with computed properties so the physical CSV .geo and original identity/properties are read back.",
+        "route": "explicit_epsg4326_planar_geometrycollection_v3",
+        "rows": 6,
+        "version": "wave71-planar-geometrycollection-workflow-v1"
+      },
+      "error": "UnsupportedEEError: Geometry.area edge-model/component scan exceeds the shared 50000-step compilation work budget",
+      "expected_rows": [
+        {
+          "centroid": [
+            30.0,
+            30.0
+          ],
+          "fraction_area": "4050",
+          "id": "wave71-octant_triangle",
+          "metrics": {
+            "area": 4050.0,
+            "length": 0.0,
+            "perimeter": 307.27922061357856
+          },
+          "name": "octant_triangle",
+          "source_rank": 0
+        },
+        {
+          "centroid": [
+            45.0,
+            0.0
+          ],
+          "fraction_area": "0",
+          "id": "wave71-equatorial_arc",
+          "metrics": {
+            "area": 0.0,
+            "length": 90.0,
+            "perimeter": 0.0
+          },
+          "name": "equatorial_arc",
+          "source_rank": 1
+        },
+        {
+          "centroid": [
+            30.0,
+            0.0
+          ],
+          "fraction_area": "0",
+          "id": "wave71-point",
+          "metrics": {
+            "area": 0.0,
+            "length": 0.0,
+            "perimeter": 0.0
+          },
+          "name": "point",
+          "source_rank": 2
+        },
+        {
+          "centroid": [
+            30.0,
+            30.0
+          ],
+          "fraction_area": "4050",
+          "id": "wave71-mixed_highest_dimension",
+          "metrics": {
+            "area": 4050.0,
+            "length": 90.0,
+            "perimeter": 307.27922061357856
+          },
+          "name": "mixed_highest_dimension",
+          "source_rank": 3
+        },
+        {
+          "centroid": [
+            3.090909090909091,
+            2.0454545454545454
+          ],
+          "fraction_area": "22",
+          "id": "wave71-planar_hole",
+          "metrics": {
+            "area": 22.0,
+            "length": 0.0,
+            "perimeter": 26.0
+          },
+          "name": "planar_hole",
+          "source_rank": 4
+        },
+        {
+          "centroid": [
+            3.0,
+            2.0
+          ],
+          "fraction_area": "32",
+          "id": "wave71-planar_overlapping_geometrycollection",
+          "metrics": {
+            "area": 32.0,
+            "length": 0.0,
+            "perimeter": 32.0
+          },
+          "name": "planar_overlapping_geometrycollection",
+          "source_rank": 5
+        }
+      ],
+      "id": "planar_geometrycollection_full6",
+      "route": "explicit_epsg4326_planar_geometrycollection_v3",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    90,
+                    0
+                  ],
+                  [
+                    0,
+                    90
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]
+              ],
+              "geodesic": false,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "label": "octant_triangle",
+                "source_rank": 0,
+                "system:index": "wave71-octant_triangle"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "3",
+            {
+              "coordinates": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  90,
+                  0
+                ]
+              ],
+              "geodesic": false,
+              "type": "LineString"
+            }
+          ],
+          [
+            "4",
+            {
+              "type": "Dictionary",
+              "value": {
+                "label": "equatorial_arc",
+                "source_rank": 1,
+                "system:index": "wave71-equatorial_arc"
+              }
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "3"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "coordinates": [
+                30,
+                0
+              ],
+              "type": "Point"
+            }
+          ],
+          [
+            "7",
+            {
+              "type": "Dictionary",
+              "value": {
+                "label": "point",
+                "source_rank": 2,
+                "system:index": "wave71-point"
+              }
+            }
+          ],
+          [
+            "8",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "6"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "7"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "9",
+            {
+              "geodesic": false,
+              "geometries": [
+                {
+                  "coordinates": [
+                    30,
+                    0
+                  ],
+                  "type": "Point"
+                },
+                {
+                  "coordinates": [
+                    [
+                      0,
+                      0
+                    ],
+                    [
+                      90,
+                      0
+                    ]
+                  ],
+                  "type": "LineString"
+                },
+                {
+                  "coordinates": [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        90,
+                        0
+                      ],
+                      [
+                        0,
+                        90
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  "type": "Polygon"
+                }
+              ],
+              "type": "GeometryCollection"
+            }
+          ],
+          [
+            "10",
+            {
+              "type": "Dictionary",
+              "value": {
+                "label": "mixed_highest_dimension",
+                "source_rank": 3,
+                "system:index": "wave71-mixed_highest_dimension"
+              }
+            }
+          ],
+          [
+            "11",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "9"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "10"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "12",
+            {
+              "coordinates": [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    6,
+                    0
+                  ],
+                  [
+                    6,
+                    4
+                  ],
+                  [
+                    0,
+                    4
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ],
+                [
+                  [
+                    1,
+                    1
+                  ],
+                  [
+                    1,
+                    2
+                  ],
+                  [
+                    3,
+                    2
+                  ],
+                  [
+                    3,
+                    1
+                  ],
+                  [
+                    1,
+                    1
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "geodesic": false,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "13",
+            {
+              "type": "Dictionary",
+              "value": {
+                "label": "planar_hole",
+                "source_rank": 4,
+                "system:index": "wave71-planar_hole"
+              }
+            }
+          ],
+          [
+            "14",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "12"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "13"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "15",
+            {
+              "geodesic": false,
+              "geometries": [
+                {
+                  "coordinates": [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        4,
+                        0
+                      ],
+                      [
+                        4,
+                        4
+                      ],
+                      [
+                        0,
+                        4
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  "geodesic": false,
+                  "type": "Polygon"
+                },
+                {
+                  "coordinates": [
+                    [
+                      [
+                        2,
+                        0
+                      ],
+                      [
+                        6,
+                        0
+                      ],
+                      [
+                        6,
+                        4
+                      ],
+                      [
+                        2,
+                        4
+                      ],
+                      [
+                        2,
+                        0
+                      ]
+                    ]
+                  ],
+                  "geodesic": false,
+                  "type": "Polygon"
+                }
+              ],
+              "type": "GeometryCollection"
+            }
+          ],
+          [
+            "16",
+            {
+              "type": "Dictionary",
+              "value": {
+                "label": "planar_overlapping_geometrycollection",
+                "source_rank": 5,
+                "system:index": "wave71-planar_overlapping_geometrycollection"
+              }
+            }
+          ],
+          [
+            "17",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "15"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "16"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "18",
+            [
+              {
+                "type": "ValueRef",
+                "value": "2"
+              },
+              {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              {
+                "type": "ValueRef",
+                "value": "11"
+              },
+              {
+                "type": "ValueRef",
+                "value": "14"
+              },
+              {
+                "type": "ValueRef",
+                "value": "17"
+              }
+            ]
+          ],
+          [
+            "19",
+            {
+              "arguments": {
+                "features": {
+                  "type": "ValueRef",
+                  "value": "18"
+                }
+              },
+              "functionName": "Collection",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "20",
+            {
+              "arguments": {
+                "crs": "EPSG:4326"
+              },
+              "functionName": "Projection",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "21",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "20"
+                }
+              },
+              "functionName": "Feature.centroid",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "22",
+            {
+              "arguments": {
+                "element": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                }
+              },
+              "functionName": "Feature.id",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "23",
+            {
+              "arguments": {
+                "key": "system:index",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "21"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "22"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "24",
+            {
+              "arguments": {
+                "key": "feature_id",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "23"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "22"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "25",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                }
+              },
+              "functionName": "Feature.geometry",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "26",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "25"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "20"
+                }
+              },
+              "functionName": "Geometry.area",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "27",
+            {
+              "arguments": {
+                "key": "geometry_area_epsg4326",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "24"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "26"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "28",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "20"
+                }
+              },
+              "functionName": "Feature.area",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "29",
+            {
+              "arguments": {
+                "key": "feature_area_epsg4326",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "27"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "28"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "30",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "25"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "20"
+                }
+              },
+              "functionName": "Geometry.length",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "31",
+            {
+              "arguments": {
+                "key": "geometry_length_epsg4326",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "29"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "30"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "32",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "20"
+                }
+              },
+              "functionName": "Feature.length",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "33",
+            {
+              "arguments": {
+                "key": "feature_length_epsg4326",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "31"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "32"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "34",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "25"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "20"
+                }
+              },
+              "functionName": "Geometry.perimeter",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "35",
+            {
+              "arguments": {
+                "key": "geometry_perimeter_epsg4326",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "33"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "34"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "36",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "20"
+                }
+              },
+              "functionName": "Feature.perimeter",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "37",
+            {
+              "arguments": {
+                "key": "feature_perimeter_epsg4326",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "35"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "36"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "38",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "25"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "20"
+                }
+              },
+              "functionName": "Geometry.centroid",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "39",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "38"
+                }
+              },
+              "functionName": "Geometry.coordinates",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "40",
+            {
+              "arguments": {
+                "key": "geometry_centroid_epsg4326",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "37"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "39"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "41",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ValueRef",
+                  "value": "21"
+                }
+              },
+              "functionName": "Feature.geometry",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "42",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "41"
+                }
+              },
+              "functionName": "Geometry.coordinates",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "43",
+            {
+              "arguments": {
+                "key": "feature_centroid_epsg4326",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "40"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "42"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "44",
+            {
+              "argumentNames": [
+                "_MAPPING_VAR_0_0"
+              ],
+              "body": {
+                "type": "ValueRef",
+                "value": "43"
+              },
+              "type": "Function"
+            }
+          ],
+          [
+            "45",
+            {
+              "arguments": {
+                "baseAlgorithm": {
+                  "type": "ValueRef",
+                  "value": "44"
+                },
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "19"
+                }
+              },
+              "functionName": "Collection.map",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "45"
+        }
+      }
+    },
+    "planar_multipolygon_full6": {
+      "accepted": false,
+      "canonical_wire_bytes": 6958,
+      "canonical_wire_sha256": "2867f0264ec499d3f8a040dbbd114f317c7aefa5bedf88c97a300310a70b7d4e",
+      "config": {
+        "csv_selectors": [
+          "system:index",
+          "feature_id",
+          "label",
+          "source_rank",
+          "geometry_area_epsg4326",
+          "feature_area_epsg4326",
+          "geometry_length_epsg4326",
+          "feature_length_epsg4326",
+          "geometry_perimeter_epsg4326",
+          "feature_perimeter_epsg4326",
+          "geometry_centroid_epsg4326",
+          "feature_centroid_epsg4326",
+          ".geo"
+        ],
+        "description": "Wave71 measures planar EPSG4326 v2",
+        "geometry_edge_model": "Every edge-bearing input receives an explicit geodesic:false flag; this preserves the coordinate path and does not relabel a default spherical edge.",
+        "input_features": [
+          "octant_triangle",
+          "equatorial_arc",
+          "point",
+          "mixed_highest_dimension",
+          "planar_hole",
+          "planar_overlapping_multipolygon"
+        ],
+        "map_behavior": "FeatureCollection.map computes only explicit EPSG:4326 Geometry/Feature area, length, perimeter and centroid. It returns the actual projected Feature centroid with computed properties so the physical CSV .geo and original identity/properties are read back.",
+        "rows": 6
+      },
+      "error": "UnsupportedEEError: Geometry decoding exceeds the shared 50000-step compilation work budget",
+      "expected_rows": [
+        {
+          "centroid": [
+            30.0,
+            30.0
+          ],
+          "fraction_area": "4050",
+          "id": "wave71-octant_triangle",
+          "metrics": {
+            "area": 4050.0,
+            "length": 0.0,
+            "perimeter": 307.27922061357856
+          },
+          "name": "octant_triangle",
+          "source_rank": 0
+        },
+        {
+          "centroid": [
+            45.0,
+            0.0
+          ],
+          "fraction_area": "0",
+          "id": "wave71-equatorial_arc",
+          "metrics": {
+            "area": 0.0,
+            "length": 90.0,
+            "perimeter": 0.0
+          },
+          "name": "equatorial_arc",
+          "source_rank": 1
+        },
+        {
+          "centroid": [
+            30.0,
+            0.0
+          ],
+          "fraction_area": "0",
+          "id": "wave71-point",
+          "metrics": {
+            "area": 0.0,
+            "length": 0.0,
+            "perimeter": 0.0
+          },
+          "name": "point",
+          "source_rank": 2
+        },
+        {
+          "centroid": [
+            30.0,
+            30.0
+          ],
+          "fraction_area": "4050",
+          "id": "wave71-mixed_highest_dimension",
+          "metrics": {
+            "area": 4050.0,
+            "length": 90.0,
+            "perimeter": 307.27922061357856
+          },
+          "name": "mixed_highest_dimension",
+          "source_rank": 3
+        },
+        {
+          "centroid": [
+            3.090909090909091,
+            2.0454545454545454
+          ],
+          "fraction_area": "22",
+          "id": "wave71-planar_hole",
+          "metrics": {
+            "area": 22.0,
+            "length": 0.0,
+            "perimeter": 26.0
+          },
+          "name": "planar_hole",
+          "source_rank": 4
+        },
+        {
+          "centroid": [
+            3.0,
+            2.0
+          ],
+          "fraction_area": "32",
+          "id": "wave71-planar_overlapping_multipolygon",
+          "metrics": {
+            "area": 32.0,
+            "length": 0.0,
+            "perimeter": 32.0
+          },
+          "name": "planar_overlapping_multipolygon",
+          "source_rank": 5
+        }
+      ],
+      "id": "planar_multipolygon_full6",
+      "route": "explicit_epsg4326_planar",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    90,
+                    0
+                  ],
+                  [
+                    0,
+                    90
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]
+              ],
+              "geodesic": false,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "label": "octant_triangle",
+                "source_rank": 0,
+                "system:index": "wave71-octant_triangle"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "3",
+            {
+              "coordinates": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  90,
+                  0
+                ]
+              ],
+              "geodesic": false,
+              "type": "LineString"
+            }
+          ],
+          [
+            "4",
+            {
+              "type": "Dictionary",
+              "value": {
+                "label": "equatorial_arc",
+                "source_rank": 1,
+                "system:index": "wave71-equatorial_arc"
+              }
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "3"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "coordinates": [
+                30,
+                0
+              ],
+              "type": "Point"
+            }
+          ],
+          [
+            "7",
+            {
+              "type": "Dictionary",
+              "value": {
+                "label": "point",
+                "source_rank": 2,
+                "system:index": "wave71-point"
+              }
+            }
+          ],
+          [
+            "8",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "6"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "7"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "9",
+            {
+              "geodesic": false,
+              "geometries": [
+                {
+                  "coordinates": [
+                    30,
+                    0
+                  ],
+                  "type": "Point"
+                },
+                {
+                  "coordinates": [
+                    [
+                      0,
+                      0
+                    ],
+                    [
+                      90,
+                      0
+                    ]
+                  ],
+                  "type": "LineString"
+                },
+                {
+                  "coordinates": [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        90,
+                        0
+                      ],
+                      [
+                        0,
+                        90
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  "type": "Polygon"
+                }
+              ],
+              "type": "GeometryCollection"
+            }
+          ],
+          [
+            "10",
+            {
+              "type": "Dictionary",
+              "value": {
+                "label": "mixed_highest_dimension",
+                "source_rank": 3,
+                "system:index": "wave71-mixed_highest_dimension"
+              }
+            }
+          ],
+          [
+            "11",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "9"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "10"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "12",
+            {
+              "coordinates": [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    6,
+                    0
+                  ],
+                  [
+                    6,
+                    4
+                  ],
+                  [
+                    0,
+                    4
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ],
+                [
+                  [
+                    1,
+                    1
+                  ],
+                  [
+                    1,
+                    2
+                  ],
+                  [
+                    3,
+                    2
+                  ],
+                  [
+                    3,
+                    1
+                  ],
+                  [
+                    1,
+                    1
+                  ]
+                ]
+              ],
+              "evenOdd": true,
+              "geodesic": false,
+              "type": "Polygon"
+            }
+          ],
+          [
+            "13",
+            {
+              "type": "Dictionary",
+              "value": {
+                "label": "planar_hole",
+                "source_rank": 4,
+                "system:index": "wave71-planar_hole"
+              }
+            }
+          ],
+          [
+            "14",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "12"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "13"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "15",
+            {
+              "coordinates": [
+                [
+                  [
+                    [
+                      0,
+                      0
+                    ],
+                    [
+                      4,
+                      0
+                    ],
+                    [
+                      4,
+                      4
+                    ],
+                    [
+                      0,
+                      4
+                    ],
+                    [
+                      0,
+                      0
+                    ]
+                  ]
+                ],
+                [
+                  [
+                    [
+                      2,
+                      0
+                    ],
+                    [
+                      6,
+                      0
+                    ],
+                    [
+                      6,
+                      4
+                    ],
+                    [
+                      2,
+                      4
+                    ],
+                    [
+                      2,
+                      0
+                    ]
+                  ]
+                ]
+              ],
+              "geodesic": false,
+              "type": "MultiPolygon"
+            }
+          ],
+          [
+            "16",
+            {
+              "type": "Dictionary",
+              "value": {
+                "label": "planar_overlapping_multipolygon",
+                "source_rank": 5,
+                "system:index": "wave71-planar_overlapping_multipolygon"
+              }
+            }
+          ],
+          [
+            "17",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "15"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "16"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "18",
+            [
+              {
+                "type": "ValueRef",
+                "value": "2"
+              },
+              {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              {
+                "type": "ValueRef",
+                "value": "11"
+              },
+              {
+                "type": "ValueRef",
+                "value": "14"
+              },
+              {
+                "type": "ValueRef",
+                "value": "17"
+              }
+            ]
+          ],
+          [
+            "19",
+            {
+              "arguments": {
+                "features": {
+                  "type": "ValueRef",
+                  "value": "18"
+                }
+              },
+              "functionName": "Collection",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "20",
+            {
+              "arguments": {
+                "crs": "EPSG:4326"
+              },
+              "functionName": "Projection",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "21",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "20"
+                }
+              },
+              "functionName": "Feature.centroid",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "22",
+            {
+              "arguments": {
+                "element": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                }
+              },
+              "functionName": "Feature.id",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "23",
+            {
+              "arguments": {
+                "key": "system:index",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "21"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "22"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "24",
+            {
+              "arguments": {
+                "key": "feature_id",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "23"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "22"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "25",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                }
+              },
+              "functionName": "Feature.geometry",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "26",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "25"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "20"
+                }
+              },
+              "functionName": "Geometry.area",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "27",
+            {
+              "arguments": {
+                "key": "geometry_area_epsg4326",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "24"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "26"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "28",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "20"
+                }
+              },
+              "functionName": "Feature.area",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "29",
+            {
+              "arguments": {
+                "key": "feature_area_epsg4326",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "27"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "28"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "30",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "25"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "20"
+                }
+              },
+              "functionName": "Geometry.length",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "31",
+            {
+              "arguments": {
+                "key": "geometry_length_epsg4326",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "29"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "30"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "32",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "20"
+                }
+              },
+              "functionName": "Feature.length",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "33",
+            {
+              "arguments": {
+                "key": "feature_length_epsg4326",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "31"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "32"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "34",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "25"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "20"
+                }
+              },
+              "functionName": "Geometry.perimeter",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "35",
+            {
+              "arguments": {
+                "key": "geometry_perimeter_epsg4326",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "33"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "34"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "36",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "20"
+                }
+              },
+              "functionName": "Feature.perimeter",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "37",
+            {
+              "arguments": {
+                "key": "feature_perimeter_epsg4326",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "35"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "36"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "38",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "25"
+                },
+                "proj": {
+                  "type": "ValueRef",
+                  "value": "20"
+                }
+              },
+              "functionName": "Geometry.centroid",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "39",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "38"
+                }
+              },
+              "functionName": "Geometry.coordinates",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "40",
+            {
+              "arguments": {
+                "key": "geometry_centroid_epsg4326",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "37"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "39"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "41",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ValueRef",
+                  "value": "21"
+                }
+              },
+              "functionName": "Feature.geometry",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "42",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "41"
+                }
+              },
+              "functionName": "Geometry.coordinates",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "43",
+            {
+              "arguments": {
+                "key": "feature_centroid_epsg4326",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "40"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "42"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "44",
+            {
+              "argumentNames": [
+                "_MAPPING_VAR_0_0"
+              ],
+              "body": {
+                "type": "ValueRef",
+                "value": "43"
+              },
+              "type": "Function"
+            }
+          ],
+          [
+            "45",
+            {
+              "arguments": {
+                "baseAlgorithm": {
+                  "type": "ValueRef",
+                  "value": "44"
+                },
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "19"
+                }
+              },
+              "functionName": "Collection.map",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "45"
+        }
+      }
+    },
+    "wgs84_full4": {
+      "accepted": false,
+      "canonical_wire_bytes": 6679,
+      "canonical_wire_sha256": "663b9d0c9d551975136dfc91b073e2a065e7226acbfaee60247ccaf1f5691422",
+      "config": {
+        "csv_selectors": [
+          "system:index",
+          "feature_id",
+          "label",
+          "source_rank",
+          "geometry_area_default",
+          "feature_area_default",
+          "geometry_area_null",
+          "feature_area_null",
+          "geometry_length_default",
+          "feature_length_default",
+          "geometry_length_null",
+          "feature_length_null",
+          "geometry_perimeter_default",
+          "feature_perimeter_default",
+          "geometry_perimeter_null",
+          "feature_perimeter_null",
+          "geometry_centroid_default",
+          "feature_centroid_default",
+          ".geo"
+        ],
+        "description": "Wave71 measures default WGS84 v2",
+        "geometry_edge_model": "default geodesic spherical great-circle edges; no coordinate transform",
+        "input_features": [
+          "octant_triangle",
+          "equatorial_arc",
+          "point",
+          "mixed_highest_dimension"
+        ],
+        "map_behavior": "FeatureCollection.map computes Geometry and Feature area/length/perimeter with omitted and explicit-null projection forms, plus default Geometry/Feature centroid coordinates. It returns the actual Feature centroid with computed properties so the physical CSV .geo and original identity/properties are read back.",
+        "rows": 4
+      },
+      "error": "UnsupportedEEError: Feature.area WGS84 native measure operation exceeds the shared 50000-step compilation work budget",
+      "expected_rows": [
+        {
+          "centroid": [
+            45.0,
+            35.264389682754654
+          ],
+          "control_ids": {
+            "area": "octant-area",
+            "perimeter": "octant-perimeter"
+          },
+          "id": "wave71-octant_triangle",
+          "metrics": {
+            "area": 63758202715511.06,
+            "length": 0.0,
+            "perimeter": 30022685.630020067
+          },
+          "name": "octant_triangle",
+          "source_rank": 0
+        },
+        {
+          "centroid": [
+            45.0,
+            0.0
+          ],
+          "control_ids": {
+            "length": "equator-quarter"
+          },
+          "id": "wave71-equatorial_arc",
+          "metrics": {
+            "area": 0.0,
+            "length": 10018754.171394622,
+            "perimeter": 0.0
+          },
+          "name": "equatorial_arc",
+          "source_rank": 1
+        },
+        {
+          "centroid": [
+            29.999999999999996,
+            0.0
+          ],
+          "control_ids": {},
+          "id": "wave71-point",
+          "metrics": {
+            "area": 0.0,
+            "length": 0.0,
+            "perimeter": 0.0
+          },
+          "name": "point",
+          "source_rank": 2
+        },
+        {
+          "centroid": [
+            45.0,
+            35.264389682754654
+          ],
+          "control_ids": {
+            "area": "octant-area",
+            "length": "equator-quarter",
+            "perimeter": "octant-perimeter"
+          },
+          "id": "wave71-mixed_highest_dimension",
+          "metrics": {
+            "area": 63758202715511.06,
+            "length": 10018754.171394622,
+            "perimeter": 30022685.630020067
+          },
+          "name": "mixed_highest_dimension",
+          "source_rank": 3
+        }
+      ],
+      "id": "wgs84_full4",
+      "route": "default_wgs84",
+      "wire": {
+        "scope": [
+          [
+            "0",
+            {
+              "coordinates": [
+                [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    90,
+                    0
+                  ],
+                  [
+                    0,
+                    90
+                  ],
+                  [
+                    0,
+                    0
+                  ]
+                ]
+              ],
+              "type": "Polygon"
+            }
+          ],
+          [
+            "1",
+            {
+              "type": "Dictionary",
+              "value": {
+                "label": "octant_triangle",
+                "source_rank": 0,
+                "system:index": "wave71-octant_triangle"
+              }
+            }
+          ],
+          [
+            "2",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "0"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "1"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "3",
+            {
+              "coordinates": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  90,
+                  0
+                ]
+              ],
+              "type": "LineString"
+            }
+          ],
+          [
+            "4",
+            {
+              "type": "Dictionary",
+              "value": {
+                "label": "equatorial_arc",
+                "source_rank": 1,
+                "system:index": "wave71-equatorial_arc"
+              }
+            }
+          ],
+          [
+            "5",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "3"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "4"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "6",
+            {
+              "coordinates": [
+                30,
+                0
+              ],
+              "type": "Point"
+            }
+          ],
+          [
+            "7",
+            {
+              "type": "Dictionary",
+              "value": {
+                "label": "point",
+                "source_rank": 2,
+                "system:index": "wave71-point"
+              }
+            }
+          ],
+          [
+            "8",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "6"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "7"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "9",
+            {
+              "geometries": [
+                {
+                  "coordinates": [
+                    30,
+                    0
+                  ],
+                  "type": "Point"
+                },
+                {
+                  "coordinates": [
+                    [
+                      0,
+                      0
+                    ],
+                    [
+                      90,
+                      0
+                    ]
+                  ],
+                  "type": "LineString"
+                },
+                {
+                  "coordinates": [
+                    [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        90,
+                        0
+                      ],
+                      [
+                        0,
+                        90
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  ],
+                  "type": "Polygon"
+                }
+              ],
+              "type": "GeometryCollection"
+            }
+          ],
+          [
+            "10",
+            {
+              "type": "Dictionary",
+              "value": {
+                "label": "mixed_highest_dimension",
+                "source_rank": 3,
+                "system:index": "wave71-mixed_highest_dimension"
+              }
+            }
+          ],
+          [
+            "11",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "9"
+                },
+                "metadata": {
+                  "type": "ValueRef",
+                  "value": "10"
+                }
+              },
+              "functionName": "Feature",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "12",
+            [
+              {
+                "type": "ValueRef",
+                "value": "2"
+              },
+              {
+                "type": "ValueRef",
+                "value": "5"
+              },
+              {
+                "type": "ValueRef",
+                "value": "8"
+              },
+              {
+                "type": "ValueRef",
+                "value": "11"
+              }
+            ]
+          ],
+          [
+            "13",
+            {
+              "arguments": {
+                "features": {
+                  "type": "ValueRef",
+                  "value": "12"
+                }
+              },
+              "functionName": "Collection",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "14",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                }
+              },
+              "functionName": "Feature.centroid",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "15",
+            {
+              "arguments": {
+                "element": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                }
+              },
+              "functionName": "Feature.id",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "16",
+            {
+              "arguments": {
+                "key": "system:index",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "14"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "15"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "17",
+            {
+              "arguments": {
+                "key": "feature_id",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "16"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "15"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "18",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                }
+              },
+              "functionName": "Feature.geometry",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "19",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "18"
+                }
+              },
+              "functionName": "Geometry.area",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "20",
+            {
+              "arguments": {
+                "key": "geometry_area_default",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "17"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "19"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "21",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                }
+              },
+              "functionName": "Feature.area",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "22",
+            {
+              "arguments": {
+                "key": "feature_area_default",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "20"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "21"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "23",
+            {
+              "arguments": {
+                "key": "geometry_area_null",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "22"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "19"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "24",
+            {
+              "arguments": {
+                "key": "feature_area_null",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "23"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "21"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "25",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "18"
+                }
+              },
+              "functionName": "Geometry.length",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "26",
+            {
+              "arguments": {
+                "key": "geometry_length_default",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "24"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "25"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "27",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                }
+              },
+              "functionName": "Feature.length",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "28",
+            {
+              "arguments": {
+                "key": "feature_length_default",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "26"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "27"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "29",
+            {
+              "arguments": {
+                "key": "geometry_length_null",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "28"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "25"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "30",
+            {
+              "arguments": {
+                "key": "feature_length_null",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "29"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "27"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "31",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "18"
+                }
+              },
+              "functionName": "Geometry.perimeter",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "32",
+            {
+              "arguments": {
+                "key": "geometry_perimeter_default",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "30"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "31"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "33",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ArgumentRef",
+                  "value": "_MAPPING_VAR_0_0"
+                }
+              },
+              "functionName": "Feature.perimeter",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "34",
+            {
+              "arguments": {
+                "key": "feature_perimeter_default",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "32"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "33"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "35",
+            {
+              "arguments": {
+                "key": "geometry_perimeter_null",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "34"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "31"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "36",
+            {
+              "arguments": {
+                "key": "feature_perimeter_null",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "35"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "33"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "37",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "18"
+                }
+              },
+              "functionName": "Geometry.centroid",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "38",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "37"
+                }
+              },
+              "functionName": "Geometry.coordinates",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "39",
+            {
+              "arguments": {
+                "key": "geometry_centroid_default",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "36"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "38"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "40",
+            {
+              "arguments": {
+                "feature": {
+                  "type": "ValueRef",
+                  "value": "14"
+                }
+              },
+              "functionName": "Feature.geometry",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "41",
+            {
+              "arguments": {
+                "geometry": {
+                  "type": "ValueRef",
+                  "value": "40"
+                }
+              },
+              "functionName": "Geometry.coordinates",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "42",
+            {
+              "arguments": {
+                "key": "feature_centroid_default",
+                "object": {
+                  "type": "ValueRef",
+                  "value": "39"
+                },
+                "value": {
+                  "type": "ValueRef",
+                  "value": "41"
+                }
+              },
+              "functionName": "Element.set",
+              "type": "Invocation"
+            }
+          ],
+          [
+            "43",
+            {
+              "argumentNames": [
+                "_MAPPING_VAR_0_0"
+              ],
+              "body": {
+                "type": "ValueRef",
+                "value": "42"
+              },
+              "type": "Function"
+            }
+          ],
+          [
+            "44",
+            {
+              "arguments": {
+                "baseAlgorithm": {
+                  "type": "ValueRef",
+                  "value": "43"
+                },
+                "collection": {
+                  "type": "ValueRef",
+                  "value": "13"
+                }
+              },
+              "functionName": "Collection.map",
+              "type": "Invocation"
+            }
+          ]
+        ],
+        "type": "CompoundValue",
+        "value": {
+          "type": "ValueRef",
+          "value": "44"
+        }
+      }
+    }
+  }
+}

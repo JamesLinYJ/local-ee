@@ -1,4 +1,4 @@
-"""Preserved full-formula gap and targeted unchanged-MultiPolygon CSV evidence."""
+"""Original full-formula references and unchanged-MultiPolygon CSV evidence."""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -15,9 +15,11 @@ from ee_multipolygon_workflow import export_and_read
 from gee.ee_translate import UnsupportedEEError, compile_expression
 from scripts.ee_python_api.offline import OfflineGuard
 from table_export_support import install
+from ee_measure_reuse_reference import assert_full_value
+from ee_measure_reuse_sdk import fixture as reuse_fixture
 
 
-def test_original_sixrow_planar_formula_keeps_exact_wire_and_visible_budget_gap():
+def test_original_sixrow_planar_formula_keeps_exact_wire_and_all_reference_values():
     data = fixture()
     original = data["original_sixrow_planar_formula"]
     with OfflineGuard() as guard:
@@ -35,8 +37,11 @@ def test_original_sixrow_planar_formula_keeps_exact_wire_and_visible_budget_gap(
             observed.update(accepted=False, error=type(error).__name__ + ": " + str(error))
         observed["offline_guard"] = guard.evidence()
         receipt("original-sixrow-current", observed)
-        assert not observed["accepted"], "If full formula becomes supported, verify all six rows"
-        assert "shared 50000-step compilation work budget" in observed["error"]
+        assert observed["accepted"], observed.get("error")
+        frozen = reuse_fixture()
+        record = frozen["workflows"]["planar_multipolygon_full6"]
+        assert wire == record["wire"]
+        assert_full_value(frozen, record, observed["value"])
     assert guard.evidence()["attempt_count"] == 0
 
 

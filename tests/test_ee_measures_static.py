@@ -25,6 +25,8 @@ from ee_measures_workflow import (
 )
 from gee.ee_translate import UnsupportedEEError, compile_expression
 from scripts.ee_python_api.offline import OfflineGuard
+from ee_measure_reuse_reference import assert_full_value
+from ee_measure_reuse_sdk import fixture as reuse_fixture
 
 
 def _encoded(ee, value):
@@ -207,7 +209,7 @@ def test_physical_workflow_v2_wires_and_v3_v4_formulas_serialize_offline():
     assert guard.evidence()["attempt_count"] == 0
 
 
-def test_preserved_v2_multipolygon_scalar_passes_but_full_formula_exceeds_budget():
+def test_preserved_v2_multipolygon_scalar_and_full_formula_match_original_references():
     fixture = load_fixture()
     addendum = load_geometrycollection_workflow_fixture(fixture)[
         "geometrycollection_addendum"
@@ -236,13 +238,15 @@ def test_preserved_v2_multipolygon_scalar_passes_but_full_formula_exceeds_budget
         projection = ee.Projection("EPSG:4326")
         expression = _encoded(ee, geometry.area(proj=projection))
         # Wave72 preserves overlapping components through the official decoder.
-        # The original six-row paired formula still exceeds the unchanged cap.
+        # Wave73 also preserves every column of the original six-row formula.
         expected = planar_reference(
             fixture["cases"]["planar_overlapping_multipolygon"]["geometry"]
         )["area_square_degrees"]
         assert compile_expression(expression, [], {})["value"] == expected == 32
-        with pytest.raises(UnsupportedEEError, match="shared 50000"):
-            compile_expression(wire, [], {})
+        frozen = reuse_fixture()
+        original = frozen["workflows"]["planar_multipolygon_full6"]
+        assert wire == original["wire"]
+        assert_full_value(frozen, original, compile_expression(wire, [], {})["value"])
     assert guard.evidence()["attempt_count"] == 0
 
 

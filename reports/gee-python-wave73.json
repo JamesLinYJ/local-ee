@@ -1,0 +1,308 @@
+{
+  "schema": "local-ee-gee-python-wave73/v1",
+  "date": "2026-10-25",
+  "base_commit": "e224ab45486cac9a7ed899d80cdfdc77163b0eb7",
+  "scope": "Preserve original full Geometry/Feature measurement formulas through bounded request-local content-proven reuse; Python-first with both official clients.",
+  "goal_status": "active; no complete GEE or production readiness claim",
+  "models": {
+    "implementation_and_contract": "temporary gpt-6-astra/max per user",
+    "independent_scoped_review": "gpt-6.1-sol/max"
+  },
+  "coverage": {
+    "entry_names": 720,
+    "pinned_names": 991,
+    "entry_name_percentage": 72.65,
+    "new_names": 0,
+    "remaining_names": 271,
+    "semantic_completeness_percentage": null,
+    "google_equivalence_measured": false
+  },
+  "changes": [
+    "Fresh schema-bounded geometry snapshots preserve exact types, signed zero, public option presence and nested GeometryValue metadata; no mutable marker or ValueRef-only authority.",
+    "Cache successful component validation separately from selected scalar/centroid results; strict aggregate decoders never consume component proofs. Native attestation remains checked on applicable hits.",
+    "Feature IDs only locate at most four candidates; fresh full typed content comparison precedes reuse of successful public-size and copy-plan facts. Returned metadata and centroid points remain owned.",
+    "Both caches share 64 entries and conservative 1MB retained-storage accounting. Snapshot, hash, comparison, normalized storage and output copies are charged before work under unchanged guards."
+  ],
+  "original_workflows": {
+    "actual_verified_local_S2": true,
+    "archived_wire_order_work": {
+      "planar_geometrycollection_full6": 49444,
+      "planar_multipolygon_full6": 45588,
+      "wgs84_full4": 42700
+    },
+    "fresh_SDK_order_work_owner_reported": {
+      "planar_geometrycollection_full6": 49708,
+      "planar_multipolygon_full6": 45852,
+      "wgs84_full4": 42876
+    },
+    "ordering_note": "Preserved canonical-record dictionary iteration and freshSDK dictionary evaluation order yield slightly different work totals; both below50000. Counts reported separately; source not changed to align them.",
+    "path": "audit/gee-python-wave73/review/exact-full-freeze1-raw.json",
+    "sha256": "e5f67b6ced0119359ace21f583f281aa61d6b1b6f1bbddce19a09be5fc801356",
+    "wire_sha256": {
+      "planar_geometrycollection_full6": "c85c56de461bf9b89fdf9c39dd5aff9f54e4e74b70e5f0ac1582302d76766ffb",
+      "planar_multipolygon_full6": "2867f0264ec499d3f8a040dbbd114f317c7aefa5bedf88c97a300310a70b7d4e",
+      "wgs84_full4": "663b9d0c9d551975136dfc91b073e2a065e7226acbfaee60247ccaf1f5691422"
+    }
+  },
+  "original_python_javascript_and_worker": {
+    "failed": 0,
+    "javascript_network_attempts": 0,
+    "passed": 10,
+    "path": "audit/gee-python-wave73/workflow/source-freeze-1/receipt.json",
+    "python_network_attempts": 0,
+    "sha256": "5f09d7ffc15a7d1475f5b33168c422e67b25b42bc0daa1822a3e6c673129192e",
+    "source_stable": true
+  },
+  "original_physical_csvs": [
+    {
+      "bytes": 1412,
+      "columns": 13,
+      "csv": "audit/gee-python-wave73/workflow/source-freeze-1/planar_geometrycollection_full6.csv",
+      "rows": 6,
+      "sha256": "5f4dae896fa8781bda3356296af086c3c489b95719ccc5554c347ece62325c7b",
+      "workflow": "planar_geometrycollection_full6"
+    },
+    {
+      "bytes": 1394,
+      "columns": 13,
+      "csv": "audit/gee-python-wave73/workflow/source-freeze-1/planar_multipolygon_full6.csv",
+      "rows": 6,
+      "sha256": "5046edf76537644527fbe34e3c490892ef5375c7dbb1a983843478f502bd7d67",
+      "workflow": "planar_multipolygon_full6"
+    },
+    {
+      "bytes": 1575,
+      "columns": 19,
+      "csv": "audit/gee-python-wave73/workflow/source-freeze-1/wgs84_full4.csv",
+      "rows": 4,
+      "sha256": "20814fcb770828a76e95b8f7524b55e049af99a9784e04fd0d58d792fe54f5cc",
+      "workflow": "wgs84_full4"
+    }
+  ],
+  "independent_values": {
+    "comparisons": 432,
+    "limits": "Reviewer compiled archived originalPython fullwires and independently read owner saved physicalCSV. Reviewer didnot run service/worker; owner transport uses syntheticDB/queue/substitutedlauncher. Not Google/Spark/native-service acceptance.",
+    "path": "audit/gee-python-wave73/review/full-values-and-saved-CSV-freeze1.json",
+    "records": [
+      {
+        "columns": 19,
+        "id": "wgs84_full4",
+        "maximum_absolute_difference": {
+          "area": 0.015625,
+          "centroid": 7.105427357601002e-15,
+          "length": 1.862645149230957e-09,
+          "perimeter": 3.725290298461914e-09
+        },
+        "rows": 4,
+        "saved_csv_bytes": 1575,
+        "saved_csv_sha256": "20814fcb770828a76e95b8f7524b55e049af99a9784e04fd0d58d792fe54f5cc",
+        "steps": 42700,
+        "wire_sha256": "663b9d0c9d551975136dfc91b073e2a065e7226acbfaee60247ccaf1f5691422"
+      },
+      {
+        "columns": 13,
+        "id": "planar_multipolygon_full6",
+        "maximum_absolute_difference": {
+          "area": 0.0,
+          "centroid": 0.0,
+          "length": 0.0,
+          "perimeter": 0.0
+        },
+        "rows": 6,
+        "saved_csv_bytes": 1394,
+        "saved_csv_sha256": "5046edf76537644527fbe34e3c490892ef5375c7dbb1a983843478f502bd7d67",
+        "steps": 45588,
+        "wire_sha256": "2867f0264ec499d3f8a040dbbd114f317c7aefa5bedf88c97a300310a70b7d4e"
+      },
+      {
+        "columns": 13,
+        "id": "planar_geometrycollection_full6",
+        "maximum_absolute_difference": {
+          "area": 0.0,
+          "centroid": 0.0,
+          "length": 0.0,
+          "perimeter": 0.0
+        },
+        "rows": 6,
+        "saved_csv_bytes": 1412,
+        "saved_csv_sha256": "5f4dae896fa8781bda3356296af086c3c489b95719ccc5554c347ece62325c7b",
+        "steps": 49444,
+        "wire_sha256": "c85c56de461bf9b89fdf9c39dd5aff9f54e4e74b70e5f0ac1582302d76766ffb"
+      }
+    ],
+    "reference_policy": "Independent Fraction shoelace/moments/componentweights/segmentlengths for planar; old frozen DecimalWGS andS2centroid controls for default. Every selected newfixture WGS record exactly equals archived original; all23oldcontrols preserved. No tolerance change.",
+    "rows": 16,
+    "sha256": "8fe2cf56d43881cdb2a3c591f073b995693d1de85cde9c80e9c8b5a53a151c8d"
+  },
+  "verification": {
+    "full_result": "7125 passed, 27 skipped, 53 warnings in 83.48s (0:01:23)",
+    "full_receipt": {
+      "path": "audit/gee-python-wave73/root/full-1.json",
+      "sha256": "90b6a9869df9c551385b60ffc24349fae82e8364491b6ba695e551efb1947289"
+    },
+    "source_files": 1240,
+    "source_stable": true,
+    "compiler_focus": "342 passed, 1 warning in3.28s; corrected filename invocation, original0-test typo log retained",
+    "owner_contract": "13 passed, 0 skipped; six client/value, three physical full CSV and separate nested-metadata controls",
+    "root_metadata_focus": "117 passed, 1 warning in1.70s",
+    "root_old_test_maintenance_focus": "14 passed, 1 warning in2.02s",
+    "independent_review": {
+      "path": "audit/gee-python-wave73/review/scoped-review-final.json",
+      "sha256": "2551b636220c6599b37391092e97239bc5b139f9b55ab54a9f3ca281019a919d"
+    },
+    "independent_conclusion": "No unresolved scoped blocker in frozen geometry/Feature reuse. Exact3original fullformulas accept under unchanged50000; all16rows/everymetric/centroid/identity/CSVfield checked. Fullrepository regression remains parent-owned.",
+    "independent_controls": [
+      {
+        "failed": 0,
+        "passed": 29,
+        "path": "audit/gee-python-wave73/review/adversarial-freeze1.json",
+        "sha256": "db5bdd73d3bb2aabbe20fc5f12f2407352cdd9248cc5a53dbbbcf83cc7d415e8"
+      },
+      {
+        "failed": 0,
+        "passed": 16,
+        "path": "audit/gee-python-wave73/review/cache-addendum-freeze1.json",
+        "sha256": "77d3fc1d2a861c4f74d0c741fc50eed5422e20e37eb0f23107b374a23d22dc3d"
+      },
+      {
+        "failed": 0,
+        "passed": 22,
+        "path": "audit/gee-python-wave73/review/metadata-freeze1.json",
+        "sha256": "aee36c0dbdf60fee2d23e8a43a6d43780f5aca9ea1374b492bcf690aeae4ba39"
+      },
+      {
+        "failed": 0,
+        "passed": 65,
+        "path": "audit/gee-python-wave73/review/consumer-regression-freeze1.json",
+        "sha256": "f70e2a06d4361d6f5c7e1990ae1afc145e746640b625b2e755b4a553b5bad0c2"
+      },
+      {
+        "failed": 0,
+        "passed": 13,
+        "path": "audit/gee-python-wave73/review/ledger-regression-freeze1.json",
+        "sha256": "f7ef820e8a6cecdcbe1512419e2fc83e088d236ece06a7c61587693a751eb56a"
+      }
+    ],
+    "count_policy": "29predeclared,16addendum,22metadata,65consumer,13ledger controls overlap each other/owner suites. Do not sum as uniqueAPI coverage; Wave73adds0names.",
+    "frontend": "Unchanged; exact-commit frontend CI required before protected-main publication."
+  },
+  "preserved_failures_and_fixes": [
+    {
+      "final": "Fixedschema numeric slots never recursively traverse nonscalars; independent publicmeasure/component cycle/deep/wide negatives rejectboundedly.",
+      "original": "Draft generic_freeze traversed cyclic numeric-slot payload toRecursionError atsteps21",
+      "receipt": {
+        "path": "audit/gee-python-wave73/review/draft-cache-snapshot-original.json",
+        "sha256": "2e534da532c20c2ffecfe8fab1392e5ae28030b65614caf16d2fa6891f481ea4"
+      }
+    },
+    {
+      "final": "Actual normalized storedcost used; independent store/restore amounts verified.",
+      "original": "Rawinput snapshot/copy costs omitted normalized closures/sidecars; sharedparentfinding, notdoublecounted"
+    },
+    {
+      "final": "Fused geometrytokens and complete streaming Featurecomparison remove genuine repeatedwork; all3original formulas nowaccept.",
+      "original": "Initial geometry snapshotpasses regressed planar budgets"
+    }
+  ],
+  "historical_test_maintenance": {
+    "files": {
+      "tests/test_ee_measures_static.py": {
+        "after_sha256": "890630fd1823d0817f5b9fa279dbabd45d496e8994263784fe0173ee160de04d",
+        "before_sha256": "e1411bb1cae102020852b93898c0a253e873b060e55e06a888bb1d10da101a79",
+        "snapshot": "audit/gee-python-wave73/root/test-maintenance-v1/test_ee_measures_static.py"
+      },
+      "tests/test_ee_measures_workflow.py": {
+        "after_sha256": "22aab05171d1e0e0d9cb8be2c3498764e01953dc2285eefe4cce237a77527227",
+        "before_sha256": "a2e7a7a3c1a1fd2b4e8108d03fc26d00ebc06af2f86fa7ec7b934f686f520ff2",
+        "snapshot": "audit/gee-python-wave73/root/test-maintenance-v1/test_ee_measures_workflow.py"
+      },
+      "tests/test_ee_planar_multipolygon_workflow.py": {
+        "after_sha256": "9fdde03110bb933f629bf9434107c1a3cd2b3046dc53b100bbcb2e8d5b28c38f",
+        "before_sha256": "4eb299e9e506be7484c1a667dbef39a0ce8686358852a5a3f8998e62552c99d7",
+        "snapshot": "audit/gee-python-wave73/root/test-maintenance-v1/test_ee_planar_multipolygon_workflow.py"
+      }
+    },
+    "path": "audit/gee-python-wave73/root/test-maintenance-v1/after-corrected.json",
+    "review": "Only4historical expectedbudget failures across3files become exactsamewire +alloriginal independent scalar/centroid/ID/row/column assertions. Oldcopies matchbase, oldtrackedfixtures/workflowhelper unchanged, no numeric/tolerance weakening. Initial after.json prose17correctedtoactual14; nottestrun/sourcechange.",
+    "sha256": "1510879f57b45df9bac7e697f71c3618e64bc960d278bfcdea25b0913f23dacf"
+  },
+  "budget_interpretation": {
+    "compiler_work": 50000,
+    "depth": 96,
+    "process_nodes": 500,
+    "native_tracked_memory_bytes": 67108864,
+    "policy": "Local logical-work guard; not Google quota, calibrated seconds, CPU instruction count or process RSS. No limit changed to pass these formulas. Production calibration/configuration remains future work.",
+    "wall_time_measurement": {
+      "scope": "local compile_expression of three original frozen wires; includes static geometry evaluation and attested S2; no raster batch or services",
+      "measurements": [
+        {
+          "workflow": "planar_geometrycollection_full6",
+          "first_ms": 120.114,
+          "subsequent_ms": [
+            33.11,
+            34.836,
+            36.968,
+            37.528,
+            36.185
+          ],
+          "median_subsequent_ms": 36.185
+        },
+        {
+          "workflow": "planar_multipolygon_full6",
+          "first_ms": 36.297,
+          "subsequent_ms": [
+            34.405,
+            32.281,
+            32.179,
+            31.37,
+            31.952
+          ],
+          "median_subsequent_ms": 32.179
+        },
+        {
+          "workflow": "wgs84_full4",
+          "first_ms": 108.69,
+          "subsequent_ms": [
+            107.634,
+            112.133,
+            108.676,
+            110.231,
+            107.531
+          ],
+          "median_subsequent_ms": 108.676
+        }
+      ],
+      "offline_guard": {
+        "attempt_count": 0,
+        "attempts_by_operation": {},
+        "instrumented_operations": [
+          "local_transport.request",
+          "socket.create_connection",
+          "socket.getaddrinfo",
+          "socket.gethostbyaddr",
+          "socket.gethostbyname",
+          "socket.gethostbyname_ex",
+          "socket.socket.connect",
+          "socket.socket.connect_ex",
+          "socket.socket.sendmsg",
+          "socket.socket.sendto"
+        ],
+        "mode": "deny_and_count_python_network_and_local_transport_entry_points",
+        "scope": "Trusted in-process SDK probes only; not packet capture or kernel isolation"
+      }
+    }
+  },
+  "unchanged_native_artifact": {
+    "library_sha256": "69d5da02e25881826af4fae6f33ce96f6b4cd345b21da88bdbab9e17b86b79d0",
+    "manifest_sha256": "fe8ea4830f93a07428f7d4da5a579d90868c960fe088dd485c67d1ba136d8ec1",
+    "reviewer_built_or_changed": false
+  },
+  "evidence_boundaries": [
+    "Original wires, formulas, rows, columns, reference values and tolerances retained. JS WGS84 raw wire has explicit nulls and a distinct pinned hash; it is independently compiled, not only normalized for comparison.",
+    "Worker CSV evidence uses synthetic in-memory database/queue and a substituted NativeTask launcher. It does not establish HTTP, real sandbox, full Spark, deployed service, private-data or Google same-data acceptance.",
+    "No dependency locks, native library, running service, accounts or research data changed by Wave73. Later requested Aliyun deployment has separate scope and receipts.",
+    "Known three strict S2 binary64 incidence/constructive-roundtrip differences remain; distance, buffer, general projection, broader raster consumers and other tracked gaps remain.",
+    "Historical draft regressions, original budget failures and rejected calibration runs are retained, not overwritten with later success. Existing test expectation changes are not separate coverage gains."
+  ],
+  "publication": "Exact commit must pass python/frontend CI, then normal fast-forward to protected main. Final publication SHA/readback is recorded separately in ignored audit/gee-python-wave73/root/publication-final.json."
+}

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from .geometry_preflight import precharge_geometry_decode
 from .ir import fail
+from . import geometry_measure_cache as cache
 
 
 def _validate_components(translator, value, inherited_geodesic=None,
@@ -52,12 +53,18 @@ def decode_component_geometry_bounded(translator, value):
     )
     from .geometry_values import _attach_geometry_metadata, _normalize_geometry
 
+    ticket = cache.lookup(translator, value)
+    cached = cache.restore_component(translator, ticket) if ticket else None
+    if cached is not None:
+        return cached[0]
     cost = precharge_geometry_decode(translator, value)
     normalized = _normalize_geometry(value)
     owned = _attach_geometry_metadata(value, normalized)
-    if contains_spherical_component(owned):
+    native = contains_spherical_component(owned)
+    if native:
         reserve_spherical_validation(translator, owned, cost=cost)
     _validate_components(translator, owned)
+    cache.store_component(translator, ticket, owned, native)
     return owned
 
 
